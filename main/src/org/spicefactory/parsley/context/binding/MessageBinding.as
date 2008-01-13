@@ -21,7 +21,6 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.util.Command;
 import org.spicefactory.parsley.context.ApplicationContext;
-import org.spicefactory.parsley.localization.LocaleManager;
 import org.spicefactory.parsley.localization.events.LocaleSwitchEvent;
 
 /**
