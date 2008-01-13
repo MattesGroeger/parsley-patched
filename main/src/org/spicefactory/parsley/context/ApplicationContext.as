@@ -33,7 +33,7 @@ import org.spicefactory.parsley.localization.impl.DefaultMessageSource;
 import org.spicefactory.parsley.localization.spi.LocaleManagerSpi;
 import org.spicefactory.parsley.localization.spi.MessageSourceSpi;
 
-import flash.utils.getQualifiedClassName;/**
+/**
  * The central class of the Parsley IOC Container.
  * 
  * <p>The main method for retrieving objects configured in a context is <code>getObject(String id)</code>.
