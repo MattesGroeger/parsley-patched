@@ -1,0 +1,5 @@
+<application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+	<factory>
+		<object id="classB" type="org.spicefactory.parsley.config.testmodel.ClassB"/>
+	</factory>
+</application-context>

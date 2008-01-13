@@ -1,0 +1,3 @@
+<message-bundle xmlns="http://www.spicefactory.org/parsley/1.0/messages">
+    <message key="base">This is the base bundle</message>
+</message-bundle>

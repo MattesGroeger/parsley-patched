@@ -1,0 +1,10 @@
+<application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+	<setup>
+		<includes>
+			<include file="testInclude.xml"/>
+		</includes>
+	</setup>
+	<factory>
+		<object id="classD" type="org.spicefactory.parsley.config.testmodel.ClassD" autowire="by-type"/>
+	</factory>
+</application-context>

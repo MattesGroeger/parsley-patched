@@ -1,0 +1,13 @@
+<application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+    <setup>
+       <expressions>
+           <variable name="test"><uint>34</uint></variable>
+       </expressions>
+    </setup>
+	<factory>
+		<object id="classA" type="org.spicefactory.parsley.config.testmodel.ClassA">
+			<property name="uintProp" value="${test}"/>
+			<property name="stringProp" value="${test2}"/>
+		</object>
+	</factory>
+</application-context>
