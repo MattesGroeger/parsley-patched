@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified"
+    xmlns="http://www.spicefactory.org/parsley/1.0/mvc"
+    xmlns:tns="http://www.spicefactory.org/parsley/1.0/mvc"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.spicefactory.org/parsley/1.0/mvc">
+
+    <xs:element name="action">
+        <xs:complexType>
+            <xs:attribute name="event-name" type="xs:token" use="optional"/>
+            <xs:attribute name="event-class" type="xs:token" use="optional"/>
+            <xs:attribute name="method" type="xs:token" use="optional"/>
+            <xs:attribute name="controller" type="xs:token" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="interceptor">
+        <xs:complexType>
+            <xs:attribute name="event-name" type="xs:token" use="optional"/>
+            <xs:attribute name="event-class" type="xs:token" use="optional"/>
+            <xs:attribute name="controller" type="xs:token" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="event-source">
+        <xs:complexType>
+            <xs:attribute name="event-types" type="xs:token" use="required"/>
+            <xs:attribute name="transformer-object" type="xs:token" use="required"/>
+            <xs:attribute name="transformer-method" type="xs:token" use="required"/>
+            <xs:attribute name="controller" type="xs:token" use="optional"/>
+        </xs:complexType>
+    </xs:element>   
+    
+</xs:schema>

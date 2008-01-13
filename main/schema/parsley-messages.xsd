@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified"
+    xmlns="http://www.spicefactory.org/parsley/1.0/messages"
+    xmlns:tns="http://www.spicefactory.org/parsley/1.0/messages"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.spicefactory.org/parsley/1.0/messages">
+
+    <xs:element name="message-bundle">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="message" type="messageType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:complexType name="messageType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="key" type="xs:token" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>    
+    
+</xs:schema>
