@@ -114,6 +114,7 @@
             <xs:element name="apply-children" type="emptyType"/>
             <xs:element name="apply-factory" type="emptyType"/>
         </xs:choice>
+        <xs:attribute name="name" type="xs:token" use="required"/>
         <xs:attribute name="value" type="xs:token" use="optional"/>
         <xs:attribute name="ref" type="xs:token" use="optional"/>
     </xs:complexType>
@@ -234,6 +235,7 @@
     
     <xs:group name="objectConfiguration">
         <xs:choice>
+        	<xs:element name="listener" type="listenerType"/>
             <xs:element name="property" type="propertyType"/>
             <xs:element name="init-method" type="methodCallType"/>
             <xs:any namespace="##other"/>
@@ -278,6 +280,7 @@
     
     <xs:complexType name="propertyType">
         <xs:group ref="value"/>
+        <xs:attribute name="name" type="xs:token" use="required"/>
         <xs:attribute name="value" type="xs:token" use="optional"/>
         <xs:attribute name="ref" type="xs:token" use="optional"/>
     </xs:complexType>
@@ -288,6 +291,12 @@
         </xs:sequence>
         <xs:attribute name="name" type="xs:token" use="required"/>
     </xs:complexType>
+    
+    <xs:complexType name="listenerType">
+		<xs:attribute name="dispatcher" type="xs:token" use="required"/>
+		<xs:attribute name="event-type" type="xs:token" use="required"/>
+		<xs:attribute name="method" type="xs:token" use="required"/>
+	</xs:complexType> 
 
     <xs:group name="value">
         <xs:choice>
