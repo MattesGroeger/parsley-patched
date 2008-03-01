@@ -137,7 +137,7 @@
     <xs:complexType name="staticType">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element name="property" type="propertyType"/>
-            <xs:element name="method-call" type="methodCallType"/>
+            <xs:element name="init-method" type="methodCallType"/>
         </xs:choice>
         <xs:attribute name="type" type="xs:token" use="required"/>
     </xs:complexType>
