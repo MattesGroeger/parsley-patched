@@ -39,6 +39,7 @@ public class DefaultElementProcessor implements ElementProcessor {
 
 	
 	public static const PARSLEY_NAMESPACE_URI:String = "http://www.spicefactory.org/parsley/1.0";
+	public static const SCHEMA_NAMESPACE_URI:String = "http://www.w3.org/2001/XMLSchema-instance";
 	
 	
 	private var _attributeConfigs:Object;
@@ -166,7 +167,9 @@ public class DefaultElementProcessor implements ElementProcessor {
 		// check for unexpected attributes
 		var attList:XMLList = node.attributes();
 		for each (var attr:XML in attList) {
-			var name:String = attr.localName() as String;
+			var qName:QName = attr.name() as QName;
+			if (qName.uri == SCHEMA_NAMESPACE_URI) continue; // ignore
+			var name:String = qName.localName;
 			if (_attributeConfigs[name] == null) {
 				throw new ConfigurationError("Unexpected attribute '" + name + "' in node: " + node.nodeName);
 			}
