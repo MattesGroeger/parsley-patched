@@ -20,7 +20,9 @@ public class TemplateTest extends ApplicationContextParserTest {
 	
 	public function testSimpleFactoryTemplate () : void {
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
-			xmlns:test="urn:parsley.unitTest">
+			xmlns:test="urn:parsley.unitTest" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		    	<namespaces>
 		    	    <namespace uri="urn:parsley.unitTest">
@@ -44,7 +46,9 @@ public class TemplateTest extends ApplicationContextParserTest {
 	
 	public function testFactoryProcessorChildren () : void {
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
-			xmlns:test="urn:parsley.unitTest">
+			xmlns:test="urn:parsley.unitTest" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		    	<namespaces>
 		    	    <namespace uri="urn:parsley.unitTest">
@@ -76,7 +80,9 @@ public class TemplateTest extends ApplicationContextParserTest {
 	
 	public function testFactoryArrayChildren () : void {
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
-			xmlns:test="urn:parsley.unitTest">
+			xmlns:test="urn:parsley.unitTest" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		    	<namespaces>
 		    	    <namespace uri="urn:parsley.unitTest">
@@ -121,7 +127,9 @@ public class TemplateTest extends ApplicationContextParserTest {
 	
 	public function testFactoryPropertyChildren () : void {
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
-			xmlns:test="urn:parsley.unitTest">
+			xmlns:test="urn:parsley.unitTest" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		    	<namespaces>
 		    	    <namespace uri="urn:parsley.unitTest">
@@ -155,7 +163,9 @@ public class TemplateTest extends ApplicationContextParserTest {
 	
 	public function testFactoryIllegalPropertyChildren () : void {
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
-			xmlns:test="urn:parsley.unitTest">
+			xmlns:test="urn:parsley.unitTest" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		    	<namespaces>
 		    	    <namespace uri="urn:parsley.unitTest">
@@ -193,7 +203,9 @@ public class TemplateTest extends ApplicationContextParserTest {
 	
 	public function testSimpleProcessorTemplate () : void {
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
-			xmlns:test="urn:parsley.unitTest">
+			xmlns:test="urn:parsley.unitTest" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		    	<namespaces>
 		    	    <namespace uri="urn:parsley.unitTest">
@@ -220,7 +232,9 @@ public class TemplateTest extends ApplicationContextParserTest {
 	
 	public function testProcessorPropertyChildren () : void {
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
-			xmlns:test="urn:parsley.unitTest">
+			xmlns:test="urn:parsley.unitTest" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		    	<namespaces>
 		    	    <namespace uri="urn:parsley.unitTest">
@@ -253,7 +267,9 @@ public class TemplateTest extends ApplicationContextParserTest {
 	
 	public function testProcessorNestedProcessorChildren () : void {
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
-			xmlns:test="urn:parsley.unitTest">
+			xmlns:test="urn:parsley.unitTest" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		    	<namespaces>
 		    	    <namespace uri="urn:parsley.unitTest">
@@ -290,7 +306,9 @@ public class TemplateTest extends ApplicationContextParserTest {
 	
 	public function testSameTagAsProcessorAndFactory () : void {
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
-			xmlns:store="urn:parsley.unitTest.store">
+			xmlns:store="urn:parsley.unitTest.store" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		    	<namespaces>
 		    	    <namespace uri="urn:parsley.unitTest.store">

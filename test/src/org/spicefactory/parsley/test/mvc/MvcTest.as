@@ -178,6 +178,8 @@ public class MvcTest extends ApplicationContextParserTest {
 		var xml:XML = <application-context 
 			xmlns="http://www.spicefactory.org/parsley/1.0"
 			xmlns:mvc="http://www.spicefactory.org/parsley/1.0/mvc"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd http://www.spicefactory.org/parsley/1.0/mvc http://www.spicefactory.org/parsley/schema/1.0/parsley-mvc.xsd"
 			>
     		<factory>
     		    <object id="action1" lazy="false" type="org.spicefactory.parsley.test.mvc.MockAction">
@@ -221,6 +223,8 @@ public class MvcTest extends ApplicationContextParserTest {
 		var xml:XML = <application-context 
 			xmlns="http://www.spicefactory.org/parsley/1.0"
 			xmlns:mvc="http://www.spicefactory.org/parsley/1.0/mvc"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd http://www.spicefactory.org/parsley/1.0/mvc http://www.spicefactory.org/parsley/schema/1.0/parsley-mvc.xsd"
 			>
 			<factory>
     		    <object id="action1" lazy="false" type="org.spicefactory.parsley.test.mvc.MockAction">
@@ -265,6 +269,8 @@ public class MvcTest extends ApplicationContextParserTest {
 		var xml:XML = <application-context 
 			xmlns="http://www.spicefactory.org/parsley/1.0"
 			xmlns:mvc="http://www.spicefactory.org/parsley/1.0/mvc"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd http://www.spicefactory.org/parsley/1.0/mvc http://www.spicefactory.org/parsley/schema/1.0/parsley-mvc.xsd"
 			>
 			<factory>
 				<object id="action" lazy="false" type="org.spicefactory.parsley.test.mvc.MockAction">
@@ -317,6 +323,8 @@ public class MvcTest extends ApplicationContextParserTest {
 		var xml:XML = <application-context 
 			xmlns="http://www.spicefactory.org/parsley/1.0"
 			xmlns:mvc="http://www.spicefactory.org/parsley/1.0/mvc"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd http://www.spicefactory.org/parsley/1.0/mvc http://www.spicefactory.org/parsley/schema/1.0/parsley-mvc.xsd"
 			>
     		<factory>
     		    <object id="transformer" type="org.spicefactory.parsley.test.mvc.EventTransformer"/>

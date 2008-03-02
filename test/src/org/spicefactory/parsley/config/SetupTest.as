@@ -16,7 +16,9 @@ public class SetupTest extends ApplicationContextParserTest {
 	}
 	
 	public function testVariableExpression () : void {
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		        <expressions>
 		            <variable name="test"><uint>34</uint></variable>
@@ -41,7 +43,9 @@ public class SetupTest extends ApplicationContextParserTest {
 	}
 	
 	public function testReferenceExpression () : void {
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="stringProp" type="org.spicefactory.parsley.config.testmodel.ClassA">
     				<property name="stringProp" value="${ref.nullProp}"/>
@@ -63,7 +67,9 @@ public class SetupTest extends ApplicationContextParserTest {
 	
 	public function testCustomResolver () : void {
 		var resolver:CustomVariableResolver = null; // just to compile
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		        <expressions>
 		            <variable-resolver type="org.spicefactory.parsley.config.util.CustomVariableResolver"/>
@@ -88,7 +94,9 @@ public class SetupTest extends ApplicationContextParserTest {
 	}
 	
 	public function testStaticInitializerProperty () : void {
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		        <static-initializers>
 		            <static type="org.spicefactory.parsley.config.testmodel.ClassA">
@@ -106,7 +114,9 @@ public class SetupTest extends ApplicationContextParserTest {
 	}
 	
 	public function testStaticInitializerMethod () : void {
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		        <static-initializers>
 		            <static type="org.spicefactory.parsley.config.testmodel.ClassA">

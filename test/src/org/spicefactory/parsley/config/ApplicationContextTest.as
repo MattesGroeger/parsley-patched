@@ -34,7 +34,9 @@ public class ApplicationContextTest extends ApplicationContextParserTest {
 	
 	public function testRootAccess () : void {
 		assertNull("root must be null", ApplicationContext.root);
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"/>;
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd"/>;
     	parseForContext2("emptyObject", xml, true);
     	assertNotNull("Expected root reference", ApplicationContext.root);
     	assertNotNull("Expected reference by name", ApplicationContext.forName("emptyObject"));
@@ -42,7 +44,9 @@ public class ApplicationContextTest extends ApplicationContextParserTest {
 	
 	public function testCacheable () : void {
 		assertNull("root must be null", ApplicationContext.root);
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"/>;
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd"/>;
     	var context1:ApplicationContext = parseForContext2("emptyObject", xml, false, true);
     	var context2:ApplicationContext = parseForContext2("emptyObject", xml, false, true);
     	assertEquals("Expected the same context instance", context1, context2);
@@ -50,7 +54,9 @@ public class ApplicationContextTest extends ApplicationContextParserTest {
 	
 	public function testInspectionForIds () : void {
 		assertNull("root must be null", ApplicationContext.root);
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="eager" lazy="false" type="org.spicefactory.parsley.config.testmodel.ClassA"/>
     			<object id="lazy" type="org.spicefactory.parsley.config.testmodel.ClassA"/>
@@ -70,7 +76,9 @@ public class ApplicationContextTest extends ApplicationContextParserTest {
 	
 	public function testInspectionForTypes () : void {
 		assertNull("root must be null", ApplicationContext.root);
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="aware" type="org.spicefactory.parsley.config.testmodel.ClassB"/>
     			<object id="classA1" type="org.spicefactory.parsley.config.testmodel.ClassA"/>
@@ -105,13 +113,17 @@ public class ApplicationContextTest extends ApplicationContextParserTest {
 	
 	public function testParentChildImplicit () : void {
 		assertNull("root must be null", ApplicationContext.root);
-		var xml1:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml1:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="objInParent" type="org.spicefactory.parsley.config.testmodel.ClassB"/>
     		</factory>
     	</application-context>; 
     	var parent:ApplicationContext = parseForContext2("obj", xml1, true);  	
-    	var xml2:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+    	var xml2:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="refProp" type="org.spicefactory.parsley.config.testmodel.ClassD" autowire="by-type"/>
     		</factory>
@@ -128,13 +140,17 @@ public class ApplicationContextTest extends ApplicationContextParserTest {
 	
 	public function testParentChildExplicit () : void {
 		assertNull("root must be null", ApplicationContext.root);
-		var xml1:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml1:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="objInParent" type="org.spicefactory.parsley.config.testmodel.ClassB"/>
     		</factory>
     	</application-context>; 
     	var parent:ApplicationContext = parseForContext2("obj", xml1);  	
-    	var xml2:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+    	var xml2:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="refProp" type="org.spicefactory.parsley.config.testmodel.ClassD" autowire="by-type"/>
     		</factory>

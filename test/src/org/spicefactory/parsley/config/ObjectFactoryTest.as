@@ -23,7 +23,9 @@ public class ObjectFactoryTest extends ApplicationContextParserTest {
 	
 	
 	public function testMethodCallWithoutArgs () : void {
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="obj" type="org.spicefactory.parsley.config.testmodel.ClassA">
     				<init-method name="testMethod"/>
@@ -35,7 +37,9 @@ public class ObjectFactoryTest extends ApplicationContextParserTest {
  	}
  	
 	public function testMethodCallWithArgs () : void {
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="obj" type="org.spicefactory.parsley.config.testmodel.ClassA">
     				<init-method name="testMethodWithArgs">
@@ -58,7 +62,9 @@ public class ObjectFactoryTest extends ApplicationContextParserTest {
  	}
  	
  	public function testListenerRegistration () : void {
- 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+ 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="obj" type="org.spicefactory.parsley.config.testmodel.ClassD">
     				<listener event-type="foo" dispatcher="dispatcher" method="handleEvent"/>
@@ -84,7 +90,9 @@ public class ObjectFactoryTest extends ApplicationContextParserTest {
  	}
  	
 	public function testConstructorArgs () : void {
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="obj" type="org.spicefactory.parsley.config.testmodel.ClassC">
     				<constructor-args>
@@ -106,7 +114,9 @@ public class ObjectFactoryTest extends ApplicationContextParserTest {
  	}
  	
 	public function testStaticFactoryMethod () : void {
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="obj" type="org.spicefactory.parsley.config.testmodel.ClassA">
     				<static-factory-method type="org.spicefactory.parsley.config.testmodel.ClassA" method="getInstance"/>
@@ -117,7 +127,9 @@ public class ObjectFactoryTest extends ApplicationContextParserTest {
  	}
  	
  	public function testInstanceFactoryMethod () : void {
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="obj" type="org.spicefactory.parsley.config.testmodel.ClassA">
     				<factory-method factory="factory" method="createClassAInstance">
@@ -137,7 +149,9 @@ public class ObjectFactoryTest extends ApplicationContextParserTest {
  	}
  	
  	public function testSingletonObject () : void {
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="obj" type="org.spicefactory.parsley.config.testmodel.ClassA"/>
     		</factory>
@@ -151,7 +165,9 @@ public class ObjectFactoryTest extends ApplicationContextParserTest {
  	}
  	
  	public function testNonSingletonObject () : void {
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="obj" singleton="false" type="org.spicefactory.parsley.config.testmodel.ClassA"/>
     		</factory>
@@ -166,7 +182,9 @@ public class ObjectFactoryTest extends ApplicationContextParserTest {
  	}
  	
  	public function testLazyAttribute () : void {
- 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+ 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="eager" lazy="false" type="org.spicefactory.parsley.config.testmodel.ClassA"/>
     			<object id="lazy" type="org.spicefactory.parsley.config.testmodel.ClassA"/>
@@ -183,7 +201,9 @@ public class ObjectFactoryTest extends ApplicationContextParserTest {
  	}
  	
  	public function testDestroyMethod () : void {
- 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+ 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="obj" type="org.spicefactory.parsley.config.testmodel.ClassA">
     			    <destroy-method name="testMethod"/>

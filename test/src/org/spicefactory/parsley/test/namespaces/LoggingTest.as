@@ -14,6 +14,8 @@ public class LoggingTest extends ApplicationContextParserTest {
 		var xml:XML = <application-context 
 			xmlns="http://www.spicefactory.org/parsley/context-ns/1.0/"
 			xmlns:log="http://www.spicefactory.org/parsley/1.0/logging"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd http://www.spicefactory.org/parsley/1.0/logging http://www.spicefactory.org/parsley/schema/1.0/parsley-logging.xsd"
 			>
     		<factory>
     			<log:factory id="logFactory" context="true">

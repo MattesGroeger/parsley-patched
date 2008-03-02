@@ -24,6 +24,8 @@ public class CinnamonTagsTest extends ApplicationContextParserTest {
 		var xml:XML = <application-context 
 			xmlns="http://www.spicefactory.org/parsley/1.0"
 			xmlns:cinnamon="http://www.spicefactory.org/parsley/1.0/cinnamon"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd http://www.spicefactory.org/parsley/1.0/cinnamon http://www.spicefactory.org/parsley/schema/1.0/parsley-cinnamon.xsd"
 			>
     		<factory>
     			<cinnamon:channel 
@@ -56,6 +58,8 @@ public class CinnamonTagsTest extends ApplicationContextParserTest {
 		var xml:XML = <application-context 
 			xmlns="http://www.spicefactory.org/parsley/1.0"
 			xmlns:cinnamon="http://www.spicefactory.org/parsley/1.0/cinnamon"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd http://www.spicefactory.org/parsley/1.0/cinnamon http://www.spicefactory.org/parsley/schema/1.0/parsley-cinnamon.xsd"
 			>
     		<factory>
     			<cinnamon:channel 
@@ -94,6 +98,8 @@ public class CinnamonTagsTest extends ApplicationContextParserTest {
 		var xml:XML = <application-context 
 			xmlns="http://www.spicefactory.org/parsley/1.0"
 			xmlns:cinnamon="http://www.spicefactory.org/parsley/1.0/cinnamon"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd http://www.spicefactory.org/parsley/1.0/cinnamon http://www.spicefactory.org/parsley/schema/1.0/parsley-cinnamon.xsd"
 			>
     		<factory>
     			<cinnamon:channel 

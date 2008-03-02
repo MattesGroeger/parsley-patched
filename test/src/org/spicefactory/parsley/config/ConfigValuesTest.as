@@ -22,7 +22,9 @@ public class ConfigValuesTest extends ApplicationContextParserTest {
 	
 	
 	private function createContextXML (objId:String, propNode:XML) : XML {
-		return <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		return <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id={objId} type="org.spicefactory.parsley.config.testmodel.ClassA">
     				{propNode}
@@ -150,7 +152,9 @@ public class ConfigValuesTest extends ApplicationContextParserTest {
     
     
     public function testRefProperty () : void {
-    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="refProp" type="org.spicefactory.parsley.config.testmodel.ClassA">
     				<property name="refProp" ref="classB"/>
@@ -162,7 +166,9 @@ public class ConfigValuesTest extends ApplicationContextParserTest {
     }
     
     public function testRefChildNodeProperty () : void {
-    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="refProp" type="org.spicefactory.parsley.config.testmodel.ClassA">
     				<property name="refProp">
@@ -176,7 +182,9 @@ public class ConfigValuesTest extends ApplicationContextParserTest {
     }
     
     public function testAutowireByType () : void {
-    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="refProp" type="org.spicefactory.parsley.config.testmodel.ClassD" autowire="by-type"/>
     			<object id="classB" type="org.spicefactory.parsley.config.testmodel.ClassB"/>
@@ -186,7 +194,9 @@ public class ConfigValuesTest extends ApplicationContextParserTest {
     }
     
     public function testAutowireByName () : void {
-    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="refProp" type="org.spicefactory.parsley.config.testmodel.ClassD" autowire="by-name"/>
     			<object id="ref" type="org.spicefactory.parsley.config.testmodel.ClassB"/>
@@ -196,7 +206,9 @@ public class ConfigValuesTest extends ApplicationContextParserTest {
     }
     
     public function testIllegalAutowireByType () : void {
-    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="refProp" lazy="false" 
     				type="org.spicefactory.parsley.config.testmodel.ClassD" autowire="by-type"/>
@@ -332,7 +344,9 @@ public class ConfigValuesTest extends ApplicationContextParserTest {
     
     public function testCustomProperty () : void {
     	var conv:RectangleConverter = null; // just to compile class
-    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="customProp" type="org.spicefactory.parsley.config.testmodel.ClassA">
     				<property name="rectProp">
@@ -375,7 +389,9 @@ public class ConfigValuesTest extends ApplicationContextParserTest {
     
     
     public function testApplicationContextAware () : void {
-    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+    	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
     		<factory>
     			<object id="contextAware" type="org.spicefactory.parsley.config.testmodel.ClassB"/>
     		</factory>

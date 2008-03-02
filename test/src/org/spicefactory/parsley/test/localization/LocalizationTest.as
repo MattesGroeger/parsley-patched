@@ -27,7 +27,9 @@ public class LocalizationTest extends ApplicationContextParserTest {
 	
 	public function testGetMessageIgnoreCountry () : void {
 		ApplicationContext.context_internal::setLocaleManager(null);		
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		        <localization>
 		            <locale-manager>
@@ -58,7 +60,9 @@ public class LocalizationTest extends ApplicationContextParserTest {
 	
 	public function testGetLocalizedMessage () : void {
 		ApplicationContext.context_internal::setLocaleManager(null);
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		        <localization>
 		            <locale-manager>
@@ -89,7 +93,9 @@ public class LocalizationTest extends ApplicationContextParserTest {
 	
 	public function testDefaultBundle () : void {
 		ApplicationContext.context_internal::setLocaleManager(null);
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		        <localization>
 		            <locale-manager>
@@ -122,7 +128,9 @@ public class LocalizationTest extends ApplicationContextParserTest {
 	
 	public function testProgrammaticDefaultLocale () : void {
 		ApplicationContext.context_internal::setLocaleManager(null);		
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		        <localization>
 		            <locale-manager>
@@ -154,7 +162,9 @@ public class LocalizationTest extends ApplicationContextParserTest {
 	
 	public function testMessageBinding () : void {
 		ApplicationContext.context_internal::setLocaleManager(null);		
-		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0">
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
 		    <setup>
 		        <localization>
 		            <locale-manager>
