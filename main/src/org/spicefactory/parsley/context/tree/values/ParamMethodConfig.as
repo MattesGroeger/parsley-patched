@@ -70,7 +70,7 @@ public class ParamMethodConfig extends AbstractMethodConfig {
 	}
 	
 	public function set target (value:String) : void {
-		_target = target;
+		_target = value;
 	}
 
 	/**
