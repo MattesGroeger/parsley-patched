@@ -27,7 +27,6 @@ public class AbstractAttributeContainer
 	
 	
 	private var _attributes:Object;
-	private var _cache:Object;
 	
 	
 	/**
@@ -35,7 +34,6 @@ public class AbstractAttributeContainer
 	 */
 	function AbstractAttributeContainer () {
 		_attributes = new Object();
-		_cache = new Object();
 	}
 	
 	/**
@@ -57,23 +55,13 @@ public class AbstractAttributeContainer
 	
 	/**
 	 * Returns the value for the attribute with the specified name.
-	 * This method caches evaluated attribute values. If you want to
-	 * dynamically evaluate the expression each time it is accessed
-	 * use getAttribute(name).getValue() instead.
 	 * 
 	 * @param name the name of the attribute
 	 * @return the value of the attribute or undefined if no such attribute exists
 	 */
 	protected function getAttributeValue (name:String) : * {
-		var cache:Object = _cache[name];
-		if (cache != null) {
-			return cache.value;
-		}
 		var attr:Attribute = getAttribute(name);
-		if (attr == null) return undefined;
-		var value:* = attr.getValue();
-		_cache[name] = {value:value}; // object wrapper necessary to detect undefined values in cache
-		return value;
+		return (attr == null) ? undefined : attr.getValue();
 	} 
 
 
