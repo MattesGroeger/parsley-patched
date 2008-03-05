@@ -265,6 +265,82 @@ public class TemplateTest extends ApplicationContextParserTest {
     	assertEquals("Unexpected property value", 7, classA.intProp);
 	}
 	
+	public function testTwoProcessorTemplates () : void {
+		var templateAttributeRef:String = "${@value}";
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
+			xmlns:test="urn:parsley.unitTest" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
+		    <setup>
+		    	<namespaces>
+		    	    <namespace uri="urn:parsley.unitTest">
+		    	        <processor-template tag-name="test">
+		    	        	<init-method name="testMethodWithArg">
+		    	        		<string>{templateAttributeRef}</string>
+		    	        	</init-method>
+		    	        </processor-template>
+		    	    </namespace>
+		    	</namespaces>
+		    </setup>
+    		<factory>
+    			<object id="foo" type="org.spicefactory.parsley.config.testmodel.ClassA">
+    				<test:test value="A"/>
+    				<test:test value="B"/>
+    			</object>
+    		</factory>
+    	</application-context>;
+    	var context:ApplicationContext = parseForContext2("template", xml);  	
+    	assertEquals("Unexpected object count", 1, context.objectCount);
+    	assertTrue("Expected object in context", context.containsObject("foo"));
+    	var obj:Object = context.getObject("foo");
+    	assertTrue("Unexpected type", (obj is ClassA));
+    	var classA:ClassA = ClassA(obj);
+    	var args:Array = classA.testMethodArgs;
+    	assertEquals("Unexpected number of arguments", 2, args.length);
+    	assertEquals("Unexpected argument", "A", args[0]);
+    	assertEquals("Unexpected argument", "B", args[1]);
+	}
+	
+	public function testTwoProcessorTemplatesWithObjectRefs () : void {
+		var templateAttributeRef:String = "${@value}";
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
+			xmlns:test="urn:parsley.unitTest" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
+		    <setup>
+		    	<namespaces>
+		    	    <namespace uri="urn:parsley.unitTest">
+		    	        <processor-template tag-name="test">
+		    	        	<init-method name="testMethodWithArg">
+		    	        		<object-ref id="${@value}"/>
+		    	        	</init-method>
+		    	        </processor-template>
+		    	    </namespace>
+		    	</namespaces>
+		    </setup>
+    		<factory>
+    			<object id="ref1" type="org.spicefactory.parsley.config.testmodel.ClassA"/> 
+    			<object id="ref2" type="org.spicefactory.parsley.config.testmodel.ClassA"/> 
+    			<object id="foo" type="org.spicefactory.parsley.config.testmodel.ClassA">
+    				<test:test value="ref1"/>
+    				<test:test value="ref2"/>
+    			</object>
+    		</factory>
+    	</application-context>;
+    	var context:ApplicationContext = parseForContext2("template", xml);  	
+    	assertEquals("Unexpected object count", 3, context.objectCount);
+    	assertTrue("Expected object in context", context.containsObject("foo"));
+    	var obj:Object = context.getObject("foo");
+    	assertTrue("Unexpected type", (obj is ClassA));
+    	var classA:ClassA = ClassA(obj);
+    	var ref1:ClassA = ClassA(context.getObject("ref1"));
+    	var ref2:ClassA = ClassA(context.getObject("ref2"));
+    	var args:Array = classA.testMethodArgs;
+    	assertEquals("Unexpected number of arguments", 2, args.length);
+    	assertEquals("Unexpected argument", ref1, args[0]);
+    	assertEquals("Unexpected argument", ref2, args[1]);
+	}
+	
 	public function testProcessorNestedProcessorChildren () : void {
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
 			xmlns:test="urn:parsley.unitTest" 

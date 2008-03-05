@@ -26,7 +26,7 @@ public class ClassA {
 	
 	private var _testMethodCalled:Boolean = false;
 	private static var _staticTestMethodCalled:Boolean = false;
-	private var _methodArgs:Array;
+	private var _methodArgs:Array = new Array();
 	
 	private static var _instanceCount:uint = 0;
 	
@@ -174,6 +174,10 @@ public class ClassA {
 	
 	public function testMethod () : void {
 		_testMethodCalled = true;
+	}
+	
+	public function testMethodWithArg (arg:*) : void {
+		_methodArgs.push(arg);
 	}
 	
 	public static function staticTestMethod () : void {
