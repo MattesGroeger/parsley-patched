@@ -63,6 +63,7 @@
             <xs:element name="processor-config" type="tagConfigType"/>
             <xs:element name="processor-template" type="processorTemplateType"/>
         </xs:choice>
+        <xs:attribute name="uri" type="xs:token" use="required"/>
     </xs:complexType>
     
     <xs:complexType name="tagConfigType">
@@ -85,7 +86,7 @@
     <xs:complexType name="processorTemplateType">
         <xs:sequence>
             <xs:element name="property" type="templatePropertyType"/>
-            <xs:element name="method-call" type="templateMethodCallType"/>
+            <xs:element name="init-method" type="templateMethodCallType"/>
         </xs:sequence>
         <xs:attribute name="tag-name" type="xs:Name" use="required"/>
     </xs:complexType>
