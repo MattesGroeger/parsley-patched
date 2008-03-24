@@ -48,6 +48,7 @@
     
     <xs:complexType name="variableType">
         <xs:group ref="value"/>
+        <xs:attribute name="name" type="xs:token" use="required"/>
     </xs:complexType>
     
     <xs:complexType name="namespacesType">
