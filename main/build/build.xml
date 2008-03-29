@@ -9,10 +9,10 @@
 
 	<target name="compile">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-o ${project.dir}/release/parsley-1.0.0.swc" />
+			<arg line="-o ${project.dir}/release/parsley-1.0.1.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/playerglobal.swc" />
 			<arg line="-el ${lib.dir}/spicelib-1.0.0.swc" />
-			<arg line="-el ${lib.dir}/cinnamon-0.1.0.swc" />
+			<arg line="-el ${lib.dir}/cinnamon-0.2.0.swc" />
 			<arg line="-sp ${project.dir}/src" />
 			<arg line="-is ${project.dir}/src" />
 			<arg line="-debug=false"/>
