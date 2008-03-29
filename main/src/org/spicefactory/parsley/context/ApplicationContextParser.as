@@ -192,12 +192,16 @@ public class ApplicationContextParser extends Task {
 	}
 	
 	/**
-	 * Indicates whether this context can be cached.
+	 * This property is deprecated, it will be removed in version 1.1.0. 
+	 * Use <code>ApplicationContext.forName</code> or <code>ApplicationContext.root</code>
+	 * to access already loaded context instances.
+	 * 
+	 * <p>Indicates whether this context can be cached.
 	 * If this property is set to true, and an <code>ApplicationContext</code> with the same name
 	 * has already been loaded, this parser will use the cached
 	 * context instance and immediately fire the <code>COMPLETE</code> event.
 	 * This may be useful if many modules have to load the same <code>ApplicationContext</code>
-	 * but it is not known until runtime which module will be the first.
+	 * but it is not known until runtime which module will be the first.</p>
 	 */
 	public function get cacheable () : Boolean {
 		return _cacheable;
