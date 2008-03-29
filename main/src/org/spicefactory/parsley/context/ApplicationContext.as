@@ -91,7 +91,7 @@ public class ApplicationContext	{
 	/**
 	 * @private
 	 */
-	function ApplicationContext (name:String, config:ApplicationContextConfig, parent:ApplicationContext) {
+	function ApplicationContext (name:String, config:ApplicationContextConfig, parent:ApplicationContext = null) {
 		if (_logger == null) {
 			_logger = LogContext.getLogger("org.spicefactory.parsley.context.ApplicationContext");
 		}
@@ -191,6 +191,13 @@ public class ApplicationContext	{
 	 */
 	public function get parent () : ApplicationContext {
 		return _parent;
+	}
+	
+	/**
+	 * @private
+	 */
+	internal function setParent (value:ApplicationContext) : void {
+		_parent = value;
 	}
 	
 	/**

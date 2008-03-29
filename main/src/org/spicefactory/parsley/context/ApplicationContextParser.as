@@ -100,7 +100,6 @@ public class ApplicationContextParser extends Task {
 	private var _name:String;
 	private var _useAsRoot:Boolean;
 	private var _cacheable:Boolean;
-	private var _parentContext:ApplicationContext;
 	private var _locale:Locale;
 	
 	private var _files:Array;
@@ -152,6 +151,9 @@ public class ApplicationContextParser extends Task {
 		}
 		_name = name;
 		_useAsRoot = useAsRoot;
+		_config = new ApplicationContextConfig();
+		_context = new ApplicationContext(_name, _config);
+		_config.context = _context;
 		_cacheable = false;
 		_files = new Array();
 		_xml = new Array();
@@ -174,10 +176,10 @@ public class ApplicationContextParser extends Task {
 	 * from the parent context (but not vice versa).
 	 */
 	public function get parentContext () : ApplicationContext {
-		return _parentContext;
+		return _context.parent;
 	}
 	public function set parentContext (parent:ApplicationContext) : void {
-		_parentContext = parent;
+		_context.setParent(parent);
 	}
 	
 	/**
@@ -239,7 +241,6 @@ public class ApplicationContextParser extends Task {
 		return _underConstruction.concat();
 	} 
 
-	// TODO - 1.1.0 - addObjectFactory + addObject
 	/**
 	 * @private
 	 */
@@ -250,12 +251,9 @@ public class ApplicationContextParser extends Task {
 			complete();
 			return;
 		}
-		if (_parentContext == null && ApplicationContext.root != null) {
-			_parentContext = ApplicationContext.root;
+		if (_context.parent == null && ApplicationContext.root != null) {
+			_context.setParent(ApplicationContext.root);
 		}
-		_config = new ApplicationContextConfig();
-		_context = new ApplicationContext(_name, _config, _parentContext);
-		_config.context = _context;
 		_underConstruction.push(_context);
 		
 		try {
@@ -320,7 +318,7 @@ public class ApplicationContextParser extends Task {
 		_context.initLocaleManager();
 		var ms:MessageSourceSpi = MessageSourceSpi(_context.messageSource);
 		var lm:LocaleManagerSpi = LocaleManagerSpi(ApplicationContext.localeManager);
-		if (_parentContext != null) {
+		if (_context.parent != null) {
 			var queue : TaskGroup = new SequentialTaskGroup("TaskQueue for loading MessageSources into ApplicationContextParser");
 			queue.addEventListener(ErrorEvent.ERROR, handleTaskError);
 			queue.addEventListener(TaskEvent.COMPLETE, processRemaining);
