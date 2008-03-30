@@ -154,7 +154,7 @@ public class MessageSourceConfig
 	
 	public function set defaultMessageBundleConfig (config:MessageBundleConfig) : void {
 		if (_defaultMessageBundleConfig != null) {
-			throw new ConfigurationError("More than one default-message-source was specified");
+			throw new ConfigurationError("More than one default-message-bundle was specified");
 		}
 		addMessageBundleConfig(config);
 		_defaultMessageBundleConfig = config;
