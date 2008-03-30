@@ -151,10 +151,10 @@ public class ApplicationContextParserTest extends TestCase {
     	return _context;
     }
     
-	protected function parseForContextError (name:String, xml:XML) : void {
+	protected function parseForContextError (name:String, xml:XML, asRoot:Boolean = false) : void {
     	_parser = null;
     	_context = null;
-    	startParser(name, xml, onContextComplete, onUnexpectedContextError);
+    	startParser(name, xml, onContextComplete, onUnexpectedContextError, asRoot);
     	if (_parserError == null) {
     		fail("Missing error event");
     	} else {
