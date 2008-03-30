@@ -99,7 +99,6 @@ public class ApplicationContextParser extends Task {
 	
 	private var _name:String;
 	private var _useAsRoot:Boolean;
-	private var _cacheable:Boolean;
 	private var _locale:Locale;
 	
 	private var _files:Array;
@@ -107,13 +106,16 @@ public class ApplicationContextParser extends Task {
 	
 	private var _loader:XmlLoaderTask;
 	
-	private var _config:ApplicationContextConfig;
 	private var _context:ApplicationContext;
 	
-	
-	private static var _cache : Object;
 	private static var _underConstruction:Array = new Array();
 	
+
+	/* deprecated - will be removed in 1.1.0 */
+	private var _cacheable:Boolean;
+	private static var _cache : Object;
+
+
 	/**
 	 * Clears the cache, removing all previously loaded <code>ApplicationContext</code>
 	 * instances.
@@ -151,9 +153,7 @@ public class ApplicationContextParser extends Task {
 		}
 		_name = name;
 		_useAsRoot = useAsRoot;
-		_config = new ApplicationContextConfig();
-		_context = new ApplicationContext(_name, _config);
-		_config.context = _context;
+		_context = new ApplicationContext(_name);
 		_cacheable = false;
 		_files = new Array();
 		_xml = new Array();
@@ -168,7 +168,7 @@ public class ApplicationContextParser extends Task {
 	 * Use <code>ApplicationContext.config</code> to access the <code>ApplicationContextConfig</code> instance.
 	 */
 	public function get config () : ApplicationContextConfig {
-		return _config;
+		return _context.config;
 	}
 	
 	/**
@@ -300,13 +300,13 @@ public class ApplicationContextParser extends Task {
 		} else if (qname.localName != "application-context") {
 			throw new ConfigurationError("Root node is not <application-context>");
 		}
-		_config.parse(node, _context);
-		_config.setupConfig.includesConfig.process(this);
+		_context.config.parse(node, _context);
+		_context.config.setupConfig.includesConfig.process(this);
 	}
 	
 	private function process () : void {
 		try {
-			_config.setupConfig.process();
+			_context.config.setupConfig.process();
 		} catch (e:Error) {
 			handleParserError(e);
 			return;
@@ -345,7 +345,7 @@ public class ApplicationContextParser extends Task {
 	private function processRemaining (event:Event) : void {
 		reset();
 		try {
-			_config.factoryConfig.process();
+			_context.config.factoryConfig.process();
 		} catch (e:Error) {
 			handleParserError(e);
 			return;

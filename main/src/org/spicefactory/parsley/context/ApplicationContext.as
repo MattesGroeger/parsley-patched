@@ -15,6 +15,7 @@
  */
  
 package org.spicefactory.parsley.context {
+import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.expr.impl.DefaultExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
@@ -90,14 +91,22 @@ public class ApplicationContext	{
 	
 	/**
 	 * @private
+	 * TODO - 1.1.0 - remove config parameter
 	 */
-	function ApplicationContext (name:String, config:ApplicationContextConfig, parent:ApplicationContext = null) {
+	function ApplicationContext (name:String, config:ApplicationContextConfig = null, parent:ApplicationContext = null) {
 		if (_logger == null) {
 			_logger = LogContext.getLogger("org.spicefactory.parsley.context.ApplicationContext");
+		}
+		if (name == null || name.length == 0) {
+			throw new IllegalArgumentError("name must not be null or an empty string");
+		}
+		if (config == null) {
+			config = new ApplicationContextConfig();
 		}
 		_name = name;
 		_destroyed = false;
 		_config = config;
+		_config.context = this;
 		_parent = parent;
 		/*
 		if (_parent != null) {
