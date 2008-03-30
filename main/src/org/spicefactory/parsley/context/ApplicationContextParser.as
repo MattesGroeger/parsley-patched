@@ -164,7 +164,8 @@ public class ApplicationContextParser extends Task {
 	}
 	
 	/**
-	 * @copy org.spicefactory.parsley.context.ApplicationContext#config
+	 * This property is deprecated, it will be removed in version 1.1.0. 
+	 * Use <code>ApplicationContext.config</code> to access the <code>ApplicationContextConfig</code> instance.
 	 */
 	public function get config () : ApplicationContextConfig {
 		return _config;
