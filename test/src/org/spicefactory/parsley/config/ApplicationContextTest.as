@@ -32,6 +32,24 @@ public class ApplicationContextTest extends ApplicationContextParserTest {
     	assertNotNull("Expected reference by name", ApplicationContext.forName("emptyObject"));
 	}
 	
+	public function testDuplicateName () : void {
+		assertNull("root must be null", ApplicationContext.root);
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd"/>;
+    	parseForContext2("duplicate", xml, true);
+    	parseForContextError("duplicate", xml);
+	}
+	
+	public function testDuplicateRoot () : void {
+		assertNull("root must be null", ApplicationContext.root);
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd"/>;
+    	parseForContext2("duplicate", xml, true);
+    	parseForContextError("duplicate2", xml, true);
+	}
+	
 	public function testRootAccess () : void {
 		assertNull("root must be null", ApplicationContext.root);
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
