@@ -26,6 +26,7 @@ import org.spicefactory.lib.task.TaskGroup;
 import org.spicefactory.lib.task.enum.TaskState;
 import org.spicefactory.lib.task.events.TaskEvent;
 import org.spicefactory.lib.util.ArrayUtil;
+import org.spicefactory.lib.util.collection.SimpleMap;
 import org.spicefactory.parsley.context.ns.context_internal;
 import org.spicefactory.parsley.context.tree.core.ApplicationContextConfig;
 import org.spicefactory.parsley.context.xml.DefaultElementProcessor;
@@ -108,7 +109,8 @@ public class ApplicationContextParser extends Task {
 	
 	private var _context:ApplicationContext;
 	
-	private static var _underConstruction:Array = new Array();
+	private static var _underConstruction:SimpleMap = new SimpleMap();
+	private static var _rootUnderConstruction:Boolean = false;
 	
 
 	/* deprecated - will be removed in 1.1.0 */
@@ -239,7 +241,7 @@ public class ApplicationContextParser extends Task {
 	 * @private
 	 */
 	context_internal static function getContextsUnderConstruction () : Array {
-		return _underConstruction.concat();
+		return _underConstruction.values;
 	} 
 
 	/**
@@ -255,7 +257,17 @@ public class ApplicationContextParser extends Task {
 		if (_context.parent == null && ApplicationContext.root != null) {
 			_context.setParent(ApplicationContext.root);
 		}
-		_underConstruction.push(_context);
+		if (_useAsRoot && (ApplicationContext.root != null || _rootUnderConstruction)) {
+			handleParserErrorMessage("There is already a root ApplicationContext");
+			return;
+		} else if (ApplicationContext.forName(_name) != null || _underConstruction.containsKey(_name)) {
+			handleParserErrorMessage("Duplicate ApplicationContext name: " + _name);
+			return;
+		}
+		if (_useAsRoot) {
+			_rootUnderConstruction = true;
+		}
+		_underConstruction.put(_name, _context);
 		
 		try {
 			for each (var node:XML in _xml) {
@@ -334,7 +346,7 @@ public class ApplicationContextParser extends Task {
 	
 	
 	
-	private function reset () : void {
+	private function resetLocaleManager () : void {
 		ApplicationContext.localeManager.removeEventListener(ErrorEvent.ERROR, handleTaskError);
 		ApplicationContext.localeManager.removeEventListener(LocaleSwitchEvent.COMPLETE, processRemaining);
 	}
@@ -343,7 +355,7 @@ public class ApplicationContextParser extends Task {
 	 * Event argument may be LocaleSwitchEvent or TaskEvent
 	 */
 	private function processRemaining (event:Event) : void {
-		reset();
+		resetLocaleManager();
 		try {
 			_context.config.factoryConfig.process();
 		} catch (e:Error) {
@@ -353,14 +365,14 @@ public class ApplicationContextParser extends Task {
 		if (_cacheable) {
 			_cache[_name] = _context;
 		}
-		ArrayUtil.remove(_underConstruction, _context);
+		reset();
 		_context.initialize(_useAsRoot);
 		complete();
 	}
 	
 	private function handleTaskError (evt:ErrorEvent) : void {
 		handleParserErrorMessage(evt.text);
-		reset();
+		resetLocaleManager();
 	}
 	
 	private function handleParserError (e:Error) : void {
@@ -369,10 +381,18 @@ public class ApplicationContextParser extends Task {
 	}
 	
 	private function handleParserErrorMessage (msg:String) : void {
+		reset();
 		_context = null;
 		_logger.error(msg);
 		error(msg);
 	}	
+	
+	private function reset () : void {
+		_underConstruction.remove(_context.name);
+		if (_useAsRoot) {
+			_rootUnderConstruction = false;
+		}
+	}
 	
 	/**
 	 * The <code>ApplicationContext</code> instance loaded and parsed by this parser.
