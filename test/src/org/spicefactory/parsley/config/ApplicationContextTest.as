@@ -183,6 +183,38 @@ public class ApplicationContextTest extends ApplicationContextParserTest {
     	assertTrue("Unexpected property value", (classD.ref is ClassB));		
 	}
 	
+	public function testUseVariableFromOtherContextXml () : void {
+		assertNull("root must be null", ApplicationContext.root);
+		var xml1:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
+    		<setup>
+		       <expressions>
+		           <variable name="test"><uint>37</uint></variable>
+		       </expressions>
+		    </setup>
+    	</application-context>; 
+    	var xml2:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
+    		<factory>
+				<object id="classA" type="org.spicefactory.parsley.config.testmodel.ClassA">
+					<property name="uintProp" value="${test}"/>
+				</object>
+			</factory>
+    	</application-context>; 
+    	var prepare:Function = function (parser:ApplicationContextParser) : void {
+    		parser.addXml(xml2);
+    	};
+    	var context:ApplicationContext = parseForContext2("var", xml1, false, false, null, prepare);  	
+    	assertEquals("Unexpected object count", 1, context.objectCount);
+    	var obj:Object = context.getObject("classA");
+    	assertNotNull("Expecting Object instance", obj);
+    	assertTrue("Expecting instance of ClassA", (obj is ClassA));
+    	var classA:ClassA = obj as ClassA;
+    	assertEquals("Unexpected property value", 37, classA.uintProp);	
+	}
+	
 	public function testIncludeFiles () : void {
 		var f:Function = addAsync(onIncludeTest, 3000);		
 		var parser:ApplicationContextParser = new ApplicationContextParser("include");
