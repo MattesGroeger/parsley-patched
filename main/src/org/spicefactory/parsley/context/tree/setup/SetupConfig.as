@@ -32,11 +32,11 @@ import org.spicefactory.parsley.context.xml.ElementProcessor;
 public class SetupConfig  extends AbstractElementConfig {
 	
 	
-	private var _includeListConfig:IncludeListConfig;
-	private var _variableListConfig:ExpressionsConfig;
-	private var _namespaceListConfig:NamespaceListConfig;
-	private var _staticListConfig:StaticListConfig;
-	private var _internationalizationConfig:LocalizationConfig;
+	private var _includesConfig:IncludeListConfig;
+	private var _expresionsConfig:ExpressionsConfig;
+	private var _namespacesConfig:NamespaceListConfig;
+	private var _staticInitializersConfig:StaticListConfig;
+	private var _localizationConfig:LocalizationConfig;
 	
 	private var _context:ApplicationContext;
 	
@@ -76,10 +76,10 @@ public class SetupConfig  extends AbstractElementConfig {
 	 * The configuration for the list of configuration files to include.
 	 */
 	public function get includesConfig () : IncludeListConfig {
-		if (_includeListConfig == null) {
-			_includeListConfig = new IncludeListConfig();
+		if (_includesConfig == null) {
+			_includesConfig = new IncludeListConfig();
 		}
-		return _includeListConfig;
+		return _includesConfig;
 	}
 	
 	/**
@@ -88,64 +88,64 @@ public class SetupConfig  extends AbstractElementConfig {
 	 * that are used in configuration files.
 	 */
 	public function get expressionsConfig () : ExpressionsConfig {
-		return _variableListConfig;
+		return _expresionsConfig;
 	}
 	
 	/**
 	 * The configuration for custom configuration namespaces.
 	 */
 	public function get namespacesConfig () : NamespaceListConfig {
-		if (_namespaceListConfig == null) {
-			_namespaceListConfig = new NamespaceListConfig();
-			_namespaceListConfig.applicationContext = _context;
+		if (_namespacesConfig == null) {
+			_namespacesConfig = new NamespaceListConfig();
+			_namespacesConfig.applicationContext = _context;
 		}
-		return _namespaceListConfig;
+		return _namespacesConfig;
 	}
 	
 	public function get staticInitializersConfig () : StaticListConfig {
-		return _staticListConfig;
+		return _staticInitializersConfig;
 	}
 	
 	/**
-	 * The configuration for internationalization.
+	 * The configuration for localization.
 	 */
 	public function get localizationConfig () : LocalizationConfig {
-		return _internationalizationConfig;
+		return _localizationConfig;
 	}
 	
 	public function set includesConfig (ic:IncludeListConfig) : void {
-		_includeListConfig = ic;
+		_includesConfig = ic;
 	}
 	
 	public function set expressionsConfig (vc:ExpressionsConfig) : void {
-		if (_variableListConfig == null) {
-			_variableListConfig = vc;
+		if (_expresionsConfig == null) {
+			_expresionsConfig = vc;
 		} else {
-			_variableListConfig.merge(vc);
+			_expresionsConfig.merge(vc);
 		}
 	}
 	
 	public function set namespacesConfig (nc:NamespaceListConfig) : void {
-		if (_namespaceListConfig == null) {
-			_namespaceListConfig = nc;
+		if (_namespacesConfig == null) {
+			_namespacesConfig = nc;
 		} else {
-			_namespaceListConfig.merge(nc);
+			_namespacesConfig.merge(nc);
 		}
 	}
 	
 	public function set staticInitializersConfig (sc:StaticListConfig) : void {
-		if (_staticListConfig == null) {
-			_staticListConfig = sc;
+		if (_staticInitializersConfig == null) {
+			_staticInitializersConfig = sc;
 		} else {
-			_staticListConfig.merge(sc);
+			_staticInitializersConfig.merge(sc);
 		}
 	}
 	
 	public function set localizationConfig (ic:LocalizationConfig) : void {
-		if (_internationalizationConfig == null) {
-			_internationalizationConfig = ic;
+		if (_localizationConfig == null) {
+			_localizationConfig = ic;
 		} else {
-			_internationalizationConfig.merge(ic);
+			_localizationConfig.merge(ic);
 		}
 	}
 	
@@ -168,10 +168,9 @@ public class SetupConfig  extends AbstractElementConfig {
 	 * Delegates to all configuration artifacts handled by this setup configuration.
 	 */
 	public function process () : void {
-		if (_variableListConfig != null) _variableListConfig.process();
-		//if (_namespaceListConfig != null) _namespaceListConfig.process(); obsolete
-		if (_staticListConfig != null) _staticListConfig.process();
-		if (_internationalizationConfig != null) _internationalizationConfig.process();
+		if (_expresionsConfig != null) _expresionsConfig.process();
+		if (_staticInitializersConfig != null) _staticInitializersConfig.process();
+		if (_localizationConfig != null) _localizationConfig.process();
 	}
 	
 	
