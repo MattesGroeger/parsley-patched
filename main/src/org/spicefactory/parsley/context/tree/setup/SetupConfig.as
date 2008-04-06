@@ -33,7 +33,7 @@ public class SetupConfig  extends AbstractElementConfig {
 	
 	
 	private var _includesConfig:IncludeListConfig;
-	private var _expresionsConfig:ExpressionsConfig;
+	private var _expressionsConfig:ExpressionsConfig;
 	private var _namespacesConfig:NamespaceListConfig;
 	private var _staticInitializersConfig:StaticListConfig;
 	private var _localizationConfig:LocalizationConfig;
@@ -88,7 +88,11 @@ public class SetupConfig  extends AbstractElementConfig {
 	 * that are used in configuration files.
 	 */
 	public function get expressionsConfig () : ExpressionsConfig {
-		return _expresionsConfig;
+		if (_expressionsConfig == null) {
+			_expressionsConfig = new ExpressionsConfig();
+			_expressionsConfig.applicationContext = _context;
+		}
+		return _expressionsConfig;
 	}
 	
 	/**
@@ -103,6 +107,10 @@ public class SetupConfig  extends AbstractElementConfig {
 	}
 	
 	public function get staticInitializersConfig () : StaticListConfig {
+		if (_staticInitializersConfig == null) {
+			_staticInitializersConfig = new StaticListConfig();
+			_staticInitializersConfig.applicationContext = _context;
+		}
 		return _staticInitializersConfig;
 	}
 	
@@ -110,6 +118,10 @@ public class SetupConfig  extends AbstractElementConfig {
 	 * The configuration for localization.
 	 */
 	public function get localizationConfig () : LocalizationConfig {
+		if (_localizationConfig == null) {
+			_localizationConfig = new LocalizationConfig();
+			_localizationConfig.applicationContext = _context;
+		}
 		return _localizationConfig;
 	}
 	
@@ -118,10 +130,10 @@ public class SetupConfig  extends AbstractElementConfig {
 	}
 	
 	public function set expressionsConfig (vc:ExpressionsConfig) : void {
-		if (_expresionsConfig == null) {
-			_expresionsConfig = vc;
+		if (_expressionsConfig == null) {
+			_expressionsConfig = vc;
 		} else {
-			_expresionsConfig.merge(vc);
+			_expressionsConfig.merge(vc);
 		}
 	}
 	
@@ -156,11 +168,21 @@ public class SetupConfig  extends AbstractElementConfig {
 	 */
 	public function merge (sc:SetupConfig) : void {
 		if (sc == null) return;
-		includesConfig = sc.includesConfig;
-		expressionsConfig = sc.expressionsConfig;
-		namespacesConfig = sc.namespacesConfig;
-		staticInitializersConfig = sc.staticInitializersConfig;
-		localizationConfig = sc.localizationConfig;
+		if (sc._includesConfig != null) {
+			includesConfig = sc._includesConfig;
+		}
+		if (sc._expressionsConfig != null) {
+			expressionsConfig = sc._expressionsConfig;
+		}
+		if (sc._namespacesConfig != null) {
+			namespacesConfig = sc._namespacesConfig;
+		}
+		if (sc._staticInitializersConfig != null) {
+			staticInitializersConfig = sc._staticInitializersConfig;
+		}
+		if (sc._localizationConfig != null) {
+			localizationConfig = sc._localizationConfig;
+		}
 	}
 	
 	/**
@@ -168,7 +190,7 @@ public class SetupConfig  extends AbstractElementConfig {
 	 * Delegates to all configuration artifacts handled by this setup configuration.
 	 */
 	public function process () : void {
-		if (_expresionsConfig != null) _expresionsConfig.process();
+		if (_expressionsConfig != null) _expressionsConfig.process();
 		if (_staticInitializersConfig != null) _staticInitializersConfig.process();
 		if (_localizationConfig != null) _localizationConfig.process();
 	}

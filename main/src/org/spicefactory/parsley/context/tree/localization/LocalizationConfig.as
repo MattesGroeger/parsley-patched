@@ -83,6 +83,9 @@ public class LocalizationConfig
 	 * The configuration for the <code>MessageSource</code>.
 	 */
 	public function get messageSourceConfig () : MessageSourceConfig {
+		if (_messageSourceConfig == null) {
+			_messageSourceConfig = new MessageSourceConfig();
+		}
 		return _messageSourceConfig;
 	}
 	
@@ -107,8 +110,12 @@ public class LocalizationConfig
 	 * @param vc the localization configuration to merge with this instance
 	 */
 	public function merge (ic:LocalizationConfig) : void {
-		messageSourceConfig = ic.messageSourceConfig;
-		localeManagerConfig = ic.localeManagerConfig;
+		if (ic._messageSourceConfig != null) {
+			messageSourceConfig = ic._messageSourceConfig;
+		}
+		if (ic._localeManagerConfig != null) {
+			localeManagerConfig = ic._localeManagerConfig;
+		}
 	}
 	
 	/**

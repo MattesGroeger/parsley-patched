@@ -186,7 +186,9 @@ public class MessageSourceConfig
 	 * @param msc the message source configuration to merge with this instance
 	 */
 	public function merge (msc:MessageSourceConfig) : void {
-		defaultMessageBundleConfig = msc.defaultMessageBundleConfig;
+		if (msc._defaultMessageBundleConfig != null) {
+			defaultMessageBundleConfig = msc._defaultMessageBundleConfig;
+		}
 		for each (var config:MessageBundleConfig in msc._messageBundleConfigs) {
 			addMessageBundleConfig(config);
 		}
