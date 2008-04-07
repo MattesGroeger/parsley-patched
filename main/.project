@@ -21,11 +21,6 @@
 			<locationURI>FLEX_2_0_1_HF1/frameworks/libs/playerglobal.swc</locationURI>
 		</link>
 		<link>
-			<name>CINNAMON_CLIENT_LIB.swc</name>
-			<type>1</type>
-			<locationURI>CINNAMON_CLIENT_LIB</locationURI>
-		</link>
-		<link>
 			<name>rpc.swc</name>
 			<type>1</type>
 			<locationURI>FLEX_2_0_1_HF1/frameworks/libs/rpc.swc</locationURI>
@@ -39,11 +34,6 @@
 			<name>flex.swc</name>
 			<type>1</type>
 			<locationURI>FLEX_2_0_1_HF1/frameworks/libs/flex.swc</locationURI>
-		</link>
-		<link>
-			<name>SPICELIB_AS3_LIB.swc</name>
-			<type>1</type>
-			<locationURI>SPICELIB_AS3_LIB</locationURI>
 		</link>
 		<link>
 			<name>framework.swc</name>
