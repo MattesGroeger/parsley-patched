@@ -281,7 +281,9 @@
     </xs:complexType>
     
     <xs:complexType name="propertyType">
-        <xs:group ref="value"/>
+    	<xs:sequence minOccurs="0">
+    		<xs:group ref="value"/>
+    	</xs:sequence>
         <xs:attribute name="name" type="xs:token" use="required"/>
         <xs:attribute name="value" type="xs:token" use="optional"/>
         <xs:attribute name="ref" type="xs:token" use="optional"/>
