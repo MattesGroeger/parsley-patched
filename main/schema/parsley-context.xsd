@@ -330,7 +330,7 @@
     
     <xs:simpleType name="expression">
         <xs:restriction base="xs:token">
-            <xs:pattern value="\$\{(.*)+\}"></xs:pattern>
+            <xs:pattern value="\$\{.+\}"></xs:pattern>
         </xs:restriction>
     </xs:simpleType>
     
