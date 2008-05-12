@@ -1,4 +1,4 @@
-<project name="Parsley Build" xmlns:ivy="antlib:fr.jayasoft.ivy.ant"> 
+<project name="Parsley Build"> 
 
 	
 	<property file="build.properties" />
@@ -15,7 +15,8 @@
 			<arg line="-el ${lib.dir}/cinnamon-0.2.0.swc" />
 			<arg line="-sp ${project.dir}/src" />
 			<arg line="-is ${project.dir}/src" />
-			<arg line="-debug=false"/>
+			<arg line="-debug=true"/>
+			<arg line="-verbose-stacktraces"/>
 		</exec>
 	</target>
 	
