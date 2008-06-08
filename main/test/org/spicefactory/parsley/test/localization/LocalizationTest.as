@@ -211,6 +211,49 @@ public class LocalizationTest extends ApplicationContextParserTest {
 		var classA:ClassA = ClassA(context.getObject("binding"));
 		assertEquals("Unexpected message", "Deutsch", classA.stringProp);
 	}
+	
+	public function testTwoBundles () : void {
+		ApplicationContext.context_internal::setLocaleManager(null);
+		var xml1:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
+			<setup>
+				<localization>
+					<locale-manager>
+						<locale language="de" country="DE"/>
+					</locale-manager>
+					<message-source>
+						<message-bundle id="a_text" basename="textA" localized="true" ignore-country="true"/>
+					</message-source>
+				</localization>
+			</setup>
+		</application-context>;
+		var xml2:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
+			<setup>
+				<localization>
+					<message-source>
+						<message-bundle id="b_text" basename="textB" localized="true" ignore-country="true"/>
+					</message-source>
+				</localization>
+			</setup>
+		</application-context>;
+    	var f:Function = addAsync(onTestTwoBundles, 3000);		
+		var parser:ApplicationContextParser = new ApplicationContextParser("twoBundles");
+		parser.addXml(xml1);
+		parser.addXml(xml2);
+		parser.addEventListener(ErrorEvent.ERROR, onUnexpectedContextError);
+		parser.addEventListener(TaskEvent.COMPLETE, f);
+		parser.start();
+	}
+	
+	private function onTestTwoBundles (event:TaskEvent) : void {
+		var parser:ApplicationContextParser = ApplicationContextParser(event.target);
+		var context:ApplicationContext = parser.applicationContext;
+		assertEquals("Unexpected message", "Text A", context.getMessage("a", "a_text"));
+		assertEquals("Unexpected message", "Text B", context.getMessage("b", "b_text"));
+	}
 
 		
 }
