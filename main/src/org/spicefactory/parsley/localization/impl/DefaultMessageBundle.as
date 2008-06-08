@@ -114,7 +114,7 @@ public class DefaultMessageBundle implements MessageBundleSpi {
 		var language:String = _locale.language;
 		if (_localized && language != "") {
 			var lang:Locale = new Locale(language);
-			if (_newMessages[LocaleUtil.getSuffix(lang)] == undefined) {
+			if (_newMessages[getBundleKey(lang, false)] == undefined) {
 				chain.addTask(_loaderFactory.createLoaderTask(this, lang, _basename));
 			}
 			var country:String = _locale.country;
@@ -140,10 +140,10 @@ public class DefaultMessageBundle implements MessageBundleSpi {
 		
 		if (_localized) {
 			if (!_ignoreCountry && _locale.country != "") {
-				msg = _messages[LocaleUtil.getSuffix(_locale)][messageKey];
+				msg = _messages[getBundleKey(_locale, false)][messageKey];
 			}
 			if (msg == null) {
-				msg = _messages[LocaleUtil.getSuffix(_locale, true)][messageKey];
+				msg = _messages[getBundleKey(_locale, true)][messageKey];
 			}
 		}
 		if (msg == null) {
@@ -156,6 +156,11 @@ public class DefaultMessageBundle implements MessageBundleSpi {
 		return msg;
 	}
 	
+	private function getBundleKey (locale:Locale, ignoreCountry:Boolean) : String {
+		var bundleKey:String = LocaleUtil.getSuffix(_locale, true);
+		return (bundleKey == "") ? "__base" : bundleKey;
+	}
+	 
 	private function applyParams (msg:String, params:Array) : String {
 		var parts:Array = msg.split("{");
 		var result:String = parts[0];
