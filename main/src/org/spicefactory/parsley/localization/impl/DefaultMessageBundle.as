@@ -157,7 +157,7 @@ public class DefaultMessageBundle implements MessageBundleSpi {
 	}
 	
 	private function getBundleKey (locale:Locale, ignoreCountry:Boolean) : String {
-		var bundleKey:String = LocaleUtil.getSuffix(_locale, true);
+		var bundleKey:String = LocaleUtil.getSuffix(_locale, ignoreCountry);
 		return (bundleKey == "") ? "__base" : bundleKey;
 	}
 	 
