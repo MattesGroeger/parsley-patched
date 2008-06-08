@@ -189,7 +189,7 @@ public class MessageSourceConfig
 		if (msc._defaultMessageBundleConfig != null) {
 			defaultMessageBundleConfig = msc._defaultMessageBundleConfig;
 		}
-		for each (var config:MessageBundleConfig in msc._messageBundleConfigs) {
+		for each (var config:MessageBundleConfig in msc._messageBundleConfigs.values) {
 			addMessageBundleConfig(config);
 		}
 		/* ignore cacheable and class attribute */
