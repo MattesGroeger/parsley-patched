@@ -3,16 +3,19 @@
 	
 	<property file="build.properties" />
 	
+	<property name="version" value="1.0.1"/>
+	<property name="spicelib.version" value="1.0.1"/>
+	<property name="cinnamon.version" value="0.2.1"/>
 	<property name="project.dir" value="${basedir}/.."/>
 	<property name="lib.dir" value="${project.dir}/lib"/>
 
 
 	<target name="compile">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-o ${project.dir}/release/parsley-1.0.1.swc" />
+			<arg line="-o ${project.dir}/release/parsley-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/playerglobal.swc" />
-			<arg line="-el ${lib.dir}/spicelib-1.0.0.swc" />
-			<arg line="-el ${lib.dir}/cinnamon-0.2.0.swc" />
+			<arg line="-el ${lib.dir}/spicelib-${spicelib.version}.swc" />
+			<arg line="-el ${lib.dir}/cinnamon-${cinnamon.version}.swc" />
 			<arg line="-sp ${project.dir}/src" />
 			<arg line="-is ${project.dir}/src" />
 			<arg line="-debug=true"/>
@@ -27,8 +30,8 @@
 		<exec executable="${flex.sdk}/bin/asdoc.exe" dir="${project.dir}/src" spawn="no">
 			<arg line="-source-path ."/>
 			<arg line="-doc-sources ."/>
-			<arg line="-library-path ${basedir}/cinnamon-0.1.0.swc"/>
-			<arg line="-library-path ${basedir}/spicelib-1.0.RC1.swc"/>
+			<arg line="-library-path ${basedir}/cinnamon-${cinnamon.version}.swc"/>
+			<arg line="-library-path ${basedir}/spicelib-${spicelib.version}.swc"/>
 			<arg line="-left-frameset-width 250"/>
 			<arg line="-main-title"/>
 			<arg value="Parsley Full API"/>
@@ -120,8 +123,8 @@
 			<arg line="org.spicefactory.parsley.mvc.ApplicationEvent"/>
 			<arg line="org.spicefactory.parsley.mvc.EventSource"/>
 			<arg line="org.spicefactory.parsley.mvc.FrontController"/>
-			<arg line="-library-path ${basedir}/cinnamon-0.1.0.swc"/>
-			<arg line="-library-path ${basedir}/spicelib-1.0.RC1.swc"/>
+			<arg line="-library-path ${basedir}/cinnamon-${cinnamon.version}.swc"/>
+			<arg line="-library-path ${basedir}/spicelib-${spicelib.version}.swc"/>
 			<arg line="-exclude-dependencies=true"/>
 			<arg line="-left-frameset-width 250"/>
 			<arg line="-main-title"/>
