@@ -193,15 +193,23 @@ public class FactoryConfig
 	}
 
 	/**
+	 * Processes the XML. This object does not process the XML in the <code>parse</code> method
+	 * like other configuration objects since the parser must first collect the nodes from (possibly)
+	 * multiple configuration files.
+	 */
+	public function processXml () : void {
+		for each (var node:XML in _nodes) {
+			super.parse(node, _context);
+		}
+	}
+	
+	/**
 	 * Processes the object configurations of this factory.
 	 * This method will be executed once after all configuration artifacts have been parsed.
 	 * It will instantiate all objects which have the <code>singleton</code> property set to
 	 * <code>true</code> and the <code>lazy</code> property set to <code>false</code>.
 	 */
-	public function process () : void {
-		for each (var node:XML in _nodes) {
-			super.parse(node, _context);
-		}
+	public function processObjects () : void {
 		for each (var config:RootObjectFactoryConfig in _objectFactoryConfigs.values) {
 			if (config.singleton && !config.lazy) {
 				config.createObject();
