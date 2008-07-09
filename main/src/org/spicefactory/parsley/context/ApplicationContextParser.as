@@ -139,8 +139,8 @@ public class ApplicationContextParser extends Task {
 	 * you will get the already loaded instance. Furthermore the context is accessible by
 	 * name with the static <code>ApplicationContext.forName(name:String)</code> method.
 	 * If you specify <code>true</code> for the optional <code>useAsRoot</code> parameter
-	 * the context is also accessible with the static <code>ApplicationContext.root()</code>
-	 * method.
+	 * the context is also accessible with the static <code>ApplicationContext.root</code>
+	 * property.
 	 * 
 	 * @param name the name that should be assigned to the loaded <code>ApplicationContext</code>
 	 * @param useAsRoot whether the loaded <code>ApplicationContext</code> should be used as the root context
@@ -356,7 +356,8 @@ public class ApplicationContextParser extends Task {
 	private function processRemaining (event:Event) : void {
 		resetLocaleManager();
 		try {
-			_context.config.factoryConfig.process();
+			_context.config.factoryConfig.processXml();
+			_context.config.factoryConfig.processObjects();
 		} catch (e:Error) {
 			handleParserError(e);
 			return;
