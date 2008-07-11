@@ -67,7 +67,7 @@ public class DelegatingRootObjectFactoryConfig
 		try {
 			_metaData = _delegate.parseRootObject(node, context);
 		} finally {
-			ParserContext.popTemplateContext();
+			ParserContext.popParserContext();
 		}
 	}
 	

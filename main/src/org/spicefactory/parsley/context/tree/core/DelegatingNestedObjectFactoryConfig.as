@@ -61,7 +61,7 @@ public class DelegatingNestedObjectFactoryConfig
 		try {
 			_delegate.parseNestedObject(node, context);
 		} finally {
-			ParserContext.popTemplateContext();
+			ParserContext.popParserContext();
 		}
 	}
 

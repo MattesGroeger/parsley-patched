@@ -14,20 +14,20 @@ public class ParserContext {
 	
 	
 	/**
-	 * Pushes the specified contextual information on the stack.
+	 * Pushes the specified contextual information on the stack. The specified object
+	 * should implement either <code>RootObjectFactoryConfig</code>
+	 * or <code>NestedObjectFactoryConfig</code>.
 	 * 
-	 * @param context the <code>ApplicationContext</code> that belongs to the currently processed element
-	 * @param config the configuration of the currently processed element
-	 * @param attributes the attributes extracted from the currently processed template client node
+	 * @param obj the currently processed object configuration
 	 */
-	public static function pushParserContext (obj:Object) : void {
+	public static function pushParserContext (obj:ElementConfig) : void {
 		contextStack.push(obj);
 	}
 	
 	/**
 	 * Pops the contextual information from the top of the stack.
 	 */
-	public static function popTemplateContext () : void {
+	public static function popParserContext () : void {
 		if (contextStack.length == 0) {
 			throw new ConfigurationError("Internal error: Attempt to pop empty context stack");
 		}
@@ -41,7 +41,7 @@ public class ParserContext {
 	 * 
 	 * @return the <code>ElementConfig</code> instance from the top of the stack
 	 */
-	public static function getActiveConfig () : Object {
+	public static function getActiveConfig () : ElementConfig {
 		if (contextStack.length == 0) {
 			throw new ConfigurationError("ParserContext stack is empty");
 		}
