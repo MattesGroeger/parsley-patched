@@ -266,7 +266,6 @@ public class TemplateTest extends ApplicationContextParserTest {
 	}
 	
 	public function testTwoProcessorTemplates () : void {
-		var templateAttributeRef:String = "${@value}";
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
 			xmlns:test="urn:parsley.unitTest" 
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -302,7 +301,6 @@ public class TemplateTest extends ApplicationContextParserTest {
 	}
 	
 	public function testTwoProcessorTemplatesWithObjectRefs () : void {
-		var templateAttributeRef:String = "${@value}";
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
 			xmlns:test="urn:parsley.unitTest" 
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
