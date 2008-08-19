@@ -120,8 +120,8 @@ public class ApplicationContextTest extends ApplicationContextParserTest {
     		var actualIds:Array = context.getIdsForType(expectedType);
     		var actualObjects:Array = context.getObjectsByType(expectedType);
     		actualIds.sort();
-    		assertEquals("Unexpected number of ids for type " + expectedType, expectedIds.length, actualIds.length)
-    		assertEquals("Unexpected number of objects for type " + expectedType, expectedIds.length, actualObjects.length)
+    		assertEquals("Unexpected number of ids for type " + expectedType, expectedIds.length, actualIds.length);
+    		assertEquals("Unexpected number of objects for type " + expectedType, expectedIds.length, actualObjects.length);
     		for each (var expectedId:String in expectedIds) {
     			assertEquals("Unexpexted type", exactType, context.getType(expectedId));
     			assertEquals("Unexpected id", expectedId, actualIds.shift());
