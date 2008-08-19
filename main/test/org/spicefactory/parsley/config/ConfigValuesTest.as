@@ -343,7 +343,7 @@ public class ConfigValuesTest extends ApplicationContextParserTest {
     
     
     public function testCustomProperty () : void {
-    	var conv:RectangleConverter = null; // just to compile class
+    	RectangleConverter; // just to compile class
     	var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
