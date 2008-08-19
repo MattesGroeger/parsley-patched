@@ -1,12 +1,11 @@
 package org.spicefactory.parsley.test.namespaces {
-	
-import org.spicefactory.cinnamon.client.ServiceEvent;
 import org.spicefactory.cinnamon.client.ServiceProxy;
 import org.spicefactory.parsley.config.ApplicationContextParserTest;
 import org.spicefactory.parsley.context.ApplicationContext;
 import org.spicefactory.parsley.context.ApplicationContextParser;
-import org.spicefactory.parsley.namespaces.cinnamon.CinnamonNamespaceXml;
 import org.spicefactory.parsley.context.ns.context_internal;
+import org.spicefactory.parsley.namespaces.cinnamon.CinnamonNamespaceXml;	
+
 //import org.spicefactory.parsley.context.ns.context_internal;
 
 public class CinnamonTagsTest extends ApplicationContextParserTest {
@@ -42,7 +41,7 @@ public class CinnamonTagsTest extends ApplicationContextParserTest {
     	</application-context>;
     	var f:Function = function (parser:ApplicationContextParser) : void {
     		parser.addXml(CinnamonNamespaceXml.config);
-    	}
+    	};
 		var context:ApplicationContext = parseForContext2("cinnamon", xml, false, false, null, f);
 		assertEquals("Unexpected object count", 2, context.objectCount);
 		var service:EchoService = EchoService(context.getObject("echoService"));
@@ -80,7 +79,7 @@ public class CinnamonTagsTest extends ApplicationContextParserTest {
     	</application-context>;
     	var f:Function = function (parser:ApplicationContextParser) : void {
     		parser.addXml(CinnamonNamespaceXml.config);
-    	}
+    	};
 		var context:ApplicationContext = parseForContext2("cinnamon", xml, false, false, null, f);
 		assertEquals("Unexpected object count", 3, context.objectCount);
 		var service:EchoService = EchoService(context.getObject("echoService"));
@@ -121,7 +120,7 @@ public class CinnamonTagsTest extends ApplicationContextParserTest {
     	</application-context>;
     	var f:Function = function (parser:ApplicationContextParser) : void {
     		parser.addXml(CinnamonNamespaceXml.config);
-    	}
+    	};
 		var context:ApplicationContext = parseForContext2("cinnamon", xml, false, false, null, f);
 		assertEquals("Unexpected object count", 3, context.objectCount);
 		var service:EchoService = EchoService(context.getObject("echoService"));
