@@ -198,7 +198,7 @@ public class MvcTest extends ApplicationContextParserTest {
     	</application-context>;
     	var f:Function = function (parser:ApplicationContextParser) : void {
     		parser.addXml(MvcNamespaceXml.config);
-    	}
+    	};
 		var context:ApplicationContext = parseForContext2("mvc", xml, false, false, null, f);
 		assertEquals("Unexpected object count", 4, context.objectCount);
 		
@@ -244,7 +244,7 @@ public class MvcTest extends ApplicationContextParserTest {
     	</application-context>;
     	var f:Function = function (parser:ApplicationContextParser) : void {
     		parser.addXml(MvcNamespaceXml.config);
-    	}
+    	};
 		var context:ApplicationContext = parseForContext2("mvc", xml, false, false, null, f);
 		assertEquals("Unexpected object count", 4, context.objectCount);
 		
@@ -293,7 +293,7 @@ public class MvcTest extends ApplicationContextParserTest {
     	</application-context>;
     	var f:Function = function (parser:ApplicationContextParser) : void {
     		parser.addXml(MvcNamespaceXml.config);
-    	}
+    	};
 		var context:ApplicationContext = parseForContext2("mvc", xml, false, false, null, f);
 		assertEquals("Unexpected object count", 5, context.objectCount);
 		
@@ -318,7 +318,6 @@ public class MvcTest extends ApplicationContextParserTest {
 	}
 	
 	public function testEventSourceTags () : void {
-		var x:EventTransformer;
 		var c:FrontController = new FrontController(true);
 		var xml:XML = <application-context 
 			xmlns="http://www.spicefactory.org/parsley/1.0"
@@ -348,7 +347,7 @@ public class MvcTest extends ApplicationContextParserTest {
     	</application-context>;
     	var f:Function = function (parser:ApplicationContextParser) : void {
     		parser.addXml(MvcNamespaceXml.config);
-    	}
+    	};
 		var context:ApplicationContext = parseForContext2("mvc", xml, false, false, null, f);
 		assertEquals("Unexpected object count", 6, context.objectCount);
 		
