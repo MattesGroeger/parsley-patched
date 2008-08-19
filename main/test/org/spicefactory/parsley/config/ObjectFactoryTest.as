@@ -123,7 +123,7 @@ public class ObjectFactoryTest extends ApplicationContextParserTest {
     			</object>
     		</factory>
     	</application-context>;
-    	var obj:ClassA = parseForSingleObject2("obj", xml, ClassA) as ClassA;  
+    	parseForSingleObject2("obj", xml, ClassA) as ClassA;  
  	}
  	
  	public function testInstanceFactoryMethod () : void {
