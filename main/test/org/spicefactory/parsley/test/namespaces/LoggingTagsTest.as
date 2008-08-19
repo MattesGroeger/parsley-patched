@@ -41,7 +41,7 @@ public class LoggingTagsTest extends ApplicationContextParserTest {
     	</application-context>;
     	var f:Function = function (parser:ApplicationContextParser) : void {
     		parser.addXml(LoggingNamespaceXml.config);
-    	}
+    	};
 		var context:ApplicationContext = parseForContext2("logging", xml, false, false, null, f);
 		assertEquals("Unexpected object count", 2, context.objectCount);
 		logAllLevels(LogCounterAppender(context.getObject("appender")));

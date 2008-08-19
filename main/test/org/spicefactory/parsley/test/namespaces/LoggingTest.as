@@ -33,7 +33,7 @@ public class LoggingTest extends ApplicationContextParserTest {
     	var f:Function = function (parser:ApplicationContextParser) : void {
 			trace("add config to parser");    		
     		parser.addXml(LoggingNamespaceXml.config);
-    	}
+    	};
 		var context:ApplicationContext = parseForContext2("logging", xml, false, false, null, f);
 		assertEquals("Unexpected object count", 2, context.objectCount);
 		logAllLevels(LogCounterAppender(context.getObject("appender")));
