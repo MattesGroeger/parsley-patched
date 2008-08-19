@@ -1,11 +1,9 @@
 package org.spicefactory.parsley.test.namespaces {
-	
-import org.spicefactory.cinnamon.client.ServiceEvent;
 import org.spicefactory.cinnamon.client.ServiceProxy;
 import org.spicefactory.parsley.config.ApplicationContextParserTest;
 import org.spicefactory.parsley.context.ApplicationContext;
 import org.spicefactory.parsley.context.ApplicationContextParser;
-import org.spicefactory.parsley.namespaces.cinnamon.CinnamonNamespaceXml;
+import org.spicefactory.parsley.namespaces.cinnamon.CinnamonNamespaceXml;	
 
 public class CinnamonTest extends ApplicationContextParserTest {
 	
@@ -34,7 +32,7 @@ public class CinnamonTest extends ApplicationContextParserTest {
     	var f:Function = function (parser:ApplicationContextParser) : void {
 			trace("add config to parser");    		
     		parser.addXml(CinnamonNamespaceXml.config);
-    	}
+    	};
 		var context:ApplicationContext = parseForContext2("cinnamon", xml, false, false, null, f);
 		assertEquals("Unexpected object count", 2, context.objectCount);
 		var service:EchoService = EchoService(context.getObject("echoService"));
@@ -73,7 +71,7 @@ public class CinnamonTest extends ApplicationContextParserTest {
     	var f:Function = function (parser:ApplicationContextParser) : void {
 			trace("add config to parser");    		
     		parser.addXml(CinnamonNamespaceXml.config);
-    	}
+    	};
 		var context:ApplicationContext = parseForContext2("cinnamon", xml, false, false, null, f);
 		assertEquals("Unexpected object count", 3, context.objectCount);
 		var service:EchoService = EchoService(context.getObject("echoService"));
@@ -116,7 +114,7 @@ public class CinnamonTest extends ApplicationContextParserTest {
     	var f:Function = function (parser:ApplicationContextParser) : void {
 			trace("add config to parser");    		
     		parser.addXml(CinnamonNamespaceXml.config);
-    	}
+    	};
 		var context:ApplicationContext = parseForContext2("cinnamon", xml, false, false, null, f);
 		assertEquals("Unexpected object count", 3, context.objectCount);
 		var service:EchoService = EchoService(context.getObject("echoService"));
