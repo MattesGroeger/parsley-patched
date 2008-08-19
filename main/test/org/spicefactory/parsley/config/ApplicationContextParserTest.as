@@ -27,7 +27,6 @@ public class ApplicationContextParserTest extends TestCase {
 	protected var _complete:Boolean;
 	private var _error:Boolean;	
 	private var _callback:Function;
-	private var _singleObject:Object;
 	private var _expectedType:Class;
 	private var _callbackError:Error;
 	
