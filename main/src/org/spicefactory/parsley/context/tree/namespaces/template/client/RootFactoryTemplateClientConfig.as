@@ -32,6 +32,8 @@ public class RootFactoryTemplateClientConfig
 	
 	
 	private var _factoryMetadataConfig:FactoryMetadataConfig;
+	
+	private var _instance:Object;
 
 	
 	/**
@@ -88,9 +90,20 @@ public class RootFactoryTemplateClientConfig
 	 * @inheritDoc
 	 */
 	public function createObject () : Object {
+		// return existing instance if possible
+		if (singleton && _instance != null) {
+			return _instance;
+		}
+		
 		TemplateProcessorContext.pushTemplateContext(applicationContext, childProcessor, attributes);
 		var obj:Object = objectFactoryConfig.createObject();
 		TemplateProcessorContext.popTemplateContext();
+		
+		// save instance if necessary	
+		if (singleton) {
+			_instance = obj;
+		}
+		
 		return obj;
 	}
 

@@ -44,6 +44,40 @@ public class TemplateTest extends ApplicationContextParserTest {
     	assertTrue("Unexpected type", (obj is ClassA));
 	}
 	
+	public function testTwoSingletonFactoryTemplateClients () : void {
+		ClassA;
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
+			xmlns:test="urn:parsley.unitTest" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
+		    <setup>
+		    	<namespaces>
+		    	    <namespace uri="urn:parsley.unitTest">
+		    	        <factory-template tag-name="test">
+		    	        	<factory-metadata id="${@testid}"/>
+		    	        	<object type="org.spicefactory.parsley.config.testmodel.ClassA"/>
+		    	        </factory-template>
+		    	    </namespace>
+		    	</namespaces>
+		    </setup>
+    		<factory>
+    			<test:test testid="foo1"/>
+    			<test:test testid="foo2"/>
+    		</factory>
+    	</application-context>; 
+    	var context:ApplicationContext = parseForContext2("template", xml);  	
+    	assertEquals("Unexpected object count", 2, context.objectCount);
+    	assertTrue("Expected object in context", context.containsObject("foo1"));
+    	assertTrue("Expected object in context", context.containsObject("foo2"));
+    	var obj1a:Object = context.getObject("foo1");
+    	var obj1b:Object = context.getObject("foo1");
+    	var obj2a:Object = context.getObject("foo2");
+    	var obj2b:Object = context.getObject("foo2");
+    	assertEquals("Expected singleton object", obj1a, obj1b);
+    	assertEquals("Expected singleton object", obj2a, obj2b);
+    	assertFalse("Expected two distinct objects", (obj1a == obj2a));
+	}
+	
 	public function testFactoryProcessorChildren () : void {
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
 			xmlns:test="urn:parsley.unitTest" 
@@ -266,6 +300,7 @@ public class TemplateTest extends ApplicationContextParserTest {
 	}
 	
 	public function testTwoProcessorTemplates () : void {
+		var attribute:String = "${@value}";
 		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
 			xmlns:test="urn:parsley.unitTest" 
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -275,7 +310,7 @@ public class TemplateTest extends ApplicationContextParserTest {
 		    	    <namespace uri="urn:parsley.unitTest">
 		    	        <processor-template tag-name="test">
 		    	        	<init-method name="testMethodWithArg">
-		    	        		<string>{templateAttributeRef}</string>
+		    	        		<string>{attribute}</string>
 		    	        	</init-method>
 		    	        </processor-template>
 		    	    </namespace>
