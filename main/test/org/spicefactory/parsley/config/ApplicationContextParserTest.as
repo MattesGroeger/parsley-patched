@@ -121,11 +121,11 @@ public class ApplicationContextParserTest extends TestCase {
     	if (parent != null) {
     		parser.parentContext = parent;
     	}
-    	if (xml != null) {
-    		parser.addXml(xml);
-    	}
     	if (prepare != null) {
     		prepare(parser);
+    	}
+    	if (xml != null) {
+    		parser.addXml(xml);
     	}
     	parser.addEventListener(TaskEvent.COMPLETE, complete);
     	parser.addEventListener(ErrorEvent.ERROR, error);

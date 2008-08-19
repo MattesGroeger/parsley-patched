@@ -17,12 +17,12 @@
 package org.spicefactory.parsley.context.tree.namespaces.template.client {
 import flash.utils.Dictionary;
 
-import org.spicefactory.parsley.context.tree.AbstractAttributeContainer;
-import org.spicefactory.parsley.context.factory.ObjectFactoryConfig;
-import org.spicefactory.parsley.context.factory.ElementConfig;
 import org.spicefactory.parsley.context.ApplicationContext;
+import org.spicefactory.parsley.context.factory.ElementConfig;
+import org.spicefactory.parsley.context.factory.ObjectFactoryConfig;
+import org.spicefactory.parsley.context.factory.ParserContext;
+import org.spicefactory.parsley.context.tree.AbstractAttributeContainer;
 import org.spicefactory.parsley.context.tree.ApplicationContextAware;
-	
 
 /**
  * Abstract base implementation for factory template clients.
@@ -85,7 +85,12 @@ public class AbstractFactoryTemplateClientConfig
 			attributes[at.localName()] = at.toXMLString();
 		}
 		if (childProcessor != null) {
-			childProcessor.parse(node, context);
+			ParserContext.pushParserContext(this);
+			try {
+				childProcessor.parse(node, context);
+			} finally {
+				ParserContext.popParserContext();
+			}
 		}
 	}
 
