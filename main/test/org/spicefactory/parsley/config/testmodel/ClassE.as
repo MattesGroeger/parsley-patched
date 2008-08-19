@@ -1,8 +1,5 @@
 package org.spicefactory.parsley.config.testmodel {
-	
-import flash.events.Event;
-	
-	
+
 public class ClassE {
 	
 	private var _stringProp:String;
