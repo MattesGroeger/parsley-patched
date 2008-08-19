@@ -9,10 +9,10 @@ import flash.net.URLRequest;
 
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.lib.task.Task;
+import org.spicefactory.lib.task.ResultTask;
 import org.spicefactory.lib.task.enum.TaskState;
 
-public class XmlLoaderTask extends Task {
+public class XmlLoaderTask extends ResultTask {
 	
 	
 	private static var _log:Logger;
@@ -61,7 +61,7 @@ public class XmlLoaderTask extends Task {
 			return;
 		}
 		_xml = xml;
-		complete();
+		setResult(_xml);
 	}
 	
 	private function onErrorEvent (evt:ErrorEvent) : void {

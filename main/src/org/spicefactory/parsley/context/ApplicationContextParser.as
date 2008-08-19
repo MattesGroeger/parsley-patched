@@ -20,6 +20,7 @@ import flash.events.Event;
 
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.lib.task.ResultTask;
 import org.spicefactory.lib.task.SequentialTaskGroup;
 import org.spicefactory.lib.task.Task;
 import org.spicefactory.lib.task.TaskGroup;
@@ -104,7 +105,7 @@ public class ApplicationContextParser extends Task {
 	private var _files:Array;
 	private var _xml:Array;
 	
-	private var _loader:XmlLoaderTask;
+	private var _loader:ResultTask;
 	
 	private var _context:ApplicationContext;
 	
@@ -286,17 +287,34 @@ public class ApplicationContextParser extends Task {
 			return;
 		}
 		_logger.debug("Start loading next file: " + _files[0]);
-		_loader = new XmlLoaderTask(String(_files.shift()));
+		_loader = createLoaderTask(String(_files.shift()));
 		_loader.addEventListener(TaskEvent.COMPLETE, onLoad);
 		_loader.addEventListener(ErrorEvent.ERROR, handleTaskError);
 		_loader.start();
 	}
 	
+	/**
+	 * Creates a ResultTask instance for loading the next file.
+	 * This method will be invoked for all loaded context files, no matter
+	 * whether they are loaded due to an <code>&lt;include&gt;</code> tag in another configuration
+	 * file or due to a call to <code>addFile</code> in this parser.
+	 * The implementation must not start the Task it creates, starting and processing
+	 * the result will be handled by other methods of this class.
+	 * 
+	 * <p>Subclasses may override this method to create their own type of <code>ResultTask</code>.</p>
+	 * 
+	 * @param filename the name of the file to load
+	 * @return a ResultTask instance to load the file with that has not been started yet
+	 */
+	protected function createLoaderTask (filename:String) : ResultTask {
+		return new XmlLoaderTask(filename);
+	}
+	
 	private function onLoad (event:TaskEvent) : void {
-		var loader : XmlLoaderTask = XmlLoaderTask(event.target);
+		var loader : ResultTask = ResultTask(event.target);
 		if (state != TaskState.ACTIVE) return;
 		try {
-			parse(loader.xml);
+			parse(loader.result as XML);
 		} catch (e:Error) {
 			handleParserError(e);
 			return;
