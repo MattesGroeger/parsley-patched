@@ -318,6 +318,7 @@ public class MvcTest extends ApplicationContextParserTest {
 	}
 	
 	public function testEventSourceTags () : void {
+		EventTransformer; // just to compile
 		var c:FrontController = new FrontController(true);
 		var xml:XML = <application-context 
 			xmlns="http://www.spicefactory.org/parsley/1.0"
