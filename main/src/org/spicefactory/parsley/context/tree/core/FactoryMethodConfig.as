@@ -15,8 +15,7 @@
  */
  
 package org.spicefactory.parsley.context.tree.core {
-	import org.spicefactory.parsley.context.ConfigurationError;
-	
+import org.spicefactory.lib.errors.AbstractMethodError;	
 
 /**
  * Abstract base class for all types of factory method configuration.
@@ -61,10 +60,8 @@ public class FactoryMethodConfig
 	 * @return the target instance to invoke the factory method on
 	 */
 	protected function getFactory () : Object {
-		throw new ConfigurationError("Method is abstract");
+		throw new AbstractMethodError();
 	}
-	
-	
 }
 
 }
