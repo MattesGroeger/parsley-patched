@@ -358,7 +358,7 @@ public class DefaultObjectFactoryConfig
 			try {
 				processor.process(obj, ci, destroyCommands);
 			} catch (e:Error) {
-				throw new ConfigurationError("Error applying configuration to " + this + ": " + e.message);
+				throw new ConfigurationError("Error applying configuration to " + this, e);
 			}
 		}
 		if (obj is ApplicationContextAware) {
