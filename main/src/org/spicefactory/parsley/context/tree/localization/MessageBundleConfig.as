@@ -15,6 +15,8 @@
  */
  
 package org.spicefactory.parsley.context.tree.localization {
+import flash.utils.Dictionary;
+
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.converter.BooleanConverter;
 import org.spicefactory.lib.reflect.converter.ClassInfoConverter;
@@ -50,13 +52,13 @@ public class MessageBundleConfig
 	
 	
 
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
+		if (_elementProcessor[domain] == null) {
 			var bundleReqType:ClassInfo = ClassInfo.forClass(MessageBundleSpi);
 			var loaderReqType:ClassInfo = ClassInfo.forClass(BundleLoaderFactory);
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
@@ -66,9 +68,9 @@ public class MessageBundleConfig
 			ep.addAttribute("ignore-country", BooleanConverter.INSTANCE, false, false);
 			ep.addAttribute("type",  new ClassInfoConverter(bundleReqType, domain), false);
 			ep.addAttribute("loader-factory", new ClassInfoConverter(loaderReqType, domain), false);
-			_elementProcessor = ep;
+			_elementProcessor[domain] = ep;
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}	
 	
 	

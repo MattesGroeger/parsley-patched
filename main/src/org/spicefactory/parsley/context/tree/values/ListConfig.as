@@ -15,6 +15,8 @@
  */
  
 package org.spicefactory.parsley.context.tree.values {
+import flash.utils.Dictionary;
+
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.converter.ClassInfoConverter;
 import org.spicefactory.lib.util.collection.ArrayList;
@@ -36,19 +38,19 @@ public class ListConfig
 
 
 
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
+		if (_elementProcessor[domain] == null) {
 			var defClass:ClassInfo = ClassInfo.forClass(ArrayList);
 			var reqClass:ClassInfo = ClassInfo.forClass(List);
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(0);
 			ep.addAttribute("type", new ClassInfoConverter(reqClass, domain), false, defClass);
 			addValueConfigs(ep);
-			_elementProcessor = ep;
+			_elementProcessor[domain] = ep;
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 	
 	

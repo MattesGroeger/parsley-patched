@@ -15,11 +15,13 @@
  */
  
 package org.spicefactory.parsley.context.tree.core {
+import flash.utils.Dictionary;
+
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.converter.ClassInfoConverter;
 import org.spicefactory.lib.reflect.converter.StringConverter;
 import org.spicefactory.parsley.context.xml.DefaultElementProcessor;
-import org.spicefactory.parsley.context.xml.ElementProcessor;	
+import org.spicefactory.parsley.context.xml.ElementProcessor;
 
 /**
  * Represents a static factory method configuration - in XML configuration
@@ -33,21 +35,21 @@ public class StaticFactoryMethodConfig extends FactoryMethodConfig {
 	private var _Class:ClassInfo;
 	
 	
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
+		if (_elementProcessor[domain] == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(0);
 			addValueConfigs(ep);
 			ep.addAttribute("type", new ClassInfoConverter(null, domain), true);
 			ep.addAttribute("method", StringConverter.INSTANCE, true);
-			_elementProcessor = ep;
+			_elementProcessor[domain] = ep;
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 		
 	

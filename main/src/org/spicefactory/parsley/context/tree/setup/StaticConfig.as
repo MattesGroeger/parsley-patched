@@ -15,11 +15,13 @@
  */
  
 package org.spicefactory.parsley.context.tree.setup {
+import flash.utils.Dictionary;
+
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.converter.ClassInfoConverter;
 import org.spicefactory.lib.util.CommandChain;
-import org.spicefactory.parsley.context.tree.AbstractElementConfig;
 import org.spicefactory.parsley.context.factory.ObjectProcessorConfig;
+import org.spicefactory.parsley.context.tree.AbstractElementConfig;
 import org.spicefactory.parsley.context.tree.core.MethodInvocationConfig;
 import org.spicefactory.parsley.context.tree.core.PropertyConfig;
 import org.spicefactory.parsley.context.xml.DefaultElementProcessor;
@@ -39,20 +41,20 @@ public class StaticConfig extends AbstractElementConfig {
 	
 	
 	
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
+		if (_elementProcessor[domain] == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.addChildNode("property", PropertyConfig, [], 0);
 			ep.addChildNode("init-method", MethodInvocationConfig, [], 0);
 			ep.addAttribute("type", new ClassInfoConverter(null, domain), true);
-			_elementProcessor = ep;
+			_elementProcessor[domain] = ep;
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}	
 
 	

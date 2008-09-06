@@ -1,7 +1,9 @@
 package org.spicefactory.parsley.namespaces.logging {
-import org.spicefactory.lib.logging.LogLevel;
+import flash.utils.Dictionary;
+
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.LogFactory;
+import org.spicefactory.lib.logging.LogLevel;
 import org.spicefactory.lib.logging.impl.DefaultLogFactory;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Converter;
@@ -30,13 +32,13 @@ public class LogFactoryConfig extends AbstractElementConfig implements ObjectFac
 
 	private var processors:Array = new Array();
 
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
+		if (_elementProcessor[domain] == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(0);
 			ep.addAttribute("id", StringConverter.INSTANCE, true);
@@ -45,9 +47,9 @@ public class LogFactoryConfig extends AbstractElementConfig implements ObjectFac
 			ep.addAttribute("context", BooleanConverter.INSTANCE, false, true);
 			ep.addAttribute("root-level", LogLevelConverter.INSTANCE, false, LogLevel.TRACE);
 			ep.permitCustomNamespaces(ObjectProcessorConfig);
-			_elementProcessor = ep;
+			_elementProcessor[domain] = ep;
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 	
 	

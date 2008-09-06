@@ -1,5 +1,6 @@
 package org.spicefactory.parsley.namespaces.cinnamon {
-import org.spicefactory.parsley.context.ConfigurationError;
+import flash.utils.Dictionary;
+
 import org.spicefactory.cinnamon.client.ServiceChannel;
 import org.spicefactory.cinnamon.client.ServiceProxy;
 import org.spicefactory.cinnamon.client.support.AbstractServiceBase;
@@ -8,6 +9,7 @@ import org.spicefactory.lib.reflect.converter.ClassInfoConverter;
 import org.spicefactory.lib.reflect.converter.StringConverter;
 import org.spicefactory.lib.reflect.converter.UintConverter;
 import org.spicefactory.parsley.context.ApplicationContext;
+import org.spicefactory.parsley.context.ConfigurationError;
 import org.spicefactory.parsley.context.factory.FactoryMetadata;
 import org.spicefactory.parsley.context.factory.ObjectFactoryConfig;
 import org.spicefactory.parsley.context.tree.AbstractElementConfig;
@@ -24,13 +26,13 @@ public class ServiceConfig extends AbstractElementConfig implements ObjectFactor
 	
 	private var context:ApplicationContext;
 	
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
+		if (_elementProcessor[domain] == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(0);
 			ep.addAttribute("id", StringConverter.INSTANCE, true);
@@ -38,9 +40,9 @@ public class ServiceConfig extends AbstractElementConfig implements ObjectFactor
 			ep.addAttribute("type", new ClassInfoConverter(ClassInfo.forClass(AbstractServiceBase), domain), true);
 			ep.addAttribute("channel", StringConverter.INSTANCE, true);
 			ep.addAttribute("timeout", UintConverter.INSTANCE, false, 0);
-			_elementProcessor = ep;
+			_elementProcessor[domain] = ep;
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 	
 	

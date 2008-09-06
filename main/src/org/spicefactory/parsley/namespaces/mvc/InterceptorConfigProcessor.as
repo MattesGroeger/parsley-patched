@@ -15,6 +15,8 @@
  */
  
 package org.spicefactory.parsley.namespaces.mvc {
+import flash.utils.Dictionary;
+
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Converter;
 import org.spicefactory.lib.reflect.converter.ClassInfoConverter;
@@ -47,21 +49,21 @@ public class InterceptorConfigProcessor extends AbstractElementConfig implements
 	private var config : RootObjectFactoryConfig;
 
 	
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
+		if (_elementProcessor[domain] == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.addAttribute("event-name", StringConverter.INSTANCE, false);
 			var c : Converter = new ClassInfoConverter(ClassInfo.forClass(ApplicationEvent), domain);
 			ep.addAttribute("event-class", c, false);
 			ep.addAttribute("controller", StringConverter.INSTANCE, false);
-			_elementProcessor = ep;
+			_elementProcessor[domain] = ep;
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 	
 	/**

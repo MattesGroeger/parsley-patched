@@ -1,4 +1,6 @@
 package org.spicefactory.parsley.namespaces.cinnamon {
+import flash.utils.Dictionary;
+
 import org.spicefactory.cinnamon.client.NetConnectionServiceChannel;
 import org.spicefactory.cinnamon.client.ServiceChannel;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -21,13 +23,13 @@ import org.spicefactory.parsley.context.xml.ElementProcessor;
 public class ChannelConfig extends AbstractElementConfig implements ObjectFactoryConfig {
 
 
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
+		if (_elementProcessor[domain] == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(0);
 			ep.addAttribute("id", StringConverter.INSTANCE, true);
@@ -35,9 +37,9 @@ public class ChannelConfig extends AbstractElementConfig implements ObjectFactor
 				 false, ClassInfo.forClass(NetConnectionServiceChannel));
 			ep.addAttribute("url", StringConverter.INSTANCE, true);
 			ep.addAttribute("timeout", UintConverter.INSTANCE, false, 0);
-			_elementProcessor = ep;
+			_elementProcessor[domain] = ep;
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 	
 	
