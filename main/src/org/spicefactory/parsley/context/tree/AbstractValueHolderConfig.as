@@ -71,7 +71,7 @@ public class AbstractValueHolderConfig extends AbstractElementConfig {
 		ep.addChildNode("static-property-ref", StaticPropertyRefConfig, [], 0);
 		
 		ep.addChildNode("object", DelegatingNestedObjectFactoryConfig, [DefaultObjectFactoryConfig], 0);
-		ep.addChildNode("class", SimpleValueConfig, [new ClassConverter()], 0);
+		ep.addChildNode("class", SimpleValueConfig, [new ClassConverter(domain)], 0);
 		ep.addChildNode("list", ListConfig, [], 0);
 		ep.addChildNode("custom", CustomValueConfig, [], 0);
 		ep.addChildNode("app-context", ApplicationContextRefConfig, [], 0);
