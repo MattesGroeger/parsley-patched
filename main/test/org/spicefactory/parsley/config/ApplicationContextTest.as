@@ -1,8 +1,14 @@
 package org.spicefactory.parsley.config {
-
+import flash.display.Loader;
+import flash.display.LoaderInfo;
+import flash.display.Sprite;
 import flash.events.ErrorEvent;
+import flash.events.Event;
 import flash.events.IEventDispatcher;
+import flash.net.URLRequest;
+import flash.system.ApplicationDomain;
 
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.task.events.TaskEvent;
 import org.spicefactory.parsley.config.testmodel.ClassA;
 import org.spicefactory.parsley.config.testmodel.ClassB;
@@ -11,8 +17,9 @@ import org.spicefactory.parsley.config.testmodel.ClassD;
 import org.spicefactory.parsley.config.testmodel.TestEventDispatcher;
 import org.spicefactory.parsley.context.ApplicationContext;
 import org.spicefactory.parsley.context.ApplicationContextParser;
-import org.spicefactory.parsley.context.tree.ApplicationContextAware;
 import org.spicefactory.parsley.context.ns.context_internal;
+import org.spicefactory.parsley.context.tree.ApplicationContextAware;
+
 //import org.spicefactory.parsley.context.ns.context_internal;
 
 public class ApplicationContextTest extends ApplicationContextParserTest {
@@ -266,6 +273,33 @@ public class ApplicationContextTest extends ApplicationContextParserTest {
     	var classA:ClassA = obj as ClassA;
     	assertEquals("Unexpected property value", 34, classA.uintProp);	
     	assertEquals("Unexpected property value", "variable", classA.stringProp);	
+	}
+	
+	public function testApplicationDomain () : void {
+		assertFalse("Unexpected definition in current domain",
+				ApplicationDomain.currentDomain.hasDefinition("org.spicefactory.lib.reflect.domain.ClassInChildDomain"));
+		var loader:Loader = new Loader();
+		loader.load(new URLRequest("domain.swf"));
+		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, addAsync(onTestApplicationDomain, 3000));
+	}
+	
+	private function onTestApplicationDomain (event:Event) : void {
+		assertNull("root must be null", ApplicationContext.root);	
+		var loaderInfo:LoaderInfo = LoaderInfo(event.target);
+		var xml:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
+    		<factory>
+    			<object id="classInChildDomain" type="org.spicefactory.lib.reflect.domain.ClassInChildDomain"/>
+    		</factory>
+    	</application-context>; 
+    	var prepare:Function = function (parser:ApplicationContextParser) : void {
+    		parser.applicationDomain = loaderInfo.applicationDomain;
+    	};
+    	var context:ApplicationContext = parseForContext2("obj", xml, true, false, null, prepare);  	
+    	assertNotNull("ApplicationDomain should not be null for context", context.applicationDomain);
+    	var obj:Object = context.getObject("classInChildDomain");
+    	assertTrue("Expected subclass of Sprite", (obj is Sprite));
 	}
 	
 	
