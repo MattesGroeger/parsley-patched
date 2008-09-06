@@ -15,10 +15,10 @@
  */
  
 package org.spicefactory.parsley.context.tree.core {
-
-import org.spicefactory.parsley.context.tree.AbstractArrayValueHolderConfig;
+import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.parsley.context.ConfigurationError;
-	
+import org.spicefactory.parsley.context.tree.AbstractArrayValueHolderConfig;
+
 /**
  * Abstract baes class for all types of method call configuration.
  * 
@@ -44,14 +44,14 @@ public class AbstractMethodConfig
 	}
 
 	public function set methodName (name:String) : void {
-		throw new ConfigurationError("Method is abstract");
+		throw new AbstractMethodError();
 	}
 		
 	/**
 	 * The name of the method.
 	 */
 	public function get methodName () : String {
-		throw new ConfigurationError("Method is abstract");
+		throw new AbstractMethodError();
 	}
 	
 	
