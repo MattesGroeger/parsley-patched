@@ -15,6 +15,8 @@
  */
  
 package org.spicefactory.parsley.context.tree.setup {
+import flash.utils.Dictionary;
+
 import org.spicefactory.lib.expr.PropertyResolver;
 import org.spicefactory.parsley.context.xml.ElementProcessor;
 
@@ -26,16 +28,16 @@ import org.spicefactory.parsley.context.xml.ElementProcessor;
  */
 public class PropertyResolverConfig extends AbstractResolverConfig {
 
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
-			_elementProcessor = createElementProcessor(PropertyResolver);
+		if (_elementProcessor[domain] == null) {
+			_elementProcessor[domain] = createElementProcessor(PropertyResolver);
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 	
 	
