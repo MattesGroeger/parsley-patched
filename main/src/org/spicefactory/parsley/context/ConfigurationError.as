@@ -15,21 +15,18 @@
  */
  
 package org.spicefactory.parsley.context {
+import org.spicefactory.lib.errors.NestedError;
 import org.spicefactory.lib.logging.LogContext;
-import org.spicefactory.lib.logging.Logger;	
+import org.spicefactory.lib.logging.Logger;
 
 /**
  * Error thrown for configuration errors.
  * 
  * @author Jens Halm
  */
-public class ConfigurationError extends Error {
+public class ConfigurationError extends NestedError {
 	
-	// TODO - 1.1.0 - refactor as subclass of NestedError after Spicelib 1.1 release
 		
-	private var _message:String;
-	private var _cause:Error;
-	
 	private static var _logger:Logger;
 	
 
@@ -40,13 +37,11 @@ public class ConfigurationError extends Error {
 	 * @param cause the original cause of the error
 	 */	
 	public function ConfigurationError (msg:String, cause:Error = null) {
-		super((cause == null) ? msg : msg + " [cause: " + cause + "]");
+		super(msg, cause);
 		if (_logger == null) {
 			_logger = LogContext.getLogger("org.spicefactory.parsley.context.ConfigurationError");
 		}
-		_message = message;
-		_cause = cause;
-		_logger.error(_message);
+		_logger.error(msg);
 	}
 	
 		
