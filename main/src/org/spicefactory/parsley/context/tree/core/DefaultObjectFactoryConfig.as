@@ -87,21 +87,21 @@ public class DefaultObjectFactoryConfig
 	
 	
 	
-	private static var _topLevelElementProcessor:ElementProcessor;
-	private static var _nestedElementProcessor:ElementProcessor;
+	private static var _topLevelElementProcessor:Dictionary = new Dictionary();
+	private static var _nestedElementProcessor:Dictionary = new Dictionary();
 	
 	private function getRootElementProcessor (context:ApplicationContext) : ElementProcessor {
-		if (_topLevelElementProcessor == null) {
-			_topLevelElementProcessor = createElementProcessor(context, false);
+		if (_topLevelElementProcessor[context] == null) {
+			_topLevelElementProcessor[context] = createElementProcessor(context, false);
 		}
-		return _topLevelElementProcessor;
+		return _topLevelElementProcessor[context];
 	}
 	
 	private function getNestedElementProcessor (context:ApplicationContext) : ElementProcessor {
-		if (_nestedElementProcessor == null) {
-			_nestedElementProcessor = createElementProcessor(context, true);
+		if (_nestedElementProcessor[context] == null) {
+			_nestedElementProcessor[context] = createElementProcessor(context, true);
 		}
-		return _nestedElementProcessor;
+		return _nestedElementProcessor[context];
 	}
 	
 	private function createElementProcessor (context:ApplicationContext, isInline:Boolean) : DefaultElementProcessor {
