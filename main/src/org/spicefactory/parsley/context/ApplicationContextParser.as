@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.context {
 import flash.events.ErrorEvent;
 import flash.events.Event;
+import flash.system.ApplicationDomain;
 
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
@@ -183,6 +184,17 @@ public class ApplicationContextParser extends Task {
 	}
 	public function set parentContext (parent:ApplicationContext) : void {
 		_context.setParent(parent);
+	}
+	
+	/**
+	 * The <code>ApplicationDomain</code> the <code>ApplicationContext</code> should use to obtain class definitions.
+	 * If this property is null <code>ApplicationDomain.currentDomain</code> will be used.
+	 */
+	public function get applicationDomain () : ApplicationDomain {
+		return _context.applicationDomain;
+	}
+	public function set applicationDomain (domain:ApplicationDomain) : void {
+		_context.setApplicationDomain(domain);
 	}
 	
 	/**
