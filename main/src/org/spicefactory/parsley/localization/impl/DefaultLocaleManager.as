@@ -15,24 +15,26 @@
  */
  
 package org.spicefactory.parsley.localization.impl {
-import org.spicefactory.parsley.context.ApplicationContextParser;
+import org.spicefactory.lib.errors.IllegalArgumentError;
 
 import flash.events.ErrorEvent;
 import flash.events.EventDispatcher;
 import flash.net.SharedObject;
 import flash.system.Capabilities;
 
+import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.task.SequentialTaskGroup;
 import org.spicefactory.lib.task.TaskGroup;
 import org.spicefactory.lib.task.events.TaskEvent;
 import org.spicefactory.parsley.context.ApplicationContext;
+import org.spicefactory.parsley.context.ApplicationContextParser;
+import org.spicefactory.parsley.context.ns.context_internal;
 import org.spicefactory.parsley.localization.Locale;
 import org.spicefactory.parsley.localization.events.LocaleSwitchEvent;
 import org.spicefactory.parsley.localization.spi.LocaleManagerSpi;
 import org.spicefactory.parsley.localization.spi.MessageSourceSpi;
-import org.spicefactory.parsley.context.ns.context_internal;
 
 /**
  * Default implementation of the <code>LocaleManagerSpi</code> interface.
@@ -84,13 +86,13 @@ public class DefaultLocaleManager extends EventDispatcher implements LocaleManag
 
 	public function set currentLocale (loc:Locale) : void {
 		if (!_initialized) {
-			var msg:String = "Attempt to set the Locale before LocaleManager was iniitalized";
+			var msg:String = "Attempt to set the Locale before LocaleManager was initialized";
 			_logger.error(msg);
-			throw new Error(msg);
+			throw new IllegalStateError(msg);
 		} else if (_switching) {
 			var msg2:String = "Switching locale already in progress";
 			_logger.error(msg2);
-			throw new Error(msg2);
+			throw new IllegalStateError(msg2);
 		}
 		if (_currentLocale != null && _currentLocale.equals(loc)) {
 			_logger.warn("Locale " + loc + " is already active");
@@ -115,7 +117,7 @@ public class DefaultLocaleManager extends EventDispatcher implements LocaleManag
 		} else {
 			var msg3:String = "The specified Locale (" + loc + ") is not supported";
 			_logger.error(msg3);
-			throw new Error(msg3);
+			throw new IllegalArgumentError(msg3);
 		}
 	}
 	
