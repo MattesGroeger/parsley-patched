@@ -35,7 +35,7 @@ public class ServiceConfig extends AbstractElementConfig implements ObjectFactor
 			ep.setSingleArrayMode(0);
 			ep.addAttribute("id", StringConverter.INSTANCE, true);
 			ep.addAttribute("name", StringConverter.INSTANCE, false);
-			ep.addAttribute("type", new ClassInfoConverter(ClassInfo.forClass(AbstractServiceBase)), true);
+			ep.addAttribute("type", new ClassInfoConverter(ClassInfo.forClass(AbstractServiceBase), domain), true);
 			ep.addAttribute("channel", StringConverter.INSTANCE, true);
 			ep.addAttribute("timeout", UintConverter.INSTANCE, false, 0);
 			_elementProcessor = ep;

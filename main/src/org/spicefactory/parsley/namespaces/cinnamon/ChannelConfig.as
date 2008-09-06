@@ -31,7 +31,7 @@ public class ChannelConfig extends AbstractElementConfig implements ObjectFactor
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(0);
 			ep.addAttribute("id", StringConverter.INSTANCE, true);
-			ep.addAttribute("type", new ClassInfoConverter(ClassInfo.forClass(ServiceChannel)),
+			ep.addAttribute("type", new ClassInfoConverter(ClassInfo.forClass(ServiceChannel), domain),
 				 false, ClassInfo.forClass(NetConnectionServiceChannel));
 			ep.addAttribute("url", StringConverter.INSTANCE, true);
 			ep.addAttribute("timeout", UintConverter.INSTANCE, false, 0);
