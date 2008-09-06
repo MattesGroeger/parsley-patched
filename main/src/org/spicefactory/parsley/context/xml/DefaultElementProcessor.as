@@ -103,6 +103,7 @@ public class DefaultElementProcessor implements ElementProcessor {
 	 * 
 	 * @param name the local name of the child node
 	 * @param ChildClass the class of the configuration object processing the child node
+	 * @param constructorArgs the arguments to pass to the constructor of the class processing the child
 	 * @param minOccurs the minimum number of required occurrences of that child node
 	 * @param maxOccurs the maximum number of allowed occurrences of that child node
 	 */
