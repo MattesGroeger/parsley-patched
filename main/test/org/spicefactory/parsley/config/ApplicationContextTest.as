@@ -235,6 +235,18 @@ public class ApplicationContextTest extends ApplicationContextParserTest {
     	assertTrue("Unexpected property value", (classD.ref is ClassB));	
 	}
 	
+	public function testFileNotFound () : void {
+		var f:Function = addAsync(onFileNotFoundTest, 3000);		
+		var parser:ApplicationContextParser = new ApplicationContextParser("include");
+		parser.addFile("does-not-exist.xml");
+		parser.addEventListener(ErrorEvent.ERROR, f);
+		parser.start();
+	}
+	
+	private function onFileNotFoundTest (event:ErrorEvent) : void {
+		/* test passed */
+	}
+	
 	public function testMergeVariables () : void {
 		var f:Function = addAsync(onMergeVariables, 3000);		
 		var parser:ApplicationContextParser = new ApplicationContextParser("mergeVariables");
