@@ -15,14 +15,14 @@
  */
  
 package org.spicefactory.parsley.context.tree.namespaces {
+import flash.utils.Dictionary;
 
 import org.spicefactory.parsley.context.factory.ObjectFactoryConfig;
 import org.spicefactory.parsley.context.tree.core.DelegatingNestedObjectFactoryConfig;
 import org.spicefactory.parsley.context.tree.core.DelegatingRootObjectFactoryConfig;
 import org.spicefactory.parsley.context.tree.core.NestedObjectFactoryConfig;
-import org.spicefactory.parsley.context.xml.ElementProcessor;
 import org.spicefactory.parsley.context.tree.core.RootObjectFactoryConfig;
-	
+import org.spicefactory.parsley.context.xml.ElementProcessor;
 
 /**
  * Represents the configuration for a custom tag
@@ -37,16 +37,16 @@ public class ObjectFactoryTagConfig
 		extends AbstractTagConfig implements ObjectFactoryConfigBuilder {
 	
 	
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
-			_elementProcessor = createElementProcessor(ObjectFactoryConfig);
+		if (_elementProcessor[domain] == null) {
+			_elementProcessor[domain] = createElementProcessor(ObjectFactoryConfig);
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 	
 

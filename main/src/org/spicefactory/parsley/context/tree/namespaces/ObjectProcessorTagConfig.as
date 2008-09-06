@@ -15,10 +15,11 @@
  */
  
 package org.spicefactory.parsley.context.tree.namespaces {
+import flash.utils.Dictionary;
 
 import org.spicefactory.parsley.context.factory.ObjectProcessorConfig;
 import org.spicefactory.parsley.context.xml.ElementProcessor;
-	
+
 /**
  * Represents the configuration for a custom tag
  * that acts as an object processor. Such a tag is usually an immediate child of
@@ -32,16 +33,16 @@ public class ObjectProcessorTagConfig
 		extends AbstractTagConfig implements ObjectProcessorConfigBuilder {
 	
 	
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
-			_elementProcessor = createElementProcessor(ObjectProcessorConfig);
+		if (_elementProcessor[domain] == null) {
+			_elementProcessor[domain] = createElementProcessor(ObjectProcessorConfig);
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 	
 	/**
