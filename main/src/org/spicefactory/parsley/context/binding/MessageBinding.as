@@ -63,7 +63,7 @@ public class MessageBinding implements Binding {
 			throw new IllegalStateError("Message is already bound");
 		}
 		_target = target;
-		_property = ClassInfo.forInstance(target).getProperty(property);
+		_property = ClassInfo.forInstance(target, _context.applicationDomain).getProperty(property);
 		if (_property == null) {
 			throw new IllegalArgumentError("Given instance does not have a property with name " + property);
 		}
