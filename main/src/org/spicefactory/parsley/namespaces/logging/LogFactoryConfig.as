@@ -40,7 +40,7 @@ public class LogFactoryConfig extends AbstractElementConfig implements ObjectFac
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(0);
 			ep.addAttribute("id", StringConverter.INSTANCE, true);
-			var c : Converter = new ClassInfoConverter(ClassInfo.forClass(LogFactory));
+			var c : Converter = new ClassInfoConverter(ClassInfo.forClass(LogFactory), domain);
 			ep.addAttribute("type", c, false, ClassInfo.forClass(DefaultLogFactory));
 			ep.addAttribute("context", BooleanConverter.INSTANCE, false, true);
 			ep.addAttribute("root-level", LogLevelConverter.INSTANCE, false, LogLevel.TRACE);
