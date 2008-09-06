@@ -49,7 +49,7 @@ public class StaticConfig extends AbstractElementConfig {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.addChildNode("property", PropertyConfig, [], 0);
 			ep.addChildNode("init-method", MethodInvocationConfig, [], 0);
-			ep.addAttribute("type", new ClassInfoConverter(), true);
+			ep.addAttribute("type", new ClassInfoConverter(null, domain), true);
 			_elementProcessor = ep;
 		}
 		return _elementProcessor;

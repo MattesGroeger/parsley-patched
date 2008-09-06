@@ -47,7 +47,7 @@ public class StaticPropertyRefConfig
 	protected override function getElementProcessor () : ElementProcessor {
 		if (_elementProcessor == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
-			ep.addAttribute("type", new ClassInfoConverter(), true);
+			ep.addAttribute("type", new ClassInfoConverter(null, domain), true);
 			ep.addAttribute("property", StringConverter.INSTANCE, true);
 			_elementProcessor = ep;
 		}

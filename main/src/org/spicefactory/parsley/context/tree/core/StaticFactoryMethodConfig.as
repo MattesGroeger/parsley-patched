@@ -43,7 +43,7 @@ public class StaticFactoryMethodConfig extends FactoryMethodConfig {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(0);
 			addValueConfigs(ep);
-			ep.addAttribute("type", new ClassInfoConverter(), true);
+			ep.addAttribute("type", new ClassInfoConverter(null, domain), true);
 			ep.addAttribute("method", StringConverter.INSTANCE, true);
 			_elementProcessor = ep;
 		}
