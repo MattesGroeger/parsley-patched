@@ -15,6 +15,8 @@
  */
  
 package org.spicefactory.parsley.context.tree {
+import org.spicefactory.lib.errors.AbstractMethodError;
+
 import flash.system.ApplicationDomain;
 
 import org.spicefactory.parsley.context.ApplicationContext;
@@ -63,10 +65,8 @@ public class AbstractElementConfig
 	 * @return the <code>ElementProcessor</code> instance to use for XML parsing
 	 */
 	protected function getElementProcessor () : ElementProcessor {
-		throw new Error("Abstract method");
+		throw new AbstractMethodError();
 	}
-	
-	
 }
 
 }
