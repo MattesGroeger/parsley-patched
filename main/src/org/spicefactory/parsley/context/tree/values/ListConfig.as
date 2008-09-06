@@ -44,7 +44,7 @@ public class ListConfig
 			var reqClass:ClassInfo = ClassInfo.forClass(List);
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(0);
-			ep.addAttribute("type", new ClassInfoConverter(reqClass), false, defClass);
+			ep.addAttribute("type", new ClassInfoConverter(reqClass, domain), false, defClass);
 			addValueConfigs(ep);
 			_elementProcessor = ep;
 		}
