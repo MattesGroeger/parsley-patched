@@ -362,7 +362,7 @@ public class ApplicationContext	{
  				// TODO - 1.1.0 - use nested errors
  				var msg:String = "Error constructing object with id '" + id + "'";
  				_logger.error(msg, e);
- 				throw new ConfigurationError(msg + ": " + e.message);
+ 				throw new ConfigurationError(msg, e);
  			} finally {
 				_underConstruction.remove(id); // TODO - 1.1.0 - test and maybe allow bidirectional associations
  			}
