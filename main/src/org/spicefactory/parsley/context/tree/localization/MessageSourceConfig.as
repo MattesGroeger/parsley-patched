@@ -66,10 +66,10 @@ public class MessageSourceConfig
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.addChildNode("default-message-bundle", MessageBundleConfig, [], 0, 1);
 			ep.addChildNode("message-bundle", MessageBundleConfig, [], 0);
-			ep.addAttribute("type", new ClassInfoConverter(sourceReqType), false, sourceDefType);
+			ep.addAttribute("type", new ClassInfoConverter(sourceReqType, domain), false, sourceDefType);
 			ep.addAttribute("cacheable", BooleanConverter.INSTANCE, false, false);
-			ep.addAttribute("bundle-type", new ClassInfoConverter(bundleReqType), false, bundleDefType);
-			ep.addAttribute("loader-factory", new ClassInfoConverter(loaderReqType), false, loaderDefType);
+			ep.addAttribute("bundle-type", new ClassInfoConverter(bundleReqType, domain), false, bundleDefType);
+			ep.addAttribute("loader-factory", new ClassInfoConverter(loaderReqType, domain), false, loaderDefType);
 			_elementProcessor = ep;
 		}
 		return _elementProcessor;

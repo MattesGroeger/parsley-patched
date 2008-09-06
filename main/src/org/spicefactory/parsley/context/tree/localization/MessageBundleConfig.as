@@ -64,8 +64,8 @@ public class MessageBundleConfig
 			ep.addAttribute("basename", StringConverter.INSTANCE, true);
 			ep.addAttribute("localized", BooleanConverter.INSTANCE, false, false);
 			ep.addAttribute("ignore-country", BooleanConverter.INSTANCE, false, false);
-			ep.addAttribute("type",  new ClassInfoConverter(bundleReqType), false);
-			ep.addAttribute("loader-factory", new ClassInfoConverter(loaderReqType), false);
+			ep.addAttribute("type",  new ClassInfoConverter(bundleReqType, domain), false);
+			ep.addAttribute("loader-factory", new ClassInfoConverter(loaderReqType, domain), false);
 			_elementProcessor = ep;
 		}
 		return _elementProcessor;

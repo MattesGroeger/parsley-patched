@@ -58,7 +58,7 @@ public class LocaleManagerConfig
 			var reqType:ClassInfo = ClassInfo.forClass(LocaleManagerSpi);
 			ep.addChildNode("default-locale", LocaleConfig, [], 0, 1);
 			ep.addChildNode("locale", LocaleConfig, [], 0);
-			ep.addAttribute("type", new ClassInfoConverter(reqType), false, defType);
+			ep.addAttribute("type", new ClassInfoConverter(reqType, domain), false, defType);
 			ep.addAttribute("persistent", BooleanConverter.INSTANCE, false, false);
 			_elementProcessor = ep;
 		}
