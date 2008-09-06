@@ -56,7 +56,7 @@ public class InterceptorConfigProcessor extends AbstractElementConfig implements
 		if (_elementProcessor == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.addAttribute("event-name", StringConverter.INSTANCE, false);
-			var c : Converter = new ClassInfoConverter(ClassInfo.forClass(ApplicationEvent));
+			var c : Converter = new ClassInfoConverter(ClassInfo.forClass(ApplicationEvent), domain);
 			ep.addAttribute("event-class", c, false);
 			ep.addAttribute("controller", StringConverter.INSTANCE, false);
 			_elementProcessor = ep;

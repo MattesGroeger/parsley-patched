@@ -56,7 +56,7 @@ public class ActionConfigProcessor extends AbstractElementConfig implements Obje
 		if (_elementProcessor == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.addAttribute("event-name", StringConverter.INSTANCE, false);
-			var c : Converter = new ClassInfoConverter(ClassInfo.forClass(ApplicationEvent));
+			var c : Converter = new ClassInfoConverter(ClassInfo.forClass(ApplicationEvent), domain);
 			ep.addAttribute("event-class", c, false);
 			ep.addAttribute("method", StringConverter.INSTANCE, false);
 			ep.addAttribute("controller", StringConverter.INSTANCE, false);
