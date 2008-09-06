@@ -15,6 +15,8 @@
  */
  
 package org.spicefactory.parsley.context {
+import flash.system.ApplicationDomain;
+
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.expr.impl.DefaultExpressionContext;
@@ -78,6 +80,7 @@ public class ApplicationContext	{
 	private var _config:ApplicationContextConfig;
 	private var _parent:ApplicationContext;
 	
+	private var _applicationDomain:ApplicationDomain;
 	private var _expressionContext:ExpressionContext;
 	
 	private static var _localeManager:LocaleManagerSpi;
@@ -207,6 +210,21 @@ public class ApplicationContext	{
 	 */
 	internal function setParent (value:ApplicationContext) : void {
 		_parent = value;
+	}
+	
+	/**
+	 * The <code>ApplicationDomain</code> this <code>ApplicationContext</code> should use to obtain class definitions.
+	 * If this property is null <code>ApplicationDomain.currentDomain</code> will be used.
+	 */
+	public function get applicationDomain () : ApplicationDomain {
+		return _applicationDomain;
+	}
+	
+	/**
+	 * @private
+	 */
+	internal function setApplicationDomain (value:ApplicationDomain) : void {
+		_applicationDomain = value;
 	}
 	
 	/**
