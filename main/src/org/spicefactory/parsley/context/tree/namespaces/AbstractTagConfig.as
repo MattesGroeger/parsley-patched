@@ -43,7 +43,7 @@ public class AbstractTagConfig
 	protected function createElementProcessor (requiredType:Class) : ElementProcessor {
 		var ep:DefaultElementProcessor = new DefaultElementProcessor();
 		ep.addAttribute("tag-name", StringConverter.INSTANCE, true);
-		ep.addAttribute("type", new ClassInfoConverter(ClassInfo.forClass(requiredType)), true);
+		ep.addAttribute("type", new ClassInfoConverter(ClassInfo.forClass(requiredType), domain), true);
 		return ep;
 	}	
 	
