@@ -15,6 +15,8 @@
  */
  
 package org.spicefactory.parsley.context.tree.core {
+import flash.utils.Dictionary;
+
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.reflect.converter.StringConverter;
@@ -22,10 +24,10 @@ import org.spicefactory.lib.util.Command;
 import org.spicefactory.lib.util.CommandChain;
 import org.spicefactory.parsley.context.ApplicationContext;
 import org.spicefactory.parsley.context.ConfigurationError;
+import org.spicefactory.parsley.context.factory.ObjectProcessorConfig;
 import org.spicefactory.parsley.context.tree.AbstractValueHolderConfig;
 import org.spicefactory.parsley.context.tree.ApplicationContextAware;
 import org.spicefactory.parsley.context.tree.Attribute;
-import org.spicefactory.parsley.context.factory.ObjectProcessorConfig;
 import org.spicefactory.parsley.context.tree.values.BoundValueConfig;
 import org.spicefactory.parsley.context.tree.values.MessageBindingConfig;
 import org.spicefactory.parsley.context.tree.values.ReferenceConfig;
@@ -50,13 +52,13 @@ public class PropertyConfig
 	private var _isStatic:Boolean = false;
 	
 	
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
+		if (_elementProcessor[domain] == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(0, 1);
 			addValueConfigs(ep);
@@ -64,10 +66,9 @@ public class PropertyConfig
 			ep.addAttribute("name", StringConverter.INSTANCE, true);
 			ep.addAttribute("value", null, false);
 			ep.addAttribute("ref", StringConverter.INSTANCE, false);
-			//ep.addAttribute("binding", StringConverter.INSTANCE, false);
-			_elementProcessor = ep;
+			_elementProcessor[domain] = ep;
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 		
 	

@@ -15,11 +15,12 @@
  */
  
 package org.spicefactory.parsley.context.tree.values {
+import flash.utils.Dictionary;
 
-import org.spicefactory.parsley.context.xml.ElementProcessor;
-import org.spicefactory.parsley.context.xml.DefaultElementProcessor;
 import org.spicefactory.parsley.context.tree.AbstractArrayValueHolderConfig;
-	
+import org.spicefactory.parsley.context.xml.DefaultElementProcessor;
+import org.spicefactory.parsley.context.xml.ElementProcessor;
+
 /**
  * Represents an Array - in XML configuration the &lt;array&gt; tag.
  * The elements of the Array are repesented by child tags:<br/>
@@ -37,19 +38,19 @@ public class ArrayConfig
 
 
 
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
+		if (_elementProcessor[domain] == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(0);
 			addValueConfigs(ep);
-			_elementProcessor = ep;
+			_elementProcessor[domain] = ep;
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 	
 	

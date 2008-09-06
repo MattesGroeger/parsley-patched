@@ -15,6 +15,8 @@
  */
  
 package org.spicefactory.parsley.context.tree.setup {
+import flash.utils.Dictionary;
+
 import org.spicefactory.lib.reflect.converter.StringConverter;
 import org.spicefactory.parsley.context.tree.AbstractValueHolderConfig;
 import org.spicefactory.parsley.context.tree.values.ValueConfig;
@@ -33,20 +35,20 @@ public class VariableConfig
 	private var _valueConfig:ValueConfig;
 	
 
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
+		if (_elementProcessor[domain] == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(1, 1);
 			addValueConfigs(ep);
 			ep.addAttribute("name", StringConverter.INSTANCE, true);
-			_elementProcessor = ep;
+			_elementProcessor[domain] = ep;
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 	
 	

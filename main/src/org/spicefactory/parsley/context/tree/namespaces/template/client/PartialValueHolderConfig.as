@@ -15,6 +15,8 @@
  */
  
 package org.spicefactory.parsley.context.tree.namespaces.template.client {
+import flash.utils.Dictionary;
+
 import org.spicefactory.parsley.context.ConfigurationError;
 import org.spicefactory.parsley.context.tree.AbstractArrayValueHolderConfig;
 import org.spicefactory.parsley.context.tree.values.ValueConfig;
@@ -31,20 +33,20 @@ public class PartialValueHolderConfig
 		extends AbstractArrayValueHolderConfig implements ValueConfig {
 	
 
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
+		if (_elementProcessor[domain] == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(0);
 			ep.ignoreAttributes = true;
 			addValueConfigs(ep);
-			_elementProcessor = ep;
+			_elementProcessor[domain] = ep;
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 	
 

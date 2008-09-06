@@ -15,6 +15,8 @@
  */
  
 package org.spicefactory.parsley.context.tree.values {
+import flash.utils.Dictionary;
+
 import org.spicefactory.lib.reflect.converter.StringConverter;
 import org.spicefactory.lib.util.Command;
 import org.spicefactory.parsley.context.ConfigurationError;
@@ -35,21 +37,21 @@ public class ParamMethodConfig extends AbstractMethodConfig {
 	private var _method:String;
 
 
-	private static var _elementProcessor:ElementProcessor;
+	private static var _elementProcessor:Dictionary = new Dictionary();
 	
 	/**
 	 * @private
 	 */
 	protected override function getElementProcessor () : ElementProcessor {
-		if (_elementProcessor == null) {
+		if (_elementProcessor[domain] == null) {
 			var ep:DefaultElementProcessor = new DefaultElementProcessor();
 			ep.setSingleArrayMode(0);
 			addValueConfigs(ep);
 			ep.addAttribute("target", StringConverter.INSTANCE, true);
 			ep.addAttribute("method", StringConverter.INSTANCE, true);
-			_elementProcessor = ep;
+			_elementProcessor[domain] = ep;
 		}
-		return _elementProcessor;
+		return _elementProcessor[domain];
 	}
 	
 	
