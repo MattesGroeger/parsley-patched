@@ -92,6 +92,10 @@ public class DefaultLocaleManager extends EventDispatcher implements LocaleManag
 			_logger.error(msg2);
 			throw new Error(msg2);
 		}
+		if (_currentLocale != null && _currentLocale.equals(loc)) {
+			_logger.warn("Locale " + loc + " is already active");
+			return;		
+		} 
 		if (isSupportedLocale(loc)) {
 			_switching = true;
 			_nextLocale = loc;
