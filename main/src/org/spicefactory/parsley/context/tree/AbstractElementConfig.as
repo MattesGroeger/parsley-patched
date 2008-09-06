@@ -15,10 +15,12 @@
  */
  
 package org.spicefactory.parsley.context.tree {
+import flash.system.ApplicationDomain;
+
 import org.spicefactory.parsley.context.ApplicationContext;
 import org.spicefactory.parsley.context.ConfigurationError;
 import org.spicefactory.parsley.context.factory.ElementConfig;
-import org.spicefactory.parsley.context.xml.ElementProcessor;	
+import org.spicefactory.parsley.context.xml.ElementProcessor;
 
 /**
  * Abstract base implementation of the <code>ElementConfig</code> interface that delegates
@@ -30,10 +32,23 @@ public class AbstractElementConfig
 		extends AbstractAttributeContainer implements ElementConfig {
 	
 	
+	private var _domain:ApplicationDomain;
+	
+	
+	/**
+	 * The <code>ApplicationDomain</code> to use to load class definitions. May be null,
+	 * in this case <code>ApplicationDomain.currentDomain</code> should be used.
+	 */
+	protected function get domain () : ApplicationDomain {
+		return _domain;
+	}	
+	
+	
 	/**
 	 * @inheritDoc
 	 */
 	public function parse (node : XML, context : ApplicationContext) : void {
+		_domain = context.applicationDomain;
 		var ep:ElementProcessor = getElementProcessor();
 		if (ep == null) {
 			throw new ConfigurationError("Unable to obtain ElementProcessor");
