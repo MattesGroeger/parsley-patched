@@ -75,14 +75,14 @@ public class DefaultObjectFactoryConfig
 	 * @inheritDoc
 	 */
 	public function parseRootObject (node : XML, context : ApplicationContext) : FactoryMetadata {
-		getRootElementProcessor().parse(node, this, context);
+		getRootElementProcessor(context).parse(node, this, context);
 		return new FactoryMetadata(id, singleton, lazy);
 	}
 	/**
 	 * @inheritDoc
 	 */
 	public function parseNestedObject (node : XML, context : ApplicationContext) : void {
-		getNestedElementProcessor().parse(node, this, context);
+		getNestedElementProcessor(context).parse(node, this, context);
 	}
 	
 	
@@ -90,21 +90,21 @@ public class DefaultObjectFactoryConfig
 	private static var _topLevelElementProcessor:ElementProcessor;
 	private static var _nestedElementProcessor:ElementProcessor;
 	
-	private function getRootElementProcessor () : ElementProcessor {
+	private function getRootElementProcessor (context:ApplicationContext) : ElementProcessor {
 		if (_topLevelElementProcessor == null) {
-			_topLevelElementProcessor = createElementProcessor(false);
+			_topLevelElementProcessor = createElementProcessor(context, false);
 		}
 		return _topLevelElementProcessor;
 	}
 	
-	private function getNestedElementProcessor () : ElementProcessor {
+	private function getNestedElementProcessor (context:ApplicationContext) : ElementProcessor {
 		if (_nestedElementProcessor == null) {
-			_nestedElementProcessor = createElementProcessor(true);
+			_nestedElementProcessor = createElementProcessor(context, true);
 		}
 		return _nestedElementProcessor;
 	}
 	
-	private function createElementProcessor (isInline:Boolean) : DefaultElementProcessor {
+	private function createElementProcessor (context:ApplicationContext, isInline:Boolean) : DefaultElementProcessor {
 		var ep:DefaultElementProcessor = new DefaultElementProcessor();
 		if (!isInline) {
 			ep.addAttribute("id", StringConverter.INSTANCE, true);
@@ -125,7 +125,7 @@ public class DefaultObjectFactoryConfig
 		ep.permitCustomNamespaces(ObjectProcessorConfig);
 		
 		var defType:ClassInfo = ClassInfo.forClass(Object);
-		ep.addAttribute("type", new ClassInfoConverter(), false, defType);
+		ep.addAttribute("type", new ClassInfoConverter(null, context.applicationDomain), false, defType);
 		ep.addAttribute("autowire", AutowireConverter.INSTANCE, false);
 		
 		return ep;
