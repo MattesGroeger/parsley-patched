@@ -364,8 +364,10 @@ public class ApplicationContextParser extends Task {
 	
 	
 	private function resetLocaleManager () : void {
-		ApplicationContext.localeManager.removeEventListener(ErrorEvent.ERROR, handleTaskError);
-		ApplicationContext.localeManager.removeEventListener(LocaleSwitchEvent.COMPLETE, processRemaining);
+		if (ApplicationContext.localeManager != null) {
+			ApplicationContext.localeManager.removeEventListener(ErrorEvent.ERROR, handleTaskError);
+			ApplicationContext.localeManager.removeEventListener(LocaleSwitchEvent.COMPLETE, processRemaining);
+		}
 	}
 	
 	/*
