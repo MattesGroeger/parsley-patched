@@ -352,7 +352,7 @@ public class DefaultObjectFactoryConfig
 	}	
 	
 	private function configureObject (obj:Object, destroyCommands:CommandChain) : void {
-		var ci:ClassInfo = (type == null) ? ClassInfo.forInstance(obj) : type;
+		var ci:ClassInfo = (type == null) ? ClassInfo.forInstance(obj, _context.applicationDomain) : type;
 		for (var i:Number = 0; i < _processorConfigs.length; i++) {
 			var processor:ObjectProcessorConfig = ObjectProcessorConfig(_processorConfigs[i]);
 			try {
