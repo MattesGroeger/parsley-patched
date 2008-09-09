@@ -353,15 +353,27 @@
     </xs:simpleType>
     
     <xs:simpleType name="numberOrExpression">
-        <xs:union memberTypes="xs:double expression"/>
+        <xs:union memberTypes="xs:double hexValue expression"/>
     </xs:simpleType>
     
     <xs:simpleType name="intOrExpression">
-        <xs:union memberTypes="xs:int expression"/>
+        <xs:union memberTypes="xs:int hexValue expression"/>
     </xs:simpleType>
     
     <xs:simpleType name="uintOrExpression">
-        <xs:union memberTypes="xs:nonNegativeInteger expression"/>
+        <xs:union memberTypes="xs:nonNegativeInteger nonNegativeHexValue expression"/>
+    </xs:simpleType>
+    
+    <xs:simpleType name="nonNegativeHexValue">
+        <xs:restriction base="xs:token">
+            <xs:pattern value="0[Xx][0-9a-fA-F]+"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="hexValue">
+        <xs:restriction base="xs:token">
+            <xs:pattern value="-?0[Xx][0-9a-fA-F]+"/>
+        </xs:restriction>
     </xs:simpleType>
     
     <xs:simpleType name="dateOrExpression">
