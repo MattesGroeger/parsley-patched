@@ -253,8 +253,7 @@ public class DefaultObjectFactoryConfig
 	public function set staticFactoryMethodConfig (config:FactoryMethodConfig) : void {
 		// use the same property as for setFactoryMethod
 		// since only one can be specified and both are of the same type
-		// TODO - 1.0.1 - maybe check if it was already set and throw an error
-		// TODO - 1.1.0 - check if return type of method corresponds to type property of this instance
+		// TODO - 1.0.3 - maybe check if it was already set and throw an error
 		_factoryMethodConfig = config;
 	}
 	
@@ -376,7 +375,7 @@ public class DefaultObjectFactoryConfig
 			} else {
 				for each (var prop2:Property in props) {
 					if (!prop2.writable || _explicitProperties[prop2.name]) continue;
-					var propType:Class = prop2.type;
+					var propType:Class = prop2.type.getClass();
 					if (propType == Any 
 						|| propType == Object
 						|| propType == Boolean
