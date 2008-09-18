@@ -36,7 +36,7 @@ public interface ObjectFactoryConfig {
 	/**
 	 * Parses the specified XML node as a root object configuration.
 	 * Root objects are those that are defined as direct children of the <code>factory</code>
-	 * tag and that can obtained by the <code>ApplicationContext</code> either by id or by type.
+	 * tag and that can be obtained by the <code>ApplicationContext</code> either by id or by type.
 	 * 
 	 * @param node the XML node to parse
 	 * @param context the ApplicationContext this factory belongs to
