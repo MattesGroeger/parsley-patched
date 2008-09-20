@@ -89,12 +89,11 @@ public class ApplicationContext	{
 	
 	private var _messageSource:MessageSourceSpi;
 	
-	private var _underConstruction:SimpleMap; // TODO - 1.1.0 - replace with Set impl
+	private var _underConstruction:SimpleMap;
 	
 	
 	/**
 	 * @private
-	 * TODO - 1.1.0 - remove config parameter
 	 */
 	function ApplicationContext (name:String, config:ApplicationContextConfig = null, parent:ApplicationContext = null) {
 		if (_logger == null) {
@@ -359,12 +358,11 @@ public class ApplicationContext	{
  			try {
 				obj = _config.factoryConfig.getObject(id);
  			} catch (e:Error) {
- 				// TODO - 1.1.0 - use nested errors
  				var msg:String = "Error constructing object with id '" + id + "'";
  				_logger.error(msg, e);
  				throw new ConfigurationError(msg, e);
  			} finally {
-				_underConstruction.remove(id); // TODO - 1.1.0 - test and maybe allow bidirectional associations
+				_underConstruction.remove(id);
  			}
 		} else if (_parent != null) {
 			obj = _parent.getObject(id);
