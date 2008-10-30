@@ -35,7 +35,6 @@ public class AbstractMethodConfig
 	 * @return the return value of the method invokation
 	 */
 	public function invoke (obj:Object) : * {
-		// TODO - 1.1.0 - maybe use reflection to check params
 		var name:String = methodName;
 		if (!(obj[name] is Function)) {
 			throw new ConfigurationError("Unable to resolve method '" + name + "' for given target object");
