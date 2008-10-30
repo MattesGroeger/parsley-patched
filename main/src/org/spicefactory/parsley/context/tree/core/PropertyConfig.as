@@ -203,7 +203,6 @@ public class PropertyConfig
 			} else {
 				prop.setValue(obj, propValue);
 			}
-			// TODO - 1.1.0 - how to handle dynamic objects?
 		}
 	}
 	
