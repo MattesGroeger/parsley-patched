@@ -161,7 +161,6 @@ public class FactoryConfig
 				ids.push(entry.key);
 			}
 		}
-		// TODO - 1.0.1 - cache Array
 		return ids;
 	}
 	
@@ -172,14 +171,6 @@ public class FactoryConfig
 	 * @param fc the factory configuration to merge with this one
 	 */
 	public function merge (fc:FactoryConfig) : void {
-		// TODO - 1.1.0 - maybe use context_internal namespace for merge and process functions
-		/*
-		var keys:Array = fc._objectFactoryConfigs.keys;
-		for (var i:Number = 0; i < keys.length; i++) {
-			var config:RootObjectFactoryConfig = RootObjectFactoryConfig(fc._objectFactoryConfigs.get(keys[i]));
-			addChildConfig(config);
-		}
-		*/
 		_nodes = _nodes.concat(fc._nodes);
 	}
 
