@@ -392,11 +392,6 @@ public class DefaultObjectFactoryConfig
 							throw new ConfigurationError(msg);
 						}
 						prop2.setValue(obj, _context.getObject(candidates[0]));
-					} else {
-						// TODO - 1.0.1 - handle missing dependency - warning or error?
-						//var msg:String = "Autowire: No objects of type " + getQualifiedClassName(type) 
-								//+ " registered for autowired property " + prop2.name;
-							//_logger.warn(msg);
 					}
 				}	
 			}
