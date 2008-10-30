@@ -23,7 +23,6 @@ public class ApplicationContextParserTest extends TestCase {
 	private var _parserError:String;
 	private var _context:ApplicationContext;
 	
-	// TODO - remove all these:
 	protected var _complete:Boolean;
 	private var _error:Boolean;	
 	private var _callback:Function;
