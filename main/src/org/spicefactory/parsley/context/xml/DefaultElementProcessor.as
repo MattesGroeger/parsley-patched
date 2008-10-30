@@ -288,7 +288,7 @@ public class DefaultElementProcessor implements ElementProcessor {
 			) : void {
 		for each (var child:XML in children) {
 			var childConfig:ChildConfig = getChildConfig(child);
-			var childObj:ElementConfig = childConfig.createChild(context, child); // TODO - 1.0.1 - handle errors
+			var childObj:ElementConfig = childConfig.createChild(context, child);
 			childObj.parse(child, context);
 			var methodName:String = null;
 			var propertyName:String = null;
