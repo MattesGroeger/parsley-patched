@@ -57,7 +57,6 @@ public class Attribute {
 				return _config.defaultValue;
 			} else {
 				if (_config.required) {
-					// TODO - 1.0.1 - include tag info
 					throw new ConfigurationError("Attribute with name '" + _config.name + "' is required");
 				} else {
 					return undefined;
