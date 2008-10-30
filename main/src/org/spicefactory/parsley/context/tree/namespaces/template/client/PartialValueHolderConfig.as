@@ -56,7 +56,6 @@ public class PartialValueHolderConfig
 	public function get value () : * {
 		var arr:Array = getArray();
 		if (arr.length != 1) {
-			// TODO - 1.0.1 - why is this check necessary?
 			throw new ConfigurationError("Expected exactly one child");
 		}
 		return arr[0];
