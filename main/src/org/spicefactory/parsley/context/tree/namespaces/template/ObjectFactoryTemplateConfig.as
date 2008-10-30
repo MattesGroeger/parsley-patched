@@ -76,7 +76,6 @@ public class ObjectFactoryTemplateConfig
 	public function buildRootObjectFactoryConfig() : RootObjectFactoryConfig {
 		var ChildConfigClass:Class = RequiredChildConfig;
 		var childProcessor:ElementConfig = (ChildConfigClass != null) ? new ChildConfigClass() : null;
-		// TODO - 1.1.0 - check behaviour if template client tags have children in case of ChildConfigClass == null
 		return new RootFactoryTemplateClientConfig (
 			_objectFactoryConfigWrapper.getObjectFactoryConfig(), 
 			_factoryMetadataConfig, 
