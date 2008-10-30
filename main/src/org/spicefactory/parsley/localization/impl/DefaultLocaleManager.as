@@ -135,7 +135,6 @@ public class DefaultLocaleManager extends EventDispatcher implements LocaleManag
 	private function onError (evt:ErrorEvent) : void {
 		_logger.error("Error loading MessageSource: " + evt.text);
 		_switching = false;
-		// TODO - 1.0.1 - check if same event instance can be dispatched (check if target is set accordingly)
 		dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, evt.text));
 	}
 	
