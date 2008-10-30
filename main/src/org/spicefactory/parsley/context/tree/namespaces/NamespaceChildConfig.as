@@ -47,7 +47,7 @@ public class NamespaceChildConfig implements ChildConfig {
 	 * @inheritDoc
 	 */
 	public function get name () : String {
-		return "[custom namespace tag]"; // TODO - 1.1.0 - maybe this can be improved?
+		return "[custom namespace tag]";
 	}
 	
 	/**
