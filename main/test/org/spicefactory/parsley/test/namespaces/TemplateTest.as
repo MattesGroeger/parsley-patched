@@ -515,51 +515,6 @@ public class TemplateTest extends ApplicationContextParserTest {
 		assertEquals("Unexpected event count", 4, action.executionCount);
 	}
 	
-	/*
-	 * TODO - this fails 
-	public function testCustomTagWithinTemplate () : void {
-		var c:FrontController = new FrontController(true);
-		var xml:XML = <application-context 
-			xmlns="http://www.spicefactory.org/parsley/1.0"
-			xmlns:test="urn:parsley.unitTest"
-			xmlns:mvc="http://www.spicefactory.org/parsley/1.0/mvc"
-			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd http://www.spicefactory.org/parsley/1.0/mvc http://www.spicefactory.org/parsley/schema/1.0/parsley-mvc.xsd"
-			>
-			<setup>
-		    	<namespaces>
-		    	    <namespace uri="urn:parsley.unitTest">
-		    	        <factory-template tag-name="test">
-		    	        	<factory-metadata id="${@id}"/>
-		    	        	<object type="org.spicefactory.parsley.test.mvc.MockAction">
-								<mvc:action/>		    	        	
-		    	        	</object>
-		    	        </factory-template>
-		    	    </namespace>
-		    	</namespaces>
-		    </setup>
-    		<factory>
-    		    <test:test id="foo"/>
-    		</factory>
-    	</application-context>;
-    	var f:Function = function (parser:ApplicationContextParser) : void {
-    		parser.addXml(MvcNamespaceXml.config);
-    	};
-		var context:ApplicationContext = parseForContext2("mvc", xml, false, false, null, f);
-		assertEquals("Unexpected object count", 1, context.objectCount);
-		
-		var action:MockAction = MockAction(context.getObject("foo"));
-		
-		FrontController.root.dispatchEvent(new MockEvent("eventType1"));
-		FrontController.root.dispatchEvent(new MockEvent("eventType2"));
-		FrontController.root.dispatchEvent(new ApplicationEvent("eventType1"));
-		FrontController.root.dispatchEvent(new ApplicationEvent("eventType2"));
-		
-		assertEquals("Unexpected event count", 4, action.executionCount);
-	}
-	 * 
-	 */
-	
 	
 }
 
