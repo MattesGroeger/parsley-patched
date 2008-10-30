@@ -141,7 +141,6 @@ public class ListenerConfig
 				+ " does not implement IEventDispatcher");
 		}
 		if (!(obj[method] is Function)) {
-			// TODO - 1.1.0 - reflect for matching method signature?
 			throw new ConfigurationError("Unable to resolve method '" + method 
 				+ "' for given target object");
 		}
