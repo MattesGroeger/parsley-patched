@@ -201,7 +201,6 @@ public class ApplicationContextParser extends Task {
 	 * The initial <code>Locale</code> to use when processing the <code>ApplicationContext</code>.
 	 */
 	public function get locale () : Locale {
-		// TODO - 1.0.1 - doc other means the locale can be determined
 		return _locale;
 	}
 	public function set locale (loc:Locale) : void {
