@@ -192,8 +192,8 @@ public class DefaultLocaleManager extends EventDispatcher implements LocaleManag
 	 */
 	public function addSupportedLocale (loc:Locale) : void {
 		_supportedLocales[LocaleUtil.getSuffix(loc)] = loc;
-		/* TODO - 1.0.1 - would this make sense?
-		if (loc.getCountry() != "") {
+		/* TODO - 1.0.3 - would this make sense?
+		if (loc.getCountry() != "" && loc.getLanguage() != "") {
 			_supportedLocales[loc.getLanguage()] = new Locale(loc.getLanguage(), "");
 		} */
 	}

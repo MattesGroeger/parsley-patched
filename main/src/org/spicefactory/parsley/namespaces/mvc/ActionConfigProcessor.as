@@ -87,8 +87,8 @@ public class ActionConfigProcessor extends AbstractElementConfig implements Obje
 		var eventName:String = getAttributeValue("eventName") as String;
 		var method:String = getAttributeValue("method") as String;
 		var controllerId:String = getAttributeValue("controller") as String;
-		// TODO - 1.0.1 - early check if eventClass extends ApplicationEvent
-		// TODO - 1.0.1 - early check if object with specified id implements Action if method == null
+		// TODO - 1.0.3 - early check if eventClass extends ApplicationEvent
+		// TODO - 1.0.3 - early check if object with specified id implements Action if method == null
 		
 		var eventType:Class = (eventClass != null) ? eventClass.getClass() : null;
 		var action:Action = new ApplicationContextAction(context, config.id, method);

@@ -85,8 +85,8 @@ public class InterceptorConfigProcessor extends AbstractElementConfig implements
 		var eventClass:ClassInfo = getAttributeValue("eventClass") as ClassInfo;
 		var eventName:String = getAttributeValue("eventName") as String;
 		var controllerId:String = getAttributeValue("controller") as String;
-		// TODO - 1.0.1 - early check if eventClass extends ApplicationEvent
-		// TODO - 1.0.1 - check if object with specified id implements ActionInterceptor
+		// TODO - 1.0.3 - early check if eventClass extends ApplicationEvent
+		// TODO - 1.0.3 - check if object with specified id implements ActionInterceptor
 		
 		var eventType:Class = (eventClass != null) ? eventClass.getClass() : null;
 		var ic:ActionInterceptor = new ApplicationContextInterceptor(context, config.id);

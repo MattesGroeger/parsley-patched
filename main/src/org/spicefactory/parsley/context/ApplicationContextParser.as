@@ -232,7 +232,7 @@ public class ApplicationContextParser extends Task {
 	 * @param filename the name of the file to be loaded
 	 */
 	public function addFile (filename:String) : void {
-		// TODO - 1.0.1 - check state
+		// TODO - 1.0.3 - check state
 		_files.push(filename);
 	}
 	
@@ -244,7 +244,7 @@ public class ApplicationContextParser extends Task {
 	 * @param xml the XML object to add to the list of XML objects to be processed
 	 */
 	public function addXml (xml:XML) : void {
-		// TODO - 1.0.1 - check state
+		// TODO - 1.0.3 - check state
 		_xml.push(xml);
 	}
 	

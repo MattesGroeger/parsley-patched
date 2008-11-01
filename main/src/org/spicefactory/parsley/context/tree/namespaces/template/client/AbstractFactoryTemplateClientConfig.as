@@ -78,7 +78,7 @@ public class AbstractFactoryTemplateClientConfig
 	 * @inheritDoc
 	 */
 	public function parse (node : XML, context : ApplicationContext) : void {
-		_context = context; // TODO - 1.1.0 - should be obsolete with ApplicationContextAware
+		_context = context; // TODO - 1.0.3 - should be obsolete with ApplicationContextAware
 		attributes = new Dictionary();
 		var attr:XMLList = node.attributes();
 		for each (var at:XML in attr) {
