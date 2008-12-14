@@ -142,7 +142,9 @@ public class DefaultMessageSource implements MessageSourceSpi {
 			var ms:MessageSourceSpi = MessageSourceSpi(_children.get(i));
 			ms.addBundleLoaders(loc, chain);
 		}
-		chain.addEventListener(TaskEvent.COMPLETE, onLoad);
+		/* setting priority to 1 since this listener must be processed before the
+		   one that leads to the COMPLETE event of the ApplicationContextParser */
+		chain.addEventListener(TaskEvent.COMPLETE, onLoad, false, 1); 
 	}
 	
 	private function onLoad (event:TaskEvent) : void {
