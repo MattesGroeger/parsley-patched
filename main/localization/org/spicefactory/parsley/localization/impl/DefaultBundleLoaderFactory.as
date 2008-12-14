@@ -18,7 +18,7 @@ package org.spicefactory.parsley.localization.impl {
 import org.spicefactory.lib.task.Task;
 import org.spicefactory.parsley.localization.Locale;
 import org.spicefactory.parsley.localization.spi.BundleLoaderFactory;
-import org.spicefactory.parsley.localization.spi.MessageBundleSpi;	
+import org.spicefactory.parsley.localization.spi.ResourceBundleSpi;	
 
 /**
  * Default implementation of the <code>BundleLoaderFactory</code> interface.
@@ -32,7 +32,7 @@ public class DefaultBundleLoaderFactory implements BundleLoaderFactory	{
 	/**
 	 * @inheritDoc
 	 */
-	public function createLoaderTask (bundle : MessageBundleSpi, loc : Locale, basename : String) : Task {
+	public function createLoaderTask (bundle : ResourceBundleSpi, loc : Locale, basename : String) : Task {
 		return new DefaultBundleLoader(bundle, loc, basename);
 	}
 	

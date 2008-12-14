@@ -22,7 +22,7 @@ import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.task.Task;
 import org.spicefactory.lib.task.events.TaskEvent;
 import org.spicefactory.parsley.localization.Locale;
-import org.spicefactory.parsley.localization.MessageBundle;
+import org.spicefactory.parsley.localization.ResourceBundle;
 import org.spicefactory.parsley.util.XmlLoaderTask;
 
 /**
@@ -37,7 +37,7 @@ public class DefaultBundleLoader extends Task {
 	
 	
 	private var _filename:String;
-	private var _bundle:MessageBundle;
+	private var _bundle:ResourceBundle;
 	private var _locale:Locale;
 	
 	private var _xmlLoader:XmlLoaderTask;
@@ -51,7 +51,7 @@ public class DefaultBundleLoader extends Task {
 	 * @param loc the Locale to add messages for
 	 * @param basename the basename of files containing localized messages for that bundle
 	 */
-	public function DefaultBundleLoader (bundle:MessageBundle, loc:Locale, basename:String) {
+	public function DefaultBundleLoader (bundle:ResourceBundle, loc:Locale, basename:String) {
 		if (_logger == null) {
 			_logger = LogContext.getLogger("org.spicefactory.parsley.localization.impl.DefaultBundleLoader");
 		}

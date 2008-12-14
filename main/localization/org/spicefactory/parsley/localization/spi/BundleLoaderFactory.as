@@ -35,7 +35,7 @@ public interface BundleLoaderFactory {
 	 * @param loc the Locale to add messages for
 	 * @param basename the basename of files containing localized messages for that bundle
 	 */
-	function createLoaderTask (bundle:MessageBundleSpi, loc:Locale, basename:String) : Task;		
+	function createLoaderTask (bundle:ResourceBundleSpi, loc:Locale, basename:String) : Task;		
 		
 }
 	

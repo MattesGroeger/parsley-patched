@@ -17,14 +17,14 @@
 package org.spicefactory.parsley.localization.spi {
 import org.spicefactory.lib.task.TaskGroup;
 import org.spicefactory.parsley.localization.Locale;
-import org.spicefactory.parsley.localization.MessageBundle;	
+import org.spicefactory.parsley.localization.ResourceBundle;	
 
 /**	
  * Service provider interface that extends the public <code>MessageBundle</code> interface.
  * 
  * @author Jens Halm
  */
-public interface MessageBundleSpi extends MessageBundle {
+public interface ResourceBundleSpi extends ResourceBundle {
 
 	/**
 	 * Called once after this message bundle was instantiated.

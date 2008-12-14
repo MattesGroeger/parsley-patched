@@ -34,12 +34,12 @@ import flash.events.IEventDispatcher;
 
 /**
  * The central manager for all internationalization features.
- * Usually there is always at most one active <code>LocaleManager</code> instance in 
+ * Usually there is always at most one active <code>ResourceManager</code> instance in 
  * an application.
  * 
  * @author Jens Halm
  */
-public interface LocaleManager extends IEventDispatcher {
+public interface ResourceManager extends IEventDispatcher {
 	
 	/**
 	 * Indicates whether the current <code>Locale</code> will be stored
@@ -50,6 +50,15 @@ public interface LocaleManager extends IEventDispatcher {
 	
 	function set persistent (persistent:Boolean) : void ;
 
+	/**
+	 * Indicates whether bundles managed by this instance should be cached.
+	 * If this property is set to false all bundles will be reloaded each time
+	 * the current <code>Locale</code> is switched.
+	 */
+	function get cacheable () : Boolean;
+	
+	function set cacheable (cacheable:Boolean) : void;
+	
 	/**
 	 * The currently active <code>Locale</code>.
 	 */
@@ -85,6 +94,21 @@ public interface LocaleManager extends IEventDispatcher {
 	function get defaultLocale () : Locale ;
 
 	function set defaultLocale (loc:Locale) : void ;
+	
+	/**
+	 * Returns the message bundle for the specified id.
+	 * If the id parameter is omitted the default bundle will be returned.
+	 * 
+	 * @param bundleId the id of the message bundle
+	 * @return the message bundle with the specified id or null if no such bundle exists
+	 */
+	function getBundle (bundleId:String = null) : ResourceBundle;
+	
+	/**
+	 * @copy org.spicefactory.parsley.context.ApplicationContext#getMessage()
+	 */
+	function getMessage (messageKey:String, bundleId:String = null, params:Array = null) : String;
+		
 	
 }
 	

@@ -15,38 +15,45 @@
  */
  
 package org.spicefactory.parsley.localization {
-
-/**	
- * The central repository for localized messages. 
- * Manages multiple <code>MessageBundle</code> instances.
+	
+/**
+ * A single message bundle containing localized messages.
  * 
  * @author Jens Halm
  */
-public interface MessageSource {
+public interface ResourceBundle {
 	
 	/**
-	 * Indicates whether bundles managed by this instance should be cached.
+	 * The id of the bundle.
+	 */
+	function get id () : String;
+	
+	/**
+	 * Indicates whether this bundle caches messages.
 	 * If this property is set to false all bundles will be reloaded each time
 	 * the current <code>Locale</code> is switched.
 	 */
 	function get cacheable () : Boolean;
-	
+
 	function set cacheable (cacheable:Boolean) : void;
 	
 	/**
-	 * Returns the message bundle for the specified id.
-	 * If the id parameter is omitted the default bundle will be returned.
+	 * Adds messages for the specified <code>Locale</code>.
 	 * 
-	 * @param bundleId the id of the message bundle
-	 * @return the message bundle with the specified id or null if no such bundle exists
+	 * @param loc the Locale the specified messages belong to
+	 * @param the messages to add to this bundle
 	 */
-	function getBundle (bundleId:String = null) : MessageBundle;
+	function addMessages (loc:Locale, messages:Object) : void;
 	
 	/**
-	 * @copy org.spicefactory.parsley.context.ApplicationContext#getMessage()
+	 * Returns a localized message for the specified key.
+	 * 
+	 * @param messageKey the key of the message
+	 * @param params optional parameters for parameterized messages
+	 * @return the localized message for the specified key with all parameters applied
 	 */
-	function getMessage (messageKey:String, bundleId:String = null, params:Array = null) : String;
-		
+	function getMessage (messageKey:String, params:Array) : String;	
+	
 }
-
+	
 }

@@ -16,7 +16,7 @@
  
 package org.spicefactory.parsley.localization.impl {
 import org.spicefactory.lib.task.TaskGroup;	
-import org.spicefactory.parsley.localization.spi.MessageBundleSpi;
+import org.spicefactory.parsley.localization.spi.ResourceBundleSpi;
 import org.spicefactory.parsley.localization.spi.BundleLoaderFactory;
 import org.spicefactory.parsley.localization.Locale;
 	
@@ -25,7 +25,7 @@ import org.spicefactory.parsley.localization.Locale;
  * 
  * @author Jens Halm
  */
-public class DefaultMessageBundle implements MessageBundleSpi {
+public class DefaultResourceBundle implements ResourceBundleSpi {
 
 	private var _loaderFactory:BundleLoaderFactory;
 	

@@ -15,33 +15,33 @@
  */
  
 package org.spicefactory.parsley.localization.impl {
-import org.spicefactory.lib.errors.IllegalArgumentError;
+	import org.spicefactory.lib.errors.IllegalArgumentError;
+	import org.spicefactory.lib.errors.IllegalStateError;
+	import org.spicefactory.lib.logging.LogContext;
+	import org.spicefactory.lib.logging.Logger;
+	import org.spicefactory.lib.task.SequentialTaskGroup;
+	import org.spicefactory.lib.task.TaskGroup;
+	import org.spicefactory.lib.task.events.TaskEvent;
+	import org.spicefactory.lib.util.collection.ArrayList;
+	import org.spicefactory.lib.util.collection.List;
+	import org.spicefactory.parsley.localization.Locale;
+	import org.spicefactory.parsley.localization.ResourceBundle;
+	import org.spicefactory.parsley.localization.events.LocaleSwitchEvent;
+	import org.spicefactory.parsley.localization.spi.ResourceBundleSpi;
+	import org.spicefactory.parsley.localization.spi.ResourceManagerSpi;
+	
+	import flash.events.ErrorEvent;
+	import flash.events.EventDispatcher;
+	import flash.net.SharedObject;
+	import flash.sampler.getSize;
+	import flash.system.Capabilities;
 
-import flash.events.ErrorEvent;
-import flash.events.EventDispatcher;
-import flash.net.SharedObject;
-import flash.system.Capabilities;
-
-import org.spicefactory.lib.errors.IllegalStateError;
-import org.spicefactory.lib.logging.LogContext;
-import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.lib.task.SequentialTaskGroup;
-import org.spicefactory.lib.task.TaskGroup;
-import org.spicefactory.lib.task.events.TaskEvent;
-import org.spicefactory.parsley.context.ApplicationContext;
-import org.spicefactory.parsley.context.ApplicationContextParser;
-import org.spicefactory.parsley.context.ns.context_internal;
-import org.spicefactory.parsley.localization.Locale;
-import org.spicefactory.parsley.localization.events.LocaleSwitchEvent;
-import org.spicefactory.parsley.localization.spi.LocaleManagerSpi;
-import org.spicefactory.parsley.localization.spi.MessageSourceSpi;
-
-/**
+	/**
  * Default implementation of the <code>LocaleManagerSpi</code> interface.
  * 
  * @author Jens Halm
  */
-public class DefaultLocaleManager extends EventDispatcher implements LocaleManagerSpi {
+public class DefaultResourceManager extends EventDispatcher implements ResourceManagerSpi {
 	
 	private var _initialized:Boolean;
 	private var _switching:Boolean;
@@ -58,7 +58,7 @@ public class DefaultLocaleManager extends EventDispatcher implements LocaleManag
 	/**
 	 * Creates a new instance.
 	 */
-	function DefaultLocaleManager () {
+	function DefaultResourceManager () {
 		if (_logger == null) {
 			_logger = LogContext.getLogger("org.spicefactory.parsley.localization.impl.DefaultLocaleManager");
 		}
@@ -107,7 +107,7 @@ public class DefaultLocaleManager extends EventDispatcher implements LocaleManag
 			contexts = contexts.concat(ApplicationContextParser.context_internal::getContextsUnderConstruction());
 			for (var i:Number = 0; i < contexts.length; i++) {
 				var context:ApplicationContext = contexts[i];
-				var ms:MessageSourceSpi = MessageSourceSpi(context.messageSource);
+				var ms:ResourceManagerSpi = ResourceManagerSpi(context.messageSource);
 				ms.addBundleLoaders(_nextLocale, group);
 			}
 			group.addEventListener(TaskEvent.COMPLETE, onComplete);
@@ -257,6 +257,136 @@ public class DefaultLocaleManager extends EventDispatcher implements LocaleManag
 			}
 		}
 	}	
+	
+	
+	// old MessageSource implementation
+	
+	private var _cacheable:Boolean;
+	
+	private var _defaultBundle:ResourceBundleSpi;
+	private var _bundles:Object;
+	
+	private var _children:List;
+	private var _parent:ResourceManagerSpi;	
+	
+	
+	/**
+	 * Creates a new instance.
+	 */
+	public function DefaultMessageSource () {
+		if (_logger == null) {
+			_logger = LogContext.getLogger("org.spicefactory.parsley.localization.DefaultMessageSource");
+		}
+		_defaultBundle = new DefaultResourceBundle();
+		_bundles = new Object();
+		_children = new ArrayList();
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function addChild (ms:ResourceManagerSpi) : void {
+		_children.append(ms);	
+	}
+	
+	public function set parent (ms:ResourceManagerSpi) : void {
+		_parent = ms;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get parent () : ResourceManagerSpi {
+		return _parent;
+	}
+	
+	public function set cacheable (cacheable:Boolean) : void {
+		_cacheable = cacheable;
+		for each (var bundle:ResourceBundle in _bundles) {
+			bundle.cacheable = cacheable;
+		}
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get cacheable () : Boolean {
+		return _cacheable;
+	}
+	
+	public function set defaultBundle (bundle:ResourceBundleSpi) : void {
+		addBundle(bundle);
+		_defaultBundle = bundle;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get defaultBundle () : ResourceBundleSpi {
+		return _defaultBundle;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function addBundle (bundle:ResourceBundleSpi) : void {
+		bundle.cacheable = _cacheable;
+		_bundles[bundle.id] = bundle;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function getBundle (bundleId:String = null) : ResourceBundle {
+		if (bundleId == null) {
+			return _defaultBundle;
+		} else {
+			return ResourceBundle(_bundles[bundleId]);
+		}
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function getMessage (messageKey:String, bundleId:String = null, params:Array = null) : String {
+		params = (params == null) ? new Array() : params ;
+		var bundle:ResourceBundle = getBundle(bundleId);
+		if (bundle == null) {
+			return (_parent == null) ? null : _parent.getMessage(messageKey, bundleId, params);
+		}
+		return bundle.getMessage(messageKey, params);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function addBundleLoaders (loc:Locale, chain : TaskGroup) : void {
+		for each (var bundle:ResourceBundleSpi in _bundles) {
+			bundle.addLoaders(loc, chain);
+		}
+		for (var i:Number = 0; i < _children.getSize(); i++) {
+			var ms:ResourceManagerSpi = ResourceManagerSpi(_children.get(i));
+			ms.addBundleLoaders(loc, chain);
+		}
+		/* setting priority to 1 since this listener must be processed before the
+		   one that leads to the COMPLETE event of the ApplicationContextParser */
+		chain.addEventListener(TaskEvent.COMPLETE, onLoad, false, 1); 
+	}
+	
+	private function onLoad (event:TaskEvent) : void {
+		for each (var bundle:ResourceBundleSpi in _bundles) {
+			bundle.applyNewMessages();
+		}
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function destroy () : void {
+		for each (var bundle:ResourceBundleSpi in _bundles) {
+			bundle.destroy();
+		}
+	}
 	
 }
 

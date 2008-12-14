@@ -15,30 +15,38 @@
  */
  
 package org.spicefactory.parsley.localization.spi {
-import org.spicefactory.lib.task.TaskGroup;
-import org.spicefactory.parsley.localization.Locale;
-import org.spicefactory.parsley.localization.MessageSource;	
+	import org.spicefactory.lib.task.TaskGroup;
+	import org.spicefactory.parsley.localization.Locale;
+	import org.spicefactory.parsley.localization.ResourceManager;	
 
-/**	
- * Service provider interface that extends the public <code>MessageSource</code> interface.
+	/**	
+ * Service provider interface that extends the public <code>LocaleManager</code> interface.
  * 
  * @author Jens Halm
  */
-public interface MessageSourceSpi extends MessageSource {
-		
+public interface ResourceManagerSpi extends ResourceManager {
+	
+	/**
+	 * Initializes the <code>LocaleManager</code>. Will be called once at application startup when
+	 * the first Parsley <code>ApplicationContext</code> is initialized.
+	 * 
+	 * @param loc the initial <code>Locale</code> to use.
+	 */	
+	function initialize (loc:Locale = null) : void ;
+
 	/**
 	 * The default <code>MessageBundle</code> for this instance.
 	 */
-	function get defaultBundle () : MessageBundleSpi;
+	function get defaultBundle () : ResourceBundleSpi;
 	
-	function set defaultBundle (bundle:MessageBundleSpi) : void;
+	function set defaultBundle (bundle:ResourceBundleSpi) : void;
 	
 	/**
 	 * Adds a message bundle to this instance.
 	 * 
 	 * @param bundle the message bundle to add to this instance
 	 */
-	function addBundle (bundle:MessageBundleSpi) : void;
+	function addBundle (bundle:ResourceBundleSpi) : void;
 	
 	/**
 	 * Adds a child <code>MessageSourceSpi</code> instance.
@@ -47,16 +55,16 @@ public interface MessageSourceSpi extends MessageSource {
 	 * 
 	 * @param ms the message source to add as a child
 	 */
-	function addChild (ms:MessageSourceSpi) : void ;
+	function addChild (ms:ResourceManagerSpi) : void ;
 
 	/**
 	 * The parent <code>MessageSourceSpi</code> instance.
 	 * This usually corresponds to the parent-child hierarchy of <code>ApplicationContext</code>
 	 * instances.
 	 */	
-	function get parent () : MessageSourceSpi ;
+	function get parent () : ResourceManagerSpi ;
 	
-	function set parent (ms:MessageSourceSpi) : void ;
+	function set parent (ms:ResourceManagerSpi) : void ;
 	
 	/**
 	 * Invoked when the current <code>Locale</code> is switched.
@@ -74,7 +82,7 @@ public interface MessageSourceSpi extends MessageSource {
 	 * when this method is invoked.
 	 */
 	function destroy () : void;	
-		
+	
 }
-
+	
 }
