@@ -254,6 +254,59 @@ public class LocalizationTest extends ApplicationContextParserTest {
 		assertEquals("Unexpected message", "Text A", context.getMessage("a", "a_text"));
 		assertEquals("Unexpected message", "Text B", context.getMessage("b", "b_text"));
 	}
+	
+	public function testBundleInChildContext () : void {
+		ApplicationContext.context_internal::setLocaleManager(null);
+		var xmlParent:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
+			<setup>
+				<localization>
+					<locale-manager>
+						<locale language="de" country="DE"/>
+					</locale-manager>
+					<message-source>
+						<message-bundle id="a_text" basename="textA" localized="true" ignore-country="true"/>
+					</message-source>
+				</localization>
+			</setup>
+		</application-context>;
+    	var f:Function = addAsync(onTestBundleInChildContext1, 3000);		
+		var parser:ApplicationContextParser = new ApplicationContextParser("twoBundlesParent");
+		parser.addXml(xmlParent);
+		parser.addEventListener(ErrorEvent.ERROR, onUnexpectedContextError);
+		parser.addEventListener(TaskEvent.COMPLETE, f);
+		parser.start();
+	}
+	
+	private function onTestBundleInChildContext1 (event:TaskEvent) : void {
+		var xmlChild:XML = <application-context xmlns="http://www.spicefactory.org/parsley/1.0"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0 http://www.spicefactory.org/parsley/schema/1.0/parsley-context.xsd">
+			<setup>
+				<localization>
+					<message-source>
+						<message-bundle id="b_text" basename="textB" localized="true" ignore-country="true"/>
+					</message-source>
+				</localization>
+			</setup>
+		</application-context>;
+		var parent:ApplicationContext = ApplicationContextParser(event.target).applicationContext;
+   		var f:Function = addAsync(onTestBundleInChildContext2, 3000);		
+		var parser:ApplicationContextParser = new ApplicationContextParser("twoBundlesChild");
+		parser.parentContext = parent;
+		parser.addXml(xmlChild);
+		parser.addEventListener(ErrorEvent.ERROR, onUnexpectedContextError);
+		parser.addEventListener(TaskEvent.COMPLETE, f);
+		parser.start();		
+	}
+	
+	private function onTestBundleInChildContext2 (event:TaskEvent) : void {
+		var parser:ApplicationContextParser = ApplicationContextParser(event.target);
+		var context:ApplicationContext = parser.applicationContext;
+		assertEquals("Unexpected message", "Text A", context.getMessage("a", "a_text"));
+		assertEquals("Unexpected message", "Text B", context.getMessage("b", "b_text"));
+	}
 
 		
 }
