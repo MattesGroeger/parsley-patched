@@ -15,27 +15,25 @@
  */
  
 package org.spicefactory.parsley.localization.impl {
-	import org.spicefactory.lib.errors.IllegalArgumentError;
-	import org.spicefactory.lib.errors.IllegalStateError;
-	import org.spicefactory.lib.logging.LogContext;
-	import org.spicefactory.lib.logging.Logger;
-	import org.spicefactory.lib.task.SequentialTaskGroup;
-	import org.spicefactory.lib.task.TaskGroup;
-	import org.spicefactory.lib.task.events.TaskEvent;
-	import org.spicefactory.lib.util.collection.ArrayList;
-	import org.spicefactory.lib.util.collection.List;
-	import org.spicefactory.parsley.localization.Locale;
-	import org.spicefactory.parsley.localization.ResourceBundle;
-	import org.spicefactory.parsley.localization.events.LocaleSwitchEvent;
-	import org.spicefactory.parsley.localization.spi.ResourceBundleSpi;
-	import org.spicefactory.parsley.localization.spi.ResourceManagerSpi;
-	
-	import flash.events.ErrorEvent;
-	import flash.events.EventDispatcher;
-	import flash.net.SharedObject;
-	import flash.system.Capabilities;
+import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.lib.errors.IllegalStateError;
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.lib.task.SequentialTaskGroup;
+import org.spicefactory.lib.task.TaskGroup;
+import org.spicefactory.lib.task.events.TaskEvent;
+import org.spicefactory.parsley.localization.Locale;
+import org.spicefactory.parsley.localization.ResourceBundle;
+import org.spicefactory.parsley.localization.events.LocaleSwitchEvent;
+import org.spicefactory.parsley.localization.spi.ResourceBundleSpi;
+import org.spicefactory.parsley.localization.spi.ResourceManagerSpi;
 
-	/**
+import flash.events.ErrorEvent;
+import flash.events.EventDispatcher;
+import flash.net.SharedObject;
+import flash.system.Capabilities;	
+
+/**
  * Default implementation of the <code>LocaleManagerSpi</code> interface.
  * 
  * @author Jens Halm
@@ -316,7 +314,7 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	/**
 	 * @inheritDoc
 	 */
-	public function addBundleLoaders (loc:Locale, chain : TaskGroup) : void {
+	private function addBundleLoaders (loc:Locale, chain : TaskGroup) : void {
 		for each (var bundle:ResourceBundleSpi in _bundles) {
 			bundle.addLoaders(loc, chain);
 		}
