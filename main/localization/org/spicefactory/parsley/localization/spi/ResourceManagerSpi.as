@@ -15,11 +15,10 @@
  */
  
 package org.spicefactory.parsley.localization.spi {
-	import org.spicefactory.lib.task.TaskGroup;
-	import org.spicefactory.parsley.localization.Locale;
-	import org.spicefactory.parsley.localization.ResourceManager;	
+import org.spicefactory.parsley.localization.Locale;
+import org.spicefactory.parsley.localization.ResourceManager;	
 
-	/**	
+/**	
  * Service provider interface that extends the public <code>LocaleManager</code> interface.
  * 
  * @author Jens Halm
@@ -66,16 +65,6 @@ public interface ResourceManagerSpi extends ResourceManager {
 	
 	function set parent (ms:ResourceManagerSpi) : void ;
 	
-	/**
-	 * Invoked when the current <code>Locale</code> is switched.
-	 * The implementation is expected to add the Tasks required to load all bundles for the
-	 * new <code>Locale</code> to the specified <code>TaskGroup</code>.
-	 * 
-	 * @param loc the next active <code>Locale</code>
-	 * @param group a TaskGroup to add the Tasks required to load all bundles to
-	 */
-	function addBundleLoaders (loc : Locale, group : TaskGroup) : void;
-
 	/**
 	 * Called when the <code>ApplicationContext</code> this message source belongs to gets
 	 * destroyed. Implementations should remove all references to any loaded message bundles

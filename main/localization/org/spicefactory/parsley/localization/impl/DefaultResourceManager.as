@@ -345,10 +345,12 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 		for each (var bundle:ResourceBundleSpi in _bundles) {
 			bundle.addLoaders(loc, chain);
 		}
+		/*
 		for (var i:Number = 0; i < _children.getSize(); i++) {
 			var ms:ResourceManagerSpi = ResourceManagerSpi(_children.get(i));
 			ms.addBundleLoaders(loc, chain);
 		}
+		 */
 		/* setting priority to 1 since this listener must be processed before the
 		   one that leads to the COMPLETE event of the ApplicationContextParser */
 		chain.addEventListener(TaskEvent.COMPLETE, onLoad, false, 1); 
