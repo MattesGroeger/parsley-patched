@@ -55,9 +55,6 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	private var _defaultBundle:ResourceBundleSpi;
 	private var _bundles:Object;
 	
-	private var _children:List;
-	private var _parent:ResourceManagerSpi;	
-
 	
 	private static const _logger:Logger = LogContext.getLogger(DefaultResourceManager);
 	
@@ -71,7 +68,6 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 		_supportedLocales = new Object();
 		_defaultBundle = new DefaultResourceBundle();
 		_bundles = new Object();
-		_children = new ArrayList();
 	}
 	
 	/**
@@ -263,24 +259,6 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	// old MessageSource implementation ********************************************************************************
 	
 	
-	/**
-	 * @inheritDoc
-	 */
-	public function addChild (ms:ResourceManagerSpi) : void {
-		_children.append(ms);	
-	}
-	
-	public function set parent (ms:ResourceManagerSpi) : void {
-		_parent = ms;
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function get parent () : ResourceManagerSpi {
-		return _parent;
-	}
-	
 	public function set cacheable (cacheable:Boolean) : void {
 		_cacheable = cacheable;
 		for each (var bundle:ResourceBundle in _bundles) {
@@ -332,9 +310,6 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	public function getMessage (messageKey:String, bundleId:String = null, params:Array = null) : String {
 		params = (params == null) ? new Array() : params ;
 		var bundle:ResourceBundle = getBundle(bundleId);
-		if (bundle == null) {
-			return (_parent == null) ? null : _parent.getMessage(messageKey, bundleId, params);
-		}
 		return bundle.getMessage(messageKey, params);
 	}
 	
@@ -345,12 +320,6 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 		for each (var bundle:ResourceBundleSpi in _bundles) {
 			bundle.addLoaders(loc, chain);
 		}
-		/*
-		for (var i:Number = 0; i < _children.getSize(); i++) {
-			var ms:ResourceManagerSpi = ResourceManagerSpi(_children.get(i));
-			ms.addBundleLoaders(loc, chain);
-		}
-		 */
 		/* setting priority to 1 since this listener must be processed before the
 		   one that leads to the COMPLETE event of the ApplicationContextParser */
 		chain.addEventListener(TaskEvent.COMPLETE, onLoad, false, 1); 

@@ -48,24 +48,6 @@ public interface ResourceManagerSpi extends ResourceManager {
 	function addBundle (bundle:ResourceBundleSpi) : void;
 	
 	/**
-	 * Adds a child <code>MessageSourceSpi</code> instance.
-	 * This usually corresponds to the parent-child hierarchy of <code>ApplicationContext</code>
-	 * instances.
-	 * 
-	 * @param ms the message source to add as a child
-	 */
-	function addChild (ms:ResourceManagerSpi) : void ;
-
-	/**
-	 * The parent <code>MessageSourceSpi</code> instance.
-	 * This usually corresponds to the parent-child hierarchy of <code>ApplicationContext</code>
-	 * instances.
-	 */	
-	function get parent () : ResourceManagerSpi ;
-	
-	function set parent (ms:ResourceManagerSpi) : void ;
-	
-	/**
 	 * Called when the <code>ApplicationContext</code> this message source belongs to gets
 	 * destroyed. Implementations should remove all references to any loaded message bundles
 	 * when this method is invoked.
