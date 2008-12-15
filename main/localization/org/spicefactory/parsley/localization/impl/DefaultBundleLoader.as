@@ -15,15 +15,14 @@
  */
  
 package org.spicefactory.parsley.localization.impl {
-import flash.events.ErrorEvent;
-
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.task.Task;
 import org.spicefactory.lib.task.events.TaskEvent;
 import org.spicefactory.parsley.localization.Locale;
 import org.spicefactory.parsley.localization.ResourceBundle;
-import org.spicefactory.parsley.util.XmlLoaderTask;
+
+import flash.events.ErrorEvent;
 
 /**
  * The default bundle loader which loads localized messages from XML files.
