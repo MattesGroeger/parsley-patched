@@ -33,7 +33,6 @@ package org.spicefactory.parsley.localization.impl {
 	import flash.events.ErrorEvent;
 	import flash.events.EventDispatcher;
 	import flash.net.SharedObject;
-	import flash.sampler.getSize;
 	import flash.system.Capabilities;
 
 	/**
@@ -46,25 +45,33 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	private var _initialized:Boolean;
 	private var _switching:Boolean;
 	private var _persistent:Boolean;
+	private var _cacheable:Boolean;
 	
 	private var _defaultLocale:Locale;
 	private var _currentLocale:Locale;
 	private var _nextLocale:Locale;
 	private var _supportedLocales:Object;
 	
-	private static var _logger:Logger;
+	private var _defaultBundle:ResourceBundleSpi;
+	private var _bundles:Object;
+	
+	private var _children:List;
+	private var _parent:ResourceManagerSpi;	
+
+	
+	private static const _logger:Logger = LogContext.getLogger(DefaultResourceManager);
 	
 	
 	/**
 	 * Creates a new instance.
 	 */
 	function DefaultResourceManager () {
-		if (_logger == null) {
-			_logger = LogContext.getLogger("org.spicefactory.parsley.localization.impl.DefaultLocaleManager");
-		}
 		_initialized = false;
 		_switching = false;
 		_supportedLocales = new Object();
+		_defaultBundle = new DefaultResourceBundle();
+		_bundles = new Object();
+		_children = new ArrayList();
 	}
 	
 	/**
@@ -103,13 +110,7 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 			_nextLocale = loc;
 			_defaultLocale = null;
 			var group : TaskGroup = new SequentialTaskGroup("TaskGroup for switching Locale");
-			var contexts:Array = ApplicationContext.getAll();
-			contexts = contexts.concat(ApplicationContextParser.context_internal::getContextsUnderConstruction());
-			for (var i:Number = 0; i < contexts.length; i++) {
-				var context:ApplicationContext = contexts[i];
-				var ms:ResourceManagerSpi = ResourceManagerSpi(context.messageSource);
-				ms.addBundleLoaders(_nextLocale, group);
-			}
+			addBundleLoaders(_nextLocale, group);
 			group.addEventListener(TaskEvent.COMPLETE, onComplete);
 			group.addEventListener(ErrorEvent.ERROR, onError);
 			dispatchEvent(new LocaleSwitchEvent(LocaleSwitchEvent.START, _nextLocale));
@@ -259,28 +260,8 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	}	
 	
 	
-	// old MessageSource implementation
+	// old MessageSource implementation ********************************************************************************
 	
-	private var _cacheable:Boolean;
-	
-	private var _defaultBundle:ResourceBundleSpi;
-	private var _bundles:Object;
-	
-	private var _children:List;
-	private var _parent:ResourceManagerSpi;	
-	
-	
-	/**
-	 * Creates a new instance.
-	 */
-	public function DefaultMessageSource () {
-		if (_logger == null) {
-			_logger = LogContext.getLogger("org.spicefactory.parsley.localization.DefaultMessageSource");
-		}
-		_defaultBundle = new DefaultResourceBundle();
-		_bundles = new Object();
-		_children = new ArrayList();
-	}
 	
 	/**
 	 * @inheritDoc
