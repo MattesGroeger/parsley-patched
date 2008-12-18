@@ -26,8 +26,7 @@ import org.spicefactory.parsley.localization.ResourceManager;
 public interface ResourceManagerSpi extends ResourceManager {
 	
 	/**
-	 * Initializes the <code>LocaleManager</code>. Will be called once at application startup when
-	 * the first Parsley <code>ApplicationContext</code> is initialized.
+	 * Initializes the <code>ResourceManager</code>. Should be called once at application startup.
 	 * 
 	 * @param loc the initial <code>Locale</code> to use.
 	 */	
