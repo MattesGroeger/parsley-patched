@@ -22,7 +22,7 @@ import org.spicefactory.parsley.factory.ObjectPostProcessor;
  */
 public interface PostProcessorRegistry {
 	
-	function addPostProcessor (processor:ObjectPostProcessor) : PostProcessorRegistry;
+	function addPostProcessor (processor:ObjectPostProcessor, afterInit:Boolean = false) : PostProcessorRegistry;
 	
 	function removePostProcessor (processor:ObjectPostProcessor) : PostProcessorRegistry;
 	
