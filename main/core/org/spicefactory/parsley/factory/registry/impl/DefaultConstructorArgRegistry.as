@@ -15,55 +15,33 @@
  */
 
 package org.spicefactory.parsley.factory.registry.impl {
-import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.reflect.Constructor;
-import org.spicefactory.lib.reflect.Parameter;
-import org.spicefactory.parsley.factory.model.ObjectIdReference;
-import org.spicefactory.parsley.factory.model.ObjectTypeReference;
 import org.spicefactory.parsley.factory.registry.ConstructorArgRegistry;
 
 /**
  * @author Jens Halm
  */
-public class DefaultConstructorArgRegistry implements ConstructorArgRegistry {
-
-
-	private var args:Array = new Array();
-	private var con:Constructor;
+public class DefaultConstructorArgRegistry extends AbstractParameterRegistry implements ConstructorArgRegistry {
 
 
 	function DefaultConstructorArgRegistry (targetType:ClassInfo) {
-		this.con = targetType.getConstructor();
+		super(targetType.getConstructor());
 	}
 		
 	
 	public function addValue (value:*) : ConstructorArgRegistry {
-		args.push(value);
+		doAddValue(value);
 		return this;
 	}
 	
 	public function addIdReference (id:String, required:Boolean = true) : ConstructorArgRegistry {
-		args.push(new ObjectIdReference(id, required));		
+		doAddIdReference(id, required);
 		return this;
 	}
 	
 	public function addTypeReference (required:Boolean = true) : ConstructorArgRegistry {
-		if (args.length >= con.parameters.length) {
-			throw new IllegalArgumentError("Cannot determine target type for parameter at index"
-					+ args.length + " of constructor for class " + con.owner.name);
-		}
-		var type:ClassInfo = Parameter(con.parameters[args.length]).type;
-		args.push(new ObjectTypeReference(type, required));	
+		doAddTypeReference(required);
 		return this;
-	}
-	
-	public function getAt (index:uint) : * {
-		return args[index];	
-	}
-	
-	public function getAll () : Array {
-		return args.concat();
 	}
 	
 	
