@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.factory {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.parsley.factory.registry.InjectorMethodRegistry;
+import org.spicefactory.parsley.factory.registry.MethodRegistry;
 import org.spicefactory.parsley.factory.registry.ConstructorArgRegistry;
 import org.spicefactory.parsley.factory.registry.PostProcessorRegistry;
 import org.spicefactory.parsley.factory.registry.PropertyRegistry;
@@ -35,7 +35,7 @@ public interface ObjectDefinition {
 	
 	function get properties () : PropertyRegistry;
 	
-	function get injectorMethods () : InjectorMethodRegistry;
+	function get injectorMethods () : MethodRegistry;
 
 
 	function get postProcessors () : PostProcessorRegistry;	
