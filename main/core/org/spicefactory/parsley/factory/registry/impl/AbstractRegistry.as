@@ -24,17 +24,17 @@ import org.spicefactory.parsley.factory.ObjectDefinition;
 public class AbstractRegistry {
 	
 	
-	private var def:ObjectDefinition;
+	protected var definition:ObjectDefinition;
 	
 	
 	function AbstractRegistry (def:ObjectDefinition) {
-		this.def = def;
+		this.definition = def;
 	}
 	
 	
 	protected function checkState () : void {
-		if (def.frozen) {
-			throw new IllegalStateError("" + def + " is frozen");
+		if (definition.frozen) {
+			throw new IllegalStateError("" + definition + " is frozen");
 		}
 	}
 	
