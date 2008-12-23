@@ -21,11 +21,13 @@ package org.spicefactory.parsley.factory.registry {
  */
 public interface MethodRegistry {
 	
+	function addMethod (methodName:String) : MethodParameterRegistry;
+	
 	function addTypeReferences (methodName:String) : void;
 	
 	function removeMethod (methodName:String) : void;
 	
-	function getMethod (methodName:String) : Array;
+	function getMethod (methodName:String) : MethodParameterRegistry;
 	
 	function getAll () : Array;
 	
