@@ -20,12 +20,26 @@ import org.spicefactory.parsley.factory.ObjectPostProcessor;
 /**
  * @author Jens Halm
  */
-public interface PostProcessorEntry {
+public class PostProcessorEntry {
 	
+	
+	private var _processor:ObjectPostProcessor;
+	private var _afterInit:Boolean;
+	
+	
+	function PostProcessorEntry (processor:ObjectPostProcessor, afterInit:Boolean) {
+		_processor = processor;
+		_afterInit = afterInit;
+	}
 
-	function get processor () : ObjectPostProcessor;
 	
-	function get afterInit () : Boolean;
+	function get processor () : ObjectPostProcessor {
+		return _processor;
+	}
+	
+	function get afterInit () : Boolean {
+		return _afterInit;
+	}
 
 	
 }
