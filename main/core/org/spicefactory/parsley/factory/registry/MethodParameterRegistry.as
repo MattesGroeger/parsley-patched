@@ -15,11 +15,14 @@
  */
 
 package org.spicefactory.parsley.factory.registry {
+import org.spicefactory.lib.reflect.Method;
 
 /**
  * @author Jens Halm
  */
 public interface MethodParameterRegistry {
+	
+	function get method () : Method;
 	
 	function addValue (value:*) : MethodParameterRegistry;
 	
