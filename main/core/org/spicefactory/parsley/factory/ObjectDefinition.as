@@ -52,6 +52,8 @@ public interface ObjectDefinition {
 	
 	
 	function freeze () : void;
+	
+	function get frozen () : Boolean;
 
 	
 }
