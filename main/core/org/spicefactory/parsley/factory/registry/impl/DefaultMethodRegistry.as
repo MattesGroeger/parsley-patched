@@ -33,6 +33,11 @@ public class DefaultMethodRegistry implements MethodRegistry {
 	private var targetType:ClassInfo;
 
 
+	function DefaultMethodRegistry (type:ClassInfo) {
+		this.targetType = type;
+	}
+
+	
 	public function addTypeReferences (methodName:String) : void {
 		var mpr:MethodParameterRegistry = addMethod(methodName);
 		var params:Array = mpr.method.parameters;
