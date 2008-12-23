@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.factory.registry.impl {
+import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.factory.registry.ConstructorArgRegistry;
 
@@ -24,8 +25,8 @@ import org.spicefactory.parsley.factory.registry.ConstructorArgRegistry;
 public class DefaultConstructorArgRegistry extends AbstractParameterRegistry implements ConstructorArgRegistry {
 
 
-	function DefaultConstructorArgRegistry (targetType:ClassInfo) {
-		super(targetType.getConstructor());
+	function DefaultConstructorArgRegistry (def:ObjectDefinition) {
+		super(def.type.getConstructor(), def);
 	}
 		
 	

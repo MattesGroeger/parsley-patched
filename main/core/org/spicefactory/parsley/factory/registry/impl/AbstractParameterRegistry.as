@@ -19,33 +19,38 @@ import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.FunctionBase;
 import org.spicefactory.lib.reflect.Parameter;
+import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.model.ObjectIdReference;
 import org.spicefactory.parsley.factory.model.ObjectTypeReference;
 
 /**
  * @author Jens Halm
  */
-public class AbstractParameterRegistry {
+public class AbstractParameterRegistry extends AbstractRegistry {
 	
 	
 	private var args:Array = new Array();
 	private var func:FunctionBase;
 
 
-	function AbstractParameterRegistry (func:FunctionBase) {
+	function AbstractParameterRegistry (func:FunctionBase, def:ObjectDefinition) {
+		super(def);
 		this.func = func;
 	}
 		
 	
 	protected function doAddValue (value:*) : void {
+		checkState();
 		args.push(value);
 	}
 	
 	protected function doAddIdReference (id:String, required:Boolean = true) : void {
+		checkState();
 		args.push(new ObjectIdReference(id, required));		
 	}
 	
 	protected function doAddTypeReference (required:Boolean = true) : void {
+		checkState();
 		if (args.length >= func.parameters.length) {
 			throw new IllegalArgumentError("Cannot determine target type for parameter at index"
 					+ args.length + " of constructor for class " + func.owner.name);

@@ -18,6 +18,7 @@ package org.spicefactory.parsley.factory.registry.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.registry.MethodParameterRegistry;
 import org.spicefactory.parsley.factory.registry.MethodRegistry;
 
@@ -26,19 +27,22 @@ import flash.utils.Dictionary;
 /**
  * @author Jens Halm
  */
-public class DefaultMethodRegistry implements MethodRegistry {
+public class DefaultMethodRegistry extends AbstractRegistry implements MethodRegistry {
 
 
 	private var methods:Dictionary = new Dictionary();
 	private var targetType:ClassInfo;
+	
 
 
-	function DefaultMethodRegistry (type:ClassInfo) {
-		this.targetType = type;
+	function DefaultMethodRegistry (def:ObjectDefinition) {
+		super(def);
+		this.targetType = def.type;
 	}
 
 	
 	public function addTypeReferences (methodName:String) : void {
+		checkState();
 		var mpr:MethodParameterRegistry = addMethod(methodName);
 		var params:Array = mpr.method.parameters;
 		if (params.length == 0) {
@@ -51,8 +55,9 @@ public class DefaultMethodRegistry implements MethodRegistry {
 	}
 
 	public function addMethod (methodName:String) : MethodParameterRegistry {
+		checkState();
 		var method:Method = getMethodReference(targetType, methodName);
-		var mpr:MethodParameterRegistry = new DefaultMethodParameterRegistry(method);
+		var mpr:MethodParameterRegistry = new DefaultMethodParameterRegistry(method, definition);
 		methods[methodName] = mpr;
 		return mpr;
 	}
@@ -66,6 +71,7 @@ public class DefaultMethodRegistry implements MethodRegistry {
 	}
 	
 	public function removeMethod (methodName:String) : void {
+		checkState();
 		delete methods[methodName];
 	}
 	

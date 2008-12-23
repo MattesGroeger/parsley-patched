@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.factory.registry.impl {
+import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
@@ -28,31 +29,35 @@ import flash.utils.Dictionary;
 /**
  * @author Jens Halm
  */
-public class DefaultPropertyRegistry implements PropertyRegistry {
+public class DefaultPropertyRegistry extends AbstractRegistry implements PropertyRegistry {
 
 
 	private var properties:Dictionary = new Dictionary();
 	private var targetType:ClassInfo;
 	
 	
-	function DefaultPropertyRegistry (targetType:ClassInfo) {
-		this.targetType = targetType;
+	function DefaultPropertyRegistry (def:ObjectDefinition) {
+		super(def);
+		this.targetType = def.type;
 	}
 
 	
 	public function addValue (name:String, value:*) : PropertyRegistry {
+		checkState();
 		var property:Property = getProperty(targetType, name, false, true);
 		properties[name] = new PropertyValue(property, value);		
 		return this;
 	}
 	
 	public function addIdReference (name:String, id:String, required:Boolean = true) : PropertyRegistry {
+		checkState();
 		var property:Property = getProperty(targetType, name, false, true);
 		properties[name] = new PropertyValue(property, new ObjectIdReference(id, required));		
 		return this;
 	}
 	
 	public function addTypeReference (name:String, required:Boolean = true) : PropertyRegistry {
+		checkState();
 		var property:Property = getProperty(targetType, name, false, true);
 		properties[name] = new PropertyValue(property, new ObjectTypeReference(property.type, required));		
 		return this;
@@ -73,6 +78,7 @@ public class DefaultPropertyRegistry implements PropertyRegistry {
 	}
 	
 	public function removeValue (name:String) : void {
+		checkState();
 		delete properties[name];
 	}
 	

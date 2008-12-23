@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.factory.registry.impl {
+import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectPostProcessor;
 import org.spicefactory.parsley.factory.registry.PostProcessorEntry;
 import org.spicefactory.parsley.factory.registry.PostProcessorRegistry;
@@ -22,18 +23,25 @@ import org.spicefactory.parsley.factory.registry.PostProcessorRegistry;
 /**
  * @author Jens Halm
  */
-public class DefaultPostProcessorRegistry implements PostProcessorRegistry {
+public class DefaultPostProcessorRegistry extends AbstractRegistry implements PostProcessorRegistry {
 
 
 	private var processors:Array = new Array();
 
 
+	function DefaultPostProcessorRegistry (def:ObjectDefinition) {
+		super(def);
+	}
+
+	
 	public function addPostProcessor (processor:ObjectPostProcessor, afterInit:Boolean = false) : PostProcessorRegistry {
+		checkState();
 		processors.push(new PostProcessorEntry(processor, afterInit));
 		return this;
 	}
 	
 	public function removePostProcessor (processor:ObjectPostProcessor) : PostProcessorRegistry {
+		checkState();
 		for (var i:uint = 0; i < processors.length; i++) {
 			var entry:PostProcessorEntry = PostProcessorEntry(processors[i]);
 			if (entry.processor = processor) {

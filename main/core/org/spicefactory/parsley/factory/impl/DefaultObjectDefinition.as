@@ -49,10 +49,10 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	
 	function DefaultObjectDefinition (type:ClassInfo) {
 		_type = type;
-		_constructorArgs = new DefaultConstructorArgRegistry(type);
-		_properties = new DefaultPropertyRegistry(type);
-		_methods = new DefaultMethodRegistry(type);
-		_processors = new DefaultPostProcessorRegistry();
+		_constructorArgs = new DefaultConstructorArgRegistry(this);
+		_properties = new DefaultPropertyRegistry(this);
+		_methods = new DefaultMethodRegistry(this);
+		_processors = new DefaultPostProcessorRegistry(this);
 	}
 
 	

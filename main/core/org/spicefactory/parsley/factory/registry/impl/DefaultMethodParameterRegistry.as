@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.factory.registry.impl {
 import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.registry.MethodParameterRegistry;
 
 /**
@@ -27,8 +28,8 @@ public class DefaultMethodParameterRegistry extends AbstractParameterRegistry im
 	private var _method:Method;
 
 	
-	function DefaultMethodParameterRegistry (method:Method) {
-		super(method);
+	function DefaultMethodParameterRegistry (method:Method, def:ObjectDefinition) {
+		super(method, def);
 		_method = method;
 	}
 	
