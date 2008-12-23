@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.factory.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.factory.ObjectDefinition;
@@ -80,6 +81,7 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	}
 	
 	public function set initMethod (value:Method) : void {
+		checkState();
 		checkMethodOwner(value);
 		_initMethod = value;
 	}
@@ -89,6 +91,7 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	}
 
 	public function set destroyMethod (value:Method) : void {
+		checkState();
 		checkMethodOwner(value);
 		_destroyMethod = value;
 	}
@@ -98,6 +101,12 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 			throw new IllegalArgumentError("Method " + method.name + " is not a member of Class " + _type.name);
 		}
 	}
+	
+	private function checkState () : void {
+		if (_frozen) {
+			throw new IllegalStateError(toString() + " is frozen");
+		}
+	}
 
 	public function freeze () : void {
 		_frozen = true;
@@ -105,6 +114,11 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	
 	public function get frozen () : Boolean {
 		return _frozen;
+	}
+	
+	
+	public function toString () : String {
+		return "ObjectDefinition for Class " + _type.name;
 	}
 	
 	
