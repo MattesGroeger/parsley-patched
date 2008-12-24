@@ -74,6 +74,7 @@ public class MetadataObjectDefinitionReader {
 	private function executeMetadataHandlers (definition:ObjectDefinition, type:MetadataAware) : void {
 		for each (var metadata:Object in type.getAllMetadata()) {
 			if (metadata is ObjectDefinitionDecorator) {
+				// TODO - map Property and Method instances
 				ObjectDefinitionDecorator(metadata).decorate(definition, _registry);				
 				// TODO - collect errors for ProblemReporter
 			} 
