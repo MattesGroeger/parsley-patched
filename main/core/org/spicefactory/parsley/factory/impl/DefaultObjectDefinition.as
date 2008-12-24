@@ -43,6 +43,7 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	private var _processors:PostProcessorRegistry;
 	private var _initMethod:Method;
 	private var _destroyMethod:Method;
+	private var _factoryMethod:Method;
 	
 	private var _frozen:Boolean;
 
@@ -94,6 +95,16 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		checkState();
 		checkMethodOwner(value);
 		_destroyMethod = value;
+	}
+	
+	public function get factoryMethod () : Method {
+		return _factoryMethod;
+	}
+
+	public function set factoryMethod (value:Method) : void {
+		checkState();
+		checkMethodOwner(value);
+		_factoryMethod = value;
 	}
 
 	private function checkMethodOwner (method:Method) : void {

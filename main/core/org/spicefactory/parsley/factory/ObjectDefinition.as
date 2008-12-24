@@ -51,6 +51,11 @@ public interface ObjectDefinition {
 	function set destroyMethod (value:Method) : void;
 	
 	
+	function get factoryMethod () : Method;
+	
+	function set factoryMethod (value:Method) : void;
+	
+	
 	function freeze () : void;
 	
 	function get frozen () : Boolean;
