@@ -33,11 +33,11 @@ public class PostProcessorEntry {
 	}
 
 	
-	function get processor () : ObjectPostProcessor {
+	public function get processor () : ObjectPostProcessor {
 		return _processor;
 	}
 	
-	function get afterInit () : Boolean {
+	public function get afterInit () : Boolean {
 		return _afterInit;
 	}
 
