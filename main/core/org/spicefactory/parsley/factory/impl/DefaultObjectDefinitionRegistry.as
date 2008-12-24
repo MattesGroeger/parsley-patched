@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.factory.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.util.collection.SimpleMap;
+import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
 
@@ -59,11 +60,20 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 	public function getDefinitionsByType (type:Class) : Array {
 		var defs:Array = new Array();
 		for each (var def:RootObjectDefinition in definitions.values) {
-			if (def.type.isType(type)) {
+			if (isMatchingType(def, type)) {
 				defs.push(def);
 			}
 		}
 		return defs;
+	}
+	
+	private function isMatchingType (def:ObjectDefinition, type:Class) : Boolean {
+		if (def.factoryMethod == null) {
+			return def.type.isType(type);
+		}
+		else {
+			return def.factoryMethod.returnType.isType(type);
+		}
 	}
 	
 	
