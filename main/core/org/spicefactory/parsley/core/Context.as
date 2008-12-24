@@ -15,11 +15,35 @@
  */
 
 package org.spicefactory.parsley.core {
+import org.spicefactory.lib.util.Command;
 
 /**
  * @author Jens Halm
  */
-public interface ApplicationContext {
+public interface Context {
+	
+	
+	function get objectCount () : uint;
+	
+	function get objectIds () : Array;
+	
+	function containsObject (id:String) : Boolean;
+	
+	function getObjectsByType (type:Class) : Array;
+	
+	function getType (id:String) : Class;
+	
+	function getObject (id:String) : Object;
+	
+	//function getFactory (id:String) : Object;
+	
+	function addDestroyCommand (com:Command) : void;
+	
+	function destroy () : void;
+	
+	// messaging
+	
+	
 }
 
 }
