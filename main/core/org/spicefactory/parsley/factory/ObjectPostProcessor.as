@@ -15,14 +15,14 @@
  */
 
 package org.spicefactory.parsley.factory {
-import org.spicefactory.parsley.core.ApplicationContext;
+import org.spicefactory.parsley.core.Context;
 
 /**
  * @author Jens Halm
  */
 public interface ObjectPostProcessor {
 	
-	function process (instance:Object, context:ApplicationContext) : void;
+	function process (instance:Object, context:Context) : void;
 	
 }
 }
