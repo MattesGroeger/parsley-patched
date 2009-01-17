@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.messaging {
-import flash.events.IEventDispatcher;
 
 /**
  * @author Jens Halm
@@ -32,8 +31,6 @@ public interface MessageDispatcher {
 	function registerMessageInterceptor (targetInstance:Object, targetMethod:String, 
 			messageType:Class = null, selector:* = undefined) : void;
 			
-	function registerManagedEvents (dispatcher:IEventDispatcher, events:Array) : void;
-	
 	function dispatchMessage (message:Object) : void;
 	
 	function destroy () : void;
