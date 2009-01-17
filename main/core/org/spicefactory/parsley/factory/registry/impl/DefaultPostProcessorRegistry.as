@@ -44,7 +44,7 @@ public class DefaultPostProcessorRegistry extends AbstractRegistry implements Po
 		checkState();
 		for (var i:uint = 0; i < processors.length; i++) {
 			var entry:PostProcessorEntry = PostProcessorEntry(processors[i]);
-			if (entry.processor = processor) {
+			if (entry.processor == processor) {
 				processors.slice(i,1);
 			}
 		}
