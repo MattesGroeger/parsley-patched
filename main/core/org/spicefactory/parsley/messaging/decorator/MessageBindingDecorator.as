@@ -19,12 +19,14 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.messaging.MessageDispatcher;
+import org.spicefactory.parsley.messaging.MessageTargetDefinition;
 
+[Metadata(name="MessageBinding", types="property")]
 /**
  * @author Jens Halm
  */
-[Metadata(name="MessageBinding", types="property")]
-public class MessageBindingDecorator implements ObjectDefinitionDecorator {
+public class MessageBindingDecorator implements ObjectDefinitionDecorator, MessageTargetDefinition {
 
 
 	[Required]
@@ -39,10 +41,18 @@ public class MessageBindingDecorator implements ObjectDefinitionDecorator {
 	public var targetProperty:Property;
 	
 	
+	private var definition:ObjectDefinition;
+	
+	
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : void {
-		
+		this.definition = definition;
+		definition.messageTargets.addMessageTarget(this);
 	}
 
+	public function apply (targetInstance:Object, dispatcher:MessageDispatcher) : void {
+		dispatcher.registerMessageBinding(targetInstance, targetProperty.name, 
+				type, messageProperty.name, selector);
+	}
 	
 }
 
