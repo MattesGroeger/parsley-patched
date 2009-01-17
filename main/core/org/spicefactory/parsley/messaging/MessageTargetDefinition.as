@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.messaging {
-import org.spicefactory.parsley.core.Context;
 
 /**
  * @author Jens Halm
@@ -23,7 +22,7 @@ import org.spicefactory.parsley.core.Context;
 public interface MessageTargetDefinition {
 	
 	
-	function apply (context:Context) : void;
+	function apply (targetInstance:Object, dispatcher:MessageDispatcher) : void;
 	
 	
 }
