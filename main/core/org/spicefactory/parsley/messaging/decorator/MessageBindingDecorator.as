@@ -35,7 +35,7 @@ public class MessageBindingDecorator implements ObjectDefinitionDecorator, Messa
 	public var selector:String;
 	
 	[Required]
-	public var messageProperty:Property;
+	public var messageProperty:String;
 
 	[Target]
 	public var targetProperty:Property;
@@ -51,7 +51,7 @@ public class MessageBindingDecorator implements ObjectDefinitionDecorator, Messa
 
 	public function apply (targetInstance:Object, dispatcher:MessageDispatcher) : void {
 		dispatcher.registerMessageBinding(targetInstance, targetProperty.name, 
-				type, messageProperty.name, selector);
+				type, messageProperty, selector);
 	}
 	
 }
