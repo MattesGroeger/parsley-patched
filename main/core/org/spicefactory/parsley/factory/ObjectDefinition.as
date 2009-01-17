@@ -17,10 +17,11 @@
 package org.spicefactory.parsley.factory {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.parsley.factory.registry.MethodRegistry;
 import org.spicefactory.parsley.factory.registry.ConstructorArgRegistry;
+import org.spicefactory.parsley.factory.registry.MethodRegistry;
 import org.spicefactory.parsley.factory.registry.PostProcessorRegistry;
 import org.spicefactory.parsley.factory.registry.PropertyRegistry;
+import org.spicefactory.parsley.messaging.registry.MessageTargetRegistry;
 
 /**
  * @author Jens Halm
@@ -39,6 +40,8 @@ public interface ObjectDefinition {
 
 
 	function get postProcessors () : PostProcessorRegistry;	
+	
+	function get messageTargets () : MessageTargetRegistry;
 	
 	
 	function get initMethod () : Method;

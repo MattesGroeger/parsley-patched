@@ -28,6 +28,8 @@ import org.spicefactory.parsley.factory.registry.impl.DefaultConstructorArgRegis
 import org.spicefactory.parsley.factory.registry.impl.DefaultMethodRegistry;
 import org.spicefactory.parsley.factory.registry.impl.DefaultPostProcessorRegistry;
 import org.spicefactory.parsley.factory.registry.impl.DefaultPropertyRegistry;
+import org.spicefactory.parsley.messaging.registry.MessageTargetRegistry;
+import org.spicefactory.parsley.messaging.registry.impl.DefaultMessageTargetRegistry;
 
 /**
  * @author Jens Halm
@@ -41,6 +43,7 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	private var _properties:PropertyRegistry;
 	private var _methods:MethodRegistry;
 	private var _processors:PostProcessorRegistry;
+	private var _messageTargets:MessageTargetRegistry;
 	private var _initMethod:Method;
 	private var _destroyMethod:Method;
 	private var _factoryMethod:Method;
@@ -54,6 +57,7 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		_properties = new DefaultPropertyRegistry(this);
 		_methods = new DefaultMethodRegistry(this);
 		_processors = new DefaultPostProcessorRegistry(this);
+		_messageTargets = new DefaultMessageTargetRegistry(this);
 	}
 
 	
@@ -77,6 +81,10 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		return _processors;
 	}
 	
+	public function get messageTargets () : MessageTargetRegistry {
+		return _messageTargets;
+	}
+
 	public function get initMethod () : Method {
 		return _initMethod;
 	}
