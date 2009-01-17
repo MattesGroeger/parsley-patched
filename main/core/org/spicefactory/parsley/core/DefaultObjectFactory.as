@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core {
+import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReference;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.util.Command;
 import org.spicefactory.parsley.core.Context;
@@ -123,6 +124,9 @@ public class DefaultObjectFactory implements ObjectFactory {
 			else {
 				return objects[0];
 			}
+		}
+		else if (value is MessageDispatcherFunctionReference) {
+			return context.messageDispatcher.dispatchMessage;
 		}
 		else {
 			// TODO - handle ManagedArray
