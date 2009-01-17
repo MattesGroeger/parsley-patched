@@ -22,6 +22,9 @@ import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
+import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
+import org.spicefactory.parsley.messaging.MessageDispatcher;
+import org.spicefactory.parsley.messaging.impl.DefaultMessageDispatcher;
 
 import flash.utils.Dictionary;
 
@@ -33,6 +36,7 @@ public class DefaultContext implements Context {
 
 	private var _registry:ObjectDefinitionRegistry;
 	private var _factory:ObjectFactory;
+	private var _messageDispatcher:MessageDispatcher;
 	
 	private var _singletonCache:SimpleMap;
 	private var _factoryCache:SimpleMap;
@@ -43,9 +47,11 @@ public class DefaultContext implements Context {
 	
 	
 	function DefaultContext (registry:ObjectDefinitionRegistry = null, 
+			dispatcher:MessageDispatcher = null,
 			factory:ObjectFactory = null) {
-		_registry = registry;
-		_factory = factory;
+		_registry = (registry != null) ? registry : new DefaultObjectDefinitionRegistry();
+		_messageDispatcher = (dispatcher != null) ? dispatcher : new DefaultMessageDispatcher();
+		_factory = (factory != null) ? factory : new DefaultObjectFactory();
 	}
 	
 	public function get registry () : ObjectDefinitionRegistry {
@@ -161,6 +167,10 @@ public class DefaultContext implements Context {
 		finally {
 			_destroyed = true;
 		}
+	}
+	
+	public function get messageDispatcher () : MessageDispatcher {
+		return _messageDispatcher;
 	}
 	
 	
