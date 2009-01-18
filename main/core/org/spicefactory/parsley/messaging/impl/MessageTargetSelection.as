@@ -16,6 +16,8 @@
 
 package org.spicefactory.parsley.messaging.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.core.ContextError;
 
 import flash.utils.Dictionary;
 
@@ -26,31 +28,85 @@ public class MessageTargetSelection {
 	
 	
 	private var _messageType:ClassInfo;
-	private var _targets:Array;
-	private var _interceptors:Array;
+	private var _selectorProperty:Property;
 	
-	private var _selectorMap:Dictionary;
+	private var _targetsWithSelector:Array;
+	private var _interceptorsWithSelector:Array;
+	
+	private var _targetsWithoutSelector:Array;
+	private var _interceptorsWithoutSelector:Array;
+	
+	private var _targetSelectorMap:Dictionary;
+	private var _interceptorSelectorMap:Dictionary;
+	
+	
+	function MessageTargetSelection (type:ClassInfo) {
+		_messageType = type;
+		for each (var p:Property in type) {
+			if (p.getMetadata(Selector).length > 0) {
+				if (_selectorProperty == null) {
+					_selectorProperty = p;
+				}
+				else {
+					throw new ContextError("Class " + type.name + " contains more than one Selector metadata tag");
+				}
+			}
+		}
+	}
 	
 	
 	public function get messageType () : ClassInfo {
 		return _messageType;
 	}
 	
-	public function get targets ():Array {
-		return _targets;
+	public function getSelectorValue (message:Object) : * {
+		if (_selectorProperty != null) {
+			return _selectorProperty.getValue(message);
+		}
+		else {
+			return message.toString();
+		}
 	}
 	
-	public function get interceptors ():Array {
-		return _interceptors;
+	public function getTargets (selectorValue:*) : Array {
+		var targets:Array = null;
+		if (_targetSelectorMap[selectorValue] != undefined) {
+			targets = _targetSelectorMap[selectorValue];
+		}
+		else {
+			targets = new Array();
+			_targetSelectorMap[selectorValue] = targets;
+			for each (var target:MessageTarget in _targetsWithSelector) {
+				if (target.selector == selectorValue) {
+					targets.push(target);
+				}
+			}
+		}
+		return targets.concat(_targetsWithoutSelector);
+	}
+	
+	public function getInterceptors (selectorValue:*) : Array {
+		var interceptors:Array = null;
+		if (_interceptorSelectorMap[selectorValue] != undefined) {
+			interceptors = _interceptorSelectorMap[selectorValue];
+		}
+		else {
+			interceptors = new Array();
+			_interceptorSelectorMap[selectorValue] = interceptors;
+			for each (var target:MessageTarget in _interceptorsWithSelector) {
+				if (target.selector == selectorValue) {
+					interceptors.push(target);
+				}
+			}
+		}
+		return interceptors.concat(_interceptorsWithoutSelector);
 	}
 	
 	public function addTarget (target:MessageTarget) : void {
-		if (target.interceptor) {
-			_interceptors.push(target);
-		}
-		else {
-			_targets.push(target);
-		}
+		var collection:Array = (target.interceptor) ?
+				((target.selector === undefined) ? _interceptorsWithoutSelector : _interceptorsWithSelector)
+				: ((target.selector === undefined) ? _targetsWithoutSelector : _interceptorsWithSelector);
+		collection.push(target);
 	}
 	
 	

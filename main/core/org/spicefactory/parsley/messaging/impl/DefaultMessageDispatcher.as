@@ -57,7 +57,7 @@ public class DefaultMessageDispatcher implements MessageDispatcher {
 			targetSelection = cache[type.getClass()];
 		}
 		else {
-			targetSelection = new MessageTargetSelection();
+			targetSelection = new MessageTargetSelection(type);
 			cache[type.getClass()] = targetSelection;
 			for each (var target:MessageTarget in targets) {
 				if (type.isType(target.messageType.getClass())) {
@@ -66,7 +66,9 @@ public class DefaultMessageDispatcher implements MessageDispatcher {
 			}
 		}
 		
-		var processor:MessageProcessor = new DefaultMessageProcessor(message, targetSelection.targets, targetSelection.interceptors);
+		var selectorValue:* = targetSelection.getSelectorValue(message);
+		var processor:MessageProcessor = new DefaultMessageProcessor(message, 
+				targetSelection.getTargets(selectorValue), targetSelection.getInterceptors(selectorValue));
 		processor.proceed();
 	}	
 	
@@ -93,7 +95,6 @@ public class DefaultMessageDispatcher implements MessageDispatcher {
 			throw new ContextError("Message property with name " + messageProperty + " of type " + messageTypeInfo.name 
 					+ " is not readable");
 		}
-		// TODO - handle selector
 		targets.push(new MessageBinding(targetInstance, resolvedTargetProperty, messageTypeInfo, resolvedMessageProperty, selector));
 	}
 	
