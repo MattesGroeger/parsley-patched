@@ -121,7 +121,7 @@ public class DefaultContext implements Context {
 					_singletonCache.put(id, instance);
 				}
 				
-				_factory.configureObject(instance, def, this);
+				_factory.configureObject(instance, def, this, (!def.singleton || !def.lazy));
 			}
 			
 			if (isFactory && !getFactory) {

@@ -15,16 +15,18 @@
  */
 
 package org.spicefactory.parsley.core {
-import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReference;
+import org.spicefactory.parsley.messaging.MessageTargetDefinition;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.util.Command;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.factory.ObjectDefinition;
+import org.spicefactory.parsley.factory.RootObjectDefinition;
 import org.spicefactory.parsley.factory.model.ObjectIdReference;
 import org.spicefactory.parsley.factory.model.ObjectTypeReference;
 import org.spicefactory.parsley.factory.model.PropertyValue;
 import org.spicefactory.parsley.factory.registry.MethodParameterRegistry;
 import org.spicefactory.parsley.factory.registry.PostProcessorEntry;
+import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReference;
 
 /**
  * @author Jens Halm
@@ -37,11 +39,12 @@ public class DefaultObjectFactory implements ObjectFactory {
 		return definition.type.newInstance(args);
 	}
 	
-	public function configureObject (instance:Object, definition:ObjectDefinition, context:Context) : void {
+	public function configureObject (instance:Object, definition:ObjectDefinition, 
+			context:Context, includeMessageTargets:Boolean) : void {
 	 	processProperties(instance, definition, context);
 	 	processMethods(instance, definition, context);
 	 	
-	 	//processManagedEvents(instance, defintion);
+		if (includeMessageTargets) processMessageTargets(instance, definition, context);
 	 	
 	 	processPostProcessors(instance, definition, context, false);
 	 	processInitMethod(instance, definition, context);	
@@ -65,6 +68,13 @@ public class DefaultObjectFactory implements ObjectFactory {
 			var params:Array = resolveArray(mpr.getAll(), context);
 	 		mpr.method.invoke(instance, params);
 		}		
+	}
+	
+	protected function processMessageTargets (instance:Object, definition:ObjectDefinition, context:Context) : void {
+		for each (var target:MessageTargetDefinition in definition.messageTargets.getAll()) {
+			target.apply(instance, context.messageDispatcher);
+		}
+		// TODO - must unregister when Context gets destroyed
 	}
 	
 	protected function processPostProcessors (instance:Object, definition:ObjectDefinition, 
