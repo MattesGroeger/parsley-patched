@@ -149,7 +149,7 @@ public class DefaultContext implements Context {
 	}
 	
 	public function refresh () : void {
-		// TODO - must process new definitions
+		// TODO - must process new definitions (create non-lazy singletons and process message targets of lazy singletons)
 	}
 	
 	public function addDestroyCommand (com:Command) : void {
