@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.factory.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinition;
 
@@ -37,6 +38,14 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 		_lazy = lazy;
 		_singleton = singleton;
 	}
+	
+	
+	public static function fromDefinition (definition:ObjectDefinition, id:String, 
+			lazy:Boolean = true, singleton:Boolean = true) : DefaultRootObjectDefinition {
+		var def:DefaultRootObjectDefinition = new DefaultRootObjectDefinition(definition.type, id, lazy, singleton);
+		def.populateFrom(definition);
+		return def;
+	} 
 
 	
 	public function get id () : String {
