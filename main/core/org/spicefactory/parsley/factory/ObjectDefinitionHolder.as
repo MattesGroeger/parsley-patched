@@ -37,6 +37,7 @@ public class ObjectDefinitionHolder {
 	}
 	
 	public function set processedDefinition (processedDefinition:ObjectDefinition) : void {
+		// TODO - check if types are compatible
 		_processedDefinition = processedDefinition;
 	}
 	
