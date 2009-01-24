@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core {
+package org.spicefactory.parsley.core.impl {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.util.Command;
 import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.ContextError;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.model.ObjectIdReference;
 import org.spicefactory.parsley.factory.model.ObjectTypeReference;

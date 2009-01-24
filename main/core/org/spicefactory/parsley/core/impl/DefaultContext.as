@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core {
+package org.spicefactory.parsley.core.impl {
 import org.spicefactory.lib.util.Command;
 import org.spicefactory.lib.util.CommandChain;
 import org.spicefactory.lib.util.collection.SimpleMap;
 import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.ContextError;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;

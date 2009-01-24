@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core {
+import org.spicefactory.parsley.core.impl.DefaultContext;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
 
@@ -46,7 +47,7 @@ public class CompositeContextBuilder {
 
 
 	public function build () : Context {
-		var df:DefaultContext = new DefaultContext();
+		var df:DefaultContext = new DefaultContext(_registry);
 		// TODO - handle parent
 		df.initialize();
 		return df;
