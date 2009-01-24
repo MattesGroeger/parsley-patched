@@ -29,7 +29,7 @@ import org.spicefactory.parsley.util.IdGenerator;
 /**
  * @author Jens Halm
  */
-public class MetadataObjectDefinitionReader {
+public class MetadataObjectDefinitionBuilder {
 	
 	
 	

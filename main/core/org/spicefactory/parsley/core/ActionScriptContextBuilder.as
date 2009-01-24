@@ -19,7 +19,7 @@ import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.impl.DefaultContext;
-import org.spicefactory.parsley.core.impl.MetadataObjectDefinitionReader;
+import org.spicefactory.parsley.core.impl.MetadataObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.metadata.InternalProperty;
 import org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
@@ -59,7 +59,7 @@ public class ActionScriptContextBuilder {
 	private static function populateRegistry (containers:Array, registry:ObjectDefinitionRegistry = null) : void {
 		for each (var container:Class in containers) {
 			var ci:ClassInfo = ClassInfo.forClass(container);
-			var containerDefinition:RootObjectDefinition = MetadataObjectDefinitionReader.newRootDefinition(registry, container);
+			var containerDefinition:RootObjectDefinition = MetadataObjectDefinitionBuilder.newRootDefinition(registry, container);
 			for each (var property:Property in ci.getProperties()) {
 				var internalMeta:Array = property.getMetadata(InternalProperty);
 				if (internalMeta.length == 0) {
@@ -69,7 +69,7 @@ public class ActionScriptContextBuilder {
 					var id:String = (definitionMeta != null) ? definitionMeta.id : property.name;
 					var lazy:Boolean = (definitionMeta != null) ? definitionMeta.lazy : true;
 					var singleton:Boolean = (definitionMeta != null) ? definitionMeta.singleton : true;
-					MetadataObjectDefinitionReader.newRootDefinition(registry, property.type.getClass(), id, lazy, singleton);
+					MetadataObjectDefinitionBuilder.newRootDefinition(registry, property.type.getClass(), id, lazy, singleton);
 				} 
 			}	
 		}
