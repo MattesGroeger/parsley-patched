@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core {
+import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.MetadataAware;
 import org.spicefactory.lib.reflect.Method;
@@ -39,10 +40,10 @@ public class MetadataObjectDefinitionReader {
 	
 	
 	function MetadataObjectDefinitionReader (registry:ObjectDefinitionRegistry = null) {
-		_registry = registry;
+		_registry = (registry != null) ? registry : new DefaultObjectDefinitionRegistry();
 	}
 
-
+	
 	public function get domain () : ApplicationDomain {
 		return _domain;
 	}
@@ -51,7 +52,11 @@ public class MetadataObjectDefinitionReader {
 		_domain = domain;
 	}
 	
+	public function get registry () : ObjectDefinitionRegistry {
+		return _registry;
+	}
 
+	
 	public function addClass (type:Class, id:String = null, lazy:Boolean = true, singleton:Boolean = true) : void {
 		if (id == null) id = IdGenerator.nextObjectId;
 		var def:RootObjectDefinition 
