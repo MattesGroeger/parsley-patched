@@ -59,6 +59,11 @@ public interface ObjectDefinition {
 	function set factoryMethod (value:Method) : void;
 	
 	
+	function get instantiator () : ObjectInstantiator;
+	
+	function set instantiator (value:ObjectInstantiator) : void;
+	
+	
 	function freeze () : void;
 	
 	function get frozen () : Boolean;

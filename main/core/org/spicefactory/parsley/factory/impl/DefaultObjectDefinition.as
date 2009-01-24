@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.factory.impl {
+import org.spicefactory.parsley.factory.ObjectInstantiator;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -47,7 +48,8 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	private var _initMethod:Method;
 	private var _destroyMethod:Method;
 	private var _factoryMethod:Method;
-	
+	private var _instantiator:ObjectInstantiator;
+
 	private var _frozen:Boolean;
 
 	
@@ -113,6 +115,15 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		checkState();
 		checkMethodOwner(value);
 		_factoryMethod = value;
+	}
+	
+	function get instantiator () : ObjectInstantiator {
+		return _instantiator;
+	}
+	
+	function set instantiator (value:ObjectInstantiator) : void {
+		checkState();
+		_instantiator = value;
 	}
 
 	private function checkMethodOwner (method:Method) : void {
