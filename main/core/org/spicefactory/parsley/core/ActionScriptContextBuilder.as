@@ -1,0 +1,76 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.spicefactory.parsley.core {
+import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.metadata.InternalProperty;
+import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.lib.reflect.ClassInfo;
+
+import flash.system.ApplicationDomain;
+
+/**
+ * @author Jens Halm
+ */
+public class ActionScriptContextBuilder {
+	
+	
+	public static function build (container:Class, parent:Context = null, domain:ApplicationDomain = null) : Context {
+		return buildAll([container], parent, domain);		
+	}
+	
+	public static function buildAll (containers:Array, parent:Context = null, domain:ApplicationDomain = null) : Context {
+		// TODO - handle parent
+		var registry:ObjectDefinitionRegistry = populateRegistry(containers, domain);
+		var dc:DefaultContext = new DefaultContext(registry);
+		dc.initialize();
+		return dc;		
+	}
+	
+	
+	public static function merge (container:Class, builder:CompositeContextBuilder) : void {
+		populateRegistry([container], builder.domain, builder.registry);
+	}
+	
+	public static function mergeAll (containers:Array, builder:CompositeContextBuilder) : void {
+		populateRegistry(containers, builder.domain, builder.registry);
+	}
+	
+	
+	private static function populateRegistry (containers:Array, domain:ApplicationDomain, 
+			registry:ObjectDefinitionRegistry = null) : ObjectDefinitionRegistry {
+		for each (var container:Class in containers) {
+			var ci:ClassInfo = ClassInfo.forClass(container);
+			var reader:MetadataObjectDefinitionReader = new MetadataObjectDefinitionReader(registry);
+			if (domain != null) {
+				reader.domain = domain;
+			}
+			for each (var property:Property in ci.getProperties()) {
+				var internalMeta:Array = property.getMetadata(InternalProperty);
+				if (internalMeta.length == 0) {
+					var lazy:Boolean = true; // TODO - check metadata
+					var singleton:Boolean = true; // TODO - check metadata
+					reader.addClass(property.type.getClass(), property.name, lazy, singleton);
+				} 
+			}	
+		}
+		return reader.registry;			
+	}
+	
+	
+}
+
+}
