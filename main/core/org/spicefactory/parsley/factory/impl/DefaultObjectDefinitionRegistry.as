@@ -21,14 +21,27 @@ import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
 
+import flash.system.ApplicationDomain;
+
 /**
  * @author Jens Halm
  */
 public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry {
 	
 	
+	private var _domain:ApplicationDomain;
+	
 	private var definitions:SimpleMap = new SimpleMap();
 
+
+	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain = null) {
+		_domain = domain;
+	}
+
+	
+	function get domain () : ApplicationDomain {
+		return _domain;
+	}
 	
 	public function containsDefinition (id:String) : Boolean {
 		return definitions.containsKey(id);
@@ -45,8 +58,14 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 		definitions.put(definition.id, definition);
 	}
 
-	public function removeDefinition (id:String) : void {
-		definitions.remove(id);
+	public function unregisterDefinition (definition:RootObjectDefinition) : void {
+		if (containsDefinition(definition.id)) {
+			if (getDefinition(definition.id) != definition) {
+				throw new IllegalArgumentError("Definition with id " + definition.id 
+						+ " is not identical with a different definition with the same id and cannot be removed");	
+			}
+			definitions.remove(definition.id);
+		}
 	}
 	
 	public function get definitionCount () : uint {

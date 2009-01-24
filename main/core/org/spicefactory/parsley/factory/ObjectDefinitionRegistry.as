@@ -15,13 +15,16 @@
  */
 
 package org.spicefactory.parsley.factory {
+import flash.system.ApplicationDomain;
 
 /**
  * @author Jens Halm
  */
 public interface ObjectDefinitionRegistry {
 	
-	 
+
+		function get domain () : ApplicationDomain;
+	
 		function containsDefinition (id:String) : Boolean;
 	
 		function getDefinition (id:String) : RootObjectDefinition;
@@ -33,6 +36,8 @@ public interface ObjectDefinitionRegistry {
 		function get definitionIds () : Array;
 	
 		function registerDefinition (definition:RootObjectDefinition) : void;	
+		
+		function unregisterDefinition (definition:RootObjectDefinition) : void;
 	
 	
 }
