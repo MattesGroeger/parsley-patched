@@ -69,7 +69,9 @@ public class ActionScriptContextBuilder {
 					var id:String = (definitionMeta != null) ? definitionMeta.id : property.name;
 					var lazy:Boolean = (definitionMeta != null) ? definitionMeta.lazy : true;
 					var singleton:Boolean = (definitionMeta != null) ? definitionMeta.singleton : true;
-					MetadataObjectDefinitionBuilder.newRootDefinition(registry, property.type.getClass(), id, lazy, singleton);
+					var targetDefinition:RootObjectDefinition 
+							= MetadataObjectDefinitionBuilder.newRootDefinition(registry, property.type.getClass(), id, lazy, singleton);
+					registry.registerDefinition(targetDefinition);
 				} 
 			}	
 		}

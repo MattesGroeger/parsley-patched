@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.messaging.decorator {
+import org.spicefactory.parsley.factory.ObjectDefinitionHolder;
 import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReference;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.factory.ObjectDefinition;
@@ -32,8 +33,8 @@ public class MessageDispatcherDecorator implements ObjectDefinitionDecorator {
 	public var property:Property;
 	
 	
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : void {
-		definition.properties.addValue(property.name, new MessageDispatcherFunctionReference());
+	public function decorate (definitionHolder:ObjectDefinitionHolder, registry:ObjectDefinitionRegistry) : void {
+		definitionHolder.processedDefinition.properties.addValue(property.name, new MessageDispatcherFunctionReference());
 	}
 	
 	

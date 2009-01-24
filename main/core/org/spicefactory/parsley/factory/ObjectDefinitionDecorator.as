@@ -16,13 +16,12 @@
 
 package org.spicefactory.parsley.factory {
 
-import org.spicefactory.parsley.factory.ObjectDefinition;
 /**
  * @author Jens Halm
  */
 public interface ObjectDefinitionDecorator {
 	
-	function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : void;
+	function decorate (definitionHolder:ObjectDefinitionHolder, registry:ObjectDefinitionRegistry) : void;
 	
 }
 

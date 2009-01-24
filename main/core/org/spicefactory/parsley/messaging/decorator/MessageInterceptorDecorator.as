@@ -18,6 +18,7 @@ package org.spicefactory.parsley.messaging.decorator {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.factory.ObjectDefinitionHolder;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.messaging.MessageRouter;
 import org.spicefactory.parsley.messaging.registry.MessageTargetDefinition;
@@ -40,7 +41,7 @@ public class MessageInterceptorDecorator implements ObjectDefinitionDecorator, M
 	private var definition:ObjectDefinition;
 	
 	
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : void {
+	public function decorate (definitionHolder:ObjectDefinitionHolder, registry:ObjectDefinitionRegistry) : void {
 		this.definition = definition;
 		definition.messageTargets.addMessageTarget(this);
 	}

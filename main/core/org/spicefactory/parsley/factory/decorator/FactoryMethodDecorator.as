@@ -16,9 +16,13 @@
 
 package org.spicefactory.parsley.factory.decorator {
 import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.parsley.core.impl.MetadataObjectDefinitionBuilder;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.factory.ObjectDefinitionHolder;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.factory.RootObjectDefinition;
+import org.spicefactory.parsley.factory.impl.DefaultRootObjectDefinition;
 
 /**
  * @author Jens Halm
@@ -30,10 +34,54 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 	public var method:Method;
 
 
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : void {
-		definition.factoryMethod = method;
+	public function decorate (definitionHolder:ObjectDefinitionHolder, registry:ObjectDefinitionRegistry) : void {
+		
+		var definition:ObjectDefinition = definitionHolder.processedDefinition;
+		// Specified definition is for the factory, must be registered as a root factory, 
+		// even if the original definition is for a nested object
+		var factoryDefinition:RootObjectDefinition = DefaultRootObjectDefinition.fromDefinition(definition);
+		registry.registerDefinition(factoryDefinition);
+		definitionHolder.processedDefinition = factoryDefinition;
+		
+		// Must create a new definition for the target type
+		var targetDefinition:ObjectDefinition = (definition is RootObjectDefinition) 
+				? MetadataObjectDefinitionBuilder.newRootDefinition(registry, method.returnType.getClass()) 
+				: MetadataObjectDefinitionBuilder.newDefinition(registry, method.returnType.getClass());
+		targetDefinition.instantiator = new FactoryMethodInstantiator(factoryDefinition, method);
+		definitionHolder.targetDefinition = targetDefinition;
+				
 	}
 	
 	
 }
+}
+
+import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.ContextError;
+import org.spicefactory.parsley.factory.ObjectInstantiator;
+import org.spicefactory.parsley.factory.RootObjectDefinition;
+
+class FactoryMethodInstantiator implements ObjectInstantiator {
+
+	
+	private var definition:RootObjectDefinition;
+	private var method:Method;
+
+
+	function FactoryMethodInstantiator (definition:RootObjectDefinition, method:Method) {
+		this.definition = definition;
+		this.method = method;
+	}
+
+	
+	public function instantiate (context:Context) : Object {
+		var factory:Object = context.getObject(definition.id);
+		if (factory == null) {
+			throw new ContextError("Unable to obtain factory of type " + definition.type.name);
+		}
+		return method.invoke(factory, []);
+	}
+	
+	
 }

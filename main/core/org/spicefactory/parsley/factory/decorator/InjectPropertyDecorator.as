@@ -16,8 +16,8 @@
 
 package org.spicefactory.parsley.factory.decorator {
 import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.factory.ObjectDefinitionHolder;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 
 /**
@@ -35,12 +35,12 @@ public class InjectPropertyDecorator implements ObjectDefinitionDecorator {
 	public var property:Property;
 	
 	
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : void {
+	public function decorate (definitionHolder:ObjectDefinitionHolder, registry:ObjectDefinitionRegistry) : void {
 		if (id == null) {
-			definition.properties.addTypeReference(property.name, required);
+			definitionHolder.processedDefinition.properties.addTypeReference(property.name, required);
 		}
 		else {
-			definition.properties.addIdReference(property.name, id, required);
+			definitionHolder.processedDefinition.properties.addIdReference(property.name, id, required);
 		}
 	}
 
