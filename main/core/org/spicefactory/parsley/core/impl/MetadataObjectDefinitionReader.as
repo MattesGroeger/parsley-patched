@@ -36,21 +36,12 @@ public class MetadataObjectDefinitionReader {
 	
 	
 	private var _registry:ObjectDefinitionRegistry;
-	private var _domain:ApplicationDomain;
 	
 	
 	function MetadataObjectDefinitionReader (registry:ObjectDefinitionRegistry = null) {
 		_registry = (registry != null) ? registry : new DefaultObjectDefinitionRegistry();
 	}
 
-	
-	public function get domain () : ApplicationDomain {
-		return _domain;
-	}
-	
-	public function set domain (domain:ApplicationDomain) : void {
-		_domain = domain;
-	}
 	
 	public function get registry () : ObjectDefinitionRegistry {
 		return _registry;
@@ -61,7 +52,7 @@ public class MetadataObjectDefinitionReader {
 			lazy:Boolean = true, singleton:Boolean = true) : RootObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
 		var def:RootObjectDefinition 
-				= new DefaultRootObjectDefinition(ClassInfo.forClass(type, domain), id, lazy, singleton);
+				= new DefaultRootObjectDefinition(ClassInfo.forClass(type, _registry.domain), id, lazy, singleton);
 		processMetadata(def);
 		_registry.registerDefinition(def);
 		return def;
