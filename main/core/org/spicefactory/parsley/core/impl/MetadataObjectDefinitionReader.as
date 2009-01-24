@@ -57,12 +57,14 @@ public class MetadataObjectDefinitionReader {
 	}
 
 	
-	public function addClass (type:Class, id:String = null, lazy:Boolean = true, singleton:Boolean = true) : void {
+	public function addClass (type:Class, id:String = null, 
+			lazy:Boolean = true, singleton:Boolean = true) : RootObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
 		var def:RootObjectDefinition 
 				= new DefaultRootObjectDefinition(ClassInfo.forClass(type, domain), id, lazy, singleton);
 		processMetadata(def);
 		_registry.registerDefinition(def);
+		return def;
 	}
 
 	protected function processMetadata (definition:ObjectDefinition) : void {
