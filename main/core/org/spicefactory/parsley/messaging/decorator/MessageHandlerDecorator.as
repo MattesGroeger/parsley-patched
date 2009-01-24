@@ -19,7 +19,7 @@ import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.messaging.MessageDispatcher;
+import org.spicefactory.parsley.messaging.MessageRouter;
 import org.spicefactory.parsley.messaging.MessageTargetDefinition;
 
 [Metadata(name="MessageHandler", types="method")]
@@ -47,7 +47,7 @@ public class MessageHandlerDecorator implements ObjectDefinitionDecorator, Messa
 		definition.messageTargets.addMessageTarget(this);
 	}
 
-	public function apply (targetInstance:Object, dispatcher:MessageDispatcher) : void {
+	public function apply (targetInstance:Object, dispatcher:MessageRouter) : void {
 		dispatcher.registerMessageHandler(targetInstance, method.name, 
 				type, messageProperties, selector);
 	}

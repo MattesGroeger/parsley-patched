@@ -20,7 +20,7 @@ import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.ContextError;
-import org.spicefactory.parsley.messaging.MessageDispatcher;
+import org.spicefactory.parsley.messaging.MessageRouter;
 import org.spicefactory.parsley.messaging.MessageProcessor;
 
 import flash.utils.Dictionary;
@@ -28,7 +28,7 @@ import flash.utils.Dictionary;
 /**
  * @author Jens Halm
  */
-public class DefaultMessageDispatcher implements MessageDispatcher {
+public class DefaultMessageRouter implements MessageRouter {
 	
 	
 	private var targets:Array;
@@ -38,7 +38,7 @@ public class DefaultMessageDispatcher implements MessageDispatcher {
 	/**
 	 * Creates a new instance.
 	 */
-	function DefaultMessageDispatcher () {
+	function DefaultMessageRouter () {
 		init();
 	}
 	

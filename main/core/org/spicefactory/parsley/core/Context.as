@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.core {
 import org.spicefactory.lib.util.Command;
-import org.spicefactory.parsley.messaging.MessageDispatcher;
+import org.spicefactory.parsley.messaging.MessageRouter;
 
 /**
  * @author Jens Halm
@@ -42,7 +42,7 @@ public interface Context {
 	
 	function destroy () : void;
 	
-	function get messageDispatcher () : MessageDispatcher;
+	function get messageDispatcher () : MessageRouter;
 	
 	
 }

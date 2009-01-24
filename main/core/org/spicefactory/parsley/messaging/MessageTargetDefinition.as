@@ -22,7 +22,7 @@ package org.spicefactory.parsley.messaging {
 public interface MessageTargetDefinition {
 	
 	
-	function apply (targetInstance:Object, dispatcher:MessageDispatcher) : void;
+	function apply (targetInstance:Object, dispatcher:MessageRouter) : void;
 	
 	
 }

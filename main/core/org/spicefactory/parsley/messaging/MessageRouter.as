@@ -19,7 +19,7 @@ package org.spicefactory.parsley.messaging {
 /**
  * @author Jens Halm
  */
-public interface MessageDispatcher {
+public interface MessageRouter {
 	
 	
 	function registerMessageBinding (targetInstance:Object, targetProperty:String, 
