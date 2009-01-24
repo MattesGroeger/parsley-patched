@@ -15,13 +15,14 @@
  */
 
 package org.spicefactory.parsley.factory {
+import org.spicefactory.parsley.core.Context;
 
 /**
  * @author Jens Halm
  */
 public interface ObjectInstantiator {
 	
-	function instantiate () : Object;
+	function instantiate (context:Context) : Object;
 	
 }
 }

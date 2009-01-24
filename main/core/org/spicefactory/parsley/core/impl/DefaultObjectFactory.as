@@ -36,7 +36,7 @@ public class DefaultObjectFactory implements ObjectFactory {
 
 	public function createObject (definition:ObjectDefinition, context:Context) : Object {
 		if (definition.instantiator != null) {
-			return definition.instantiator.instantiate();
+			return definition.instantiator.instantiate(context);
 		}
 		else {
 			var args:Array = resolveArray(definition.constructorArgs.getAll(), context);
