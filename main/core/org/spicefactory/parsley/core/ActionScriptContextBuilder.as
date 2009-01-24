@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core {
+import org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.impl.DefaultContext;
@@ -63,9 +64,13 @@ public class ActionScriptContextBuilder {
 			for each (var property:Property in ci.getProperties()) {
 				var internalMeta:Array = property.getMetadata(InternalProperty);
 				if (internalMeta.length == 0) {
-					var lazy:Boolean = true; // TODO - check metadata
-					var singleton:Boolean = true; // TODO - check metadata
-					reader.addClass(property.type.getClass(), property.name, lazy, singleton);
+					var definitionMetaArray:Array = property.getMetadata(ObjectDefinitionMetadata);
+					var definitionMeta:ObjectDefinitionMetadata = (definitionMetaArray > 0) ? 
+							ObjectDefinitionMetadata(definitionMetaArray[0]) : null;
+					var id:String = (definitionMeta != null) ? definitionMeta.id : property.name;
+					var lazy:Boolean = (definitionMeta != null) ? definitionMeta.lazy : true;
+					var singleton:Boolean = (definitionMeta != null) ? definitionMeta.singleton : true;
+					reader.addClass(property.type.getClass(), id, lazy, singleton);
 				} 
 			}	
 		}
