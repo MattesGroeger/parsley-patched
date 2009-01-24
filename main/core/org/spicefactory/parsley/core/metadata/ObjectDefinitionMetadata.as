@@ -25,9 +25,9 @@ public class ObjectDefinitionMetadata {
 
 	public var id:String;
 	
-	public var lazy:Boolean;
+	public var lazy:Boolean = true;
 	
-	public var singleton:Boolean;
+	public var singleton:Boolean = true;
 	
 	
 }
