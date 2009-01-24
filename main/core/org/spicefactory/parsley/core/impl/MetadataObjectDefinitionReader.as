@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.impl {
-import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.MetadataAware;
 import org.spicefactory.lib.reflect.Method;
@@ -27,48 +26,39 @@ import org.spicefactory.parsley.factory.RootObjectDefinition;
 import org.spicefactory.parsley.factory.impl.DefaultRootObjectDefinition;
 import org.spicefactory.parsley.util.IdGenerator;
 
-import flash.system.ApplicationDomain;
-
 /**
  * @author Jens Halm
  */
 public class MetadataObjectDefinitionReader {
 	
 	
-	private var _registry:ObjectDefinitionRegistry;
 	
-	
-	function MetadataObjectDefinitionReader (registry:ObjectDefinitionRegistry = null) {
-		_registry = (registry != null) ? registry : new DefaultObjectDefinitionRegistry();
-	}
-
-	
-	public function addClass (type:Class, id:String = null, 
+	public static function newRootDefinition (registry:ObjectDefinitionRegistry, type:Class, id:String = null, 
 			lazy:Boolean = true, singleton:Boolean = true) : RootObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
 		var def:RootObjectDefinition 
-				= new DefaultRootObjectDefinition(ClassInfo.forClass(type, _registry.domain), id, lazy, singleton);
-		processMetadata(def);
-		_registry.registerDefinition(def);
+				= new DefaultRootObjectDefinition(ClassInfo.forClass(type, registry.domain), id, lazy, singleton);
+		processMetadata(registry, def);
+		registry.registerDefinition(def);
 		return def;
 	}
 
-	protected function processMetadata (definition:ObjectDefinition) : void {
+	private static function processMetadata (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : void {
 		var type:ClassInfo = definition.type;
-		executeMetadataHandlers(definition, type);
+		executeMetadataHandlers(registry, definition, type);
 		for each (var property:Property in type.getProperties()) {
-			executeMetadataHandlers(definition, property);
+			executeMetadataHandlers(registry, definition, property);
 		}
 		for each (var method:Method in type.getMethods()) {
-			executeMetadataHandlers(definition, method);
+			executeMetadataHandlers(registry, definition, method);
 		}
 	}
 	
-	private function executeMetadataHandlers (definition:ObjectDefinition, type:MetadataAware) : void {
+	private static function executeMetadataHandlers (registry:ObjectDefinitionRegistry, definition:ObjectDefinition, type:MetadataAware) : void {
 		for each (var metadata:Object in type.getAllMetadata()) {
 			if (metadata is ObjectDefinitionDecorator) {
 				// TODO - map Property and Method instances
-				ObjectDefinitionDecorator(metadata).decorate(definition, _registry);				
+				ObjectDefinitionDecorator(metadata).decorate(definition, registry);				
 				// TODO - collect errors for ProblemReporter
 			} 
 		}

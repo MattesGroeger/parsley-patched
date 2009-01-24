@@ -59,8 +59,7 @@ public class ActionScriptContextBuilder {
 	private static function populateRegistry (containers:Array, registry:ObjectDefinitionRegistry = null) : void {
 		for each (var container:Class in containers) {
 			var ci:ClassInfo = ClassInfo.forClass(container);
-			var reader:MetadataObjectDefinitionReader = new MetadataObjectDefinitionReader(registry);
-			var containerDefinition:RootObjectDefinition = reader.addClass(container);
+			var containerDefinition:RootObjectDefinition = MetadataObjectDefinitionReader.newRootDefinition(registry, container);
 			for each (var property:Property in ci.getProperties()) {
 				var internalMeta:Array = property.getMetadata(InternalProperty);
 				if (internalMeta.length == 0) {
@@ -70,7 +69,7 @@ public class ActionScriptContextBuilder {
 					var id:String = (definitionMeta != null) ? definitionMeta.id : property.name;
 					var lazy:Boolean = (definitionMeta != null) ? definitionMeta.lazy : true;
 					var singleton:Boolean = (definitionMeta != null) ? definitionMeta.singleton : true;
-					reader.addClass(property.type.getClass(), id, lazy, singleton);
+					MetadataObjectDefinitionReader.newRootDefinition(registry, property.type.getClass(), id, lazy, singleton);
 				} 
 			}	
 		}
