@@ -53,7 +53,13 @@ public class DefaultContext implements Context {
 		_messageDispatcher = (dispatcher != null) ? dispatcher : new DefaultMessageDispatcher();
 		_factory = (factory != null) ? factory : new DefaultObjectFactory();
 	}
+
 	
+	public function initialize () : void {
+		// TODO - must process new definitions (create non-lazy singletons and process message targets of lazy singletons)
+	}
+
+
 	public function get registry () : ObjectDefinitionRegistry {
 		return _registry;
 	}
@@ -148,9 +154,6 @@ public class DefaultContext implements Context {
 		return _registry.getDefinition(id);
 	}
 	
-	public function refresh () : void {
-		// TODO - must process new definitions (create non-lazy singletons and process message targets of lazy singletons)
-	}
 	
 	public function addDestroyCommand (com:Command) : void {
 		_destroyCommands.addCommand(com);		
