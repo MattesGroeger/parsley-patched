@@ -23,6 +23,7 @@ import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
+import org.spicefactory.parsley.factory.impl.DefaultObjectDefinition;
 import org.spicefactory.parsley.factory.impl.DefaultRootObjectDefinition;
 import org.spicefactory.parsley.util.IdGenerator;
 
@@ -39,7 +40,13 @@ public class MetadataObjectDefinitionBuilder {
 		var def:RootObjectDefinition 
 				= new DefaultRootObjectDefinition(ClassInfo.forClass(type, registry.domain), id, lazy, singleton);
 		processMetadata(registry, def);
-		registry.registerDefinition(def);
+		return def;
+	}
+	
+	public static function newDefinition (registry:ObjectDefinitionRegistry, type:Class) : ObjectDefinition {
+		var def:ObjectDefinition 
+				= new DefaultObjectDefinition(ClassInfo.forClass(type, registry.domain));
+		processMetadata(registry, def);
 		return def;
 	}
 
