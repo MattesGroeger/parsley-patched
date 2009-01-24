@@ -43,11 +43,6 @@ public class MetadataObjectDefinitionReader {
 	}
 
 	
-	public function get registry () : ObjectDefinitionRegistry {
-		return _registry;
-	}
-
-	
 	public function addClass (type:Class, id:String = null, 
 			lazy:Boolean = true, singleton:Boolean = true) : RootObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
