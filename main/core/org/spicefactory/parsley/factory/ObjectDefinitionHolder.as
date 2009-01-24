@@ -26,9 +26,9 @@ public class ObjectDefinitionHolder {
 	private var _targetDefinition:ObjectDefinition;
 	
 	
-	function ObjectDefinitionHolder (processed:ObjectDefinition, target:ObjectDefinition) {
-		_processedDefinition = processed;
-		_targetDefinition = target;
+	function ObjectDefinitionHolder (definition:ObjectDefinition) {
+		_processedDefinition = definition;
+		_targetDefinition = definition;
 	}
 
 	
