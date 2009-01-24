@@ -62,6 +62,19 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		_messageTargets = new DefaultMessageTargetRegistry(this);
 	}
 
+
+	public function populateFrom (definition:ObjectDefinition) : void {
+		_constructorArgs = definition.constructorArgs;
+		_properties = definition.properties;
+		_methods = definition.injectorMethods;
+		_processors = definition.postProcessors;
+		_messageTargets = definition.messageTargets;
+		
+		_initMethod = definition.initMethod;
+		_destroyMethod = definition.destroyMethod;
+		_instantiator = definition.instantiator;
+	}
+
 	
 	public function get type () : ClassInfo {
 		return _type;
