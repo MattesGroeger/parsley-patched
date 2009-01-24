@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.factory {
+import org.spicefactory.parsley.core.ContextError;
 
 /**
  * @author Jens Halm
@@ -37,7 +38,10 @@ public class ObjectDefinitionHolder {
 	}
 	
 	public function set processedDefinition (processedDefinition:ObjectDefinition) : void {
-		// TODO - check if types are compatible
+		if (!processedDefinition.type.isType(_processedDefinition.type.getClass())) {
+			throw new ContextError("Cannot switch from type " + _processedDefinition.type.name
+					+ " to type " + processedDefinition.type.name);	
+		}
 		_processedDefinition = processedDefinition;
 	}
 	
@@ -46,6 +50,9 @@ public class ObjectDefinitionHolder {
 	}
 	
 	public function set targetDefinition (targetDefinition:ObjectDefinition) : void {
+		if ((_targetDefinition is RootObjectDefinition) != (targetDefinition is RootObjectDefinition)) {
+			throw new ContextError("Illegal ObjectDefinition type: Cannot switch from root to nested definition or vice versa");
+		}
 		_targetDefinition = targetDefinition;
 	}
 	
