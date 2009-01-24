@@ -19,6 +19,7 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinition;
+import org.spicefactory.parsley.util.IdGenerator;
 
 /**
  * @author Jens Halm
@@ -40,8 +41,9 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 	}
 	
 	
-	public static function fromDefinition (definition:ObjectDefinition, id:String, 
+	public static function fromDefinition (definition:ObjectDefinition, id:String = null, 
 			lazy:Boolean = true, singleton:Boolean = true) : DefaultRootObjectDefinition {
+		if (id == null) id = IdGenerator.nextObjectId;
 		var def:DefaultRootObjectDefinition = new DefaultRootObjectDefinition(definition.type, id, lazy, singleton);
 		def.populateFrom(definition);
 		return def;
