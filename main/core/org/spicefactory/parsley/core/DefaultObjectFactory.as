@@ -15,17 +15,16 @@
  */
 
 package org.spicefactory.parsley.core {
-import org.spicefactory.parsley.messaging.MessageTargetDefinition;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.util.Command;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.factory.ObjectDefinition;
-import org.spicefactory.parsley.factory.RootObjectDefinition;
 import org.spicefactory.parsley.factory.model.ObjectIdReference;
 import org.spicefactory.parsley.factory.model.ObjectTypeReference;
 import org.spicefactory.parsley.factory.model.PropertyValue;
 import org.spicefactory.parsley.factory.registry.MethodParameterRegistry;
 import org.spicefactory.parsley.factory.registry.PostProcessorEntry;
+import org.spicefactory.parsley.messaging.MessageTargetDefinition;
 import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReference;
 
 /**
@@ -35,8 +34,13 @@ public class DefaultObjectFactory implements ObjectFactory {
 
 
 	public function createObject (definition:ObjectDefinition, context:Context) : Object {
-		var args:Array = resolveArray(definition.constructorArgs.getAll(), context);
-		return definition.type.newInstance(args);
+		if (definition.instantiator != null) {
+			return definition.instantiator.instantiate();
+		}
+		else {
+			var args:Array = resolveArray(definition.constructorArgs.getAll(), context);
+			return definition.type.newInstance(args);
+		}
 	}
 	
 	public function configureObject (instance:Object, definition:ObjectDefinition, 
