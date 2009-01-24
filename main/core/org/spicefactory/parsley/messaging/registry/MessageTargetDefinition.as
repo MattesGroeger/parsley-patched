@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.messaging {
+package org.spicefactory.parsley.messaging.registry {
+import org.spicefactory.parsley.messaging.MessageRouter;
 
 /**
  * @author Jens Halm

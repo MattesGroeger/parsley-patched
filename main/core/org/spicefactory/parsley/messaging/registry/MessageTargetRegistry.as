@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.messaging.registry {
-import org.spicefactory.parsley.messaging.MessageTargetDefinition;
 
 /**
  * @author Jens Halm

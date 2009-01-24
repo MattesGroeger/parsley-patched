@@ -25,8 +25,8 @@ import org.spicefactory.parsley.factory.model.ObjectTypeReference;
 import org.spicefactory.parsley.factory.model.PropertyValue;
 import org.spicefactory.parsley.factory.registry.MethodParameterRegistry;
 import org.spicefactory.parsley.factory.registry.PostProcessorEntry;
-import org.spicefactory.parsley.messaging.MessageTargetDefinition;
 import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReference;
+import org.spicefactory.parsley.messaging.registry.MessageTargetDefinition;
 
 /**
  * @author Jens Halm

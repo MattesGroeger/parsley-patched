@@ -20,7 +20,7 @@ import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.messaging.MessageRouter;
-import org.spicefactory.parsley.messaging.MessageTargetDefinition;
+import org.spicefactory.parsley.messaging.registry.MessageTargetDefinition;
 
 [Metadata(name="MessageInterceptor", types="method")]
 /**

@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.messaging.registry.impl {
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.registry.impl.AbstractRegistry;
-import org.spicefactory.parsley.messaging.MessageTargetDefinition;
+import org.spicefactory.parsley.messaging.registry.MessageTargetDefinition;
 import org.spicefactory.parsley.messaging.registry.MessageTargetRegistry;
 
 /**
