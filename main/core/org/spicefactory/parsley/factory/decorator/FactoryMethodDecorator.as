@@ -46,7 +46,6 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 		// even if the original definition is for a nested object
 		var factoryDefinition:FactoryObjectDefinition 
 				= DefaultFactoryObjectDefinition.fromDefinition(definition, targetDefinition);
-		registry.registerDefinition(factoryDefinition);
 		return factoryDefinition;		
 	}
 	
