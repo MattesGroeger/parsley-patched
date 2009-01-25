@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.impl {
+import org.spicefactory.parsley.core.ContextError;
+import org.spicefactory.parsley.factory.FactoryObjectDefinition;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.MetadataAware;
 import org.spicefactory.lib.reflect.Method;
@@ -37,20 +39,25 @@ public class MetadataObjectDefinitionBuilder {
 	public static function newRootDefinition (registry:ObjectDefinitionRegistry, type:Class, id:String = null, 
 			lazy:Boolean = true, singleton:Boolean = true) : RootObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
-		var def:RootObjectDefinition 
-				= new DefaultRootObjectDefinition(ClassInfo.forClass(type, registry.domain), id, lazy, singleton);
-		def = processMetadata(registry, def);
+		var ci:ClassInfo = ClassInfo.forClass(type, registry.domain);
+		var def:RootObjectDefinition = new DefaultRootObjectDefinition(ci, id, lazy, singleton);
+		var result:ObjectDefinition = processMetadata(registry, def);
+		if (!(result is RootObjectDefinition)) {
+			throw new ContextError("Metadata processing did not return a RootObjectDefinition for type " + ci.name);
+		}
+		def = RootObjectDefinition(result);
+		registry.registerDefinition(def);
 		return def;
 	}
 	
 	public static function newDefinition (registry:ObjectDefinitionRegistry, type:Class) : ObjectDefinition {
-		var def:ObjectDefinition 
-				= new DefaultObjectDefinition(ClassInfo.forClass(type, registry.domain));
+		var ci:ClassInfo = ClassInfo.forClass(type, registry.domain);
+		var def:ObjectDefinition = new DefaultObjectDefinition(ci);
 		def = processMetadata(registry, def);
 		return def;
 	}
 
-	private static function processMetadata (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : void {
+	private static function processMetadata (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : ObjectDefinition {
 		var type:ClassInfo = definition.type;
 		
 		definition = executeMetadataHandlers(registry, definition, type);
@@ -60,10 +67,18 @@ public class MetadataObjectDefinitionBuilder {
 		for each (var method:Method in type.getMethods()) {
 			definition = executeMetadataHandlers(registry, definition, method);
 		}
+		
+		if (definition is FactoryObjectDefinition) {
+			var factory:FactoryObjectDefinition = FactoryObjectDefinition(definition);
+			registry.registerDefinition(factory);
+			return factory.targetDefinition;
+		}
+		
+		return definition;
 	}
-	
+
 	private static function executeMetadataHandlers (registry:ObjectDefinitionRegistry, 
-			definition:ObjectDefinition, type:MetadataAware) : void {
+			definition:ObjectDefinition, type:MetadataAware) : ObjectDefinition {
 		for each (var metadata:Object in type.getAllMetadata()) {
 			if (metadata is ObjectDefinitionDecorator) {
 				// TODO - map Property and Method instances
@@ -75,9 +90,8 @@ public class MetadataObjectDefinitionBuilder {
 				// TODO - collect errors for ProblemReporter
 			} 
 		}
+		return definition;
 	}
-	
-
 }
 
 }
