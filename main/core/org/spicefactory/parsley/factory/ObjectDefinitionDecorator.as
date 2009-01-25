@@ -21,7 +21,7 @@ package org.spicefactory.parsley.factory {
  */
 public interface ObjectDefinitionDecorator {
 	
-	function decorate (definitionHolder:ObjectDefinitionHolder, registry:ObjectDefinitionRegistry) : void;
+	function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition;
 	
 }
 

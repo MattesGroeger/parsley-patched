@@ -18,8 +18,8 @@ package org.spicefactory.parsley.messaging.decorator {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.metadata.EventInfo;
 import org.spicefactory.parsley.core.ContextError;
+import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.factory.ObjectDefinitionHolder;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 
 [Metadata(name="ManagedEvents", types="class")]
@@ -36,7 +36,7 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
 	public var type:ClassInfo;
 	
 	
-	public function decorate (definitionHolder:ObjectDefinitionHolder, registry:ObjectDefinitionRegistry) : void {
+	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		if (names == null) {
 			names = new Array();
 			var events:Array = type.getMetadata(EventInfo);
@@ -48,7 +48,7 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
 			throw new ContextError("ManagedEvents on class " + type.name 
 					+ ": No event names specified in ManagedEvents tag and no Event tag on class");	
 		}
-		definitionHolder.processedDefinition.postProcessors.addPostProcessor(new ManagedEventsPostProcessor(names));
+		definition.postProcessors.addPostProcessor(new ManagedEventsPostProcessor(names));
 	}
 }
 }

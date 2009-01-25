@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.messaging.decorator {
-import org.spicefactory.parsley.factory.ObjectDefinitionHolder;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
@@ -41,8 +40,9 @@ public class MessageHandlerDecorator implements ObjectDefinitionDecorator, Messa
 	
 	
 	
-	public function decorate (definitionHolder:ObjectDefinitionHolder, registry:ObjectDefinitionRegistry) : void {
-		definitionHolder.processedDefinition.messageTargets.addMessageTarget(this);
+	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		definition.messageTargets.addMessageTarget(this);
+		return definition;
 	}
 
 	public function apply (targetInstance:Object, dispatcher:MessageRouter) : void {

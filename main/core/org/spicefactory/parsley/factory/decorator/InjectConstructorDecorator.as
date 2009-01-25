@@ -17,7 +17,6 @@
 package org.spicefactory.parsley.factory.decorator {
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.factory.ObjectDefinitionHolder;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 
 /**
@@ -27,11 +26,11 @@ import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 public class InjectConstructorDecorator implements ObjectDefinitionDecorator {
 
 
-	public function decorate (definitionHolder:ObjectDefinitionHolder, registry:ObjectDefinitionRegistry) : void {
-		var definition:ObjectDefinition = definitionHolder.processedDefinition;
+	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		for (var i:uint = 0; i < definition.type.getConstructor().parameters.length; i++) {
 			definition.constructorArgs.addTypeReference();
 		}
+		return definition;
 	}
 	
 	

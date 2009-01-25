@@ -17,12 +17,12 @@
 package org.spicefactory.parsley.factory.decorator {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.impl.MetadataObjectDefinitionBuilder;
+import org.spicefactory.parsley.factory.FactoryObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.factory.ObjectDefinitionHolder;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
-import org.spicefactory.parsley.factory.impl.DefaultRootObjectDefinition;
+import org.spicefactory.parsley.factory.impl.DefaultFactoryObjectDefinition;
 
 /**
  * @author Jens Halm
@@ -34,22 +34,20 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 	public var method:Method;
 
 
-	public function decorate (definitionHolder:ObjectDefinitionHolder, registry:ObjectDefinitionRegistry) : void {
-		
-		var definition:ObjectDefinition = definitionHolder.processedDefinition;
-		// Specified definition is for the factory, must be registered as a root factory, 
-		// even if the original definition is for a nested object
-		var factoryDefinition:RootObjectDefinition = DefaultRootObjectDefinition.fromDefinition(definition);
-		registry.registerDefinition(factoryDefinition);
-		definitionHolder.processedDefinition = factoryDefinition;
+	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		
 		// Must create a new definition for the target type
 		var targetDefinition:ObjectDefinition = (definition is RootObjectDefinition) 
 				? MetadataObjectDefinitionBuilder.newRootDefinition(registry, method.returnType.getClass()) 
 				: MetadataObjectDefinitionBuilder.newDefinition(registry, method.returnType.getClass());
 		targetDefinition.instantiator = new FactoryMethodInstantiator(factoryDefinition, method);
-		definitionHolder.targetDefinition = targetDefinition;
-				
+		
+		// Specified definition is for the factory, must be registered as a root factory, 
+		// even if the original definition is for a nested object
+		var factoryDefinition:FactoryObjectDefinition 
+				= DefaultFactoryObjectDefinition.fromDefinition(definition, targetDefinition);
+		registry.registerDefinition(factoryDefinition);
+		return factoryDefinition;		
 	}
 	
 	

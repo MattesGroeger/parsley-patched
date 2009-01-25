@@ -21,7 +21,6 @@ import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.factory.ObjectDefinitionHolder;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinition;
@@ -40,37 +39,39 @@ public class MetadataObjectDefinitionBuilder {
 		if (id == null) id = IdGenerator.nextObjectId;
 		var def:RootObjectDefinition 
 				= new DefaultRootObjectDefinition(ClassInfo.forClass(type, registry.domain), id, lazy, singleton);
-		var definitionHolder:ObjectDefinitionHolder = new ObjectDefinitionHolder(def);
-		processMetadata(registry, definitionHolder);
+		def = processMetadata(registry, def);
 		return def;
 	}
 	
 	public static function newDefinition (registry:ObjectDefinitionRegistry, type:Class) : ObjectDefinition {
 		var def:ObjectDefinition 
 				= new DefaultObjectDefinition(ClassInfo.forClass(type, registry.domain));
-		var definitionHolder:ObjectDefinitionHolder = new ObjectDefinitionHolder(def);
-		processMetadata(registry, definitionHolder);
+		def = processMetadata(registry, def);
 		return def;
 	}
 
-	private static function processMetadata (registry:ObjectDefinitionRegistry, definitionHolder:ObjectDefinitionHolder) : void {
-		var type:ClassInfo = definitionHolder.processedDefinition.type;
+	private static function processMetadata (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : void {
+		var type:ClassInfo = definition.type;
 		
-		executeMetadataHandlers(registry, definitionHolder, type);
+		definition = executeMetadataHandlers(registry, definition, type);
 		for each (var property:Property in type.getProperties()) {
-			executeMetadataHandlers(registry, definitionHolder, property);
+			definition = executeMetadataHandlers(registry, definition, property);
 		}
 		for each (var method:Method in type.getMethods()) {
-			executeMetadataHandlers(registry, definitionHolder, method);
+			definition = executeMetadataHandlers(registry, definition, method);
 		}
 	}
 	
 	private static function executeMetadataHandlers (registry:ObjectDefinitionRegistry, 
-			definitionHolder:ObjectDefinitionHolder, type:MetadataAware) : void {
+			definition:ObjectDefinition, type:MetadataAware) : void {
 		for each (var metadata:Object in type.getAllMetadata()) {
 			if (metadata is ObjectDefinitionDecorator) {
 				// TODO - map Property and Method instances
-				ObjectDefinitionDecorator(metadata).decorate(definitionHolder, registry);				
+				var newDef:ObjectDefinition = ObjectDefinitionDecorator(metadata).decorate(definition, registry);
+				if (newDef != definition) {
+					// TODO - check if applicable
+				}				
+				definition = newDef;
 				// TODO - collect errors for ProblemReporter
 			} 
 		}

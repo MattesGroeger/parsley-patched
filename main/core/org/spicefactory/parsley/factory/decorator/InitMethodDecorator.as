@@ -16,8 +16,8 @@
 
 package org.spicefactory.parsley.factory.decorator {
 import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.factory.ObjectDefinitionHolder;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 
 /**
@@ -30,8 +30,9 @@ public class InitMethodDecorator implements ObjectDefinitionDecorator {
 	public var method:Method;
 
 
-	public function decorate (definitionHolder:ObjectDefinitionHolder, registry:ObjectDefinitionRegistry) : void {
-		definitionHolder.processedDefinition.initMethod = method;
+	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		definition.initMethod = method;
+		return definition;
 	}
 	
 	
