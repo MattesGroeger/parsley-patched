@@ -15,8 +15,10 @@
  */
 
 package org.spicefactory.parsley.factory.impl {
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.factory.FactoryObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinition;
+import org.spicefactory.parsley.util.IdGenerator;
 
 /**
  * @author Jens Halm
@@ -27,10 +29,21 @@ public class DefaultFactoryObjectDefinition extends DefaultRootObjectDefinition 
 	private var _targetDefinition:ObjectDefinition;
 	
 	
-	function DefaultFactoryObjectDefinition (target:ObjectDefinition) {
+	function DefaultFactoryObjectDefinition (target:ObjectDefinition, type:ClassInfo, id:String, 
+			lazy:Boolean = true, singleton:Boolean = true) {
 		_targetDefinition = target;
 	}
 
+
+	public static function fromDefinition (factoryDefinition:ObjectDefinition, targetDefinition:ObjectDefinition, 
+			id:String = null, lazy:Boolean = true, singleton:Boolean = true) : DefaultFactoryObjectDefinition {
+		if (id == null) id = IdGenerator.nextObjectId;
+		var def:DefaultFactoryObjectDefinition 
+				= new DefaultFactoryObjectDefinition(targetDefinition, factoryDefinition.type, id, lazy, singleton);
+		def.populateFrom(factoryDefinition);
+		return def;
+	} 
+	
 	
 	public function get targetDefinition () : ObjectDefinition {
 		return _targetDefinition;
