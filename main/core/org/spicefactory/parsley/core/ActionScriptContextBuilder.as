@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.core {
-import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.impl.DefaultContext;
@@ -24,6 +23,7 @@ import org.spicefactory.parsley.core.metadata.InternalProperty;
 import org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
+import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
 
 import flash.system.ApplicationDomain;
 
@@ -62,7 +62,7 @@ public class ActionScriptContextBuilder {
 			var containerDefinition:RootObjectDefinition = MetadataObjectDefinitionBuilder.newRootDefinition(registry, container);
 			for each (var property:Property in ci.getProperties()) {
 				var internalMeta:Array = property.getMetadata(InternalProperty);
-				if (internalMeta.length == 0) {
+				if (internalMeta.length == 0 && property.readable) {
 					var definitionMetaArray:Array = property.getMetadata(ObjectDefinitionMetadata);
 					var definitionMeta:ObjectDefinitionMetadata = (definitionMetaArray > 0) ? 
 							ObjectDefinitionMetadata(definitionMetaArray[0]) : null;
@@ -71,7 +71,7 @@ public class ActionScriptContextBuilder {
 					var singleton:Boolean = (definitionMeta != null) ? definitionMeta.singleton : true;
 					var targetDefinition:RootObjectDefinition 
 							= MetadataObjectDefinitionBuilder.newRootDefinition(registry, property.type.getClass(), id, lazy, singleton);
-					registry.registerDefinition(targetDefinition);
+					targetDefinition.instantiator = new ContainerPropertyInstantiator(containerDefinition, property);
 				} 
 			}	
 		}
@@ -79,5 +79,34 @@ public class ActionScriptContextBuilder {
 	
 	
 }
+}
 
+import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.ContextError;
+import org.spicefactory.parsley.factory.ObjectInstantiator;
+import org.spicefactory.parsley.factory.RootObjectDefinition;
+
+class ContainerPropertyInstantiator implements ObjectInstantiator {
+
+	
+	private var definition:RootObjectDefinition;
+	private var property:Property;
+
+
+	function ContainerPropertyInstantiator (definition:RootObjectDefinition, property:Property) {
+		this.definition = definition;
+		this.property = property;
+	}
+
+	
+	public function instantiate (context:Context) : Object {
+		var factory:Object = context.getObject(definition.id);
+		if (factory == null) {
+			throw new ContextError("Unable to obtain factory of type " + definition.type.name);
+		}
+		return property.getValue(factory);
+	}
+	
+	
 }
