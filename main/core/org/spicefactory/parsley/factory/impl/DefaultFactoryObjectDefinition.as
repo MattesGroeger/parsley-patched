@@ -31,6 +31,7 @@ public class DefaultFactoryObjectDefinition extends DefaultRootObjectDefinition 
 	
 	function DefaultFactoryObjectDefinition (target:ObjectDefinition, type:ClassInfo, id:String, 
 			lazy:Boolean = true, singleton:Boolean = true) {
+		super(type, id, lazy, singleton);
 		_targetDefinition = target;
 	}
 
