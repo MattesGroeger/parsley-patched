@@ -40,7 +40,6 @@ public class DefaultContext implements Context {
 	private var _messageDispatcher:MessageRouter;
 	
 	private var _singletonCache:SimpleMap;
-	private var _factoryCache:SimpleMap;
 	private var _destroyCommands:CommandChain; // TODO - maybe use events instead of commands
 	
 	private var _underConstruction:Dictionary = new Dictionary();
@@ -79,7 +78,7 @@ public class DefaultContext implements Context {
 	
 	public function getType (id:String) : Class {
 		var def:ObjectDefinition = getDefinition(id);
-		return (def.factoryMethod == null) ? def.type.getClass() : def.factoryMethod.returnType.getClass();
+		return def.type.getClass();
 	}
 	
 	public function getObjectsByType (type:Class) : Array {
@@ -93,10 +92,6 @@ public class DefaultContext implements Context {
 	
 	public function getObject (id:String) : Object {
 		return getInstance(getDefinition(id));
-	}
-	
-	public function getFactory (id:String) : Object {
-		return getInstance(getDefinition(id), true);		
 	}
 	
 	private function getInstance (def:RootObjectDefinition, getFactory:Boolean = false) : Object {
@@ -114,32 +109,11 @@ public class DefaultContext implements Context {
 		_underConstruction[id] = true;
 		
 		try {
-			var isFactory:Boolean = (def.factoryMethod != null);
-			var instance:Object;
-			if (isFactory && _factoryCache.containsKey(id)) {
-				instance = _factoryCache.get(id);
+			var instance:Object = _factory.createObject(def, this);
+			if (def.singleton) {
+				_singletonCache.put(id, instance);
 			}
-			else {
-				instance = _factory.createObject(def, this);
-				if (isFactory) {
-					_factoryCache.put(id, instance);
-				}
-				else if (def.singleton) {
-					_singletonCache.put(id, instance);
-				}
-				
-				_factory.configureObject(instance, def, this, (!def.singleton || !def.lazy));
-			}
-			
-			if (isFactory && !getFactory) {
-				instance = def.factoryMethod.invoke(instance, []);
-				if (instance == null) {
-					throw new ContextError("Factory with id " + id + " returned null");
-				}
-				if (def.singleton) {
-					_singletonCache.put(id, instance);
-				}
-			}
+			_factory.configureObject(instance, def, this, (!def.singleton || !def.lazy));
 		}
 		finally {
 			delete _underConstruction[id];

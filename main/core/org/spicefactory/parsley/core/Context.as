@@ -36,8 +36,6 @@ public interface Context {
 	
 	function getObject (id:String) : Object;
 	
-	function getFactory (id:String) : Object;
-	
 	function addDestroyCommand (com:Command) : void;
 	
 	function destroy () : void;

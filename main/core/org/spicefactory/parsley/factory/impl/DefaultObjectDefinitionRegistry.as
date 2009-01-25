@@ -79,20 +79,11 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 	public function getDefinitionsByType (type:Class) : Array {
 		var defs:Array = new Array();
 		for each (var def:RootObjectDefinition in definitions.values) {
-			if (isMatchingType(def, type)) {
+			if (def.type.isType(type)) {
 				defs.push(def);
 			}
 		}
 		return defs;
-	}
-	
-	private function isMatchingType (def:ObjectDefinition, type:Class) : Boolean {
-		if (def.factoryMethod == null) {
-			return def.type.isType(type);
-		}
-		else {
-			return def.factoryMethod.returnType.isType(type);
-		}
 	}
 	
 	

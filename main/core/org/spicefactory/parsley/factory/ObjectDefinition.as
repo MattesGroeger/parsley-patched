@@ -42,7 +42,12 @@ public interface ObjectDefinition {
 	function get postProcessors () : PostProcessorRegistry;	
 	
 	function get messageTargets () : MessageTargetRegistry;
+
 	
+	function get instantiator () : ObjectInstantiator;
+	
+	function set instantiator (value:ObjectInstantiator) : void;
+
 	
 	function get initMethod () : Method;
 	
@@ -52,16 +57,6 @@ public interface ObjectDefinition {
 	function get destroyMethod () : Method;
 	
 	function set destroyMethod (value:Method) : void;
-	
-	
-	function get factoryMethod () : Method;
-	
-	function set factoryMethod (value:Method) : void;
-	
-	
-	function get instantiator () : ObjectInstantiator;
-	
-	function set instantiator (value:ObjectInstantiator) : void;
 	
 	
 	function freeze () : void;
