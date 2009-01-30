@@ -10,7 +10,6 @@
 <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/spicelib-1.1.0.swc</AS3Classpath>
 <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/cinnamon-0.3.0.swc</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">core</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">xml</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">flex</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">localization</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-xml</AS3Classpath>
