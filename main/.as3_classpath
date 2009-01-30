@@ -14,4 +14,5 @@
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-flex</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-core</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-core</AS3Classpath>
+<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-logging</AS3Classpath>
 </AS3Classpath>
