@@ -12,4 +12,5 @@
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">core</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-xml</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-localization</AS3Classpath>
+<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-flex</AS3Classpath>
 </AS3Classpath>
