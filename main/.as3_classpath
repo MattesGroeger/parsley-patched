@@ -13,4 +13,5 @@
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">xml</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">flex</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">localization</AS3Classpath>
+<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-xml</AS3Classpath>
 </AS3Classpath>
