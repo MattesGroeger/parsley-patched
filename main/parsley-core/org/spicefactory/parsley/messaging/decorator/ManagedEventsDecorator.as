@@ -49,6 +49,7 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
 					+ ": No event names specified in ManagedEvents tag and no Event tag on class");	
 		}
 		definition.postProcessors.addPostProcessor(new ManagedEventsPostProcessor(names));
+		return definition;
 	}
 }
 }
