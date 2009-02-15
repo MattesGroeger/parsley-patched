@@ -135,7 +135,7 @@ public class DefaultMessageRouter implements MessageRouter {
 				// since we can't reflect on varargs in AS3.
 			}
 		} 
-		else if (params.length == null) {
+		else if (params.length == 0) {
 			resolvedMessageProperties = new Array();
 		}
 		else {
@@ -200,6 +200,7 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.messaging.MessageProcessor;
+import org.spicefactory.parsley.messaging.impl.MessageTarget;
 
 class MessageBinding extends MessageTarget {
 
