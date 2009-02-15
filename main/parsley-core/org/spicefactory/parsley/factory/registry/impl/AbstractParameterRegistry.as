@@ -59,7 +59,7 @@ public class AbstractParameterRegistry extends AbstractRegistry {
 		args.push(new ObjectTypeReference(type, required));	
 	}
 	
-	protected function getAt (index:uint) : * {
+	public function getAt (index:uint) : * {
 		return args[index];	
 	}
 	
