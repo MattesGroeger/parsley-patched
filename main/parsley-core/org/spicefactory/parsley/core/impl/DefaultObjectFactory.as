@@ -141,7 +141,9 @@ public class DefaultObjectFactory implements ObjectFactory {
 			}
 		}
 		else if (value is MessageDispatcherFunctionReference) {
-			return context.messageDispatcher.dispatchMessage;
+			// two lines to avoid compiler warning
+			var r:* = context.messageDispatcher.dispatchMessage;
+			return r;
 		}
 		else {
 			// TODO - handle ManagedArray
