@@ -64,7 +64,7 @@ public class ActionScriptContextBuilder {
 				var internalMeta:Array = property.getMetadata(InternalProperty);
 				if (internalMeta.length == 0 && property.readable) {
 					var definitionMetaArray:Array = property.getMetadata(ObjectDefinitionMetadata);
-					var definitionMeta:ObjectDefinitionMetadata = (definitionMetaArray > 0) ? 
+					var definitionMeta:ObjectDefinitionMetadata = (definitionMetaArray.length > 0) ? 
 							ObjectDefinitionMetadata(definitionMetaArray[0]) : null;
 					var id:String = (definitionMeta != null) ? definitionMeta.id : property.name;
 					var lazy:Boolean = (definitionMeta != null) ? definitionMeta.lazy : true;
