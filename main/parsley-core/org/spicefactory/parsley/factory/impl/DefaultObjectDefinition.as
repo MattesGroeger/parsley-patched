@@ -130,11 +130,11 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		_factoryMethod = value;
 	}
 	
-	function get instantiator () : ObjectInstantiator {
+	public function get instantiator () : ObjectInstantiator {
 		return _instantiator;
 	}
 	
-	function set instantiator (value:ObjectInstantiator) : void {
+	public function set instantiator (value:ObjectInstantiator) : void {
 		checkState();
 		_instantiator = value;
 	}
