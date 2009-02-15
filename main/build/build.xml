@@ -7,15 +7,27 @@
 	<property name="cinnamon.version" value="0.3.1"/>
 	<property name="project.dir" value="${basedir}/.."/>
 	<property name="lib.dir" value="${project.dir}/lib"/>
+	
+	<property name="release.target.dir" value="${project.dir}/release/parsley-${version}"/>
 
-
-	<target name="compile_parsley">
+	
+	<!-- compile -->
+	
+	<target name="compile_parsley_full">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-o ${project.dir}/release/parsley-${version}.swc" />
-			<arg line="-el ${flex.sdk}/frameworks/libs/player/playerglobal.swc" />
+			<arg line="-o ${release.target.dir}/release/parsley-${version}.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/rpc.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/utilities.swc" />
+			<arg line="-el ${release.target.dir}/release/spicelib-${version}.swc" />
 			<arg line="-el ${lib.dir}/cinnamon-${cinnamon.version}.swc" />
-			<arg line="-sp ${project.dir}/src" />
-			<arg line="-is ${project.dir}/src" />
+			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-flex ${project.dir}/parsley-localization ${project.dir}/parsley-xml"/>
+			<arg line="-is ${project.dir}/parsley-core" />
+			<arg line="-is ${project.dir}/parsley-flex" />
+			<arg line="-is ${project.dir}/parsley-xml" />
+			<arg line="-is ${project.dir}/parsley-localization" />
 			<arg line="-debug=true"/>
 			<arg line="-verbose-stacktraces"/>
 		</exec>
@@ -24,76 +36,149 @@
 	<target name="compile_spicelib_full">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required" />
-			<arg line="-o ${project.dir}/release/spicelib-${version}.swc" />
+			<arg line="-o ${release.target.dir}/release/spicelib-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
-			<arg line="-sp ${project.dir}/core ${project.dir}/expressions ${project.dir}/logging ${project.dir}/reflect ${project.dir}/task" />
-			<arg line="-is ${project.dir}/core" />
-			<arg line="-is ${project.dir}/expressions" />
-			<arg line="-is ${project.dir}/logging" />
-			<arg line="-is ${project.dir}/reflect" />
-			<arg line="-is ${project.dir}/task" />
+			<arg line="-sp ${project.dir}/spicelib-core ${project.dir}/spicelib-expressions ${project.dir}/spicelib-logging ${project.dir}/spicelib-reflect ${project.dir}/spicelib-task ${project.dir}/spicelib-xml" />
+			<arg line="-is ${project.dir}/spicelib-core" />
+			<arg line="-is ${project.dir}/spicelib-expressions" />
+			<arg line="-is ${project.dir}/spicelib-logging" />
+			<arg line="-is ${project.dir}/spicelib-reflect" />
+			<arg line="-is ${project.dir}/spicelib-task" />
+			<arg line="-is ${project.dir}/spicelib-xml" />
 		</exec>
 	</target>
 	
 	<target name="compile_spicelib_core">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-o ${project.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-o ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
-			<arg line="-sp ${project.dir}/core" />
-			<arg line="-is ${project.dir}/core" />
+			<arg line="-sp ${project.dir}/spicelib-core" />
+			<arg line="-is ${project.dir}/spicelib-core" />
 		</exec>
 	</target>
 	
 	<target name="compile_spicelib_logging">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-o ${project.dir}/release/modules/spicelib-logging-${version}.swc" />
+			<arg line="-o ${release.target.dir}/release/modules/spicelib-logging-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
-			<arg line="-el ${project.dir}/release/modules/spicelib-core-${version}.swc" />
-			<arg line="-sp ${project.dir}/logging" />
-			<arg line="-is ${project.dir}/logging" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-sp ${project.dir}/spicelib-logging" />
+			<arg line="-is ${project.dir}/spicelib-logging" />
 		</exec>
 	</target>
 	
 	<target name="compile_spicelib_reflect">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required" />
-			<arg line="-o ${project.dir}/release/modules/spicelib-reflect-${version}.swc" />
+			<arg line="-o ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
-			<arg line="-el ${project.dir}/release/modules/spicelib-core-${version}.swc" />
-			<arg line="-sp ${project.dir}/reflect" />
-			<arg line="-is ${project.dir}/reflect" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-sp ${project.dir}/spicelib-reflect" />
+			<arg line="-is ${project.dir}/spicelib-reflect" />
 		</exec>
 	</target>
 	
 	<target name="compile_spicelib_expressions">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-o ${project.dir}/release/modules/spicelib-expressions-${version}.swc" />
+			<arg line="-o ${release.target.dir}/release/modules/spicelib-expressions-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
-			<arg line="-el ${project.dir}/release/modules/spicelib-core-${version}.swc" />
-			<arg line="-sp ${project.dir}/expressions" />
-			<arg line="-is ${project.dir}/expressions" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-sp ${project.dir}/spicelib-expressions" />
+			<arg line="-is ${project.dir}/spicelib-expressions" />
 		</exec>
 	</target>
 				
 	<target name="compile_spicelib_task">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-o ${project.dir}/release/modules/spicelib-task-${version}.swc" />
+			<arg line="-o ${release.target.dir}/release/modules/spicelib-task-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
-			<arg line="-el ${project.dir}/release/modules/spicelib-core-${version}.swc" />
-			<arg line="-el ${project.dir}/release/modules/spicelib-logging-${version}.swc" />
-			<arg line="-sp ${project.dir}/task" />
-			<arg line="-is ${project.dir}/task" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-logging-${version}.swc" />
+			<arg line="-sp ${project.dir}/spicelib-task" />
+			<arg line="-is ${project.dir}/spicelib-task" />
+		</exec>
+	</target>
+	
+	<target name="compile_spicelib_xml">
+		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+			<arg line="-o ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-logging-${version}.swc" />
+			<arg line="-sp ${project.dir}/spicelib-xml" />
+			<arg line="-is ${project.dir}/spicelib-xml" />
+		</exec>
+	</target>
+	
+	<target name="compile_parsley_core">
+		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+			<arg line="-o ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${release.target.dir}/release/spicelib-${version}.swc" />
+			<arg line="-sp ${project.dir}/parsley-core" />
+			<arg line="-is ${project.dir}/parsley-core" />
+		</exec>
+	</target>
+	
+	<target name="compile_parsley_flex">
+		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+			<arg line="-o ${release.target.dir}/release/modules/parsley-flex-${version}.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/rpc.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/utilities.swc" />
+			<arg line="-el ${release.target.dir}/release/spicelib-${version}.swc" />
+			<arg line="-sp ${project.dir}/parsley-flex" />
+			<arg line="-is ${project.dir}/parsley-flex" />
+		</exec>
+	</target>
+			
+	<target name="compile_parsley_xml">
+		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+			<arg line="-o ${release.target.dir}/release/modules/parsley-xml-${version}.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${release.target.dir}/release/spicelib-${version}.swc" />
+			<arg line="-sp ${project.dir}/parsley-xml" />
+			<arg line="-is ${project.dir}/parsley-xml" />
+		</exec>
+	</target>
+	
+	<target name="compile_parsley_localization">
+		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+			<arg line="-o ${release.target.dir}/release/modules/parsley-localization-${version}.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${release.target.dir}/release/spicelib-${version}.swc" />
+			<arg line="-sp ${project.dir}/parsley-localization" />
+			<arg line="-is ${project.dir}/parsley-localization" />
 		</exec>
 	</target>
 	
 	<target name="compile_spicelib_all">
-		<antcall target="compile_full"/>
-		<antcall target="compile_core"/>
-		<antcall target="compile_logging"/>
-		<antcall target="compile_expressions"/>
-		<antcall target="compile_reflect"/>
-		<antcall target="compile_task"/>
+		<antcall target="compile_spicelib_full"/>
+		<antcall target="compile_spicelib_core"/>
+		<antcall target="compile_spicelib_logging"/>
+		<antcall target="compile_spicelib_expressions"/>
+		<antcall target="compile_spicelib_reflect"/>
+		<antcall target="compile_spicelib_task"/>
+		<antcall target="compile_spicelib_xml"/>
 	</target>
+	
+	<target name="compile_parsley_all">
+		<antcall target="compile_parsley_full"/>
+		<antcall target="compile_parsley_core"/>
+		<antcall target="compile_parsley_flex"/>
+		<antcall target="compile_parsley_xml"/>
+		<antcall target="compile_parsley_localization"/>
+	</target>
+	
+	<target name="compile_all" description="Compile all Parsley and Spicelib SWCs">
+		<antcall target="compile_spicelib_all"/>
+		<antcall target="compile_parsley_all"/>
+	</target>
+	
+	
+	<!-- api docs -->
 	
 	<target name="generate_full_api">
 		<delete includeemptydirs="true">
