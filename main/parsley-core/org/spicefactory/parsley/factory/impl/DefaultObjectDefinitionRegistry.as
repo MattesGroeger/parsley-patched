@@ -39,7 +39,7 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 	}
 
 	
-	function get domain () : ApplicationDomain {
+	public function get domain () : ApplicationDomain {
 		return _domain;
 	}
 	
