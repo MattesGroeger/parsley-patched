@@ -13,6 +13,11 @@
 	
 	<!-- compile -->
 	
+	<target name="clear">
+		<delete dir="${release.target.dir}"/>
+		<mkdir dir="${release.target.dir}"/>
+	</target>
+	
 	<target name="compile_parsley_full">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/parsley-${version}.swc" />
@@ -173,27 +178,27 @@
 	</target>
 	
 	<target name="compile_all" description="Compile all Parsley and Spicelib SWCs">
+		<antcall target="clear"/>
 		<antcall target="compile_spicelib_all"/>
 		<antcall target="compile_parsley_all"/>
 	</target>
 	
 	
 	<!-- api docs -->
-	
-	<target name="generate_full_api">
-		<delete includeemptydirs="true">
-			<fileset dir="${project.dir}/docs" includes="**/*" />
-		</delete>
-		<exec executable="${flex.sdk}/bin/asdoc.exe" dir="${project.dir}/src" spawn="no">
-			<arg line="-source-path ."/>
-			<arg line="-doc-sources ."/>
+		
+	<target name="api_full">
+		<delete dir="${project.dir}/release/fullapi"/>
+		<mkdir dir="${project.dir}/release/fullapi"/>
+		<exec executable="${flex.sdk}/bin/asdoc.exe" dir="${project.dir}">
+			<arg line="-source-path spicelib-core spicelib-reflect spicelib-expressions spicelib-logging spicelib-task spicelib-xml parsley-core parsley-flex parsley-xml parsley-localization"/>
+			<arg line="-doc-sources spicelib-core spicelib-reflect spicelib-expressions spicelib-logging spicelib-task spicelib-xml parsley-core parsley-flex parsley-xml parsley-localization"/>
 			<arg line="-library-path ${basedir}/cinnamon-${cinnamon.version}.swc"/>
-			<arg line="-library-path ${basedir}/spicelib-${spicelib.version}.swc"/>
 			<arg line="-left-frameset-width 250"/>
 			<arg line="-main-title"/>
-			<arg value="Parsley Full API"/>
+			<arg value="Parsley - Spicelib Full API"/>
 			<arg line="-window-title"/>
-			<arg value="Parsley Full API"/>
+			<arg value="Parsley - Spicelib Full API"/>
+			<!--
 			<arg line="-package org.spicefactory.parsley.context"/>
 			<arg value="Public API of the IOC Container"/>
 			<arg line="-package org.spicefactory.parsley.context.factory"/>
@@ -250,17 +255,18 @@
 			<arg value="Custom Configuration Namespace for the MVC Framework"/>
 			<arg line="-package org.spicefactory.parsley.util"/>
 			<arg value="Internal Utility Classes"/>
-			<arg line="-output ../docs"/>
+			-->
+			<arg line="-output release/fullapi"/>
 		</exec>
 		
 	</target>
 	
-	<target name="generate_public_api">
-		<delete includeemptydirs="true">
-			<fileset dir="${project.dir}/docs" includes="**/*" />
-		</delete>
-		<exec executable="${flex.sdk}/bin/asdoc.exe" dir="${project.dir}/src" spawn="no">
-			<arg line="-source-path ."/>
+	<target name="api_public">
+		<delete dir="${project.dir}/release/publicapi"/>
+		<mkdir dir="${project.dir}/release/publicapi"/>
+		<exec executable="${flex.sdk}/bin/asdoc.exe" dir="${project.dir}">
+			<arg line="-source-path spicelib-core spicelib-reflect spicelib-expressions spicelib-logging spicelib-task spicelib-xml parsley-core parsley-flex parsley-xml parsley-localization"/>
+			<!--
 			<arg line="-doc-classes org.spicefactory.parsley.context.ApplicationContext"/>
 			<arg line="org.spicefactory.parsley.context.ApplicationContextParser"/> 
 			<arg line="org.spicefactory.parsley.context.ConfigurationError"/> 
@@ -280,14 +286,15 @@
 			<arg line="org.spicefactory.parsley.mvc.ApplicationEvent"/>
 			<arg line="org.spicefactory.parsley.mvc.EventSource"/>
 			<arg line="org.spicefactory.parsley.mvc.FrontController"/>
+			-->
 			<arg line="-library-path ${basedir}/cinnamon-${cinnamon.version}.swc"/>
-			<arg line="-library-path ${basedir}/spicelib-${spicelib.version}.swc"/>
 			<arg line="-exclude-dependencies=true"/>
 			<arg line="-left-frameset-width 250"/>
 			<arg line="-main-title"/>
 			<arg value="Parsley Public API"/>
 			<arg line="-window-title"/>
 			<arg value="Parsley Public API"/>
+			<!--
 			<arg line="-package org.spicefactory.parsley.context"/>
 			<arg value="Public API of the IOC Container"/>
 			<arg line="-package org.spicefactory.parsley.context.factory"/>
@@ -298,197 +305,23 @@
 			<arg value="Localization Events"/>
 			<arg line="-package org.spicefactory.parsley.mvc"/>
 			<arg value="Public API of the MVC Framework"/>
-			<arg line="-output ../docs"/>
+			-->
+			<arg line="-output release/publicapi"/>
 		</exec>
 	</target>
-		
-	<target name="generate_spicelib_api">
-		<delete includeemptydirs="true">
-			<fileset dir="${project.dir}/docs" includes="**/*" />
-		</delete>
-		
-		<exec executable="${flex.sdk}/bin/asdoc.exe" dir="${project.dir}/src" spawn="no">
+
+	<!--
+	<target name="api_spicelib">
+		<delete dir="${project.dir}/release/spicelibapi"/>
+		<mkdir dir="${project.dir}/release/spicelibapi"/>
+		<exec executable="${flex.sdk}/bin/asdoc.exe" dir="${project.dir}" spawn="no">
 			<arg line="-source-path ."/>
 			<arg line="-doc-sources ."/>
 			<arg line="-left-frameset-width 250"/>
 			<arg line="-main-title"/>
-			<arg value="Spicelib AS3 API"/>
+			<arg value="Spicelib API"/>
 			<arg line="-window-title"/>
-			<arg value="Spicelib AS3 API"/>
-			<arg line="-package org.spicefactory.lib.errors"/>
-			<arg value="Common Error Classes"/>
-			<arg line="-package org.spicefactory.lib.expr"/>
-			<arg value="Expression Framework API"/>
-			<arg line="-package org.spicefactory.lib.expr.impl"/>
-			<arg value="Expression Framework Implementation"/>
-			<arg line="-package org.spicefactory.lib.logging"/>
-			<arg value="Logging Framework API"/>
-			<arg line="-package org.spicefactory.lib.logging.impl"/>
-			<arg value="Logging Framework Implementation"/>
-			<arg line="-package org.spicefactory.lib.reflect"/>
-			<arg value="Reflection API"/>
-			<arg line="-package org.spicefactory.lib.reflect.converter"/>
-			<arg value="Several Converter implementations"/>
-			<arg line="-package org.spicefactory.lib.reflect.errors"/>
-			<arg value="Reflection Errors"/>
-			<arg line="-package org.spicefactory.lib.reflect.types"/>
-			<arg value="Classes representing * and void"/>
-			<arg line="-package org.spicefactory.lib.task"/>
-			<arg value="The Task Framework - Abstractions for asynchronous operations"/>
-			<arg line="-package org.spicefactory.lib.task.enum"/>
-			<arg value="Enumerations for the Task Framework"/>
-			<arg line="-package org.spicefactory.lib.task.events"/>
-			<arg value="Events for the Task Framework"/>
-			<arg line="-package org.spicefactory.lib.task.util"/>
-			<arg value="Utility Task Implementations"/>
-			<arg line="-package org.spicefactory.lib.util"/>
-			<arg value="Miscellaneous Utitlities"/>
-			<arg line="-output ../docs"/>
-		</exec>
-	</target>
-	
-	
-	
-	
-	<target name="generate_parsley_full">
-		<copy todir="${basedir}/parsley">
-			<fileset dir="${transfer.path}\asdoc_transfer\parsley" includes="src/**/*"/>
-		</copy>
-		<exec executable="C:\flex3sdk\bin\asdoc.exe" dir="${basedir}/parsley/src">
-			<arg line="-source-path ."/>
-			<arg line="-doc-sources ."/>
-			<arg line="-library-path ${basedir}/cinnamon-0.1.0.swc"/>
-			<arg line="-library-path ${basedir}/spicelib-1.1.0.swc"/>
-			<arg line="-left-frameset-width 250"/>
-			<arg line="-main-title"/>
-			<arg value="Parsley Full API"/>
-			<arg line="-window-title"/>
-			<arg value="Parsley Full API"/>
-			<arg line="-package org.spicefactory.parsley.context"/>
-			<arg value="Public API of the IOC Container"/>
-			<arg line="-package org.spicefactory.parsley.context.factory"/>
-			<arg value="Public API for Custom Configuration Namespaces"/>
-			<arg line="-package org.spicefactory.parsley.context.binding"/>
-			<arg value="Classes for binding to property values"/>
-			<arg line="-package org.spicefactory.parsley.context.converter"/>
-			<arg value="Internal Converter implementations"/>
-			<arg line="-package org.spicefactory.parsley.context.expr"/>
-			<arg value="Internal extensions to the Spicelib Expression Framework"/>
-			<arg line="-package org.spicefactory.parsley.context.util"/>
-			<arg value="Internal Utility Classes"/>
-			<arg line="-package org.spicefactory.parsley.context.xml"/>
-			<arg value="XML configuration file parser"/>
-			<arg line="-package org.spicefactory.parsley.context.tree"/>
-			<arg value="Base Classes for the internal representation of XML configuration files"/>
-			<arg line="-package org.spicefactory.parsley.context.tree.core"/>
-			<arg value="Classes representing the core XML tags"/>
-			<arg line="-package org.spicefactory.parsley.context.tree.core.enum"/>
-			<arg value="Enumerations for the core XML tags"/>
-			<arg line="-package org.spicefactory.parsley.context.tree.localization"/>
-			<arg value="Classes representing the XML tags for localization"/>
-			<arg line="-package org.spicefactory.parsley.context.tree.setup"/>
-			<arg value="Classes representing the XML tags of the setup section"/>
-			<arg line="-package org.spicefactory.parsley.context.tree.values"/>
-			<arg value="Classes representing the XML tags for values"/>
-			<arg line="-package org.spicefactory.parsley.context.tree.namespaces"/>
-			<arg value="Classes representing the core XML tags for custom namespaces"/>
-			<arg line="-package org.spicefactory.parsley.context.tree.namespaces.template"/>
-			<arg value="Classes representing the core XML tags for templates of custom namespaces"/>
-			<arg line="-package org.spicefactory.parsley.context.tree.namespaces.template.client"/>
-			<arg value="Classes representing the template client XML tags"/>
-			<arg line="-package org.spicefactory.parsley.context.tree.namespaces.template.nested"/>
-			<arg value="Classes representing the nested tags in templates"/>
-			<arg line="-package org.spicefactory.parsley.context.tree.namespaces.template.context"/>
-			<arg value="Context classes for parsing and processing templates"/>
-			<arg line="-package org.spicefactory.parsley.localization"/>
-			<arg value="Public API of the Localization Framework"/>
-			<arg line="-package org.spicefactory.parsley.localization.events"/>
-			<arg value="Localization Events"/>
-			<arg line="-package org.spicefactory.parsley.localization.spi"/>
-			<arg value="Service Provider Interfaces of the Localization Framework"/>
-			<arg line="-package org.spicefactory.parsley.localization.impl"/>
-			<arg value="Default Implementation of the Localization API"/>
-			<arg line="-package org.spicefactory.parsley.mvc"/>
-			<arg value="Public API of the MVC Framework"/>
-			<arg line="-package org.spicefactory.parsley.mvc.impl"/>
-			<arg value="Internal classes of the MVC Framework"/>
-			<arg line="-package org.spicefactory.parsley.namespaces.cinnamon"/>
-			<arg value="Custom Configuration Namespace for Cinnamon Remoting"/>
-			<arg line="-package org.spicefactory.parsley.namespaces.logging"/>
-			<arg value="Custom Configuration Namespace for Spicelib Logging"/>
-			<arg line="-package org.spicefactory.parsley.namespaces.mvc"/>
-			<arg value="Custom Configuration Namespace for the MVC Framework"/>
-			<arg line="-package org.spicefactory.parsley.util"/>
-			<arg value="Internal Utility Classes"/>
-			<arg line="-output ..\output"/>
-		</exec>
-		<copy todir="${transfer.path}\asdoc_transfer\parsley_full">
-			<fileset dir="${basedir}/parsley" includes="output/**/*"/>
-		</copy>
-	</target>
-	
-	<target name="generate_parsley_public">
-		<copy todir="${basedir}/parsley">
-			<fileset dir="${transfer.path}\asdoc_transfer\parsley" includes="src/**/*"/>
-		</copy>
-		<exec executable="C:\flex3sdk\bin\asdoc.exe" dir="${basedir}/parsley/src">
-			<arg line="-source-path ."/>
-			<arg line="-doc-classes org.spicefactory.parsley.context.ApplicationContext"/>
-			<arg line="org.spicefactory.parsley.context.ApplicationContextParser"/> 
-			<arg line="org.spicefactory.parsley.context.ConfigurationError"/> 
-			<arg line="org.spicefactory.parsley.context.factory.ElementConfig"/> 
-			<arg line="org.spicefactory.parsley.context.factory.FactoryMetadata"/> 
-			<arg line="org.spicefactory.parsley.context.factory.ObjectFactoryConfig"/> 
-			<arg line="org.spicefactory.parsley.context.factory.ObjectProcessorConfig"/> 
-			<arg line="org.spicefactory.parsley.context.factory.ParserContext"/> 
-			<arg line="org.spicefactory.parsley.localization.Locale"/>
-			<arg line="org.spicefactory.parsley.localization.LocaleManager"/>
-			<arg line="org.spicefactory.parsley.localization.MessageBundle"/>
-			<arg line="org.spicefactory.parsley.localization.MessageSource"/>
-			<arg line="org.spicefactory.parsley.localization.events.LocaleSwitchEvent"/>
-			<arg line="org.spicefactory.parsley.mvc.Action"/>
-			<arg line="org.spicefactory.parsley.mvc.ActionInterceptor"/>
-			<arg line="org.spicefactory.parsley.mvc.ActionProcessor"/>
-			<arg line="org.spicefactory.parsley.mvc.ApplicationEvent"/>
-			<arg line="org.spicefactory.parsley.mvc.EventSource"/>
-			<arg line="org.spicefactory.parsley.mvc.FrontController"/>
-			<arg line="-library-path ${basedir}/cinnamon-0.1.0.swc"/>
-			<arg line="-library-path ${basedir}/spicelib-1.1.0.swc"/>
-			<arg line="-exclude-dependencies=true"/>
-			<arg line="-left-frameset-width 250"/>
-			<arg line="-main-title"/>
-			<arg value="Parsley Public API"/>
-			<arg line="-window-title"/>
-			<arg value="Parsley Public API"/>
-			<arg line="-package org.spicefactory.parsley.context"/>
-			<arg value="Public API of the IOC Container"/>
-			<arg line="-package org.spicefactory.parsley.context.factory"/>
-			<arg value="Public API for Custom Configuration Namespaces"/>
-			<arg line="-package org.spicefactory.parsley.localization"/>
-			<arg value="Public API of the Localization Framework"/>
-			<arg line="-package org.spicefactory.parsley.localization.events"/>
-			<arg value="Localization Events"/>
-			<arg line="-package org.spicefactory.parsley.mvc"/>
-			<arg value="Public API of the MVC Framework"/>
-			<arg line="-output ..\output_public"/>
-		</exec>
-		<copy todir="${transfer.path}\asdoc_transfer\parsley_public">
-			<fileset dir="${basedir}/parsley" includes="output_public/**/*"/>
-		</copy>
-	</target>
-	
-	<target name="generate_spicelib">
-		<copy todir="${basedir}/spicelib">
-			<fileset dir="${transfer.path}\asdoc_transfer\spicelib" includes="src/**/*"/>
-		</copy>
-		<exec executable="C:\flex3sdk\bin\asdoc.exe" dir="${basedir}/spicelib/src">
-			<arg line="-source-path ."/>
-			<arg line="-doc-sources ."/>
-			<arg line="-left-frameset-width 250"/>
-			<arg line="-main-title"/>
-			<arg value="Spicelib AS3 API"/>
-			<arg line="-window-title"/>
-			<arg value="Spicelib AS3 API"/>
+			<arg value="Spicelib API"/>
 			<arg line="-package org.spicefactory.lib.errors"/>
 			<arg value="Common Error Classes"/>
 			<arg line="-package org.spicefactory.lib.events"/>
@@ -521,12 +354,54 @@
 			<arg value="Utility Task Implementations"/>
 			<arg line="-package org.spicefactory.lib.util"/>
 			<arg value="Miscellaneous Utitlities"/>
-			<arg line="-output ..\output"/>
+			<arg line="-output ../docs"/>
 		</exec>
-		<copy todir="${transfer.path}\asdoc_transfer\spicelib">
-			<fileset dir="${basedir}/spicelib" includes="output/**/*"/>
-		</copy>
 	</target>
+	-->
+
+	<!-- create release zip -->
 		
+	<target name="release_zip" description="Create Release Zip">
+		
+		<!-- create directories -->
+		<delete dir="${release.target.dir}"/>
+		<mkdir dir="${release.target.dir}"/>
+
+		<mkdir dir="${release.target.dir}/src"/>
+		<mkdir dir="${release.target.dir}/lib"/>
+		
+		<!-- build all swcs -->
+		<antcall target="compile_all"/>
+		
+		<!-- copy license -->
+		<copy todir="${release.target.dir}">
+			<fileset dir="${project.dir}" includes="license.txt"/>
+		</copy>
+		
+		<!-- copy project -->
+		<copy todir="${release.target.dir}/src">
+			<fileset dir="${project.dir}">
+				 <include name="spicelib-core/**/*"/>
+				 <include name="spicelib-reflect/**/*"/>
+				 <include name="spicelib-expressions/**/*"/>
+				 <include name="spicelib-task/**/*"/>
+				 <include name="spicelib-logging/**/*"/>
+				 <include name="spicelib-xml/**/*"/>
+				 <include name="parsley-core/**/*"/>
+				 <include name="parsley-flex/**/*"/>
+				 <include name="parsley-xml/**/*"/>
+				 <include name="parsley-localization/**/*"/>
+				 <include name="test/**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${release.target.dir}/lib">
+			<fileset dir="${project.dir}/lib" includes="*.swc"/>
+		</copy>
+		
+		<!-- create zip -->
+		<zip basedir="${release.target.dir}" zipfile="${release.target.dir}/../parsley-${version}.zip"/>
+	</target>
+	
+
 	
 </project>
