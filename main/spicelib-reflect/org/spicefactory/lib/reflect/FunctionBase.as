@@ -17,9 +17,6 @@
 package org.spicefactory.lib.reflect {
 import flash.utils.Dictionary;
 
-import org.spicefactory.lib.reflect.errors.MethodInvocationError;
-import org.spicefactory.lib.reflect.types.Any;
-
 /**
  * Abstract base class for Function types (Methods and Constructors).
  * 
