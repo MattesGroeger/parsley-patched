@@ -67,10 +67,10 @@ public class MappedProperty {
 						var message:String = "Expected a type assignable to " + assignableTo.name 
 								+ "as the mapped value for " + targetProperty;
 						if (validate) {
-							throw new ValidationError(message, e);
+							throw new ValidationError(message);
 						}
 						else {
-							trace(message, e);
+							trace(message);
 						}
 					}
 				}
@@ -86,7 +86,7 @@ public class MappedProperty {
 				}
 			}
 			
-			delete values[targetProperty];
+			delete values[targetProperty.name];
 		}
 		else if (validate && required) {
 			throw new ValidationError("Missing required attribute for property " + targetProperty);
