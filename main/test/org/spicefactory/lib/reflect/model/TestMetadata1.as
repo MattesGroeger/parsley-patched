@@ -3,7 +3,7 @@ package org.spicefactory.lib.reflect.model {
 /**
  * @author Jens Halm
  */
-[Metadata]
+[Metadata(multiple="true")]
 public class TestMetadata1 {
 	
 	[DefaultProperty]
