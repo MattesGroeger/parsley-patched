@@ -14,16 +14,16 @@
  * limitations under the License.
  */
  
-package org.spicefactory.lib.reflect.errors {
+package org.spicefactory.lib.reflect.mapping {
 import org.spicefactory.lib.errors.NestedError;	
 
 /**
- * Error thrown when a metadata tag that has been mapped to a custom tag contains
+ * Error thrown when a metadata tag or XML tag that has been mapped to a custom class contains
  * invalid arguments.
  * 
  * @author Jens Halm
  */
-public class MetadataError extends NestedError {
+public class ValidationError extends NestedError {
 	
 	/**
 	 * Create a new instance.
@@ -32,7 +32,7 @@ public class MetadataError extends NestedError {
 	 * @param cause the cause of this Error
 	 * @param id an optional reference number
 	 */
-	function MetadataError (message:String = "", cause:Error = null, id:int = 0) {
+	function ValidationError (message:String = "", cause:Error = null, id:int = 0) {
 		super(message, cause, id);
 	}
 
