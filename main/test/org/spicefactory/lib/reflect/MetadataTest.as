@@ -1,11 +1,17 @@
 package org.spicefactory.lib.reflect {
+import org.spicefactory.lib.reflect.mapping.ValidationError;
+
+import flexunit.framework.TestCase;
+
 import org.spicefactory.lib.reflect.metadata.EventInfo;
 import org.spicefactory.lib.reflect.model.ClassC;
+import org.spicefactory.lib.reflect.model.ClassE;
 import org.spicefactory.lib.reflect.model.InterfaceB;
 import org.spicefactory.lib.reflect.model.TestMetadata1;
 import org.spicefactory.lib.reflect.model.TestMetadata2;
+import org.spicefactory.lib.reflect.model.TestMetadata3;
 
-import flexunit.framework.TestCase;
+import flash.display.Sprite;
 
 public class MetadataTest extends TestCase {
 	
@@ -19,6 +25,7 @@ public class MetadataTest extends TestCase {
 		                // all constructor parameters if the class was not instantiated at least once.
 		Metadata.registerMetadataClass(TestMetadata1);
 		Metadata.registerMetadataClass(TestMetadata2);
+		Metadata.registerMetadataClass(TestMetadata3);
 		classCInfo = ClassInfo.forClass(ClassC);
 	}
 	
@@ -140,6 +147,47 @@ public class MetadataTest extends TestCase {
 		var metadata:Metadata = Metadata(meta[0]);
 		// Without mapping no Array conversion should occur
 		assertEquals("Unexpected default property value", "a,b", metadata.getDefaultArgument());
+	}
+	
+	public function testAssignableToAndRequired () : void {
+		var meta:TestMetadata3 = getMetadata3Tag("valid");
+		assertEquals("Unexpected type property", Sprite, meta.type);
+		assertEquals("Unexpected count property", 5, meta.count);
+	}
+
+	public function testMissingRequiredValue () : void {
+		expectError("invalid1");
+	}
+		
+	public function testIllegalClassValue () : void {
+		expectError("invalid2");
+	}
+	
+	public function testIllegalMultipleOccurrences () : void {
+		expectError("invalid3");
+	}
+	
+	public function testValidationTurnedOff () : void {
+		var meta:TestMetadata3 = getMetadata3Tag("invalid1", false);
+		assertEquals("Unexpected type property", Sprite, meta.type);
+		assertEquals("Unexpected count property", 0, meta.count);
+	}
+
+	
+	private function getMetadata3Tag (propName:String, validate:Boolean = true) : TestMetadata3 {
+		var meta:Array = ClassInfo.forClass(ClassE).getProperty(propName).getMetadata(TestMetadata3, validate);
+		assertEquals("Unexpected number of metadata tags", 1, meta.length);
+		return meta[0] as TestMetadata3;
+	}
+	
+	private function expectError (propName:String) : void {
+		try {
+			getMetadata3Tag(propName);
+		} 
+		catch (e:ValidationError) {
+			return;
+		}
+		fail("Expected Error");
 	}
 	
 	
