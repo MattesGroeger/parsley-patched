@@ -18,9 +18,7 @@ package org.spicefactory.lib.reflect.metadata {
 
 /**
  * Represents a metadata tag that marks a property as required.
- * This will currently not be processed and validated by the Reflection API itself,
- * but may be used by applications or other frameworks to validate metadata tags
- * mapped to custom classes. 
+ * The tag may be used on properties that map to attributes from metadata tags or XML tags. 
  * 
  * @author Jens Halm
  */
