@@ -40,7 +40,7 @@
 	
 	<target name="compile_spicelib_full">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required" />
+			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,AssignableTo" />
 			<arg line="-o ${release.target.dir}/release/spicelib-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-sp ${project.dir}/spicelib-core ${project.dir}/spicelib-expressions ${project.dir}/spicelib-logging ${project.dir}/spicelib-reflect ${project.dir}/spicelib-task ${project.dir}/spicelib-xml" />
@@ -74,7 +74,7 @@
 	
 	<target name="compile_spicelib_reflect">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required" />
+			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,AssignableTo" />
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
@@ -308,6 +308,11 @@
 			-->
 			<arg line="-output release/publicapi"/>
 		</exec>
+	</target>
+	
+	<target name="api_all" description="Create Public and Full Client API">
+		<antcall target="api_public"/>
+		<antcall target="api_full"/>
 	</target>
 
 	<!--
