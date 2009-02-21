@@ -15,12 +15,10 @@
  */
  
 package org.spicefactory.lib.reflect {
+import org.spicefactory.lib.reflect.errors.PropertyError;
 import org.spicefactory.lib.reflect.metadata.Types;
 
 import flash.utils.Dictionary;
-import flash.utils.getQualifiedClassName;
-
-import org.spicefactory.lib.reflect.errors.PropertyError;
 
 /**
  * Represents a single property. 
