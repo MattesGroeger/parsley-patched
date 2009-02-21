@@ -74,33 +74,36 @@ public class MetadataAware {
 	 * In this case you use the name of the metadata tag as a String for the type parameter.</p>
 	 * 
 	 * @param type for mapped metadata the mapped class otherwise the name of the metadata tag as a String.
+	 * @param whether the returned objects should be validated (applies only for metadata mapped to custom classes)
 	 * @return all metadata tags for the specified type for this element
 	 */
-	public function getMetadata (type:Object) : Array {
+	public function getMetadata (type:Object, validate:Boolean = true) : Array {
 		// clone Array to prevent modifications
-		return (_metadata[type] == undefined) ? [] : prepareMetadata((_metadata[type] as Array).concat());
+		return (_metadata[type] == undefined) ? [] : prepareMetadata(_metadata[type] as Array, validate);
 	}
 	
 	/**
 	 * Returns all metadata tags for this type in no particular order.
 	 * 
+	 * @param whether the returned objects should be validated (applies only for metadata mapped to custom classes)
 	 * @return all metadata tags for this type
 	 */
-	public function getAllMetadata () : Array {
+	public function getAllMetadata (validate:Boolean = true) : Array {
 		// clone Arrays to prevent modifications
 		var all:Array = new Array();
 		for each (var metadata:Array in _metadata) {
-			all = all.concat(metadata);
+			all = all.concat(prepareMetadata(metadata, validate));
 		}
-		return prepareMetadata(all);
+		return all;
 	}
 	
 	
-	private function prepareMetadata (metas:Array) : Array {
+	private function prepareMetadata (metas:Array, validate:Boolean) : Array {
+		var prepared:Array = new Array();
 		for (var i:uint = 0; i < metas.length; i++) {
-			metas[i] = Metadata(metas[i]).getExternalValue();
+			prepared[i] = Metadata(metas[i]).getExternalValue(validate, i == 0);
 		}
-		return metas;
+		return prepared;
 	}
 	
 	

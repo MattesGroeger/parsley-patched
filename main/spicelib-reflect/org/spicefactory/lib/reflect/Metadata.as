@@ -15,11 +15,11 @@
  */
 
 package org.spicefactory.lib.reflect {
+import org.spicefactory.lib.reflect.mapping.ValidationError;
+import org.spicefactory.lib.reflect.metadata.EventInfo;
 import org.spicefactory.lib.reflect.metadata.Required;
 
 import flash.system.ApplicationDomain;
-
-import org.spicefactory.lib.reflect.metadata.EventInfo;
 
 /**
  * Represents a single metadata tag associated with a class, property or method declaration.
@@ -44,6 +44,10 @@ public class Metadata {
 		_name = name;
 		_arguments = args;
 		registration = reg;
+		if (registration != null && registration.defaultProperty != null && _arguments[""] != undefined) {
+			_arguments[registration.defaultProperty] = _arguments[""];
+			delete _arguments[""];
+		}
 	}
 
 	
@@ -96,7 +100,6 @@ public class Metadata {
 				metadataClasses[key] = reg;
 			} 
 		}
-		registerMetadataClass(Required);
 		registerMetadataClass(EventInfo);
 	}
 	
@@ -132,33 +135,22 @@ public class Metadata {
 	/**
 	 * @private
 	 */
-	internal function getExternalValue () : Object {
+	internal function getExternalValue (validate:Boolean, first:Boolean) : Object {
 		if (registration == null) {
 			return this;
 		}
 		else {
+			if (validate && !first && !registration.allowMultiple) {
+				throw new ValidationError("Multiple occurrences of the tag mapped to " 
+						+ registration.mappedClass.type.name + " on the same element are not allowed");
+			}
 			// Create a new instance on each access so that modifications of property values
 			// have no effect.
-			var instance:Object = registration.metadataType.newInstance([]);
+			var values:Object = new Object();
 			for (var key:String in _arguments) {
-				var propName:String = (key == "") ? registration.defaultProperty : key;
-				var p:Property = registration.metadataType.getProperty(propName);
-				if (p == null || !p.writable) {
-					trace("Unable to set property with name "
-							+ propName + " on metadata class " + registration.metadataType.name
-							+ ": Property does not exist or is not writable");
-					continue;
-				}
-				try {
-					var value:* = (p.type.isType(Array)) ? _arguments[key].split(",") : _arguments[key];
-					p.setValue(instance, value);
-				}
-				catch (e:Error) {
-					trace("Unable to set property with name "
-							+ propName + " on metadata class " + registration.metadataType.name, e);
-				}
-			} 
-			return instance;
+				values[key] = _arguments[key];
+			}
+			return registration.mappedClass.newInstance(values, validate);
 		}
 	}
 	
@@ -170,7 +162,7 @@ public class Metadata {
 			return _name;
 		}
 		else {
-			return registration.metadataType.getClass();
+			return registration.mappedClass.type.getClass();
 		}
 	}
 	
@@ -188,36 +180,53 @@ public class Metadata {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.lib.reflect.metadata.MappedMetadata;
+import org.spicefactory.lib.reflect.mapping.MappedClass;
+import org.spicefactory.lib.reflect.mapping.MappedProperty;
+import org.spicefactory.lib.reflect.metadata.AssignableTo;
 import org.spicefactory.lib.reflect.metadata.DefaultProperty;
+import org.spicefactory.lib.reflect.metadata.MappedMetadata;
+import org.spicefactory.lib.reflect.metadata.Required;
 import org.spicefactory.lib.reflect.metadata.Types;
 
 class MetadataClassRegistration {
 	
 	
 	public var name:String;
-	public var metadataType:ClassInfo;
+	public var mappedClass:MappedClass;
 	public var defaultProperty:String;
 	public var annotatedTypes:Array;
+	public var allowMultiple:Boolean;
 	
 	
 	public static function createInternalRegistrations () : Array {
 		/* Internal tags like [Metadata] cannot be created through Reflection
 		   as this would lead to a chicken-and-egg problem. */
 	    var internalRegs:Array = new Array();
+	    var ci:ClassInfo = ClassInfo.forClass(MappedMetadata);
+	    var props:Array = [new MappedProperty(ci.getProperty("name")), 
+	    		new MappedProperty(ci.getProperty("types")), 
+	    		new MappedProperty(ci.getProperty("multiple"))];
 	    internalRegs.push(createRegistration("Metadata", 
-	   			ClassInfo.forClass(MappedMetadata), [Types.CLASS]));
+	   			ci, [Types.CLASS], null, props));
 	    internalRegs.push(createRegistration("DefaultProperty", 
 	    		ClassInfo.forClass(DefaultProperty), [Types.PROPERTY]));
+	    internalRegs.push(createRegistration("Required", 
+	    		ClassInfo.forClass(Required), [Types.PROPERTY]));
+	    ci = ClassInfo.forClass(AssignableTo);
+	    internalRegs.push(createRegistration("AssignableTo", 
+	    		ci, [Types.PROPERTY], "type", [new MappedProperty(ci.getProperty("type"), true)]));
 	    return internalRegs;
 	}
 	
-	private static function createRegistration (name:String, metadataType:ClassInfo, annotatedTypes:Array)
+	private static function createRegistration (name:String, metadataType:ClassInfo, annotatedTypes:Array, 
+			defaultProperty:String = null, properties:Array = null)
 			: MetadataClassRegistration {
+		if (properties == null) properties = [];
 		var reg:MetadataClassRegistration = new MetadataClassRegistration();
 		reg.name = name;
-		reg.metadataType = metadataType;
+		reg.mappedClass = new MappedClass(metadataType, properties);
 		reg.annotatedTypes = annotatedTypes;
+		reg.defaultProperty = defaultProperty;
 		return reg;
 	}
 
@@ -230,26 +239,21 @@ class MetadataClassRegistration {
 			}
 			var mappedMetadata:MappedMetadata = MappedMetadata(metadata[0]);
 			this.name = (mappedMetadata.name == null) ? type.simpleName : mappedMetadata.name;
-			this.metadataType = type;
+			this.allowMultiple = mappedMetadata.multiple;
+			
 			this.annotatedTypes = (mappedMetadata.types == null || mappedMetadata.types.length == 0)
 					? [Types.CLASS, Types.CONSTRUCTOR, Types.PROPERTY, Types.METHOD] : mappedMetadata.types;
-			var defaultProperties:Array = new Array();
 			for each (var p:Property in type.getProperties()) {
 				metadata = p.getMetadata(DefaultProperty);
-				if (metadata.length > 1) {
-					throw new IllegalArgumentError("Expected no more than one [DefaultProperty] tag on " + p);
+				if (metadata.length == 1) {
+					if (this.defaultProperty != null) {
+						throw new IllegalArgumentError("Expected no more than one property annotated " +
+								"with [DefaultProperty] on Class " + type.name);
+					}
+					this.defaultProperty = p.name;
 				}
-				else if (metadata.length == 1) {
-					defaultProperties.push(p.name);
-				}
 			}
-			if (defaultProperties.length > 1) {
-				throw new IllegalArgumentError("Expected no more than one property annotated " +
-						"with [DefaultProperty] on Class " + metadataType.name);
-			}
-			else if (defaultProperties.length == 1) {
-				this.defaultProperty = defaultProperties[0];
-			}
+			this.mappedClass = new MappedClass(type);
 		}
 	}
 	
