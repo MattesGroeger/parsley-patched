@@ -21,7 +21,7 @@ package org.spicefactory.lib.reflect.metadata {
  * 
  * @author Jens Halm
  */
-[Metadata(name="Event", types="class")]
+[Metadata(name="Event", types="class", multiple="true")]
 public class EventInfo {
 	
 	
