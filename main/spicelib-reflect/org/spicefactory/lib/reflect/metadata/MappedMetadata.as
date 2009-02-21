@@ -48,6 +48,11 @@ public class MappedMetadata {
 	 */
 	public var name:String;
 	
+	/**
+	 * Determines whether the mapped metadata tag is allowed to appear multiple times on the same element.
+	 */
+	public var multiple:Boolean = false;
+	
 	
 }
 
