@@ -32,6 +32,7 @@ public class AssignableTo {
 	 * The type the property must be assignable to.
 	 */	
 	[DefaultProperty]
+	[Required]
 	public var type:Class;
 	
 	
