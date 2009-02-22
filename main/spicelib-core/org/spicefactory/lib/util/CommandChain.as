@@ -46,6 +46,16 @@ public class CommandChain extends Command {
 	}
 	
 	/**
+	 * Removes the specified Command from this CommandChain.
+	 * 
+	 * @param com the Command to remove
+	 */
+	public function removeCommand (com:Command) : void {
+		var index:int = commands.indexOf(com);
+		if (index >= 0) commands.splice(index, 1);
+	}
+	
+	/**
 	 * Checks whether this CommandChain is empty (does not contain any Commands).
 	 * 
 	 * @return true if this CommandChain does not contain any Commands
