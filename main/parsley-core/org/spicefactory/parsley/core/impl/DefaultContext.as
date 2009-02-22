@@ -134,6 +134,10 @@ public class DefaultContext implements Context {
 		_destroyCommands.addCommand(com);		
 	}
 	
+	public function removeDestroyCommand (com:Command) : void {
+		_destroyCommands.removeCommand(com);		
+	}
+	
 	public function destroy () : void {
 		if (_destroyed) {
 			return;
