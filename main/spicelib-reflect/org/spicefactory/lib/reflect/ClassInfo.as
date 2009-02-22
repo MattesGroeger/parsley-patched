@@ -109,14 +109,43 @@ public class ClassInfo extends MetadataAware {
 		if (name == null) {
 			name = getQualifiedClassName(clazz);
 		}
-		var cacheEntry:ClassInfo = cache[clazz];
+		var cacheEntry:ClassInfo = getFromCache(clazz, domain);
 		if (cacheEntry != null) {
 			return cacheEntry;
 		}
 		var ci:ClassInfo = new ClassInfo(name, clazz, domain);
-		cache[clazz] = ci;
+		putIntoCache(ci, domain);
 		return ci;		
 	}
+	
+	private static function getFromCache (type:Class, domain:ApplicationDomain) : ClassInfo {
+		var domainCache:Dictionary = cache[domain];
+		return (domainCache == null) ? null : domainCache[type] as ClassInfo;
+	}
+	
+	private static function putIntoCache (info:ClassInfo, domain:ApplicationDomain) : void {
+		var domainCache:Dictionary = cache[domain];
+		if (domainCache == null) {
+			domainCache = new Dictionary();
+			cache[domain] = domainCache;
+		}
+		domainCache[info.getClass()] = info;
+	}
+	
+	/**
+	 * Purges all cached ClassInfo instance from the specified domain.
+	 * If the ApplicationDomain parameter is omitted the cache will be cleared for all ApplicationDomains.
+	 * 
+	 * @param domain the ApplicationDomain to purge all cached ClassInfo instances from
+	 */
+	public static function purgeCache (domain:ApplicationDomain = null) : void {
+		if (domain != null) {
+			delete cache[domain];
+		}
+		else {
+			clearCache();			
+		}
+	} 
 	
 	/**
 	 * @private
