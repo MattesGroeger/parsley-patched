@@ -33,7 +33,7 @@ public class FlexContextBuilder {
 		return ActionScriptContextBuilder.build(container, parent);		
 	}
 	
-	public static function buildAll (containers:Array, parent:Context = null, domain:ApplicationDomain = null) : Context {
+	public static function buildAll (containers:Array, parent:Context = null) : Context {
 		return ActionScriptContextBuilder.buildAll(containers, parent);		
 	}
 	
