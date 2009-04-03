@@ -19,8 +19,6 @@ import org.spicefactory.parsley.core.ActionScriptContextBuilder;
 import org.spicefactory.parsley.core.CompositeContextBuilder;
 import org.spicefactory.parsley.core.Context;
 
-import flash.system.ApplicationDomain;
-
 /**
  * @author Jens Halm
  */
