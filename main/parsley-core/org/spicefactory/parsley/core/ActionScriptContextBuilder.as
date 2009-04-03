@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core {
+import org.spicefactory.parsley.core.impl.ChildContext;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.impl.DefaultContext;
@@ -40,8 +41,9 @@ public class ActionScriptContextBuilder {
 	public static function buildAll (containers:Array, parent:Context = null, domain:ApplicationDomain = null) : Context {
 		var registry:ObjectDefinitionRegistry = new DefaultObjectDefinitionRegistry(domain);
 		populateRegistry(containers, registry);
-		// TODO - handle parent
-		var dc:DefaultContext = new DefaultContext(registry);
+		var dc:DefaultContext = (parent != null) 
+				? new ChildContext(parent, registry) 
+				: new DefaultContext(registry);
 		dc.initialize();
 		return dc;		
 	}
