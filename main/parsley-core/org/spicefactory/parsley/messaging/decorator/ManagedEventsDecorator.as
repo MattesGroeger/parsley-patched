@@ -79,7 +79,7 @@ class ManagedEventsPostProcessor implements ObjectPostProcessor {
 	private function onDestroy (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
 		for each (var name:String in names) {		
-			eventDispatcher.addEventListener(name, context.messageDispatcher.dispatchMessage);
+			eventDispatcher.removeEventListener(name, context.messageDispatcher.dispatchMessage);
 		}
 	}
 	
