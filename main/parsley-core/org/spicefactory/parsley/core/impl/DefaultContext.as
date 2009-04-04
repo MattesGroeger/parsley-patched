@@ -56,8 +56,15 @@ public class DefaultContext implements Context {
 
 	
 	public function initialize () : void {
-		// TODO - must process new definitions (create non-lazy singletons and process message targets of lazy singletons)
-		// (probably do not process message targets - will only be in effect after object was created)
+		for each (var id:String in _registry.definitionIds) {
+			var definition:RootObjectDefinition = _registry.getDefinition(id);
+			// freeze definition
+			definition.freeze();
+			// create singletons which are not defined as lazy
+			if (definition.singleton && !definition.lazy) {
+				getInstance(definition);
+			}
+		}
 	}
 
 
