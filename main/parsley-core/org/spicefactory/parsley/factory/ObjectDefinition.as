@@ -16,12 +16,10 @@
 
 package org.spicefactory.parsley.factory {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.factory.registry.ConstructorArgRegistry;
 import org.spicefactory.parsley.factory.registry.MethodRegistry;
-import org.spicefactory.parsley.factory.registry.PostProcessorRegistry;
+import org.spicefactory.parsley.factory.registry.LifecycleListenerRegistry;
 import org.spicefactory.parsley.factory.registry.PropertyRegistry;
-import org.spicefactory.parsley.messaging.registry.MessageTargetRegistry;
 
 /**
  * @author Jens Halm
@@ -31,6 +29,11 @@ public interface ObjectDefinition {
 	
 	function get type () : ClassInfo;
 
+
+	function get instantiator () : ObjectInstantiator;
+	
+	function set instantiator (value:ObjectInstantiator) : void;
+
 	
 	function get constructorArgs () : ConstructorArgRegistry;
 	
@@ -38,27 +41,10 @@ public interface ObjectDefinition {
 	
 	function get injectorMethods () : MethodRegistry;
 
+	
+	function get lifecycleListeners () : LifecycleListenerRegistry;
+	
 
-	function get postProcessors () : PostProcessorRegistry;	
-	
-	function get messageTargets () : MessageTargetRegistry;
-
-	
-	function get instantiator () : ObjectInstantiator;
-	
-	function set instantiator (value:ObjectInstantiator) : void;
-
-	
-	function get initMethod () : Method;
-	
-	function set initMethod (value:Method) : void;
-	
-	
-	function get destroyMethod () : Method;
-	
-	function set destroyMethod (value:Method) : void;
-	
-	
 	function freeze () : void;
 	
 	function get frozen () : Boolean;

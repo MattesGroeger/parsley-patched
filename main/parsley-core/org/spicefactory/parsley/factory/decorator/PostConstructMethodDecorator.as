@@ -19,22 +19,32 @@ import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 
 /**
  * @author Jens Halm
  */
-[Metadata(name="Init", types="method")]
-public class InitMethodDecorator implements ObjectDefinitionDecorator {
+[Metadata(name="PostConstruct", types="method")]
+import org.spicefactory.parsley.core.Context;
+
+public class PostConstructMethodDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
 
 	public var method:Method;
 
 
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		definition.initMethod = method;
+		definition.lifecycleListeners.addLifecycleListener(this);
 		return definition;
 	}
 	
+	public function postConstruct (instance:Object, context:Context) : void {
+		method.invoke(instance, []);
+	}
+	
+	public function preDestroy (instance:Object, context:Context) : void {
+		/* nothing to do here */
+	}
 	
 }
 }

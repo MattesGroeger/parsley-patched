@@ -17,16 +17,20 @@
 package org.spicefactory.parsley.messaging.decorator {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.metadata.EventInfo;
+import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.ContextError;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.factory.ObjectLifecycleListener;
+
+import flash.events.IEventDispatcher;
 
 [Metadata(name="ManagedEvents", types="class")]
 /**
  * @author Jens Halm
  */
-public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
+public class ManagedEventsDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
 
 	[DefaultProperty]
@@ -48,40 +52,26 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
 			throw new ContextError("ManagedEvents on class " + type.name 
 					+ ": No event names specified in ManagedEvents tag and no Event tag on class");	
 		}
-		definition.postProcessors.addPostProcessor(new ManagedEventsPostProcessor(names));
+		definition.lifecycleListeners.addLifecycleListener(this);
 		return definition;
 	}
-}
-}
-
-import org.spicefactory.lib.util.Command;
-import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.factory.ObjectPostProcessor;
-
-import flash.events.IEventDispatcher;
-
-class ManagedEventsPostProcessor implements ObjectPostProcessor {
-
-	private var names:Array;
-
-	function ManagedEventsPostProcessor (names:Array) {
-		this.names = names;
-	}
-
-	public function process (instance:Object, context:Context) : void {
+	
+	public function postConstruct (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
 		for each (var name:String in names) {		
 			eventDispatcher.addEventListener(name, context.messageDispatcher.dispatchMessage);
 		}
-		context.addDestroyCommand(new Command(onDestroy, [instance, context]));
 	}
 	
-	private function onDestroy (instance:Object, context:Context) : void {
+	public function preDestroy (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
 		for each (var name:String in names) {		
 			eventDispatcher.removeEventListener(name, context.messageDispatcher.dispatchMessage);
 		}
 	}
-	
+
 	
 }
+}
+
+

@@ -25,8 +25,7 @@ public interface ObjectFactory {
 	
 	function createObject (definition:ObjectDefinition, context:Context) : Object;	
 
-	function configureObject (instance:Object, definition:ObjectDefinition, 
-								context:Context, includeMessageTargets:Boolean) : void;	
+	function configureObject (instance:Object, definition:ObjectDefinition, context:Context) : void;	
 	
 }
 

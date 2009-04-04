@@ -57,6 +57,7 @@ public class DefaultContext implements Context {
 	
 	public function initialize () : void {
 		// TODO - must process new definitions (create non-lazy singletons and process message targets of lazy singletons)
+		// (probably do not process message targets - will only be in effect after object was created)
 	}
 
 
@@ -113,7 +114,7 @@ public class DefaultContext implements Context {
 			if (def.singleton) {
 				_singletonCache.put(id, instance);
 			}
-			_factory.configureObject(instance, def, this, (!def.singleton || !def.lazy));
+			_factory.configureObject(instance, def, this);
 		}
 		finally {
 			delete _underConstruction[id];

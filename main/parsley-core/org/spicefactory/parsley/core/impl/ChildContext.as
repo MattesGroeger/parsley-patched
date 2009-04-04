@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.impl {
-import org.spicefactory.lib.util.Command;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.impl.DefaultContext;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
@@ -27,16 +26,13 @@ public class ChildContext extends DefaultContext {
 
 
 	private var _parent:Context;
-	private var _destroyCommand:Command;
 
 
 	public function ChildContext (parent:Context, registry:ObjectDefinitionRegistry = null, 
 			factory:ObjectFactory = null) {
 		super(registry, parent.messageDispatcher, factory);
 		_parent = parent;
-		_destroyCommand = new Command(destroy);
-		_parent.addDestroyCommand(_destroyCommand); 
-		// TODO - would be better if this would be executed before destroyCommands of parent
+		// TODO - add listener for ContextLifecycleEvent.DESTROY
 	}
 	
 
@@ -68,12 +64,6 @@ public class ChildContext extends DefaultContext {
 	public override function getObject (id:String) : Object {
 		return super.containsObject(id) ? super.getObject(id) : _parent.getObject(id);
 	}
-	
-	
-	public override function destroy () : void {
-		_parent.removeDestroyCommand(_destroyCommand);
-		super.destroy();
-	}	
 	
 	
 }

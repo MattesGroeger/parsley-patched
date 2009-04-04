@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.messaging.registry {
-import org.spicefactory.parsley.messaging.MessageRouter;
+package org.spicefactory.parsley.factory {
+import org.spicefactory.parsley.core.Context;
 
 /**
  * @author Jens Halm
  */
-public interface MessageTargetDefinition {
+public interface ObjectLifecycleListener {
 	
-	
-	function apply (targetInstance:Object, dispatcher:MessageRouter) : void;
-	
+	function postConstruct (instance:Object, context:Context) : void;
+
+	function preDestroy (instance:Object, context:Context) : void;
 	
 }
 }

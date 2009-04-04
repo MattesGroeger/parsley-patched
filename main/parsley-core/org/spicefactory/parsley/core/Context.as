@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.core {
-import org.spicefactory.lib.util.Command;
 import org.spicefactory.parsley.messaging.MessageRouter;
 
 /**
@@ -35,10 +34,6 @@ public interface Context {
 	function getType (id:String) : Class;
 	
 	function getObject (id:String) : Object;
-	
-	function addDestroyCommand (com:Command) : void;
-
-	function removeDestroyCommand (com:Command) : void;
 	
 	function destroy () : void;
 	

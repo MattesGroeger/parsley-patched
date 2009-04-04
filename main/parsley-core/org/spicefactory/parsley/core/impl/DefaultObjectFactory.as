@@ -16,17 +16,15 @@
 
 package org.spicefactory.parsley.core.impl {
 import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.lib.util.Command;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.ContextError;
 import org.spicefactory.parsley.factory.ObjectDefinition;
+import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 import org.spicefactory.parsley.factory.model.ObjectIdReference;
 import org.spicefactory.parsley.factory.model.ObjectTypeReference;
 import org.spicefactory.parsley.factory.model.PropertyValue;
 import org.spicefactory.parsley.factory.registry.MethodParameterRegistry;
-import org.spicefactory.parsley.factory.registry.PostProcessorEntry;
 import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReference;
-import org.spicefactory.parsley.messaging.registry.MessageTargetDefinition;
 
 /**
  * @author Jens Halm
@@ -44,19 +42,10 @@ public class DefaultObjectFactory implements ObjectFactory {
 		}
 	}
 	
-	public function configureObject (instance:Object, definition:ObjectDefinition, 
-			context:Context, includeMessageTargets:Boolean) : void {
+	public function configureObject (instance:Object, definition:ObjectDefinition, context:Context) : void {
 	 	processProperties(instance, definition, context);
 	 	processMethods(instance, definition, context);
-	 	
-		if (includeMessageTargets) processMessageTargets(instance, definition, context);
-	 	
-	 	processPostProcessors(instance, definition, context, false);
-	 	processInitMethod(instance, definition, context);	
-	 	processPostProcessors(instance, definition, context, true);	
-	
-	 	processDestroyMethod(instance, definition, context);
-	 	
+	 	processLifecycleListeners(instance, definition, context);
 	}
 	
 	protected function processProperties (instance:Object, definition:ObjectDefinition, context:Context) : void {
@@ -75,34 +64,11 @@ public class DefaultObjectFactory implements ObjectFactory {
 		}		
 	}
 	
-	protected function processMessageTargets (instance:Object, definition:ObjectDefinition, context:Context) : void {
-		for each (var target:MessageTargetDefinition in definition.messageTargets.getAll()) {
-			target.apply(instance, context.messageDispatcher);
-		}
-		// TODO - must unregister when Context gets destroyed
-	}
-	
-	protected function processPostProcessors (instance:Object, definition:ObjectDefinition, 
-			context:Context, afterInit:Boolean) : void {
-	 	var postProcessors:Array = definition.postProcessors.getAll();
-	 	for each (var entry:PostProcessorEntry in postProcessors) {
-	 		if (entry.afterInit == afterInit) {
-	 			entry.processor.process(instance, context);
-	 		}
+	protected function processLifecycleListeners (instance:Object, definition:ObjectDefinition, context:Context) : void {
+	 	var listeners:Array = definition.lifecycleListeners.getAll();
+	 	for each (var listener:ObjectLifecycleListener in listeners) {
+ 			listener.postConstruct(instance, context);
 		}		
-	}
-	
-	protected function processInitMethod (instance:Object, definition:ObjectDefinition, context:Context) : void {
-	 	var method:Method = definition.initMethod;
-	 	if (method != null) {
-	 		method.invoke(instance, []);
-	 	}
-	}
-	
-	protected function processDestroyMethod (instance:Object, definition:ObjectDefinition, context:Context) : void {
-	 	if (definition.destroyMethod != null) {
-	 		context.addDestroyCommand(new Command(definition.destroyMethod.invoke, [instance, []]));
-	 	}	
 	}
 	
 	protected function resolveValue (value:*, context:Context) : * {

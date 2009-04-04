@@ -15,22 +15,18 @@
  */
 
 package org.spicefactory.parsley.factory.impl {
-import org.spicefactory.parsley.factory.ObjectInstantiator;
-import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.factory.ObjectDefinition;
+import org.spicefactory.parsley.factory.ObjectInstantiator;
 import org.spicefactory.parsley.factory.registry.ConstructorArgRegistry;
+import org.spicefactory.parsley.factory.registry.LifecycleListenerRegistry;
 import org.spicefactory.parsley.factory.registry.MethodRegistry;
-import org.spicefactory.parsley.factory.registry.PostProcessorRegistry;
 import org.spicefactory.parsley.factory.registry.PropertyRegistry;
 import org.spicefactory.parsley.factory.registry.impl.DefaultConstructorArgRegistry;
+import org.spicefactory.parsley.factory.registry.impl.DefaultLifecycleListenerRegistry;
 import org.spicefactory.parsley.factory.registry.impl.DefaultMethodRegistry;
-import org.spicefactory.parsley.factory.registry.impl.DefaultPostProcessorRegistry;
 import org.spicefactory.parsley.factory.registry.impl.DefaultPropertyRegistry;
-import org.spicefactory.parsley.messaging.registry.MessageTargetRegistry;
-import org.spicefactory.parsley.messaging.registry.impl.DefaultMessageTargetRegistry;
 
 /**
  * @author Jens Halm
@@ -40,15 +36,11 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	
 	private var _type:ClassInfo;
 	
+	private var _instantiator:ObjectInstantiator;
 	private var _constructorArgs:ConstructorArgRegistry;
 	private var _properties:PropertyRegistry;
 	private var _methods:MethodRegistry;
-	private var _processors:PostProcessorRegistry;
-	private var _messageTargets:MessageTargetRegistry;
-	private var _initMethod:Method;
-	private var _destroyMethod:Method;
-	private var _factoryMethod:Method;
-	private var _instantiator:ObjectInstantiator;
+	private var _listeners:LifecycleListenerRegistry;
 
 	private var _frozen:Boolean;
 
@@ -58,21 +50,16 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		_constructorArgs = new DefaultConstructorArgRegistry(this);
 		_properties = new DefaultPropertyRegistry(this);
 		_methods = new DefaultMethodRegistry(this);
-		_processors = new DefaultPostProcessorRegistry(this);
-		_messageTargets = new DefaultMessageTargetRegistry(this);
+		_listeners = new DefaultLifecycleListenerRegistry(this);
 	}
 
 
 	public function populateFrom (definition:ObjectDefinition) : void {
+		_instantiator = definition.instantiator;
 		_constructorArgs = definition.constructorArgs;
 		_properties = definition.properties;
 		_methods = definition.injectorMethods;
-		_processors = definition.postProcessors;
-		_messageTargets = definition.messageTargets;
-		
-		_initMethod = definition.initMethod;
-		_destroyMethod = definition.destroyMethod;
-		_instantiator = definition.instantiator;
+		_listeners = definition.lifecycleListeners;
 	}
 
 	
@@ -92,42 +79,8 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		return _methods;
 	}
 
-	public function get postProcessors () : PostProcessorRegistry {
-		return _processors;
-	}
-	
-	public function get messageTargets () : MessageTargetRegistry {
-		return _messageTargets;
-	}
-
-	public function get initMethod () : Method {
-		return _initMethod;
-	}
-	
-	public function set initMethod (value:Method) : void {
-		checkState();
-		checkMethodOwner(value);
-		_initMethod = value;
-	}
-
-	public function get destroyMethod () : Method {
-		return _destroyMethod;
-	}
-
-	public function set destroyMethod (value:Method) : void {
-		checkState();
-		checkMethodOwner(value);
-		_destroyMethod = value;
-	}
-	
-	public function get factoryMethod () : Method {
-		return _factoryMethod;
-	}
-
-	public function set factoryMethod (value:Method) : void {
-		checkState();
-		checkMethodOwner(value);
-		_factoryMethod = value;
+	public function get lifecycleListeners () : LifecycleListenerRegistry {
+		return _listeners;
 	}
 	
 	public function get instantiator () : ObjectInstantiator {
@@ -139,12 +92,7 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		_instantiator = value;
 	}
 
-	private function checkMethodOwner (method:Method) : void {
-		if (method.owner != _type) {
-			throw new IllegalArgumentError("Method " + method.name + " is not a member of Class " + _type.name);
-		}
-	}
-	
+
 	private function checkState () : void {
 		if (_frozen) {
 			throw new IllegalStateError(toString() + " is frozen");

@@ -37,7 +37,7 @@ public class MetadataObjectDefinitionBuilder {
 	
 	
 	public static function newRootDefinition (registry:ObjectDefinitionRegistry, type:Class, id:String = null, 
-			lazy:Boolean = true, singleton:Boolean = true) : RootObjectDefinition {
+			lazy:Boolean = true, singleton:Boolean = true, metadataRequired:Boolean = false) : RootObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
 		var ci:ClassInfo = ClassInfo.forClass(type, registry.domain);
 		var def:RootObjectDefinition = new DefaultRootObjectDefinition(ci, id, lazy, singleton);
@@ -50,7 +50,7 @@ public class MetadataObjectDefinitionBuilder {
 		return def;
 	}
 	
-	public static function newDefinition (registry:ObjectDefinitionRegistry, type:Class) : ObjectDefinition {
+	public static function newDefinition (registry:ObjectDefinitionRegistry, type:Class, metadataRequired:Boolean = false) : ObjectDefinition {
 		var ci:ClassInfo = ClassInfo.forClass(type, registry.domain);
 		var def:ObjectDefinition = new DefaultObjectDefinition(ci);
 		def = processMetadata(registry, def);
