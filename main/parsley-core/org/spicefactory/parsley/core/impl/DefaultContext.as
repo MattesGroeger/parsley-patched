@@ -15,8 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.impl {
-import org.spicefactory.lib.util.Command;
-import org.spicefactory.lib.util.CommandChain;
+import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 import org.spicefactory.lib.util.collection.SimpleMap;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.ContextError;
@@ -27,6 +26,7 @@ import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.parsley.messaging.MessageRouter;
 import org.spicefactory.parsley.messaging.impl.DefaultMessageRouter;
 
+import flash.events.Event;
 import flash.utils.Dictionary;
 
 /**
@@ -40,7 +40,6 @@ public class DefaultContext implements Context {
 	private var _messageDispatcher:MessageRouter;
 	
 	private var _singletonCache:SimpleMap;
-	private var _destroyCommands:CommandChain; // TODO - maybe use events instead of commands
 	
 	private var _underConstruction:Dictionary = new Dictionary();
 	private var _destroyed:Boolean;
@@ -138,24 +137,25 @@ public class DefaultContext implements Context {
 	}
 	
 	
-	public function addDestroyCommand (com:Command) : void {
-		_destroyCommands.addCommand(com);		
-	}
-	
-	public function removeDestroyCommand (com:Command) : void {
-		_destroyCommands.removeCommand(com);		
-	}
-	
 	public function destroy () : void {
 		if (_destroyed) {
 			return;
 		}
 		try {
-			_destroyCommands.execute();
-			_destroyCommands = null;
+			// TODO - dispatch event (add one internal listener that processes lifecycle listeners)
 		}
 		finally {
 			_destroyed = true;
+		}
+	}
+	
+	private function onDestroy (event:Event) : void {
+		for each (var id:String in _registry.definitionIds) {
+			var definition:RootObjectDefinition = _registry.getDefinition(id);
+			for each (var listener:ObjectLifecycleListener in definition.lifecycleListeners) {
+				listener.preDestroy(getObject(id), this);
+			}
+			// TODO - must process nested definitions
 		}
 	}
 	
