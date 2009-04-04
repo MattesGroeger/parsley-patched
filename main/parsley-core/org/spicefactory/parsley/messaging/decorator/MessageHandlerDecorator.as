@@ -48,7 +48,7 @@ public class MessageHandlerDecorator implements ObjectDefinitionDecorator, Objec
 	}
 
 	public function postConstruct (instance:Object, context:Context) : void {
-		context.messageDispatcher.registerMessageHandler(instance, method.name, 
+		context.messageRouter.registerMessageHandler(instance, method.name, 
 				type, messageProperties, selector);
 	}
 	

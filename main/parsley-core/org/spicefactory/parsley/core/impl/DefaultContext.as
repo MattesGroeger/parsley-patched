@@ -37,7 +37,7 @@ public class DefaultContext implements Context {
 
 	private var _registry:ObjectDefinitionRegistry;
 	private var _factory:ObjectFactory;
-	private var _messageDispatcher:MessageRouter;
+	private var _messageRouter:MessageRouter;
 	
 	private var _singletonCache:SimpleMap;
 	
@@ -46,10 +46,10 @@ public class DefaultContext implements Context {
 	
 	
 	function DefaultContext (registry:ObjectDefinitionRegistry = null, 
-			dispatcher:MessageRouter = null,
+			messageRouter:MessageRouter = null,
 			factory:ObjectFactory = null) {
 		_registry = (registry != null) ? registry : new DefaultObjectDefinitionRegistry();
-		_messageDispatcher = (dispatcher != null) ? dispatcher : new DefaultMessageRouter();
+		_messageRouter = (messageRouter != null) ? messageRouter : new DefaultMessageRouter();
 		_factory = (factory != null) ? factory : new DefaultObjectFactory();
 	}
 
@@ -159,8 +159,8 @@ public class DefaultContext implements Context {
 		}
 	}
 	
-	public function get messageDispatcher () : MessageRouter {
-		return _messageDispatcher;
+	public function get messageRouter () : MessageRouter {
+		return _messageRouter;
 	}
 	
 	

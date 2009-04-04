@@ -59,14 +59,14 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 	public function postConstruct (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
 		for each (var name:String in names) {		
-			eventDispatcher.addEventListener(name, context.messageDispatcher.dispatchMessage);
+			eventDispatcher.addEventListener(name, context.messageRouter.dispatchMessage);
 		}
 	}
 	
 	public function preDestroy (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
 		for each (var name:String in names) {		
-			eventDispatcher.removeEventListener(name, context.messageDispatcher.dispatchMessage);
+			eventDispatcher.removeEventListener(name, context.messageRouter.dispatchMessage);
 		}
 	}
 

@@ -43,7 +43,7 @@ public class MessageInterceptorDecorator implements ObjectDefinitionDecorator, O
 	}
 
 	public function postConstruct (instance:Object, context:Context) : void {
-		context.messageDispatcher.registerMessageInterceptor(instance, method.name, type, selector);
+		context.messageRouter.registerMessageInterceptor(instance, method.name, type, selector);
 	}
 	
 	public function preDestroy (instance:Object, context:Context) : void {

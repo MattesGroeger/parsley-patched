@@ -30,7 +30,7 @@ public class ChildContext extends DefaultContext {
 
 	public function ChildContext (parent:Context, registry:ObjectDefinitionRegistry = null, 
 			factory:ObjectFactory = null) {
-		super(registry, parent.messageDispatcher, factory);
+		super(registry, parent.messageRouter, factory);
 		_parent = parent;
 		// TODO - add listener for ContextLifecycleEvent.DESTROY
 	}

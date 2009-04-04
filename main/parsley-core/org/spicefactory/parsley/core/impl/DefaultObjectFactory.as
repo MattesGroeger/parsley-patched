@@ -108,7 +108,7 @@ public class DefaultObjectFactory implements ObjectFactory {
 		}
 		else if (value is MessageDispatcherFunctionReference) {
 			// two lines to avoid compiler warning
-			var r:* = context.messageDispatcher.dispatchMessage;
+			var r:* = context.messageRouter.dispatchMessage;
 			return r;
 		}
 		else {

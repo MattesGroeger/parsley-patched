@@ -47,7 +47,7 @@ public class MessageBindingDecorator implements ObjectDefinitionDecorator, Objec
 	}
 
 	public function postConstruct (instance:Object, context:Context) : void {
-		context.messageDispatcher.registerMessageBinding(instance, targetProperty.name, 
+		context.messageRouter.registerMessageBinding(instance, targetProperty.name, 
 				type, messageProperty, selector);
 	}
 

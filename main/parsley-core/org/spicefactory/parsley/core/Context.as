@@ -37,7 +37,7 @@ public interface Context {
 	
 	function destroy () : void;
 	
-	function get messageDispatcher () : MessageRouter;
+	function get messageRouter () : MessageRouter;
 	
 	
 }
