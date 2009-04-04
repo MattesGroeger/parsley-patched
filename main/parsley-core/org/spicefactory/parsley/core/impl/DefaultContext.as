@@ -71,6 +71,10 @@ public class DefaultContext implements Context {
 		return _registry;
 	}
 	
+	public function get factory () : ObjectFactory {
+		return _factory;
+	}
+	
 	public function get objectCount () : uint {
 		return _registry.definitionCount;
 	}
@@ -101,7 +105,7 @@ public class DefaultContext implements Context {
 		return getInstance(getDefinition(id));
 	}
 	
-	private function getInstance (def:RootObjectDefinition, getFactory:Boolean = false) : Object {
+	private function getInstance (def:RootObjectDefinition) : Object {
 		var id:String = def.id;
 		
 		if (def.singleton && _singletonCache.containsKey(id)) {
@@ -150,13 +154,7 @@ public class DefaultContext implements Context {
 	}
 	
 	private function onDestroy (event:Event) : void {
-		for each (var id:String in _registry.definitionIds) {
-			var definition:RootObjectDefinition = _registry.getDefinition(id);
-			for each (var listener:ObjectLifecycleListener in definition.lifecycleListeners) {
-				listener.preDestroy(getObject(id), this);
-			}
-			// TODO - must process nested definitions
-		}
+		_factory.destroyAll(this);
 	}
 	
 	public function get messageRouter () : MessageRouter {

@@ -26,10 +26,15 @@ import org.spicefactory.parsley.factory.model.PropertyValue;
 import org.spicefactory.parsley.factory.registry.MethodParameterRegistry;
 import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReference;
 
+import flash.utils.Dictionary;
+
 /**
  * @author Jens Halm
  */
 public class DefaultObjectFactory implements ObjectFactory {
+	
+	
+	private var processedInstances:Dictionary = new Dictionary();
 
 
 	public function createObject (definition:ObjectDefinition, context:Context) : Object {
@@ -45,9 +50,24 @@ public class DefaultObjectFactory implements ObjectFactory {
 	public function configureObject (instance:Object, definition:ObjectDefinition, context:Context) : void {
 	 	processProperties(instance, definition, context);
 	 	processMethods(instance, definition, context);
-	 	processLifecycleListeners(instance, definition, context);
+	 	processPostConstructListeners(instance, definition, context);
+		processedInstances[instance] = definition;
 	}
 	
+	public function destroyObject (instance:Object, definition:ObjectDefinition, context:Context) : void {
+		processPreDestroyListeners(instance, definition, context);
+		delete processedInstances[instance];
+	}
+
+	public function destroyAll (context:Context) : void {
+		for (var instance:Object in processedInstances) {
+			var definition:ObjectDefinition = ObjectDefinition(processedInstances[instance]);
+			processPreDestroyListeners(instance, definition, context);
+		}
+		processedInstances = new Dictionary();
+	}
+	
+
 	protected function processProperties (instance:Object, definition:ObjectDefinition, context:Context) : void {
 	 	var props:Array = definition.properties.getAll();
 	 	for each (var prop:PropertyValue in props) {
@@ -64,10 +84,17 @@ public class DefaultObjectFactory implements ObjectFactory {
 		}		
 	}
 	
-	protected function processLifecycleListeners (instance:Object, definition:ObjectDefinition, context:Context) : void {
+	protected function processPostConstructListeners (instance:Object, definition:ObjectDefinition, context:Context) : void {
 	 	var listeners:Array = definition.lifecycleListeners.getAll();
 	 	for each (var listener:ObjectLifecycleListener in listeners) {
  			listener.postConstruct(instance, context);
+		}		
+	}
+	
+	protected function processPreDestroyListeners (instance:Object, definition:ObjectDefinition, context:Context) : void {
+	 	var listeners:Array = definition.lifecycleListeners.getAll();
+	 	for each (var listener:ObjectLifecycleListener in listeners) {
+ 			listener.preDestroy(instance, context);
 		}		
 	}
 	
