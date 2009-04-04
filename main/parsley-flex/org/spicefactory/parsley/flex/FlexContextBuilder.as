@@ -27,20 +27,30 @@ public class FlexContextBuilder {
 	public function FlexContextBuilder () {
 	}
 	
-	public static function build (container:Class, parent:Context = null) : Context {
-		return ActionScriptContextBuilder.build(container, parent);		
+	public static function build (container:Class, parent:Context = null, 
+			viewManager:FlexViewManager = null) : Context {
+		var context:Context = ActionScriptContextBuilder.build(container, parent);	
+		if (viewManager != null) viewManager.init(context);
+		return context;	
 	}
 	
-	public static function buildAll (containers:Array, parent:Context = null) : Context {
-		return ActionScriptContextBuilder.buildAll(containers, parent);		
+	public static function buildAll (containers:Array, parent:Context = null,
+			viewManager:FlexViewManager = null) : Context {
+		var context:Context = ActionScriptContextBuilder.buildAll(containers, parent);
+		if (viewManager != null) viewManager.init(context);
+		return context;		
 	}
 	
 	
-	public static function merge (container:Class, builder:CompositeContextBuilder) : void {
+	public static function merge (container:Class, builder:CompositeContextBuilder,
+			viewManager:FlexViewManager = null) : void {
+		if (viewManager != null) viewManager.init(null); // TODO - need context ref
 		ActionScriptContextBuilder.merge(container, builder);
 	}
 	
-	public static function mergeAll (containers:Array, builder:CompositeContextBuilder) : void {
+	public static function mergeAll (containers:Array, builder:CompositeContextBuilder,
+			viewManager:FlexViewManager = null) : void {
+		if (viewManager != null) viewManager.init(null); // TODO - need context ref
 		ActionScriptContextBuilder.mergeAll(containers, builder);
 	}
 	
