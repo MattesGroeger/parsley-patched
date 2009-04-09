@@ -58,9 +58,10 @@ public class ActionScriptContextBuilder {
 	}
 	
 	
-	private static function populateRegistry (containers:Array, registry:ObjectDefinitionRegistry = null) : void {
+	// TODO - move to new class ActionScriptObjectDefinitionBuilder
+	private static function populateRegistry (containers:Array, registry:ObjectDefinitionRegistry) : void {
 		for each (var container:Class in containers) {
-			var ci:ClassInfo = ClassInfo.forClass(container);
+			var ci:ClassInfo = ClassInfo.forClass(container, registry.domain);
 			var containerDefinition:RootObjectDefinition = MetadataObjectDefinitionBuilder.newRootDefinition(registry, container);
 			for each (var property:Property in ci.getProperties()) {
 				var internalMeta:Array = property.getMetadata(InternalProperty);
