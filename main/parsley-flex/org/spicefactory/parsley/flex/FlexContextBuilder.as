@@ -19,6 +19,8 @@ import org.spicefactory.parsley.core.ActionScriptContextBuilder;
 import org.spicefactory.parsley.core.CompositeContextBuilder;
 import org.spicefactory.parsley.core.Context;
 
+import flash.system.ApplicationDomain;
+
 /**
  * @author Jens Halm
  */
@@ -28,14 +30,14 @@ public class FlexContextBuilder {
 	}
 	
 	public static function build (container:Class, parent:Context = null, 
-			viewManager:FlexViewManager = null) : Context {
+			viewManager:FlexViewManager = null, domain:ApplicationDomain = null) : Context {
 		var context:Context = ActionScriptContextBuilder.build(container, parent);	
 		if (viewManager != null) viewManager.init(context);
 		return context;	
 	}
 	
 	public static function buildAll (containers:Array, parent:Context = null,
-			viewManager:FlexViewManager = null) : Context {
+			viewManager:FlexViewManager = null, domain:ApplicationDomain = null) : Context {
 		var context:Context = ActionScriptContextBuilder.buildAll(containers, parent);
 		if (viewManager != null) viewManager.init(context);
 		return context;		
