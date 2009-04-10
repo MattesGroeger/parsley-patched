@@ -45,16 +45,33 @@ public class FlexContextBuilder {
 	
 	public static function merge (container:Class, builder:CompositeContextBuilder,
 			viewTriggerEvent:String = "configureIOC") : void {
-		// TODO - need context ref for deferred creation of view manager
-		ActionScriptContextBuilder.merge(container, builder);
+		mergeAll([container], builder, viewTriggerEvent);
 	}
-	
+
 	public static function mergeAll (containers:Array, builder:CompositeContextBuilder,
 			viewTriggerEvent:String = "configureIOC") : void {
-		// TODO - need context ref for deferred creation of view manager
 		ActionScriptContextBuilder.mergeAll(containers, builder);
+		new BuilderEventHandler(viewTriggerEvent, builder);
+	}
+}
+}
+
+import org.spicefactory.parsley.core.CompositeContextBuilder;
+import org.spicefactory.parsley.core.events.ContextBuilderEvent;
+import org.spicefactory.parsley.flex.view.RootViewManager;
+
+class BuilderEventHandler {
+	
+	private var triggerEvent:String;
+	
+	function BuilderEventHandler (triggerEvent:String, builder:CompositeContextBuilder) {
+		this.triggerEvent = triggerEvent;
+		builder.addEventListener(ContextBuilderEvent.COMPLETE, builderComplete);
 	}
 	
+	private function builderComplete (event:ContextBuilderEvent) : void {
+		var builder:CompositeContextBuilder = event.target as CompositeContextBuilder;
+		RootViewManager.addContext(builder.context, triggerEvent, builder.registry.domain);
+	}
 	
-}
 }
