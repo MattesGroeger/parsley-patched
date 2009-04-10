@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core {
+import org.spicefactory.parsley.core.impl.ChildContext;
 import org.spicefactory.parsley.core.impl.DefaultContext;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
@@ -27,13 +28,13 @@ import flash.system.ApplicationDomain;
 public class CompositeContextBuilder {
 	
 	
+	private var _parent:Context;
 	private var _registry:ObjectDefinitionRegistry;
-	private var _domain:ApplicationDomain;
 	
 	
-	function CompositeContextBuilder (parent:Context = null, domain:ApplicationDomain = null, 
-			registry:ObjectDefinitionRegistry = null) {
-		_registry = (registry != null) ? registry : new DefaultObjectDefinitionRegistry();
+	function CompositeContextBuilder (parent:Context = null, domain:ApplicationDomain = null) {
+		_parent = parent;
+		_registry = new DefaultObjectDefinitionRegistry(domain);
 	}
 	
 	
@@ -41,16 +42,16 @@ public class CompositeContextBuilder {
 		return _registry;
 	}
 
-	public function get domain () : ApplicationDomain {
-		return _domain;
+	public function get parent () : Context {
+		return _parent;
 	}
 
-
 	public function build () : Context {
-		var df:DefaultContext = new DefaultContext(_registry);
-		// TODO - handle parent
-		df.initialize();
-		return df;
+		var dc:DefaultContext = (parent != null) 
+				? new ChildContext(parent, registry) 
+				: new DefaultContext(registry);
+		dc.initialize();
+		return dc;	
 	}
 	
 	
