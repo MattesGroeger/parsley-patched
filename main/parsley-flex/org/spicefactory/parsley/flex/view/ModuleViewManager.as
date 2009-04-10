@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.view {
+import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.parsley.flex.view.AbstractViewManager;
@@ -40,9 +41,14 @@ public class ModuleViewManager extends AbstractViewManager {
 	
 	public function init (parent:Context, domain:ApplicationDomain) : void {
 		context = new FlexViewContext(parent, new DefaultObjectDefinitionRegistry(domain));
+		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		addListener(container);
-		// TODO - listen for ContextEvent.DESTROYED
 	}
+	
+	private function contextDestroyed (event:ContextEvent) : void {
+		removeListener(container);	
+	}
+
 	
 	protected override function getContext (component:DisplayObject) : FlexViewContext {
 		return context;

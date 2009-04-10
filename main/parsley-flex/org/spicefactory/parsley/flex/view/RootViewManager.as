@@ -19,6 +19,7 @@ import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.util.ClassUtil;
 import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
 
 import mx.core.Application;
@@ -67,8 +68,14 @@ public class RootViewManager extends AbstractViewManager {
 					+ " for the same ApplicationDomain more than once.");
 			return;
 		}
-		contextsByDomain[domain] = new FlexViewContext(parent, new DefaultObjectDefinitionRegistry(domain)); 
-		// TODO - listen for ContextEvent.DESTROYED
+		var context:FlexViewContext = new FlexViewContext(parent, new DefaultObjectDefinitionRegistry(domain)); 
+		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		contextsByDomain[domain] = context;
+	}
+	
+	private function contextDestroyed (event:ContextEvent) : void {
+		var context:FlexViewContext = event.target as FlexViewContext;
+		delete contextsByDomain[context.registry.domain];
 	}
 
 	protected override function getContext (component:DisplayObject) : FlexViewContext {

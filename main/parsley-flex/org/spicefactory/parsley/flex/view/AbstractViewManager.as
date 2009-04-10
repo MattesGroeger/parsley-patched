@@ -15,11 +15,12 @@
  */
 
 package org.spicefactory.parsley.flex.view {
+	import org.spicefactory.parsley.core.impl.MetadataObjectDefinitionBuilder;
 import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.impl.MetadataObjectDefinitionBuilder;
+
 import org.spicefactory.parsley.factory.ObjectDefinition;
 
 import flash.display.DisplayObject;
@@ -54,6 +55,10 @@ public class AbstractViewManager {
 	
 	protected function addListener (component:DisplayObject) : void {
 		component.addEventListener(_triggerEvent, addComponent);
+	}
+	
+	protected function removeListener (component:DisplayObject) : void {
+		component.removeEventListener(_triggerEvent, addComponent);
 	}
 	
 	private function addComponent (event:Event) : void {
