@@ -32,7 +32,7 @@ public class Module extends mx.modules.Module {
 
 	
 	public var container:Class;
-	public var viewTriggerEvent:String;
+	public var viewTriggerEvent:String = "configureIOC";
 	
 	
 	public function buildContext (parent:Context, domain:ApplicationDomain) : Context {
@@ -40,8 +40,7 @@ public class Module extends mx.modules.Module {
 			log.warn("No container specified for context - skipping context creation");
 			return null;
 		}
-		// TODO - init view manager
-		return FlexContextBuilder.build(container, parent, null, domain); 
+		return FlexContextBuilder.build(container, parent, viewTriggerEvent, domain); 
 	}
 	
 	

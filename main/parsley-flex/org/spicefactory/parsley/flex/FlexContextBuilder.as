@@ -18,6 +18,7 @@ package org.spicefactory.parsley.flex {
 import org.spicefactory.parsley.core.ActionScriptContextBuilder;
 import org.spicefactory.parsley.core.CompositeContextBuilder;
 import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.flex.view.RootViewManager;
 
 import flash.system.ApplicationDomain;
 
@@ -30,29 +31,27 @@ public class FlexContextBuilder {
 	}
 	
 	public static function build (container:Class, parent:Context = null, 
-			viewManager:FlexViewManager = null, domain:ApplicationDomain = null) : Context {
-		var context:Context = ActionScriptContextBuilder.build(container, parent);	
-		if (viewManager != null) viewManager.init(context);
-		return context;	
+			viewTriggerEvent:String = "configureIOC", domain:ApplicationDomain = null) : Context {
+		return buildAll([container], parent, viewTriggerEvent, domain);
 	}
 	
 	public static function buildAll (containers:Array, parent:Context = null,
-			viewManager:FlexViewManager = null, domain:ApplicationDomain = null) : Context {
-		var context:Context = ActionScriptContextBuilder.buildAll(containers, parent);
-		if (viewManager != null) viewManager.init(context);
+			viewTriggerEvent:String = "configureIOC", domain:ApplicationDomain = null) : Context {
+		var context:Context = ActionScriptContextBuilder.buildAll(containers, parent, domain);
+		RootViewManager.addContext(context, viewTriggerEvent, domain);
 		return context;		
 	}
 	
 	
 	public static function merge (container:Class, builder:CompositeContextBuilder,
-			viewManager:FlexViewManager = null) : void {
-		if (viewManager != null) viewManager.init(null); // TODO - need context ref
+			viewTriggerEvent:String = "configureIOC") : void {
+		// TODO - need context ref for deferred creation of view manager
 		ActionScriptContextBuilder.merge(container, builder);
 	}
 	
 	public static function mergeAll (containers:Array, builder:CompositeContextBuilder,
-			viewManager:FlexViewManager = null) : void {
-		if (viewManager != null) viewManager.init(null); // TODO - need context ref
+			viewTriggerEvent:String = "configureIOC") : void {
+		// TODO - need context ref for deferred creation of view manager
 		ActionScriptContextBuilder.mergeAll(containers, builder);
 	}
 	

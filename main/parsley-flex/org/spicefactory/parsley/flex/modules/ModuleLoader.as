@@ -21,7 +21,7 @@ import org.spicefactory.parsley.core.Context;
 
 import mx.modules.ModuleLoader;
 
-import flash.system.ApplicationDomain;
+import flash.display.DisplayObject;
 import flash.utils.ByteArray;
 
 /**
@@ -32,62 +32,46 @@ public class ModuleLoader extends mx.modules.ModuleLoader {
 	
 	private static const log:Logger = LogContext.getLogger(ModuleLoader);
 
+	/**
+	 * The Context to use as a parent for the Module Context.
+	 */
 	public var parentContext:Context;
 	
-	private var builder:Builder;
+	private var registration:ModuleRegistration;
 	
 	
+	/**
+	 * @private
+	 */
 	public override function loadModule (url:String = null, bytes:ByteArray = null) : void {
 		url = (url != null) ? url : this.url;
 		if (url == null) {
 			return;
 		}
-		if (parentContext == null) {
-			log.warn("Parent context not specified for module with URL " + url);
+		registration = ModuleManager.getInstance().registerModule(url, parentContext, applicationDomain);
+		if (registration.moduleDomain != applicationDomain) {
+			/* may happen if the domain was not explicitly set or if it was different from a domain
+			 * set by another loader - we have to adjust since there is no way to switch the domain
+			 * for a module that has already started to load.
+			 */
+			applicationDomain = registration.moduleDomain;
 		}
-		// must explicitly create domain instance here, we would not have access to it afterwards
-		if (applicationDomain == null) {
-			applicationDomain = new ApplicationDomain(ApplicationDomain.currentDomain);
-		}
-		builder = new Builder(this);
-		ModuleManager.getInstance().registerModule(url, parentContext, applicationDomain, builder);
 		super.loadModule(url, bytes);
 	}
-}
-}
-
-import org.spicefactory.lib.logging.LogContext;
-import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.parsley.core.Context;
-
-import mx.modules.ModuleLoader;
-
-import flash.display.DisplayObject;
-import flash.system.ApplicationDomain;
-
-class Builder implements ModuleContextBuilder {
-
-
-	private static const log:Logger = LogContext.getLogger(ModuleContextBuilder);
-	private var loader:ModuleLoader;
-
 	
-	function Builder (loader:ModuleLoader) {
-		this.loader = loader;
-	}
-	
-	
-	public function build (parent:Context, domain:ApplicationDomain) : Context {
-		var child:DisplayObject = loader.child;
-		if (child == null) {
-			log.warn("No child has been created for ModuleLoader with URL " + loader.url);
-			return null;
-		}
+	/**
+	 * @private
+	 */
+	public override function addChild (child:DisplayObject) : DisplayObject {
 		if (!(child is Module)) {
-			log.warn("Child created for ModuleLoader with URL " + loader.url + " does not extend the Parsley Module class");
+			log.warn("Child created for ModuleLoader with URL " + url + " does not extend the Parsley Module class");
 			return null;
 		}
-		return Module(child).buildContext(parent, domain);
+		registration.addModule(Module(child));
+		return super.addChild(child);
 	}
 	
+	
+}
+
 }

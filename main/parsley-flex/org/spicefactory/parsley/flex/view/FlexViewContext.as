@@ -15,15 +15,15 @@
  */
 
 package org.spicefactory.parsley.flex.view {
-import flash.utils.Dictionary;
-
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.impl.ChildContext;
 import org.spicefactory.parsley.core.impl.ObjectFactory;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 
-import mx.core.UIComponent;
+import flash.display.DisplayObject;
+import flash.events.Event;
+import flash.utils.Dictionary;
 
 /**
  * @author Jens Halm
@@ -40,13 +40,15 @@ public class FlexViewContext extends ChildContext {
 	}
 	
 	
-	public function addComponent (component:UIComponent, definition:ObjectDefinition) : void {
+	public function addComponent (component:DisplayObject, definition:ObjectDefinition) : void {
 		factory.configureObject(component, definition, this);
 		definitionMap[component] = definition;
+		component.addEventListener(Event.REMOVED_FROM_STAGE, removeComponent);
 	}
 	
-	
-	public function removeComponent (component:UIComponent) : void {
+	private function removeComponent (event:Event) : void {
+		var component:DisplayObject = DisplayObject(event.target);
+		component.removeEventListener(Event.REMOVED_FROM_STAGE, removeComponent);
 		var definition:ObjectDefinition = ObjectDefinition(definitionMap[component]);
 		if (definition != null) {
 			factory.destroyObject(component, definition, this);
