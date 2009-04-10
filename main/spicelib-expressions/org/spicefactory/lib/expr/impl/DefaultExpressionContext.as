@@ -60,7 +60,6 @@ public class DefaultExpressionContext implements ExpressionContext {
 	}
 	
 	private function buildValueExpression (expression:String) : Expression {
-		// TODO - handle default (provided in expression, provided from parser)
 		var ex:String = expression.substring(2, expression.length - 1);
 		return new ValueExpression(ex, variableResolver, propertyResolver); 		
 	}
