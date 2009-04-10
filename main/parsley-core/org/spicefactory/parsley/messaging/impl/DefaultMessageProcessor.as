@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.messaging.impl {
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.messaging.MessageProcessor;
 
 /**
@@ -23,12 +25,14 @@ import org.spicefactory.parsley.messaging.MessageProcessor;
 public class DefaultMessageProcessor implements MessageProcessor {
 	
 	
+	private static const log:Logger = LogContext.getLogger(DefaultMessageProcessor);
+
+	
 	private var _message:Object;
 	
 	private var _targets:Array;
 	private var _interceptors:Array;
 	
-	private var _targetPhase:Boolean = false;
 	private var _currentIndex:uint = 0;
 	
 	
@@ -39,28 +43,27 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	}
 	
 	public function proceed () : void {
-		if (!_targetPhase) {
-			if (_interceptors.length > _currentIndex) {
-				var ic:* = _interceptors[_currentIndex++];
-				// TODO - invoke
-			}
-			else {
-				_targetPhase = true;
-				_currentIndex = 0;
-			}
+		if (_interceptors.length > _currentIndex) {
+			var ic:MessageTarget = _interceptors[_currentIndex++];
+			invokeMessageTarget(ic);
 		}
-		if (_targetPhase) {
-			if (_targets.length > _currentIndex) {
-				for each (var t:* in _targets) {
-					// TODO - invoke
-					_currentIndex++;
-				}
+		else {
+			for each (var target:MessageTarget in _targets) {
+				invokeMessageTarget(target);
 			}
 		}
 	}
 	
+	private function invokeMessageTarget (target:MessageTarget) : void {
+		try {
+			target.handleMessage(this);
+		}
+		catch (e:Error) {
+			log.error("Message Target threw Error", e);
+		}
+	}
+	
 	public function rewind () : void {
-		_targetPhase = false;
 		_currentIndex = 0;
 	}
 	
