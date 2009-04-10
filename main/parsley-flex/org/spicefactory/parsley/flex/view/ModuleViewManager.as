@@ -39,8 +39,8 @@ public class ModuleViewManager extends AbstractViewManager {
 
 	
 	public function init (parent:Context, domain:ApplicationDomain) : void {
-		container.addEventListener(triggerEvent, addComponent);
 		context = new FlexViewContext(parent, new DefaultObjectDefinitionRegistry(domain));
+		addListener(container);
 		// TODO - listen for ContextEvent.DESTROYED
 	}
 	

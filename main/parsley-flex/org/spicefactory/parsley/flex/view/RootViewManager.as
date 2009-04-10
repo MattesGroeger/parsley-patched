@@ -58,7 +58,7 @@ public class RootViewManager extends AbstractViewManager {
 	
 	
 	public function init () : void {
-		Application.application.systemManager.addEventListener(triggerEvent, addComponent);
+		addListener(Application.application.systemManager);
 	}
 	
 	private function addContext (parent:Context, domain:ApplicationDomain) : void {

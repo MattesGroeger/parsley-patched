@@ -52,7 +52,11 @@ public class AbstractViewManager {
 		throw new AbstractMethodError();
 	}
 	
-	protected function addComponent (event:Event) : void {
+	protected function addListener (component:DisplayObject) : void {
+		component.addEventListener(_triggerEvent, addComponent);
+	}
+	
+	private function addComponent (event:Event) : void {
 		event.stopImmediatePropagation();
 		var component:DisplayObject = DisplayObject(event.target);
 		var context:FlexViewContext = getContext(component);
