@@ -17,7 +17,6 @@
 package org.spicefactory.parsley.messaging.impl {
 import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.messaging.LazyMessageTarget;
 import org.spicefactory.parsley.messaging.MessageProcessor;
 
 /**
@@ -34,8 +33,7 @@ public class MessageTarget {
 	private var _interceptor:Boolean;
 	
 	function MessageTarget (targetInstance:Object, messageType:ClassInfo, selector:*, interceptor:Boolean) {
-		this._targetType = (targetInstance is LazyMessageTarget) ? 
-				ClassInfo.forClass(LazyMessageTarget(targetInstance).type) : ClassInfo.forInstance(targetInstance);
+		this._targetType = ClassInfo.forInstance(targetInstance);
 		this._targetInstance = targetInstance;
 		this._messageType = messageType;
 		this._selector = selector;
@@ -46,19 +44,19 @@ public class MessageTarget {
 		throw new AbstractMethodError();
 	}
 	
-	public function get targetType ():ClassInfo {
+	public function get targetType () : ClassInfo {
 		return _targetType;
 	}
 	
-	public function get targetInstance ():Object {
+	public function get targetInstance () : Object {
 		return _targetInstance;
 	}
 	
-	public function get messageType ():ClassInfo {
+	public function get messageType () : ClassInfo {
 		return _messageType;
 	}
 	
-	public function get selector ():* {
+	public function get selector () : * {
 		return _selector;
 	}
 	
