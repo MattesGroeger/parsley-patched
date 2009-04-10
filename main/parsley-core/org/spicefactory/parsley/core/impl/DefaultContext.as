@@ -15,10 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.impl {
-import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 import org.spicefactory.lib.util.collection.SimpleMap;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.ContextError;
+import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
@@ -27,12 +27,13 @@ import org.spicefactory.parsley.messaging.MessageRouter;
 import org.spicefactory.parsley.messaging.impl.DefaultMessageRouter;
 
 import flash.events.Event;
+import flash.events.EventDispatcher;
 import flash.utils.Dictionary;
 
 /**
  * @author Jens Halm
  */
-public class DefaultContext implements Context {
+public class DefaultContext extends EventDispatcher implements Context {
 
 
 	private var _registry:ObjectDefinitionRegistry;
@@ -51,6 +52,7 @@ public class DefaultContext implements Context {
 		_registry = (registry != null) ? registry : new DefaultObjectDefinitionRegistry();
 		_messageRouter = (messageRouter != null) ? messageRouter : new DefaultMessageRouter();
 		_factory = (factory != null) ? factory : new DefaultObjectFactory();
+		addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
 
 	
@@ -146,14 +148,14 @@ public class DefaultContext implements Context {
 			return;
 		}
 		try {
-			// TODO - dispatch event (add one internal listener that processes lifecycle listeners)
+			dispatchEvent(new ContextEvent(ContextEvent.DESTROYED));
 		}
 		finally {
 			_destroyed = true;
 		}
 	}
 	
-	private function onDestroy (event:Event) : void {
+	private function contextDestroyed (event:Event) : void {
 		_factory.destroyAll(this);
 	}
 	

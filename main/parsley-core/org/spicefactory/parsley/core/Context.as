@@ -17,10 +17,19 @@
 package org.spicefactory.parsley.core {
 import org.spicefactory.parsley.messaging.MessageRouter;
 
+import flash.events.IEventDispatcher;
+
+/**
+ * Dispatched when the Context was destroyed.
+ * 
+ * @eventType org.spicefactory.parsley.core.events.ContextEvent.DESTROYED
+ */
+[Event(name="destroyed", type="org.spicefactory.parsley.core.events.ContextEvent")]
+
 /**
  * @author Jens Halm
  */
-public interface Context {
+public interface Context extends IEventDispatcher {
 	
 	
 	function get objectCount () : uint;

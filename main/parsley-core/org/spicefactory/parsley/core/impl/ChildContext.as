@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.impl {
 import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.impl.DefaultContext;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 
@@ -32,7 +33,7 @@ public class ChildContext extends DefaultContext {
 			factory:ObjectFactory = null) {
 		super(registry, parent.messageRouter, factory);
 		_parent = parent;
-		// TODO - add listener for ContextLifecycleEvent.DESTROY
+		_parent.addEventListener(ContextEvent.DESTROYED, parentDestroyed, false, 1); // want to process before parent
 	}
 	
 
@@ -63,6 +64,11 @@ public class ChildContext extends DefaultContext {
 	
 	public override function getObject (id:String) : Object {
 		return super.containsObject(id) ? super.getObject(id) : _parent.getObject(id);
+	}
+	
+	
+	private function parentDestroyed (event:ContextEvent) : void {
+		destroy();
 	}
 	
 	
