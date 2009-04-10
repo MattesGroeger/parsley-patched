@@ -15,6 +15,10 @@
  */
 
 package org.spicefactory.parsley.core {
+import org.spicefactory.parsley.core.events.ContextBuilderEvent;
+
+import flash.events.EventDispatcher;
+
 import org.spicefactory.parsley.core.impl.ChildContext;
 import org.spicefactory.parsley.core.impl.DefaultContext;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
@@ -23,11 +27,19 @@ import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
 import flash.system.ApplicationDomain;
 
 /**
+ * Dispatched when the builder completed and the context property has been set.
+ * 
+ * @eventType org.spicefactory.parsley.core.events.ContextBuilderEvent.COMPLETE
+ */
+[Event(name="complete", type="org.spicefactory.parsley.core.events.ContextBuilderEvent")]
+
+/**
  * @author Jens Halm
  */
-public class CompositeContextBuilder {
+public class CompositeContextBuilder extends EventDispatcher {
+
 	
-	
+	private var _context:Context;
 	private var _parent:Context;
 	private var _registry:ObjectDefinitionRegistry;
 	
@@ -45,12 +57,18 @@ public class CompositeContextBuilder {
 	public function get parent () : Context {
 		return _parent;
 	}
+	
+	public function get context () : Context {
+		return _context;
+	}
 
 	public function build () : Context {
 		var dc:DefaultContext = (parent != null) 
 				? new ChildContext(parent, registry) 
 				: new DefaultContext(registry);
 		dc.initialize();
+		_context = dc;
+		dispatchEvent(new ContextBuilderEvent(ContextBuilderEvent.COMPLETE));
 		return dc;	
 	}
 	
