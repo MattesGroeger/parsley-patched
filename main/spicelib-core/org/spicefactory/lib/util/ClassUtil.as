@@ -15,9 +15,11 @@
  */
  
 package org.spicefactory.lib.util {
-import flash.utils.getDefinitionByName;
-
 import org.spicefactory.lib.errors.IllegalArgumentError;
+
+import flash.system.ApplicationDomain;
+import flash.utils.getDefinitionByName;
+import flash.utils.getQualifiedClassName;
 
 /**
  * Static utility methods to reflectively create new instances.
@@ -61,6 +63,24 @@ public class ClassUtil {
 			case 8: return new type(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7]);
 			default: throw new IllegalArgumentError("Unsupported number of Constructor args: " + params.length);
 		}
+	}
+	
+	/**
+	 * Checks whether the specified ApplicationDomain contains the definition for the given instance.
+	 * 
+	 * @param domain the ApplicationDomain to check
+	 * @param instance the instance to look for
+	 * @return true if the specified ApplicationDomain contains the definition for the given instance
+	 */
+	public static function containsDefintion (domain:ApplicationDomain, instance:Object) : Boolean {
+		var className:String = getQualifiedClassName(instance);
+		if (domain.hasDefinition(className)) {
+			var clazz:Class = domain.getDefinition(className) as Class;
+			if (instance is clazz) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }
