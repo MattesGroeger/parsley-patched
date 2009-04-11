@@ -17,7 +17,6 @@
 package org.spicefactory.lib.reflect {
 import org.spicefactory.lib.reflect.mapping.ValidationError;
 import org.spicefactory.lib.reflect.metadata.EventInfo;
-import org.spicefactory.lib.reflect.metadata.Required;
 
 import flash.system.ApplicationDomain;
 
