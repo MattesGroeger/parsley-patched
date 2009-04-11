@@ -187,10 +187,9 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	 */
 	public function addSupportedLocale (loc:Locale) : void {
 		_supportedLocales[LocaleUtil.getSuffix(loc)] = loc;
-		/* TODO - 1.0.3 - would this make sense?
-		if (loc.getCountry() != "" && loc.getLanguage() != "") {
-			_supportedLocales[loc.getLanguage()] = new Locale(loc.getLanguage(), "");
-		} */
+		if (loc.country != "" && loc.language != "") {
+			_supportedLocales[loc.language] = new Locale(loc.language, "");
+		}
 	}
 	
 	/**
