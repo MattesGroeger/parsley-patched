@@ -70,7 +70,7 @@ public class AbstractStringValueMapper {
 		}
 	}
 	
-	public function mapProperty (propertyName:String, attributeName:String = null) : void {
+	public function mapProperty (propertyName:String, xmlName:String = null) : void {
 		var property:Property = targetType.getProperty(propertyName);
 		if (property == null || !property.writable) {
 			throw new IllegalArgumentError(property.toString() + " does not exist or is not writable"); 
@@ -78,11 +78,11 @@ public class AbstractStringValueMapper {
 		addPropertyMapping(property);	
 	}
 	
-	private function addPropertyMapping (property:Property, attributeName:String = null) : void {
-		if (attributeName == null) attributeName = XmlProcessorContext.namingStrategy.toXmlName(property.name);
+	private function addPropertyMapping (property:Property, xmlName:String = null) : void {
+		if (xmlName == null) xmlName = XmlProcessorContext.namingStrategy.toXmlName(property.name);
 		var required:Boolean = property.getMetadata(Required).length != 0;
-		var config:ValueConfig = new ValueConfig(new QName(_namespaceUri, attributeName), property, required);
-		xmlConfigs[_namespaceUri + "::" + attributeName] = config;
+		var config:ValueConfig = new ValueConfig(new QName(_namespaceUri, xmlName), property, required);
+		xmlConfigs[_namespaceUri + "::" + xmlName] = config;
 		propertyConfigs[property.name] = config;
 		valueConfigs.push(config);
 	}
