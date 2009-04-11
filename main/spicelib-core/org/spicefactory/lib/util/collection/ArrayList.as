@@ -53,10 +53,10 @@ public class ArrayList implements List {
 	}
 	
 	public function insertAll (index:uint, l:List) : void {
-		var cnt:uint = l.getSize();
-		for (var i:uint = 0; i < cnt; i++) {
-			insert(index + i, l.get(i)); // TODO - slow operation
+		if (index < 0 || index > _array.length) {
+			throw new IllegalArgumentError("insert: index out of range: " + index);
 		}
+		_array.splice(index, 0, l.toArray());
 	}		
 	
 	public function contains (item:*) : Boolean {
@@ -106,11 +106,11 @@ public class ArrayList implements List {
 		return removeAt(_array.length - 1);		
 	}
 	
-	public function sort (compareFunction:Function, options:Number) : void { // TODO - check Number type
+	public function sort (compareFunction:Function, options:uint) : void {
 		_array.sort(compareFunction, options);
 	}
 	
-	public function sortOn (propertyNames:Array, options:Number) : void {
+	public function sortOn (propertyNames:Array, options:uint) : void {
 		_array.sortOn(propertyNames, options);
 	}
 	
