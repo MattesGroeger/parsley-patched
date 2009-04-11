@@ -29,7 +29,7 @@ import org.spicefactory.parsley.factory.impl.DefaultObjectDefinition;
 import org.spicefactory.parsley.factory.impl.DefaultRootObjectDefinition;
 import org.spicefactory.parsley.util.IdGenerator;
 
-/**
+import flash.utils.getQualifiedClassName;/**
  * @author Jens Halm
  */
 public class MetadataObjectDefinitionBuilder {
@@ -41,11 +41,7 @@ public class MetadataObjectDefinitionBuilder {
 		if (id == null) id = IdGenerator.nextObjectId;
 		var ci:ClassInfo = ClassInfo.forClass(type, registry.domain);
 		var def:RootObjectDefinition = new DefaultRootObjectDefinition(ci, id, lazy, singleton);
-		var result:ObjectDefinition = processMetadata(registry, def);
-		if (!(result is RootObjectDefinition)) {
-			throw new ContextError("Metadata processing did not return a RootObjectDefinition for type " + ci.name);
-		}
-		def = RootObjectDefinition(result);
+		def = processMetadata(registry, def) as RootObjectDefinition;
 		registry.registerDefinition(def);
 		return def;
 	}
@@ -68,31 +64,38 @@ public class MetadataObjectDefinitionBuilder {
 			definition = executeMetadataHandlers(registry, definition, method);
 		}
 		
-		if (definition is FactoryObjectDefinition) {
-			var factory:FactoryObjectDefinition = FactoryObjectDefinition(definition);
-			registry.registerDefinition(factory);
-			return factory.targetDefinition;
-		}
-		
-		return definition;
+		return (definition is FactoryObjectDefinition) ? FactoryObjectDefinition(definition).targetDefinition : definition;
 	}
 
 	private function executeMetadataHandlers (registry:ObjectDefinitionRegistry, 
 			definition:ObjectDefinition, type:MetadataAware) : ObjectDefinition {
 		for each (var metadata:Object in type.getAllMetadata()) {
 			if (metadata is ObjectDefinitionDecorator) {
-				//applyDecorator(metadata as ObjectDefinitionDecorator, registry);
-				// TODO - map Property and Method instances
-				var newDef:ObjectDefinition = ObjectDefinitionDecorator(metadata).decorate(definition, registry);
-				if (newDef != definition) {
-					// TODO - check if applicable
-				}				
-				definition = newDef;
-				// TODO - collect errors for ProblemReporter
+				definition = applyDecorator(definition, metadata as ObjectDefinitionDecorator, registry);
 			} 
 		}
 		return definition;
 	}
+	
+	protected function applyDecorator (definition:ObjectDefinition, 
+			decorator:ObjectDefinitionDecorator, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		// TODO - map Property and Method instances
+		var newDef:ObjectDefinition = decorator.decorate(definition, registry);
+		if (newDef != definition) {
+			// we cannot allow "downgrades"
+			if (definition is FactoryObjectDefinition && (!(newDef is FactoryObjectDefinition))) {
+				throw new ContextError("Decorator of type " + getQualifiedClassName(decorator) 
+						+ " attempts to downgrade a FactoryObjectDefinition to " + getQualifiedClassName(newDef));
+			}
+			if (definition is RootObjectDefinition && (!(newDef is RootObjectDefinition))) {
+				throw new ContextError("Decorator of type " + getQualifiedClassName(decorator) 
+						+ " attempts to downgrade a RootObjectDefinition to " + getQualifiedClassName(newDef));
+			}
+		}				
+		return newDef;
+		// TODO - collect errors for ProblemReporter		
+	}
+	
+	
 }
-
 }
