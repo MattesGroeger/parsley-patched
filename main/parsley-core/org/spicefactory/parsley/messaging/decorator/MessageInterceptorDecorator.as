@@ -21,12 +21,13 @@ import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.ObjectLifecycleListener;
+import org.spicefactory.parsley.messaging.MessageTarget;
 
 [Metadata(name="MessageInterceptor", types="method")]
 /**
  * @author Jens Halm
  */
-public class MessageInterceptorDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
+public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
 
 	public var type:Class;
@@ -43,11 +44,8 @@ public class MessageInterceptorDecorator implements ObjectDefinitionDecorator, O
 	}
 
 	public function postConstruct (instance:Object, context:Context) : void {
-		context.messageRouter.registerMessageInterceptor(instance, method.name, type, selector);
-	}
-	
-	public function preDestroy (instance:Object, context:Context) : void {
-		// TODO - unregister
+		var target:MessageTarget = context.messageRouter.registerMessageInterceptor(instance, method.name, type, selector);
+		addTarget(instance, target);
 	}
 	
 	

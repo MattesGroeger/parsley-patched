@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.messaging.decorator {
+import org.spicefactory.parsley.messaging.MessageTarget;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.factory.ObjectDefinition;
@@ -26,7 +27,7 @@ import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 /**
  * @author Jens Halm
  */
-public class MessageBindingDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
+public class MessageBindingDecorator extends AbstractMessageTargetDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
 
 	[Required]
@@ -47,14 +48,11 @@ public class MessageBindingDecorator implements ObjectDefinitionDecorator, Objec
 	}
 
 	public function postConstruct (instance:Object, context:Context) : void {
-		context.messageRouter.registerMessageBinding(instance, targetProperty.name, 
+		var target:MessageTarget = context.messageRouter.registerMessageBinding(instance, targetProperty.name, 
 				type, messageProperty, selector);
+		addTarget(instance, target);
 	}
 
-	public function preDestroy (instance:Object, context:Context) : void {
-		// TODO - unregister
-	}
-		
 	
 }
 

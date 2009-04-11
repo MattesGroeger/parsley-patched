@@ -16,19 +16,20 @@
 
 package org.spicefactory.parsley.messaging.decorator {
 import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 import org.spicefactory.parsley.messaging.MessageRouter;
+import org.spicefactory.parsley.messaging.MessageTarget;
 
 [Metadata(name="MessageHandler", types="method")]
-import org.spicefactory.parsley.core.Context;
 
 /**
  * @author Jens Halm
  */
-public class MessageHandlerDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
+public class MessageHandlerDecorator extends AbstractMessageTargetDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
 
 	public var type:Class;
@@ -48,13 +49,11 @@ public class MessageHandlerDecorator implements ObjectDefinitionDecorator, Objec
 	}
 
 	public function postConstruct (instance:Object, context:Context) : void {
-		context.messageRouter.registerMessageHandler(instance, method.name, 
+		var target:MessageTarget = context.messageRouter.registerMessageHandler(instance, method.name, 
 				type, messageProperties, selector);
+		addTarget(instance, target);
 	}
 	
-	public function preDestroy (instance:Object, context:Context) : void {
-		// TODO - unregister
-	}
 	
 }
 
