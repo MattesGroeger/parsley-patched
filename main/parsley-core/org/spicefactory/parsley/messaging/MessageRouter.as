@@ -23,13 +23,13 @@ public interface MessageRouter {
 	
 	
 	function registerMessageBinding (targetInstance:Object, targetProperty:String, 
-			messageType:Class, messageProperty:String, selector:* = undefined) : void;
+			messageType:Class, messageProperty:String, selector:* = undefined) : MessageTarget;
 	
 	function registerMessageHandler (targetInstance:Object, targetMethod:String, 
-			messageType:Class = null, messageProperties:Array = null, selector:* = undefined) : void;
+			messageType:Class = null, messageProperties:Array = null, selector:* = undefined) : MessageTarget;
 			
 	function registerMessageInterceptor (targetInstance:Object, targetMethod:String, 
-			messageType:Class = null, selector:* = undefined) : void;
+			messageType:Class = null, selector:* = undefined) : MessageTarget;
 			
 	function dispatchMessage (message:Object) : void;
 	

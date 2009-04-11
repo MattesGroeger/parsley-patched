@@ -18,6 +18,7 @@ package org.spicefactory.parsley.messaging.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.messaging.MessageProcessor;
+import org.spicefactory.parsley.messaging.MessageTarget;
 
 /**
  * @author Jens Halm

@@ -18,6 +18,7 @@ package org.spicefactory.parsley.messaging.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.ContextError;
+import org.spicefactory.parsley.messaging.MessageTarget;
 
 import flash.utils.Dictionary;
 

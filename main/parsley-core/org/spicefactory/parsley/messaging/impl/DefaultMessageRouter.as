@@ -20,8 +20,9 @@ import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.ContextError;
-import org.spicefactory.parsley.messaging.MessageRouter;
 import org.spicefactory.parsley.messaging.MessageProcessor;
+import org.spicefactory.parsley.messaging.MessageRouter;
+import org.spicefactory.parsley.messaging.MessageTarget;
 
 import flash.utils.Dictionary;
 
@@ -74,7 +75,7 @@ public class DefaultMessageRouter implements MessageRouter {
 	
 	
 	public function registerMessageBinding (targetInstance:Object, targetProperty:String, 
-			messageType:Class, messageProperty:String, selector:* = undefined) : void {
+			messageType:Class, messageProperty:String, selector:* = undefined) : MessageTarget {
 		var targetType:ClassInfo = ClassInfo.forInstance(targetInstance);
 		var resolvedTargetProperty:Property = targetType.getProperty(targetProperty);
 		if (resolvedTargetProperty == null) {
@@ -95,11 +96,16 @@ public class DefaultMessageRouter implements MessageRouter {
 			throw new ContextError("Message property with name " + messageProperty + " of type " + messageTypeInfo.name 
 					+ " is not readable");
 		}
-		targets.push(new MessageBinding(targetInstance, resolvedTargetProperty, messageTypeInfo, resolvedMessageProperty, selector));
+		clearCache();
+
+		var target:MessageTarget = 
+			new MessageBinding(targetInstance, resolvedTargetProperty, messageTypeInfo, resolvedMessageProperty, selector, this);
+		targets.push(target);
+		return target;
 	}
 	
 	public function registerMessageHandler (targetInstance:Object, targetMethod:String, 
-			messageType:Class = null, messageProperties:Array = null, selector:* = undefined) : void {
+			messageType:Class = null, messageProperties:Array = null, selector:* = undefined) : MessageTarget {
 		var targetType:ClassInfo = ClassInfo.forInstance(targetInstance);
 		var resolvedTargetMethod:Method = targetType.getMethod(targetMethod);
 		if (resolvedTargetMethod == null) {
@@ -152,11 +158,16 @@ public class DefaultMessageRouter implements MessageRouter {
 					+ " is not applicable to message type " + messageTypeInfo.name);
 			} 
 		}
-		targets.push(new MessageHandler(targetInstance, resolvedTargetMethod, messageTypeInfo, resolvedMessageProperties, selector));
+		clearCache();
+		
+		var target:MessageTarget = 
+			new MessageHandler(targetInstance, resolvedTargetMethod, messageTypeInfo, resolvedMessageProperties, selector, this);
+		targets.push(target);
+		return target;
 	}
 	
 	public function registerMessageInterceptor (targetInstance:Object, targetMethod:String, 
-			messageType:Class = null, selector:* = undefined) : void {
+			messageType:Class = null, selector:* = undefined) : MessageTarget {
 		var targetType:ClassInfo = ClassInfo.forInstance(targetInstance);
 		var resolvedTargetMethod:Method = targetType.getMethod(targetMethod);
 		if (resolvedTargetMethod == null) {
@@ -175,17 +186,25 @@ public class DefaultMessageRouter implements MessageRouter {
 			throw new ContextError("Target method with name " + targetMethod + " of type " + targetType.name 
 				+ ": Method must have exactly one parameter of type org.spicefactory.parsley.messaging.MessageProcessor.");
 		} 
-		targets.push(new MessageInterceptor(targetInstance, resolvedTargetMethod, messageTypeInfo, selector));
+		
+		var target:MessageTarget = 
+			new MessageInterceptor(targetInstance, resolvedTargetMethod, messageTypeInfo, selector, this);
+		targets.push(target);
+		return target;
 	}
 	
-	
-	/*
-	public function unregisterTarget () : void {
+
+	private function clearCache () : void {
+		cache = new Dictionary();
 	}
-	
-	public function unregisterInterceptor () : void {
+
+	public function unregister (target:MessageTarget) : void {
+		var index:int = targets.indexOf(target);
+		if (index != -1) {
+			targets.slice(index, 1);
+			clearCache();
+		}
 	}
-	*/
 	
 	
 	public function destroy () : void {
@@ -196,20 +215,74 @@ public class DefaultMessageRouter implements MessageRouter {
 }
 }
 
+
+class AbstractMessageTarget implements MessageTarget {
+	
+	private var _targetType:ClassInfo;
+	private var _targetInstance:Object;
+	
+	private var _messageType:ClassInfo;
+	private var _selector:*;
+	
+	private var _interceptor:Boolean;
+	
+	private var _router:DefaultMessageRouter;
+	
+	
+	function AbstractMessageTarget (targetInstance:Object, messageType:ClassInfo, selector:*, 
+			interceptor:Boolean, router:DefaultMessageRouter) {
+		this._targetType = ClassInfo.forInstance(targetInstance);
+		this._targetInstance = targetInstance;
+		this._messageType = messageType;
+		this._selector = selector;
+		this._interceptor = interceptor;
+		this._router = router;
+	}
+
+	public function handleMessage (processor:MessageProcessor) : void {
+		throw new AbstractMethodError();
+	}
+	
+	public function unregister () : void {
+		_router.unregister(this);
+	}
+	
+	public function get targetType () : ClassInfo {
+		return _targetType;
+	}
+	
+	public function get targetInstance () : Object {
+		return _targetInstance;
+	}
+	
+	public function get messageType () : ClassInfo {
+		return _messageType;
+	}
+	
+	public function get selector () : * {
+		return _selector;
+	}
+	
+	public function get interceptor () : Boolean {
+		return _interceptor;
+	}
+}
+
+import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.messaging.MessageProcessor;
-import org.spicefactory.parsley.messaging.impl.MessageTarget;
+import org.spicefactory.parsley.messaging.MessageTarget;
 
-class MessageBinding extends MessageTarget {
+class MessageBinding extends AbstractMessageTarget {
 
 	public var targetProperty:Property;
 	public var messageProperty:Property;
 	
 	function MessageBinding (targetInstance:Object, targetProperty:Property, 
-			messageType:ClassInfo, messageProperty:Property, selector:*) {
-		super(targetInstance, messageType, selector, false);
+			messageType:ClassInfo, messageProperty:Property, selector:*, router:DefaultMessageRouter) {
+		super(targetInstance, messageType, selector, false, router);
 		this.targetProperty = targetProperty;
 		this.messageProperty = messageProperty;
 	}
@@ -221,14 +294,14 @@ class MessageBinding extends MessageTarget {
 	
 } 
 
-class MessageHandler extends MessageTarget {
+class MessageHandler extends AbstractMessageTarget {
 
 	public var targetMethod:Method;
 	public var messageProperties:Array;
 
 	function MessageHandler (targetInstance:Object, targetMethod:Method, 
-			messageType:ClassInfo, messageProperties:Array, selector:*) {
-		super(targetInstance, messageType, selector, false);
+			messageType:ClassInfo, messageProperties:Array, selector:*, router:DefaultMessageRouter) {
+		super(targetInstance, messageType, selector, false, router);
 		this.targetMethod = targetMethod;
 		this.messageProperties = messageProperties;
 	}
@@ -249,13 +322,13 @@ class MessageHandler extends MessageTarget {
 	
 }
 
-class MessageInterceptor extends MessageTarget {
+class MessageInterceptor extends AbstractMessageTarget {
 
 	public var targetMethod:Method;
 
 	function MessageInterceptor (targetInstance:Object, targetMethod:Method, 
-			messageType:ClassInfo, selector:*) {
-		super(targetInstance, messageType, selector, true);
+			messageType:ClassInfo, selector:*, router:DefaultMessageRouter) {
+		super(targetInstance, messageType, selector, true, router);
 		this.targetMethod = targetMethod;
 	}
 		
