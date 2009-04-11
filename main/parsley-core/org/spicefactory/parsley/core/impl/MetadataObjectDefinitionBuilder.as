@@ -36,7 +36,7 @@ public class MetadataObjectDefinitionBuilder {
 	
 	
 	
-	public static function newRootDefinition (registry:ObjectDefinitionRegistry, type:Class, id:String = null, 
+	public function newRootDefinition (registry:ObjectDefinitionRegistry, type:Class, id:String = null, 
 			lazy:Boolean = true, singleton:Boolean = true) : RootObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
 		var ci:ClassInfo = ClassInfo.forClass(type, registry.domain);
@@ -50,14 +50,14 @@ public class MetadataObjectDefinitionBuilder {
 		return def;
 	}
 	
-	public static function newDefinition (registry:ObjectDefinitionRegistry, type:Class) : ObjectDefinition {
+	public function newDefinition (registry:ObjectDefinitionRegistry, type:Class) : ObjectDefinition {
 		var ci:ClassInfo = ClassInfo.forClass(type, registry.domain);
 		var def:ObjectDefinition = new DefaultObjectDefinition(ci);
 		def = processMetadata(registry, def);
 		return def;
 	}
 
-	private static function processMetadata (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : ObjectDefinition {
+	protected function processMetadata (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : ObjectDefinition {
 		var type:ClassInfo = definition.type;
 		
 		definition = executeMetadataHandlers(registry, definition, type);
@@ -77,10 +77,11 @@ public class MetadataObjectDefinitionBuilder {
 		return definition;
 	}
 
-	private static function executeMetadataHandlers (registry:ObjectDefinitionRegistry, 
+	private function executeMetadataHandlers (registry:ObjectDefinitionRegistry, 
 			definition:ObjectDefinition, type:MetadataAware) : ObjectDefinition {
 		for each (var metadata:Object in type.getAllMetadata()) {
 			if (metadata is ObjectDefinitionDecorator) {
+				//applyDecorator(metadata as ObjectDefinitionDecorator, registry);
 				// TODO - map Property and Method instances
 				var newDef:ObjectDefinition = ObjectDefinitionDecorator(metadata).decorate(definition, registry);
 				if (newDef != definition) {

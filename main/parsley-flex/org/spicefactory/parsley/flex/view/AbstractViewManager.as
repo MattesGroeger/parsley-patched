@@ -37,6 +37,8 @@ public class AbstractViewManager {
 
 	private var _triggerEvent:String = "configureIOC";
 	
+	private var builder:MetadataObjectDefinitionBuilder = new MetadataObjectDefinitionBuilder();
+	
 	
 	function AbstractViewManager (triggerEvent:String = null) {
 		if (triggerEvent != null) {
@@ -70,7 +72,7 @@ public class AbstractViewManager {
 			return;
 		}
 		var ci:ClassInfo = ClassInfo.forInstance(component, context.registry.domain);
-		var definition:ObjectDefinition = MetadataObjectDefinitionBuilder.newDefinition(context.registry, ci.getClass());
+		var definition:ObjectDefinition = builder.newDefinition(context.registry, ci.getClass());
 		context.addComponent(component, definition);
 	}
 

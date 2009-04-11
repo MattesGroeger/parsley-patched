@@ -32,14 +32,17 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 
 
 	public var method:Method;
+	
+	
+	private var builder:MetadataObjectDefinitionBuilder = new MetadataObjectDefinitionBuilder();
 
-
+	
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		
 		// Must create a new definition for the target type
 		var targetDefinition:ObjectDefinition = (definition is RootObjectDefinition) 
-				? MetadataObjectDefinitionBuilder.newRootDefinition(registry, method.returnType.getClass()) 
-				: MetadataObjectDefinitionBuilder.newDefinition(registry, method.returnType.getClass());
+				? builder.newRootDefinition(registry, method.returnType.getClass()) 
+				: builder.newDefinition(registry, method.returnType.getClass());
 		targetDefinition.instantiator = new FactoryMethodInstantiator(factoryDefinition, method);
 		
 		// Specified definition is for the factory, must be registered as a root factory, 
