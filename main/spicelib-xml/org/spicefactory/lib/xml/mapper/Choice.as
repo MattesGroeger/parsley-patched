@@ -15,7 +15,12 @@
  */
 
 package org.spicefactory.lib.xml.mapper {
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.XmlObjectMapper;
+import org.spicefactory.lib.xml.XmlProcessorContext;
+import org.spicefactory.lib.xml.XmlValidationError;
+
+import flash.utils.Dictionary;
 
 /**
  * @author Jens Halm
@@ -23,20 +28,35 @@ import org.spicefactory.lib.xml.XmlObjectMapper;
 public class Choice {
 	
 	
-	private var _mappers:Array = new Array();
+	private var mappersByXmlName:Dictionary = new Dictionary();
+	private var mappersByType:Dictionary = new Dictionary();
 	
 	
 	public function addMapper (mapper:XmlObjectMapper) : void {
-		_mappers.push(mapper);
+		mappersByXmlName[mapper.elementName.toString()] = mapper;
+		mappersByType[mapper.objectType.getClass()] = mapper;
+	}
+
+	public function getMapperForInstance (instance:Object, context:XmlProcessorContext):XmlObjectMapper {
+		var ci:ClassInfo = ClassInfo.forInstance(instance, context.applicationDomain);
+		var mapper:XmlObjectMapper = mappersByType[ci.getClass()];
+		if (mapper == null) {
+			throw new XmlValidationError("No mapper defined for objects of type " + ci.name + " in this choice");
+		}
+		return mapper;
 	}
 	
-	public function get mappers () : Array {
-		return _mappers;
+	public function getMapperForElementName (name:QName) : XmlObjectMapper {
+		var mapper:XmlObjectMapper = mappersByXmlName[name.toString()];
+		if (mapper == null) {
+			throw new XmlValidationError("No mapper defined for element name " + name + " in this choice");
+		}
+		return mapper;
 	}
-	
+
 	public function get xmlNames () : Array {
 		var names:Array = new Array();
-		for each (var mapper:XmlObjectMapper in _mappers) {
+		for each (var mapper:XmlObjectMapper in mappersByXmlName) {
 			names.push(mapper.elementName);
 		}
 		return names;

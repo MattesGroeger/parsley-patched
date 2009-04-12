@@ -148,7 +148,7 @@ public class PropertyMapper implements XmlObjectMapper {
 		var hasErrors:Boolean = false;
 		for (handler in valueMap) {
 			try {
-				handler.toObject(valueMap[handler], targetInstance);
+				handler.toObject(valueMap[handler], targetInstance, context);
 			}
 			catch (e:Error) {
 				hasErrors = true;
@@ -172,7 +172,7 @@ public class PropertyMapper implements XmlObjectMapper {
 		var hasErrors:Boolean = false;
 		for each (var handler:PropertyHandler in propertyHandlerList) {
 			try {
-				handler.toXML(object, parentElement);
+				handler.toXML(object, parentElement, context);
 			}
 			catch (e:Error) {
 				hasErrors = true;

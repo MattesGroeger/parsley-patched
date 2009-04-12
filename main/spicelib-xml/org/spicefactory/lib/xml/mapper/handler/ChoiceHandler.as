@@ -15,21 +15,32 @@
  */
 
 package org.spicefactory.lib.xml.mapper.handler {
+import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.Choice;
 
 /**
  * @author Jens Halm
  */
-public class ChoiceHandler extends AbstractPropertyHandler {
+public class ChoiceHandler extends AbstractChildElementHandler {
 	
 	
 	private var choice:Choice;
 
 	
 	public function ChoiceHandler (property:Property, choice:Choice) {
-		super(property, "element", choice.xmlNames);
+		super(property, choice.xmlNames);
 		this.choice = choice;
+	}
+	
+	
+	protected override function getMapperForInstance (instance:Object, context:XmlProcessorContext):XmlObjectMapper {
+		return choice.getMapperForInstance(instance, context);
+	}
+	
+	protected override function getMapperForXmlName (xmlName:QName) : XmlObjectMapper {
+		return choice.getMapperForElementName(xmlName);
 	}
 	
 	

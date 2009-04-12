@@ -16,6 +16,7 @@
 
 package org.spicefactory.lib.xml.mapper.handler {
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.lib.xml.XmlProcessorContext;
 
 /**
  * @author Jens Halm
@@ -27,6 +28,21 @@ public class TextNodeHandler extends AbstractPropertyHandler {
 		super(property, "text");
 	}
 	
+	
+	public override function toObject (nodes:Array, parentInstance:Object, context:XmlProcessorContext) : void {
+		validateValueCount(nodes.length);
+		if (nodes.length > 0) {
+			property.setValue(parentInstance, context.expressionContext.createExpression(nodes[0]).value);
+		}
+	}
+	
+	public override function toXML (instance:Object, parentElement:XML, context:XmlProcessorContext) : void {
+		var value:String = getValueAsString(instance);
+		if (value.length > 0) {
+			parentElement.text()[0] = getValue(instance);
+		}
+	}
+
 
 }
 }

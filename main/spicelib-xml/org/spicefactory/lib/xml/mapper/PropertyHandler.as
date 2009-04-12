@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.lib.xml.mapper {
+import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.lib.reflect.Property;
 
 /**
@@ -33,9 +34,9 @@ public interface PropertyHandler {
 	function get nodeKind () : String;
 	
 	
-	function toObject (node:XML, parentInstance:Object) : void;
+	function toObject (nodes:Array, parentInstance:Object, context:XmlProcessorContext) : void;
 
-	function toXML (instance:Object, parentElement:XML) : void;
+	function toXML (instance:Object, parentElement:XML, context:XmlProcessorContext) : void;
 	
 	
 }

@@ -18,9 +18,11 @@ package org.spicefactory.lib.xml.mapper.handler {
 import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.reflect.metadata.Required;
+import org.spicefactory.lib.xml.XmlProcessorContext;
+import org.spicefactory.lib.xml.XmlValidationError;
 import org.spicefactory.lib.xml.mapper.PropertyHandler;
 
-/**
+import flash.utils.getQualifiedClassName;/**
  * @author Jens Halm
  */
 public class AbstractPropertyHandler implements PropertyHandler {
@@ -30,6 +32,7 @@ public class AbstractPropertyHandler implements PropertyHandler {
 	private var _xmlNames:Array;
 	private var _nodeKind:String;
 	private var _required:Boolean;
+	private var _singleValue:Boolean;
 	
 	/**
 	 * Creates a new instance.
@@ -38,11 +41,16 @@ public class AbstractPropertyHandler implements PropertyHandler {
 	 * @param property the property the attribute value should be applied to
 	 * @param required whether this attribute is required
 	 */
-	public function AbstractPropertyHandler (property:Property, nodeKind:String, xmlNames:Array = null) {
+	public function AbstractPropertyHandler (property:Property, nodeKind:String, 
+			xmlNames:Array = null, allowArrayProperty:Boolean = false) {
 		_property = property;
 		_required = property.getMetadata(Required).length > 0;
+		_singleValue = !property.type.isType(Array);
 		_nodeKind = nodeKind;
 		_xmlNames = (xmlNames == null) ? [null] : xmlNames;
+		if (_property.type.isType(Array) && !allowArrayProperty) {
+			throw new XmlValidationError("Array Properties cannot be handled by " + getQualifiedClassName(this));
+		}
 	}
 	
 	/**
@@ -70,15 +78,41 @@ public class AbstractPropertyHandler implements PropertyHandler {
 	/**
 	 * Indicates whether this attribute is required.
 	 */
-	public function get required () : Boolean {
+	protected function get required () : Boolean {
 		return _required;
 	}
 	
-	public function toObject (node:XML, parentInstance:Object) : void {
+	protected function get singleValue () : Boolean {
+		return _singleValue;
+	}
+	
+	protected function validateValueCount (count:int) : void {
+		if (count == 0 && _required) {
+			throw new XmlValidationError("No element mapping to required " + property);
+		}
+		if (count > 1 && _singleValue) {
+			throw new XmlValidationError("At most one element allowed to map to " + property);
+		}
+	}
+	
+	protected function getValue (instance:Object) : * {
+		var value:* = property.getValue(instance);
+		if (_required && (value == null || value === "" || (value is Array && value.length == 0))) {
+			throw new XmlValidationError("Null, empty string or empty array values not allowed for required " + property);
+		}
+		return value;
+	}
+	
+	protected function getValueAsString (instance:Object) : String {
+		var value:* = getValue(instance);
+		return (value == null) ? "" : value.toString();
+	}
+	
+	public function toObject (nodes:Array, parentInstance:Object, context:XmlProcessorContext) : void {
 		throw new AbstractMethodError();
 	}
 	
-	public function toXML (instance:Object, parentElement:XML) : void {
+	public function toXML (instance:Object, parentElement:XML, context:XmlProcessorContext) : void {
 		throw new AbstractMethodError();
 	}
 	

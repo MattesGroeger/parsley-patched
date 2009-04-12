@@ -17,19 +17,29 @@
 package org.spicefactory.lib.xml.mapper.handler {
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.XmlObjectMapper;
+import org.spicefactory.lib.xml.XmlProcessorContext;
 
 /**
  * @author Jens Halm
  */
-public class ChildElementHandler extends AbstractPropertyHandler {
+public class ChildElementHandler extends AbstractChildElementHandler {
 
 
 	private var mapper:XmlObjectMapper;
 
 	
 	public function ChildElementHandler (property:Property, mapper:XmlObjectMapper) {
-		super(property, "element", [mapper.elementName]);
+		super(property, [mapper.elementName]);
 		this.mapper = mapper;
+	}
+	
+	
+	protected override function getMapperForInstance (instance:Object, context:XmlProcessorContext) : XmlObjectMapper {
+		return mapper;
+	}
+	
+	protected override function getMapperForXmlName (xmlName:QName) : XmlObjectMapper {
+		return mapper;
 	}
 	
 
