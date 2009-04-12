@@ -52,9 +52,9 @@ public interface List {
 	
 	 function removeLast () : * ;
 	
-	 function sort (compareFunction:Function, options:Number) : void ;
+	 function sort (compareFunction:Function, options:uint) : void ;
 	
-	 function sortOn (propertyNames:Array, options:Number) : void ;
+	 function sortOn (propertyNames:Array, options:uint) : void ;
 	
 	 function get (index:uint) : *  ;
 	
