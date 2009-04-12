@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.lib.xml {
+import flash.utils.Dictionary;
+
 import org.spicefactory.lib.expr.impl.DefaultExpressionContext;import flash.system.ApplicationDomain;
 
 import org.spicefactory.lib.expr.ExpressionContext;
@@ -29,6 +31,8 @@ public class XmlProcessorContext {
 	private var _applicationDomain:ApplicationDomain;
 	private var _data:Object;
 	
+	private var _namespaceMap:Dictionary = new Dictionary();
+
 	private var _errors:Array = new Array();
 	
 
@@ -36,6 +40,25 @@ public class XmlProcessorContext {
 		_expressionContext = (expressionContext == null) ? new DefaultExpressionContext() : expressionContext;
 		_applicationDomain = (domain == null) ? ApplicationDomain.currentDomain : domain;
 		_data = data;
+	}
+	
+	
+	public function addNamespace (ns:Namespace) : void {
+		_namespaceMap[ns.uri] = ns;
+	}
+	
+	public function setNamespace (element:XML, uri:String) : void {
+		var ns:Namespace = _namespaceMap[uri];
+		if (ns == null) {
+			throw new XmlValidationError("Namespace for URI " + uri + " has not been added to this context.");
+		}
+		element.setNamespace(ns);
+	}
+	
+	public function addNamespaceDeclarations (element:XML) : void {
+		for each (var ns:Namespace in _namespaceMap) {
+			element.addNamespace(ns);
+		}
 	}
 
 	
