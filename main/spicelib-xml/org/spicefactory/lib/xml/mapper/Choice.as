@@ -34,6 +34,14 @@ public class Choice {
 		return _mappers;
 	}
 	
+	public function get xmlNames () : Array {
+		var names:Array = new Array();
+		for each (var mapper:XmlObjectMapper in _mappers) {
+			names.push(mapper.elementName);
+		}
+		return names;
+	}
+	
 				
 }
 }
