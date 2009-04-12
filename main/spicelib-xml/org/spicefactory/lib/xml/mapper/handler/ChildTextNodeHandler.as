@@ -24,7 +24,7 @@ public class ChildTextNodeHandler extends AbstractPropertyHandler {
 
 	
 	public function ChildTextNodeHandler (property:Property, xmlName:QName) {
-		super(property, "element", xmlName);
+		super(property, "element", [xmlName]);
 	}
 	
 	

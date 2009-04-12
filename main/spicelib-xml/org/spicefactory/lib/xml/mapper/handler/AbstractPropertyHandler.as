@@ -27,7 +27,7 @@ public class AbstractPropertyHandler implements PropertyHandler {
 	
 	
 	private var _property:Property;
-	private var _xmlName:QName;
+	private var _xmlNames:Array;
 	private var _nodeKind:String;
 	private var _required:Boolean;
 	
@@ -38,11 +38,11 @@ public class AbstractPropertyHandler implements PropertyHandler {
 	 * @param property the property the attribute value should be applied to
 	 * @param required whether this attribute is required
 	 */
-	public function AbstractPropertyHandler (property:Property, nodeKind:String, xmlName:QName = null) {
+	public function AbstractPropertyHandler (property:Property, nodeKind:String, xmlNames:Array = null) {
 		_property = property;
 		_required = property.getMetadata(Required).length > 0;
 		_nodeKind = nodeKind;
-		_xmlName = xmlName;
+		_xmlNames = xmlNames;
 	}
 	
 	/**
@@ -55,8 +55,8 @@ public class AbstractPropertyHandler implements PropertyHandler {
 	/**
 	 * The local name of the attribute.
 	 */
-	public function get xmlName () : QName {
-		return _xmlName;
+	public function get xmlNames () : Array {
+		return _xmlNames;
 	}
 	
 	/**

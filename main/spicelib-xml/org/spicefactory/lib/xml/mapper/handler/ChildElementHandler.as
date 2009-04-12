@@ -28,7 +28,7 @@ public class ChildElementHandler extends AbstractPropertyHandler {
 
 	
 	public function ChildElementHandler (property:Property, mapper:XmlObjectMapper) {
-		super(property, "element", mapper.elementName);
+		super(property, "element", [mapper.elementName]);
 		this.mapper = mapper;
 	}
 	

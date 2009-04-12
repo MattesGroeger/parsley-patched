@@ -24,7 +24,7 @@ public class AttributeHandler extends AbstractPropertyHandler {
 	
 	
 	public function AttributeHandler (property:Property, xmlName:QName) {
-		super(property, "attribute", xmlName);
+		super(property, "attribute", [xmlName]);
 	}
 	
 }

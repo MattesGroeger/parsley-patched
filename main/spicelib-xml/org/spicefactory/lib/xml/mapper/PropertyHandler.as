@@ -28,7 +28,7 @@ public interface PropertyHandler {
 	 */
 	function get property () : Property;
 	
-	function get xmlName () : QName;
+	function get xmlNames () : Array;
 	
 	function get nodeKind () : String;
 	
