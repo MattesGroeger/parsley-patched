@@ -42,7 +42,7 @@ public class AbstractPropertyHandler implements PropertyHandler {
 		_property = property;
 		_required = property.getMetadata(Required).length > 0;
 		_nodeKind = nodeKind;
-		_xmlNames = xmlNames;
+		_xmlNames = (xmlNames == null) ? [null] : xmlNames;
 	}
 	
 	/**
