@@ -21,7 +21,7 @@ import org.spicefactory.lib.xml.XmlObjectMapper;
 /**
  * @author Jens Halm
  */
-public class ChildElementHandler {
+public class ChildElementHandler extends AbstractPropertyHandler {
 
 
 	private var mapper:XmlObjectMapper;
