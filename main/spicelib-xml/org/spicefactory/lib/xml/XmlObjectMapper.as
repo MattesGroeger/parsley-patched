@@ -15,11 +15,23 @@
  */
 
 package org.spicefactory.lib.xml {
+import org.spicefactory.lib.reflect.ClassInfo;
 
 /**
  * @author Jens Halm
  */
 public interface XmlObjectMapper {
+	
+	
+	/*
+	 * The type of the objects the mapToObject method produces.
+	 */
+	function get objectType () : ClassInfo;
+
+	/*
+	 * The name of the elements the mapToXml method produces.
+	 */
+	function get elementName () : QName;
 	
 	
 	function mapToObject (element:XML, context:XmlProcessorContext) : Object;

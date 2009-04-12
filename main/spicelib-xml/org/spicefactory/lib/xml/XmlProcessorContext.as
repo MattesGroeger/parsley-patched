@@ -25,8 +25,6 @@ import org.spicefactory.lib.expr.ExpressionContext;
 public class XmlProcessorContext {
 	
 	
-	public static var namingStrategy:NamingStrategy;
-	
 	private var _expressionContext:ExpressionContext;
 	private var _applicationDomain:ApplicationDomain;
 	private var _data:Object;
