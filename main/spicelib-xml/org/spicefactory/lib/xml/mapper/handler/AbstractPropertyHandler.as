@@ -38,10 +38,11 @@ public class AbstractPropertyHandler implements PropertyHandler {
 	 * @param property the property the attribute value should be applied to
 	 * @param required whether this attribute is required
 	 */
-	public function AbstractPropertyHandler (xmlName:QName, property:Property) {
-		_xmlName = xmlName;
+	public function AbstractPropertyHandler (property:Property, nodeKind:String, xmlName:QName = null) {
 		_property = property;
 		_required = property.getMetadata(Required).length > 0;
+		_nodeKind = nodeKind;
+		_xmlName = xmlName;
 	}
 	
 	/**
