@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.lib.xml {
-import flash.system.ApplicationDomain;
+import org.spicefactory.lib.expr.impl.DefaultExpressionContext;import flash.system.ApplicationDomain;
 
 import org.spicefactory.lib.expr.ExpressionContext;
 
@@ -33,8 +33,8 @@ public class XmlProcessorContext {
 	
 
 	function XmlProcessorContext (expressionContext:ExpressionContext = null, domain:ApplicationDomain = null, data:Object = null) {
-		_expressionContext = expressionContext;
-		_applicationDomain = domain;
+		_expressionContext = (expressionContext == null) ? new DefaultExpressionContext() : expressionContext;
+		_applicationDomain = (domain == null) ? ApplicationDomain.currentDomain : domain;
 		_data = data;
 	}
 
