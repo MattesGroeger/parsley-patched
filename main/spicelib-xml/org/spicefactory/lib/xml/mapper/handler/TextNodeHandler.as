@@ -20,7 +20,7 @@ import org.spicefactory.lib.reflect.Property;
 /**
  * @author Jens Halm
  */
-public class TextNodeHandler {
+public class TextNodeHandler extends AbstractPropertyHandler {
 	
 	
 	public function TextNodeHandler (property:Property) {
