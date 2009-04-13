@@ -16,44 +16,58 @@
 
 package org.spicefactory.parsley.core.task {
 import org.spicefactory.lib.task.SequentialTaskGroup;
+import org.spicefactory.lib.task.Task;
+import org.spicefactory.lib.task.TaskGroup;
+import org.spicefactory.lib.task.events.TaskEvent;
 import org.spicefactory.parsley.core.CompositeContextBuilder;
 import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 
+import flash.events.ErrorEvent;
+import flash.events.Event;
 import flash.system.ApplicationDomain;
 
 /**
  * @author Jens Halm
  */
-public class CompositeContextBuilderTask extends SequentialTaskGroup {
+public class CompositeContextBuilderTask extends ContextBuilderTask {
 
 	
 	private var _builder:CompositeContextBuilder;
-	private var _result:Context;
-	
+	private var _tasks:TaskGroup = new SequentialTaskGroup();
+
 	
 	function CompositeContextBuilderTask (parent:Context = null, domain:ApplicationDomain = null) {
+		super(parent, domain);
 		_builder = new CompositeContextBuilder(parent, domain);
 	}
 	
 	
-	public function get builder () : CompositeContextBuilder {
-		return _builder;
+	public function get registry () : ObjectDefinitionRegistry {
+		return _builder.registry;
 	}
 	
-	public function get result () : Context {
-		return _result;
-	}
-
 	
-	protected override function complete () : Boolean {
-		try {
-			_result = _builder.build();
-			return super.complete();
-		}
-		catch (e:Error) {
-			error(e.message);
-			return false;
-		}
+	public function addBuilderTask (t:Task) : void {
+		_tasks.addTask(t);
+	}
+	
+	
+	protected override function doStart () : void {
+		_tasks.addEventListener(TaskEvent.COMPLETE, tasksComplete);		
+		_tasks.addEventListener(ErrorEvent.ERROR, tasksError);		
+	}
+	
+	private function tasksComplete (event:Event) : void {
+		super.doStart();
+	}
+	
+	private function tasksError (event:ErrorEvent) : void {
+		error(event.text);
+	}
+	
+	protected override function build (parent:Context = null, domain:ApplicationDomain = null) : Context {
+		return _builder.build();
 	}
 	
 	
