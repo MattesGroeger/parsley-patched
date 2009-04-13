@@ -24,7 +24,17 @@ import flash.events.Event;
  */
 public class ContextEvent extends Event {
 
-	
+
+	/**
+	 * Constant for the type of event fired when a Context instance was initialized.
+	 * A Context is fully initialized if the <code>initialize</code> method has been called,
+	 * all asynchronous initializers for non-lazy singletons (if any) have completed and
+	 * the parent Context (if set) is fully initialized too.
+	 * 
+	 * @eventType initialized
+	 */
+	public static const INITIALIZED : String = "initialized";
+		
 	/**
 	 * Constant for the type of event fired when a Context instance was destroyed.
 	 * 
