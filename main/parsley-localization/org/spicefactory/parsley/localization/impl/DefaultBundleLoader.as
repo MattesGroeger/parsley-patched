@@ -15,6 +15,8 @@
  */
  
 package org.spicefactory.parsley.localization.impl {
+	import org.spicefactory.lib.task.util.XmlLoaderTask;
+	import org.spicefactory.parsley.localization.impl.LocaleUtil;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.task.Task;

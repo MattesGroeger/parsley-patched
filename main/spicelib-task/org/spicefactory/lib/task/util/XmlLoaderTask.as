@@ -1,4 +1,4 @@
-package org.spicefactory.parsley.localization.impl {
+package org.spicefactory.lib.task.util {
 	import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
