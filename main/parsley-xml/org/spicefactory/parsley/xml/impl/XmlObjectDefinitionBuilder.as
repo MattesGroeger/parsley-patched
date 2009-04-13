@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml.impl {
+	import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
