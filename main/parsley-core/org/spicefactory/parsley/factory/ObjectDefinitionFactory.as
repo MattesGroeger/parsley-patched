@@ -21,9 +21,13 @@ package org.spicefactory.parsley.factory {
  */
 public interface ObjectDefinitionFactory {
 	
-	function createObjectDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition;	
+	
+	function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition;	
+
+	function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition;	
 
 	function applyDecorators (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : void;	
+	
 	
 }
 }
