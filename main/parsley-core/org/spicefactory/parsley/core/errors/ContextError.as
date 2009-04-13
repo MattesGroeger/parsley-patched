@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core {
+package org.spicefactory.parsley.core.errors {
 import org.spicefactory.lib.errors.NestedError;
 
 /**

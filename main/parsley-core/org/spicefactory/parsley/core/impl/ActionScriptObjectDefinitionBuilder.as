@@ -59,7 +59,7 @@ public class ActionScriptObjectDefinitionBuilder {
 
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.core.ContextError;
+import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.factory.ObjectInstantiator;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
 

@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.impl {
-import org.spicefactory.parsley.core.ContextError;
+import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.factory.FactoryObjectDefinition;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.MetadataAware;

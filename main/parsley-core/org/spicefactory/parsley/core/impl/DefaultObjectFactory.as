@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.core.impl {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.core.ContextError;
+import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 import org.spicefactory.parsley.factory.model.ObjectIdReference;
