@@ -114,13 +114,12 @@ public class DefaultObjectFactory implements ObjectFactory {
 		}
 		else if (value is ObjectTypeReference) {
 			var typeRef:ObjectTypeReference = ObjectTypeReference(value);
-			// TODO - context.getIdsForType would be better
-			var objects:Array = context.getObjectsByType(typeRef.type.getClass());
-			if (objects.length > 1) {
+			var ids:Array = context.getObjectIds(typeRef.type.getClass());
+			if (ids.length > 1) {
 				throw new ContextError("Ambigous dependency: Context contains more than one object of type "
 						+ typeRef.type.name);
 			} 
-			else if (objects.length == 0) {
+			else if (ids.length == 0) {
 				if (typeRef.required) {
 					throw new ContextError("Unsatisfied dependency: Context does not contain an object of type " 
 						+ typeRef.type.name);
@@ -130,7 +129,7 @@ public class DefaultObjectFactory implements ObjectFactory {
 				}				
 			}
 			else {
-				return objects[0];
+				return context.getObject(ids[0]);
 			}
 		}
 		else if (value is MessageDispatcherFunctionReference) {

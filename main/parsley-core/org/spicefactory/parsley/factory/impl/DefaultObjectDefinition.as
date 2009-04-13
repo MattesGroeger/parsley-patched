@@ -55,6 +55,7 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 
 
 	public function populateFrom (definition:ObjectDefinition) : void {
+		checkState();
 		_instantiator = definition.instantiator;
 		_constructorArgs = definition.constructorArgs;
 		_properties = definition.properties;

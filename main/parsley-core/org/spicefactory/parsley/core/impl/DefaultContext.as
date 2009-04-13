@@ -43,6 +43,8 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private var _singletonCache:SimpleMap;
 	
 	private var _underConstruction:Dictionary = new Dictionary();
+	
+	private var _initialized:Boolean;
 	private var _destroyed:Boolean;
 	
 	
@@ -56,16 +58,22 @@ public class DefaultContext extends EventDispatcher implements Context {
 	}
 
 	
-	public function initialize () : void {
-		for each (var id:String in _registry.definitionIds) {
+	public function initialize () : Boolean {
+		_registry.freeze();
+		for each (var id:String in _registry.getDefinitionIds()) {
 			var definition:RootObjectDefinition = _registry.getDefinition(id);
-			// freeze definition
-			definition.freeze();
 			// create singletons which are not defined as lazy
 			if (definition.singleton && !definition.lazy) {
 				getInstance(definition);
+				// TODO - check if it contains asyncInitializers (will be executed before all [PostConstruct] methods)
 			}
 		}
+		_initialized = true;
+		return true;
+	}
+	
+	public function get initialized () : Boolean {
+		return _initialized;
 	}
 
 
@@ -77,16 +85,21 @@ public class DefaultContext extends EventDispatcher implements Context {
 		return _factory;
 	}
 	
-	public function get objectCount () : uint {
-		return _registry.definitionCount;
+	public function getObjectCount (type:Class = null) : uint {
+		return _registry.getDefinitionCount(type);
 	}
 	
-	public function get objectIds () : Array {
-		return _registry.definitionIds;
+	public function getObjectIds (type:Class = null) : Array {
+		return _registry.getDefinitionIds(type);
 	}
+	
 	
 	public function containsObject (id:String) : Boolean {
 		return _registry.containsDefinition(id);
+	}
+	
+	public function getObject (id:String) : Object {
+		return getInstance(getDefinition(id));
 	}
 	
 	public function getType (id:String) : Class {
@@ -94,8 +107,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 		return def.type.getClass();
 	}
 	
-	public function getObjectsByType (type:Class) : Array {
-		var defs:Array = _registry.getDefinitionsByType(type);
+	
+	public function getAllObjectsByType (type:Class) : Array {
+		var defs:Array = _registry.getAllDefinitionsByType(type);
 		var objects:Array = new Array();
 		for each (var def:RootObjectDefinition in defs) {
 			objects.push(getInstance(def));
@@ -103,9 +117,11 @@ public class DefaultContext extends EventDispatcher implements Context {
 		return defs;
 	}
 	
-	public function getObject (id:String) : Object {
-		return getInstance(getDefinition(id));
+	public function getObjectByType (type:Class, required:Boolean = false) : Object {
+		return getInstance(_registry.getDefinitionByType(type, required));
 	}
+	
+
 	
 	private function getInstance (def:RootObjectDefinition) : Object {
 		var id:String = def.id;
@@ -153,6 +169,10 @@ public class DefaultContext extends EventDispatcher implements Context {
 		finally {
 			_destroyed = true;
 		}
+	}
+	
+	public function get destroyed () : Boolean {
+		return _initialized;
 	}
 	
 	private function contextDestroyed (event:Event) : void {

@@ -42,29 +42,44 @@ public class ChildContext extends DefaultContext {
 	}
 	
 	
-	public override function get objectCount () : uint {
-		return super.objectCount + _parent.objectCount;
+	public override function initialize () : Boolean {
+		return super.initialize() && _parent.initialized;
 	}
 	
-	public override function get objectIds () : Array {
-		return super.objectIds.concat(_parent.objectIds);
+	public override function get initialized () : Boolean {
+		return super.initialized && _parent.initialized;
+	}
+	
+	
+	public override function getObjectCount (type:Class = null) : uint {
+		return super.getObjectCount(type) + _parent.getObjectCount(type);
+	}
+	
+	public override function getObjectIds (type:Class = null) : Array {
+		return super.getObjectIds(type).concat(_parent.getObjectIds(type));
 	}
 	
 	public override function containsObject (id:String) : Boolean {
 		return super.containsObject(id) || _parent.containsObject(id);
 	}
 	
+	public override function getObject (id:String) : Object {
+		return super.containsObject(id) ? super.getObject(id) : _parent.getObject(id);
+	}
+
 	public override function getType (id:String) : Class {
 		return super.containsObject(id) ? super.getType(id) : _parent.getType(id);
 	}
 	
-	public override function getObjectsByType (type:Class) : Array {
-		return super.getObjectsByType(type).concat(_parent.getObjectsByType(type));
+	public override function getAllObjectsByType (type:Class) : Array {
+		return super.getAllObjectsByType(type).concat(_parent.getAllObjectsByType(type));
 	}
 	
-	public override function getObject (id:String) : Object {
-		return super.containsObject(id) ? super.getObject(id) : _parent.getObject(id);
+	public override function getObjectByType (type:Class, required:Boolean = false) : Object {
+		var local:Object = super.getObjectByType(type);
+		return (local == null) ? _parent.getObjectByType(type, required) : local; 
 	}
+	
 	
 	
 	private function parentDestroyed (event:ContextEvent) : void {

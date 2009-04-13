@@ -32,19 +32,31 @@ import flash.events.IEventDispatcher;
 public interface Context extends IEventDispatcher {
 	
 	
-	function get objectCount () : uint;
+	function getObjectCount (type:Class = null) : uint;
 	
-	function get objectIds () : Array;
+	function getObjectIds (type:Class = null) : Array;
+	
 	
 	function containsObject (id:String) : Boolean;
-	
-	function getObjectsByType (type:Class) : Array;
 	
 	function getType (id:String) : Class;
 	
 	function getObject (id:String) : Object;
 	
+
+	function getObjectByType (type:Class, required:Boolean = false) : Object;
+
+	function getAllObjectsByType (type:Class) : Array;
+	
+	
+	function initialize () : Boolean;
+	
+	function get initialized () : Boolean;
+	
 	function destroy () : void;
+	
+	function get destroyed () : Boolean;
+	
 	
 	function get messageRouter () : MessageRouter;
 	

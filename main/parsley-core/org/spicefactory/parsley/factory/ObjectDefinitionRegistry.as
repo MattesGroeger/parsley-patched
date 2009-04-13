@@ -22,22 +22,34 @@ import flash.system.ApplicationDomain;
  */
 public interface ObjectDefinitionRegistry {
 	
+	
+	
+	function get domain () : ApplicationDomain;
 
-		function get domain () : ApplicationDomain;
 	
-		function containsDefinition (id:String) : Boolean;
+	function getDefinitionCount (type:Class = null) : uint;
+
+	function getDefinitionIds (type:Class = null) : Array;
+
 	
-		function getDefinition (id:String) : RootObjectDefinition;
+	function containsDefinition (id:String) : Boolean;
+
+	function getDefinition (id:String) : RootObjectDefinition;
 	
-		function getDefinitionsByType (type:Class) : Array;
+
+	function getAllDefinitionsByType (type:Class) : Array;
+
+	function getDefinitionByType (type:Class, required:Boolean = false) : RootObjectDefinition;
+
+
+	function registerDefinition (definition:RootObjectDefinition) : void;	
 	
-		function get definitionCount () : uint;
+	function unregisterDefinition (definition:RootObjectDefinition) : void;
 	
-		function get definitionIds () : Array;
 	
-		function registerDefinition (definition:RootObjectDefinition) : void;	
-		
-		function unregisterDefinition (definition:RootObjectDefinition) : void;
+	function freeze () : void;
+	
+	function get frozen () : Boolean;
 	
 	
 }
