@@ -18,7 +18,7 @@ package org.spicefactory.parsley.messaging.decorator {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.metadata.EventInfo;
 import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.core.ContextError;
+import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;

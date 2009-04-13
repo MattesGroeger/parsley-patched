@@ -19,7 +19,7 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.core.ContextError;
+import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.messaging.MessageProcessor;
 import org.spicefactory.parsley.messaging.MessageRouter;
 import org.spicefactory.parsley.messaging.MessageTarget;
