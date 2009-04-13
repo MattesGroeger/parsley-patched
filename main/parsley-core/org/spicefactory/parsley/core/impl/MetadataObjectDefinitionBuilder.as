@@ -53,7 +53,7 @@ public class MetadataObjectDefinitionBuilder {
 		return def;
 	}
 
-	protected function processMetadata (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : ObjectDefinition {
+	public function processMetadata (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : ObjectDefinition {
 		var type:ClassInfo = definition.type;
 		
 		definition = executeMetadataHandlers(registry, definition, type);
