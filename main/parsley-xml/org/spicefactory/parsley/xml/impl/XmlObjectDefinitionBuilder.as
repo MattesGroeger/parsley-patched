@@ -26,10 +26,15 @@ public class XmlObjectDefinitionBuilder {
 					= mapper.mapToObject(containerXML, context) as ObjectDefinitionFactoryContainer;
 			if (container != null) {
 				for each (var factory:ObjectDefinitionFactory in container.factories) {
-					var definition:RootObjectDefinition = factory.createRootDefinition(registry);
-					builder.processMetadata(registry, definition);
-					factory.applyDecorators(definition, registry);
-					registry.registerDefinition(definition);
+					try {
+						var definition:RootObjectDefinition = factory.createRootDefinition(registry);
+						builder.processMetadata(registry, definition);
+						factory.applyDecorators(definition, registry);
+						registry.registerDefinition(definition);
+					} 
+					catch (error:Error) {
+						context.addError(error);
+					}
 				}
 			}	
 		}
