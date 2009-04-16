@@ -15,38 +15,54 @@
  */
 
 package org.spicefactory.parsley.xml.impl {
-	import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
-import org.spicefactory.parsley.core.ContextError;
-import org.spicefactory.parsley.core.impl.MetadataObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
+import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
+
+import flash.events.EventDispatcher;
 
 /**
  * @author Jens Halm
  */
-public class XmlObjectDefinitionBuilder {
-	
-	
-	private var builder:MetadataObjectDefinitionBuilder = new MetadataObjectDefinitionBuilder();
-	
-	private var mapper:XmlObjectMapper; // TODO - create mapper
+public class XmlObjectDefinitionBuilder extends EventDispatcher implements AsyncObjectDefinitionBuilder {
 
 	
-	public function build (containers:Array, registry:ObjectDefinitionRegistry, expressionContext:ExpressionContext = null):void {
+	private var mapper:XmlObjectMapper; // TODO - create mapper
+	private var _loader:XmlObjectDefinitionLoader;
+	private var files:Array;
+	private var xmlRoots:Array;
+	private var expressionContext:ExpressionContext;
+
+	
+	function XmlObjectDefinitionBuilder (files:Array, expressionContext:ExpressionContext) {
+		this.files = files;
+		this.expressionContext = expressionContext;
+	}
+
+	
+	public function get loader () : XmlObjectDefinitionLoader {
+		return _loader;
+	}
+	
+	public function addXml (xml:XML) : void {
+		xmlRoots.push(xml);
+	}
+	
+	public function build (registry:ObjectDefinitionRegistry) : void {
 		var context:XmlProcessorContext = new XmlProcessorContext(expressionContext, registry.domain);
-		for each (var containerXML:XML in containers) {
+		for each (var containerXML:XML in xmlRoots) {
 			var container:ObjectDefinitionFactoryContainer 
 					= mapper.mapToObject(containerXML, context) as ObjectDefinitionFactoryContainer;
 			if (container != null) {
 				for each (var factory:ObjectDefinitionFactory in container.factories) {
 					try {
 						var definition:RootObjectDefinition = factory.createRootDefinition(registry);
-						builder.processMetadata(registry, definition);
-						factory.applyDecorators(definition, registry);
 						registry.registerDefinition(definition);
 					} 
 					catch (error:Error) {
@@ -60,6 +76,10 @@ public class XmlObjectDefinitionBuilder {
 			for each (var e:Error in context.errors) msg += "\n" + e.message; 
 			throw new ContextError(msg);
 		}
+	}
+	
+	public function cancel () : void {
+		// TODO - implement cancel method
 	}
 	
 	
