@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.messaging.decorator {
-import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
@@ -35,7 +34,7 @@ public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator 
 	public var selector:String;
 	
 	[Target]
-	public var method:Method;
+	public var method:String;
 	
 	
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
@@ -44,7 +43,7 @@ public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator 
 	}
 
 	public function postConstruct (instance:Object, context:Context) : void {
-		var target:MessageTarget = context.messageRouter.registerMessageInterceptor(instance, method.name, type, selector);
+		var target:MessageTarget = context.messageRouter.registerMessageInterceptor(instance, method, type, selector);
 		addTarget(instance, target);
 	}
 	

@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.messaging.decorator {
-import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
@@ -39,7 +38,7 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 	public var messageProperties:Array;
 
 	[Target]
-	public var method:Method;
+	public var method:String;
 	
 	
 	
@@ -49,7 +48,7 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 	}
 
 	public function postConstruct (instance:Object, context:Context) : void {
-		var target:MessageTarget = context.messageRouter.registerMessageHandler(instance, method.name, 
+		var target:MessageTarget = context.messageRouter.registerMessageHandler(instance, method, 
 				type, messageProperties, selector);
 		addTarget(instance, target);
 	}

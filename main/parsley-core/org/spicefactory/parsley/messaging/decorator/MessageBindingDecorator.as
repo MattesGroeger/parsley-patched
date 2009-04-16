@@ -15,13 +15,12 @@
  */
 
 package org.spicefactory.parsley.messaging.decorator {
-import org.spicefactory.parsley.messaging.MessageTarget;
-import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.ObjectLifecycleListener;
+import org.spicefactory.parsley.messaging.MessageTarget;
 
 [Metadata(name="MessageBinding", types="property")]
 /**
@@ -39,7 +38,7 @@ public class MessageBindingDecorator extends AbstractMessageTargetDecorator impl
 	public var messageProperty:String;
 
 	[Target]
-	public var targetProperty:Property;
+	public var targetProperty:String;
 	
 	
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
@@ -48,7 +47,7 @@ public class MessageBindingDecorator extends AbstractMessageTargetDecorator impl
 	}
 
 	public function postConstruct (instance:Object, context:Context) : void {
-		var target:MessageTarget = context.messageRouter.registerMessageBinding(instance, targetProperty.name, 
+		var target:MessageTarget = context.messageRouter.registerMessageBinding(instance, targetProperty, 
 				type, messageProperty, selector);
 		addTarget(instance, target);
 	}
