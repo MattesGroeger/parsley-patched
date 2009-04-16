@@ -15,61 +15,50 @@
  */
 
 package org.spicefactory.parsley.core.task {
-import org.spicefactory.lib.task.SequentialTaskGroup;
 import org.spicefactory.lib.task.Task;
-import org.spicefactory.lib.task.TaskGroup;
-import org.spicefactory.lib.task.events.TaskEvent;
 import org.spicefactory.parsley.core.CompositeContextBuilder;
 import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.events.ContextEvent;
 
-import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.system.ApplicationDomain;
 
 /**
  * @author Jens Halm
  */
-public class CompositeContextBuilderTask extends ContextBuilderTask {
+public class CompositeContextBuilderTask extends Task {
 
 	
 	private var _builder:CompositeContextBuilder;
-	private var _tasks:TaskGroup = new SequentialTaskGroup();
 
 	
 	function CompositeContextBuilderTask (parent:Context = null, domain:ApplicationDomain = null) {
-		super(parent, domain);
 		_builder = new CompositeContextBuilder(parent, domain);
 	}
 	
 	
-	public function get registry () : ObjectDefinitionRegistry {
-		return _builder.registry;
+	public function get result () : Context {
+		// TODO - rename to context after context was renamed to data
+		return _builder.context;
 	}
 	
-	
-	public function addBuilderTask (t:Task) : void {
-		_tasks.addTask(t);
+	public function addBuilder (builder:ObjectDefinitionBuilder) : void {
+		_builder.addBuilder(builder);
 	}
 	
 	
 	protected override function doStart () : void {
-		_tasks.addEventListener(TaskEvent.COMPLETE, tasksComplete);		
-		_tasks.addEventListener(ErrorEvent.ERROR, tasksError);		
+		_builder.build();
+		result.addEventListener(ContextEvent.INITIALIZED, contextInitialized);		
 	}
 	
-	private function tasksComplete (event:Event) : void {
-		super.doStart();
+	private function contextInitialized (event:Event) : void {
+		complete();
 	}
 	
-	private function tasksError (event:ErrorEvent) : void {
-		error(event.text);
-	}
-	
-	protected override function build (parent:Context = null, domain:ApplicationDomain = null) : Context {
-		return _builder.build();
-	}
-	
+
+	// TODO - handle ERROR and DESTROYED event
 	
 }
 
