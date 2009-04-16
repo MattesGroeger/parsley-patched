@@ -55,6 +55,9 @@ public class CompositeContextBuilder extends EventDispatcher {
 		_builders.push(builder);
 	}
 
+	public function get domain () : ApplicationDomain {
+		return _registry.domain;
+	}
 	
 	public function get context () : Context {
 		return _context;
