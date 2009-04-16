@@ -15,11 +15,7 @@ import org.spicefactory.lib.task.enum.TaskState;
 public class XmlLoaderTask extends ResultTask {
 	
 	
-	// TODO - should be moved to different package (or even to Spicelib as an internal
-	// undocumented class - until the loader module gets added).
-	
-	
-	private static var _log:Logger;
+	private static const _log:Logger = LogContext.getLogger("org.spicefactory.parsley.loader.XmlLoaderTask");
 	
 	private var _filename:String;
 	private var _loader:URLLoader;
@@ -28,9 +24,6 @@ public class XmlLoaderTask extends ResultTask {
 	
 	
 	public function XmlLoaderTask (filename:String) {
-		if (_log == null) {
-			_log = LogContext.getLogger("org.spicefactory.parsley.loader.XmlLoaderTask");
-		}
 		_filename = filename;	
 		setSuspendable(false);
 		setSkippable(false);
