@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.factory.decorator {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.factory.DecoratorUtil;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
@@ -29,10 +30,15 @@ import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 public class PreDestroyMethodDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
 	
-	public var method:Method;
+	[Target]
+	public var method:String;
+	
+	
+	private var targetMethod:Method;	
 
 
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		targetMethod = DecoratorUtil.getMethod(method, definition);
 		definition.lifecycleListeners.addLifecycleListener(this);
 		return definition;
 	}
@@ -42,7 +48,7 @@ public class PreDestroyMethodDecorator implements ObjectDefinitionDecorator, Obj
 	}
 	
 	public function preDestroy (instance:Object, context:Context) : void {
-		method.invoke(instance, []);
+		targetMethod.invoke(instance, []);
 	}
 	
 	

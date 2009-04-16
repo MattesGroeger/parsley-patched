@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.factory.decorator {
 import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.parsley.factory.DecoratorUtil;
 import org.spicefactory.parsley.factory.FactoryObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
@@ -31,13 +32,15 @@ import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 [Metadata(name="Factory", types="method")]
 public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 
-
-	public var method:Method;
+	
+	[Target]
+	public var method:String;
 	
 	
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		
 		// Must create a new definition for the target type
+		var method:Method = DecoratorUtil.getMethod(this.method, definition);
 		var targetType:Class = method.returnType.getClass();
 		var targetFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(targetType);
 		var targetDefinition:ObjectDefinition = (definition is RootObjectDefinition) 

@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.factory.decorator {
-import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
@@ -27,11 +26,12 @@ import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 public class InjectMethodDecorator implements ObjectDefinitionDecorator {
 
 
-	public var method:Method;
+	[Target]
+	public var method:String;
 
 
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		definition.injectorMethods.addTypeReferences(method.name);
+		definition.injectorMethods.addTypeReferences(method);
 		return definition;
 	}
 	
