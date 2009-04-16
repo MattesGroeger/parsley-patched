@@ -36,20 +36,17 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 	[DefaultProperty]
 	public var names:Array;
 
-	[Target]
-	public var type:ClassInfo;
-	
 	
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		if (names == null) {
 			names = new Array();
-			var events:Array = type.getMetadata(EventInfo);
+			var events:Array = definition.type.getMetadata(EventInfo);
 			for each (var event:EventInfo in events) {
 				names.push(event.name);	
 			}
 		}
 		if (names.length == 0) {
-			throw new ContextError("ManagedEvents on class " + type.name 
+			throw new ContextError("ManagedEvents on class " + definition.type.name 
 					+ ": No event names specified in ManagedEvents tag and no Event tag on class");	
 		}
 		definition.lifecycleListeners.addLifecycleListener(this);
