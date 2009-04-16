@@ -21,6 +21,7 @@ import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.events.ContextEvent;
 
+import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.system.ApplicationDomain;
 
@@ -38,8 +39,7 @@ public class CompositeContextBuilderTask extends Task {
 	}
 	
 	
-	public function get result () : Context {
-		// TODO - rename to context after context was renamed to data
+	public function get context () : Context {
 		return _builder.context;
 	}
 	
@@ -50,16 +50,26 @@ public class CompositeContextBuilderTask extends Task {
 	
 	protected override function doStart () : void {
 		_builder.build();
-		result.addEventListener(ContextEvent.INITIALIZED, contextInitialized);		
+		context.addEventListener(ContextEvent.INITIALIZED, contextInitialized);		
+		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);		
+		context.addEventListener(ErrorEvent.ERROR, contextError);		
 	}
 	
 	private function contextInitialized (event:Event) : void {
+		context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		complete();
 	}
 	
-
-	// TODO - handle ERROR and DESTROYED event
+	private function contextDestroyed (event:Event) : void {
+		// Destroyed before being fully initialized - interpreting this as cancellation
+		cancel();
+	}
 	
+	private function contextError (event:ErrorEvent) : void {
+		error(event.text);
+	}
+	
+
 }
 
 }
