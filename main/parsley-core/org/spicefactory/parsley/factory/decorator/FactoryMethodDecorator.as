@@ -16,13 +16,14 @@
 
 package org.spicefactory.parsley.factory.decorator {
 import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.parsley.core.impl.MetadataObjectDefinitionBuilder;
 import org.spicefactory.parsley.factory.FactoryObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
 import org.spicefactory.parsley.factory.impl.DefaultFactoryObjectDefinition;
+import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 
 /**
  * @author Jens Halm
@@ -34,17 +35,18 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 	public var method:Method;
 	
 	
-	private var builder:MetadataObjectDefinitionBuilder = new MetadataObjectDefinitionBuilder();
-
-	
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		
 		// Must create a new definition for the target type
 		var targetType:Class = method.returnType.getClass();
+		var targetFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(targetType);
 		var targetDefinition:ObjectDefinition = (definition is RootObjectDefinition) 
-				? builder.newRootDefinition(registry, targetType) 
-				: builder.newDefinition(registry, targetType);
+				? targetFactory.createRootDefinition(registry) 
+				: targetFactory.createNestedDefinition(registry);
 		targetDefinition.instantiator = new FactoryMethodInstantiator(factoryDefinition, method);
+		if (targetDefinition is RootObjectDefinition) {
+			registry.registerDefinition(targetDefinition as RootObjectDefinition);
+		}
 		
 		// Specified definition is for the factory, must be registered as a root factory, 
 		// even if the original definition is for a nested object
