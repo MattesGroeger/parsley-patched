@@ -45,6 +45,7 @@ public class CompositeContextBuilder extends EventDispatcher {
 	
 	function CompositeContextBuilder (parent:Context = null, domain:ApplicationDomain = null) {
 		_parent = parent;
+		if (domain == null) domain = ApplicationDomain.currentDomain;
 		_registry = new DefaultObjectDefinitionRegistry(domain);
 		_context = (_parent != null) ? new ChildContext(_parent, _registry) : new DefaultContext(_registry);
 		_context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
