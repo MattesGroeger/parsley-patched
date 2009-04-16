@@ -7,9 +7,9 @@ import flash.errors.IllegalOperationError;
  * This may be a loading operation or a remote service invocation.
  * 
  * <p>With the optional <code>propertyName</code> parameter of the constructor you 
- * can specify a property that will be set in the value of the context property.
- * Since the context property of any Task is recursive (if it wasn't set for a particular Task it uses the
- * value of its parent TaskGroup), you can use an object that was set as the context property
+ * can specify a property that will be set in the value of the data property.
+ * Since the data property of any Task is recursive (if it wasn't set for a particular Task it uses the
+ * value of its parent TaskGroup), you can use an object that was set as the data property
  * on a containing TaskGroup to collect values of different ResultTasks. This way you don't have
  * to keep references to all individual Tasks just to retrieve the result after the asynchronous
  * operation is finished.</p>
@@ -26,7 +26,7 @@ import flash.errors.IllegalOperationError;
  * }
  * 
  * var group:TaskGroup = new SequentialTaskGroup();
- * group.context = new LoaderResult();
+ * group.data = new LoaderResult();
  * group.addTask(new TextLoaderTask("test.txt", "text"));
  * group.addTask(new XmlLoaderTask("test.xml", "xml"));
  * group.addEventListener(TaskEvent.COMPLETE, onComplete);
@@ -35,7 +35,7 @@ import flash.errors.IllegalOperationError;
  * 
  * private function onComplete (event:TaskEvent) : void {
  *     var t:Task = event.target as Task;
- *     var result:LoaderResult = t.context as LoaderResult;
+ *     var result:LoaderResult = t.data as LoaderResult;
  *     trace("loaded text: " result.text);
  *     trace("loaded XML: " result.xml);
  * }
@@ -46,7 +46,7 @@ import flash.errors.IllegalOperationError;
  * illustration purposes. This example only works if the constructor of these two classes
  * passes the second argument to the constructor of the superclass (<code>ResultTask</code>).
  * Instead of a concrete class like <code>LoaderResult</code> in the
- * example above you can also use a simple <code>Dictionary</code> as the context property.</p>
+ * example above you can also use a simple <code>Dictionary</code> as the data property.</p>
  * 
  * @author Jens Halm
  */
@@ -59,7 +59,7 @@ public class ResultTask extends Task {
 	
 	/**
 	 * Creates a new ResultTask instance. The optional <code>propertyName</code> parameter
-	 * can be used to specify a property that will be set on the value of the context property
+	 * can be used to specify a property that will be set on the value of the data property
 	 * of this Task or one of its parents.
 	 */
 	function ResultTask (propertyName:String = null) {

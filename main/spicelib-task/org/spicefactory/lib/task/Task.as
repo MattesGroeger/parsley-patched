@@ -156,7 +156,7 @@ public class Task extends EventDispatcher {
 	 * This may be useful if a Task is nested in a <code>TaskGroup</code>
 	 * for example and produces or loads data that is needed by subsequent Tasks.
 	 * If the value for this Task is null and the Task has a parent, the 
-	 * parents context value will be used.
+	 * parents data value will be used.
 	 */
 	public function get data () : * {
 		return (_data != null) ? _data : (_parent != null) ? _parent.data : null;
@@ -164,7 +164,7 @@ public class Task extends EventDispatcher {
 	
 	public function set data (data:*) : void {
 		if (state != TaskState.INACTIVE) {
-			logger.error("Attempt to change context in Task '" + this + "' in illegal state: " + state);
+			logger.error("Attempt to change data in Task '" + this + "' in illegal state: " + state);
 			return;
 		}
 		_data = data;
