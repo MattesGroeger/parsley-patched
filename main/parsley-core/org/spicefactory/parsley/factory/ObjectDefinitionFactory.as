@@ -26,8 +26,6 @@ public interface ObjectDefinitionFactory {
 
 	function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition;	
 
-	function applyDecorators (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : void;	
-	
 	
 }
 }
