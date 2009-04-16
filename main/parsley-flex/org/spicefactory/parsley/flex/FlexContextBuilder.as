@@ -18,6 +18,7 @@ package org.spicefactory.parsley.flex {
 import org.spicefactory.parsley.core.CompositeContextBuilder;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.builder.ActionScriptObjectDefinitionBuilder;
+import org.spicefactory.parsley.flex.view.RootViewManager;
 
 import flash.system.ApplicationDomain;
 
@@ -34,17 +35,20 @@ public class FlexContextBuilder {
 	
 	public static function buildAll (containers:Array, parent:Context = null, domain:ApplicationDomain = null,
 			viewTriggerEvent:String = "configureIOC") : Context {
-		var builder:FlexCompositeContextBuilder = new FlexCompositeContextBuilder(viewTriggerEvent, parent, domain);
-		mergeAll(containers, builder);
+		var builder:CompositeContextBuilder = new CompositeContextBuilder(parent, domain);
+		mergeAll(containers, builder, viewTriggerEvent);
 		return builder.build();		
 	}
 	
 	
-	public static function merge (container:Class, builder:FlexCompositeContextBuilder) : void {
-		mergeAll([container], builder);
+	public static function merge (container:Class, builder:CompositeContextBuilder,
+			viewTriggerEvent:String = "configureIOC") : void {
+		mergeAll([container], builder, viewTriggerEvent);
 	}
 
-	public static function mergeAll (containers:Array, builder:FlexCompositeContextBuilder) : void {
+	public static function mergeAll (containers:Array, builder:CompositeContextBuilder,
+			viewTriggerEvent:String = "configureIOC") : void {
+		RootViewManager.addContext(builder.context, viewTriggerEvent, builder.domain);
 		builder.addBuilder(new ActionScriptObjectDefinitionBuilder(containers));
 	}
 
