@@ -14,48 +14,63 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.impl {
+package org.spicefactory.parsley.core.builder {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.metadata.InternalProperty;
 import org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata;
+import org.spicefactory.parsley.factory.ObjectDefinition;
+import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
+import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 
 /**
  * @author Jens Halm
  */
-public class ActionScriptObjectDefinitionBuilder {
+public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuilder {
+
+	
+	private var containers:Array;
 	
 	
-	private var builder:MetadataObjectDefinitionBuilder = new MetadataObjectDefinitionBuilder();
+	function ActionScriptObjectDefinitionBuilder (containers:Array) {
+		this.containers = containers;
+	}
 	
 	
-	public function build (containers:Array, registry:ObjectDefinitionRegistry) : void {
+	public function build (registry:ObjectDefinitionRegistry) : void {
 		for each (var container:Class in containers) {
 			var ci:ClassInfo = ClassInfo.forClass(container, registry.domain);
-			var containerDefinition:RootObjectDefinition 
-					= builder.newRootDefinition(registry, container);
+			var containerFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
+			var containerDefinition:RootObjectDefinition = containerFactory.createRootDefinition(registry);
+			registry.registerDefinition(containerDefinition);
 			for each (var property:Property in ci.getProperties()) {
 				var internalMeta:Array = property.getMetadata(InternalProperty);
 				if (internalMeta.length == 0 && property.readable) {
-					var definitionMetaArray:Array = property.getMetadata(ObjectDefinitionMetadata);
-					var definitionMeta:ObjectDefinitionMetadata = (definitionMetaArray.length > 0) ? 
-							ObjectDefinitionMetadata(definitionMetaArray[0]) : null;
-					var id:String = (definitionMeta != null) ? definitionMeta.id : property.name;
-					var lazy:Boolean = (definitionMeta != null) ? definitionMeta.lazy : true;
-					var singleton:Boolean = (definitionMeta != null) ? definitionMeta.singleton : true;
-					var targetDefinition:RootObjectDefinition 
-							= builder.newRootDefinition(registry, property.type.getClass(), id, lazy, singleton);
-					targetDefinition.instantiator = new ContainerPropertyInstantiator(containerDefinition, property);
+					buildTargetDefinition(property, containerDefinition, registry);
 				} 
 			}	
 		}
 	}
 	
+	private function buildTargetDefinition (containerProperty:Property, containerDefinition:RootObjectDefinition,
+			registry:ObjectDefinitionRegistry) : void {
+		var definitionMetaArray:Array = containerProperty.getMetadata(ObjectDefinitionMetadata);
+		var definitionMeta:ObjectDefinitionMetadata = (definitionMetaArray.length > 0) ? 
+				ObjectDefinitionMetadata(definitionMetaArray[0]) : null;
+		var id:String = (definitionMeta != null) ? definitionMeta.id : containerProperty.name;
+		var lazy:Boolean = (definitionMeta != null) ? definitionMeta.lazy : true;
+		var singleton:Boolean = (definitionMeta != null) ? definitionMeta.singleton : true;
+		var targetFactory:ObjectDefinitionFactory 
+				= new DefaultObjectDefinitionFactory(containerProperty.type.getClass(), id, lazy, singleton);
+		var targetDefinition:RootObjectDefinition 
+				= targetFactory.createRootDefinition(registry);
+		targetDefinition.instantiator = new ContainerPropertyInstantiator(containerDefinition, containerProperty);
+		registry.registerDefinition(targetDefinition);
+	}
 }
 }
-
 
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.Context;
