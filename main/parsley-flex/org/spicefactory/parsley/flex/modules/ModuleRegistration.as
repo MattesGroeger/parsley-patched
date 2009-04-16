@@ -90,6 +90,7 @@ public class ModuleRegistration {
 		if (module.viewTriggerEvent != null) {
 			if (_modules[module] != undefined) {
 				log.error("Module with URL " + _info.url + ": Attempt to add the same Module instance more than once.");
+				return;
 			}
 			_modules[module] = true;
 			// view manager must be created for each Module instance
