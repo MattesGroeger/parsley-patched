@@ -20,7 +20,38 @@ import org.spicefactory.parsley.messaging.MessageRouter;
 import flash.events.IEventDispatcher;
 
 /**
+ * Dispatched when the Context was fully initialized.
+ * At this point all configuration was processed and all non-lazy singleton objects
+ * in this Context have been instantiated and configured and their asynchronous
+ * initializers (if any) have successfully completed.
+ * 
+ * <p>Some ContextBuilder implementations excute synchronously. In this case this
+ * event will never fire. Thus before registering for this event you should check the
+ * <code>initialized</code> property on the Context.</p>
+ * 
+ * @eventType org.spicefactory.parsley.core.events.ContextEvent.INITIALIZED
+ */
+[Event(name="initialized", type="org.spicefactory.parsley.core.events.ContextEvent")]
+
+/**
+ * Dispatched when Context initialization failed.
+ * This may happen due to errors in processing the configuration or because some asynchronous
+ * initializer on a non-lazy singleton failed. All objects that have already been created at
+ * this point (partly or fully) will get their PreDestroy methods invoked.
+ * 
+ * <p>After the <code>INITIALIZED</code> event of this Context has fired and the
+ * <code>initialized</code> property was set to true, this event can never fire.
+ * In particular it does not fire if retrieving a lazy initializing object fails
+ * after Context initialization.</p>
+ * 
+ * @eventType flash.events.ErrorEvent.ERROR
+ */
+[Event(name="error", type="flash.events.ErrorEvent")]
+
+/**
  * Dispatched when the Context was destroyed.
+ * At this point all methods marked with [PreDestroy] on objects managed by this context 
+ * have been invoked and any child Context instances were destroyed, too.
  * 
  * @eventType org.spicefactory.parsley.core.events.ContextEvent.DESTROYED
  */
@@ -49,7 +80,7 @@ public interface Context extends IEventDispatcher {
 	function getAllObjectsByType (type:Class) : Array;
 	
 	
-	function initialize () : Boolean;
+	//function initialize () : Boolean;
 	
 	function get initialized () : Boolean;
 	
