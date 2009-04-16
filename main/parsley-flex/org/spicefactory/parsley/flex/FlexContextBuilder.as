@@ -15,10 +15,9 @@
  */
 
 package org.spicefactory.parsley.flex {
-import org.spicefactory.parsley.core.ActionScriptContextBuilder;
 import org.spicefactory.parsley.core.CompositeContextBuilder;
 import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.flex.view.RootViewManager;
+import org.spicefactory.parsley.core.builder.ActionScriptObjectDefinitionBuilder;
 
 import flash.system.ApplicationDomain;
 
@@ -27,51 +26,28 @@ import flash.system.ApplicationDomain;
  */
 public class FlexContextBuilder {
 
-	public function FlexContextBuilder () {
+	
+	public static function build (container:Class, parent:Context = null, domain:ApplicationDomain = null,
+			viewTriggerEvent:String = "configureIOC") : Context {
+		return buildAll([container], parent, domain, viewTriggerEvent);
 	}
 	
-	public static function build (container:Class, parent:Context = null, 
-			viewTriggerEvent:String = "configureIOC", domain:ApplicationDomain = null) : Context {
-		return buildAll([container], parent, viewTriggerEvent, domain);
-	}
-	
-	public static function buildAll (containers:Array, parent:Context = null,
-			viewTriggerEvent:String = "configureIOC", domain:ApplicationDomain = null) : Context {
-		var context:Context = ActionScriptContextBuilder.buildAll(containers, parent, domain);
-		RootViewManager.addContext(context, viewTriggerEvent, domain);
-		return context;		
+	public static function buildAll (containers:Array, parent:Context = null, domain:ApplicationDomain = null,
+			viewTriggerEvent:String = "configureIOC") : Context {
+		var builder:FlexCompositeContextBuilder = new FlexCompositeContextBuilder(viewTriggerEvent, parent, domain);
+		mergeAll(containers, builder);
+		return builder.build();		
 	}
 	
 	
-	public static function merge (container:Class, builder:CompositeContextBuilder,
-			viewTriggerEvent:String = "configureIOC") : void {
-		mergeAll([container], builder, viewTriggerEvent);
+	public static function merge (container:Class, builder:FlexCompositeContextBuilder) : void {
+		mergeAll([container], builder);
 	}
 
-	public static function mergeAll (containers:Array, builder:CompositeContextBuilder,
-			viewTriggerEvent:String = "configureIOC") : void {
-		ActionScriptContextBuilder.mergeAll(containers, builder);
-		new BuilderEventHandler(viewTriggerEvent, builder);
+	public static function mergeAll (containers:Array, builder:FlexCompositeContextBuilder) : void {
+		builder.addBuilder(new ActionScriptObjectDefinitionBuilder(containers));
 	}
+
+
 }
-}
-
-import org.spicefactory.parsley.core.CompositeContextBuilder;
-import org.spicefactory.parsley.core.events.ContextBuilderEvent;
-import org.spicefactory.parsley.flex.view.RootViewManager;
-
-class BuilderEventHandler {
-	
-	private var triggerEvent:String;
-	
-	function BuilderEventHandler (triggerEvent:String, builder:CompositeContextBuilder) {
-		this.triggerEvent = triggerEvent;
-		builder.addEventListener(ContextBuilderEvent.COMPLETE, builderComplete);
-	}
-	
-	private function builderComplete (event:ContextBuilderEvent) : void {
-		var builder:CompositeContextBuilder = event.target as CompositeContextBuilder;
-		RootViewManager.addContext(builder.context, triggerEvent, builder.registry.domain);
-	}
-	
 }
