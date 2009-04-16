@@ -15,11 +15,7 @@
  */
 
 package org.spicefactory.parsley.core {
-import org.spicefactory.parsley.core.impl.ActionScriptObjectDefinitionBuilder;
-import org.spicefactory.parsley.core.impl.ChildContext;
-import org.spicefactory.parsley.core.impl.DefaultContext;
-import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.builder.ActionScriptObjectDefinitionBuilder;
 
 import flash.system.ApplicationDomain;
 
@@ -29,30 +25,23 @@ import flash.system.ApplicationDomain;
 public class ActionScriptContextBuilder {
 	
 	
-	private static var defBuilder:ActionScriptObjectDefinitionBuilder = new ActionScriptObjectDefinitionBuilder();
-
-	
 	public static function build (container:Class, parent:Context = null, domain:ApplicationDomain = null) : Context {
 		return buildAll([container], parent, domain);		
 	}
 	
 	public static function buildAll (containers:Array, parent:Context = null, domain:ApplicationDomain = null) : Context {
-		var registry:ObjectDefinitionRegistry = new DefaultObjectDefinitionRegistry(domain);
-		defBuilder.build(containers, registry);
-		var dc:DefaultContext = (parent != null) 
-				? new ChildContext(parent, registry) 
-				: new DefaultContext(registry);
-		dc.initialize();
-		return dc;		
+		var builder:CompositeContextBuilder = new CompositeContextBuilder(parent, domain);
+		mergeAll(containers, builder);
+		return builder.build();
 	}
 	
 	
 	public static function merge (container:Class, builder:CompositeContextBuilder) : void {
-		defBuilder.build([container], builder.registry);
+		mergeAll([container], builder);
 	}
 	
 	public static function mergeAll (containers:Array, builder:CompositeContextBuilder) : void {
-		defBuilder.build(containers, builder.registry);
+		builder.addBuilder(new ActionScriptObjectDefinitionBuilder(containers));
 	}
 	
 	
