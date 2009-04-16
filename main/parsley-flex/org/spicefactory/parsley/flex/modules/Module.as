@@ -40,9 +40,7 @@ public class Module extends mx.modules.Module {
 			log.warn("No container specified for context - skipping context creation");
 			return null;
 		}
-		return FlexContextBuilder.build(container, parent, viewTriggerEvent, domain); 
+		return FlexContextBuilder.build(container, parent, domain, viewTriggerEvent); 
 	}
-	
-	
 }
 }
