@@ -113,7 +113,7 @@ public class Task extends EventDispatcher {
 	private var _timeout : uint;
 	private var timer : Timer;
 	
-	private var _context:*;
+	private var _data:*;
 	private var _parent : TaskGroup;
 	
 	private var name : String;
@@ -137,7 +137,7 @@ public class Task extends EventDispatcher {
 		_suspendable = true;
 		_skippable = true;
 		_timeout = 0;
-		_context = null;
+		_data = null;
 		_parent = null;
 	}
 	
@@ -158,16 +158,16 @@ public class Task extends EventDispatcher {
 	 * If the value for this Task is null and the Task has a parent, the 
 	 * parents context value will be used.
 	 */
-	public function get context () : * {
-		return (_context != null) ? _context : (_parent != null) ? _parent.context : null;
+	public function get data () : * {
+		return (_data != null) ? _data : (_parent != null) ? _parent.data : null;
 	}
 	
-	public function set context (context:*) : void {
+	public function set data (data:*) : void {
 		if (state != TaskState.INACTIVE) {
 			logger.error("Attempt to change context in Task '" + this + "' in illegal state: " + state);
 			return;
 		}
-		_context = context;
+		_data = data;
 	}
 	
 	/**

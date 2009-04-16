@@ -115,7 +115,7 @@ public class ResultTask extends Task {
 	private function handleResultValue (value:*) : void {
 		_result = value;
 		if (_propertyName != null) {
-			var c:* = context;
+			var c:* = data;
 			if (c != null) {
 				c[_propertyName] = value;
 			}
