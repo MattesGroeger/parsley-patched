@@ -66,13 +66,10 @@ public class AbstractViewManager {
 		var component:DisplayObject = DisplayObject(event.target);
 		var context:FlexViewContext = getContext(component);
 		if (context == null) {
-			log.warn("No context found for triggerEvent " + triggerEvent + " and component " + component);
+			log.warn("No Context found for triggerEvent " + triggerEvent + " and component " + component);
 			return;
 		}
-		var ci:ClassInfo = ClassInfo.forInstance(component, context.registry.domain);
-		var factory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
-		var definition:ObjectDefinition = factory.createNestedDefinition(context.registry);
-		context.addComponent(component, definition);
+		context.addComponent(component);
 	}
 
 

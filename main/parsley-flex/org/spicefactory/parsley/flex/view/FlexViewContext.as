@@ -15,11 +15,15 @@
  */
 
 package org.spicefactory.parsley.flex.view {
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.impl.ChildContext;
 import org.spicefactory.parsley.core.impl.ObjectFactory;
 import org.spicefactory.parsley.factory.ObjectDefinition;
+import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
@@ -32,15 +36,32 @@ public class FlexViewContext extends ChildContext {
 	
 	
 	private var definitionMap:Dictionary = new Dictionary();
+	
+	private var deferredComponents:Array = new Array();
+	
 
 	
 	public function FlexViewContext (parent:Context, registry:ObjectDefinitionRegistry = null, 
 			factory:ObjectFactory = null) {
 		super(parent, registry, factory);
+		addEventListener(ContextEvent.INITIALIZED, contextInitialized);
 	}
 	
-	
-	public function addComponent (component:DisplayObject, definition:ObjectDefinition) : void {
+	private function contextInitialized (event:Event) : void {
+		for each (var component:DisplayObject in deferredComponents) {
+			addComponent(component);
+		}
+		deferredComponents = new Array();
+	}
+
+	public function addComponent (component:DisplayObject) : void {
+		if (!initialized) {
+			deferredComponents.push(component);
+			return;			
+		}
+		var ci:ClassInfo = ClassInfo.forInstance(component, registry.domain);
+		var defFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
+		var definition:ObjectDefinition = defFactory.createNestedDefinition(registry);
 		factory.configureObject(component, definition, this);
 		definitionMap[component] = definition;
 		component.addEventListener(Event.REMOVED_FROM_STAGE, removeComponent);
