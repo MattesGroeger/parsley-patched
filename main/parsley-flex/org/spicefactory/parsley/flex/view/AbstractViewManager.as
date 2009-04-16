@@ -15,13 +15,13 @@
  */
 
 package org.spicefactory.parsley.flex.view {
-	import org.spicefactory.parsley.core.impl.MetadataObjectDefinitionBuilder;
 import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
-
 import org.spicefactory.parsley.factory.ObjectDefinition;
+import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
+import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
@@ -36,8 +36,6 @@ public class AbstractViewManager {
 	
 
 	private var _triggerEvent:String = "configureIOC";
-	
-	private var builder:MetadataObjectDefinitionBuilder = new MetadataObjectDefinitionBuilder();
 	
 	
 	function AbstractViewManager (triggerEvent:String = null) {
@@ -72,7 +70,8 @@ public class AbstractViewManager {
 			return;
 		}
 		var ci:ClassInfo = ClassInfo.forInstance(component, context.registry.domain);
-		var definition:ObjectDefinition = builder.newDefinition(context.registry, ci.getClass());
+		var factory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
+		var definition:ObjectDefinition = factory.createNestedDefinition(context.registry);
 		context.addComponent(component, definition);
 	}
 
