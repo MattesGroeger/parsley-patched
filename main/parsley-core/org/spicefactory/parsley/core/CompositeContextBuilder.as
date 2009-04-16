@@ -15,23 +15,20 @@
  */
 
 package org.spicefactory.parsley.core {
-import org.spicefactory.parsley.core.events.ContextBuilderEvent;
-
-import flash.events.EventDispatcher;
-
+import org.spicefactory.lib.events.NestedErrorEvent;
+import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.impl.ChildContext;
 import org.spicefactory.parsley.core.impl.DefaultContext;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
 
+import flash.events.ErrorEvent;
+import flash.events.Event;
+import flash.events.EventDispatcher;
 import flash.system.ApplicationDomain;
 
-/**
- * Dispatched when the builder completed and the context property has been set.
- * 
- * @eventType org.spicefactory.parsley.core.events.ContextBuilderEvent.COMPLETE
- */
-[Event(name="complete", type="org.spicefactory.parsley.core.events.ContextBuilderEvent")]
 
 /**
  * @author Jens Halm
@@ -39,37 +36,75 @@ import flash.system.ApplicationDomain;
 public class CompositeContextBuilder extends EventDispatcher {
 
 	
-	private var _context:Context;
+	private var _context:DefaultContext;
 	private var _parent:Context;
 	private var _registry:ObjectDefinitionRegistry;
-	
+	private var _builders:Array = new Array();
+	private var _currentBuilder:AsyncObjectDefinitionBuilder;
+
 	
 	function CompositeContextBuilder (parent:Context = null, domain:ApplicationDomain = null) {
 		_parent = parent;
 		_registry = new DefaultObjectDefinitionRegistry(domain);
+		_context = (_parent != null) ? new ChildContext(_parent, _registry) : new DefaultContext(_registry);
+		_context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
 	
 	
-	public function get registry () : ObjectDefinitionRegistry {
-		return _registry;
+	public function addBuilder (builder:ObjectDefinitionBuilder) : void {
+		_builders.push(builder);
 	}
 
-	public function get parent () : Context {
-		return _parent;
-	}
 	
 	public function get context () : Context {
 		return _context;
 	}
 
 	public function build () : Context {
-		var dc:DefaultContext = (parent != null) 
-				? new ChildContext(parent, registry) 
-				: new DefaultContext(registry);
-		dc.initialize();
-		_context = dc;
-		dispatchEvent(new ContextBuilderEvent(ContextBuilderEvent.COMPLETE));
-		return dc;	
+		invokeNextBuilder();
+		return _context;	
+	}
+	
+	private function invokeNextBuilder () : void {
+		if (_builders.length == 0) {
+			_context.initialize();
+		}
+		else {
+			var builder:ObjectDefinitionBuilder = _builders.shift();
+			try {
+				if (builder is AsyncObjectDefinitionBuilder) {
+					_currentBuilder = AsyncObjectDefinitionBuilder(builder);
+					_currentBuilder.addEventListener(Event.COMPLETE, builderCompleted);				
+					_currentBuilder.addEventListener(ErrorEvent.ERROR, builderError);				
+					_currentBuilder.build(_registry);
+				}
+				else {
+					builder.build(_registry);
+					invokeNextBuilder();
+				}
+			} catch (e:Error) {
+				dispatchBuilderError(builder, e);	
+			}
+		}
+	}
+	
+	private function builderCompleted (event:Event) : void {
+		invokeNextBuilder();
+	}
+	
+	private function builderError (event:ErrorEvent) : void {
+		dispatchBuilderError(event.target as ObjectDefinitionBuilder, event);
+	}
+	
+	private function contextDestroyed (event:Event) : void {
+		if (_currentBuilder != null) {
+			_currentBuilder.cancel();
+		}
+	}
+	
+	private function dispatchBuilderError (builder:ObjectDefinitionBuilder, cause:Object) : void {
+		var msg:String = "ObjectDefinitionBuilder " + builder + " failed";
+		_context.dispatchEvent(new NestedErrorEvent(ErrorEvent.ERROR, cause, msg));
 	}
 	
 	
