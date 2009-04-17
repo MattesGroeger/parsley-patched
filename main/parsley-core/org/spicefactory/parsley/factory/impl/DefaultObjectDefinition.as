@@ -19,6 +19,7 @@ import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectInstantiator;
+import org.spicefactory.parsley.factory.model.AsyncInitConfig;
 import org.spicefactory.parsley.factory.registry.ConstructorArgRegistry;
 import org.spicefactory.parsley.factory.registry.LifecycleListenerRegistry;
 import org.spicefactory.parsley.factory.registry.MethodRegistry;
@@ -41,6 +42,7 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	private var _properties:PropertyRegistry;
 	private var _methods:MethodRegistry;
 	private var _listeners:LifecycleListenerRegistry;
+	private var _asyncInitConfig:AsyncInitConfig;
 
 	private var _frozen:Boolean;
 
@@ -61,6 +63,7 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		_properties = definition.properties;
 		_methods = definition.injectorMethods;
 		_listeners = definition.lifecycleListeners;
+		_asyncInitConfig = definition.asyncInitConfig;
 	}
 
 	
@@ -84,6 +87,10 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		return _listeners;
 	}
 	
+	public function get asyncInitConfig () : AsyncInitConfig {
+		return _asyncInitConfig;
+	}
+
 	public function get instantiator () : ObjectInstantiator {
 		return _instantiator;
 	}
