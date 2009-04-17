@@ -33,7 +33,6 @@ public interface MessageRouter {
 			
 	function dispatchMessage (message:Object) : void;
 	
-	function destroy () : void;
 	
 }
 }
