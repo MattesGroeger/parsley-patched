@@ -26,8 +26,23 @@ public class ContextEvent extends Event {
 
 
 	/**
+	 * Constant for the type of event fired when a Context instance was configured.
+	 * After this event has fired all configuration has been processed and all
+	 * <code>ObjectDefinition</code> instances have been frozen and cannot be
+	 * modified anymore. <code>Context.getObject</code> and other methods of
+	 * the Context can now be called. But application code should be careful
+	 * to fetch objects from the container before the <code>INITIALIZED</code>
+	 * event because it could alter the sequence of asynchronously initializing
+	 * objects. Nevertheless it is legal to fetch objects at this point because
+	 * the asynchronously initializing objects might have dependencies themselves.
+	 * 
+	 * @eventType configured
+	 */
+	public static const CONFIGURED : String = "configured";
+	
+	/**
 	 * Constant for the type of event fired when a Context instance was initialized.
-	 * A Context is fully initialized if the <code>initialize</code> method has been called,
+	 * A Context is fully initialized if
 	 * all asynchronous initializers for non-lazy singletons (if any) have completed and
 	 * the parent Context (if set) is fully initialized too.
 	 * 
