@@ -16,9 +16,10 @@
 
 package org.spicefactory.parsley.factory {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.factory.model.AsyncInitConfig;
 import org.spicefactory.parsley.factory.registry.ConstructorArgRegistry;
-import org.spicefactory.parsley.factory.registry.MethodRegistry;
 import org.spicefactory.parsley.factory.registry.LifecycleListenerRegistry;
+import org.spicefactory.parsley.factory.registry.MethodRegistry;
 import org.spicefactory.parsley.factory.registry.PropertyRegistry;
 
 /**
@@ -43,6 +44,8 @@ public interface ObjectDefinition {
 
 	
 	function get lifecycleListeners () : LifecycleListenerRegistry;
+	
+    function get asyncInitConfig () : AsyncInitConfig;
 	
 
 	function freeze () : void;
