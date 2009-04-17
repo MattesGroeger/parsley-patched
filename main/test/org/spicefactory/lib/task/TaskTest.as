@@ -324,18 +324,18 @@ public class TaskTest extends TestCase {
 		var task:Task = new TimerTask(100);
 		innerGroup.addTask(task);
 		outerGroup.addTask(innerGroup);
-		outerGroup.context = 7;
-		assertEquals("Unexpected context value", 7, outerGroup.context);
-		assertEquals("Unexpected context value", 7, innerGroup.context);
-		assertEquals("Unexpected context value", 7, task.context);
-		innerGroup.context = "foo";
-		assertEquals("Unexpected context value", 7, outerGroup.context);
-		assertEquals("Unexpected context value", "foo", innerGroup.context);
-		assertEquals("Unexpected context value", "foo", task.context);	
-		task.context = true;	
-		assertEquals("Unexpected context value", 7, outerGroup.context);
-		assertEquals("Unexpected context value", "foo", innerGroup.context);
-		assertEquals("Unexpected context value", true, task.context);	
+		outerGroup.data = 7;
+		assertEquals("Unexpected context value", 7, outerGroup.data);
+		assertEquals("Unexpected context value", 7, innerGroup.data);
+		assertEquals("Unexpected context value", 7, task.data);
+		innerGroup.data = "foo";
+		assertEquals("Unexpected context value", 7, outerGroup.data);
+		assertEquals("Unexpected context value", "foo", innerGroup.data);
+		assertEquals("Unexpected context value", "foo", task.data);	
+		task.data = true;	
+		assertEquals("Unexpected context value", 7, outerGroup.data);
+		assertEquals("Unexpected context value", "foo", innerGroup.data);
+		assertEquals("Unexpected context value", true, task.data);	
 	}
 	
 	public function testAddTaskToRunningConcurrent () : void {
@@ -411,14 +411,14 @@ public class TaskTest extends TestCase {
 	public function testResultTaskWithContextProperty () : void {
 		var t:ResultTask = new SimpleResultTask("test");
 		var tg:TaskGroup = new SequentialTaskGroup();
-		tg.context = new Dictionary();
+		tg.data = new Dictionary();
 		tg.addTask(t);
 		eventCounter = new EventCounter(tg);
 		expectedState = TaskState.INACTIVE;
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		tg.start();
 		validate(Task(tg));
-		assertEquals("Unexpected result property", "foo", tg.context.test);
+		assertEquals("Unexpected result property", "foo", tg.data.test);
 	}
 
 	
