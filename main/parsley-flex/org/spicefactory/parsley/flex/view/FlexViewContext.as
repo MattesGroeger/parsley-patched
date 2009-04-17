@@ -68,6 +68,7 @@ public class FlexViewContext extends ChildContext {
 	}
 	
 	private function removeComponent (event:Event) : void {
+		if (destroyed) return;
 		var component:DisplayObject = DisplayObject(event.target);
 		component.removeEventListener(Event.REMOVED_FROM_STAGE, removeComponent);
 		var definition:ObjectDefinition = ObjectDefinition(definitionMap[component]);
