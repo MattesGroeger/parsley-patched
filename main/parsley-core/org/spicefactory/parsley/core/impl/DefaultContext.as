@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.impl {
+import org.spicefactory.lib.errors.IllegalStateError;
+import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.util.collection.SimpleMap;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
@@ -26,6 +28,7 @@ import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.parsley.messaging.MessageRouter;
 import org.spicefactory.parsley.messaging.impl.DefaultMessageRouter;
 
+import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.utils.Dictionary;
@@ -40,11 +43,14 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private var _factory:ObjectFactory;
 	private var _messageRouter:MessageRouter;
 	
-	private var _singletonCache:SimpleMap;
+	private var singletonCache:SimpleMap;
 	
-	private var _underConstruction:Dictionary = new Dictionary();
+	private var asyncInitSequence:AsyncInitializerSequence;
+	private var initSequence:Array;
+	private var underConstruction:Dictionary = new Dictionary();
 	
 	private var _initialized:Boolean;
+	private var _configured:Boolean;
 	private var _destroyed:Boolean;
 	
 	
@@ -54,22 +60,55 @@ public class DefaultContext extends EventDispatcher implements Context {
 		_registry = (registry != null) ? registry : new DefaultObjectDefinitionRegistry();
 		_messageRouter = (messageRouter != null) ? messageRouter : new DefaultMessageRouter();
 		_factory = (factory != null) ? factory : new DefaultObjectFactory();
-		addEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		addEventListener(ContextEvent.DESTROYED, contextDestroyed, null, 1);
 	}
 
 	
-	public function initialize () : Boolean {
+	public function initialize () : void {
+		
+		// freeze configuration
 		_registry.freeze();
+		_configured = true;
+		asyncInitSequence = new AsyncInitializerSequence(this);
+		dispatchEvent(new ContextEvent(ContextEvent.CONFIGURED));
+		
+		// instantiate non-lazy singletons, those with asyncInitConfigs first
+		initSequence = new Array();
 		for each (var id:String in _registry.getDefinitionIds()) {
 			var definition:RootObjectDefinition = _registry.getDefinition(id);
-			// create singletons which are not defined as lazy
 			if (definition.singleton && !definition.lazy) {
-				getInstance(definition);
-				// TODO - check if it contains asyncInitializers (will be executed before all [PostConstruct] methods)
+				if (definition.asyncInitConfig != null) {
+					asyncInitSequence.addDefinition(definition);
+				}
+				else {
+					initSequence.push(definition);
+				}
 			}
 		}
+	}
+	
+	/**
+	 * @private
+	 */
+	internal function finishInitialization () : void {
+		asyncInitSequence = null;
+		for each (var definition:RootObjectDefinition in initSequence) {
+			try {
+				getInstance(definition);
+			}
+			catch (e:Error) {
+				destroyWithError("Error instantiating " + definition, e);
+				return;
+			}
+		}
+		initSequence = null;
 		_initialized = true;
-		return true;
+		dispatchEvent(new ContextEvent(ContextEvent.INITIALIZED));
+	}
+	
+	
+	public function get configured () : Boolean {
+		return _configured;
 	}
 	
 	public function get initialized () : Boolean {
@@ -85,30 +124,37 @@ public class DefaultContext extends EventDispatcher implements Context {
 		return _factory;
 	}
 	
+	
 	public function getObjectCount (type:Class = null) : uint {
+		checkState();
 		return _registry.getDefinitionCount(type);
 	}
 	
 	public function getObjectIds (type:Class = null) : Array {
+		checkState();
 		return _registry.getDefinitionIds(type);
 	}
 	
 	
 	public function containsObject (id:String) : Boolean {
+		checkState();
 		return _registry.containsDefinition(id);
 	}
 	
 	public function getObject (id:String) : Object {
+		checkState();
 		return getInstance(getDefinition(id));
 	}
 	
 	public function getType (id:String) : Class {
+		checkState();
 		var def:ObjectDefinition = getDefinition(id);
 		return def.type.getClass();
 	}
 	
 	
 	public function getAllObjectsByType (type:Class) : Array {
+		checkState();
 		var defs:Array = _registry.getAllDefinitionsByType(type);
 		var objects:Array = new Array();
 		for each (var def:RootObjectDefinition in defs) {
@@ -118,34 +164,40 @@ public class DefaultContext extends EventDispatcher implements Context {
 	}
 	
 	public function getObjectByType (type:Class, required:Boolean = false) : Object {
+		checkState();
 		return getInstance(_registry.getDefinitionByType(type, required));
 	}
 	
 
-	
-	private function getInstance (def:RootObjectDefinition) : Object {
+	/**
+	 * @private
+	 */
+	internal function getInstance (def:RootObjectDefinition) : Object {
 		var id:String = def.id;
 		
-		if (def.singleton && _singletonCache.containsKey(id)) {
-			return _singletonCache.get(id);
+		if (def.singleton && singletonCache.containsKey(id)) {
+			return singletonCache.get(id);
 		}		
 		
-		if (_underConstruction[id]) {
+		if (underConstruction[id]) {
 			throw new ContextError("Illegal type of bidirectional association. Make sure that at least" +
 					" one side is a singleton, at most one side uses the constructor for injection and" +
 					" none of the objects involved is a factory.");
 		}
-		_underConstruction[id] = true;
+		underConstruction[id] = true;
 		
 		try {
 			var instance:Object = _factory.createObject(def, this);
 			if (def.singleton) {
-				_singletonCache.put(id, instance);
+				singletonCache.put(id, instance);
+				if (!initialized && def.asyncInitConfig != null && asyncInitSequence != null) {
+					asyncInitSequence.addInstance(def, instance);
+				}
 			}
 			_factory.configureObject(instance, def, this);
 		}
 		finally {
-			delete _underConstruction[id];
+			delete underConstruction[id];
 		}
 		return instance;
 	}
@@ -159,9 +211,21 @@ public class DefaultContext extends EventDispatcher implements Context {
 	}
 	
 	
+	/**
+	 * @private
+	 */
+	internal function destroyWithError (message:String, cause:Object = null) : void {
+		dispatchEvent(new NestedErrorEvent(ErrorEvent.ERROR, cause, message));
+		destroy();
+	}
+
 	public function destroy () : void {
 		if (_destroyed) {
 			return;
+		}
+		if (asyncInitSequence != null) {
+			asyncInitSequence.cancel();
+			asyncInitSequence = null;
 		}
 		try {
 			dispatchEvent(new ContextEvent(ContextEvent.DESTROYED));
@@ -172,15 +236,32 @@ public class DefaultContext extends EventDispatcher implements Context {
 	}
 	
 	public function get destroyed () : Boolean {
-		return _initialized;
+		return _destroyed;
 	}
 	
 	private function contextDestroyed (event:Event) : void {
-		_factory.destroyAll(this);
+		if (_configured) {
+			_factory.destroyAll(this);
+		}
+		_configured = false;
+		_initialized = false;
+		_registry = null;
+		_factory = null;
+		_messageRouter = null;
 	}
-	
+
 	public function get messageRouter () : MessageRouter {
 		return _messageRouter;
+	}
+	
+	
+	private function checkState () : void {
+		if (!_configured) {
+			throw new IllegalStateError("Attempt to access Context before it was fully configured");
+		}
+		if (_destroyed) {
+			throw new IllegalStateError("Attempt to access Context after it was destroyed");
+		}
 	}
 	
 	

@@ -80,13 +80,13 @@ public interface Context extends IEventDispatcher {
 	function getAllObjectsByType (type:Class) : Array;
 	
 	
-	//function initialize () : Boolean;
+	function get configured () : Boolean;
 	
 	function get initialized () : Boolean;
 	
-	function destroy () : void;
-	
 	function get destroyed () : Boolean;
+	
+	function destroy () : void;
 	
 	
 	function get messageRouter () : MessageRouter;

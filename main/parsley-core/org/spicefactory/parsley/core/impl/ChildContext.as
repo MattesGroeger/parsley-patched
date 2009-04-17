@@ -33,7 +33,7 @@ public class ChildContext extends DefaultContext {
 			factory:ObjectFactory = null) {
 		super(registry, parent.messageRouter, factory);
 		_parent = parent;
-		_parent.addEventListener(ContextEvent.DESTROYED, parentDestroyed, false, 1); // want to process before parent
+		_parent.addEventListener(ContextEvent.DESTROYED, parentDestroyed, false, 2); // want to process before parent
 	}
 	
 
@@ -42,8 +42,8 @@ public class ChildContext extends DefaultContext {
 	}
 	
 	
-	public override function initialize () : Boolean {
-		return super.initialize() && _parent.initialized;
+	public override function get configured () : Boolean {
+		return super.configured && _parent.configured;
 	}
 	
 	public override function get initialized () : Boolean {
