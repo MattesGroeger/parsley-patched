@@ -35,13 +35,13 @@ public class DefaultConstructorArgRegistry extends AbstractParameterRegistry imp
 		return this;
 	}
 	
-	public function addIdReference (id:String, required:Boolean = true) : ConstructorArgRegistry {
-		doAddIdReference(id, required);
+	public function addIdReference (id:String) : ConstructorArgRegistry {
+		doAddIdReference(id);
 		return this;
 	}
 	
-	public function addTypeReference (required:Boolean = true) : ConstructorArgRegistry {
-		doAddTypeReference(required);
+	public function addTypeReference () : ConstructorArgRegistry {
+		doAddTypeReference();
 		return this;
 	}
 	

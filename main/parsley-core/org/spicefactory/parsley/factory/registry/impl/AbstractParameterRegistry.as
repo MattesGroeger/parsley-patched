@@ -44,19 +44,26 @@ public class AbstractParameterRegistry extends AbstractRegistry {
 		args.push(value);
 	}
 	
-	protected function doAddIdReference (id:String, required:Boolean = true) : void {
+	protected function doAddIdReference (id:String) : void {
 		checkState();
-		args.push(new ObjectIdReference(id, required));		
+		args.push(new ObjectIdReference(id, nextParamRequired()));		
 	}
 	
-	protected function doAddTypeReference (required:Boolean = true) : void {
+	protected function doAddTypeReference () : void {
 		checkState();
 		if (args.length >= func.parameters.length) {
 			throw new IllegalArgumentError("Cannot determine target type for parameter at index"
-					+ args.length + " of constructor for class " + func.owner.name);
+					+ args.length + " of " + func);
 		}
 		var type:ClassInfo = Parameter(func.parameters[args.length]).type;
-		args.push(new ObjectTypeReference(type, required));	
+		args.push(new ObjectTypeReference(type, nextParamRequired()));	
+	}
+	
+	private function nextParamRequired () : Boolean {
+		if (args.length >= func.parameters.length) {
+			return false; // either rest param or illegal
+		}
+		return Parameter(func.parameters[args.length]).required;
 	}
 	
 	public function getAt (index:uint) : * {

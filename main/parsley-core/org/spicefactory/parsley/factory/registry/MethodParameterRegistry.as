@@ -26,9 +26,9 @@ public interface MethodParameterRegistry {
 	
 	function addValue (value:*) : MethodParameterRegistry;
 	
-	function addIdReference (id:String, required:Boolean = true) : MethodParameterRegistry;
+	function addIdReference (id:String) : MethodParameterRegistry;
 
-	function addTypeReference (required:Boolean = true) : MethodParameterRegistry;
+	function addTypeReference () : MethodParameterRegistry;
 	
 	function getAt (index:uint) : *;
 	

@@ -43,13 +43,13 @@ public class DefaultMethodParameterRegistry extends AbstractParameterRegistry im
 		return this;
 	}
 	
-	public function addIdReference (id:String, required:Boolean = true) : MethodParameterRegistry {
-		doAddIdReference(id, required);
+	public function addIdReference (id:String) : MethodParameterRegistry {
+		doAddIdReference(id);
 		return this;
 	}
 
-	public function addTypeReference (required:Boolean = true) : MethodParameterRegistry {
-		doAddTypeReference(required);
+	public function addTypeReference () : MethodParameterRegistry {
+		doAddTypeReference();
 		return this;
 	}
 

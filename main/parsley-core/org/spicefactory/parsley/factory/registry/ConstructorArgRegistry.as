@@ -23,9 +23,9 @@ public interface ConstructorArgRegistry {
 	
 	function addValue (value:*) : ConstructorArgRegistry;
 	
-	function addIdReference (id:String, required:Boolean = true) : ConstructorArgRegistry;
+	function addIdReference (id:String) : ConstructorArgRegistry;
 
-	function addTypeReference (required:Boolean = true) : ConstructorArgRegistry;
+	function addTypeReference () : ConstructorArgRegistry;
 	
 	function getAt (index:uint) : *;
 	
