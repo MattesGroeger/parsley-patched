@@ -90,6 +90,10 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	public function get asyncInitConfig () : AsyncInitConfig {
 		return _asyncInitConfig;
 	}
+	
+	public function set asyncInitConfig (config:AsyncInitConfig) : void {
+		_asyncInitConfig = config;
+	}
 
 	public function get instantiator () : ObjectInstantiator {
 		return _instantiator;

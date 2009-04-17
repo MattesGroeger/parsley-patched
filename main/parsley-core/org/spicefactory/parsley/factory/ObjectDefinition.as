@@ -46,6 +46,8 @@ public interface ObjectDefinition {
 	function get lifecycleListeners () : LifecycleListenerRegistry;
 	
     function get asyncInitConfig () : AsyncInitConfig;
+    
+    function set asyncInitConfig (config:AsyncInitConfig) : void;
 	
 
 	function freeze () : void;
