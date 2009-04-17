@@ -19,7 +19,9 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.messaging.MessageProcessor;
 import org.spicefactory.parsley.messaging.MessageRouter;
 import org.spicefactory.parsley.messaging.MessageTarget;
@@ -33,33 +35,56 @@ public class DefaultMessageRouter implements MessageRouter {
 	
 	
 	private var targets:Array;
-	private var cache:Dictionary;
+	private var targetSelectionCache:Dictionary;
+	
+	private var deferredMessages:Array;
+	private var activated:Boolean = false;
 	
 	
 	/**
 	 * Creates a new instance.
 	 */
-	function DefaultMessageRouter () {
+	function DefaultMessageRouter (context:Context) {
 		init();
+		if (context.initialized) {
+			activated = true;
+		}
+		else {
+			context.addEventListener(ContextEvent.INITIALIZED, contextInitialized);
+		}
 	}
 	
 	
 	private function init () : void {
 		targets = new Array();
-		cache = new Dictionary();
+		targetSelectionCache = new Dictionary();
+		deferredMessages = new Array();
+	}
+	
+	
+	private function contextInitialized (event:ContextEvent) : void {
+		if (activated) return;
+		activated = true;
+		for each (var message:Object in deferredMessages) {
+			dispatchMessage(message);
+		}
+		deferredMessages = new Array();
 	}
 	
 	
 	public function dispatchMessage (message:Object) : void {
+		if (!activated) {
+			deferredMessages.push(message);
+		}
 		var type:ClassInfo = ClassInfo.forInstance(message);
 		var targetSelection:MessageTargetSelection = null;
 		
-		if (cache[type.getClass()] != null) {
-			targetSelection = cache[type.getClass()];
+		if (targetSelectionCache[type.getClass()] != null) {
+			targetSelection = targetSelectionCache[type.getClass()];
 		}
 		else {
 			targetSelection = new MessageTargetSelection(type);
-			cache[type.getClass()] = targetSelection;
+			targetSelectionCache[type.getClass()] = targetSelection;
 			for each (var target:MessageTarget in targets) {
 				if (type.isType(target.messageType.getClass())) {
 					targetSelection.addTarget(target);
@@ -195,7 +220,7 @@ public class DefaultMessageRouter implements MessageRouter {
 	
 
 	private function clearCache () : void {
-		cache = new Dictionary();
+		targetSelectionCache = new Dictionary();
 	}
 
 	public function unregister (target:MessageTarget) : void {
