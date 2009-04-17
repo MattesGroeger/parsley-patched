@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.impl {
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.util.collection.SimpleMap;
@@ -39,6 +41,9 @@ import flash.utils.Dictionary;
 public class DefaultContext extends EventDispatcher implements Context {
 
 
+	private static const log:Logger = LogContext.getLogger(DefaultContext);
+
+	
 	private var _registry:ObjectDefinitionRegistry;
 	private var _factory:ObjectFactory;
 	private var _messageRouter:MessageRouter;
@@ -215,6 +220,13 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 * @private
 	 */
 	internal function destroyWithError (message:String, cause:Object = null) : void {
+		if (_initialized) {
+			throw new IllegalStateError("Cannot dispatch ERROR event after INITIALIZED event");
+		}
+		if (_destroyed) {
+			log.warn("Attempt to dispatch ERROR event after DESTROYED event");
+			return;
+		}
 		dispatchEvent(new NestedErrorEvent(ErrorEvent.ERROR, cause, message));
 		destroy();
 	}
