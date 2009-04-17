@@ -16,6 +16,7 @@
 
 package org.spicefactory.lib.events {
 import flash.events.ErrorEvent;
+import flash.events.Event;
 
 /**
  * Base <code>ErrorEvent</code> implementation that allows to specify a cause.
@@ -73,6 +74,11 @@ public class NestedErrorEvent extends ErrorEvent {
 			}
 		}
 		return txt;
+	}
+	
+	
+	public override function clone () : Event {
+		return new NestedErrorEvent(type, cause, text, bubbles, cancelable);
 	}
 	
 	
