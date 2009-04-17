@@ -40,12 +40,14 @@ public class XmlContextBuilder {
 		return builder.build();
 	}
 	
-	public static function merge (filename:String, builder:CompositeContextBuilder) : void {
-		mergeAll([filename], builder);
+	public static function merge (filename:String, builder:CompositeContextBuilder, 
+			expressionContext:ExpressionContext = null) : void {
+		mergeAll([filename], builder, expressionContext);
 	}
-	
-	public static function mergeAll (filenames:Array, builder:CompositeContextBuilder) : void {
-		builder.addBuilder(new XmlObjectDefinitionBuilder(filenames, null)); // TODO - how to pass expressionContext ??
+
+	public static function mergeAll (filenames:Array, builder:CompositeContextBuilder, 
+			expressionContext:ExpressionContext = null) : void {
+		builder.addBuilder(new XmlObjectDefinitionBuilder(filenames, expressionContext));
 	}
 	
 	
