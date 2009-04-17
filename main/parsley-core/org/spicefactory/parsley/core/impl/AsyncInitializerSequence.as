@@ -87,7 +87,12 @@ public class AsyncInitializerSequence {
 			return;
 		}
 		activeDefinition = queuedInits.shift() as RootObjectDefinition;
-		context.getInstance(activeDefinition);
+		try {
+			context.getInstance(activeDefinition);
+		}
+		catch (e:Error) {
+			context.destroyWithError("Initialization of " + activeDefinition + " failed", e);
+		}
 	}
 
 	public function addInstance (def:ObjectDefinition, instance:Object) : void {
