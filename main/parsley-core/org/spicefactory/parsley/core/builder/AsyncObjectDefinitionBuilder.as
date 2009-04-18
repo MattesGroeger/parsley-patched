@@ -18,6 +18,16 @@ package org.spicefactory.parsley.core.builder {
 import flash.events.IEventDispatcher;
 
 /**
+ * @eventType flash.events.Event.COMPLETE
+ */
+[Event(name="complete", type="flash.events.Event")]
+
+/**
+ * @eventType flash.events.ErrorEvent.ERROR
+ */
+[Event(name="error", type="flash.events.ErrorEvent")]
+
+/**
  * @author Jens Halm
  */
 public interface AsyncObjectDefinitionBuilder extends ObjectDefinitionBuilder, IEventDispatcher {
