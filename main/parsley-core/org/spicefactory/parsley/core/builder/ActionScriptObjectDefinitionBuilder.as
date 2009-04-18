@@ -50,12 +50,7 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 				for each (var property:Property in ci.getProperties()) {
 					var internalMeta:Array = property.getMetadata(InternalProperty);
 					if (internalMeta.length == 0 && property.readable) {
-						try {
-							buildTargetDefinition(property, containerDefinition, registry);
-						}
-						catch (e:Error) {
-							
-						}
+						buildTargetDefinition(property, containerDefinition, registry);
 					} 
 				}	
 			}
