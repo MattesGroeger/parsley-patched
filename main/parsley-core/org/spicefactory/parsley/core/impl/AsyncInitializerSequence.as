@@ -133,12 +133,7 @@ public class AsyncInitializerSequence {
 	
 	private function activeInstanceError (event:ErrorEvent) : void {
 		removeListeners(IEventDispatcher(event.target), activeInstanceComplete, activeInstanceError);
-		if (activeDefinition.asyncInitConfig.failOnError) {
-			context.destroyWithError("Asynchronous initialization of " + activeDefinition + " failed", event);
-		}
-		else {
-			createNextInstance();
-		}
+		context.destroyWithError("Asynchronous initialization of " + activeDefinition + " failed", event);
 	}
 	
 	private function parallelInstanceComplete (event:Event) : void {
@@ -150,12 +145,7 @@ public class AsyncInitializerSequence {
 	private function parallelInstanceError (event:ErrorEvent) : void {
 		removeListeners(IEventDispatcher(event.target), parallelInstanceComplete, parallelInstanceError);
 		var def:ObjectDefinition = removeParallelInit(event.target);
-		if (def.asyncInitConfig.failOnError) {
-			context.destroyWithError("Asynchronous initialization of " + def + " failed", event);
-		}
-		else if (complete) {
-			context.finishInitialization();
-		}		
+		context.destroyWithError("Asynchronous initialization of " + def + " failed", event);
 	}
 	
 	private function removeParallelInit (instance:Object) : ObjectDefinition {

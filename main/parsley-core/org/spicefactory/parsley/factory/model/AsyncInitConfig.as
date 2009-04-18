@@ -28,8 +28,6 @@ public class AsyncInitConfig {
 
 	public var errorEvent:String = ErrorEvent.ERROR;
 	
-	public var failOnError:Boolean = true;
-	
 	public var order:int = int.MAX_VALUE;
 	
 	
