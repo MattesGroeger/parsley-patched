@@ -18,7 +18,6 @@ package org.spicefactory.parsley.factory.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.util.collection.SimpleMap;
-import org.spicefactory.parsley.core.builder.ErrorReporter;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
@@ -34,8 +33,6 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 	
 	private var _domain:ApplicationDomain;
 	
-	private var _errorReporter:ErrorReporter;
-	
 	private var _frozen:Boolean;
 	
 	private var definitions:SimpleMap = new SimpleMap();
@@ -48,10 +45,6 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 	
 	public function get domain () : ApplicationDomain {
 		return _domain;
-	}
-	
-	public function get errorReporter () : ErrorReporter {
-		return _errorReporter;
 	}
 	
 	
