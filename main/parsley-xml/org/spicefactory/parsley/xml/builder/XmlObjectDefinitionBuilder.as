@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.xml.impl {
+package org.spicefactory.parsley.xml.builder {
+	import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionLoader;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;

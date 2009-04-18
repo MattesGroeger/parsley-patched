@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.xml.impl {
+package org.spicefactory.parsley.xml.builder {
 
 /**
  * @author Jens Halm

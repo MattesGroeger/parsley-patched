@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml {
-import org.spicefactory.parsley.xml.impl.XmlObjectDefinitionBuilder;
+import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionBuilder;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.parsley.core.CompositeContextBuilder;
 import org.spicefactory.parsley.core.Context;

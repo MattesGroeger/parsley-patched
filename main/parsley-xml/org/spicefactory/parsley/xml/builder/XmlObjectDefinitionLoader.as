@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.xml.impl {
+package org.spicefactory.parsley.xml.builder {
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
