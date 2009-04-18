@@ -66,7 +66,7 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 	}
 	
 	
-	public function get loadedRootNodes () : Array {
+	public function get loadedFiles () : Array {
 		return _loadedFiles.concat();
 	}
 	
@@ -133,7 +133,7 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 			return;
 		}
 		_loadedFiles.push(new XmlFile(_currentFile, xml));
-		loadedRootNodes.push(xml);
+		loadedFiles.push(xml);
 		loadNextFile();
 	}
 

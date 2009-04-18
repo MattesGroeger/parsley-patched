@@ -67,7 +67,7 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	}
 	
 	private function loaderComplete (event:Event) : void {
-		loadedFiles = loadedFiles.concat(_loader.loadedRootNodes);
+		loadedFiles = loadedFiles.concat(_loader.loadedFiles);
 		var containerErrors:Array = new Array();
 		for each (var file:XmlFile in loadedFiles) {
 			try {
