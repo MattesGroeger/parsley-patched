@@ -15,6 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.builder {
+import org.spicefactory.parsley.factory.ObjectDefinition;
+import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
+
 import flash.events.ErrorEvent;
 
 /**
@@ -26,17 +30,34 @@ public class ErrorReporter {
 	private var _errors:Array = new Array();
 	
 	
-	public function addError (error:Error) : void {
+	public function addDecoratorError (error:Error, definition:ObjectDefinition, decorator:ObjectDefinitionDecorator) : void {
 		_errors.push(error);
 	}
 	
-	public function addErrorEvent (event:ErrorEvent) : void {
+	public function addDecoratorErrorMessage (message:String, definition:ObjectDefinition, decorator:ObjectDefinitionDecorator) : void {
+		_errors.push(message);
+	}
+	
+	public function addFactoryError (error:Error, factory:ObjectDefinitionFactory) : void {
+		_errors.push(error);
+	}
+	
+	public function addFactoryErrorMessage (message:String, factory:ObjectDefinitionFactory) : void {
+		_errors.push(message);
+	}
+
+	public function addBuilderError (error:Error, builder:ObjectDefinitionBuilder) : void {
+		_errors.push(error);
+	}
+	
+	public function addBuilderErrorMessage (message:String, builder:ObjectDefinitionBuilder) : void {
+		_errors.push(message);
+	}
+	
+	public function addBuilderErrorEvent (event:ErrorEvent, builder:ObjectDefinitionBuilder) : void {
 		_errors.push(event);
 	}
 	
-	public function addErrorMessage (message:String) : void {
-		_errors.push(message);
-	}
 	
 	
 	public function hasErrors () : Boolean {
