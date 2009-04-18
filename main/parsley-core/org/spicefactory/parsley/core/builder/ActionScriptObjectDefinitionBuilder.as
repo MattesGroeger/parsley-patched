@@ -15,8 +15,11 @@
  */
 
 package org.spicefactory.parsley.core.builder {
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.metadata.InternalProperty;
 import org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata;
 import org.spicefactory.parsley.factory.ObjectDefinition;
@@ -25,10 +28,15 @@ import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 
+import flash.utils.getQualifiedClassName;
+
 /**
  * @author Jens Halm
  */
 public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuilder {
+
+	
+	private static const log:Logger = LogContext.getLogger(ActionScriptObjectDefinitionBuilder);
 
 	
 	private var containers:Array;
@@ -40,23 +48,41 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 	
 	
 	public function build (registry:ObjectDefinitionRegistry) : void {
+		var containerErrors:Array = new Array();
 		for each (var container:Class in containers) {
 			try {
 				var ci:ClassInfo = ClassInfo.forClass(container, registry.domain);
 				var containerFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
 				var containerDefinition:RootObjectDefinition = containerFactory.createRootDefinition(registry);
-				if (containerDefinition == null) return;
 				registry.registerDefinition(containerDefinition);
+				var factoryErrors:Array = new Array();
 				for each (var property:Property in ci.getProperties()) {
-					var internalMeta:Array = property.getMetadata(InternalProperty);
-					if (internalMeta.length == 0 && property.readable) {
-						buildTargetDefinition(property, containerDefinition, registry);
-					} 
-				}	
+					try {
+						var internalMeta:Array = property.getMetadata(InternalProperty);
+						if (internalMeta.length == 0 && property.readable) {
+							buildTargetDefinition(property, containerDefinition, registry);
+						} 
+					}
+					catch (e:Error) {
+						var msg:String = "Error building object definition for " + property;
+						log.error(msg, e);
+						factoryErrors.push(msg + ": " + e.message);						
+					}
+				}
+				if (factoryErrors.length > 0) {
+					containerErrors.push("One or more errors processing " + getQualifiedClassName(container) 
+							+ ":\n " + factoryErrors.join("\n "));
+				}
 			}
 			catch (e:Error) {
-				registry.errorReporter.addBuilderError(e, this);
+				var message:String = "Error processing " + getQualifiedClassName(container);
+				log.error(message, e);
+				containerErrors.push(message + ":\n " + e.message);
 			}
+		}
+		if (containerErrors.length > 0) {
+			throw new ContextError("One or more errors in ActionScriptObjectDefinitionBuilder:\n " 
+					+ containerErrors.join("\n "));	
 		}
 	}
 	
@@ -72,7 +98,6 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 				= new DefaultObjectDefinitionFactory(containerProperty.type.getClass(), id, lazy, singleton);
 		var targetDefinition:RootObjectDefinition 
 				= targetFactory.createRootDefinition(registry);
-		if (targetDefinition == null) return;
 		targetDefinition.instantiator = new ContainerPropertyInstantiator(containerDefinition, containerProperty);
 		registry.registerDefinition(targetDefinition);
 	}
