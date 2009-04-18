@@ -15,8 +15,9 @@
  */
 
 package org.spicefactory.parsley.factory.impl {
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.builder.ErrorReporter;
 import org.spicefactory.parsley.core.builder.MetadataDecoratorExtractor;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.factory.FactoryObjectDefinition;
@@ -33,6 +34,9 @@ import flash.utils.getQualifiedClassName;
  * @author Jens Halm
  */
 public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
+
+	
+	private static const log:Logger = LogContext.getLogger(DefaultObjectDefinitionFactory);
 
 	
 	public var type:Class = Object;
@@ -74,7 +78,7 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	
 	protected function processDecorators (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : ObjectDefinition {
 		var decorators:Array = MetadataDecoratorExtractor.extract(definition.type).concat(this.decorators);
-		var hasErrors:Boolean = true;
+		var errors:Array = new Array();
 		for each (var decorator:ObjectDefinitionDecorator in decorators) {
 			try {
 				var newDef:ObjectDefinition = decorator.decorate(definition, registry);
@@ -84,12 +88,15 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 				}
 			}
 			catch (e:Error) {
-				hasErrors = true;
-				registry.errorReporter.addDecoratorError(e, definition, decorator);
+				var msg:String = "Error applying " + decorator + " to " + definition;
+				log.error(msg, e);
+				errors.push(msg + ": " + e.message);
 			}
 		}
-		return (hasErrors) ? null : 
-				(definition is FactoryObjectDefinition) ? FactoryObjectDefinition(definition).targetDefinition : definition;
+		if (errors.length > 0) {
+			throw new ContextError("One or more errors processing " + definition + ":\n " + errors.join("\n "));
+		} 
+		return (definition is FactoryObjectDefinition) ? FactoryObjectDefinition(definition).targetDefinition : definition;
 	}
 
 	private function validateDefinitionReplacement (oldDef:ObjectDefinition, newDef:ObjectDefinition, 
