@@ -16,15 +16,18 @@
 
 package org.spicefactory.parsley.xml.impl {
 import org.spicefactory.lib.expr.ExpressionContext;
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
-import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
 import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
 
+import flash.events.ErrorEvent;
+import flash.events.Event;
 import flash.events.EventDispatcher;
 
 /**
@@ -33,16 +36,19 @@ import flash.events.EventDispatcher;
 public class XmlObjectDefinitionBuilder extends EventDispatcher implements AsyncObjectDefinitionBuilder {
 
 	
+	private static const log:Logger = LogContext.getLogger(XmlObjectDefinitionBuilder);
+	
+	
 	private var mapper:XmlObjectMapper; // TODO - create mapper
 	private var _loader:XmlObjectDefinitionLoader;
-	private var files:Array;
-	private var xmlRoots:Array;
+	private var loadedFiles:Array;
 	private var expressionContext:ExpressionContext;
+	private var registry:ObjectDefinitionRegistry;
 
 	
 	function XmlObjectDefinitionBuilder (files:Array, expressionContext:ExpressionContext) {
-		this.files = files;
 		this.expressionContext = expressionContext;
+		this._loader = new XmlObjectDefinitionLoader(files, expressionContext);
 	}
 
 	
@@ -51,35 +57,69 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	}
 	
 	public function addXml (xml:XML) : void {
-		xmlRoots.push(xml);
+		loadedFiles.push(new XmlFile("<local XML reference>", xml));
 	}
 	
 	public function build (registry:ObjectDefinitionRegistry) : void {
-		var context:XmlProcessorContext = new XmlProcessorContext(expressionContext, registry.domain);
-		for each (var containerXML:XML in xmlRoots) {
-			var container:ObjectDefinitionFactoryContainer 
-					= mapper.mapToObject(containerXML, context) as ObjectDefinitionFactoryContainer;
-			if (container != null) {
-				for each (var factory:ObjectDefinitionFactory in container.factories) {
-					try {
-						var definition:RootObjectDefinition = factory.createRootDefinition(registry);
-						registry.registerDefinition(definition);
-					} 
-					catch (error:Error) {
-						context.addError(error);
+		_loader.addEventListener(Event.COMPLETE, loaderComplete);
+		_loader.addEventListener(ErrorEvent.ERROR, loaderError);
+		_loader.load(registry.domain);
+	}
+	
+	private function loaderComplete (event:Event) : void {
+		loadedFiles = loadedFiles.concat(_loader.loadedRootNodes);
+		var containerErrors:Array = new Array();
+		for each (var file:XmlFile in loadedFiles) {
+			try {
+				var context:XmlProcessorContext = new XmlProcessorContext(expressionContext, registry.domain);
+				var factoryErrors:Array = new Array();
+				var container:ObjectDefinitionFactoryContainer 
+						= mapper.mapToObject(file.rootElement, context) as ObjectDefinitionFactoryContainer;
+				if (!context.hasErrors()) {
+					for each (var factory:ObjectDefinitionFactory in container.factories) {
+						try {
+							var definition:RootObjectDefinition = factory.createRootDefinition(registry);
+							registry.registerDefinition(definition);
+						} 
+						catch (error:Error) {
+							var msg:String = "Error building object definition with " + factory;
+							log.error(msg, e);
+							factoryErrors.push(msg + ": " + e.message);		
+						}
+					}
+				}	
+				else {
+					for each (var xmlError:Error in context.errors) {
+						factoryErrors.push(xmlError.message);
 					}
 				}
-			}	
+				if (factoryErrors.length > 0) {
+					containerErrors.push("One or more errors processing file " + file 
+								+ ":\n " + factoryErrors.join("\n "));
+				}
+			}
+			catch (e:Error) {
+				var message:String = "Error processing file " + file;
+				log.error(message, e);
+				containerErrors.push(message + ":\n " + e.message);
+			}
 		}
-		if (context.hasErrors()) {
-			var msg:String = "XML Context configuration contains one or more errors: ";
-			for each (var e:Error in context.errors) msg += "\n" + e.message; 
-			throw new ContextError(msg);
+		if (containerErrors.length > 0) {
+			var eventText:String = "One or more errors in XmlObjectDefinitionBuilder:\n " 
+					+ containerErrors.join("\n ");	
+			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, eventText));
 		}
+		else {
+			dispatchEvent(new Event(Event.COMPLETE));
+		}
+	}
+
+	private function loaderError (event:ErrorEvent) : void {
+		dispatchEvent(event.clone());
 	}
 	
 	public function cancel () : void {
-		// TODO - implement cancel method
+		_loader.cancel();
 	}
 	
 	
