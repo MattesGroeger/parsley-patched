@@ -46,9 +46,9 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	private var registry:ObjectDefinitionRegistry;
 
 	
-	function XmlObjectDefinitionBuilder (files:Array, expressionContext:ExpressionContext) {
+	function XmlObjectDefinitionBuilder (files:Array, expressionContext:ExpressionContext, loader:XmlObjectDefinitionLoader = null) {
 		this.expressionContext = expressionContext;
-		this._loader = new XmlObjectDefinitionLoader(files, expressionContext);
+		this._loader = (loader == null) ? new XmlObjectDefinitionLoader(files, expressionContext) : loader;
 	}
 
 	
