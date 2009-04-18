@@ -46,9 +46,6 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 		var targetDefinition:ObjectDefinition = (definition is RootObjectDefinition) 
 				? targetFactory.createRootDefinition(registry) 
 				: targetFactory.createNestedDefinition(registry);
-		if (targetDefinition == null) {
-			throw new Error("Unable to create target definition for factory");
-		}
 		targetDefinition.instantiator = new FactoryMethodInstantiator(factoryDefinition, method);
 		if (targetDefinition is RootObjectDefinition) {
 			registry.registerDefinition(targetDefinition as RootObjectDefinition);
