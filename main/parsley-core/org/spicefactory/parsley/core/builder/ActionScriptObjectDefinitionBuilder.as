@@ -41,16 +41,27 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 	
 	public function build (registry:ObjectDefinitionRegistry) : void {
 		for each (var container:Class in containers) {
-			var ci:ClassInfo = ClassInfo.forClass(container, registry.domain);
-			var containerFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
-			var containerDefinition:RootObjectDefinition = containerFactory.createRootDefinition(registry);
-			registry.registerDefinition(containerDefinition);
-			for each (var property:Property in ci.getProperties()) {
-				var internalMeta:Array = property.getMetadata(InternalProperty);
-				if (internalMeta.length == 0 && property.readable) {
-					buildTargetDefinition(property, containerDefinition, registry);
-				} 
-			}	
+			try {
+				var ci:ClassInfo = ClassInfo.forClass(container, registry.domain);
+				var containerFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
+				var containerDefinition:RootObjectDefinition = containerFactory.createRootDefinition(registry);
+				if (containerDefinition == null) return;
+				registry.registerDefinition(containerDefinition);
+				for each (var property:Property in ci.getProperties()) {
+					var internalMeta:Array = property.getMetadata(InternalProperty);
+					if (internalMeta.length == 0 && property.readable) {
+						try {
+							buildTargetDefinition(property, containerDefinition, registry);
+						}
+						catch (e:Error) {
+							
+						}
+					} 
+				}	
+			}
+			catch (e:Error) {
+				registry.errorReporter.addBuilderError(e, this);
+			}
 		}
 	}
 	
@@ -66,6 +77,7 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 				= new DefaultObjectDefinitionFactory(containerProperty.type.getClass(), id, lazy, singleton);
 		var targetDefinition:RootObjectDefinition 
 				= targetFactory.createRootDefinition(registry);
+		if (targetDefinition == null) return;
 		targetDefinition.instantiator = new ContainerPropertyInstantiator(containerDefinition, containerProperty);
 		registry.registerDefinition(targetDefinition);
 	}
