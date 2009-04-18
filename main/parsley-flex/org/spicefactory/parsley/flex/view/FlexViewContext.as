@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.flex.view {
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
@@ -34,6 +36,9 @@ import flash.utils.Dictionary;
  */
 public class FlexViewContext extends ChildContext {
 	
+	
+	private static const log:Logger = LogContext.getLogger(FlexViewContext);
+
 	
 	private var definitionMap:Dictionary = new Dictionary();
 	
@@ -61,10 +66,15 @@ public class FlexViewContext extends ChildContext {
 		}
 		var ci:ClassInfo = ClassInfo.forInstance(component, registry.domain);
 		var defFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
-		var definition:ObjectDefinition = defFactory.createNestedDefinition(registry);
-		factory.configureObject(component, definition, this);
-		definitionMap[component] = definition;
-		component.addEventListener(Event.REMOVED_FROM_STAGE, removeComponent);
+		try {
+			var definition:ObjectDefinition = defFactory.createNestedDefinition(registry);
+			factory.configureObject(component, definition, this);
+			definitionMap[component] = definition;
+			component.addEventListener(Event.REMOVED_FROM_STAGE, removeComponent);
+		}
+		catch (e:Error) {
+			log.error("Error adding Component " + component + " to Context", e);
+		} 
 	}
 	
 	private function removeComponent (event:Event) : void {
