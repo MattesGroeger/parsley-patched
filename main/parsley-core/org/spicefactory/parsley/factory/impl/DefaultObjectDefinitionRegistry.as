@@ -15,22 +15,26 @@
  */
 
 package org.spicefactory.parsley.factory.impl {
-import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.util.collection.SimpleMap;
+import org.spicefactory.parsley.core.builder.ErrorReporter;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
 
 import flash.system.ApplicationDomain;
+import flash.utils.getQualifiedClassName;
 
-import flash.utils.getQualifiedClassName;/**
+/**
  * @author Jens Halm
  */
 public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry {
 	
 	
 	private var _domain:ApplicationDomain;
+	
+	private var _errorReporter:ErrorReporter;
 	
 	private var _frozen:Boolean;
 	
@@ -45,6 +49,11 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 	public function get domain () : ApplicationDomain {
 		return _domain;
 	}
+	
+	public function get errorReporter () : ErrorReporter {
+		return _errorReporter;
+	}
+	
 	
 	public function containsDefinition (id:String) : Boolean {
 		return definitions.containsKey(id);

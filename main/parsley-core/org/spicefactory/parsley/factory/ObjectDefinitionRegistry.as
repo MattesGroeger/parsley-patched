@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.factory {
+import org.spicefactory.parsley.core.builder.ErrorReporter;
+
 import flash.system.ApplicationDomain;
 
 /**
@@ -45,6 +47,9 @@ public interface ObjectDefinitionRegistry {
 	function registerDefinition (definition:RootObjectDefinition) : void;	
 	
 	function unregisterDefinition (definition:RootObjectDefinition) : void;
+	
+	
+	function get errorReporter () : ErrorReporter;
 	
 	
 	function freeze () : void;
