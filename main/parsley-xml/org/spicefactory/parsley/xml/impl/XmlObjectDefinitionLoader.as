@@ -15,18 +15,27 @@
  */
 
 package org.spicefactory.parsley.xml.impl {
-import org.spicefactory.lib.xml.XmlProcessorContext;
+import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.lib.task.ResultTask;
-import org.spicefactory.lib.task.events.TaskEvent;
 import org.spicefactory.lib.xml.XmlObjectMapper;
+import org.spicefactory.lib.xml.XmlProcessorContext;
+import org.spicefactory.parsley.xml.events.XmlFileEvent;
+import org.spicefactory.parsley.xml.events.XmlFileProgressEvent;
 import org.spicefactory.parsley.xml.tag.Include;
 import org.spicefactory.parsley.xml.tag.Variable;
 
 import flash.events.ErrorEvent;
+import flash.events.Event;
 import flash.events.EventDispatcher;
+import flash.events.IOErrorEvent;
+import flash.events.ProgressEvent;
+import flash.events.SecurityErrorEvent;
+import flash.net.URLLoader;
+import flash.net.URLLoaderDataFormat;
+import flash.net.URLRequest;
+import flash.system.ApplicationDomain;
 
 /**
  * @author Jens Halm
@@ -38,12 +47,17 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 	
 	
 	private var files:Array;
-	private var loadedXml:Array = new Array();
+	
+	private var _currentFile:String;
+	private var _currentLoader:URLLoader;
+	
+	private var _loadedFiles:Array = new Array();
 	
 	private var expressionContext:ExpressionContext;
+	private var domain:ApplicationDomain;
 	
 	private var variableMapper:XmlObjectMapper;
-	private var includeMapper:XmlObjectMapper; // TODO - create both
+	private var includeMapper:XmlObjectMapper; // TODO - create both mappers
 
 	
 	function XmlObjectDefinitionLoader (files:Array, expressionContext:ExpressionContext) {
@@ -52,39 +66,85 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 	}
 	
 	
-	public function start () : void {
+	public function get loadedRootNodes () : Array {
+		return _loadedFiles.concat();
+	}
+	
+	public function get currentFile () : String {
+		return _currentFile;
+	}
+
+	
+	public function load (domain:ApplicationDomain) : void {
+		this.domain = domain;
+		dispatchEvent(new Event(Event.INIT));
 		loadNextFile();
 	}
 	
 	private function loadNextFile () : void {
 		if (files.length == 0) {
-			// setResult(loadedXml);
+			_currentFile = null;
+			dispatchEvent(new Event(Event.COMPLETE));
 			return;
 		}
-		log.debug("Start loading next file: " + files[0]);
-		var loader:ResultTask = null; // createLoader(files.shift());
-		loader.addEventListener(TaskEvent.COMPLETE, fileLoaded);
-		loader.addEventListener(ErrorEvent.ERROR, fileError); // TODO - use URLLoader directly
-		loader.start();
+		_currentFile = files.shift(); 
+		log.debug("Start loading next file: " + _currentFile);
+		loadFile(_currentFile);
 	}
 	
-	private function fileLoaded (event:TaskEvent) : void {
-		var loader:ResultTask = ResultTask(event.target);
-		var xml:XML = loader.result as XML;
+	protected function loadFile (file:String) : void {
+		log.info("Start loading XML configuration file " + file);
+		_currentLoader = new URLLoader();
+		_currentLoader.addEventListener(Event.COMPLETE, fileComplete);
+		_currentLoader.addEventListener(IOErrorEvent.IO_ERROR, fileError);
+		_currentLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, fileError);
+		_currentLoader.addEventListener(ProgressEvent.PROGRESS, fileProgress);
+		_currentLoader.dataFormat = URLLoaderDataFormat.TEXT;
+		_currentLoader.load(new URLRequest(file));
+		dispatchEvent(new XmlFileEvent(XmlFileEvent.FILE_INIT, file));
+	}
+
+	private function fileProgress (event:ProgressEvent) : void {
+		dispatchEvent(new XmlFileProgressEvent(XmlFileProgressEvent.FILE_PROGRESS, _currentFile, event.bytesLoaded, event.bytesTotal));
+	}
+	
+	private function fileError (evt:ErrorEvent) : void {
+		handleError("Error in URLLoader", evt);
+	}
+	
+	private function fileComplete (event:Event) : void {
+		if (_currentLoader == null) return;
+		log.info("Loaded XML File " + _currentFile);
+		handleLoadedFile(_currentLoader.data);
+	}
+	
+	protected function handleLoadedFile (fileContent:String) : void {
+		var xml:XML;
 		try {
-			process(xml);
+			xml = new XML(fileContent);
 		} catch (e:Error) {
-			log.error("Error parsing XML context definition", e);
-			// error(e.message);
+			handleError("XML Parser error");
 			return;
 		}
-		loadedXml.push(xml);
+		try {
+			preprocess(xml);
+		} catch (e:Error) {
+			handleError("Error preprocessing XML context definition");
+			return;
+		}
+		_loadedFiles.push(new XmlFile(_currentFile, xml));
+		loadedRootNodes.push(xml);
 		loadNextFile();
 	}
-	
-	
-	private function process (xml:XML) : void {
-		var context:XmlProcessorContext = new XmlProcessorContext(expressionContext, null); // TODO - use domain
+
+	protected function handleError (message:String, cause:Object = null) : void {
+		var msg:String = "Error loading " + _currentFile + ": " + message;
+		log.error(msg, cause as Error); // passing null if not an Error is OK
+		dispatchEvent(new NestedErrorEvent(msg, cause));
+	}
+
+	protected function preprocess (xml:XML) : void {
+		var context:XmlProcessorContext = new XmlProcessorContext(expressionContext, domain);
 		for each (var variableXml:XML in xml.variable) {
 			var variable:Variable = variableMapper.mapToObject(variableXml, context) as Variable;
 			expressionContext.setVariable(variable.name, variable.value);
@@ -93,15 +153,22 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 			var incl:Include = includeMapper.mapToObject(includeXml, context) as Include;
 			files.push(incl.filename);
 		}
-		// TODO - check context errors
 		delete xml.variable;
 		delete xml["include"]; // to trick the FDT parser who complains about xml.include
+		if (context.hasErrors()) {
+			var msg:String = "One or more errors preprocessing loaded xml: ";
+			for each (var xmlError:Error in context.errors) {
+				msg += "\n" + xmlError.message;
+			}
+			handleError(msg);
+		}
 	}
 	
-	
-	private function fileError (evt:ErrorEvent) : void {
-		log.error(evt.text);
-		//error(evt.text);
+	public function cancel () : void {
+		_currentLoader.close();
+		_currentLoader = null;
+		_currentFile = null;
+		_loadedFiles = new Array();
 	}
 	
 	
