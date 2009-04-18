@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.factory.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.builder.ErrorReporter;
 import org.spicefactory.parsley.core.builder.MetadataDecoratorExtractor;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.factory.FactoryObjectDefinition;
@@ -73,15 +74,22 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	
 	protected function processDecorators (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : ObjectDefinition {
 		var decorators:Array = MetadataDecoratorExtractor.extract(definition.type).concat(this.decorators);
+		var hasErrors:Boolean = true;
 		for each (var decorator:ObjectDefinitionDecorator in decorators) {
-			var newDef:ObjectDefinition = decorator.decorate(definition, registry);
-			if (newDef != definition) {
-				validateDefinitionReplacement(definition, newDef, decorator);
-				definition = newDef;
+			try {
+				var newDef:ObjectDefinition = decorator.decorate(definition, registry);
+				if (newDef != definition) {
+					validateDefinitionReplacement(definition, newDef, decorator);
+					definition = newDef;
+				}
 			}
-			// TODO - collect errors for ProblemReporter
+			catch (e:Error) {
+				hasErrors = true;
+				registry.errorReporter.addDecoratorError(e, definition, decorator);
+			}
 		}
-		return (definition is FactoryObjectDefinition) ? FactoryObjectDefinition(definition).targetDefinition : definition;
+		return (hasErrors) ? null : 
+				(definition is FactoryObjectDefinition) ? FactoryObjectDefinition(definition).targetDefinition : definition;
 	}
 
 	private function validateDefinitionReplacement (oldDef:ObjectDefinition, newDef:ObjectDefinition, 
