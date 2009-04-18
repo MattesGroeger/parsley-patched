@@ -15,6 +15,9 @@
  */
 
 package org.spicefactory.parsley.core {
+import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
@@ -36,11 +39,15 @@ import flash.system.ApplicationDomain;
 public class CompositeContextBuilder extends EventDispatcher {
 
 	
+	private static const log:Logger = LogContext.getLogger(CompositeContextBuilder);
+
+	
 	private var _context:DefaultContext;
 	private var _parent:Context;
 	private var _registry:ObjectDefinitionRegistry;
 	private var _builders:Array = new Array();
 	private var _currentBuilder:AsyncObjectDefinitionBuilder;
+	private var _errors:Array = new Array();
 
 	
 	function CompositeContextBuilder (parent:Context = null, domain:ApplicationDomain = null) {
@@ -69,9 +76,20 @@ public class CompositeContextBuilder extends EventDispatcher {
 		return _context;	
 	}
 	
-	private function invokeNextBuilder () : void {
+	private function invokeNextBuilder (async:Boolean = false) : void {
 		if (_builders.length == 0) {
-			_context.initialize();
+			if (_errors.length > 0) {
+				var errorMsg:String = "One or more errors processing CompositeContextBuilder: \n " + _errors.join("\n ");
+				if (async) {
+					_context.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, errorMsg));
+				}
+				else {
+					throw new ContextError(errorMsg);
+				}
+			}
+			else {
+				_context.initialize();
+			}
 		}
 		else {
 			var builder:ObjectDefinitionBuilder = _builders.shift();
@@ -79,36 +97,46 @@ public class CompositeContextBuilder extends EventDispatcher {
 				if (builder is AsyncObjectDefinitionBuilder) {
 					_currentBuilder = AsyncObjectDefinitionBuilder(builder);
 					_currentBuilder.addEventListener(Event.COMPLETE, builderCompleted);				
-					_currentBuilder.addEventListener(ErrorEvent.ERROR, builderError);				
+					_currentBuilder.addEventListener(ErrorEvent.ERROR, builderError);		
 					_currentBuilder.build(_registry);
 				}
 				else {
 					builder.build(_registry);
-					invokeNextBuilder();
+					invokeNextBuilder(async);
 				}
 			} catch (e:Error) {
-				dispatchBuilderError(builder, e);	
+				removeCurrentBuilder();
+				var msg:String = "Error processing " + builder;
+				log.error(msg, e);
+				_errors.push(msg + ": " + e.message);
+				invokeNextBuilder(async);
 			}
 		}
 	}
 	
 	private function builderCompleted (event:Event) : void {
-		invokeNextBuilder();
+		removeCurrentBuilder();
+		invokeNextBuilder(true);
 	}
 	
 	private function builderError (event:ErrorEvent) : void {
-		dispatchBuilderError(event.target as ObjectDefinitionBuilder, event);
+		removeCurrentBuilder();
+		var msg:String = "Error processing " + event.target + ": " + event.text;
+		log.error(msg);
+		_errors.push(msg);
+	}
+	
+	private function removeCurrentBuilder () : void {
+		if (_currentBuilder == null) return;
+		_currentBuilder.removeEventListener(Event.COMPLETE, builderCompleted);				
+		_currentBuilder.removeEventListener(ErrorEvent.ERROR, builderError);
+		_currentBuilder = null;			
 	}
 	
 	private function contextDestroyed (event:Event) : void {
 		if (_currentBuilder != null) {
 			_currentBuilder.cancel();
 		}
-	}
-	
-	private function dispatchBuilderError (builder:ObjectDefinitionBuilder, cause:Object) : void {
-		var msg:String = "ObjectDefinitionBuilder " + builder + " failed";
-		_context.dispatchEvent(new NestedErrorEvent(ErrorEvent.ERROR, cause, msg));
 	}
 	
 	
