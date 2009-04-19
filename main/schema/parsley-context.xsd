@@ -17,7 +17,7 @@
     </xs:element>
     
     <xs:complexType name="includeType">
-        <xs:attribute name="file" type="xs:token" use="required"/>
+        <xs:attribute name="filename" type="xs:token" use="required"/>
     </xs:complexType>
     
     <xs:complexType name="variableType">
@@ -30,10 +30,16 @@
             <xs:element name="constructor-args" type="arrayType" minOccurs="0"/>
             <xs:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="async-init" type="asyncInitType" minOccurs="0"/>
+	        
+	        <xs:element name="pre-destroy" type="xs:token" minOccurs="0"/>
+	        <xs:element name="post-construct" type="xs:token" minOccurs="0"/>
+	        <xs:element name="factory" type="xs:token" minOccurs="0"/>
+            
             <xs:element name="managed-events" type="managedEventsType" minOccurs="0"/>
             <xs:element name="message-handler" type="messageHandlerType" minOccurs="0"/>
             <xs:element name="message-interceptor" type="messageInterceptorType" minOccurs="0"/>
             <xs:element name="message-binding" type="messageBindingType" minOccurs="0"/>
+            
             <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attributeGroup ref="objectAttributes"/>
@@ -41,9 +47,6 @@
     
     <xs:attributeGroup name="objectAttributes">
         <xs:attribute name="type" type="xs:token" use="optional"/>
-        <xs:attribute name="pre-destroy-method" type="xs:token" use="optional"/>
-        <xs:attribute name="post-construct-method" type="xs:token" use="optional"/>
-        <xs:attribute name="factory-method" type="xs:token" use="optional"/>
     </xs:attributeGroup>
     
     <xs:complexType name="rootObjectType">
