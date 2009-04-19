@@ -15,12 +15,6 @@
  */
 
 package org.spicefactory.parsley.factory.tag {
-import org.spicefactory.lib.errors.IllegalStateError;
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.factory.model.ObjectIdReference;
-import org.spicefactory.parsley.factory.model.ObjectTypeReference;
-
-import flash.system.ApplicationDomain;
 
 /**
  * @author Jens Halm
@@ -32,17 +26,7 @@ public class ObjectReferenceTag {
 	
 	public var typeRef:String;
 	
-	public var required:Boolean;
-	
-	
-	
-	public function resolve (domain:ApplicationDomain) : Object {
-		if ((idRef == null && typeRef == null) || (idRef != null && typeRef != null)) {
-			throw new IllegalStateError("Exactly one attribute of type-ref or id-ref must be specified");
-		}
-		return (idRef != null) ? new ObjectIdReference(idRef, required) 
-								: new ObjectTypeReference(ClassInfo.forName(typeRef, domain), required);
-	}
+	public var required:Boolean = true;
 	
 	
 }
