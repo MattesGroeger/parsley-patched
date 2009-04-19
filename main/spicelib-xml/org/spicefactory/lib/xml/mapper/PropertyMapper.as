@@ -1,3 +1,19 @@
+/*
+ * Copyright 2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.spicefactory.lib.xml.mapper {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.XmlObjectMapper;
@@ -10,11 +26,8 @@ import flash.utils.Dictionary;
 /**
  * @author Jens Halm
  */
-public class PropertyMapper implements XmlObjectMapper {
+public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObjectMapper {
 
-	
-	private var _objectType:ClassInfo;
-	private var _elementName:QName;
 	
 	private var ignoreUnmappedAttributes:Boolean = false;
 	private var ignoreUnmappedChildren:Boolean = false;
@@ -31,8 +44,7 @@ public class PropertyMapper implements XmlObjectMapper {
 
 	function PropertyMapper (objectType:ClassInfo, elementName:QName, handlers:Array, 
 			ignoreUnmappedAttributes:Boolean, ignoreUnmappedChildren:Boolean) {
-		_objectType = objectType;
-		_elementName = elementName;
+		super(objectType, elementName);
 		propertyHandlerList = handlers;
 		for each (var handler:PropertyHandler in propertyHandlerList) {
 			switch (handler.nodeKind) {
@@ -74,21 +86,12 @@ public class PropertyMapper implements XmlObjectMapper {
 	}
 
 	
-	public function get objectType () : ClassInfo {
-		return _objectType;
-	}
-	
-	public function get elementName () : QName {
-		return _elementName;
-	}
-	
-	
 	/**
 	 * @inheritDoc
 	 */
-	public function mapToObject (element:XML, context:XmlProcessorContext) : Object {
+	public override function mapToObject (element:XML, context:XmlProcessorContext) : Object {
 		try {
-			var targetInstance:Object = _objectType.newInstance([]);
+			var targetInstance:Object = objectType.newInstance([]);
 			var hasErrors:Boolean = false;
 			hasErrors = processNodes(element, element.attributes(), "attribute", attributeHandlerMap, 
 					targetInstance, context, ignoreUnmappedAttributes);
@@ -162,7 +165,7 @@ public class PropertyMapper implements XmlObjectMapper {
 	/**
 	 * @inheritDoc
 	 */
-	public function mapToXml (object:Object, context:XmlProcessorContext) : XML {
+	public override function mapToXml (object:Object, context:XmlProcessorContext) : XML {
 		
 		var parentElement:XML = <{elementName.localName}/>;
 		if (elementName.uri != null && elementName.uri.length != 0) {
