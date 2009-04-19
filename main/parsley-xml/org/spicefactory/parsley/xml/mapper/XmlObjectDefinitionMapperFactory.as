@@ -164,8 +164,12 @@ public class XmlObjectDefinitionMapperFactory {
 
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Converter;
+import org.spicefactory.lib.reflect.types.Any;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.lib.xml.mapper.AbstractXmlObjectMapper;
+import org.spicefactory.lib.xml.mapper.PropertyMapper;
+import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
+import org.spicefactory.parsley.xml.tag.StaticPropertyRef;
 
 import flash.errors.IllegalOperationError;
 
@@ -201,6 +205,29 @@ class SimpleValueXmlObjectMapper extends AbstractXmlObjectMapper {
 	public override function mapToXml (object:Object, context:XmlProcessorContext) : XML {
 		throw new IllegalOperationError("This mapper does not support mapping back to XML");
 	}
+	
+}
+
+class StaticPropertyRefMapper extends AbstractXmlObjectMapper {
+	
+	private var delegate:PropertyMapper;
+	
+	function StaticPropertyRefMapper () {
+		super(ClassInfo.forClass(Any), new QName(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI, "static-property"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassInfo.forClass(StaticPropertyRef), elementName);
+		builder.mapAllToAttributes();
+		delegate = builder.build();
+	}
+	
+	public override function mapToObject (element:XML, context:XmlProcessorContext) : Object {
+		var ref:StaticPropertyRef = delegate.mapToObject(element, context) as StaticPropertyRef;
+		return (ref != null) ? ref.resolve(context.applicationDomain) : null;
+	}
+
+	public override function mapToXml (object:Object, context:XmlProcessorContext) : XML {
+		throw new IllegalOperationError("This mapper does not support mapping back to XML");
+	}	
+	
 	
 }
 
