@@ -26,7 +26,7 @@ public class Variable {
 	public var name:String;
 	
 	[Required]
-	public var value:*;
+	public var value:String;
 	
 	
 }
