@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.factory.registry.impl {
+import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -56,10 +57,15 @@ public class DefaultPropertyRegistry extends AbstractRegistry implements Propert
 		return this;
 	}
 	
-	public function addTypeReference (name:String, required:Boolean = true) : PropertyRegistry {
+	public function addTypeReference (name:String, required:Boolean = true, type:ClassInfo = null) : PropertyRegistry {
 		checkState();
 		var property:Property = getProperty(targetType, name, false, true);
-		properties[name] = new PropertyValue(property, new ObjectTypeReference(property.type, required));		
+		if (type != null && !type.isType(property.type.getClass())) {
+			throw new ObjectDefinitionBuilderError("The type reference to " + type.name
+					+ " is not applicable for the target type " + property.type.name + " of " + property);
+		}
+		type = (type == null) ? property.type : type;
+		properties[name] = new PropertyValue(property, new ObjectTypeReference(type, required));		
 		return this;
 	}
 	

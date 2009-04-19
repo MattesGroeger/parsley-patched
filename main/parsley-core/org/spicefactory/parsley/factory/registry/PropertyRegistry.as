@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.factory.registry {
+import org.spicefactory.lib.reflect.ClassInfo;
 
 /**
  * @author Jens Halm
@@ -25,7 +26,7 @@ public interface PropertyRegistry {
 	
 	function addIdReference (name:String, id:String, required:Boolean = true) : PropertyRegistry;
 
-	function addTypeReference (name:String, required:Boolean = true) : PropertyRegistry;
+	function addTypeReference (name:String, required:Boolean = true, type:ClassInfo = null) : PropertyRegistry;
 	
 	function removeValue (name:String) : void;
 	
