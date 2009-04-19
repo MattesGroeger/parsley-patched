@@ -15,7 +15,8 @@
  */
 
 package org.spicefactory.parsley.xml.builder {
-	import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionLoader;
+import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;	
+import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionLoader;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
@@ -40,7 +41,7 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	private static const log:Logger = LogContext.getLogger(XmlObjectDefinitionBuilder);
 	
 	
-	private var mapper:XmlObjectMapper; // TODO - create mapper
+	private var mapper:XmlObjectMapper;
 	private var _loader:XmlObjectDefinitionLoader;
 	private var loadedFiles:Array;
 	private var expressionContext:ExpressionContext;
@@ -50,6 +51,8 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	function XmlObjectDefinitionBuilder (files:Array, expressionContext:ExpressionContext, loader:XmlObjectDefinitionLoader = null) {
 		this.expressionContext = expressionContext;
 		this._loader = (loader == null) ? new XmlObjectDefinitionLoader(files, expressionContext) : loader;
+		var mapperFactory:XmlObjectDefinitionMapperFactory = new XmlObjectDefinitionMapperFactory();
+		mapper = mapperFactory.createObjectDefinitionMapper();
 	}
 
 	
