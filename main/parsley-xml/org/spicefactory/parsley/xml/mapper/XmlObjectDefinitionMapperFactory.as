@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.xml.mapper {
-import org.spicefactory.parsley.factory.tag.ObjectReferenceTag;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.converter.BooleanConverter;
 import org.spicefactory.lib.reflect.converter.ClassConverter;
@@ -34,13 +33,16 @@ import org.spicefactory.parsley.factory.decorator.PreDestroyMethodDecorator;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.parsley.factory.tag.ArrayTag;
 import org.spicefactory.parsley.factory.tag.ConstructorDecoratorTag;
+import org.spicefactory.parsley.factory.tag.ObjectReferenceTag;
 import org.spicefactory.parsley.factory.tag.PropertyDecoratorTag;
 import org.spicefactory.parsley.messaging.decorator.ManagedEventsDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageBindingDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageInterceptorDecorator;
+import org.spicefactory.parsley.xml.tag.Include;
 import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
 import org.spicefactory.parsley.xml.tag.StaticPropertyRef;
+import org.spicefactory.parsley.xml.tag.Variable;
 
 /**
  * @author Jens Halm
@@ -68,6 +70,18 @@ public class XmlObjectDefinitionMapperFactory {
 		return builder.build();
 	}
 	
+	public function createVariableMapper () : XmlObjectMapper {
+		var builder:PropertyMapperBuilder = getMapperBuilder(Variable, "variable");
+		builder.mapAllToAttributes();
+		return builder.build(); 
+	}
+	
+	public function createIncludeMapper () : XmlObjectMapper {
+		var builder:PropertyMapperBuilder = getMapperBuilder(Include, "include");
+		builder.mapAllToAttributes();
+		return builder.build(); 		
+	}
+
 	
 	private function getRootObjectMapper () : XmlObjectMapper {
 		var builder:PropertyMapperBuilder = getMapperBuilder(DefaultObjectDefinitionFactory, "object"); 
