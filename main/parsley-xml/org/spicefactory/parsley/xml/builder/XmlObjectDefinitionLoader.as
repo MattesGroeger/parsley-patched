@@ -23,6 +23,7 @@ import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.parsley.xml.events.XmlFileEvent;
 import org.spicefactory.parsley.xml.events.XmlFileProgressEvent;
+import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import org.spicefactory.parsley.xml.tag.Include;
 import org.spicefactory.parsley.xml.tag.Variable;
 
@@ -57,12 +58,15 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 	private var domain:ApplicationDomain;
 	
 	private var variableMapper:XmlObjectMapper;
-	private var includeMapper:XmlObjectMapper; // TODO - create both mappers
+	private var includeMapper:XmlObjectMapper;
 
 	
 	function XmlObjectDefinitionLoader (files:Array, expressionContext:ExpressionContext) {
 		this.files = files;
 		this.expressionContext = expressionContext;
+		var mapperFactory:XmlObjectDefinitionMapperFactory = new XmlObjectDefinitionMapperFactory();
+		variableMapper = mapperFactory.createVariableMapper();
+		includeMapper = mapperFactory.createIncludeMapper();
 	}
 	
 	
