@@ -15,9 +15,12 @@
  */
 
 package org.spicefactory.parsley.factory.tag {
-import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinition;
+import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.factory.impl.RegistryValueResolver;
+import org.spicefactory.parsley.factory.model.ObjectIdReference;
+import org.spicefactory.parsley.factory.model.ObjectTypeReference;
 
 /**
  * @author Jens Halm
@@ -25,8 +28,24 @@ import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 public class ConstructorDecoratorTag extends ArrayTag implements ObjectDefinitionDecorator {
 
 
+	private static const valueResolver:RegistryValueResolver = new RegistryValueResolver(); 
+
+
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		return definition; // TODO - implement
+		valueResolver.resolveValues(values, registry);
+		for each (var arg:* in values) {
+			if (arg is ObjectIdReference) {
+				// ignoring required value from config - will be detected with reflection
+				definition.constructorArgs.addIdReference(ObjectIdReference(arg).id);
+			}
+			else if (arg is ObjectTypeReference) {
+				definition.constructorArgs.addTypeReference(ObjectTypeReference(arg).type);
+			}
+			else {
+				definition.constructorArgs.addValue(arg);
+			}
+		}
+		return definition;
 	}
 	
 	
