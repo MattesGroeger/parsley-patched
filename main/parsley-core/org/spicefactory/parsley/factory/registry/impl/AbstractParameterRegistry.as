@@ -19,6 +19,7 @@ import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.FunctionBase;
 import org.spicefactory.lib.reflect.Parameter;
+import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.model.ObjectIdReference;
 import org.spicefactory.parsley.factory.model.ObjectTypeReference;
@@ -49,13 +50,18 @@ public class AbstractParameterRegistry extends AbstractRegistry {
 		args.push(new ObjectIdReference(id, nextParamRequired()));		
 	}
 	
-	protected function doAddTypeReference () : void {
+	protected function doAddTypeReference (type:ClassInfo = null) : void {
 		checkState();
 		if (args.length >= func.parameters.length) {
 			throw new IllegalArgumentError("Cannot determine target type for parameter at index"
 					+ args.length + " of " + func);
 		}
-		var type:ClassInfo = Parameter(func.parameters[args.length]).type;
+		var param:Parameter = Parameter(func.parameters[args.length]);
+		if (type != null && !type.isType(param.type.getClass())) {
+			throw new ObjectDefinitionBuilderError("The type reference to " + type.name
+					+ " is not applicable for the target type " + param.type.name + " of " + func);
+		}
+		type = (type == null) ? param.type : type;
 		args.push(new ObjectTypeReference(type, nextParamRequired()));	
 	}
 	

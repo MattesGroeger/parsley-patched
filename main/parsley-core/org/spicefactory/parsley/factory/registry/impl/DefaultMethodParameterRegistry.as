@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.factory.registry.impl {
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.registry.MethodParameterRegistry;
@@ -48,8 +49,8 @@ public class DefaultMethodParameterRegistry extends AbstractParameterRegistry im
 		return this;
 	}
 
-	public function addTypeReference () : MethodParameterRegistry {
-		doAddTypeReference();
+	public function addTypeReference (type:ClassInfo = null) : MethodParameterRegistry {
+		doAddTypeReference(type);
 		return this;
 	}
 

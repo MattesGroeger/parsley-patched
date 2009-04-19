@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.factory.registry {
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 
 /**
@@ -28,7 +29,7 @@ public interface MethodParameterRegistry {
 	
 	function addIdReference (id:String) : MethodParameterRegistry;
 
-	function addTypeReference () : MethodParameterRegistry;
+	function addTypeReference (type:ClassInfo = null) : MethodParameterRegistry;
 	
 	function getAt (index:uint) : *;
 	

@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.factory.registry {
+import org.spicefactory.lib.reflect.ClassInfo;
 
 /**
  * @author Jens Halm
@@ -25,7 +26,7 @@ public interface ConstructorArgRegistry {
 	
 	function addIdReference (id:String) : ConstructorArgRegistry;
 
-	function addTypeReference () : ConstructorArgRegistry;
+	function addTypeReference (type:ClassInfo = null) : ConstructorArgRegistry;
 	
 	function getAt (index:uint) : *;
 	

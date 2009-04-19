@@ -40,8 +40,8 @@ public class DefaultConstructorArgRegistry extends AbstractParameterRegistry imp
 		return this;
 	}
 	
-	public function addTypeReference () : ConstructorArgRegistry {
-		doAddTypeReference();
+	public function addTypeReference (type:ClassInfo = null) : ConstructorArgRegistry {
+		doAddTypeReference(type);
 		return this;
 	}
 	
