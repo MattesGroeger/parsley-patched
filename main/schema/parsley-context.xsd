@@ -21,8 +21,8 @@
     </xs:complexType>
     
     <xs:complexType name="variableType">
-        <xs:group ref="value"/>
         <xs:attribute name="name" type="xs:token" use="required"/>
+        <xs:attribute name="value" type="xs:token" use="required"/>
     </xs:complexType>
     
     <xs:complexType name="objectType">
@@ -66,7 +66,8 @@
     	</xs:sequence>
         <xs:attribute name="name" type="xs:token" use="required"/>
         <xs:attribute name="value" type="xs:token" use="optional"/>
-        <xs:attribute name="ref" type="xs:token" use="optional"/>
+        <xs:attribute name="id-ref" type="xs:token" use="optional"/>
+        <xs:attribute name="type-ref" type="xs:token" use="optional"/>
     </xs:complexType>
     
     <xs:complexType name="asyncInitType">
@@ -109,10 +110,12 @@
             <xs:element name="string" type="xs:string"/>
             <xs:element name="date" type="dateOrExpression"/>
             <xs:element name="class" type="xs:token"/>
+            
             <xs:element name="static-property" type="staticPropertyType"/>
             <xs:element name="array" type="arrayType"/>
             <xs:element name="object" type="objectType"/>
             <xs:element name="object-ref" type="refType"/>
+            
             <xs:any namespace="##other"/>
         </xs:choice>
     </xs:group>
@@ -175,7 +178,8 @@
     </xs:complexType>    
     
     <xs:complexType name="refType">
-        <xs:attribute name="id" type="xs:token" use="required"/>
+        <xs:attribute name="id-ref" type="xs:token" use="optional"/>
+        <xs:attribute name="type-ref" type="xs:token" use="optional"/>
     </xs:complexType>
     
 </xs:schema>
