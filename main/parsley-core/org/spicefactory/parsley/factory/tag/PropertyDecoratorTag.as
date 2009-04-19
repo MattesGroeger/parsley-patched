@@ -15,9 +15,12 @@
  */
 
 package org.spicefactory.parsley.factory.tag {
-import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
+import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
 import org.spicefactory.parsley.factory.ObjectDefinition;
+import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.factory.impl.RegistryValueResolver;
 
 /**
  * @author Jens Halm
@@ -25,13 +28,41 @@ import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 public class PropertyDecoratorTag extends ObjectReferenceTag implements ObjectDefinitionDecorator {
 
 
+	private static const valueResolver:RegistryValueResolver = new RegistryValueResolver(); 
+
+	
 	public var childValue:*;
 
 	public var value:*;
 
+	[Required]
+	public var name:String;
+
 
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		return definition; // TODO - implement
+		var valueCount:int = 0;
+		if (childValue !== undefined) valueCount++;
+		if (value !== undefined) valueCount++;
+		if (idRef != null) valueCount++;
+		if (typeRef != null) valueCount++;
+		if (valueCount != 1) {
+			throw new ObjectDefinitionBuilderError("Exactly one attribute of value, id-ref or type-ref or a child node without" +
+				" attributes must be specified");
+		}
+		if (idRef != null) {
+			definition.properties.addIdReference(name, idRef, required);
+		}
+		else if (typeRef != null) {
+			var ci:ClassInfo = (typeRef == "*") ? null : ClassInfo.forName(typeRef, registry.domain);
+			definition.properties.addTypeReference(name, required, ci);
+		}
+		else if (childValue != null) {
+			definition.properties.addValue(name, valueResolver.resolveValue(childValue, registry));
+		}
+		else if (value != null) {
+			definition.properties.addValue(name, valueResolver.resolveValue(value, registry));
+		}
+		return definition;
 	}
 	
 	
