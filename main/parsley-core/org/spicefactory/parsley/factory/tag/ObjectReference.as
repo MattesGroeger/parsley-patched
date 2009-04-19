@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.xml.tag {
+package org.spicefactory.parsley.factory.tag {
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.factory.model.ObjectIdReference;
