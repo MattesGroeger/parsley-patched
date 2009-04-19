@@ -15,7 +15,15 @@
  */
 
 package org.spicefactory.parsley.factory.impl {
+import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
+import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.factory.model.ManagedArray;
+import org.spicefactory.parsley.factory.model.ObjectIdReference;
+import org.spicefactory.parsley.factory.model.ObjectTypeReference;
+import org.spicefactory.parsley.factory.tag.ArrayTag;
+import org.spicefactory.parsley.factory.tag.ObjectReferenceTag;
 
 /**
  * @author Jens Halm
@@ -24,22 +32,40 @@ public class RegistryValueResolver {
 	
 	
 	public function resolveValue (value:*, registry:ObjectDefinitionRegistry) : * {
-		return null; // TODO - implement
-	}
+		if (value is ObjectDefinitionFactory) {
+			return ObjectDefinitionFactory(value).createNestedDefinition(registry);
+		}
+		else if (value is ObjectReferenceTag) {
+			var objRef:ObjectReferenceTag = value as ObjectReferenceTag;
+			if ((objRef.idRef != null && objRef.typeRef != null) || (objRef.idRef == null && objRef.typeRef == null)) {
+				throw new ObjectDefinitionBuilderError("Exactly one attribute of either id-ref or type-ref must be specified");
+			}
+			if (objRef.idRef != null) {
+				return new ObjectIdReference(objRef.idRef, objRef.required);
+			}
+			else {
+				return new ObjectTypeReference(ClassInfo.forName(objRef.typeRef, registry.domain), objRef.required);
+			}
+		}
+		else if (value is ArrayTag) {
+			var arrayTag:ArrayTag = value as ArrayTag;
+			var managedArray:Array = new ManagedArray();
+			for (var i:int = 0; i < arrayTag.values.length; i++) {
+				managedArray.push(resolveValue(arrayTag.values[i], registry));
+			}
+			return managedArray;
+		}
+		else {
+			return value;
+		}
+	} 
 	
 	public function resolveValues (values:Array, registry:ObjectDefinitionRegistry):void {
 		for (var i:int = 0; i < values.length; i++) {
 			values[i] = resolveValue(values[i], registry);
 		}
 	}	
-	/*
-	public function resolve (domain:ApplicationDomain) : Object {
-		if ((idRef == null && typeRef == null) || (idRef != null && typeRef != null)) {
-			throw new IllegalStateError("Exactly one attribute of type-ref or id-ref must be specified");
-		}
-		return (idRef != null) ? new ObjectIdReference(idRef, required) 
-								: new ObjectTypeReference(ClassInfo.forName(typeRef, domain), required);
-	}	
-	 */
+
+
 }
 }
