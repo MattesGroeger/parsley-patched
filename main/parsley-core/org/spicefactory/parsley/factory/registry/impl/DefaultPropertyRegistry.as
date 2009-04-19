@@ -64,7 +64,7 @@ public class DefaultPropertyRegistry extends AbstractRegistry implements Propert
 			throw new ObjectDefinitionBuilderError("The type reference to " + type.name
 					+ " is not applicable for the target type " + property.type.name + " of " + property);
 		}
-		type = (type == null) ? property.type : type;
+		type = (type == null || type.name == "*") ? property.type : type;
 		properties[name] = new PropertyValue(property, new ObjectTypeReference(type, required));		
 		return this;
 	}

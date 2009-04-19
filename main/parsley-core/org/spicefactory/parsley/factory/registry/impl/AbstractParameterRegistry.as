@@ -61,7 +61,7 @@ public class AbstractParameterRegistry extends AbstractRegistry {
 			throw new ObjectDefinitionBuilderError("The type reference to " + type.name
 					+ " is not applicable for the target type " + param.type.name + " of " + func);
 		}
-		type = (type == null) ? param.type : type;
+		type = (type == null || type.name == "*") ? param.type : type;
 		args.push(new ObjectTypeReference(type, nextParamRequired()));	
 	}
 	
