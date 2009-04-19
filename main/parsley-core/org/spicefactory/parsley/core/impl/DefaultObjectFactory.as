@@ -20,6 +20,7 @@ import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectLifecycleListener;
+import org.spicefactory.parsley.factory.model.ManagedArray;
 import org.spicefactory.parsley.factory.model.ObjectIdReference;
 import org.spicefactory.parsley.factory.model.ObjectTypeReference;
 import org.spicefactory.parsley.factory.model.PropertyValue;
@@ -132,13 +133,26 @@ public class DefaultObjectFactory implements ObjectFactory {
 				return context.getObject(ids[0]);
 			}
 		}
+		else if (value is ObjectDefinition) {
+			var definition:ObjectDefinition = ObjectDefinition(value);
+			var instance:Object = createObject(definition, context);
+			configureObject(instance, definition, context);
+			return instance;
+		}
 		else if (value is MessageDispatcherFunctionReference) {
 			// two lines to avoid compiler warning
 			var r:* = context.messageRouter.dispatchMessage;
 			return r;
 		}
+		else if (value is ManagedArray) {
+			var source:Array = value as Array;
+			var result:Array = new Array();
+			for each (var element:* in source) {
+				result.push(resolveValue(element, context));			
+			}
+			return result;
+		} 
 		else {
-			// TODO - handle ManagedArray
 			return value;
 		}
 	}
