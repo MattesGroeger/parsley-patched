@@ -25,7 +25,7 @@ import flash.system.ApplicationDomain;
 /**
  * @author Jens Halm
  */
-public class ObjectReference {
+public class ObjectReferenceTag {
 	
 	
 	public var idRef:String;
