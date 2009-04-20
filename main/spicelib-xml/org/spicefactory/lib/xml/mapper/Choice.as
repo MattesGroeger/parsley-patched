@@ -53,6 +53,14 @@ public class Choice {
 		}
 		return mapper;
 	}
+	
+	public function getAllMappers () : Array {
+		var result:Array = new Array();
+		for each (var mapper:Object in mappersByXmlName) {
+			result.push(mapper);
+		}
+		return result;
+	}
 
 	public function get xmlNames () : Array {
 		var names:Array = new Array();
