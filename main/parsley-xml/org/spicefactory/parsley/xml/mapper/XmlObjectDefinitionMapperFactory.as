@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.xml.mapper {
+import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
+import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.converter.BooleanConverter;
 import org.spicefactory.lib.reflect.converter.ClassConverter;
@@ -61,10 +63,10 @@ public class XmlObjectDefinitionMapperFactory {
 	
 	
 	public function createObjectDefinitionMapper () : XmlObjectMapper {
+		addCustomConfigurationNamespaces();
 		buildValueChoice();
 		buildDecoratorChoice();
 		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectDefinitionFactoryContainer, "objects"); 
-		rootObjectChoice = new Choice();
 		rootObjectChoice.addMapper(getRootObjectMapper());
 		builder.mapToChildElementChoice("factories", rootObjectChoice);
 		return builder.build();
@@ -97,6 +99,22 @@ public class XmlObjectDefinitionMapperFactory {
 		return builder.build();
 	}
 	
+	
+	private function addCustomConfigurationNamespaces () : void {
+		var namespaces:Array = XmlConfigurationNamespaceRegistry.getRegisteredNamespaces();
+		for each (var ns:XmlConfigurationNamespace in namespaces) {
+			var factories:Array = ns.getAllFactoryMappers();
+			for each (var fMapper:XmlObjectMapper in factories) {
+				rootObjectChoice.addMapper(fMapper);
+				valueChoice.addMapper(fMapper);
+			}
+			var decorators:Array = ns.getAllFactoryMappers();
+			for each (var dMapper:XmlObjectMapper in decorators) {
+				decoratorChoice.addMapper(dMapper);
+			}
+		}
+	}
+
 	
 	private function buildDecoratorChoice () : void {
 		var childBuilder:PropertyMapperBuilder = getMapperBuilder(ConstructorDecoratorTag, "constructor-args");
