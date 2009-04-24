@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.resources {
+import flash.events.IEventDispatcher;
 
 /**
  * @eventType org.spicefactory.parsley.resources.ResouceBindingEvent.UPDATE
@@ -24,8 +25,8 @@ package org.spicefactory.parsley.resources {
 /**
  * @author Jens Halm
  */
-public interface ResourceBindingAdapter {
-	
+public interface ResourceBindingAdapter extends IEventDispatcher {
+
 	
 	function getResource (bundleName:String, resourceName:String) : *;
 	
