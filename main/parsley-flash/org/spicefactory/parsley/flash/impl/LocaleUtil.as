@@ -14,9 +14,9 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.localization.impl {
+package org.spicefactory.parsley.flash.impl {
 	
-import org.spicefactory.parsley.localization.Locale;
+import org.spicefactory.parsley.flash.Locale;
 	
 /**
  * Utility methods used by the default bundle loading mechanism.

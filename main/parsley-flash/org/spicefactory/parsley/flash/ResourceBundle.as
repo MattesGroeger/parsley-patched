@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.localization {
+package org.spicefactory.parsley.flash {
 	
 /**
  * A single message bundle containing localized messages.

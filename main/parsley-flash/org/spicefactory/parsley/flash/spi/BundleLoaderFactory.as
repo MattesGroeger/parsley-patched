@@ -14,9 +14,10 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.localization.spi {
+package org.spicefactory.parsley.flash.spi {
+	import org.spicefactory.parsley.flash.spi.ResourceBundleSpi;
 import org.spicefactory.lib.task.Task;
-import org.spicefactory.parsley.localization.Locale;		
+import org.spicefactory.parsley.flash.Locale;		
 
 /**
  * Factory that creates <code>Task</code> instances responsible for loading localized

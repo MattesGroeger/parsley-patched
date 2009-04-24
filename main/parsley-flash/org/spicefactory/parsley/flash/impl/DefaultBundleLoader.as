@@ -14,15 +14,15 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.localization.impl {
+package org.spicefactory.parsley.flash.impl {
 	import org.spicefactory.lib.task.util.XmlLoaderTask;
-	import org.spicefactory.parsley.localization.impl.LocaleUtil;
+	import org.spicefactory.parsley.flash.impl.LocaleUtil;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.task.Task;
 import org.spicefactory.lib.task.events.TaskEvent;
-import org.spicefactory.parsley.localization.Locale;
-import org.spicefactory.parsley.localization.ResourceBundle;
+import org.spicefactory.parsley.flash.Locale;
+import org.spicefactory.parsley.flash.ResourceBundle;
 
 import flash.events.ErrorEvent;
 

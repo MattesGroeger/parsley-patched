@@ -14,13 +14,10 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.localization.impl {
+package org.spicefactory.parsley.flash.impl {
 import org.spicefactory.lib.task.Task;
-import org.spicefactory.parsley.localization.Locale;
-import org.spicefactory.parsley.localization.spi.BundleLoaderFactory;
-import org.spicefactory.parsley.localization.spi.ResourceBundleSpi;	
-
-/**
+import org.spicefactory.parsley.flash.Locale;
+import org.spiorg.spicefactory.parsley.flash.spi.BundleLoaderFactoryrt org.spiorg.spicefactory.parsley.flash.spi.ResourceBundleSpi**
  * Default implementation of the <code>BundleLoaderFactory</code> interface.
  * This implementation uses the <code>DefaultBundleLoader</code> class which loads
  * localized message from XML files.

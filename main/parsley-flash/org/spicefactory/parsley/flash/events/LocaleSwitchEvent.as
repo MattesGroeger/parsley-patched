@@ -14,10 +14,10 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.localization.events {
+package org.spicefactory.parsley.flash.events {
 	
 import flash.events.Event;
-import org.spicefactory.parsley.localization.Locale;
+import org.spicefactory.parsley.flash.Locale;
 
 /**
  * Event fired when switching the current <code>Locale</code> starts or is completed.

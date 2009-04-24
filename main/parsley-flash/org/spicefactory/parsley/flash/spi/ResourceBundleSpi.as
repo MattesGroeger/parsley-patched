@@ -14,10 +14,10 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.localization.spi {
+package org.spicefactory.parsley.flash.spi {
 import org.spicefactory.lib.task.TaskGroup;
-import org.spicefactory.parsley.localization.Locale;
-import org.spicefactory.parsley.localization.ResourceBundle;	
+import org.spicefactory.parsley.flash.Locale;
+import org.spicefactory.parsley.flash.ResourceBundle;	
 
 /**	
  * Service provider interface that extends the public <code>MessageBundle</code> interface.

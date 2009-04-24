@@ -14,7 +14,8 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.localization.impl {
+package org.spicefactory.parsley.flash.impl {
+	import org.spicefactory.parsley.flash.impl.LocaleUtil;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.logging.LogContext;
@@ -22,13 +23,9 @@ import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.task.SequentialTaskGroup;
 import org.spicefactory.lib.task.TaskGroup;
 import org.spicefactory.lib.task.events.TaskEvent;
-import org.spicefactory.parsley.localization.Locale;
-import org.spicefactory.parsley.localization.ResourceBundle;
-import org.spicefactory.parsley.localization.events.LocaleSwitchEvent;
-import org.spicefactory.parsley.localization.spi.ResourceBundleSpi;
-import org.spicefactory.parsley.localization.spi.ResourceManagerSpi;
-
-import flash.events.ErrorEvent;
+import org.spicefactory.parsley.flash.Locale;
+import org.spicefactory.paorg.spicefactory.parsley.flash.events.LocaleSwitchEventocalization.events.LocaleSwitchEvent;
+import org.spicefactoorg.spicefactory.parsley.flash.spi.ResourceBundleSpispicefactoorg.spicefactory.parsley.flash.spi.ResourceManagerSpiash.events.ErrorEvent;
 import flash.events.EventDispatcher;
 import flash.net.SharedObject;
 import flash.system.Capabilities;	
