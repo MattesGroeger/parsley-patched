@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,13 @@ import flash.utils.Dictionary;
 
 [Metadata(name="MessageHandler", types="method")]
 
-/**
+import flash.utils.getQualifiedClassName;/**
  * @author Jens Halm
  */
 public class ResourceBindingDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
+
+
+	public static var adapterClass:Class;
 
 
 	public var resourceName:String;
@@ -42,7 +45,7 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Obje
 	public var property:String;
 	
 
-	private static var _adapter:ResourceBindingAdapter;
+	private static var adapter:ResourceBindingAdapter;
 	
 	private static var managedObjects:Dictionary = new Dictionary();
 	
@@ -50,14 +53,23 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Obje
 	
 	
 	private static function initializeAdapter (domain:ApplicationDomain) : void {
-		if (_adapter == null) {
-			// TODO - init Flex or Flash ResourceAdapter + add listener for ResourceBindingEvent.UPDATE
+		if (adapter == null) {
+			if (adapterClass == null) {
+				throw new ObjectDefinitionBuilderError("adapterClass property for ResourceBindingDecorator has not been set");
+			}
+			var adapterImpl:Object = new adapterClass();
+			if (!(adapterImpl is ResourceBindingAdapter)) {
+				throw new ObjectDefinitionBuilderError("Specified adapterClass " + getQualifiedClassName(adapterClass) 
+					+ " does not implement the ResourceBindingAdapter interface");
+			}
+			adapter = adapterImpl as ResourceBindingAdapter;
 		}
 	}
 
 	
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		initializeAdapter(registry.domain);
+		adapter.addEventListener(ResourceBindingEvent.UPDATE, handleUpdate);
 		_property = definition.type.getProperty(property);
 		if (_property == null) {
 			throw new ObjectDefinitionBuilderError("Class " + definition.type.name 
@@ -68,7 +80,7 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Obje
 	}
 
 	public function postConstruct (instance:Object, context:Context) : void {
-		_property.setValue(instance, _adapter.getResource(bundleName, resourceName));
+		_property.setValue(instance, adapter.getResource(bundleName, resourceName));
 		managedObjects[instance] = true;
 	}
 
@@ -77,7 +89,7 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Obje
 	}
 
 	private function handleUpdate (event:ResourceBindingEvent) : void {
-		var resource:* = _adapter.getResource(bundleName, resourceName);
+		var resource:* = adapter.getResource(bundleName, resourceName);
 		for (var instance:Object in managedObjects) {
 			_property.setValue(instance, resource);
 		}
