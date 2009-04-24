@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.flash {
+package org.spicefactory.parsley.flash.resources {
 	
 /**
  * Represents a geographical or political region.

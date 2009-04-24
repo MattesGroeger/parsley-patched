@@ -14,12 +14,12 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.flash.impl {
-	import org.spicefactory.parsley.flash.impl.LocaleUtil;
+package org.spicefactory.parsley.flash.resources.impl {
+	import org.spicefactory.parsley.flash.resources.impl.LocaleUtil;
 import org.spicefactory.lib.task.TaskGroup;	
-import org.spicefactory.parsley.flash.spi.ResourceBundleSpi;
-import org.spicefactory.parsley.flash.spi.BundleLoaderFactory;
-import org.spicefactory.parsley.flash.Locale;
+import org.spicefactory.parsley.flash.resources.spi.ResourceBundleSpi;
+import org.spicefactory.parsley.flash.resources.spi.BundleLoaderFactory;
+import org.spicefactory.parsley.flash.resources.Locale;
 	
 /**
  * Default implementation of the <code>MessageBundleSpi</code> interface.

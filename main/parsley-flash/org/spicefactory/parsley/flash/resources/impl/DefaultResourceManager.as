@@ -14,8 +14,7 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.flash.impl {
-	import org.spicefactory.parsley.flash.impl.LocaleUtil;
+package org.spicefactory.parsley.flash.resources.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.logging.LogContext;
@@ -23,12 +22,17 @@ import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.task.SequentialTaskGroup;
 import org.spicefactory.lib.task.TaskGroup;
 import org.spicefactory.lib.task.events.TaskEvent;
-import org.spicefactory.parsley.flash.Locale;
-import org.spicefactory.paorg.spicefactory.parsley.flash.events.LocaleSwitchEventocalization.events.LocaleSwitchEvent;
-import org.spicefactoorg.spicefactory.parsley.flash.spi.ResourceBundleSpispicefactoorg.spicefactory.parsley.flash.spi.ResourceManagerSpiash.events.ErrorEvent;
+import org.spicefactory.parsley.flash.resources.Locale;
+import org.spicefactory.parsley.flash.resources.ResourceBundle;
+import org.spicefactory.parsley.flash.resources.events.LocaleSwitchEvent;
+import org.spicefactory.parsley.flash.resources.impl.LocaleUtil;
+import org.spicefactory.parsley.flash.resources.spi.ResourceBundleSpi;
+import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
+
+import flash.events.ErrorEvent;
 import flash.events.EventDispatcher;
 import flash.net.SharedObject;
-import flash.system.Capabilities;	
+import flash.system.Capabilities;
 
 /**
  * Default implementation of the <code>LocaleManagerSpi</code> interface.

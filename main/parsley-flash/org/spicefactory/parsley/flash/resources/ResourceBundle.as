@@ -14,7 +14,8 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.flash {
+package org.spicefactory.parsley.flash.resources {
+	import org.spicefactory.parsley.flash.resources.Locale;
 	
 /**
  * A single message bundle containing localized messages.

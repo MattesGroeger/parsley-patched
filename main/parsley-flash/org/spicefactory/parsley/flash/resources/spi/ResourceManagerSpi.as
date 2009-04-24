@@ -14,9 +14,10 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.flash.spi {
-import org.spicefactory.parsley.flash.Locale;
-import org.spicefactory.parsley.flash.ResourceManager;	
+package org.spicefactory.parsley.flash.resources.spi {
+	import org.spicefactory.parsley.flash.resources.spi.ResourceBundleSpi;
+import org.spicefactory.parsley.flash.resources.Locale;
+import org.spicefactory.parsley.flash.resources.ResourceManager;	
 
 /**	
  * Service provider interface that extends the public <code>LocaleManager</code> interface.

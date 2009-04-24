@@ -14,10 +14,10 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.flash.spi {
-	import org.spicefactory.parsley.flash.spi.ResourceBundleSpi;
+package org.spicefactory.parsley.flash.resources.spi {
+	import org.spicefactory.parsley.flash.resources.spi.ResourceBundleSpi;
 import org.spicefactory.lib.task.Task;
-import org.spicefactory.parsley.flash.Locale;		
+import org.spicefactory.parsley.flash.resources.Locale;		
 
 /**
  * Factory that creates <code>Task</code> instances responsible for loading localized

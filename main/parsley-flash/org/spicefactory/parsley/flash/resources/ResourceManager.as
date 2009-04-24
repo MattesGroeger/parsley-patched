@@ -14,8 +14,9 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.flash {
+package org.spicefactory.parsley.flash.resources {
 
+	import org.spicefactory.parsley.flash.resources.Locale;
 import flash.events.IEventDispatcher;
 	
 /**

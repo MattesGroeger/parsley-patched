@@ -14,10 +14,11 @@
  * limitations under the License.
  */
  
-package org.spicefactory.parsley.flash.spi {
+package org.spicefactory.parsley.flash.resources.spi {
+	import org.spicefactory.parsley.flash.resources.spi.BundleLoaderFactory;
 import org.spicefactory.lib.task.TaskGroup;
-import org.spicefactory.parsley.flash.Locale;
-import org.spicefactory.parsley.flash.ResourceBundle;	
+import org.spicefactory.parsley.flash.resources.Locale;
+import org.spicefactory.parsley.flash.resources.ResourceBundle;	
 
 /**	
  * Service provider interface that extends the public <code>MessageBundle</code> interface.
