@@ -18,7 +18,9 @@ package org.spicefactory.parsley.flex {
 import org.spicefactory.parsley.core.CompositeContextBuilder;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.builder.ActionScriptObjectDefinitionBuilder;
+import org.spicefactory.parsley.flex.resources.FlexResourceBindingAdapter;
 import org.spicefactory.parsley.flex.view.RootViewManager;
+import org.spicefactory.parsley.resources.ResourceBindingDecorator;
 
 import flash.system.ApplicationDomain;
 
@@ -26,6 +28,9 @@ import flash.system.ApplicationDomain;
  * @author Jens Halm
  */
 public class FlexContextBuilder {
+	
+	
+	ResourceBindingDecorator.adapterClass = FlexResourceBindingAdapter;
 
 	
 	public static function build (container:Class, parent:Context = null, domain:ApplicationDomain = null,
