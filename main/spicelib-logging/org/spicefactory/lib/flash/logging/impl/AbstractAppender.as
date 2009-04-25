@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
-package org.spicefactory.lib.flash.impl {
+package org.spicefactory.lib.flash.logging.impl {
 	
 import org.spicefactory.lib.flash.logging.LogLevel;
 import org.spicefactory.lib.flash.logging.Appender;

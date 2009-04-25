@@ -14,8 +14,8 @@
  * limitations under the License.
  */
  
-package org.spicefactory.lib.flash.impl {
-	import org.spicefactory.lib.flash.impl.AbstractAppender;
+package org.spicefactory.lib.flash.logging.impl {
+	import org.spicefactory.lib.flash.logging.impl.AbstractAppender;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.IOErrorEvent;

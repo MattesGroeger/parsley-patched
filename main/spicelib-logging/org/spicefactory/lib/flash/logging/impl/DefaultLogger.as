@@ -16,7 +16,7 @@
  * @author Jens Halm
  */
  
-package org.spicefactory.lib.flash.impl {
+package org.spicefactory.lib.flash.logging.impl {
 import flash.events.EventDispatcher;
 
 import org.spicefactory.lib.flash.logging.LogEvent;

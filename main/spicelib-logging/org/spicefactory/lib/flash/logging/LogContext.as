@@ -16,9 +16,9 @@
  
 package org.spicefactory.lib.flash.logging {
 
-import org.spicefactory.lib.flash.impl.DelegateLogger;
-import org.spicefactory.lib.flash.impl.DefaultLogFactory;
-import org.spicefactory.lib.flash.impl.TraceAppender;
+import org.spicefactory.lib.flash.logging.impl.DelegateLogger;
+import org.spicefactory.lib.flash.logging.impl.DefaultLogFactory;
+import org.spicefactory.lib.flash.logging.impl.TraceAppender;
 	
 
 /**
