@@ -88,7 +88,7 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 
 	public function set currentLocale (loc:Locale) : void {
 		if (!_initialized) {
-			var msg:String = "Attempt to set the Locale before LocaleManager was initialized";
+			var msg:String = "Attempt to set the Locale before ResourceManager was initialized";
 			_logger.error(msg);
 			throw new IllegalStateError(msg);
 		} else if (_switching) {
@@ -196,6 +196,7 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	/**
 	 * @inheritDoc
 	 */
+	[PostConstruct]
 	public function initialize (defaultLocale:Locale = null) : void {
 		if (_initialized) {
 			_logger.error("LocaleManager was already initialized");
@@ -332,6 +333,7 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	/**
 	 * @inheritDoc
 	 */
+	[PreDestroy]
 	public function destroy () : void {
 		for each (var bundle:ResourceBundleSpi in _bundles) {
 			bundle.destroy();
