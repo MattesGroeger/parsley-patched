@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.flash.resources.adapter {
+import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.flash.resources.events.LocaleSwitchEvent;
 import org.spicefactory.parsley.flash.resources.ResourceManager;
 import org.spicefactory.parsley.resources.ResourceBindingEvent;
@@ -30,20 +31,28 @@ import flash.events.EventDispatcher;
 public class FlashResourceBindingAdapter extends EventDispatcher implements ResourceBindingAdapter {
 
 
-	public static var manager:ResourceManager; // TODO - must be set through configuration extensions
+	public static var manager:ResourceManager;
 
 	
-	function FlashResourceBindingAdapter () {
+	private var initialized:Boolean = false;
+	
+	
+	private function init () : void {
+		initialized = true;
 		manager.addEventListener(LocaleSwitchEvent.COMPLETE, dispatchUpdateEvent);
 	}
-	
 	
 	private function dispatchUpdateEvent (event:Event) : void {
 		dispatchEvent(new ResourceBindingEvent(ResourceBindingEvent.UPDATE));
 	}
-
 	
-	public function getResource (bundleName:String, resourceName:String) :* {
+	public function getResource (bundleName:String, resourceName:String) : * {
+		if (manager == null) {
+			throw new IllegalStateError("ResourceManager has not been set for this adapter");
+		}
+		if (!initialized) {
+			init(); // we wait until the first resource get accessed since we assume the ResourceManager has been set before
+		}
 		return manager.getMessage(resourceName, bundleName);
 	}
 	
