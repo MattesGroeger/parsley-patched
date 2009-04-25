@@ -108,10 +108,11 @@ public class PropertyMapperBuilder {
 		addPropertyHandler(new ChoiceHandler(getProperty(propertyName), choice));
 	}
 
-	public function createChildElementMapperBuilder (propertyName:String) : PropertyMapperBuilder {
+	public function createChildElementMapperBuilder (propertyName:String, type:ClassInfo = null) : PropertyMapperBuilder {
 		var elementName:QName = new QName(elementName.uri, namingStrategy.toXmlName(propertyName));
 		var property:Property = getProperty(propertyName);
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(property.type, elementName);
+		if (type == null) type = property.type;
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, elementName);
 		addPropertyHandler(new BuilderHandler(getProperty(propertyName), elementName, builder));
 		return builder;
 	}
