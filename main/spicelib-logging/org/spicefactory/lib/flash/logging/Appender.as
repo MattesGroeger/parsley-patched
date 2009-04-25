@@ -14,7 +14,7 @@
  * limitations under the License.
  */
   
-package org.spicefactory.lib.logging {
+package org.spicefactory.lib.flash.logging {
 
 /**
  * An Appender is a target for log output. All <code>Logger</code> instances

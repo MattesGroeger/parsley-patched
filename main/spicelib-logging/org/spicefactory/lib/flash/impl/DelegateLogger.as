@@ -14,10 +14,10 @@
  * limitations under the License.
  */
  
-package org.spicefactory.lib.logging.impl {
+package org.spicefactory.lib.flash.impl {
 	
-import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.lib.logging.LogLevel;
+import org.spicefactory.lib.flash.logging.Logger;
+import org.spicefactory.lib.flash.logging.LogLevel;
 import flash.events.Event;
 	
 

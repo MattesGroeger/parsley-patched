@@ -14,8 +14,9 @@
  * limitations under the License.
  */
  
-package org.spicefactory.lib.logging {
+package org.spicefactory.lib.flash.logging {
 
+	import org.spicefactory.lib.flash.logging.Appender;
 /**
  * A <code>LogFactory</code> is responsible for creating and caching <code>Logger</code> instances
  * and offers configuration options for setting log levels and adding <code>Appender</code> instances.

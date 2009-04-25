@@ -14,13 +14,13 @@
  * limitations under the License.
  */
  
-package org.spicefactory.lib.logging.impl {
+package org.spicefactory.lib.flash.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
-import org.spicefactory.lib.logging.Appender;
-import org.spicefactory.lib.logging.LogFactory;
-import org.spicefactory.lib.logging.LogLevel;
-import org.spicefactory.lib.logging.LogUtil;
-import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.lib.flash.logging.Appender;
+import org.spicefactory.lib.flash.logging.LogFactory;
+import org.spicefactory.lib.flash.logging.LogLevel;
+import org.spicefactory.lib.flash.logging.LogUtil;
+import org.spicefactory.lib.flash.logging.Logger;
 
 /**
  * The default <code>LogFactory</code> implementation. Uses the <code>DefaultLogger</code>

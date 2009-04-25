@@ -16,12 +16,12 @@
  * @author Jens Halm
  */
  
-package org.spicefactory.lib.logging.impl {
+package org.spicefactory.lib.flash.impl {
 import flash.events.EventDispatcher;
 
-import org.spicefactory.lib.logging.LogEvent;
-import org.spicefactory.lib.logging.LogLevel;
-import org.spicefactory.lib.logging.Logger;	
+import org.spicefactory.lib.flash.logging.LogEvent;
+import org.spicefactory.lib.flash.logging.LogLevel;
+import org.spicefactory.lib.flash.logging.Logger;	
 
 
 /**

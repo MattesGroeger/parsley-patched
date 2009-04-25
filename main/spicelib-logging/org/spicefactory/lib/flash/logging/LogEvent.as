@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
-package org.spicefactory.lib.logging {
+package org.spicefactory.lib.flash.logging {
 
 import flash.events.Event;
 

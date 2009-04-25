@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
-package org.spicefactory.lib.logging {
+package org.spicefactory.lib.flash.logging {
 
 /**
  * Defines constants for the different log levels used in the framework.
