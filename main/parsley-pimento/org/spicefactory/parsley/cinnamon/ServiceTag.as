@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.cinnamon {
-import org.spicefactory.cinnamon.client.ServiceChannel;
-import org.spicefactory.cinnamon.client.ServiceProxy;
+import org.spicefactory.cinnamon.service.ServiceChannel;
+import org.spicefactory.cinnamon.service.ServiceProxy;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 
@@ -64,7 +64,7 @@ public class ServiceTag {
 		}
 		
 		var proxy:ServiceProxy = channelInstance.createProxy(name, service);
-		if (timeout != null) proxy.timeout = timeout;
+		if (timeout != 0) proxy.timeout = timeout;
 		
 		return service;		
 	}

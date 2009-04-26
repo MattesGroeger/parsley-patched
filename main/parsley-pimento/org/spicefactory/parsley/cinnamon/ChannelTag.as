@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.cinnamon {
-import org.spicefactory.cinnamon.client.NetConnectionServiceChannel;
-import org.spicefactory.cinnamon.client.ServiceChannel;
+import org.spicefactory.cinnamon.service.NetConnectionServiceChannel;
+import org.spicefactory.cinnamon.service.ServiceChannel;
 import org.spicefactory.parsley.core.errors.ContextError;
 
 import flash.utils.getQualifiedClassName;
