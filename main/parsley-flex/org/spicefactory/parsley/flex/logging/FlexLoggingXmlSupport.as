@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.logging {
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.flash.logging.LogFactoryTag;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
@@ -34,11 +35,13 @@ public class FlexLoggingXmlSupport {
 		var builder:PropertyMapperBuilder = ns.createObjectMapperBuilder(LogFactoryTag, "target");
 		builder.mapAllToAttributes();
 		builder.mapToChildTextNode("filters", new QName(NAMESPACE_URI, "filter"));
-		builder.addPropertyHandler(new LogEventLevelAttributeHandler());
+		builder.addPropertyHandler(new LogEventLevelAttributeHandler(
+				ClassInfo.forClass(LogFactoryTag).getProperty("level"), new QName(NAMESPACE_URI, "level")));
 	}
 }
 }
 
+import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.lib.xml.mapper.handler.AttributeHandler;
 import org.spicefactory.parsley.core.errors.ContextError;
@@ -46,6 +49,13 @@ import org.spicefactory.parsley.core.errors.ContextError;
 import mx.logging.LogEventLevel;
 
 class LogEventLevelAttributeHandler extends AttributeHandler {
+	
+
+	// TODO - property should be passed as a name only	
+	function LogEventLevelAttributeHandler (property:Property, xmlName:QName) {
+		super(property, xmlName);
+	}
+	
 	
 	public override function getValueFromNode (node:XML, context:XmlProcessorContext) : * {
 		var value:String = super.getValueFromNode(node, context).toString().toUpperCase();
