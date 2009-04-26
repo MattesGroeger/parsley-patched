@@ -31,8 +31,8 @@ public class ResourceXmlSupport {
 	
 	public static function initialize () : void {
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(FLASH_RESOURCE_NAMESPACE);
-		ns.addDefaultObjectMapper(ResourceManagerTag, "resource-manager");
-		var builder:PropertyMapperBuilder = ns.createObjectMapperBuilder(ResourceBundleTag, "resource-bundle");
+		ns.addDefaultObjectMapper(ResourceBundleTag, "resource-bundle");
+		var builder:PropertyMapperBuilder = ns.createObjectMapperBuilder(ResourceManagerTag, "resource-manager");
 		builder.mapAllToAttributes();
 		builder.createChildElementMapperBuilder("locales", ClassInfo.forClass(LocaleTag)).mapAllToAttributes();
 	}
