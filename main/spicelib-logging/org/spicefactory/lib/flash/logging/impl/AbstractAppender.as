@@ -18,7 +18,7 @@ package org.spicefactory.lib.flash.logging.impl {
 	
 import org.spicefactory.lib.flash.logging.LogLevel;
 import org.spicefactory.lib.flash.logging.Appender;
-import org.spicefactory.lib.flash.logging.Logger;
+import org.spicefactory.lib.flash.logging.FlashLogger;
 import org.spicefactory.lib.flash.logging.LogEvent;
 	
 
@@ -57,7 +57,7 @@ public class AbstractAppender implements Appender {
 	/**
 	 * @inheritDoc
 	 */
-	public function registerLogger (logger:Logger) : void {
+	public function registerLogger (logger:FlashLogger) : void {
 		logger.addEventListener(LogEvent.LOG, handleLogEvent);
 	}
 	

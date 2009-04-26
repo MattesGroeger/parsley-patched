@@ -17,10 +17,11 @@
 package org.spicefactory.lib.flash.logging.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.flash.logging.Appender;
-import org.spicefactory.lib.flash.logging.LogFactory;
+import org.spicefactory.lib.flash.logging.FlashLogFactory;
+import org.spicefactory.lib.flash.logging.FlashLogger;
 import org.spicefactory.lib.flash.logging.LogLevel;
-import org.spicefactory.lib.flash.logging.LogUtil;
-import org.spicefactory.lib.flash.logging.Logger;
+import org.spicefactory.lib.logging.LogUtil;
+import org.spicefactory.lib.logging.Logger;
 
 /**
  * The default <code>LogFactory</code> implementation. Uses the <code>DefaultLogger</code>
@@ -28,7 +29,7 @@ import org.spicefactory.lib.flash.logging.Logger;
  * 
  * @author Jens Halm
  */
-public class DefaultLogFactory implements LogFactory {
+public class DefaultLogFactory implements FlashLogFactory {
 	
 	
 	private var appenders:Array;
@@ -67,7 +68,7 @@ public class DefaultLogFactory implements LogFactory {
 	 */
 	public function addAppender (app:Appender) : void {
 		appenders.push(app);
-		for each (var log:Logger in loggers) {
+		for each (var log:FlashLogger in loggers) {
 			app.registerLogger(log);
 		}
 	}
@@ -94,7 +95,7 @@ public class DefaultLogFactory implements LogFactory {
 	}
 	
 	public function refresh () : void {
-		for each (var log:Logger in loggers) {
+		for each (var log:FlashLogger in loggers) {
 			log.level = findLevel(log.name);
 		}
 	}
@@ -105,15 +106,15 @@ public class DefaultLogFactory implements LogFactory {
 	public function getLogger (name:Object) : Logger {
 		var nameStr:String = LogUtil.getLogName(name);
 		if (loggers[nameStr] != undefined) {
-			return Logger(loggers[nameStr]);
+			return FlashLogger(loggers[nameStr]);
 		} else {
 			return createLogger(nameStr);
 		}
 	}
 	
-	private function createLogger (name:String) : Logger {
+	private function createLogger (name:String) : FlashLogger {
 		var level:LogLevel = findLevel(name);
-		var log:Logger = new DefaultLogger(name, level);
+		var log:FlashLogger = new DefaultLogger(name, level);
 		loggers[name] = log;
 		for each (var app:Appender in appenders) {
 			app.registerLogger(log);

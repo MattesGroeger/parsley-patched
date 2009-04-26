@@ -19,7 +19,7 @@ package org.spicefactory.lib.flash.logging.impl {
 	
 import org.spicefactory.lib.flash.logging.LogLevel;
 import org.spicefactory.lib.flash.logging.LogEvent;
-import org.spicefactory.lib.flash.logging.Logger;
+import org.spicefactory.lib.flash.logging.FlashLogger;
 	
 	
 /**
@@ -47,7 +47,7 @@ public class TraceAppender extends AbstractAppender {
 	 */
 	protected override function handleLogEvent (event:LogEvent) : void {
 		if (isBelowThreshold(event.level)) return;
-		var loggerName:String = Logger(event.target).name;
+		var loggerName:String = FlashLogger(event.target).name;
 		var logMessage:String;
 		if ((event.level.toValue() <= LogLevel.INFO.toValue()) && event.error == null) {
 			var levelString:String = (event.level == LogLevel.DEBUG) ? "DEBUG: " : "INFO:  ";

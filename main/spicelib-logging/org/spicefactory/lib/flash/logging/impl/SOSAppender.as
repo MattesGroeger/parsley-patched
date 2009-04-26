@@ -24,7 +24,7 @@ import flash.net.XMLSocket;
 
 import org.spicefactory.lib.flash.logging.LogEvent;
 import org.spicefactory.lib.flash.logging.LogLevel;
-import org.spicefactory.lib.flash.logging.Logger;
+import org.spicefactory.lib.flash.logging.FlashLogger;
 import org.spicefactory.lib.util.collection.ArrayList;
 import org.spicefactory.lib.util.collection.List;
 
@@ -147,7 +147,7 @@ public class SOSAppender extends AbstractAppender {
 	 * @private
 	 */
 	protected function formatLogMessage (event:LogEvent) : String {
-		var loggerName:String = Logger(event.target).name;
+		var loggerName:String = FlashLogger(event.target).name;
 		if (useShortNames) {
 			var index:Number = loggerName.lastIndexOf("::");
 			if (index != -1) loggerName = loggerName.substring(index + 1);

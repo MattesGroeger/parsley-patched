@@ -39,7 +39,7 @@ public interface Appender {
 	 * 
 	 * @param logger the logger to register with this Appender
 	 */
-	function registerLogger (logger:Logger) : void ;
+	function registerLogger (logger:FlashLogger) : void ;
 	
 }
 

@@ -21,7 +21,7 @@ import flash.events.EventDispatcher;
 
 import org.spicefactory.lib.flash.logging.LogEvent;
 import org.spicefactory.lib.flash.logging.LogLevel;
-import org.spicefactory.lib.flash.logging.Logger;	
+import org.spicefactory.lib.flash.logging.FlashLogger;	
 
 
 /**
@@ -36,7 +36,7 @@ import org.spicefactory.lib.flash.logging.Logger;
  * The default Logger implementation that dispatches <code>LogEvents</code> for all
  * logging operations.
  */
-public class DefaultLogger extends EventDispatcher implements Logger {
+public class DefaultLogger extends EventDispatcher implements FlashLogger {
 
 
 	private var _name:String;

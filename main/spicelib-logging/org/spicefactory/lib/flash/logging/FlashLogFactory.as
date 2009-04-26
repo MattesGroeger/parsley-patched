@@ -15,8 +15,8 @@
  */
  
 package org.spicefactory.lib.flash.logging {
-
-	import org.spicefactory.lib.flash.logging.Appender;
+import org.spicefactory.lib.logging.LogFactory;	
+import org.spicefactory.lib.flash.logging.Appender;
 /**
  * A <code>LogFactory</code> is responsible for creating and caching <code>Logger</code> instances
  * and offers configuration options for setting log levels and adding <code>Appender</code> instances.
@@ -26,8 +26,8 @@ package org.spicefactory.lib.flash.logging {
  * 
  * @author Jens Halm
  */	
-public interface LogFactory {
-	
+public interface FlashLogFactory extends LogFactory {
+
 	/**
 	 * Adds the specified Appender to this LogFactory. Any <code>Logger</code>
 	 * instances that have already been created will register with this new <code>Appender</code>
@@ -59,16 +59,6 @@ public interface LogFactory {
 	 * @param level the level to set for the specified logger name
 	 */
 	function addLogLevel (name:Object, level:LogLevel) : void;
-	
-	/**
-	 * Returns the logger for the specified name. If the name parameter is a Class
-	 * instance, the fully qualified class name will be used. Otherwise the <code>toString</code>
-	 * method will be invoked on the given name instance.
-	 * 
-	 * @param name the name of the logger
-	 * @return the logger for the specified name
-	 */
-	function getLogger (name:Object) : Logger;
 	
 	/**
 	 * Refreshes all existing <code>Logger</code> instances. This might be necessary

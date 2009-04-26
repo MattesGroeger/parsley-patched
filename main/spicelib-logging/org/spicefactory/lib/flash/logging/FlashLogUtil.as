@@ -16,14 +16,12 @@
  
 package org.spicefactory.lib.flash.logging {
 
-import flash.utils.getQualifiedClassName;
-
 /**
  * Static utility methods for formatting log output.
  * 
  * @author Jens Halm
  */	
-public class LogUtil {
+public class FlashLogUtil {
 
 	/**
 	 * Creates formatted log output for the given Object, starting with the specified indentation level.
@@ -77,20 +75,6 @@ public class LogUtil {
 		if (value is Array) return formatArray(value, indent);
 		if (value is Object) return formatObject(value, indent);
 		return value.toString();
-	}
-	
-	/**
-	 * Retutns the name for a logger as a String based on the specified object.
-	 * If the name parameter is a Class
-	 * instance, the fully qualified class name will be used. Otherwise the <code>toString</code>
-	 * method will be invoked on the given name instance.
-	 */
-	public static function getLogName (object:Object) : String {
-		if (object is Class) {
-			return getQualifiedClassName(object);
-		} else {
-			return object.toString();
-		}
 	}
 	
 }
