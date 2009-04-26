@@ -32,7 +32,7 @@ public class FlashLoggingXmlSupport {
 	
 	
 	public static function initialize () : void {
-		Converters.addConverter(LogLevel, LogLevelConverter.INSTANCE);
+		Converters.addConverter(LogLevel, new LogLevelConverter());
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(FLASH_LOGGING_NAMESPACE);
 		var builder:PropertyMapperBuilder = ns.createObjectMapperBuilder(LogFactoryTag, "factory");
 		builder.mapAllToAttributes();
@@ -42,4 +42,20 @@ public class FlashLoggingXmlSupport {
 	
 	
 }
+}
+
+import org.spicefactory.lib.flash.logging.LogLevel;
+import org.spicefactory.lib.reflect.Converter;
+import org.spicefactory.parsley.core.errors.ContextError;
+
+class LogLevelConverter implements Converter {
+	
+	public function convert (value:*) : * {
+		var level:LogLevel = LogLevel[value.toString().toUpperCase()];
+		if (level == null) {
+			throw new ContextError("Illegal value for log level: " + value);
+		}
+		return level;
+	}
+
 }
