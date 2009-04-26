@@ -20,41 +20,20 @@ import org.spicefactory.parsley.flash.logging.LogFactoryTag;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 
-import mx.logging.LogEventLevel;
-import mx.logging.targets.TraceTarget;
-
 /**
  * @author Jens Halm
  */
 public class FlexLoggingXmlSupport {
 	
 	
-	public static const FLEX_LOGGING_NAMESPACE:String = "http://www.spicefactory.org/parsley/flex/logging";
+	public static const NAMESPACE_URI:String = "http://www.spicefactory.org/parsley/flex/logging";
 
 
-	public var type:Class = TraceTarget;
-	
-	public var filters:Array;
-	
-	public var level:int = LogEventLevel.ALL;
-	
-	
-	public var fieldSeparator:String = " ";
-	
-	public var includeCategory:Boolean = true;
-	
-	public var includeLevel:Boolean = true;
-	
-	public var includeDate:Boolean = true;
-	
-	public var includeTime:Boolean = true;
-		
-	
 	public static function initialize () : void {
-		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(FLEX_LOGGING_NAMESPACE);
+		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(NAMESPACE_URI);
 		var builder:PropertyMapperBuilder = ns.createObjectMapperBuilder(LogFactoryTag, "target");
 		builder.mapAllToAttributes();
-		builder.mapToChildTextNode("filters", new QName(FLEX_LOGGING_NAMESPACE, "filter"));
+		builder.mapToChildTextNode("filters", new QName(NAMESPACE_URI, "filter"));
 		builder.addPropertyHandler(new LogEventLevelAttributeHandler());
 	}
 }
