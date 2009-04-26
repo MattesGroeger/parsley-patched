@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema elementFormDefault="qualified"
-    xmlns="http://www.spicefactory.org/parsley/1.0/logging"
-    xmlns:tns="http://www.spicefactory.org/parsley/1.0/logging"
+    xmlns="http://www.spicefactory.org/parsley/flash/logging"
+    xmlns:tns="http://www.spicefactory.org/parsley/flash/logging"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://www.spicefactory.org/parsley/1.0/logging">
+    targetNamespace="http://www.spicefactory.org/parsley/flash/logging">
 
     <xs:element name="factory">
         <xs:complexType>
@@ -11,7 +11,7 @@
         		<xs:element name="logger" type="loggerType"/>
         		<xs:element name="appender" type="appenderType"/>
         	</xs:choice>
-            <xs:attribute name="id" type="xs:token" use="required"/>
+            <xs:attribute name="id" type="xs:token" use="optional"/>
             <xs:attribute name="type" type="xs:token" use="optional"/>
             <xs:attribute name="context" type="xs:boolean" use="optional"/>
             <xs:attribute name="root-level" type="level" use="optional"/>
