@@ -15,17 +15,19 @@
  */
 
 package org.spicefactory.parsley.xml.builder {
-import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;	
-import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionLoader;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
 import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
+import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionLoader;
+import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
 
 import flash.events.ErrorEvent;
@@ -80,10 +82,21 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 				var container:ObjectDefinitionFactoryContainer 
 						= mapper.mapToObject(file.rootElement, context) as ObjectDefinitionFactoryContainer;
 				if (!context.hasErrors()) {
-					for each (var factory:ObjectDefinitionFactory in container.factories) {
+					for each (var obj:Object in container.factories) {
 						try {
+							var factory:ObjectDefinitionFactory;
+							if (obj is ObjectDefinitionFactory) {
+								factory = obj as ObjectDefinitionFactory;
+							}
+							else {
+								var ci:ClassInfo = ClassInfo.forInstance(obj, registry.domain);
+								factory	= new DefaultObjectDefinitionFactory(ci.getClass());
+							}
 							var definition:RootObjectDefinition = factory.createRootDefinition(registry);
 							registry.registerDefinition(definition);
+							if (!(obj is ObjectDefinitionFactory)) {
+								definition.instantiator = new ObjectWrapperInstantiator(obj);
+							}
 						} 
 						catch (error:Error) {
 							var msg:String = "Error building object definition with " + factory;
@@ -125,7 +138,20 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	public function cancel () : void {
 		_loader.cancel();
 	}
-	
-	
 }
+}
+
+import org.spicefactory.parsley.factory.ObjectInstantiator;
+import org.spicefactory.parsley.core.Context;
+
+class ObjectWrapperInstantiator implements ObjectInstantiator {
+
+	private var instance:Object;
+	
+	function ObjectWrapperInstantiator (instance:Object) { this.instance = instance; }
+
+	public function instantiate (context:Context) : Object {
+		return instance;
+	}
+	
 }
