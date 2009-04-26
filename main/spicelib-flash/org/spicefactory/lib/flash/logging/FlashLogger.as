@@ -15,7 +15,9 @@
  */
  
 package org.spicefactory.lib.flash.logging {
-import org.spicefactory.lib.logging.Logger;	
+import org.spicefactory.lib.logging.Logger;
+
+import flash.events.IEventDispatcher;	
 
 /**
  * All logging operations are done through this interface. It contains
@@ -25,7 +27,7 @@ import org.spicefactory.lib.logging.Logger;
  * 
  * @author Jens Halm
  */
-public interface FlashLogger extends Logger {
+public interface FlashLogger extends Logger, IEventDispatcher {
 	
 	/**
 	 * The active level of the logger. Any log operations with a level
