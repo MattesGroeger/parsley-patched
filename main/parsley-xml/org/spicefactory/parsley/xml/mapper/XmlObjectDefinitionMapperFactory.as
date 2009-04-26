@@ -15,8 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml.mapper {
-import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
-import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
+import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.converter.BooleanConverter;
 import org.spicefactory.lib.reflect.converter.ClassConverter;
@@ -41,12 +40,14 @@ import org.spicefactory.parsley.messaging.decorator.ManagedEventsDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageBindingDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageInterceptorDecorator;
+import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
+import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 import org.spicefactory.parsley.xml.tag.Include;
 import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
 import org.spicefactory.parsley.xml.tag.StaticPropertyRef;
 import org.spicefactory.parsley.xml.tag.Variable;
 
-/**
+import flash.utils.getQualifiedClassName;/**
  * @author Jens Halm
  */
 public class XmlObjectDefinitionMapperFactory {
@@ -61,6 +62,13 @@ public class XmlObjectDefinitionMapperFactory {
 
 	private var valueChoice:Choice = new Choice();
 	
+	
+	
+	public static function createObjectDefinitionFactoryMapperBuilder (objectType:ClassInfo, 
+			elementName:QName, decoratorArray:String) : PropertyMapperBuilder {
+		return new ObjectDefinitionFactoryMapperBuilder(objectType, elementName, decoratorArray);
+	}
+
 	
 	public function createObjectDefinitionMapper () : XmlObjectMapper {
 		addCustomConfigurationNamespaces();
@@ -104,14 +112,34 @@ public class XmlObjectDefinitionMapperFactory {
 		var namespaces:Array = XmlConfigurationNamespaceRegistry.getRegisteredNamespaces();
 		for each (var ns:XmlConfigurationNamespace in namespaces) {
 			var factories:Array = ns.getAllFactoryMappers();
-			for each (var fMapper:XmlObjectMapper in factories) {
+			for each (var fObj:Object in factories) {
+				var fMapper:XmlObjectMapper = getCustomMapper(fObj);
 				rootObjectChoice.addMapper(fMapper);
 				valueChoice.addMapper(fMapper);
 			}
 			var decorators:Array = ns.getAllFactoryMappers();
-			for each (var dMapper:XmlObjectMapper in decorators) {
+			for each (var dObj:Object in decorators) {
+				var dMapper:XmlObjectMapper = getCustomMapper(dObj);
 				decoratorChoice.addMapper(dMapper);
 			}
+		}
+	}
+	
+	private function getCustomMapper (obj:Object) : XmlObjectMapper {
+		if (obj is XmlObjectMapper) {
+			return obj as XmlObjectMapper;
+		}
+		else if (obj is ObjectDefinitionFactoryMapperBuilder) {
+			var factoryBuilder:ObjectDefinitionFactoryMapperBuilder = obj as ObjectDefinitionFactoryMapperBuilder;
+			factoryBuilder.applyDecoratorChoice(decoratorChoice);
+			return factoryBuilder.build();
+		}
+		else if (obj is PropertyMapperBuilder) {
+			return PropertyMapperBuilder(obj).build();
+		}
+		else {
+			throw new IllegalArgumentError("Object type " + getQualifiedClassName(obj) 
+					+ " is neither an XmlObjectMapper nor a PropertyMapperBuilder");	
 		}
 	}
 
@@ -183,8 +211,10 @@ public class XmlObjectDefinitionMapperFactory {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Converter;
 import org.spicefactory.lib.reflect.types.Any;
+import org.spicefactory.lib.xml.NamingStrategy;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.lib.xml.mapper.AbstractXmlObjectMapper;
+import org.spicefactory.lib.xml.mapper.Choice;
 import org.spicefactory.lib.xml.mapper.PropertyMapper;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.xml.tag.StaticPropertyRef;
@@ -245,6 +275,23 @@ class StaticPropertyRefMapper extends AbstractXmlObjectMapper {
 	public override function mapToXml (object:Object, context:XmlProcessorContext) : XML {
 		throw new IllegalOperationError("This mapper does not support mapping back to XML");
 	}	
+	
+	
+}
+
+class ObjectDefinitionFactoryMapperBuilder extends PropertyMapperBuilder {
+	
+	private var decoratorArray:String;
+	
+	function ObjectDefinitionFactoryMapperBuilder (objectType:ClassInfo, elementName:QName, 
+			decoratorArray:String, namingStrategy:NamingStrategy = null) {
+		super(objectType, elementName, namingStrategy);
+		this.decoratorArray = decoratorArray;
+	}
+	
+	public function applyDecoratorChoice (choice:Choice) : void {
+		mapToChildElementChoice(decoratorArray, choice);
+	}
 	
 	
 }

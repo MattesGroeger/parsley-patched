@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml.ext {
+import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.XmlObjectMapper;
@@ -46,34 +47,61 @@ public class XmlConfigurationNamespace {
 		return _uri;
 	}
 	
-	public function addFactoryMapper (mapper:XmlObjectMapper) : void {
+	public function addCustomObjectMapper (mapper:XmlObjectMapper) : void {
 		validateFactory(mapper.objectType, mapper.elementName.localName);
 		checkNamspace(mapper);
 		factories[mapper.elementName.localName] = mapper;
 	}
 	
-	public function addDecoratorMapper (mapper:XmlObjectMapper) : void {
+	public function addCustomFactoryMapper (mapper:XmlObjectMapper) : void {
+		validateFactory(mapper.objectType, mapper.elementName.localName, true);
+		checkNamspace(mapper);
+		factories[mapper.elementName.localName] = mapper;
+	}
+	
+	public function addCustomDecoratorMapper (mapper:XmlObjectMapper) : void {
 		validateDecorator(mapper.objectType, mapper.elementName.localName);
 		checkNamspace(mapper);
 		decorators[mapper.elementName.localName] = mapper;
 	}
-		
-	public function addDefaultFactoryMapper (type:Class, tagName:String) : void {
+
+	public function addDefaultObjectMapper (type:Class, tagName:String) : void {
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassInfo.forClass(type), new QName(_uri, tagName));
 		builder.mapAllToAttributes();
-		addFactoryMapper(builder.build());
+		addCustomObjectMapper(builder.build());
 	}
-	
+			
+	public function addDefaultFactoryMapper (type:Class, tagName:String, decoratorArray:String = "decorators") : void {
+		var builder:PropertyMapperBuilder = newFactoryMapperBuilder(type, tagName, decoratorArray);
+		builder.mapAllToAttributes();
+		addCustomFactoryMapper(builder.build());
+	}
+
 	public function addDefaultDecoratorMapper (type:Class, tagName:String) : void {
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassInfo.forClass(type), new QName(_uri, tagName));
 		builder.mapAllToAttributes();
-		addDecoratorMapper(builder.build());
+		addCustomDecoratorMapper(builder.build());
 	}
 
-	public function createFactoryMapperBuilder (type:Class, tagName:String) : PropertyMapperBuilder {
+	private function newFactoryMapperBuilder (type:Class, tagName:String, decoratorArray:String = "decorators") : PropertyMapperBuilder {
+		var ci:ClassInfo = ClassInfo.forClass(type);
+		var elementName:QName = new QName(_uri, tagName);
+		validateFactory(ci, tagName, true);
+		return (decoratorArray == null) 
+			? new PropertyMapperBuilder(ci, elementName) 
+			: XmlObjectDefinitionMapperFactory.createObjectDefinitionFactoryMapperBuilder(ci, elementName, decoratorArray);
+	}
+	
+	public function createObjectMapperBuilder (type:Class, tagName:String) : PropertyMapperBuilder {
 		var ci:ClassInfo = ClassInfo.forClass(type);
 		validateFactory(ci, tagName);
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ci, new QName(_uri, tagName));
+		factories[tagName] = builder;
+		return builder;
+	}
+
+	public function createFactoryMapperBuilder (type:Class, tagName:String, decoratorArray:String = null) : PropertyMapperBuilder {
+		var builder:PropertyMapperBuilder = newFactoryMapperBuilder(type, tagName, decoratorArray);
 		factories[tagName] = builder;
 		return builder;
 	}
@@ -98,20 +126,17 @@ public class XmlConfigurationNamespace {
 	private function getAllMappers (map:Dictionary) : Array {
 		var result:Array = new Array();
 		for each (var dec:Object in map) {
-			if (dec is PropertyMapperBuilder) {
-				dec = PropertyMapperBuilder(dec).build(); 
-			}
 			result.push(dec);
 		}
 		return result;
 	}
 	
 	
-	private function validateFactory (type:ClassInfo, tagName:String) : void {
+	private function validateFactory (type:ClassInfo, tagName:String, mustBeFactory:Boolean = false) : void {
 		if (factories[tagName] != null) {
-			throw new IllegalArgumentError("Duplicate registration for factory tag name " + tagName + " in namespace " + uri);
+			throw new IllegalArgumentError("Duplicate registration for object tag name " + tagName + " in namespace " + uri);
 		}
-		if (!type.isType(ObjectDefinitionFactory)) {
+		if (mustBeFactory && !type.isType(ObjectDefinitionFactory)) {
 			throw new IllegalArgumentError("The specified factory class " + type.name 
 					+ " does not implement the ObjectDefinitionFactory interface");
 		}
