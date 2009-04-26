@@ -23,7 +23,7 @@ import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 /**
  * @author Jens Halm
  */
-public class ResourceXmlSupport {
+public class FlashResourceXmlSupport {
 	
 	
 	public static const FLASH_RESOURCE_NAMESPACE:String = "http://www.spicefactory.org/parsley/flash/resources";
