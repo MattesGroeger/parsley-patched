@@ -15,7 +15,9 @@
  */
 
 package org.spicefactory.parsley.flash.logging {
+import org.spicefactory.lib.flash.logging.LogLevel;
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.reflect.Converters;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
@@ -30,6 +32,7 @@ public class FlashLoggingXmlSupport {
 	
 	
 	public static function initialize () : void {
+		Converters.addConverter(LogLevel, LogLevelConverter.INSTANCE);
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(FLASH_LOGGING_NAMESPACE);
 		var builder:PropertyMapperBuilder = ns.createObjectMapperBuilder(LogFactoryTag, "factory");
 		builder.mapAllToAttributes();
