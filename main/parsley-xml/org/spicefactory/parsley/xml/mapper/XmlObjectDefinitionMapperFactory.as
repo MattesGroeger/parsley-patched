@@ -68,7 +68,7 @@ public class XmlObjectDefinitionMapperFactory {
 		buildDecoratorChoice();
 		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectDefinitionFactoryContainer, "objects"); 
 		rootObjectChoice.addMapper(getRootObjectMapper());
-		builder.mapToChildElementChoice("factories", rootObjectChoice);
+		builder.mapToChildElementChoice("objects", rootObjectChoice);
 		return builder.build();
 	}
 	

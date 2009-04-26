@@ -82,7 +82,7 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 				var container:ObjectDefinitionFactoryContainer 
 						= mapper.mapToObject(file.rootElement, context) as ObjectDefinitionFactoryContainer;
 				if (!context.hasErrors()) {
-					for each (var obj:Object in container.factories) {
+					for each (var obj:Object in container.objects) {
 						try {
 							var factory:ObjectDefinitionFactory;
 							if (obj is ObjectDefinitionFactory) {

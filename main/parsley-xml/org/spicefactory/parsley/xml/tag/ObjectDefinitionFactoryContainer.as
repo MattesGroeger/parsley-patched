@@ -22,7 +22,7 @@ package org.spicefactory.parsley.xml.tag {
 public class ObjectDefinitionFactoryContainer {
 	
 	
-	public var factories:Array;
+	public var objects:Array;
 	
 	
 }
