@@ -95,6 +95,10 @@ public class AbstractPropertyHandler implements PropertyHandler {
 		}
 	}
 	
+	protected function getValueFromNode (node:XML, context:XmlProcessorContext) : * {
+		return context.expressionContext.createExpression(node.toString()).value;
+	}
+	
 	protected function getValue (instance:Object) : * {
 		var value:* = property.getValue(instance);
 		if (_required && (value == null || value === "" || (value is Array && value.length == 0))) {

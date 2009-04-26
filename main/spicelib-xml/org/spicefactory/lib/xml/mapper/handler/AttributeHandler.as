@@ -32,7 +32,7 @@ public class AttributeHandler extends AbstractPropertyHandler {
 	public override function toObject (nodes:Array, parentInstance:Object, context:XmlProcessorContext) : void {
 		validateValueCount(nodes.length);
 		if (nodes.length > 0) {
-			property.setValue(parentInstance, context.expressionContext.createExpression(nodes[0]).value);
+			property.setValue(parentInstance, getValueFromNode(nodes[0], context));
 		}
 	}
 	
