@@ -49,18 +49,16 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 	
 	public function build (registry:ObjectDefinitionRegistry) : void {
 		var containerErrors:Array = new Array();
-		for each (var container:Class in containers) {
+		for each (var containerClass:Class in containers) {
 			try {
-				var ci:ClassInfo = ClassInfo.forClass(container, registry.domain);
-				var containerFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
-				var containerDefinition:RootObjectDefinition = containerFactory.createRootDefinition(registry);
-				registry.registerDefinition(containerDefinition);
+				var ci:ClassInfo = ClassInfo.forClass(containerClass, registry.domain);
+				var container:Object = new containerClass();
 				var factoryErrors:Array = new Array();
 				for each (var property:Property in ci.getProperties()) {
 					try {
 						var internalMeta:Array = property.getMetadata(InternalProperty);
 						if (internalMeta.length == 0 && property.readable) {
-							buildTargetDefinition(property, containerDefinition, registry);
+							buildTargetDefinition(property, container, registry);
 						} 
 					}
 					catch (e:Error) {
@@ -86,51 +84,46 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 		}
 	}
 	
-	private function buildTargetDefinition (containerProperty:Property, containerDefinition:RootObjectDefinition,
-			registry:ObjectDefinitionRegistry) : void {
-		var definitionMetaArray:Array = containerProperty.getMetadata(ObjectDefinitionMetadata);
-		var definitionMeta:ObjectDefinitionMetadata = (definitionMetaArray.length > 0) ? 
-				ObjectDefinitionMetadata(definitionMetaArray[0]) : null;
-		var id:String = (definitionMeta != null) ? definitionMeta.id : containerProperty.name;
-		var lazy:Boolean = (definitionMeta != null) ? definitionMeta.lazy : true;
-		var singleton:Boolean = (definitionMeta != null) ? definitionMeta.singleton : true;
-		var targetFactory:ObjectDefinitionFactory 
-				= new DefaultObjectDefinitionFactory(containerProperty.type.getClass(), id, lazy, singleton);
-		var targetDefinition:RootObjectDefinition 
-				= targetFactory.createRootDefinition(registry);
-		targetDefinition.instantiator = new ContainerPropertyInstantiator(containerDefinition, containerProperty);
-		registry.registerDefinition(targetDefinition);
+	private function buildTargetDefinition (containerProperty:Property, container:Object, registry:ObjectDefinitionRegistry) : void {
+		var factory:ObjectDefinitionFactory;
+		if (containerProperty.type.isType(ObjectDefinitionFactory)) {
+			factory = containerProperty.getValue(container);
+		}
+		else {
+			var definitionMetaArray:Array = containerProperty.getMetadata(ObjectDefinitionMetadata);
+			var definitionMeta:ObjectDefinitionMetadata = (definitionMetaArray.length > 0) ? 
+					ObjectDefinitionMetadata(definitionMetaArray[0]) : null;
+			var id:String = (definitionMeta != null) ? definitionMeta.id : containerProperty.name;
+			var lazy:Boolean = (definitionMeta != null) ? definitionMeta.lazy : true;
+			var singleton:Boolean = (definitionMeta != null) ? definitionMeta.singleton : true;
+			factory = new DefaultObjectDefinitionFactory(containerProperty.type.getClass(), id, lazy, singleton);
+		}
+		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
+		registry.registerDefinition(definition);
+		if (!containerProperty.type.isType(ObjectDefinitionFactory)) {
+			definition.instantiator = new ContainerPropertyInstantiator(container, containerProperty);
+		}
 	}
 }
 }
 
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.factory.ObjectInstantiator;
-import org.spicefactory.parsley.factory.RootObjectDefinition;
 
 class ContainerPropertyInstantiator implements ObjectInstantiator {
 
-	
-	private var definition:RootObjectDefinition;
+	private var container:Object;
 	private var property:Property;
 
-
-	function ContainerPropertyInstantiator (definition:RootObjectDefinition, property:Property) {
-		this.definition = definition;
+	function ContainerPropertyInstantiator (container:Object, property:Property) {
+		this.container = container;
 		this.property = property;
 	}
-
 	
 	public function instantiate (context:Context) : Object {
-		var factory:Object = context.getObject(definition.id);
-		if (factory == null) {
-			throw new ContextError("Unable to obtain factory of type " + definition.type.name);
-		}
-		return property.getValue(factory);
+		return property.getValue(container);
 	}
-	
 	
 }
 
