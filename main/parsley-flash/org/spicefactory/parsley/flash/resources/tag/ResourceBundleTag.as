@@ -16,24 +16,15 @@
 
 package org.spicefactory.parsley.flash.resources.tag {
 import org.spicefactory.lib.errors.IllegalArgumentError;
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.task.SequentialTaskGroup;
 import org.spicefactory.lib.task.TaskGroup;
 import org.spicefactory.lib.task.events.TaskEvent;
-import org.spicefactory.parsley.factory.ObjectDefinition;
-import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
-import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.factory.RootObjectDefinition;
-import org.spicefactory.parsley.factory.impl.DefaultRootObjectDefinition;
-import org.spicefactory.parsley.factory.model.AsyncInitConfig;
 import org.spicefactory.parsley.flash.resources.impl.DefaultBundleLoaderFactory;
 import org.spicefactory.parsley.flash.resources.impl.DefaultResourceBundle;
 import org.spicefactory.parsley.flash.resources.spi.BundleLoaderFactory;
 import org.spicefactory.parsley.flash.resources.spi.ResourceBundleSpi;
 import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
-import org.spicefactory.parsley.util.IdGenerator;
 
-import flash.errors.IllegalOperationError;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -42,7 +33,8 @@ import flash.utils.getQualifiedClassName;
 /**
  * @author Jens Halm
  */
-public class ResourceBundleTag extends EventDispatcher implements ObjectDefinitionFactory {
+[AsyncInit(order="-2147483648")]
+public class ResourceBundleTag extends EventDispatcher {
 	
 	
 	[Required]
@@ -63,21 +55,6 @@ public class ResourceBundleTag extends EventDispatcher implements ObjectDefiniti
 	
 	[Inject]
 	public var resourceManager:ResourceManagerSpi;
-	
-	
-	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
-		var type:ClassInfo = ClassInfo.forClass(ResourceBundleTag, registry.domain);
-		var definition:RootObjectDefinition = new DefaultRootObjectDefinition(type, IdGenerator.nextObjectId); // TODO - id should be optional
-		var asyncInit:AsyncInitConfig = new AsyncInitConfig();
-		asyncInit.order = int.MIN_VALUE; // we want to be ready before any other object uses ResourceBindings
-		definition.asyncInitConfig = asyncInit;
-		definition.instantiator = new SelfInstantiator(this); // just a shortcut so we don't have to copy properties
-		return definition;
-	}
-
-	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		throw new IllegalOperationError("ResourceBundle Tag can only be used for root object definitions");
-	}
 	
 	
 	[PostConstruct]
@@ -117,21 +94,4 @@ public class ResourceBundleTag extends EventDispatcher implements ObjectDefiniti
 	
 	
 }
-}
-
-import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.factory.ObjectInstantiator;
-
-class SelfInstantiator implements ObjectInstantiator {
-
-	private var self:Object;
-
-	function SelfInstantiator (self:Object) {
-		this.self = self;
-	}
-
-	public function instantiate (context:Context) : Object {
-		return self;
-	}
-	
 }
