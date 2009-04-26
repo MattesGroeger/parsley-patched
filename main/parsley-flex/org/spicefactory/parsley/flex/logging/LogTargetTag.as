@@ -50,7 +50,7 @@ public class LogTargetTag {
 	
 	
 	[Factory]
-	public function createLogFactory () : ILoggingTarget {
+	public function createTarget () : ILoggingTarget {
 		var targetObj:Object = new type();
 		if (!(targetObj is ILoggingTarget)) {
 			throw new ContextError("Object of type " + getQualifiedClassName(targetObj) 
