@@ -1,8 +1,9 @@
 package org.spicefactory.lib.logging {
 
+import org.spicefactory.lib.flash.logging.LogEvent;
 import flash.utils.Dictionary;
 
-import org.spicefactory.lib.logging.impl.AbstractAppender;
+import org.spicefactory.lib.flash.logging.impl.AbstractAppender;
 	
 	
 public class LogCounterAppender extends AbstractAppender {

@@ -1,7 +1,10 @@
 package org.spicefactory.lib.logging {
-import org.spicefactory.lib.logging.impl.DefaultLogFactory;
+import flexunit.framework.TestCase;
 
-import flexunit.framework.TestCase;	
+import org.spicefactory.lib.flash.logging.FlashLogFactory;
+import org.spicefactory.lib.flash.logging.LogLevel;
+import org.spicefactory.lib.flash.logging.impl.DefaultLogFactory;
+import org.spicefactory.lib.logging.LogCounterAppender;	
 
 public class LoggingTest extends TestCase {
 	
@@ -9,7 +12,7 @@ public class LoggingTest extends TestCase {
 	
 	public override function setUp () : void {
 		super.setUp();
-		var factory:LogFactory = new DefaultLogFactory();
+		var factory:FlashLogFactory = new DefaultLogFactory();
 		factory.setRootLogLevel(LogLevel.TRACE);
 		factory.refresh();
 		LogContext.factory = factory;	
@@ -19,7 +22,7 @@ public class LoggingTest extends TestCase {
 	
 	public function testSingleAppender () : void {
 		var counter:LogCounterAppender = new LogCounterAppender();
-		LogContext.factory.addAppender(counter);
+		FlashLogFactory(LogContext.factory).addAppender(counter);
 		logAllLevels(counter);
 	}
 	
@@ -27,8 +30,8 @@ public class LoggingTest extends TestCase {
 		var counter1:LogCounterAppender = new LogCounterAppender();
 		var counter2:LogCounterAppender = new LogCounterAppender();
 		counter2.threshold = LogLevel.WARN;
-		LogContext.factory.addAppender(counter1);
-		LogContext.factory.addAppender(counter2);
+		FlashLogFactory(LogContext.factory).addAppender(counter1);
+		FlashLogFactory(LogContext.factory).addAppender(counter2);
 		logAllLevels(counter1);
 		assertLogCount(counter2, "foo", 3);
 		assertLogCount(counter2, "foo.bar", 0);
@@ -42,13 +45,13 @@ public class LoggingTest extends TestCase {
 	
 	public function testSwitchContextFactory () : void {
 		var counter:LogCounterAppender = new LogCounterAppender();
-		LogContext.factory.addAppender(counter);
+		FlashLogFactory(LogContext.factory).addAppender(counter);
 		var logger:Logger = LogContext.getLogger("foo");
 		log(logger);
 		assertEquals("Unexpected log count", 6, counter.getCount("foo"));
 		
 		var counter2:LogCounterAppender = new LogCounterAppender();
-		var factory:LogFactory = new DefaultLogFactory();
+		var factory:FlashLogFactory = new DefaultLogFactory();
 		factory.setRootLogLevel(LogLevel.TRACE);
 		factory.addAppender(counter2);
 		factory.addLogLevel("foo", LogLevel.ERROR);
@@ -60,7 +63,7 @@ public class LoggingTest extends TestCase {
 	
 	public function testClassInstanceAsLoggerName () : void {
 		var counter:LogCounterAppender = new LogCounterAppender();
-		LogContext.factory.addAppender(counter);
+		FlashLogFactory(LogContext.factory).addAppender(counter);
 		var logger:Logger = LogContext.getLogger(LoggingTest);
 		log(logger);
 		assertEquals("Unexpected log count", 6, counter.getCount("org.spicefactory.lib.logging::LoggingTest"));
@@ -69,8 +72,8 @@ public class LoggingTest extends TestCase {
 	private function basicLoggerTest (counter:LogCounterAppender, 
 			name:String, level:LogLevel, count:uint) : void {
 		if (level != null) {
-			LogContext.factory.addLogLevel(name, level);
-			LogContext.factory.refresh();
+			FlashLogFactory(LogContext.factory).addLogLevel(name, level);
+			FlashLogFactory(LogContext.factory).refresh();
 		}	
 		log(LogContext.getLogger(name));
 		assertEquals("Unexpected log count - logger: " + name, count, counter.getCount(name));
