@@ -39,6 +39,8 @@
             <xs:element name="message-handler" type="messageHandlerType" minOccurs="0"/>
             <xs:element name="message-interceptor" type="messageInterceptorType" minOccurs="0"/>
             <xs:element name="message-binding" type="messageBindingType" minOccurs="0"/>
+
+            <xs:element name="resource-binding" type="resourceBindingType" minOccurs="0"/>
             
             <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
@@ -101,6 +103,12 @@
         <xs:attribute name="target-property" type="xs:token" use="required"/>
         <xs:attribute name="type" type="xs:token" use="required"/>
         <xs:attribute name="selector" type="xs:token" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="resourceBindingType">
+        <xs:attribute name="property" type="xs:token" use="required"/>
+        <xs:attribute name="bundle-name" type="xs:token" use="required"/>
+        <xs:attribute name="resource-name" type="xs:token" use="optional"/>
     </xs:complexType>
 
     <xs:group name="value">
