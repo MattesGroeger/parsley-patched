@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema elementFormDefault="qualified"
-    xmlns="http://www.spicefactory.org/parsley/1.0/cinnamon"
-    xmlns:tns="http://www.spicefactory.org/parsley/1.0/cinnamon"
+    xmlns="http://www.spicefactory.org/parsley/cinnamon"
+    xmlns:tns="http://www.spicefactory.org/parsley/cinnamon"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://www.spicefactory.org/parsley/1.0/cinnamon">
+    targetNamespace="http://www.spicefactory.org/parsley/cinnamon">
 
     <xs:element name="channel">
         <xs:complexType>
@@ -23,23 +23,6 @@
             <xs:attribute name="timeout" type="uintOrExpression" use="optional"/>
         </xs:complexType>
     </xs:element>
-    
-    <xs:element name="proxy-listener">
-        <xs:complexType>
-            <xs:attribute name="service" type="xs:token" use="required"/>
-            <xs:attribute name="event-type" type="xs:token" use="required"/>
-            <xs:attribute name="method" type="xs:token" use="required"/>
-        </xs:complexType>
-    </xs:element> 
-    
-    <xs:element name="operation-listener">
-        <xs:complexType>
-            <xs:attribute name="service" type="xs:token" use="required"/>
-            <xs:attribute name="operation" type="xs:token" use="required"/>
-            <xs:attribute name="event-type" type="xs:token" use="required"/>
-            <xs:attribute name="method" type="xs:token" use="required"/>
-        </xs:complexType>
-    </xs:element> 
     
     <xs:simpleType name="uintOrExpression">
         <xs:union memberTypes="xs:nonNegativeInteger expression"/>
