@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core {
+import org.spicefactory.parsley.core.builder.MetadataDecoratorExtractor;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
@@ -54,6 +55,7 @@ public class CompositeContextBuilder extends EventDispatcher {
 	function CompositeContextBuilder (parent:Context = null, domain:ApplicationDomain = null) {
 		_parent = parent;
 		if (domain == null) domain = ApplicationDomain.currentDomain;
+		MetadataDecoratorExtractor.initialize(domain);
 		_registry = new DefaultObjectDefinitionRegistry(domain);
 		_context = (_parent != null) ? new ChildContext(_parent, _registry) : new DefaultContext(_registry);
 		_context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
