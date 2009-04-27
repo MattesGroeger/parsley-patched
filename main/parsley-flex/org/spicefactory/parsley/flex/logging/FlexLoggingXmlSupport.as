@@ -27,7 +27,7 @@ import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 public class FlexLoggingXmlSupport {
 	
 	
-	public static const NAMESPACE_URI:String = "http://www.spicefactory.org/parsley/flex/logging";
+	public static const NAMESPACE_URI:String = "http://www.spicefactory.org/parsley/logging/flex";
 
 
 	public static function initialize () : void {
