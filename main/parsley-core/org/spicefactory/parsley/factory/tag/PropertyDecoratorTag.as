@@ -22,6 +22,8 @@ import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.impl.RegistryValueResolver;
 
+[DefaultProperty("value")]
+
 /**
  * @author Jens Halm
  */
