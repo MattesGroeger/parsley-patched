@@ -16,6 +16,8 @@
 
 package org.spicefactory.parsley.factory.tag {
 
+[DefaultProperty("values")]
+
 /**
  * @author Jens Halm
  */
