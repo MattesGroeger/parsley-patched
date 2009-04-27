@@ -30,6 +30,8 @@ import org.spicefactory.parsley.util.IdGenerator;
 
 import flash.utils.getQualifiedClassName;
 
+[DefaultProperty("decorators")]
+
 /**
  * @author Jens Halm
  */
