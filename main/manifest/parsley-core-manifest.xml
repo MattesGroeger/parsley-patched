@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<componentPackage>
+    <component id="Object" class="org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory"/>
+    
+    <component id="ConstructorArgs" class="org.spicefactory.parsley.factory.tag.ConstructorDecoratorTag"/>
+    <component id="Property" class="org.spicefactory.parsley.factory.tag.PropertyDecoratorTag"/>
+    <component id="AsyncInit" class="org.spicefactory.parsley.factory.decorator.AsyncInitDecorator"/>
+    
+    <component id="Factory" class="org.spicefactory.parsley.factory.decorator.FactoryMethodDecorator"/>
+    <component id="PostConstruct" class="org.spicefactory.parsley.factory.decorator.PostConstructDecorator"/>
+    <component id="PreDestroy" class="org.spicefactory.parsley.factory.decorator.PreDestroyDecorator"/>
+    
+    <component id="ManagedEvents" class="org.spicefactory.parsley.messaging.decorator.ManagedEventsDecorator"/>
+    <component id="MessageHandler" class="org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator"/>
+    <component id="MessageBinding" class="org.spicefactory.parsley.messaging.decorator.MessageBindingDecorator"/>
+    <component id="MessageInterceptor" class="org.spicefactory.parsley.messaging.decorator.MessageInterceptorDecorator"/>
+
+    <component id="ResourceBinding" class="org.spicefactory.parsley.resources.ResourceBindingDecorator"/>
+    
+    <component id="Array" class="org.spicefactory.parsley.factory.tag.ArrayTag"/>
+    <component id="ObjectRef" class="org.spicefactory.parsley.factory.tag.ObjectReferenceTag"/>
+</componentPackage>
+
+
+            
