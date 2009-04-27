@@ -19,6 +19,7 @@ import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
@@ -90,7 +91,9 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 							}
 							else {
 								var ci:ClassInfo = ClassInfo.forInstance(obj, registry.domain);
-								factory	= new DefaultObjectDefinitionFactory(ci.getClass());
+								var prop:Property = ci.getProperty("id");
+								var id:String = (prop == null) ? null : prop.getValue(obj);
+								factory	= new DefaultObjectDefinitionFactory(ci.getClass(), id);
 							}
 							var definition:RootObjectDefinition = factory.createRootDefinition(registry);
 							registry.registerDefinition(definition);
@@ -141,8 +144,8 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 }
 }
 
-import org.spicefactory.parsley.factory.ObjectInstantiator;
 import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.factory.ObjectInstantiator;
 
 class ObjectWrapperInstantiator implements ObjectInstantiator {
 
