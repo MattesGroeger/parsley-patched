@@ -40,6 +40,7 @@ import org.spicefactory.parsley.messaging.decorator.ManagedEventsDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageBindingDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageInterceptorDecorator;
+import org.spicefactory.parsley.resources.ResourceBindingDecorator;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 import org.spicefactory.parsley.xml.tag.Include;
@@ -47,7 +48,9 @@ import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
 import org.spicefactory.parsley.xml.tag.StaticPropertyRef;
 import org.spicefactory.parsley.xml.tag.Variable;
 
-import flash.utils.getQualifiedClassName;/**
+import flash.utils.getQualifiedClassName;
+
+/**
  * @author Jens Halm
  */
 public class XmlObjectDefinitionMapperFactory {
@@ -164,6 +167,8 @@ public class XmlObjectDefinitionMapperFactory {
 		addDecoratorAttributeMapper(MessageInterceptorDecorator, "message-interceptor");
 		addDecoratorAttributeMapper(MessageBindingDecorator, "message-binding");
 		addDecoratorAttributeMapper(ManagedEventsDecorator, "managed-events");
+
+		addDecoratorAttributeMapper(ResourceBindingDecorator, "resource-binding");
 	}
 	
 	private function addDecoratorAttributeMapper (type:Class, tagName:String) : void {
