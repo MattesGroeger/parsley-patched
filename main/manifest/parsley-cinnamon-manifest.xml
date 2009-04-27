@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<componentPackage>
+    <component id="Channel" class="org.spicefactory.parsley.cinnamon.ChannelTag"/>
+    <component id="Service" class="org.spicefactory.parsley.cinnamon.ServiceTag"/>
+</componentPackage>
