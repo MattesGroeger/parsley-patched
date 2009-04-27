@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema elementFormDefault="qualified"
-    xmlns="http://www.spicefactory.org/parsley/flash/logging"
-    xmlns:tns="http://www.spicefactory.org/parsley/flash/logging"
+    xmlns="http://www.spicefactory.org/parsley/logging/flash"
+    xmlns:tns="http://www.spicefactory.org/parsley/logging/flash"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://www.spicefactory.org/parsley/flash/logging">
+    targetNamespace="http://www.spicefactory.org/parsley/logging/flash">
 
     <xs:element name="factory">
         <xs:complexType>
