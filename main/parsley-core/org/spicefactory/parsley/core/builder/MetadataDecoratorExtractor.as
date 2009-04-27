@@ -50,8 +50,13 @@ public class MetadataDecoratorExtractor {
 	
 	private static const targetPropertyMap:Dictionary = new Dictionary();
 	
+	private static var initialized:Boolean = false;
+	
 	
 	public static function initialize (domain:ApplicationDomain) : void {
+		if (initialized) return;
+		initialized = true;
+		
 		Metadata.registerMetadataClass(InjectConstructorDecorator, domain);
 		Metadata.registerMetadataClass(InjectPropertyDecorator, domain);
 		Metadata.registerMetadataClass(InjectMethodDecorator, domain);
