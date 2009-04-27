@@ -17,13 +17,29 @@
 package org.spicefactory.parsley.core.builder {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Member;
+import org.spicefactory.lib.reflect.Metadata;
 import org.spicefactory.lib.reflect.MetadataAware;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.metadata.Target;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.factory.decorator.AsyncInitDecorator;
+import org.spicefactory.parsley.factory.decorator.FactoryMethodDecorator;
+import org.spicefactory.parsley.factory.decorator.InjectConstructorDecorator;
+import org.spicefactory.parsley.factory.decorator.InjectMethodDecorator;
+import org.spicefactory.parsley.factory.decorator.InjectPropertyDecorator;
+import org.spicefactory.parsley.factory.decorator.PostConstructMethodDecorator;
+import org.spicefactory.parsley.factory.decorator.PreDestroyMethodDecorator;
+import org.spicefactory.parsley.messaging.decorator.ManagedEventsDecorator;
+import org.spicefactory.parsley.messaging.decorator.MessageBindingDecorator;
+import org.spicefactory.parsley.messaging.decorator.MessageDispatcherDecorator;
+import org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator;
+import org.spicefactory.parsley.messaging.decorator.MessageInterceptorDecorator;
+import org.spicefactory.parsley.messaging.impl.Selector;
+import org.spicefactory.parsley.resources.ResourceBindingDecorator;
 
+import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
@@ -34,6 +50,27 @@ public class MetadataDecoratorExtractor {
 	
 	private static const targetPropertyMap:Dictionary = new Dictionary();
 	
+	
+	public static function initialize (domain:ApplicationDomain) : void {
+		Metadata.registerMetadataClass(InjectConstructorDecorator, domain);
+		Metadata.registerMetadataClass(InjectPropertyDecorator, domain);
+		Metadata.registerMetadataClass(InjectMethodDecorator, domain);
+		Metadata.registerMetadataClass(FactoryMethodDecorator, domain);
+		Metadata.registerMetadataClass(PostConstructMethodDecorator, domain);
+		Metadata.registerMetadataClass(PreDestroyMethodDecorator, domain);
+		Metadata.registerMetadataClass(AsyncInitDecorator, domain);
+		
+		Metadata.registerMetadataClass(ManagedEventsDecorator, domain);
+		Metadata.registerMetadataClass(MessageDispatcherDecorator, domain);
+		Metadata.registerMetadataClass(MessageHandlerDecorator, domain);
+		Metadata.registerMetadataClass(MessageBindingDecorator, domain);
+		Metadata.registerMetadataClass(MessageInterceptorDecorator, domain);
+		
+		Metadata.registerMetadataClass(ResourceBindingDecorator, domain);
+
+		Metadata.registerMetadataClass(Selector, domain);
+	}
+
 	
 	public static function extract (type:ClassInfo) : Array {
 		var decorators:Array = new Array();
