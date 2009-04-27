@@ -115,6 +115,9 @@ public class DefaultObjectFactory implements ObjectFactory {
 		}
 		else if (value is ObjectTypeReference) {
 			var typeRef:ObjectTypeReference = ObjectTypeReference(value);
+			if (typeRef.type.isType(Context)) {
+				return context;
+			}
 			var ids:Array = context.getObjectIds(typeRef.type.getClass());
 			if (ids.length > 1) {
 				throw new ContextError("Ambigous dependency: Context contains more than one object of type "
