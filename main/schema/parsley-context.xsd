@@ -183,6 +183,7 @@
     <xs:complexType name="refType">
         <xs:attribute name="id-ref" type="xs:token" use="optional"/>
         <xs:attribute name="type-ref" type="xs:token" use="optional"/>
+        <xs:attribute name="required" type="xs:token" use="optional"/>
     </xs:complexType>
     
 </xs:schema>
