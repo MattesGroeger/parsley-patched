@@ -92,12 +92,12 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 			return;
 		}
 		_currentFile = files.shift(); 
-		log.debug("Start loading next file: " + _currentFile);
+		log.debug("Start loading next file: {0}", _currentFile);
 		loadFile(_currentFile);
 	}
 	
 	protected function loadFile (file:String) : void {
-		log.info("Start loading XML configuration file " + file);
+		log.info("Start loading XML configuration file {0}", file);
 		_currentLoader = new URLLoader();
 		_currentLoader.addEventListener(Event.COMPLETE, fileComplete);
 		_currentLoader.addEventListener(IOErrorEvent.IO_ERROR, fileError);
@@ -118,7 +118,7 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 	
 	private function fileComplete (event:Event) : void {
 		if (_currentLoader == null) return;
-		log.info("Loaded XML File " + _currentFile);
+		log.info("Loaded XML File {0}", _currentFile);
 		handleLoadedFile(_currentLoader.data);
 	}
 	
@@ -143,7 +143,12 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 
 	protected function handleError (message:String, cause:Object = null) : void {
 		var msg:String = "Error loading " + _currentFile + ": " + message;
-		log.error(msg, cause as Error); // passing null if not an Error is OK
+		if (cause == null) {
+			log.error(msg);
+		}
+		else {
+			log.error(msg + "{0}", cause);
+		}
 		dispatchEvent(new NestedErrorEvent(msg, cause));
 	}
 

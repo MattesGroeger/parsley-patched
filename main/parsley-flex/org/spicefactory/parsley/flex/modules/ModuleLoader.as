@@ -64,7 +64,7 @@ public class ModuleLoader extends mx.modules.ModuleLoader {
 	 */
 	public override function addChild (child:DisplayObject) : DisplayObject {
 		if (!(child is Module)) {
-			log.warn("Child created for ModuleLoader with URL " + url + " does not extend the Parsley Module class");
+			log.warn("Child created for ModuleLoader with URL {0} does not extend the Parsley Module class", url);
 			return null;
 		}
 		registration.addModule(Module(child));

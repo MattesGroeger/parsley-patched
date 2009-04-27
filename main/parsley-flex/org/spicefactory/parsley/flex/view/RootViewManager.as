@@ -65,8 +65,8 @@ public class RootViewManager extends AbstractViewManager {
 	private function addContext (parent:Context, domain:ApplicationDomain) : void {
 		if (contextsByDomain[domain] != undefined) {
 			if (FlexViewContext(contextsByDomain[domain]).parent != parent) {
-				log.warn("Attempt to register the same triggerEvent type " + triggerEvent 
-						+ " for the same ApplicationDomain for two different Context instances.");
+				log.warn("Attempt to register the same triggerEvent type {0}"  
+						+ " for the same ApplicationDomain for two different Context instances.", triggerEvent);
 			}
 			return;
 		}

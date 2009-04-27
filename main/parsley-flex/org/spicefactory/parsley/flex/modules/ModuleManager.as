@@ -48,8 +48,7 @@ public class ModuleManager {
 		if (reg == null) {
 			var info:IModuleInfo = mx.modules.ModuleManager.getModule(url);
 			if (info.loaded) {
-				log.error("Module with URL " + url 
-						+ " was already loaded before registering - unable to determine ApplicationDomain.");
+				log.error("Module with URL {0} was already loaded before registering - unable to determine ApplicationDomain.", url);
 				moduleDomain = null;
 			}
 			else if (moduleDomain == null) {
@@ -57,7 +56,7 @@ public class ModuleManager {
 				moduleDomain = new ApplicationDomain(ApplicationDomain.currentDomain);
 			}
 			if (parentContext == null) {
-				log.warn("Parent context not specified for module with URL " + url);
+				log.warn("Parent context not specified for module with URL {0}", url);
 			}
 			reg = new ModuleRegistration(info, parentContext, moduleDomain);
 			registrations[url] = reg;
@@ -72,20 +71,17 @@ public class ModuleManager {
 				reg.setModuleDomain(moduleDomain);
 			}
 			else if (moduleDomain != null && moduleDomain != reg.moduleDomain) {
-				log.warn("Module with URL " + url 
-						+ " has already been registered with a different ApplicationDomain." 
-						+ " The existing registration instance will be returned.");
+				log.warn("Module with URL {0} has already been registered with a different ApplicationDomain." 
+						+ " The existing registration instance will be returned.", url);
 			}
 			if (parentContext != null) {
 				if (reg.parentContext == null) {
-					log.warn("Module Context for module with URL " + url 
-							+ " has already been created without a parent Context." 
-							+ " The existing registration instance will be returned.");
+					log.warn("Module Context for module with URL {0} has already been created without a parent Context." 
+							+ " The existing registration instance will be returned.", url);
 				}
 				else if (reg.parentContext != parentContext) {
-					log.warn("Module Context for module with URL " + url 
-							+ " has already been created with a different parent Context." 
-							+ " The existing registration instance will be returned.");
+					log.warn("Module Context for module with URL {0} has already been created with a different parent Context." 
+							+ " The existing registration instance will be returned.", url);
 				}
 			}
 		}

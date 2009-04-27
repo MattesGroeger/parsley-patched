@@ -113,7 +113,7 @@ public class CompositeContextBuilder extends EventDispatcher {
 			} catch (e:Error) {
 				removeCurrentBuilder();
 				var msg:String = "Error processing " + builder;
-				log.error(msg, e);
+				log.error(msg + "{0}", e);
 				_errors.push(msg + ": " + e.message);
 				invokeNextBuilder();
 			}

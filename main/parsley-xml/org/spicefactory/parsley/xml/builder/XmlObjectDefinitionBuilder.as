@@ -103,7 +103,7 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 						} 
 						catch (error:Error) {
 							var msg:String = "Error building object definition with " + factory;
-							log.error(msg, e);
+							log.error(msg + "{0}", e);
 							factoryErrors.push(msg + ": " + e.message);		
 						}
 					}
@@ -120,7 +120,7 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 			}
 			catch (e:Error) {
 				var message:String = "Error processing file " + file;
-				log.error(message, e);
+				log.error(message + "{0}", e);
 				containerErrors.push(message + ":\n " + e.message);
 			}
 		}

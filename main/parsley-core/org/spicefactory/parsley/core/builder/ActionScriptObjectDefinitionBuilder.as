@@ -63,7 +63,7 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 					}
 					catch (e:Error) {
 						var msg:String = "Error building object definition for " + property;
-						log.error(msg, e);
+						log.error(msg + "{0}", e);
 						factoryErrors.push(msg + ": " + e.message);						
 					}
 				}
@@ -74,7 +74,7 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 			}
 			catch (e:Error) {
 				var message:String = "Error processing " + getQualifiedClassName(container);
-				log.error(message, e);
+				log.error(message + "{0}", e);
 				containerErrors.push(message + ":\n " + e.message);
 			}
 		}

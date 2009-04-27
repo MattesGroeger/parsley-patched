@@ -73,7 +73,7 @@ public class FlexViewContext extends ChildContext {
 			component.addEventListener(Event.REMOVED_FROM_STAGE, removeComponent);
 		}
 		catch (e:Error) {
-			log.error("Error adding Component " + component + " to Context", e);
+			log.error("Error adding Component {0} to Context {1}", component, e);
 		} 
 	}
 	

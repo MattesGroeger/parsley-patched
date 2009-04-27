@@ -91,7 +91,7 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 			}
 			catch (e:Error) {
 				var msg:String = "Error applying " + decorator;
-				log.error(msg, e);
+				log.error(msg + "{0}", e);
 				errors.push(msg + ": " + e.message);
 			}
 		}

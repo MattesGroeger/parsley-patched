@@ -62,7 +62,7 @@ public class AbstractViewManager {
 		var component:DisplayObject = DisplayObject(event.target);
 		var context:FlexViewContext = getContext(component);
 		if (context == null) {
-			log.warn("No Context found for triggerEvent " + triggerEvent + " and component " + component);
+			log.warn("No Context found for triggerEvent {0} and component {1}", triggerEvent, component);
 			return;
 		}
 		context.addComponent(component);

@@ -78,9 +78,8 @@ public class ModuleRegistration {
 
 	public function addModule (module:Module) : void {
 		if (_moduleDomain == null) {
-			log.error("Module with URL " + _info.url 
-						+ " was already loaded before registering - unable to determine ApplicationDomain." +
-						+ " No Context will be created.");
+			log.error("Module with URL {0} was already loaded before registering - unable to determine ApplicationDomain."
+						+ " No Context will be created.", _info.url);
 			return;
 		}
 		if (_moduleContext == null) {
@@ -89,7 +88,7 @@ public class ModuleRegistration {
 		}
 		if (module.viewTriggerEvent != null) {
 			if (_modules[module] != undefined) {
-				log.error("Module with URL " + _info.url + ": Attempt to add the same Module instance more than once.");
+				log.error("Module with URL {0}: Attempt to add the same Module instance more than once.", _info.url);
 				return;
 			}
 			_modules[module] = true;

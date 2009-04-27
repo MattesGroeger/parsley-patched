@@ -60,7 +60,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 			target.handleMessage(this);
 		}
 		catch (e:Error) {
-			log.error("Message Target threw Error", e);
+			log.error("Message Target threw Error {0}", e);
 		}
 	}
 	
