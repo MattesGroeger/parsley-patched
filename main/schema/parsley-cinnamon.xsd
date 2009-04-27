@@ -17,7 +17,7 @@
     <xs:element name="service">
         <xs:complexType>
             <xs:attribute name="id" type="xs:token" use="optional"/>
-            <xs:attribute name="name" type="xs:token" use="optional"/>
+            <xs:attribute name="name" type="xs:token" use="required"/>
             <xs:attribute name="type" type="xs:token" use="required"/>
             <xs:attribute name="channel" type="xs:token" use="optional"/>
             <xs:attribute name="timeout" type="uintOrExpression" use="optional"/>
