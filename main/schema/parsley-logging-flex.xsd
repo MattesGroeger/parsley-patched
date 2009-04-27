@@ -21,11 +21,6 @@
         </xs:complexType>
     </xs:element>
     
-    <xs:complexType name="appenderType">
-        <xs:attribute name="ref" type="xs:token" use="required"/>
-        <xs:attribute name="threshold" type="level" use="optional"/>
-    </xs:complexType>
-    
     <xs:simpleType name="level">
         <xs:restriction base="xs:token">
             <xs:enumeration value="debug"/>
