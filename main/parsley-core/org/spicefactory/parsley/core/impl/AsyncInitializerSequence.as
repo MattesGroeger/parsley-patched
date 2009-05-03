@@ -78,12 +78,15 @@ public class AsyncInitializerSequence {
 	}
 
 	public function get complete () : Boolean {
-		return queuedInits.length == 0 && parallelInits.length == 0;
+		return queuedInits.length == 0 && parallelInitCount == 0;
 	}
 	
 	private function createNextInstance () : void {
+		trace(" 1");
 		if (complete) {
+			trace(" 2");
 			context.finishInitialization();
+			trace(" 3");
 			return;
 		}
 		activeDefinition = queuedInits.shift() as RootObjectDefinition;
