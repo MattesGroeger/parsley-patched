@@ -19,7 +19,7 @@ package org.spicefactory.parsley.core.metadata {
 /**
  * @author Jens Halm
  */
-[MappedMetadata(types="property")]
+[Metadata(types="property")]
 public class Target {
 	
 	

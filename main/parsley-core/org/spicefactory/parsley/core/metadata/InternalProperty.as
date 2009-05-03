@@ -19,7 +19,7 @@ package org.spicefactory.parsley.core.metadata {
 /**
  * @author Jens Halm
  */
-[MappedMetadata(name="Internal", types="property")]
+[Metadata(name="Internal", types="property")]
 public class InternalProperty {
 }
 }

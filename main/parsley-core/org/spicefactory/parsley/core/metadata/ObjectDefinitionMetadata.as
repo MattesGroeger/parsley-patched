@@ -19,13 +19,13 @@ package org.spicefactory.parsley.core.metadata {
 /**
  * @author Jens Halm
  */
-[MappedMetadata(name="ObjectDefinition", types="property")]
+[Metadata(name="ObjectDefinition", types="property")]
 public class ObjectDefinitionMetadata {
 	
 
 	public var id:String;
 	
-	public var lazy:Boolean = true;
+	public var lazy:Boolean = false;
 	
 	public var singleton:Boolean = true;
 	
