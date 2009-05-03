@@ -26,9 +26,10 @@ import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
-[Metadata(name="MessageHandler", types="method")]
+import flash.utils.getQualifiedClassName;
 
-import flash.utils.getQualifiedClassName;/**
+[Metadata(name="MessageHandler", types="method")]
+/**
  * @author Jens Halm
  */
 public class ResourceBindingDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
