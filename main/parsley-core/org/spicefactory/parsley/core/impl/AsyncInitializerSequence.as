@@ -82,11 +82,8 @@ public class AsyncInitializerSequence {
 	}
 	
 	private function createNextInstance () : void {
-		trace(" 1");
 		if (complete) {
-			trace(" 2");
 			context.finishInitialization();
-			trace(" 3");
 			return;
 		}
 		activeDefinition = queuedInits.shift() as RootObjectDefinition;
