@@ -33,7 +33,7 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 
 
 	public function DefaultRootObjectDefinition (type:ClassInfo, id:String, 
-			lazy:Boolean = true, singleton:Boolean = true) : void {
+			lazy:Boolean = false, singleton:Boolean = true) : void {
 		super(type);
 		_id = id;
 		_lazy = lazy;
