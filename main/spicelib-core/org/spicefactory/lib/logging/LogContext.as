@@ -87,6 +87,8 @@ public class LogContext {
 	
 }
 
+import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.lib.logging.LogUtil;
 
 class DelegateLogger implements Logger {
 		
@@ -138,34 +140,34 @@ class DelegateLogger implements Logger {
 		return (_delegate == null) ? true : _delegate.isFatalEnabled();
 	}
 
-	public function trace (log : String, ...params) : void {
-		if (_delegate == null) { log("TRACE: ", log, params); return; }
-		_delegate.trace(log, params);
+	public function trace (message : String, ...params) : void {
+		if (_delegate == null) { log("TRACE: ", message, params); return; }
+		_delegate.trace(message, params);
 	}
 
-	public function debug (log : String, ...params) : void {
-		if (_delegate == null) { log("DEBUG: ", log, params); return; }
-		_delegate.debug(log, params);
+	public function debug (message : String, ...params) : void {
+		if (_delegate == null) { log("DEBUG: ", message, params); return; }
+		_delegate.debug(message, params);
 	}
 
-	public function info (log : String, ...params) : void {
-		if (_delegate == null) { log("INFO:  ", log, params); return; }
-		_delegate.info(log, params);
+	public function info (message : String, ...params) : void {
+		if (_delegate == null) { log("INFO:  ", message, params); return; }
+		_delegate.info(message, params);
 	}
 
-	public function warn (log : String, ...params) : void {
-		if (_delegate == null) { log("WARN:  ", log, params); return; }
-		_delegate.warn(log, params); 
+	public function warn (message : String, ...params) : void {
+		if (_delegate == null) { log("WARN:  ", message, params); return; }
+		_delegate.warn(message, params); 
 	}
 
-	public function error (log : String, ...params) : void {
-		if (_delegate == null) { log("ERROR: ", log, params); return; }
-		_delegate.error(log, params);
+	public function error (message : String, ...params) : void {
+		if (_delegate == null) { log("ERROR: ", message, params); return; }
+		_delegate.error(message, params);
 	}
 
-	public function fatal (log : String, ...params) : void {
-		if (_delegate == null) { log("FATAL: ", log, params); return; }
-		_delegate.fatal(log, params);
+	public function fatal (message : String, ...params) : void {
+		if (_delegate == null) { log("FATAL: ", message, params); return; }
+		_delegate.fatal(message, params);
 	}
 
 	private function log (level:String, message:String, params:Array) : void {

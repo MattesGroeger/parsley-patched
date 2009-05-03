@@ -240,6 +240,7 @@ public class DefaultMessageRouter implements MessageRouter {
 }
 }
 
+import org.spicefactory.parsley.messaging.impl.DefaultMessageRouter;
 
 class AbstractMessageTarget implements MessageTarget {
 	

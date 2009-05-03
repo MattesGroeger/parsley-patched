@@ -48,6 +48,7 @@ public class LogUtil {
 			}
 			message = message.replace(new RegExp("\\{"+ i +"\\}", "g"), param);
 		}
+		return message;
 	}
 	
 	
