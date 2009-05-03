@@ -48,7 +48,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private var _factory:ObjectFactory;
 	private var _messageRouter:MessageRouter;
 	
-	private var singletonCache:SimpleMap;
+	private var singletonCache:SimpleMap = new SimpleMap();
 	
 	private var asyncInitSequence:AsyncInitializerSequence;
 	private var initSequence:Array;
