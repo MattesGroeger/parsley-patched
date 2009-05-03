@@ -90,8 +90,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 				}
 			}
 		}
+		asyncInitSequence.start();
 	}
-	
+
 	/**
 	 * @private
 	 */
