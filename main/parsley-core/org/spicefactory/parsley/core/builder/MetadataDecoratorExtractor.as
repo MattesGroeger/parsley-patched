@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.builder {
+import org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata;
+import org.spicefactory.parsley.core.metadata.InternalProperty;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Member;
 import org.spicefactory.lib.reflect.Metadata;
@@ -74,6 +76,10 @@ public class MetadataDecoratorExtractor {
 		Metadata.registerMetadataClass(ResourceBindingDecorator, domain);
 
 		Metadata.registerMetadataClass(Selector, domain);
+		
+		Metadata.registerMetadataClass(InternalProperty, domain);
+		Metadata.registerMetadataClass(Target, domain);
+		Metadata.registerMetadataClass(ObjectDefinitionMetadata, domain);
 	}
 
 	
