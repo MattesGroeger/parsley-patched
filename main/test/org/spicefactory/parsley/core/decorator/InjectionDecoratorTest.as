@@ -11,7 +11,15 @@ public class InjectionDecoratorTest extends ContextTestBase {
 	
 	
 	public function testConstructorInjection () : void {
-		
+		/*
+		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		checkState(context);
+		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
+		checkObjectIds(context, ["requiredConstructorInjection"], RequiredConstructorInjection);	
+		var obj:RequiredConstructorInjection 
+				= getAndCheckObject(context, "requiredConstructorInjection", RequiredConstructorInjection) as RequiredConstructorInjection;
+		checkDependency(context, obj.dependency);
+		 */		
 	}
 	
 	public function testConstructorInjectionWithMissingReqDep () : void {
@@ -89,19 +97,42 @@ public class InjectionDecoratorTest extends ContextTestBase {
 		checkObjectIds(context, ["optionalPropertyIdInjection"], OptionalPropertyIdInjection);	
 		var obj:OptionalPropertyIdInjection 
 				= getAndCheckObject(context, "optionalPropertyIdInjection", OptionalPropertyIdInjection) as OptionalPropertyIdInjection;
-		assertNull("Expeced optional dependency to be missing", obj.dependency);			
+		assertNull("Expected optional dependency to be missing", obj.dependency);			
 	}	
 	
 	public function testMethodInjection () : void {
-		
+		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		checkState(context);
+		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
+		checkObjectIds(context, ["requiredMethodInjection"], RequiredMethodInjection);	
+		var obj:RequiredMethodInjection 
+				= getAndCheckObject(context, "requiredMethodInjection", RequiredMethodInjection) as RequiredMethodInjection;
+		checkDependency(context, obj.dependency);		
 	}	
 	
 	public function testMethodInjectionWithMissingReqDep () : void {
-		
+		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		checkState(context);
+		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
+		checkObjectIds(context, ["missingMethodInjection"], MissingMethodInjection);
+		try {
+			context.getObject("missingMethodInjection");		
+		}
+		catch (e:ContextError) {
+			trace(e.getStackTrace());
+			return;
+		}
+		fail("Expected ContextError for missing dependency");		
 	}
 	
 	public function testMethodInjectionWithMissingOptDep () : void {
-		
+		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		checkState(context);
+		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
+		checkObjectIds(context, ["optionalMethodInjection"], OptionalMethodInjection);	
+		var obj:OptionalMethodInjection 
+				= getAndCheckObject(context, "optionalMethodInjection", OptionalMethodInjection) as OptionalMethodInjection;
+		assertNull("Expected optional dependency to be missing", obj.dependency);		
 	}	
 	
 	

@@ -10,6 +10,23 @@ public class DecoratorTestContainer {
 		return new InjectedDependency();
 	}
 	
+
+	[ObjectDefinition(lazy="true")]
+	public function get requiredMethodInjection () : RequiredMethodInjection {
+		return new RequiredMethodInjection();
+	}
+
+	[ObjectDefinition(lazy="true")]
+	public function get missingMethodInjection () : MissingMethodInjection {
+		return new MissingMethodInjection();
+	}
+	
+	[ObjectDefinition(lazy="true")]
+	public function get optionalMethodInjection () : OptionalMethodInjection {
+		return new OptionalMethodInjection();
+	}
+	
+		
 	
 	[ObjectDefinition(lazy="true")]
 	public function get requiredPropertyInjection () : RequiredPropertyInjection {
@@ -42,6 +59,7 @@ public class DecoratorTestContainer {
 	public function get optionalPropertyIdInjection () : OptionalPropertyIdInjection {
 		return new OptionalPropertyIdInjection();
 	}
+	
 	
 	
 }
