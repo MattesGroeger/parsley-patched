@@ -26,7 +26,7 @@ import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 /**
  * @author Jens Halm
  */
-[Metadata(name="Destroy", types="method")]
+[Metadata(name="PreDestroy", types="method")]
 public class PreDestroyMethodDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
 	
