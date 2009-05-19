@@ -11,7 +11,7 @@ public class InjectionDecoratorTest extends ContextTestBase {
 	
 	
 	public function testConstructorInjection () : void {
-		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		var context:Context = ActionScriptContextBuilder.build(InjectionDecoratorTestContainer);
 		checkState(context);
 		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
 		checkObjectIds(context, ["requiredConstructorInjection"], RequiredConstructorInjection);	
@@ -21,7 +21,7 @@ public class InjectionDecoratorTest extends ContextTestBase {
 	}
 	
 	public function testConstructorInjectionWithMissingReqDep () : void {
-		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		var context:Context = ActionScriptContextBuilder.build(InjectionDecoratorTestContainer);
 		checkState(context);
 		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
 		checkObjectIds(context, ["missingConstructorInjection"], MissingConstructorInjection);
@@ -36,7 +36,7 @@ public class InjectionDecoratorTest extends ContextTestBase {
 	}
 	
 	public function testConstructorInjectionWithMissingOptDep () : void {
-		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		var context:Context = ActionScriptContextBuilder.build(InjectionDecoratorTestContainer);
 		checkState(context);
 		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
 		checkObjectIds(context, ["optionalMethodInjection"], OptionalMethodInjection);	
@@ -46,7 +46,7 @@ public class InjectionDecoratorTest extends ContextTestBase {
 	}
 
 	public function testPropertyTypeInjection () : void {
-		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		var context:Context = ActionScriptContextBuilder.build(InjectionDecoratorTestContainer);
 		checkState(context);
 		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
 		checkObjectIds(context, ["requiredPropertyInjection"], RequiredPropertyInjection);	
@@ -56,7 +56,7 @@ public class InjectionDecoratorTest extends ContextTestBase {
 	}	
 
 	public function testPropertyTypeInjectionWithMissingReqDep () : void {
-		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		var context:Context = ActionScriptContextBuilder.build(InjectionDecoratorTestContainer);
 		checkState(context);
 		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
 		checkObjectIds(context, ["missingPropertyInjection"], MissingPropertyInjection);
@@ -71,7 +71,7 @@ public class InjectionDecoratorTest extends ContextTestBase {
 	}
 	
 	public function testPropertyTypeInjectionWithMissingOptDep () : void {
-		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		var context:Context = ActionScriptContextBuilder.build(InjectionDecoratorTestContainer);
 		checkState(context);
 		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
 		checkObjectIds(context, ["optionalPropertyInjection"], OptionalPropertyInjection);	
@@ -81,7 +81,7 @@ public class InjectionDecoratorTest extends ContextTestBase {
 	}
 
 	public function testPropertyIdInjection () : void {
-		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		var context:Context = ActionScriptContextBuilder.build(InjectionDecoratorTestContainer);
 		checkState(context);
 		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
 		checkObjectIds(context, ["requiredPropertyIdInjection"], RequiredPropertyIdInjection);	
@@ -91,7 +91,7 @@ public class InjectionDecoratorTest extends ContextTestBase {
 	}
 	
 	public function testPropertyIdInjectionWithMissingReqDep () : void {
-		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		var context:Context = ActionScriptContextBuilder.build(InjectionDecoratorTestContainer);
 		checkState(context);
 		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
 		checkObjectIds(context, ["missingPropertyIdInjection"], MissingPropertyIdInjection);
@@ -106,7 +106,7 @@ public class InjectionDecoratorTest extends ContextTestBase {
 	}	
 	
 	public function testPropertyIdInjectionWithMissingOptDep () : void {
-		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		var context:Context = ActionScriptContextBuilder.build(InjectionDecoratorTestContainer);
 		checkState(context);
 		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
 		checkObjectIds(context, ["optionalPropertyIdInjection"], OptionalPropertyIdInjection);	
@@ -116,7 +116,7 @@ public class InjectionDecoratorTest extends ContextTestBase {
 	}	
 	
 	public function testMethodInjection () : void {
-		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		var context:Context = ActionScriptContextBuilder.build(InjectionDecoratorTestContainer);
 		checkState(context);
 		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
 		checkObjectIds(context, ["requiredMethodInjection"], RequiredMethodInjection);	
@@ -126,7 +126,7 @@ public class InjectionDecoratorTest extends ContextTestBase {
 	}	
 	
 	public function testMethodInjectionWithMissingReqDep () : void {
-		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		var context:Context = ActionScriptContextBuilder.build(InjectionDecoratorTestContainer);
 		checkState(context);
 		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
 		checkObjectIds(context, ["missingMethodInjection"], MissingMethodInjection);
@@ -141,7 +141,7 @@ public class InjectionDecoratorTest extends ContextTestBase {
 	}
 	
 	public function testMethodInjectionWithMissingOptDep () : void {
-		var context:Context = ActionScriptContextBuilder.build(DecoratorTestContainer);
+		var context:Context = ActionScriptContextBuilder.build(InjectionDecoratorTestContainer);
 		checkState(context);
 		checkObjectIds(context, ["injectedDependency"], InjectedDependency);	
 		checkObjectIds(context, ["optionalMethodInjection"], OptionalMethodInjection);	

@@ -5,7 +5,7 @@ import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
 /**
  * @author Jens Halm
  */
-public class DecoratorTestContainer {
+public class InjectionDecoratorTestContainer {
 	
 	
 	public function get injectedDependency () : InjectedDependency {
