@@ -97,10 +97,12 @@ public class MetadataDecoratorExtractor {
 
 	private static function extractMetadataDecorators (type:MetadataAware, decorators:Array) : void {
 		for each (var metadata:Object in type.getAllMetadata()) {
-			if (type is Member) {
-				setTargetProperty(type as Member, decorators);
+			if (metadata is ObjectDefinitionDecorator) {
+				if (type is Member) {
+					setTargetProperty(type as Member, metadata);
+				}
+				decorators.push(metadata);
 			}
-			if (metadata is ObjectDefinitionDecorator) decorators.push(metadata);
 		}
 	}
 	
@@ -109,7 +111,7 @@ public class MetadataDecoratorExtractor {
 		var target:* = targetPropertyMap[ci.getClass()];
 		if (target == undefined) {
 			for each (var property:Property in ci.getProperties()) {
-				if (property.getMetadata(Target)) {
+				if (property.getMetadata(Target).length > 0) {
 					if (!property.writable) {
 						target = new Error(property.toString() + " was marked with [Target] but is not writable");
 					}
