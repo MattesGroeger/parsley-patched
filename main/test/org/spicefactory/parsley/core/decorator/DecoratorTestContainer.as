@@ -1,4 +1,6 @@
 package org.spicefactory.parsley.core.decorator {
+import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
 
 /**
  * @author Jens Halm
@@ -8,6 +10,19 @@ public class DecoratorTestContainer {
 	
 	public function get injectedDependency () : InjectedDependency {
 		return new InjectedDependency();
+	}
+	
+
+	public function get requiredConstructorInjection () : ObjectDefinitionFactory {
+		return new DefaultObjectDefinitionFactory(RequiredConstructorInjection, "requiredConstructorInjection", true);
+	}
+	
+	public function get missingConstructorInjection () : ObjectDefinitionFactory {
+		return new DefaultObjectDefinitionFactory(MissingConstructorInjection, "missingConstructorInjection", true);
+	}
+	
+	public function get optionalConstructorInjection () : ObjectDefinitionFactory {
+		return new DefaultObjectDefinitionFactory(OptionalConstructorInjection, "optionalConstructorInjection", true);
 	}
 	
 
