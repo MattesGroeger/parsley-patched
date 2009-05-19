@@ -54,7 +54,7 @@ public class LogContext {
 			return loggers[nameStr];
 		}
 		var log:Logger = (_factory == null) ? null : _factory.getLogger(nameStr);
-		var del:DelegateLogger = new DelegateLogger(nameStr, log);
+		var del:DelegateLogger = new DelegateLogger(nameStr, log, trace);
 		loggers[nameStr] = del;
 		return del;
 	}
@@ -95,11 +95,13 @@ class DelegateLogger implements Logger {
 	
 	private var _name:String;
 	private var _delegate:Logger;
+	private var _traceFunc:Function;
 	
 	
-	public function DelegateLogger (name:String, log:Logger = null) {
+	public function DelegateLogger (name:String, log:Logger, traceFunc:Function) {
 		_name = name;
 		_delegate = log;
+		_traceFunc = traceFunc;
 	}
 	
 	public function get delegate () : Logger {
@@ -171,7 +173,7 @@ class DelegateLogger implements Logger {
 	}
 
 	private function log (level:String, message:String, params:Array) : void {
-		trace(level + LogUtil.buildLogMessage(message, params));
+		_traceFunc(level + LogUtil.buildLogMessage(message, params));
 	}
 
 	
