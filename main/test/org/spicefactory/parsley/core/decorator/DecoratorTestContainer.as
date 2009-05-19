@@ -27,5 +27,22 @@ public class DecoratorTestContainer {
 	}
 	
 	
+	
+	[ObjectDefinition(lazy="true")]
+	public function get requiredPropertyIdInjection () : RequiredPropertyIdInjection {
+		return new RequiredPropertyIdInjection();
+	}
+	
+	[ObjectDefinition(lazy="true")]
+	public function get missingPropertyIdInjection () : MissingPropertyIdInjection {
+		return new MissingPropertyIdInjection();
+	}
+	
+	[ObjectDefinition(lazy="true")]
+	public function get optionalPropertyIdInjection () : OptionalPropertyIdInjection {
+		return new OptionalPropertyIdInjection();
+	}
+	
+	
 }
 }
