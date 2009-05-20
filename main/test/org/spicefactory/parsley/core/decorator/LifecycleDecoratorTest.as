@@ -26,9 +26,7 @@ public class LifecycleDecoratorTest extends ContextTestBase {
 		checkObjectIds(context, ["preDestroyModel"], PreDestroyModel);	
 		var obj:PreDestroyModel 
 				= getAndCheckObject(context, "preDestroyModel", PreDestroyModel) as PreDestroyModel;
-		trace("before destroy");
 		context.destroy();
-		trace("after destroy");
 		assertTrue("PreDestroy method not called", obj.methodCalled);			
 	}
 	
