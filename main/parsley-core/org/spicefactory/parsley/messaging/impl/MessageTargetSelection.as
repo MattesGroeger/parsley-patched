@@ -44,7 +44,7 @@ public class MessageTargetSelection {
 	
 	function MessageTargetSelection (type:ClassInfo) {
 		_messageType = type;
-		for each (var p:Property in type) {
+		for each (var p:Property in type.getProperties()) {
 			if (p.getMetadata(Selector).length > 0) {
 				if (_selectorProperty == null) {
 					_selectorProperty = p;
