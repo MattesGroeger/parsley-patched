@@ -20,7 +20,7 @@ import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReference;
 
-[Metadata(name="MessageDispatcher", types="method")]
+[Metadata(name="MessageDispatcher", types="property")]
 /**
  * @author Jens Halm
  */
