@@ -31,14 +31,14 @@ public class MessageTargetSelection {
 	private var _messageType:ClassInfo;
 	private var _selectorProperty:Property;
 	
-	private var _targetsWithSelector:Array;
-	private var _interceptorsWithSelector:Array;
+	private var _targetsWithSelector:Array = new Array();
+	private var _interceptorsWithSelector:Array = new Array();
 	
-	private var _targetsWithoutSelector:Array;
-	private var _interceptorsWithoutSelector:Array;
+	private var _targetsWithoutSelector:Array = new Array();
+	private var _interceptorsWithoutSelector:Array = new Array();
 	
-	private var _targetSelectorMap:Dictionary;
-	private var _interceptorSelectorMap:Dictionary;
+	private var _targetSelectorMap:Dictionary = new Dictionary();
+	private var _interceptorSelectorMap:Dictionary = new Dictionary();
 	
 	
 	function MessageTargetSelection (type:ClassInfo) {
