@@ -1,4 +1,4 @@
-package org.spicefactory.parsley.core {
+package org.spicefactory.parsley.core.builder {
 import org.spicefactory.parsley.testmodel.ClassWithSimpleProperties;
 
 /**

@@ -1,4 +1,9 @@
-package org.spicefactory.parsley.core {
+package org.spicefactory.parsley.core.builder {
+	import org.spicefactory.parsley.core.builder.Container2;
+	import org.spicefactory.parsley.core.Context;
+	import org.spicefactory.parsley.core.builder.Container1;
+	import org.spicefactory.parsley.core.ContextTestBase;
+	import org.spicefactory.parsley.core.ActionScriptContextBuilder;
 import org.spicefactory.parsley.testmodel.LazyTestClass;
 import org.spicefactory.parsley.testmodel.ClassWithSimpleProperties;
 
