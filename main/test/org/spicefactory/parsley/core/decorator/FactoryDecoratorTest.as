@@ -12,7 +12,6 @@ public class FactoryDecoratorTest extends ContextTestBase {
 	public function testFactoryWithDependency () : void {
 		var context:Context = ActionScriptContextBuilder.build(FactoryDecoratorTestContainer);
 		checkState(context);
-		trace(context.getObjectIds());
 		checkObjectIds(context, ["factoryWithDependency"], RequiredMethodInjection);	
 		assertTrue("Expected Factory to be accessible in Context", 1, context.getObjectIds(TestFactory).length);
 		var obj:RequiredMethodInjection 
