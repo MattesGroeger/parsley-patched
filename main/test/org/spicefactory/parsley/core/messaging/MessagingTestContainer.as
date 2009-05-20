@@ -10,6 +10,16 @@ public class MessagingTestContainer {
 		return new EventSource();
 	}
 	
+	public function get testDispatcher () : TestMessageDispatcher {
+		return new TestMessageDispatcher();
+	}
+	
+	[ObjectDefinition(lazy="true")]
+	public function get testMessageHandlers () : TestMessageHandlers {
+		return new TestMessageHandlers();
+	}
+	
+	
 	[ObjectDefinition(lazy="true")]
 	public function get messageHandlers () : MessageHandlers {
 		return new MessageHandlers();

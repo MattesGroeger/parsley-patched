@@ -87,6 +87,28 @@ public class MessagingTest extends ContextTestBase {
 		assertEquals("Unexpected count for generic event handler", 3, interceptors.genericEventCount);		
 	}
 	
+	public function testMessageDispatcher () : void {
+		var context:Context = ActionScriptContextBuilder.build(MessagingTestContainer);
+		checkState(context);
+		checkObjectIds(context, ["testDispatcher"], TestMessageDispatcher);	
+		checkObjectIds(context, ["testMessageHandlers"], TestMessageHandlers);	
+		var dispatcher:TestMessageDispatcher
+				= getAndCheckObject(context, "testDispatcher", TestMessageDispatcher) as TestMessageDispatcher;
+		var handlers:TestMessageHandlers 
+				= getAndCheckObject(context, "testMessageHandlers", TestMessageHandlers) as TestMessageHandlers;
+		var m1:TestMessage = new TestMessage();
+		m1.name = TestEvent.TEST1;
+		m1.value = 3;
+		dispatcher.dispatchMessage(m1);
+		var m2:TestMessage = new TestMessage();
+		m2.name = TestEvent.TEST2;
+		m2.value = 5;
+		dispatcher.dispatchMessage(m2);
+		assertEquals("Unexpected count for event test1", 2, handlers.test1Count);
+		assertEquals("Unexpected count for event test2", 2, handlers.test2Count);
+		assertEquals("Unexpected sum value", 16, handlers.sum);
+	}
+	
 	
 }
 }
