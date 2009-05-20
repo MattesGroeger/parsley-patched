@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <componentPackage>
-    <component id="Object" class="org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory"/>
+    <component id="Object" class="org.spicefactory.parsley.flex.tag.MxmlObjectDefinitionFactoryTag"/>
     
     <component id="ConstructorArgs" class="org.spicefactory.parsley.factory.tag.ConstructorDecoratorTag"/>
     <component id="Property" class="org.spicefactory.parsley.factory.tag.PropertyDecoratorTag"/>
     <component id="AsyncInit" class="org.spicefactory.parsley.factory.decorator.AsyncInitDecorator"/>
     
     <component id="Factory" class="org.spicefactory.parsley.factory.decorator.FactoryMethodDecorator"/>
-    <component id="PostConstruct" class="org.spicefactory.parsley.factory.decorator.PostConstructDecorator"/>
-    <component id="PreDestroy" class="org.spicefactory.parsley.factory.decorator.PreDestroyDecorator"/>
+    <component id="PostConstruct" class="org.spicefactory.parsley.factory.decorator.PostConstructMethodDecorator"/>
+    <component id="PreDestroy" class="org.spicefactory.parsley.factory.decorator.PreDestroyMethodDecorator"/>
     
     <component id="ManagedEvents" class="org.spicefactory.parsley.messaging.decorator.ManagedEventsDecorator"/>
     <component id="MessageHandler" class="org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator"/>
