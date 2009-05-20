@@ -2,11 +2,13 @@ package org.spicefactory.parsley.test {
 import flexunit.framework.TestSuite;
 
 import org.spicefactory.parsley.core.ActionScriptObjectDefinitionBuilderTest;
+import org.spicefactory.parsley.core.decorator.FactoryDecoratorTest;
 import org.spicefactory.parsley.core.decorator.InjectionDecoratorTest;
 import org.spicefactory.parsley.core.decorator.LifecycleDecoratorTest;
 import org.spicefactory.parsley.core.decorator.MissingConstructorInjection;
 import org.spicefactory.parsley.core.decorator.OptionalConstructorInjection;
 import org.spicefactory.parsley.core.decorator.RequiredConstructorInjection;
+import org.spicefactory.parsley.core.messaging.MessagingTest;
 
 public class ParsleyTestSuite {
 	
@@ -19,9 +21,11 @@ public class ParsleyTestSuite {
 		new OptionalConstructorInjection(null);
 		
 		var suite:TestSuite = new TestSuite();
-		//suite.addTestSuite(ActionScriptObjectDefinitionBuilderTest);
-		//suite.addTestSuite(InjectionDecoratorTest);
+		suite.addTestSuite(ActionScriptObjectDefinitionBuilderTest);
+		suite.addTestSuite(InjectionDecoratorTest);
 		suite.addTestSuite(LifecycleDecoratorTest);
+		suite.addTestSuite(FactoryDecoratorTest);
+		suite.addTestSuite(MessagingTest);
 		return suite;
 	}
 	
