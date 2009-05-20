@@ -1,4 +1,6 @@
-package org.spicefactory.parsley.core.decorator {
+package org.spicefactory.parsley.core.decorator.lifecycle {
+	import org.spicefactory.parsley.core.decorator.lifecycle.PostConstructModel;
+	import org.spicefactory.parsley.core.decorator.lifecycle.LifecycleDecoratorTestContainer;
 import org.spicefactory.parsley.core.ContextTestBase;
 import org.spicefactory.parsley.core.ActionScriptContextBuilder;
 import org.spicefactory.parsley.core.Context;

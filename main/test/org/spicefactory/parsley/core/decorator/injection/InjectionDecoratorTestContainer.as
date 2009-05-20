@@ -1,6 +1,19 @@
-package org.spicefactory.parsley.core.decorator {
-import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
+package org.spicefactory.parsley.core.decorator.injection {
+import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
+import org.spicefactory.parsley.core.decorator.injection.MissingConstructorInjection;
+import org.spicefactory.parsley.core.decorator.injection.MissingMethodInjection;
+import org.spicefactory.parsley.core.decorator.injection.MissingPropertyIdInjection;
+import org.spicefactory.parsley.core.decorator.injection.MissingPropertyInjection;
+import org.spicefactory.parsley.core.decorator.injection.OptionalConstructorInjection;
+import org.spicefactory.parsley.core.decorator.injection.OptionalMethodInjection;
+import org.spicefactory.parsley.core.decorator.injection.OptionalPropertyIdInjection;
+import org.spicefactory.parsley.core.decorator.injection.OptionalPropertyInjection;
+import org.spicefactory.parsley.core.decorator.injection.RequiredConstructorInjection;
+import org.spicefactory.parsley.core.decorator.injection.RequiredMethodInjection;
+import org.spicefactory.parsley.core.decorator.injection.RequiredPropertyIdInjection;
+import org.spicefactory.parsley.core.decorator.injection.RequiredPropertyInjection;
 import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
+import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;	
 
 /**
  * @author Jens Halm

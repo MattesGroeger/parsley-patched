@@ -1,5 +1,6 @@
-package org.spicefactory.parsley.core.decorator {
+package org.spicefactory.parsley.core.decorator.lifecycle {
 
+	import org.spicefactory.parsley.core.decorator.lifecycle.PostConstructModel;
 /**
  * @author Jens Halm
  */

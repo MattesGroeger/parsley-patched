@@ -1,4 +1,6 @@
-package org.spicefactory.parsley.core.decorator {
+package org.spicefactory.parsley.core.decorator.factory {
+	import org.spicefactory.parsley.core.decorator.injection.RequiredMethodInjection;
+	import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 import org.spicefactory.lib.errors.IllegalStateError;
 
 /**

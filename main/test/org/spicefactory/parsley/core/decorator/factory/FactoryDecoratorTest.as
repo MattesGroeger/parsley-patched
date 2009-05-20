@@ -1,4 +1,7 @@
-package org.spicefactory.parsley.core.decorator {
+package org.spicefactory.parsley.core.decorator.factory {
+	import org.spicefactory.parsley.core.decorator.injection.RequiredMethodInjection;
+	import org.spicefactory.parsley.core.decorator.factory.FactoryDecoratorTestContainer;
+	import org.spicefactory.parsley.core.decorator.factory.TestFactory;
 import org.spicefactory.parsley.core.ActionScriptContextBuilder;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.ContextTestBase;

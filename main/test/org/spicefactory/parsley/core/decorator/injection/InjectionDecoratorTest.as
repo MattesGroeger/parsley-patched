@@ -1,8 +1,21 @@
-package org.spicefactory.parsley.core.decorator {
+package org.spicefactory.parsley.core.decorator.injection {
 import org.spicefactory.parsley.core.ActionScriptContextBuilder;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.ContextTestBase;
-import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
+import org.spicefactory.parsley.core.decorator.injection.InjectionDecoratorTestContainer;
+import org.spicefactory.parsley.core.decorator.injection.MissingConstructorInjection;
+import org.spicefactory.parsley.core.decorator.injection.MissingMethodInjection;
+import org.spicefactory.parsley.core.decorator.injection.MissingPropertyIdInjection;
+import org.spicefactory.parsley.core.decorator.injection.MissingPropertyInjection;
+import org.spicefactory.parsley.core.decorator.injection.OptionalMethodInjection;
+import org.spicefactory.parsley.core.decorator.injection.OptionalPropertyIdInjection;
+import org.spicefactory.parsley.core.decorator.injection.OptionalPropertyInjection;
+import org.spicefactory.parsley.core.decorator.injection.RequiredConstructorInjection;
+import org.spicefactory.parsley.core.decorator.injection.RequiredMethodInjection;
+import org.spicefactory.parsley.core.decorator.injection.RequiredPropertyIdInjection;
+import org.spicefactory.parsley.core.decorator.injection.RequiredPropertyInjection;
+import org.spicefactory.parsley.core.errors.ContextError;	
 
 /**
  * @author Jens Halm

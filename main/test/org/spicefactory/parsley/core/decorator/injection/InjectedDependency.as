@@ -1,4 +1,4 @@
-package org.spicefactory.parsley.core.decorator {
+package org.spicefactory.parsley.core.decorator.injection {
 
 /**
  * @author Jens Halm
