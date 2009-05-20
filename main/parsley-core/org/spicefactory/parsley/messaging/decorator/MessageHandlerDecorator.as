@@ -48,7 +48,6 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 	}
 
 	public function postConstruct (instance:Object, context:Context) : void {
-		// TODO - check param type of method
 		var target:MessageTarget = context.messageRouter.registerMessageHandler(instance, method, 
 				type, messageProperties, selector);
 		addTarget(instance, target);
