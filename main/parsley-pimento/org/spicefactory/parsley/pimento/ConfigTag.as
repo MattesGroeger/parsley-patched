@@ -51,7 +51,6 @@ public class ConfigTag implements ObjectDefinitionFactory {
 		var emDef:RootObjectDefinition = emFactory.createRootDefinition(registry);
 		emDef.instantiator = new EntityManagerInstantiator(configDef.id);
 		registry.registerDefinition(emFactory.createRootDefinition(registry));
-		// TODO - PimentoConfig needs [PostConstruct] metadata -> Add in 1.0.1
 		
 		return configDef;
 	}
