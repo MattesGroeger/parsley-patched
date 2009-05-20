@@ -28,7 +28,6 @@ public class TestMessageHandlers {
 
 	[MessageHandler]
 	public function allTestMessages (message:TestMessage) : void {
-		trace("AA");
 		if (message.name == TestEvent.TEST1) {
 			_test1Count++;
 		}
@@ -43,7 +42,6 @@ public class TestMessageHandlers {
 
 	[MessageHandler(selector="test1")]
 	public function event1 (message:TestMessage) : void {
-		trace("BB");
 		if (message.name == TestEvent.TEST1) {
 			_test1Count++;
 		}
@@ -55,7 +53,6 @@ public class TestMessageHandlers {
 	
 	[MessageHandler(selector="test2")]
 	public function event2 (message:TestMessage) : void {
-		trace("CC");
 		if (message.name == TestEvent.TEST2) {
 			_test2Count++;
 		}
