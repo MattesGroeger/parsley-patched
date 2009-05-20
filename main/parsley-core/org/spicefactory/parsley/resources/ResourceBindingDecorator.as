@@ -28,7 +28,7 @@ import flash.utils.Dictionary;
 
 import flash.utils.getQualifiedClassName;
 
-[Metadata(name="MessageHandler", types="method")]
+[Metadata(name="ResourceBinding", types="method")]
 /**
  * @author Jens Halm
  */
