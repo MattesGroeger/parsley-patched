@@ -11,7 +11,6 @@ public class PreDestroyModel {
 	
 	[PreDestroy]
 	public function dispose () : void {
-		trace("PreDestroy called");
 		_methodCalled = true;
 	}
 	
