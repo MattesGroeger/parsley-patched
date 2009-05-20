@@ -138,10 +138,10 @@ public class DefaultMessageRouter implements MessageRouter {
 					+ " does not contain a method with name " + targetMethod);
 		}
 		var params:Array = resolvedTargetMethod.parameters;
-		if (messageType == null) messageType = Object;
-		var messageTypeInfo:ClassInfo = ClassInfo.forClass(messageType);
+		var messageTypeInfo:ClassInfo = (messageType == null) ? ClassInfo.forClass(Object) : ClassInfo.forClass(messageType);
 		var resolvedMessageProperties:Array = null;
 		if (messageProperties != null) {
+			resolvedMessageProperties = new Array();
 			for each (var messageProperty:String in messageProperties) {
 				var resolvedMessageProperty:Property = messageTypeInfo.getProperty(messageProperty);
 				if (resolvedMessageProperty == null) {
@@ -177,7 +177,10 @@ public class DefaultMessageRouter implements MessageRouter {
 					"If no messageProperties are specified, the message itself will be used as a parameter");
 			}
 			var paramType:ClassInfo = Parameter(params[0]).type;
-			if (!messageTypeInfo.isType(paramType.getClass())) {
+			if (messageType == null) {
+				messageTypeInfo = paramType;
+			}
+			else if (!messageTypeInfo.isType(paramType.getClass())) {
 				throw new ContextError("Target method with name " + targetMethod + " of type " + targetType.name 
 					+ ": Method parameter of type " + paramType.name
 					+ " is not applicable to message type " + messageTypeInfo.name);
