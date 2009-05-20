@@ -15,6 +15,11 @@ public class MessagingTestContainer {
 		return new MessageHandlers();
 	}
 	
+	[ObjectDefinition(lazy="true")]
+	public function get messageBindings () : MessageBindings {
+		return new MessageBindings();
+	}
+	
 	
 }
 }

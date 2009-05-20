@@ -31,6 +31,22 @@ public class MessagingTest extends ContextTestBase {
 		assertEquals("Unexpected int property", 9, handlers.intProp);
 	}
 	
+	public function testMessageBindings () : void {
+		var context:Context = ActionScriptContextBuilder.build(MessagingTestContainer);
+		checkState(context);
+		checkObjectIds(context, ["eventSource"], EventSource);	
+		checkObjectIds(context, ["messageBindings"], MessageBindings);	
+		var source:EventSource
+				= getAndCheckObject(context, "eventSource", EventSource) as EventSource;
+		var bindings:MessageBindings 
+				= getAndCheckObject(context, "messageBindings", MessageBindings) as MessageBindings;
+		source.dispatchEvent(new TestEvent(TestEvent.TEST1, "foo1", 7));
+		source.dispatchEvent(new TestEvent(TestEvent.TEST2, "foo2", 9));
+		assertEquals("Unexpected value for string property", "foo1foo2", bindings.stringProp);
+		assertEquals("Unexpected value for int1 property", 7, bindings.intProp1);
+		assertEquals("Unexpected value for int2 property", 9, bindings.intProp2);
+	}
+	
 	
 }
 }
