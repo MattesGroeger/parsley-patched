@@ -71,7 +71,8 @@ public class RootViewManager extends AbstractViewManager {
 			return;
 		}
 		var context:FlexViewContext = new FlexViewContext(parent, new DefaultObjectDefinitionRegistry(domain)); 
-		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, 2); // must execute before DefaultContext's internal
+																			// listener: otherwise context.registry would be null
 		contextsByDomain[domain] = context;
 	}
 	
