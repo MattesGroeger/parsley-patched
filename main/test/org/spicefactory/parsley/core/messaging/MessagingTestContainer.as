@@ -20,6 +20,11 @@ public class MessagingTestContainer {
 		return new MessageBindings();
 	}
 	
+	[ObjectDefinition(lazy="true")]
+	public function get messageInterceptors () : MessageInterceptors {
+		return new MessageInterceptors();
+	}
+	
 	
 }
 }
