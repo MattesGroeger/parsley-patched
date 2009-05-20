@@ -20,6 +20,7 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.messaging.MessageTarget;
 
+import flash.events.Event;
 import flash.utils.Dictionary;
 
 /**
@@ -52,6 +53,9 @@ public class MessageTargetSelection {
 					throw new ContextError("Class " + type.name + " contains more than one Selector metadata tag");
 				}
 			}
+		}
+		if (_selectorProperty == null && _messageType.isType(Event)) {
+			_selectorProperty = _messageType.getProperty("type");
 		}
 	}
 	
@@ -105,12 +109,10 @@ public class MessageTargetSelection {
 	
 	public function addTarget (target:MessageTarget) : void {
 		var collection:Array = (target.interceptor) ?
-				((target.selector === undefined) ? _interceptorsWithoutSelector : _interceptorsWithSelector)
-				: ((target.selector === undefined) ? _targetsWithoutSelector : _interceptorsWithSelector);
+				((target.selector == undefined) ? _interceptorsWithoutSelector : _interceptorsWithSelector)
+				: ((target.selector == undefined) ? _targetsWithoutSelector : _targetsWithSelector);
 		collection.push(target);
 	}
-	
-	
 }
 
 }
