@@ -65,6 +65,13 @@ public class ActionScriptObjectDefinitionBuilderTest extends ContextTestBase {
 		assertEquals("Unexpected object count", 2, LazyTestClass.instanceCount);	
 	}
 	
+	public function testMergeTwoContainers () : void {
+		var context:Context = ActionScriptContextBuilder.buildAll([Container1, Container2]);
+		checkState(context);
+		checkObjectIds(context, ["simpleObject", "foo", "prototypeInstance", "lazyInstance", "eagerInstance"]);	
+		checkObjectIds(context, ["simpleObject", "foo", "prototypeInstance"], ClassWithSimpleProperties);	
+	}
+	
 	
 }
 }
