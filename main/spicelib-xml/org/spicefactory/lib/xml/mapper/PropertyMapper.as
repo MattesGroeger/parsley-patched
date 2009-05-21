@@ -72,7 +72,8 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 
 	private function fillMap (handlerMap:Dictionary, handler:PropertyHandler) : void {
 		for each (var xmlName:QName in handler.xmlNames) {
-			if (handlerMap[xmlName.toString()] != undefined) {
+			var key:String = (xmlName != null) ? xmlName.toString() : null;
+			if (handlerMap[key] != undefined) {
 				var message:String = "Duplicate handler registration for ";
 				switch (handler.nodeKind) {
 					case "attribute": message += "attribute with name " + xmlName; break;
@@ -81,7 +82,7 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 				}
 				throw new XmlValidationError(message);
 			}
-			handlerMap[xmlName.toString()] = handler;
+			handlerMap[key] = handler;
 		}
 	}
 
@@ -135,7 +136,8 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 		// map nodes to handlers
 		for each (var node:XML in nodes) {
 			if (node.nodeKind() == nodeKind) {
-				handler = handlerMap[node.name().toString()];
+				var key:String = (node.name() != null) ? node.name().toString() : null;
+				handler = handlerMap[key];
 				valueMap[handler].push(node);
 			}
 			else if (node.nodeKind() != "processing-instruction" && node.nodeKind() != "comment") {
@@ -148,7 +150,8 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 		if (!ignoreUnmappedNodes) {
 			var unknownNodes:Array = new Array();
 			for each (var unknown:XML in valueMap[null]) {
-				unknownNodes.push(unknown.name().toString());
+				var unknownName:String = (unknown.name() != null) ? unknown.name().toString() : null;
+				unknownNodes.push(unknownName);
 			}
 			if (unknownNodes.length != 0) {
 				throw new XmlValidationError("Element " + parentElement.name() 
