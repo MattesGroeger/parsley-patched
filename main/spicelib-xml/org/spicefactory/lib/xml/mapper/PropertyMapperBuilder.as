@@ -72,14 +72,14 @@ public class PropertyMapperBuilder {
 	public function mapAllToAttributes () : void {
 		for each (var property:Property in objectType.getProperties()) {
 			if (property.writable && propertyHandlerMap[property.name] == undefined) {
-				var attributeName:QName = new QName(null, namingStrategy.toXmlName(property.name));
+				var attributeName:QName = new QName("", namingStrategy.toXmlName(property.name));
 				addPropertyHandler(new AttributeHandler(property, attributeName));
 			}
 		}
 	}
 	
 	public function mapToAttribute (propertyName:String, attributeName:QName = null) : void {
-		if (attributeName == null) attributeName = new QName(null, namingStrategy.toXmlName(propertyName));
+		if (attributeName == null) attributeName = new QName("", namingStrategy.toXmlName(propertyName));
 		addPropertyHandler(new AttributeHandler(getProperty(propertyName), attributeName));
 	}
 
