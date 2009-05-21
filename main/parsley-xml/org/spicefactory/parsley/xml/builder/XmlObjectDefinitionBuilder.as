@@ -46,7 +46,7 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	
 	private var mapper:XmlObjectMapper;
 	private var _loader:XmlObjectDefinitionLoader;
-	private var loadedFiles:Array;
+	private var loadedFiles:Array = new Array();
 	private var expressionContext:ExpressionContext;
 	private var registry:ObjectDefinitionRegistry;
 
@@ -68,11 +68,12 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	}
 	
 	public function build (registry:ObjectDefinitionRegistry) : void {
+		this.registry = registry;
 		_loader.addEventListener(Event.COMPLETE, loaderComplete);
 		_loader.addEventListener(ErrorEvent.ERROR, loaderError);
 		_loader.load(registry.domain);
 	}
-	
+
 	private function loaderComplete (event:Event) : void {
 		loadedFiles = loadedFiles.concat(_loader.loadedFiles);
 		var containerErrors:Array = new Array();
