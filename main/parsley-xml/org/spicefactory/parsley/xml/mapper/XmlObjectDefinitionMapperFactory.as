@@ -161,7 +161,7 @@ public class XmlObjectDefinitionMapperFactory {
 		childBuilder.mapAllToAttributes();
 		decoratorChoice.addMapper(childBuilder.build());
 
-		addDecoratorAttributeMapper(AsyncInitDecorator, "asyncInit");
+		addDecoratorAttributeMapper(AsyncInitDecorator, "async-init");
 
 		addDecoratorAttributeMapper(FactoryMethodDecorator, "factory");
 		addDecoratorAttributeMapper(PostConstructMethodDecorator, "post-construct");
