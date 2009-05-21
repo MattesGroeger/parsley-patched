@@ -41,6 +41,8 @@ public class ClassInfo extends MetadataAware {
 
 	private static var cache:Dictionary = new Dictionary();
 	
+	private static var currentDomain:ApplicationDomain = ApplicationDomain.currentDomain; // make sure it's always the same instance
+	
 	
 	/**
 	 * Returns an instance representing the class or interface with the specified name.
@@ -90,7 +92,7 @@ public class ClassInfo extends MetadataAware {
 	}
 	
 	private static function getDomain (domain:ApplicationDomain) : ApplicationDomain {
-		return (domain == null) ? ApplicationDomain.currentDomain : domain;
+		return (domain == null) ? currentDomain : domain;
 	}
 	
 	private static function getClassDefinitionByName (name:String, domain:ApplicationDomain) : Class {
