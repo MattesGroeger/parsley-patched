@@ -203,7 +203,7 @@ public class XmlObjectDefinitionMapperFactory {
 		valueChoice.addMapper(new SimpleValueXmlObjectMapper(Date, "date", DateConverter.INSTANCE));
 		valueChoice.addMapper(new SimpleValueXmlObjectMapper(Class, "class", ClassConverter.INSTANCE));
 
-		addValueAttributeMapper(StaticPropertyRef, "static-property");
+		valueChoice.addMapper(new StaticPropertyRefMapper());
 		addValueAttributeMapper(ObjectReferenceTag, "object-ref");
 
 		valueChoice.addMapper(getNestedObjectMapper());
