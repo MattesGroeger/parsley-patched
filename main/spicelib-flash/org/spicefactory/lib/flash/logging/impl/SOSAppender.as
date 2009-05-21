@@ -154,12 +154,6 @@ public class SOSAppender extends AbstractAppender {
 		}
 		var level:String = event.level.toString();
 		var message:String = event.message;
-		if (event.error != null) {
-			var stackTrace:String = event.error.getStackTrace();
-			if (stackTrace != null && stackTrace.length > 0) {
-				message += "\n" + stackTrace;
-			}
-		}
 		var command:String;
 		if (message.indexOf(":::") > -1) {
 			var elems : Array = message.split(":::");

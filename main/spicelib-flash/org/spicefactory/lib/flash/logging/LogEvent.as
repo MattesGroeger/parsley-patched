@@ -28,7 +28,6 @@ public class LogEvent extends Event {
 
 	private var _level:LogLevel;
 	private var _message:String;
-	private var _error:Error;
 	
 	/**
 	 * Constant for the type of event fired when 
@@ -46,11 +45,10 @@ public class LogEvent extends Event {
 	 * @param message the log message for this event
 	 * @param error an optional Error instance associated with this event
 	 */
-	function LogEvent (level:LogLevel, message:String, error:Error = null) {
+	function LogEvent (level:LogLevel, message:String) {
 		super(LOG);
 		_level = level;
 		_message = message;
-		_error = error;
 	}
 	
 	/**
@@ -65,13 +63,6 @@ public class LogEvent extends Event {
 	 */
 	public function get message () : String {
 		return _message;
-	}
-	
-	/**
-	 * An optional Error instance associated with this LogEvent.
-	 */
-	public function get error () : Error {
-		return _error;
 	}
 		
 

@@ -17,12 +17,12 @@
  */
  
 package org.spicefactory.lib.flash.logging.impl {
-import flash.events.EventDispatcher;
-
+import org.spicefactory.lib.flash.logging.FlashLogger;
 import org.spicefactory.lib.flash.logging.LogEvent;
 import org.spicefactory.lib.flash.logging.LogLevel;
-import org.spicefactory.lib.flash.logging.FlashLogger;	
+import org.spicefactory.lib.logging.LogUtil;
 
+import flash.events.EventDispatcher;
 
 /**
  * Dispatched when any of the logging methods is invoked.
@@ -120,53 +120,53 @@ public class DefaultLogger extends EventDispatcher implements FlashLogger {
 	/**
 	 * @inheritDoc
 	 */
-	public function trace (message:String, error:Error = null) : void {
+	public function trace (message:String, ...params) : void {
 		if (!isTraceEnabled()) return;
-		dispatch(LogLevel.TRACE, message, error);
+		dispatch(LogLevel.TRACE, message, params);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function debug (message:String, error:Error = null) : void {
+	public function debug (message:String, ...params) : void {
 		if (!isDebugEnabled()) return;
-		dispatch(LogLevel.DEBUG, message, error);
+		dispatch(LogLevel.DEBUG, message, params);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function info (message:String, error:Error = null) : void {
+	public function info (message:String, ...params) : void {
 		if (!isInfoEnabled()) return;
-		dispatch(LogLevel.INFO, message, error);
+		dispatch(LogLevel.INFO, message, params);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function warn (message:String, error:Error = null) : void {
+	public function warn (message:String, ...params) : void {
 		if (!isWarnEnabled()) return;
-		dispatch(LogLevel.WARN, message, error);
+		dispatch(LogLevel.WARN, message, params);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function error (message:String, error:Error = null) : void {
+	public function error (message:String, ...params) : void {
 		if (!isErrorEnabled()) return;
-		dispatch(LogLevel.ERROR, message, error);
+		dispatch(LogLevel.ERROR, message, params);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function fatal (message:String, error:Error = null) : void {
+	public function fatal (message:String, ...params) : void {
 		if (!isFatalEnabled()) return;
-		dispatch(LogLevel.FATAL, message, error);
+		dispatch(LogLevel.FATAL, message, params);
 	}
 	
-	private function dispatch (level:LogLevel, message:String, error:Error) : void {
-		dispatchEvent(new LogEvent(level, message, error));
+	private function dispatch (level:LogLevel, message:String, params:Array) : void {
+		dispatchEvent(new LogEvent(level, LogUtil.buildLogMessage(message, params)));
 	} 
 		
 		

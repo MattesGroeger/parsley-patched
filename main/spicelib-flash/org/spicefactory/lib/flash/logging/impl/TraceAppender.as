@@ -49,7 +49,7 @@ public class TraceAppender extends AbstractAppender {
 		if (isBelowThreshold(event.level)) return;
 		var loggerName:String = FlashLogger(event.target).name;
 		var logMessage:String;
-		if ((event.level.toValue() <= LogLevel.INFO.toValue()) && event.error == null) {
+		if ((event.level.toValue() <= LogLevel.INFO.toValue())) {
 			var levelString:String = (event.level == LogLevel.DEBUG) ? "DEBUG: " : "INFO:  ";
 			loggerName = loggerName.replace("::", ".");
 			var index:int = loggerName.lastIndexOf(".");
@@ -60,12 +60,6 @@ public class TraceAppender extends AbstractAppender {
 			var lf:String = (needsLineFeed) ? "\n" : "";
 			logMessage = lf + "  *** " + event.level + " *** " + loggerName + " ***\n" 
 				+ event.message + "\n";
-			if (event.error != null) {
-				var stackTrace:String = event.error.getStackTrace();
-				if (stackTrace != null && stackTrace.length > 0) {
-					logMessage += stackTrace + "\n";
-				}
-			}
 			needsLineFeed = false;
 		}
 		trace(logMessage);
