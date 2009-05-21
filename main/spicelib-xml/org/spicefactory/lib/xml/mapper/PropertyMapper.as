@@ -149,8 +149,10 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 		
 		// process nodes
 		var hasErrors:Boolean = false;
-		for (handler in valueMap) {
+		for (var handlerObj:Object in valueMap) {
+			if (handlerObj == null) continue;
 			try {
+				handler = handlerObj as PropertyHandler;
 				handler.toObject(valueMap[handler], targetInstance, context);
 			}
 			catch (e:Error) {
