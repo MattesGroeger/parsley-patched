@@ -12,6 +12,7 @@ public class AsyncInitMxmlTagTest extends ContextTestBase {
 	
 	
 	public function testDefaultAsyncInit () : void {
+		AsyncInitModel.instance = null;
 		var context:Context = ActionScriptContextBuilder.build(AsyncInitMxmlTagContainer);
 		checkState(context, true, false);
 		checkObjectIds(context, ["asyncInitModel"], AsyncInitModel);
@@ -22,6 +23,8 @@ public class AsyncInitMxmlTagTest extends ContextTestBase {
 	
 	
 	public function testOrderedAsyncInit () : void {
+		AsyncInitOrderedModel1.instance = null;
+		AsyncInitOrderedModel2.instance = null;
 		var context:Context = ActionScriptContextBuilder.build(AsyncInitOrderedMxmlTagContainer);
 		checkState(context, true, false);
 		checkObjectIds(context, ["asyncInitModel1"], AsyncInitOrderedModel1);

@@ -34,6 +34,7 @@ public class AsyncInitXmlTagTest extends XmlContextTestBase {
 
 	
 	public function testDefaultAsyncInit () : void {
+		AsyncInitModel.instance = null;
 		var context:Context = getContext(config);
 		checkState(context, true, false);
 		checkObjectIds(context, ["asyncInitModel"], AsyncInitModel);
@@ -44,6 +45,8 @@ public class AsyncInitXmlTagTest extends XmlContextTestBase {
 	
 	
 	public function testOrderedAsyncInit () : void {
+		AsyncInitOrderedModel1.instance = null;
+		AsyncInitOrderedModel2.instance = null;
 		var context:Context = getContext(orderedConfig);
 		checkState(context, true, false);
 		checkObjectIds(context, ["asyncInitModel1"], AsyncInitOrderedModel1);
