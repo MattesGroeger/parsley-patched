@@ -49,7 +49,8 @@ public class AbstractPropertyHandler implements PropertyHandler {
 		_nodeKind = nodeKind;
 		_xmlNames = (xmlNames == null) ? [null] : xmlNames;
 		if (_property.type.isType(Array) && !allowArrayProperty) {
-			throw new XmlValidationError("Array Properties cannot be handled by " + getQualifiedClassName(this));
+			throw new XmlValidationError("Array Properties cannot be handled by " + getQualifiedClassName(this)
+					+ ": " + _property);
 		}
 	}
 	
