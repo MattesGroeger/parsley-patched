@@ -6,7 +6,7 @@
 	
 	<mx:Script>
 		<![CDATA[
-			import org.spicefactory.parsley.flex.mxmlconfig.core.CoreMxmlTagModel;		
+			import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;		
 		]]>
 	</mx:Script>
 	
@@ -14,7 +14,7 @@
 	<model:InjectedDependency id="dependency"/>
 	
 	
-	<flextag:MxmlObjectDefinitionFactoryTag id="object" type="{CoreMxmlTagModel}">
+	<flextag:MxmlObjectDefinitionFactoryTag id="object" type="{CoreModel}">
 		<tag:ConstructorDecoratorTag>
 			<mx:String>foo</mx:String>
 			<mx:int>7</mx:int>
