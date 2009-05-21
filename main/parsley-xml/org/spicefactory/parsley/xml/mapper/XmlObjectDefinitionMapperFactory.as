@@ -112,9 +112,9 @@ public class XmlObjectDefinitionMapperFactory {
 		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectDefinitionFactoryTag, "object"); 
 		builder.mapToChildElementChoice("decorators", decoratorChoice);
 		builder.mapToAttribute("type");
-		return builder.build();
+		return new DelegatingXmlObjectMapper(builder);
 	}
-	
+
 	
 	private function addCustomConfigurationNamespaces () : void {
 		var namespaces:Array = XmlConfigurationNamespaceRegistry.getRegisteredNamespaces();
@@ -208,6 +208,7 @@ public class XmlObjectDefinitionMapperFactory {
 
 		valueChoice.addMapper(getNestedObjectMapper());
 
+		// TODO - enable nested arrays
 		var childBuilder:PropertyMapperBuilder = getMapperBuilder(ArrayTag, "array");
 		childBuilder.mapToChildElementChoice("values", valueChoice);
 		valueChoice.addMapper(childBuilder.build());
@@ -231,6 +232,7 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Converter;
 import org.spicefactory.lib.reflect.types.Any;
 import org.spicefactory.lib.xml.NamingStrategy;
+import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.lib.xml.mapper.AbstractXmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.Choice;
@@ -311,6 +313,39 @@ class ObjectDefinitionFactoryMapperBuilder extends PropertyMapperBuilder {
 	
 	public function applyDecoratorChoice (choice:Choice) : void {
 		mapToChildElementChoice(decoratorArray, choice);
+	}
+	
+	
+}
+
+class DelegatingXmlObjectMapper implements XmlObjectMapper {
+	
+	
+	private var builder:PropertyMapperBuilder;
+	private var mapper:PropertyMapper;
+	
+	
+	function DelegatingXmlObjectMapper (builder:PropertyMapperBuilder) {
+		this.builder = builder;
+	}
+
+	
+	public function mapToObject (element:XML, context:XmlProcessorContext) : Object {
+		if (mapper == null) mapper = builder.build();
+		return mapper.mapToObject(element, context);
+	}
+	
+	public function mapToXml (object:Object, context:XmlProcessorContext) : XML {
+		if (mapper == null) mapper = builder.build();
+		return mapper.mapToXml(object, context);
+	}
+	
+	public function get objectType () : ClassInfo {
+		return builder.objectType;
+	}
+	
+	public function get elementName () : QName {
+		return builder.elementName;
 	}
 	
 	
