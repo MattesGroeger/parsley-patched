@@ -103,8 +103,8 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 						} 
 						catch (error:Error) {
 							var msg:String = "Error building object definition with " + factory;
-							log.error(msg + "{0}", e);
-							factoryErrors.push(msg + ": " + e.message);		
+							log.error(msg + "{0}", error);
+							factoryErrors.push(msg + ": " + error.message);		
 						}
 					}
 				}	
