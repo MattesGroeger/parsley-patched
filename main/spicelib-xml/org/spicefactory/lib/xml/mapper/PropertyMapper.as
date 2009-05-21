@@ -23,7 +23,7 @@ import org.spicefactory.lib.xml.mapper.PropertyHandler;
 
 import flash.utils.Dictionary;
 
-/**
+import flash.utils.getQualifiedClassName;/**
  * @author Jens Halm
  */
 public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObjectMapper {
@@ -105,8 +105,17 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 			}
 		}
 		catch (error:Error) {
+			trace(error.getStackTrace());
 			hasErrors = true;
 			context.addError(error);
+		}
+		if (hasErrors) {
+			trace("Errors: " + context.errors.length);
+			for each (var e:Object in context.errors) {
+				trace("E " + e);
+				var er:Error = e as Error;
+				if (er is Error) trace(er.getStackTrace());
+			}
 		}
 		return (hasErrors) ? null : targetInstance;
 	}
@@ -126,7 +135,8 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 		// map nodes to handlers
 		for each (var node:XML in nodes) {
 			if (node.nodeKind() == nodeKind) {
-				valueMap[handlerMap[node.name().toString()]].push(node);
+				handler = handlerMap[node.name().toString()];
+				valueMap[handler].push(node);
 			}
 			else if (node.nodeKind() != "processing-instruction" && node.nodeKind() != "comment") {
 				throw new XmlValidationError("Unexpected node kind '" + node.nodeKind() 
@@ -150,7 +160,7 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 		// process nodes
 		var hasErrors:Boolean = false;
 		for (var handlerObj:Object in valueMap) {
-			if (handlerObj == null) continue;
+			if (handlerObj == "null") continue; // strangely null will be a String key here
 			try {
 				handler = handlerObj as PropertyHandler;
 				handler.toObject(valueMap[handler], targetInstance, context);
