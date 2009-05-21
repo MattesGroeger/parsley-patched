@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.lib.xml.mapper {
+import org.spicefactory.lib.xml.DefaultNamingStrategy;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
@@ -35,7 +36,7 @@ import flash.utils.Dictionary;
 public class PropertyMapperBuilder {
 	
 	
-	public static var defaultNamingStrategy:NamingStrategy;
+	public static var defaultNamingStrategy:NamingStrategy = new DefaultNamingStrategy();
 
 	public var namingStrategy:NamingStrategy;
 	
