@@ -41,8 +41,8 @@ public class PropertyMapperBuilder {
 	public var namingStrategy:NamingStrategy;
 	
 	
-	private var objectType:ClassInfo;
-	private var elementName:QName;
+	private var _objectType:ClassInfo;
+	private var _elementName:QName;
 	
 	
 	private var _ignoreUnmappedAttributes:Boolean = false;
@@ -55,10 +55,19 @@ public class PropertyMapperBuilder {
 	
 	
 	function PropertyMapperBuilder (objectType:ClassInfo, elementName:QName, namingStrategy:NamingStrategy = null) {
-		this.objectType = objectType;
-		this.elementName = elementName;
+		this._objectType = objectType;
+		this._elementName = elementName;
 		this.namingStrategy = (namingStrategy != null) ? namingStrategy : defaultNamingStrategy;
 	}
+	
+	
+	public function get objectType () : ClassInfo {
+		return _objectType;
+	}
+	
+	public function get elementName () : QName {
+		return _elementName;
+	}	
 
 	
 	public function ignoreUnmappedAttributes () : void {
@@ -80,7 +89,7 @@ public class PropertyMapperBuilder {
 	}
 
 	public function mapAllToAttributes () : void {
-		for each (var property:Property in objectType.getProperties()) {
+		for each (var property:Property in _objectType.getProperties()) {
 			if (isMappableProperty(property)) {
 				var attributeName:QName = new QName("", namingStrategy.toXmlName(property.name));
 				addPropertyHandler(new AttributeHandler(property, attributeName));
@@ -94,16 +103,16 @@ public class PropertyMapperBuilder {
 	}
 
 	public function mapAllToChildTextNodes () : void {
-		for each (var property:Property in objectType.getProperties()) {
+		for each (var property:Property in _objectType.getProperties()) {
 			if (isMappableProperty(property)) {
-				var childName:QName = new QName(elementName.uri, namingStrategy.toXmlName(property.name));
+				var childName:QName = new QName(_elementName.uri, namingStrategy.toXmlName(property.name));
 				addPropertyHandler(new ChildTextNodeHandler(property, childName));
 			}
 		}
 	}
 	
 	public function mapToChildTextNode (propertyName:String, childName:QName = null) : void {
-		if (childName == null) childName = new QName(elementName.uri, namingStrategy.toXmlName(propertyName));
+		if (childName == null) childName = new QName(_elementName.uri, namingStrategy.toXmlName(propertyName));
 		addPropertyHandler(new ChildTextNodeHandler(getProperty(propertyName), childName));
 	}
 	
@@ -121,7 +130,7 @@ public class PropertyMapperBuilder {
 
 	public function createChildElementMapperBuilder (propertyName:String, 
 			type:ClassInfo = null, elementName:QName = null) : PropertyMapperBuilder {
-		if (elementName == null) elementName = new QName(this.elementName.uri, namingStrategy.toXmlName(propertyName));
+		if (elementName == null) elementName = new QName(this._elementName.uri, namingStrategy.toXmlName(propertyName));
 		var property:Property = getProperty(propertyName);
 		if (type == null) type = property.type;
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, elementName);
@@ -139,7 +148,7 @@ public class PropertyMapperBuilder {
 
 	
 	protected function getProperty (propertyName:String) : Property {
-		var property:Property = objectType.getProperty(propertyName);
+		var property:Property = _objectType.getProperty(propertyName);
 		if (property == null || !property.writable) {
 			throw new IllegalArgumentError("Property with name " + propertyName + " does not exist or is not writable"); 
 		}		
@@ -157,10 +166,10 @@ public class PropertyMapperBuilder {
 				handlers.push(handler);
 			}
 		}
-		return new PropertyMapper(objectType, elementName, handlers, _ignoreUnmappedAttributes, _ignoreUnmappedChildren);
+		return new PropertyMapper(_objectType, _elementName, handlers, _ignoreUnmappedAttributes, _ignoreUnmappedChildren);
 	}
 	
-	
+
 }
 }
 
