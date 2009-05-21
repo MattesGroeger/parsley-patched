@@ -131,7 +131,7 @@ public class PropertyMapperBuilder {
 	protected function getProperty (propertyName:String) : Property {
 		var property:Property = objectType.getProperty(propertyName);
 		if (property == null || !property.writable) {
-			throw new IllegalArgumentError("Property with name " + property + " does not exist or is not writable"); 
+			throw new IllegalArgumentError("Property with name " + propertyName + " does not exist or is not writable"); 
 		}		
 		return property;
 	}
@@ -165,7 +165,7 @@ class BuilderHandler extends AbstractPropertyHandler {
 	private var builder:PropertyMapperBuilder;
 	
 	function BuilderHandler (property:Property, xmlName:QName, builder:PropertyMapperBuilder) {
-		super(property, "element", [xmlName]);
+		super(property, "element", [xmlName], true);
 		this.builder = builder;
 	}
 	
