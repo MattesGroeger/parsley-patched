@@ -156,6 +156,8 @@ public class PropertyMapperBuilder {
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.mapper.handler.AbstractPropertyHandler;
 import org.spicefactory.lib.xml.mapper.handler.ChildElementHandler;
+import org.spicefactory.lib.xml.mapper.PropertyHandler;
+import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 
 class BuilderHandler extends AbstractPropertyHandler {
 	
