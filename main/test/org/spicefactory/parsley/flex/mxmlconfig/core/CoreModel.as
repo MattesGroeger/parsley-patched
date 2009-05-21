@@ -4,7 +4,7 @@ import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 /**
  * @author Jens Halm
  */
-public class CoreMxmlTagModel {
+public class CoreModel {
 	
 	
 	public var arrayProp:Array;
@@ -17,7 +17,7 @@ public class CoreMxmlTagModel {
 	private var _stringProp:String;
 	
 	
-	function CoreMxmlTagModel (cArg1:String, cArg2:int) {
+	function CoreModel (cArg1:String, cArg2:int) {
 		_stringProp = cArg1;
 		_intProp = cArg2;
 	}

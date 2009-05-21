@@ -15,9 +15,9 @@ public class CoreMxmlTagTest extends ContextTestBase {
 		checkState(context);
 		trace("?? " + context.getObjectIds());
 		checkObjectIds(context, ["dependency"], InjectedDependency);	
-		checkObjectIds(context, ["object"], CoreMxmlTagModel);	
-		var obj:CoreMxmlTagModel 
-				= getAndCheckObject(context, "object", CoreMxmlTagModel) as CoreMxmlTagModel;
+		checkObjectIds(context, ["object"], CoreModel);	
+		var obj:CoreModel 
+				= getAndCheckObject(context, "object", CoreModel) as CoreModel;
 		assertEquals("Unexpected string property", "foo", obj.stringProp);
 		assertEquals("Unexpected int property", 7, obj.intProp);
 		assertEquals("Unexpected boolean property", true, obj.booleanProp);
