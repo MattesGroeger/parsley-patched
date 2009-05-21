@@ -30,10 +30,13 @@ public class ChoiceHandler extends AbstractChildElementHandler {
 
 	
 	public function ChoiceHandler (property:Property, choice:Choice) {
-		super(property, choice.xmlNames);
+		super(property, []);
 		this.choice = choice;
 	}
 	
+	public override function get xmlNames () : Array {
+		return choice.xmlNames;
+	}
 	
 	protected override function getMapperForInstance (instance:Object, context:XmlProcessorContext):XmlObjectMapper {
 		return choice.getMapperForInstance(instance, context);
