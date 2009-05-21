@@ -39,6 +39,7 @@ import org.spicefactory.parsley.factory.tag.ObjectDefinitionFactoryTag;
 import org.spicefactory.parsley.factory.tag.ObjectReferenceTag;
 import org.spicefactory.parsley.factory.tag.PropertyDecoratorTag;
 import org.spicefactory.parsley.messaging.decorator.MessageBindingDecorator;
+import org.spicefactory.parsley.messaging.decorator.MessageDispatcherDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageInterceptorDecorator;
 import org.spicefactory.parsley.resources.ResourceBindingDecorator;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
@@ -170,6 +171,7 @@ public class XmlObjectDefinitionMapperFactory {
 		addDecoratorAttributeMapperWithArrayAdapter(MessageHandlerDecoratorTag, "message-handler", "messageProperties");
 		addDecoratorAttributeMapper(MessageInterceptorDecorator, "message-interceptor");
 		addDecoratorAttributeMapper(MessageBindingDecorator, "message-binding");
+		addDecoratorAttributeMapper(MessageDispatcherDecorator, "message-dispatcher");
 		addDecoratorAttributeMapperWithArrayAdapter(ManagedEventsDecoratorTag, "managed-events", "names");
 
 		addDecoratorAttributeMapper(ResourceBindingDecorator, "resource-binding");
