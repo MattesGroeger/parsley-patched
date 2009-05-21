@@ -72,7 +72,7 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 
 	private function fillMap (handlerMap:Dictionary, handler:PropertyHandler) : void {
 		for each (var xmlName:QName in handler.xmlNames) {
-			if (handlerMap[xmlName] != undefined) {
+			if (handlerMap[xmlName.toString()] != undefined) {
 				var message:String = "Duplicate handler registration for ";
 				switch (handler.nodeKind) {
 					case "attribute": message += "attribute with name " + xmlName; break;
@@ -81,7 +81,7 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 				}
 				throw new XmlValidationError(message);
 			}
-			handlerMap[xmlName] = handler;
+			handlerMap[xmlName.toString()] = handler;
 		}
 	}
 
