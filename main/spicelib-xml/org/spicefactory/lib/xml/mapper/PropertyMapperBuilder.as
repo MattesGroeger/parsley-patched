@@ -47,6 +47,7 @@ public class PropertyMapperBuilder {
 	
 	private var _ignoreUnmappedAttributes:Boolean = false;
 	private var _ignoreUnmappedChildren:Boolean = false;
+	private var _ignoredProperties:Dictionary = new Dictionary();
 	
 	
 	private var propertyHandlerMap:Dictionary = new Dictionary();
@@ -68,10 +69,19 @@ public class PropertyMapperBuilder {
 		_ignoreUnmappedChildren = true;
 	}
 
+	public function ignoreProperty (propertyName:String) : void {
+		_ignoredProperties[propertyName] = true;
+	}
 	
+	private function isMappableProperty (property:Property) : Boolean {
+		return (property.writable 
+				&& propertyHandlerMap[property.name] == undefined 
+				&& _ignoredProperties[property.name] == undefined);
+	}
+
 	public function mapAllToAttributes () : void {
 		for each (var property:Property in objectType.getProperties()) {
-			if (property.writable && propertyHandlerMap[property.name] == undefined) {
+			if (isMappableProperty(property)) {
 				var attributeName:QName = new QName("", namingStrategy.toXmlName(property.name));
 				addPropertyHandler(new AttributeHandler(property, attributeName));
 			}
@@ -85,7 +95,7 @@ public class PropertyMapperBuilder {
 
 	public function mapAllToChildTextNodes () : void {
 		for each (var property:Property in objectType.getProperties()) {
-			if (property.writable && propertyHandlerMap[property.name] == undefined) {
+			if (isMappableProperty(property)) {
 				var childName:QName = new QName(elementName.uri, namingStrategy.toXmlName(property.name));
 				addPropertyHandler(new ChildTextNodeHandler(property, childName));
 			}
