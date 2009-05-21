@@ -197,6 +197,14 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 				context.addError(e);
 			}
 		}
+		if (hasErrors) {
+			trace("Errors: " + context.errors.length);
+			for each (var er:Object in context.errors) {
+				trace("E " + er);
+				var err:Error = er as Error;
+				if (err is Error) trace(err.getStackTrace());
+			}
+		}
 		return (hasErrors) ? null : parentElement;
 	}		 
 	
