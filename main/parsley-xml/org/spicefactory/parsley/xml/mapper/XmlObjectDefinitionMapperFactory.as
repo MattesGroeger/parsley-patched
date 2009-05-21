@@ -24,6 +24,8 @@ import org.spicefactory.lib.reflect.converter.IntConverter;
 import org.spicefactory.lib.reflect.converter.NumberConverter;
 import org.spicefactory.lib.reflect.converter.StringConverter;
 import org.spicefactory.lib.reflect.converter.UintConverter;
+import org.spicefactory.lib.xml.DefaultNamingStrategy;
+import org.spicefactory.lib.xml.NamingStrategy;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.Choice;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
@@ -31,19 +33,19 @@ import org.spicefactory.parsley.factory.decorator.AsyncInitDecorator;
 import org.spicefactory.parsley.factory.decorator.FactoryMethodDecorator;
 import org.spicefactory.parsley.factory.decorator.PostConstructMethodDecorator;
 import org.spicefactory.parsley.factory.decorator.PreDestroyMethodDecorator;
-import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.parsley.factory.tag.ArrayTag;
 import org.spicefactory.parsley.factory.tag.ConstructorDecoratorTag;
+import org.spicefactory.parsley.factory.tag.ObjectDefinitionFactoryTag;
 import org.spicefactory.parsley.factory.tag.ObjectReferenceTag;
 import org.spicefactory.parsley.factory.tag.PropertyDecoratorTag;
-import org.spicefactory.parsley.messaging.decorator.ManagedEventsDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageBindingDecorator;
-import org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageInterceptorDecorator;
 import org.spicefactory.parsley.resources.ResourceBindingDecorator;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 import org.spicefactory.parsley.xml.tag.Include;
+import org.spicefactory.parsley.xml.tag.ManagedEventsDecoratorTag;
+import org.spicefactory.parsley.xml.tag.MessageHandlerDecoratorTag;
 import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
 import org.spicefactory.parsley.xml.tag.StaticPropertyRef;
 import org.spicefactory.parsley.xml.tag.Variable;
@@ -57,6 +59,8 @@ public class XmlObjectDefinitionMapperFactory {
 	
 
 	public static const PARSLEY_NAMESPACE_URI:String = "http://www.spicefactory.org/parsley";
+	
+	private static const namingStrategy:NamingStrategy = new DefaultNamingStrategy();
 
 	
 	private var rootObjectChoice:Choice = new Choice();
@@ -97,14 +101,14 @@ public class XmlObjectDefinitionMapperFactory {
 
 	
 	private function getRootObjectMapper () : XmlObjectMapper {
-		var builder:PropertyMapperBuilder = getMapperBuilder(DefaultObjectDefinitionFactory, "object"); 
+		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectDefinitionFactoryTag, "object"); 
 		builder.mapToChildElementChoice("decorators", decoratorChoice);
 		builder.mapAllToAttributes();
 		return builder.build();
 	}
 	
 	private function getNestedObjectMapper () : XmlObjectMapper {
-		var builder:PropertyMapperBuilder = getMapperBuilder(DefaultObjectDefinitionFactory, "object"); 
+		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectDefinitionFactoryTag, "object"); 
 		builder.mapToChildElementChoice("decorators", decoratorChoice);
 		builder.mapToAttribute("type");
 		return builder.build();
@@ -163,10 +167,10 @@ public class XmlObjectDefinitionMapperFactory {
 		addDecoratorAttributeMapper(PostConstructMethodDecorator, "post-construct");
 		addDecoratorAttributeMapper(PreDestroyMethodDecorator, "pre-destroy");
 		
-		addDecoratorAttributeMapper(MessageHandlerDecorator, "message-handler");
+		addDecoratorAttributeMapperWithArrayAdapter(MessageHandlerDecoratorTag, "message-handler", "messageProperties");
 		addDecoratorAttributeMapper(MessageInterceptorDecorator, "message-interceptor");
 		addDecoratorAttributeMapper(MessageBindingDecorator, "message-binding");
-		addDecoratorAttributeMapper(ManagedEventsDecorator, "managed-events");
+		addDecoratorAttributeMapperWithArrayAdapter(ManagedEventsDecoratorTag, "managed-events", "names");
 
 		addDecoratorAttributeMapper(ResourceBindingDecorator, "resource-binding");
 	}
@@ -175,6 +179,14 @@ public class XmlObjectDefinitionMapperFactory {
 		var childBuilder:PropertyMapperBuilder = getMapperBuilder(type, tagName);
 		childBuilder.mapAllToAttributes();
 		decoratorChoice.addMapper(childBuilder.build());
+	}
+	
+	private function addDecoratorAttributeMapperWithArrayAdapter (type:Class, tagName:String, arrayProp:String) : void {
+		var childBuilder:PropertyMapperBuilder = getMapperBuilder(type, tagName);
+		childBuilder.mapToAttribute(arrayProp + "AsString", new QName("", namingStrategy.toXmlName(arrayProp)));
+		childBuilder.ignoreProperty(arrayProp);
+		childBuilder.mapAllToAttributes();
+		decoratorChoice.addMapper(childBuilder.build());		
 	}
 	
 	
@@ -189,14 +201,14 @@ public class XmlObjectDefinitionMapperFactory {
 		valueChoice.addMapper(new SimpleValueXmlObjectMapper(Date, "date", DateConverter.INSTANCE));
 		valueChoice.addMapper(new SimpleValueXmlObjectMapper(Class, "class", ClassConverter.INSTANCE));
 
+		addValueAttributeMapper(StaticPropertyRef, "static-property");
+		addValueAttributeMapper(ObjectReferenceTag, "object-ref");
+
+		valueChoice.addMapper(getNestedObjectMapper());
+
 		var childBuilder:PropertyMapperBuilder = getMapperBuilder(ArrayTag, "array");
 		childBuilder.mapToChildElementChoice("values", valueChoice);
 		valueChoice.addMapper(childBuilder.build());
-		
-		addValueAttributeMapper(StaticPropertyRef, "static-property");
-		addValueAttributeMapper(ObjectReferenceTag, "object-ref");
-		
-		valueChoice.addMapper(getNestedObjectMapper());
 	}
 	
 	private function addValueAttributeMapper (type:Class, tagName:String) : void {
@@ -222,6 +234,7 @@ import org.spicefactory.lib.xml.mapper.AbstractXmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.Choice;
 import org.spicefactory.lib.xml.mapper.PropertyMapper;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
+import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import org.spicefactory.parsley.xml.tag.StaticPropertyRef;
 
 import flash.errors.IllegalOperationError;
@@ -229,7 +242,7 @@ import flash.errors.IllegalOperationError;
 class NullXmlObjectMapper extends AbstractXmlObjectMapper {
 	
 	function NullXmlObjectMapper () {
-		super(null, new QName(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI, "null"));
+		super(ClassInfo.forClass(Object), new QName(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI, "null"));
 	}
 	
 	public override function mapToObject (element:XML, context:XmlProcessorContext) : Object {
