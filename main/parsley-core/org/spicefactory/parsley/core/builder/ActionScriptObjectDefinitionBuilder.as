@@ -22,9 +22,11 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.metadata.InternalProperty;
 import org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata;
+import org.spicefactory.parsley.factory.FactoryObjectInstantiator;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.factory.ObjectInstantiator;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 
@@ -101,7 +103,13 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
 		registry.registerDefinition(definition);
 		if (!containerProperty.type.isType(ObjectDefinitionFactory)) {
-			definition.instantiator = new ContainerPropertyInstantiator(container, containerProperty);
+			var inst:ObjectInstantiator = new ContainerPropertyInstantiator(container, containerProperty);
+			if (definition.instantiator is FactoryObjectInstantiator) {
+				FactoryObjectInstantiator(definition.instantiator).factoryDefinition.instantiator = inst;
+			}
+			else {
+				definition.instantiator = inst;
+			} 
 		}
 	}
 }
