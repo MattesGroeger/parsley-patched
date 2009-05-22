@@ -35,7 +35,7 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.utils.Dictionary;
 
-/**
+import flash.utils.getQualifiedClassName;/**
  * @author Jens Halm
  */
 public class DefaultContext extends EventDispatcher implements Context {
@@ -171,7 +171,11 @@ public class DefaultContext extends EventDispatcher implements Context {
 	
 	public function getObjectByType (type:Class, required:Boolean = false) : Object {
 		checkState();
-		return getInstance(_registry.getDefinitionByType(type, required));
+		var def:RootObjectDefinition = _registry.getDefinitionByType(type, required);
+		if (def == null && required) {
+			throw new ContextError("Context does not contain an object of type " + getQualifiedClassName(type));
+		}
+		return (def != null) ? getInstance(def) : null;
 	}
 	
 
