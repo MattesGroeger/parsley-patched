@@ -61,6 +61,7 @@ public class DefaultBundleLoader extends Task {
 		_locale = loc;
 		setSuspendable(false);
 		setSkippable(false);
+		setName("Loader for bundle " + _bundle.id + " and locale " + loc);
 	}
 	
 	/**
