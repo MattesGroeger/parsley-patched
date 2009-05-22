@@ -33,9 +33,9 @@ public class FlashResourceXmlSupport {
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(FLASH_RESOURCE_NAMESPACE);
 		ns.addDefaultObjectMapper(ResourceBundleTag, "resource-bundle");
 		var builder:PropertyMapperBuilder = ns.createObjectMapperBuilder(ResourceManagerTag, "resource-manager");
-		builder.mapAllToAttributes();
 		builder.createChildElementMapperBuilder("locales", ClassInfo.forClass(LocaleTag), 
 				new QName(FLASH_RESOURCE_NAMESPACE, "locale")).mapAllToAttributes();
+		builder.mapAllToAttributes();
 	}
 	
 	
