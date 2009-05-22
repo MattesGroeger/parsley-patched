@@ -66,7 +66,7 @@ public class ResourceBundleTag extends EventDispatcher {
 		}
 		var bundle:ResourceBundleSpi = bundleInstance as ResourceBundleSpi;
 		var factoryInstance:Object = new loaderFactory();
-		if (!(bundleInstance is BundleLoaderFactory)) {
+		if (!(factoryInstance is BundleLoaderFactory)) {
 			throw new IllegalArgumentError("Specified loaderFactory " + getQualifiedClassName(type) 
 					+ " does not implement BundleLoaderFactory"); 
 		}
@@ -78,6 +78,7 @@ public class ResourceBundleTag extends EventDispatcher {
 		bundle.addLoaders(resourceManager.currentLocale, tg);
 		tg.addEventListener(TaskEvent.COMPLETE, loaderComplete);
 		tg.addEventListener(ErrorEvent.ERROR, loaderError);
+		tg.start();
 	}
 	
 	
