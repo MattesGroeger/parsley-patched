@@ -172,9 +172,6 @@ public class DefaultContext extends EventDispatcher implements Context {
 	public function getObjectByType (type:Class, required:Boolean = false) : Object {
 		checkState();
 		var def:RootObjectDefinition = _registry.getDefinitionByType(type, required);
-		if (def == null && required) {
-			throw new ContextError("Context does not contain an object of type " + getQualifiedClassName(type));
-		}
 		return (def != null) ? getInstance(def) : null;
 	}
 	
