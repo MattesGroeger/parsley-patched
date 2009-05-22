@@ -133,6 +133,7 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 		try {
 			preprocess(xml);
 		} catch (e:Error) {
+			trace(e.getStackTrace());
 			handleError("Error preprocessing XML context definition");
 			return;
 		}
@@ -153,17 +154,18 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 	}
 
 	protected function preprocess (xml:XML) : void {
+		var parsley:Namespace = new Namespace(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI);
 		var context:XmlProcessorContext = new XmlProcessorContext(expressionContext, domain);
-		for each (var variableXml:XML in xml.variable) {
+		for each (var variableXml:XML in xml.parsley::variable) {
 			var variable:Variable = variableMapper.mapToObject(variableXml, context) as Variable;
 			expressionContext.setVariable(variable.name, variable.value);
 		}
-		for each (var includeXml:XML in xml["include"]) {
+		for each (var includeXml:XML in xml[new QName(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI, "include")]) {
 			var incl:Include = includeMapper.mapToObject(includeXml, context) as Include;
 			files.push(incl.filename);
 		}
-		delete xml.variable;
-		delete xml["include"]; // to trick the FDT parser who complains about xml.include
+		delete xml.parsley::variable;
+		delete xml[new QName(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI, "include")]; // necessary since include is a keyword
 		if (context.hasErrors()) {
 			var msg:String = "One or more errors preprocessing loaded xml: ";
 			for each (var xmlError:Error in context.errors) {
