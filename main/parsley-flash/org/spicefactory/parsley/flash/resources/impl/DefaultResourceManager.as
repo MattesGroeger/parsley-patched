@@ -24,10 +24,12 @@ import org.spicefactory.lib.task.TaskGroup;
 import org.spicefactory.lib.task.events.TaskEvent;
 import org.spicefactory.parsley.flash.resources.Locale;
 import org.spicefactory.parsley.flash.resources.ResourceBundle;
+import org.spicefactory.parsley.flash.resources.adapter.FlashResourceBindingAdapter;
 import org.spicefactory.parsley.flash.resources.events.LocaleSwitchEvent;
 import org.spicefactory.parsley.flash.resources.impl.LocaleUtil;
 import org.spicefactory.parsley.flash.resources.spi.ResourceBundleSpi;
 import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
+import org.spicefactory.parsley.resources.ResourceBindingDecorator;
 
 import flash.events.ErrorEvent;
 import flash.events.EventDispatcher;
@@ -40,6 +42,10 @@ import flash.system.Capabilities;
  * @author Jens Halm
  */
 public class DefaultResourceManager extends EventDispatcher implements ResourceManagerSpi {
+	
+	
+	ResourceBindingDecorator.adapterClass = FlashResourceBindingAdapter;
+
 	
 	private var _initialized:Boolean;
 	private var _switching:Boolean;
