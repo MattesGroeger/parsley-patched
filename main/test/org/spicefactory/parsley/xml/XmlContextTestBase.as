@@ -11,8 +11,8 @@ import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionBuilder;
 public class XmlContextTestBase extends ContextTestBase {
 	
 	
-	protected function getContext (xml:XML) : Context {
-		var builder:CompositeContextBuilder = new CompositeContextBuilder();
+	protected function getContext (xml:XML, parent:Context = null) : Context {
+		var builder:CompositeContextBuilder = new CompositeContextBuilder(parent);
 		var xmlBuilder:XmlObjectDefinitionBuilder = new XmlObjectDefinitionBuilder([], new DefaultExpressionContext());
 		xmlBuilder.addXml(xml);
 		builder.addBuilder(xmlBuilder);
