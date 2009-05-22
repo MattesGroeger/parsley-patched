@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.xml.builder {
 import org.spicefactory.lib.expr.ExpressionContext;
+import org.spicefactory.lib.expr.impl.DefaultExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -51,7 +52,8 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	private var registry:ObjectDefinitionRegistry;
 
 	
-	function XmlObjectDefinitionBuilder (files:Array, expressionContext:ExpressionContext, loader:XmlObjectDefinitionLoader = null) {
+	function XmlObjectDefinitionBuilder (files:Array, expressionContext:ExpressionContext = null, loader:XmlObjectDefinitionLoader = null) {
+		if (expressionContext == null) expressionContext = new DefaultExpressionContext();
 		this.expressionContext = expressionContext;
 		this._loader = (loader == null) ? new XmlObjectDefinitionLoader(files, expressionContext) : loader;
 		var mapperFactory:XmlObjectDefinitionMapperFactory = new XmlObjectDefinitionMapperFactory();
