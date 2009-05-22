@@ -40,6 +40,8 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 	private var elementHandlerMap:Dictionary = new Dictionary();
 
 	private var propertyHandlerList:Array = new Array();
+	
+	private static const XSI_URI:String = "http://www.w3.org/2001/XMLSchema-instance";
 
 
 	function PropertyMapper (objectType:ClassInfo, elementName:QName, handlers:Array, 
@@ -150,6 +152,7 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 		if (!ignoreUnmappedNodes) {
 			var unknownNodes:Array = new Array();
 			for each (var unknown:XML in valueMap[null]) {
+				if (unknown.name() != null && unknown.name().uri == XSI_URI) continue;
 				var unknownName:String = (unknown.name() != null) ? unknown.name().toString() : null;
 				unknownNodes.push(unknownName);
 			}
