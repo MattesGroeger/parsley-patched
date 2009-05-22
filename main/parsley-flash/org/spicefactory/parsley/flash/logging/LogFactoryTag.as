@@ -15,10 +15,11 @@
  */
 
 package org.spicefactory.parsley.flash.logging {
-import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.flash.logging.FlashLogFactory;
 import org.spicefactory.lib.flash.logging.LogLevel;
 import org.spicefactory.lib.flash.logging.impl.DefaultLogFactory;
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 
 import flash.utils.getQualifiedClassName;
@@ -43,6 +44,11 @@ public class LogFactoryTag {
 	public var loggers:Array;
 	
 	
+	[Inject]
+	public var contextRef:Context;
+	
+	
+	
 	[Factory]
 	public function createLogFactory () : FlashLogFactory {
 		var fObj:Object = new type();
@@ -53,9 +59,9 @@ public class LogFactoryTag {
 		var factory:FlashLogFactory = fObj as FlashLogFactory;
 		factory.setRootLogLevel(rootLevel);
 		for each (var appenderTag:AppenderTag in appenders) {
-			factory.addAppender(appenderTag.createAppender());
+			factory.addAppender(appenderTag.createAppender(contextRef));
 		}
-		for each (var loggerTag:LoggerTag in appenders) {
+		for each (var loggerTag:LoggerTag in loggers) {
 			factory.addLogLevel(loggerTag.name, loggerTag.level);
 		}
 		factory.refresh();		

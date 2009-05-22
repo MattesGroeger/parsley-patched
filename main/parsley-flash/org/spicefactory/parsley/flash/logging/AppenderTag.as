@@ -32,11 +32,8 @@ public class AppenderTag {
 	public var threshold:LogLevel = LogLevel.TRACE;
 	
 	
-	[Inject]
-	public var context:Context;
 	
-	
-	public function createAppender () : Appender {
+	public function createAppender (context:Context) : Appender {
 		var appObj:Object = context.getObject(ref);
 		if (!(appObj is Appender)) {
 			throw new ContextError("Specified object with id " + ref + " does not implement Appender");
