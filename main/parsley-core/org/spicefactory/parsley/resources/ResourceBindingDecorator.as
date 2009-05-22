@@ -28,7 +28,7 @@ import flash.utils.Dictionary;
 
 import flash.utils.getQualifiedClassName;
 
-[Metadata(name="ResourceBinding", types="method")]
+[Metadata(name="ResourceBinding", types="property")]
 /**
  * @author Jens Halm
  */
@@ -53,7 +53,7 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Obje
 	private var _property:Property;
 	
 	
-	private static function initializeAdapter (domain:ApplicationDomain) : void {
+	private static function initializeAdapter () : void {
 		if (adapter == null) {
 			if (adapterClass == null) {
 				throw new ObjectDefinitionBuilderError("adapterClass property for ResourceBindingDecorator has not been set");
@@ -69,7 +69,7 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Obje
 
 	
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		initializeAdapter(registry.domain);
+		initializeAdapter();
 		adapter.addEventListener(ResourceBindingEvent.UPDATE, handleUpdate);
 		_property = definition.type.getProperty(property);
 		if (_property == null) {
