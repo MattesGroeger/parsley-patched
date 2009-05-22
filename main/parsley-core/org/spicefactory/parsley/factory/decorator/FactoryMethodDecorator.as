@@ -65,10 +65,11 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.factory.ObjectInstantiator;
+import org.spicefactory.parsley.factory.FactoryObjectInstantiator;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
+import org.spicefactory.parsley.factory.ObjectDefinition;
 
-class FactoryMethodInstantiator implements ObjectInstantiator {
+class FactoryMethodInstantiator implements FactoryObjectInstantiator {
 
 	
 	private var definition:RootObjectDefinition;
@@ -89,5 +90,8 @@ class FactoryMethodInstantiator implements ObjectInstantiator {
 		return method.invoke(factory, []);
 	}
 	
+	public function get factoryDefinition () : ObjectDefinition {
+		return definition;
+	}
 	
 }
