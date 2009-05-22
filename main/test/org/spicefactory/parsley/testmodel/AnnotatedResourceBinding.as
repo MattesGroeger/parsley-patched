@@ -6,6 +6,7 @@ package org.spicefactory.parsley.testmodel {
 public class AnnotatedResourceBinding {
 	
 	
+	[Bindable]
 	[ResourceBinding(bundleName="test", resourceName="bind")]
 	public var boundValue:String;
 	
