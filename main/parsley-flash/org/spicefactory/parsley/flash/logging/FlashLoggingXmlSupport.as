@@ -35,9 +35,11 @@ public class FlashLoggingXmlSupport {
 		Converters.addConverter(LogLevel, new LogLevelConverter());
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(FLASH_LOGGING_NAMESPACE);
 		var builder:PropertyMapperBuilder = ns.createObjectMapperBuilder(LogFactoryTag, "factory");
+		builder.createChildElementMapperBuilder("appenders", ClassInfo.forClass(AppenderTag), 
+				new QName(FLASH_LOGGING_NAMESPACE, "appender")).mapAllToAttributes();
+		builder.createChildElementMapperBuilder("loggers", ClassInfo.forClass(LoggerTag), 
+				new QName(FLASH_LOGGING_NAMESPACE, "logger")).mapAllToAttributes();
 		builder.mapAllToAttributes();
-		builder.createChildElementMapperBuilder("appenders", ClassInfo.forClass(AppenderTag)).mapAllToAttributes();
-		builder.createChildElementMapperBuilder("loggers", ClassInfo.forClass(LoggerTag)).mapAllToAttributes();
 	}
 	
 	
