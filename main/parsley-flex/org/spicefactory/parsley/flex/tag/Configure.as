@@ -27,14 +27,7 @@ public class Configure extends UIComponent {
 	
 	public var triggerEvent:String = "configureIOC";
 		
-		
-	function Configure () {
-		trace("Configure Constr");
-	}
-		
-		
 	public override function initialize () : void {
-		trace("Configure A");
 		parent.addEventListener(Event.ADDED_TO_STAGE, dispatchConfigureEvent);
 		if (parent.stage != null) {
 			dispatchConfigureEvent();
@@ -43,14 +36,12 @@ public class Configure extends UIComponent {
 	}
 	
 	private function dispatchConfigureEvent (event:Event = null) : void  { 
-		trace("Configure B");
 		parent.dispatchEvent(new Event(triggerEvent, true));
 	}
 	
 	override public function get includeInLayout () : Boolean {
 		return false;
 	}
-
 	
 }
 
