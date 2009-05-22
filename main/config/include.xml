@@ -1,0 +1,11 @@
+<objects 
+	xmlns="http://www.spicefactory.org/parsley">
+	
+	<object id="object" type="org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel">
+		<constructor-args>
+			<string>foo</string>
+			<int>7</int>
+		</constructor-args>
+		<property name="refProp" id-ref="dependency"/>
+	</object> 
+</objects>

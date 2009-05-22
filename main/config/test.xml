@@ -1,0 +1,10 @@
+<objects 
+	xmlns="http://www.spicefactory.org/parsley">
+	
+	<include filename="include.xml"/>
+	
+	<variable name="package" value="org.spicefactory.parsley.core.decorator.injection"/>
+	
+	<object id="dependency" type="${package}.InjectedDependency"/>
+	
+</objects>

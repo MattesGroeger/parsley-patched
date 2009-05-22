@@ -1,0 +1,9 @@
+<message-bundle 
+		xmlns="http://www.spicefactory.org/parsley/1.0/messages"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0/messages 
+			http://www.spicefactory.org/parsley/schema/1.0/parsley-messages.xsd"
+		>
+    <message key="test">Drei Worte Deutsch</message>
+    <message key="bind">Deutsch</message>
+</message-bundle>
