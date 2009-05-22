@@ -24,8 +24,10 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
+import org.spicefactory.parsley.factory.FactoryObjectInstantiator;
 import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.factory.ObjectInstantiator;
 import org.spicefactory.parsley.factory.RootObjectDefinition;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionLoader;
@@ -101,7 +103,13 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 							var definition:RootObjectDefinition = factory.createRootDefinition(registry);
 							registry.registerDefinition(definition);
 							if (!(obj is ObjectDefinitionFactory)) {
-								definition.instantiator = new ObjectWrapperInstantiator(obj);
+								var inst:ObjectInstantiator = new ObjectWrapperInstantiator(obj);
+								if (definition.instantiator is FactoryObjectInstantiator) {
+									FactoryObjectInstantiator(definition.instantiator).factoryDefinition.instantiator = inst;
+								}
+								else {
+									definition.instantiator = inst;
+								} 
 							}
 						} 
 						catch (error:Error) {
@@ -125,9 +133,11 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 				var message:String = "Error processing file " + file;
 				log.error(message + "{0}", e);
 				containerErrors.push(message + ":\n " + e.message);
-			}
-		}
-		if (containerErrors.length > 0) {
+}
+}
+
+import flash.events.ErrorEvent;
+import flash.events.Event;		if (containerErrors.length > 0) {
 			var eventText:String = "One or more errors in XmlObjectDefinitionBuilder:\n " 
 					+ containerErrors.join("\n ");	
 			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, eventText));
