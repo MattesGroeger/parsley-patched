@@ -31,6 +31,8 @@ import flash.utils.getQualifiedClassName;
 public class ResourceManagerTag {
 	
 	
+	public var id:String;
+	
 	public var locales:Array;
 	
 	public var type:Class = DefaultResourceManager;
@@ -41,13 +43,13 @@ public class ResourceManagerTag {
 	
 	
 	[Factory]
-	public function createResourceManager () : ResourceManager {
+	public function createResourceManager () : ResourceManagerSpi {
 		var typeInfo:ClassInfo = ClassInfo.forClass(type);
 		if (!typeInfo.isType(ResourceManagerSpi)) {
 			throw new IllegalArgumentError("Specified type " + getQualifiedClassName(type) 
 					+ " does not implement ResourceManagerSpi"); 
 		}
-		var manager:ResourceManager = typeInfo.newInstance([]) as ResourceManager;
+		var manager:ResourceManagerSpi = typeInfo.newInstance([]) as ResourceManagerSpi;
 		
 		FlashResourceBindingAdapter.manager = manager;
 		
@@ -65,6 +67,7 @@ public class ResourceManagerTag {
 				manager.addSupportedLocale(loc);
 			}
 		}
+		return manager;
 	}
 	
 	
