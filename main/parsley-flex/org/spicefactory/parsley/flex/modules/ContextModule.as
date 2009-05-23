@@ -38,7 +38,7 @@ public class ContextModule extends Module {
 	
 	public function buildContext (parent:Context, domain:ApplicationDomain) : Context {
 		if (configurationClass == null) {
-			log.warn("No container specified for context - skipping context creation");
+			log.warn("No configurationClass specified - skipping context creation");
 			return null;
 		}
 		return FlexContextBuilder.build(configurationClass, parent, domain, viewTriggerEvent); 
