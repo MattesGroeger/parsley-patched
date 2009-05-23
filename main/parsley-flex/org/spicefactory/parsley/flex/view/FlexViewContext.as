@@ -50,6 +50,7 @@ public class FlexViewContext extends ChildContext {
 			factory:ObjectFactory = null) {
 		super(parent, registry, factory);
 		addEventListener(ContextEvent.INITIALIZED, contextInitialized);
+		initialize();
 	}
 	
 	private function contextInitialized (event:Event) : void {
@@ -74,12 +75,13 @@ public class FlexViewContext extends ChildContext {
 		}
 		catch (e:Error) {
 			log.error("Error adding Component {0} to Context {1}", component, e);
-		} 
+		}
 	}
 	
 	private function removeComponent (event:Event) : void {
 		if (destroyed) return;
 		var component:DisplayObject = DisplayObject(event.target);
+		log.debug("Remove component '{0}' from ViewContext", component);
 		component.removeEventListener(Event.REMOVED_FROM_STAGE, removeComponent);
 		var definition:ObjectDefinition = ObjectDefinition(definitionMap[component]);
 		if (definition != null) {
