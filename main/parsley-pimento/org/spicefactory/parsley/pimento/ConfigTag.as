@@ -44,13 +44,13 @@ public class ConfigTag implements ObjectDefinitionFactory {
 		
 		var configFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(PimentoConfig, id);
 		var configDef:RootObjectDefinition = configFactory.createRootDefinition(registry);
-		configDef.properties.addValue("url", url);
-		if (timeout != 0) configDef.properties.addValue("timeout", timeout);
+		configDef.properties.addValue("serviceUrl", url);
+		if (timeout != 0) configDef.properties.addValue("defaultTimeout", timeout);
 		
 		var emFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(EntityManager, configDef.id + "_entityManager");
 		var emDef:RootObjectDefinition = emFactory.createRootDefinition(registry);
 		emDef.instantiator = new EntityManagerInstantiator(configDef.id);
-		registry.registerDefinition(emFactory.createRootDefinition(registry));
+		registry.registerDefinition(emDef);
 		
 		return configDef;
 	}
