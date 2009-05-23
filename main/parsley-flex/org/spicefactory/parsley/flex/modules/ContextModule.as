@@ -19,28 +19,31 @@ import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.flex.FlexContextBuilder;
+import mx.modules.Module;
 
 import flash.system.ApplicationDomain;
 
 /**
  * @author Jens Halm
  */
-public class Module extends mx.modules.Module {
+public class ContextModule extends Module {
 	
 	
-	private static const log:Logger = LogContext.getLogger(Module);
+	private static const log:Logger = LogContext.getLogger(ContextModule);
 
 	
-	public var container:Class;
+	public var configurationClass:Class;
 	public var viewTriggerEvent:String = "configureIOC";
 	
 	
 	public function buildContext (parent:Context, domain:ApplicationDomain) : Context {
-		if (container == null) {
+		if (configurationClass == null) {
 			log.warn("No container specified for context - skipping context creation");
 			return null;
 		}
-		return FlexContextBuilder.build(container, parent, domain, viewTriggerEvent); 
+		return FlexContextBuilder.build(configurationClass, parent, domain, viewTriggerEvent); 
 	}
+	
+	
 }
 }
