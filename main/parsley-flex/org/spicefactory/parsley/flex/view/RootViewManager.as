@@ -41,9 +41,12 @@ public class RootViewManager extends AbstractViewManager {
 	
 	
 	public static function addContext (parent:Context, triggerEvent:String, domain:ApplicationDomain) : void {
+		log.info("Add Context for trigger event " + triggerEvent);
 		var manager:RootViewManager = managersByTrigger[triggerEvent] as RootViewManager;
 		if (manager == null) {
+			log.info("Create new RootViewManager");
 			manager = new RootViewManager();
+			managersByTrigger[triggerEvent] = manager;
 			manager.init();
 		}
 		manager.addContext(parent, domain);
@@ -88,6 +91,7 @@ public class RootViewManager extends AbstractViewManager {
 				domains.push(domainObj);
 			}
 		}
+		log.debug("Find ApplicationDomain for component: {0} candidates", domains.length);
 		if (domains.length == 0) {
 			return null;
 		}
