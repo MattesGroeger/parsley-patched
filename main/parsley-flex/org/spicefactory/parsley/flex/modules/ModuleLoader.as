@@ -18,11 +18,12 @@ package org.spicefactory.parsley.flex.modules {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.Context;
-
-import mx.modules.ModuleLoader;
+import org.spicefactory.parsley.flex.modules.ModuleManager;
+import org.spicefactory.parsley.flex.modules.ModuleRegistration;
 
 import flash.display.DisplayObject;
-import flash.utils.ByteArray;
+import flash.utils.ByteArray;	
+import mx.modules.ModuleLoader;
 
 /**
  * @author Jens Halm
@@ -30,7 +31,7 @@ import flash.utils.ByteArray;
 public class ModuleLoader extends mx.modules.ModuleLoader {
 	
 	
-	private static const log:Logger = LogContext.getLogger(ModuleLoader);
+	private static const log:Logger = LogContext.getLogger(org.spicefactory.parsley.flex.modules.ModuleLoader);
 
 	/**
 	 * The Context to use as a parent for the Module Context.
@@ -63,12 +64,28 @@ public class ModuleLoader extends mx.modules.ModuleLoader {
 	 * @private
 	 */
 	public override function addChild (child:DisplayObject) : DisplayObject {
-		if (!(child is Module)) {
+		if (!(child is ContextModule)) {
 			log.warn("Child created for ModuleLoader with URL {0} does not extend the Parsley Module class", url);
-			return null;
+			return super.addChild(child);
 		}
-		registration.addModule(Module(child));
-		return super.addChild(child);
+		else {
+			/*		
+			 * First we have to create the ViewManager since super.addChild will trigger
+			 * addedToStage events which in turn will trigger configureIOC events.
+			 * At that time the ViewManager must already be active even if the Context 
+			 * has not been created yet
+			 */
+			registration.createViewManager(ContextModule(child)); 
+			var result:DisplayObject = super.addChild(child);
+			/*
+			 * In contrast the Context for the Module has to be created after super.addChild
+			 * since addChild will also trigger the initialize method which in turn will execute
+			 * the bindings. We need those bindings because you can specify the Context container
+			 * class as a property on the ContextModule.
+			 */
+			registration.createContext(ContextModule(child));
+			return result;
+		}
 	}
 	
 	
