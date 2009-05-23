@@ -61,7 +61,7 @@ public class AbstractViewManager {
 	private function handleConfigureEvent (event:Event) : void {
 		event.stopImmediatePropagation();
 		var component:DisplayObject = DisplayObject(event.target);
-		log.debug("Add component '{0}' to ViewContext");
+		log.debug("Add component '{0}' to ViewContext", component);
 		addComponent(component);
 	}
 	
