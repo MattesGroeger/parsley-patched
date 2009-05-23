@@ -40,7 +40,7 @@ public class ChannelTag {
 	[Factory]
 	public function createChannel () : ServiceChannel {
 		var channelObj:Object = new type();
-		if (!(type is ServiceChannel)) {
+		if (!(channelObj is ServiceChannel)) {
 			throw new ContextError("Object of type " + getQualifiedClassName(channelObj) 
 					+ " does not implement ServiceChannel");							
 		}
