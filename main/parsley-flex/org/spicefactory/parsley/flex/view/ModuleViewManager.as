@@ -32,23 +32,39 @@ public class ModuleViewManager extends AbstractViewManager {
 	private var context:FlexViewContext;
 	private var container:DisplayObject;
 	
+	private var deferredComponents:Array = new Array();
+	
 
 	public function ModuleViewManager (container:DisplayObject, triggerEventType:String = null) {
 		super(triggerEventType);
 		this.container = container;
+		addListener(container);
 	}
 
 	
 	public function init (parent:Context, domain:ApplicationDomain) : void {
 		context = new FlexViewContext(parent, new DefaultObjectDefinitionRegistry(domain));
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		addListener(container);
+		for each (var component:DisplayObject in deferredComponents) {
+			super.addComponent(component);
+		}
+		deferredComponents = new Array();
 	}
-	
+
 	private function contextDestroyed (event:ContextEvent) : void {
 		removeListener(container);	
 	}
 
+
+	protected override function addComponent (component:DisplayObject) : void {
+		if (context == null) {
+			deferredComponents.push(component);
+		}
+		else {
+			super.addComponent(component);
+		}
+	}
+	
 	
 	protected override function getContext (component:DisplayObject) : FlexViewContext {
 		return context;
