@@ -22,7 +22,7 @@ import org.spicefactory.lib.logging.Logger;
 import flash.display.DisplayObject;
 import flash.events.Event;
 
-/**
+import flash.utils.getQualifiedClassName;/**
  * @author Jens Halm
  */
 public class AbstractViewManager {
@@ -50,16 +50,22 @@ public class AbstractViewManager {
 	}
 	
 	protected function addListener (component:DisplayObject) : void {
-		component.addEventListener(_triggerEvent, addComponent);
+		log.info("Add listener for {0}/{1} ", component.name, getQualifiedClassName(component));
+		component.addEventListener(_triggerEvent, handleConfigureEvent);
 	}
 	
 	protected function removeListener (component:DisplayObject) : void {
-		component.removeEventListener(_triggerEvent, addComponent);
+		component.removeEventListener(_triggerEvent, handleConfigureEvent);
 	}
 	
-	private function addComponent (event:Event) : void {
+	private function handleConfigureEvent (event:Event) : void {
 		event.stopImmediatePropagation();
 		var component:DisplayObject = DisplayObject(event.target);
+		log.debug("Add component '{0}' to ViewContext");
+		addComponent(component);
+	}
+	
+	protected function addComponent (component:DisplayObject) : void {
 		var context:FlexViewContext = getContext(component);
 		if (context == null) {
 			log.warn("No Context found for triggerEvent {0} and component {1}", triggerEvent, component);
