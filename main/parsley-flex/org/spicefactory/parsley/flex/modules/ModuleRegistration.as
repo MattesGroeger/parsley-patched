@@ -24,7 +24,7 @@ import mx.events.ModuleEvent;
 import mx.modules.IModuleInfo;
 
 import flash.system.ApplicationDomain;
-import flash.utils.Dictionary;
+import flash.utils.Dictionary;	
 
 /**
  * @author Jens Halm
@@ -75,31 +75,49 @@ public class ModuleRegistration {
 	internal function setModuleDomain (domain:ApplicationDomain) : void {
 		_moduleDomain = domain;
 	}
-
-	public function addModule (module:Module) : void {
+	
+	private function checkModuleDomain () : void {
 		if (_moduleDomain == null) {
 			log.error("Module with URL {0} was already loaded before registering - unable to determine ApplicationDomain."
 						+ " No Context will be created.", _info.url);
 			return;
-		}
-		if (_moduleContext == null) {
-			// only build context for the first Module instance created from a loaded module
-			_moduleContext = module.buildContext(_parentContext, _moduleDomain);
-		}
+		}		
+	}
+
+	public function createViewManager (module:ContextModule) : void {
+		log.info("Create ViewManager for {0}", module);
+		checkModuleDomain();
 		if (module.viewTriggerEvent != null) {
 			if (_modules[module] != undefined) {
 				log.error("Module with URL {0}: Attempt to add the same Module instance more than once.", _info.url);
 				return;
 			}
-			_modules[module] = true;
 			// view manager must be created for each Module instance
 			var viewManager:ModuleViewManager = new ModuleViewManager(module, module.viewTriggerEvent);
+			_modules[module] = viewManager;
+			if (_moduleContext != null) {
+				viewManager.init(_moduleContext, _moduleDomain);
+			}
+		}
+	}
+	
+	public function createContext (module:ContextModule) : void {
+		log.info("Create Context for {0}", module);
+		checkModuleDomain();
+		if (_moduleContext == null) {
+			// only build context for the first Module instance created from a loaded module
+			_moduleContext = module.buildContext(_parentContext, _moduleDomain);
+			var viewManager:ModuleViewManager = _modules[module] as ModuleViewManager;
+			if (viewManager == null) {
+				log.error("No ViewManager available for Module {0}", module);
+			}
 			viewManager.init(_moduleContext, _moduleDomain);
 		}
 	}
 	
 	
 	private function onModuleUnloaded (event:ModuleEvent) : void {
+		log.info("Unload Module '{0}'", event.module.url);
 		if (_moduleContext != null) {
 			_moduleContext.destroy();
 		}
