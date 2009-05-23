@@ -1,6 +1,7 @@
 package org.spicefactory.parsley.flex.mxmlconfig.core {
 import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 
+[Bindable]
 /**
  * @author Jens Halm
  */
