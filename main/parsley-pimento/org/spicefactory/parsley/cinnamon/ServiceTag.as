@@ -15,15 +15,18 @@
  */
 
 package org.spicefactory.parsley.cinnamon {
-import org.spicefactory.cinnamon.service.ServiceChannel;
-import org.spicefactory.cinnamon.service.ServiceProxy;
-import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.factory.ObjectDefinition;
+import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
+import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.factory.RootObjectDefinition;
+import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
+
+import flash.errors.IllegalOperationError;
 
 /**
  * @author Jens Halm
  */
-public class ServiceTag {
+public class ServiceTag implements ObjectDefinitionFactory {
 	
             
 	public var id:String;
@@ -39,36 +42,54 @@ public class ServiceTag {
 	public var timeout:uint = 0;
 	
 	
-	[Inject]
-	public var context:Context;
-	
-	
-	[Factory]
-	public function createService () : Object {
-		if (name == null) {
-			throw new ContextError("Name of the service with id " + id + " has not been specified"); 
-		}
+	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
+		if (id == null) id = name;
+		var factory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(type, id);
+		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
+		definition.lifecycleListeners.addLifecycleListener(new ServiceLifecycleListener(this));
+		return definition;
+	}
 
-		var service:Object = new type();
-		
+	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		throw new IllegalOperationError("Services must be defined as root objects");
+	}
+}
+}
+
+import org.spicefactory.cinnamon.service.ServiceChannel;
+import org.spicefactory.cinnamon.service.ServiceProxy;
+import org.spicefactory.parsley.cinnamon.ServiceTag;
+import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.factory.ObjectLifecycleListener;
+
+class ServiceLifecycleListener implements ObjectLifecycleListener {
+
+	private var tag:ServiceTag;
+	
+	function ServiceLifecycleListener (tag:ServiceTag) {
+		this.tag = tag;
+	}
+
+	public function postConstruct (instance:Object, context:Context):void {
 		var channelInstance:ServiceChannel;
-		if (channel != null) {
-			var channelRef:Object = context.getObject(channel);
+		if (tag.channel != null) {
+			var channelRef:Object = context.getObject(tag.channel);
 			if (!(channelRef is ServiceChannel)) {
-				throw new ContextError("Object with id " + channel + " does not implement ServiceChannel");
+				throw new ContextError("Object with id " + tag.channel + " does not implement ServiceChannel");
 			}
 			channelInstance = channelRef as ServiceChannel;
 		}
 		else {
 			channelInstance = context.getObjectByType(ServiceChannel, true) as ServiceChannel;
 		}
-		
-		var proxy:ServiceProxy = channelInstance.createProxy(name, service);
-		if (timeout != 0) proxy.timeout = timeout;
-		
-		return service;		
+		var proxy:ServiceProxy = channelInstance.createProxy(tag.name, instance);
+		if (tag.timeout != 0) proxy.timeout = tag.timeout;
 	}
-            
-            
+	
+	public function preDestroy (instance:Object, context:Context) : void {
+		/* ignore */
+	}
+	
 }
-}
+
