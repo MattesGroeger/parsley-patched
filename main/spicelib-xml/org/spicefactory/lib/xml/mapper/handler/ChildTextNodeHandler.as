@@ -25,14 +25,23 @@ public class ChildTextNodeHandler extends AbstractPropertyHandler {
 
 	
 	public function ChildTextNodeHandler (property:Property, xmlName:QName) {
-		super(property, "element", [xmlName]);
+		super(property, "element", [xmlName], true);
 	}
 	
 
 	public override function toObject (nodes:Array, parentInstance:Object, context:XmlProcessorContext) : void {
 		validateValueCount(nodes.length);
 		if (nodes.length > 0) {
-			property.setValue(parentInstance, context.expressionContext.createExpression(nodes[0].text()).value);
+			if (singleValue) {
+				property.setValue(parentInstance, context.expressionContext.createExpression(nodes[0].text()).value);
+			}
+			else {
+				var array:Array = new Array();
+				for each (var node:XML in nodes) {
+					array.push(context.expressionContext.createExpression(node.text()).value); 
+				}
+				property.setValue(parentInstance, array);
+			}
 		}
 	}
 	
