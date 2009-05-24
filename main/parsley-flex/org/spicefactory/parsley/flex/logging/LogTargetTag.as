@@ -31,6 +31,8 @@ import flash.utils.getQualifiedClassName;
 public class LogTargetTag {
 	
 	
+	public var id:String;
+	
 	public var type:Class = TraceTarget;
 	
 	public var filters:Array;
