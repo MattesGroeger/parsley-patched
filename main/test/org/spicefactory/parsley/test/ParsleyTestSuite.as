@@ -10,13 +10,19 @@ import org.spicefactory.parsley.core.decorator.injection.OptionalConstructorInje
 import org.spicefactory.parsley.core.decorator.injection.RequiredConstructorInjection;
 import org.spicefactory.parsley.core.decorator.lifecycle.LifecycleDecoratorTest;
 import org.spicefactory.parsley.core.messaging.MessagingTest;
+import org.spicefactory.parsley.flash.logging.FlashLoggingXmlTagTest;
+import org.spicefactory.parsley.flash.resources.FlashResourcesTest;
+import org.spicefactory.parsley.flex.logging.FlexLoggingXmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.asyncinit.AsyncInitMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.core.CoreMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.factory.FactoryMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.lifecycle.LifecycleMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.messaging.MessagingMxmlTagTest;
+import org.spicefactory.parsley.pimento.PimentoMxmlTagTest;
+import org.spicefactory.parsley.pimento.PimentoXmlTagTest;
 import org.spicefactory.parsley.xml.AsyncInitXmlTagTest;
 import org.spicefactory.parsley.xml.CoreXmlTagTest;
+import org.spicefactory.parsley.xml.ExternalXmlConfigTest;
 import org.spicefactory.parsley.xml.FactoryXmlTagTest;
 import org.spicefactory.parsley.xml.LifecycleXmlTagTest;
 import org.spicefactory.parsley.xml.MessagingXmlTagTest;
@@ -48,6 +54,12 @@ public class ParsleyTestSuite {
 		suite.addTestSuite(FactoryXmlTagTest);
 		suite.addTestSuite(AsyncInitXmlTagTest);
 		suite.addTestSuite(MessagingXmlTagTest);
+		suite.addTestSuite(ExternalXmlConfigTest);
+		suite.addTestSuite(FlashLoggingXmlTagTest);
+		suite.addTestSuite(FlashResourcesTest);
+		suite.addTestSuite(PimentoXmlTagTest);
+		suite.addTestSuite(PimentoMxmlTagTest);
+		suite.addTestSuite(FlexLoggingXmlTagTest);
 		return suite;
 	}
 	
