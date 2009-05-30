@@ -32,16 +32,16 @@ public class ContextModule extends Module {
 	private static const log:Logger = LogContext.getLogger(ContextModule);
 
 	
-	public var configurationClass:Class;
+	public var configClass:Class;
 	public var viewTriggerEvent:String = "configureIOC";
 	
 	
 	public function buildContext (parent:Context, domain:ApplicationDomain) : Context {
-		if (configurationClass == null) {
+		if (configClass == null) {
 			log.warn("No configurationClass specified - skipping context creation");
 			return null;
 		}
-		return FlexContextBuilder.build(configurationClass, parent, domain, viewTriggerEvent); 
+		return FlexContextBuilder.build(configClass, parent, domain, viewTriggerEvent); 
 	}
 	
 	
