@@ -28,7 +28,7 @@ import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 public class FlashLoggingXmlSupport {
 	
 	
-	public static const FLASH_LOGGING_NAMESPACE:String = "http://www.spicefactory.org/parsley/logging/flash";
+	public static const FLASH_LOGGING_NAMESPACE:String = "http://www.spicefactory.org/parsley/flash/logging";
 	
 	
 	public static function initialize () : void {
