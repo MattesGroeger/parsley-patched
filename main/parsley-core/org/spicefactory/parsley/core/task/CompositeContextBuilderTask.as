@@ -26,6 +26,10 @@ import flash.events.Event;
 import flash.system.ApplicationDomain;
 
 /**
+ * Wraps a CompositeContextBuilder to adapt it to the Task Framework.
+ * Instances of this class can be used in Spicelib TaskGroups in case the initialization process of your application
+ * involve more asynchronous operations than just Parsley Context initialization.
+ * 
  * @author Jens Halm
  */
 public class CompositeContextBuilderTask extends Task {
@@ -34,20 +38,36 @@ public class CompositeContextBuilderTask extends Task {
 	private var _builder:CompositeContextBuilder;
 
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param parent the Context to use as a parent for the Context this instance creates
+	 * @param domain the ApplicationDomain to use for reflecting on configured objects.
+	 */
 	function CompositeContextBuilderTask (parent:Context = null, domain:ApplicationDomain = null) {
 		_builder = new CompositeContextBuilder(parent, domain);
 	}
 	
 	
+	/**
+	 * The Context this builder creates, possibly still under construction.
+	 */
 	public function get context () : Context {
 		return _builder.context;
 	}
 	
+	/**
+	 * Adds an ObjectDefinitionBuilder that should participate in creating the internal ObjectDefinitionRegistry.
+	 * 
+	 * @param builder the builder to add
+	 */
 	public function addBuilder (builder:ObjectDefinitionBuilder) : void {
 		_builder.addBuilder(builder);
 	}
 	
-	
+	/**
+	 * @private
+	 */
 	protected override function doStart () : void {
 		_builder.build();
 		context.addEventListener(ContextEvent.INITIALIZED, contextInitialized);		
