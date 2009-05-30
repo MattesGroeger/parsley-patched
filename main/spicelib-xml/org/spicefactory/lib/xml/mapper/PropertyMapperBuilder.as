@@ -15,10 +15,10 @@
  */
 
 package org.spicefactory.lib.xml.mapper {
-import org.spicefactory.lib.xml.DefaultNamingStrategy;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.lib.xml.DefaultNamingStrategy;
 import org.spicefactory.lib.xml.NamingStrategy;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.PropertyHandler;
@@ -28,6 +28,7 @@ import org.spicefactory.lib.xml.mapper.handler.ChildTextNodeHandler;
 import org.spicefactory.lib.xml.mapper.handler.ChoiceHandler;
 import org.spicefactory.lib.xml.mapper.handler.TextNodeHandler;
 
+import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
@@ -54,8 +55,9 @@ public class PropertyMapperBuilder {
 	private var propertyHandlerList:Array = new Array();
 	
 	
-	function PropertyMapperBuilder (objectType:ClassInfo, elementName:QName, namingStrategy:NamingStrategy = null) {
-		this._objectType = objectType;
+	function PropertyMapperBuilder (objectType:Class, elementName:QName, namingStrategy:NamingStrategy = null,
+			domain:ApplicationDomain = null) {
+		this._objectType = ClassInfo.forClass(objectType, domain);
 		this._elementName = elementName;
 		this.namingStrategy = (namingStrategy != null) ? namingStrategy : defaultNamingStrategy;
 	}
@@ -129,11 +131,11 @@ public class PropertyMapperBuilder {
 	}
 
 	public function createChildElementMapperBuilder (propertyName:String, 
-			type:ClassInfo = null, elementName:QName = null) : PropertyMapperBuilder {
+			type:Class = null, elementName:QName = null) : PropertyMapperBuilder {
 		if (elementName == null) elementName = new QName(this._elementName.uri, namingStrategy.toXmlName(propertyName));
 		var property:Property = getProperty(propertyName);
-		if (type == null) type = property.type;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, elementName);
+		if (type == null) type = property.type.getClass();
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, elementName, namingStrategy, _objectType.applicationDomain);
 		addPropertyHandler(new BuilderHandler(getProperty(propertyName), elementName, builder));
 		return builder;
 	}
@@ -174,10 +176,10 @@ public class PropertyMapperBuilder {
 }
 
 import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.lib.xml.mapper.handler.AbstractPropertyHandler;
-import org.spicefactory.lib.xml.mapper.handler.ChildElementHandler;
 import org.spicefactory.lib.xml.mapper.PropertyHandler;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
+import org.spicefactory.lib.xml.mapper.handler.AbstractPropertyHandler;
+import org.spicefactory.lib.xml.mapper.handler.ChildElementHandler;
 
 class BuilderHandler extends AbstractPropertyHandler {
 	
