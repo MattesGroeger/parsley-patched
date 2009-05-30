@@ -76,9 +76,9 @@ public class MetadataDecoratorExtractor {
 		Metadata.registerMetadataClass(ResourceBindingDecorator, domain);
 
 		Metadata.registerMetadataClass(Selector, domain);
+		Metadata.registerMetadataClass(Target, domain);
 		
 		Metadata.registerMetadataClass(InternalProperty, domain);
-		Metadata.registerMetadataClass(Target, domain);
 		Metadata.registerMetadataClass(ObjectDefinitionMetadata, domain);
 	}
 
