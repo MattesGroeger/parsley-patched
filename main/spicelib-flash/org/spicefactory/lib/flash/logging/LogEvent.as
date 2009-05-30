@@ -19,7 +19,7 @@ package org.spicefactory.lib.flash.logging {
 import flash.events.Event;
 
 /**
- * Event that fires when a log method is invoked in a <code>Logger</code> instance. 
+ * Event that fires when a log method is invoked in a <code>FlashLogger</code> instance. 
  * 
  * @author Jens Halm
  */

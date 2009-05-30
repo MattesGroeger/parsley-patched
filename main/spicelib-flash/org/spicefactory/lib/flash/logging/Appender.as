@@ -17,7 +17,7 @@
 package org.spicefactory.lib.flash.logging {
 
 /**
- * An Appender is a target for log output. All <code>Logger</code> instances
+ * An Appender is a target for log output. All <code>FlashLogger</code> instances
  * route their log output through one or more Appenders.
  * 
  * @author Jens Halm

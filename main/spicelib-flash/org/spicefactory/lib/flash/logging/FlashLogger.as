@@ -25,6 +25,8 @@ import flash.events.IEventDispatcher;
  * log level is active for a Logger instance and the <code>level</code> property
  * for filtering log output.
  * 
+ * <p>It extends the basic <code>Logger</code> interface from the core log delegate.</p>
+ * 
  * @author Jens Halm
  */
 public interface FlashLogger extends Logger, IEventDispatcher {
