@@ -34,7 +34,7 @@ import flash.events.ErrorEvent;
 public class DefaultBundleLoader extends Task {
 
 	
-	public static var PARSLEY_BUNDLE_URI:String = "http://www.spicefactory.org/parsley/1.0/messages";
+	public static var PARSLEY_BUNDLE_URI:String = "http://www.spicefactory.org/parsley/flash/resource-bundle";
 	
 	
 	private var _filename:String;
