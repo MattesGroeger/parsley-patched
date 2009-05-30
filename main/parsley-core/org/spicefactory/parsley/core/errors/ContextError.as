@@ -18,12 +18,22 @@ package org.spicefactory.parsley.core.errors {
 import org.spicefactory.lib.errors.NestedError;
 
 /**
+ * Error thrown by <code>Context</code> implementations.
+ * 
  * @author Jens Halm
  */
 public class ContextError extends NestedError {
 
+	/**
+	 * Create a new instance.
+	 * 
+	 * @param message the error message
+	 * @param cause the cause of this Error
+	 * @param id an optional reference number
+	 */
 	public function ContextError (message:String = "", cause:Error = null, id:int = 0) {
 		super(message, cause, id);
 	}
+	
 }
 }
