@@ -17,6 +17,11 @@
 package org.spicefactory.parsley.core.metadata {
 
 /**
+ * Represents a metadata tag that can be used in metadata configuration extensions.
+ * For any extension tag that can be place on properties or methods the framework will
+ * automatically set the value of the property marked with this tag to the name of
+ * the annotated method or property.
+ * 
  * @author Jens Halm
  */
 [Metadata(types="property")]

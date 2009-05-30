@@ -17,6 +17,9 @@
 package org.spicefactory.parsley.core.metadata {
 
 /**
+ * Represents a metadata tag that marks a property for exclusion when processing 
+ * an ActionScript configuration.
+ * 
  * @author Jens Halm
  */
 [Metadata(name="Internal", types="property")]

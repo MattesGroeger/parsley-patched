@@ -17,16 +17,31 @@
 package org.spicefactory.parsley.core.metadata {
 
 /**
+ * Represents a metadata tag that can be used to specify additional configuration for object definitions
+ * in an ActionScript configuration class.
+ * 
  * @author Jens Halm
  */
 [Metadata(name="ObjectDefinition", types="property")]
 public class ObjectDefinitionMetadata {
 	
 
+	/**
+	 * The id the object should be registered with.
+	 */
 	public var id:String;
 	
+	/**
+	 * Indicates whether this object should be lazily initialized.
+	 * If set to false the object will be instantiated upon Context initialization.
+	 */
 	public var lazy:Boolean = false;
 	
+	/**
+	 * Indicates whether the Context should cache instances of this object internally
+	 * and return the cached instance on subsequent requests. If set to false the
+	 * Context will create a new instance on each request.
+	 */
 	public var singleton:Boolean = true;
 	
 	
