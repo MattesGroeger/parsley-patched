@@ -17,6 +17,8 @@
 package org.spicefactory.parsley.factory.model {
 
 /**
+ * Represent a reference to an object in the Parsley Context by id.
+ * 
  * @author Jens Halm
  */
 public class ObjectIdReference {
@@ -26,15 +28,27 @@ public class ObjectIdReference {
 	private var _required:Boolean;
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param id the id of the referenced object
+	 * @param required whether this instance represents a required dependency
+	 */
 	function ObjectIdReference (id:String, required:Boolean = true) {
 		_id = id;
 		_required = required;
 	}
 
+	/**
+	 * Indicates whether this instance represents a required dependency.
+	 */
 	public function get required () : Boolean {
 		return _required;
 	}
-
+	
+	/**
+	 * The id of the referenced object.
+	 */
 	public function get id ():String {
 		return _id;
 	}

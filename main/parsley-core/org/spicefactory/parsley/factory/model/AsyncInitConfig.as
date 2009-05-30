@@ -19,15 +19,26 @@ import flash.events.ErrorEvent;
 import flash.events.Event;
 
 /**
+ * The configuration for an asynchronously initializing object.
+ * 
  * @author Jens Halm
  */
 public class AsyncInitConfig {
 	
 	
+	/**
+	 * The event type that signals that object initialization has successfully completed.
+	 */
 	public var completeEvent:String = Event.COMPLETE;
 
+	/**
+	 * The event type that signals that object initialization has failed.
+	 */
 	public var errorEvent:String = ErrorEvent.ERROR;
 	
+	/**
+	 * The processing order for this object. Will be processed in ascending order.
+	 */
 	public var order:int = int.MAX_VALUE;
 	
 	

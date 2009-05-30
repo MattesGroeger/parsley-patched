@@ -18,6 +18,8 @@ package org.spicefactory.parsley.factory.model {
 import org.spicefactory.lib.reflect.ClassInfo;
 
 /**
+ * Represent a reference to an object in the Parsley Context by type.
+ * 
  * @author Jens Halm
  */
 public class ObjectTypeReference {
@@ -26,16 +28,28 @@ public class ObjectTypeReference {
 	private var _type:ClassInfo;
 	private var _required:Boolean;
 	
-	
+
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param id the type of the referenced object
+	 * @param required whether this instance represents a required dependency
+	 */	
 	function ObjectTypeReference (type:ClassInfo, required:Boolean = true) {
 		_type = type;
 		_required = required;
 	}
 
+	/**
+	 * Indicates whether this instance represents a required dependency.
+	 */
 	public function get required () : Boolean {
 		return _required;
 	}
 
+	/**
+	 * The type of the referenced object.
+	 */
 	public function get type () : ClassInfo {
 		return _type;
 	}

@@ -17,6 +17,9 @@
 package org.spicefactory.parsley.factory.model {
 
 /**
+ * Represents an Array that might contain special configuration values like object references or
+ * inline object definitons alongside simple values.
+ * 
  * @author Jens Halm
  */
 public class ManagedArray extends Array {
