@@ -40,8 +40,9 @@ public class RootViewManager extends AbstractViewManager {
 	private static const managersByTrigger:Dictionary = new Dictionary();
 	
 	
-	public static function addContext (parent:Context, triggerEvent:String, domain:ApplicationDomain) : void {
+	public static function addContext (parent:Context, triggerEvent:String = "configureIOC", domain:ApplicationDomain = null) : void {
 		log.info("Add Context for trigger event " + triggerEvent);
+		if (domain == null) domain = ApplicationDomain.currentDomain;
 		var manager:RootViewManager = managersByTrigger[triggerEvent] as RootViewManager;
 		if (manager == null) {
 			log.info("Create new RootViewManager");
