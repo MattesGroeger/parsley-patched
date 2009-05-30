@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.flash.resources.tag {
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
@@ -33,7 +32,7 @@ public class FlashResourceXmlSupport {
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(FLASH_RESOURCE_NAMESPACE);
 		ns.addDefaultObjectMapper(ResourceBundleTag, "resource-bundle");
 		var builder:PropertyMapperBuilder = ns.createObjectMapperBuilder(ResourceManagerTag, "resource-manager");
-		builder.createChildElementMapperBuilder("locales", ClassInfo.forClass(LocaleTag), 
+		builder.createChildElementMapperBuilder("locales", LocaleTag, 
 				new QName(FLASH_RESOURCE_NAMESPACE, "locale")).mapAllToAttributes();
 		builder.mapAllToAttributes();
 	}
