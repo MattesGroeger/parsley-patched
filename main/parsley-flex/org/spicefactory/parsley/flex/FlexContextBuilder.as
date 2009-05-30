@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.flex {
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.flex.FlexLogFactory;
 import org.spicefactory.parsley.core.CompositeContextBuilder;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.builder.ActionScriptObjectDefinitionBuilder;
@@ -54,6 +56,7 @@ public class FlexContextBuilder {
 	public static function mergeAll (containers:Array, builder:CompositeContextBuilder,
 			viewTriggerEvent:String = "configureIOC") : void {
 		RootViewManager.addContext(builder.context, viewTriggerEvent, builder.domain);
+		if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
 		builder.addBuilder(new ActionScriptObjectDefinitionBuilder(containers));
 	}
 
