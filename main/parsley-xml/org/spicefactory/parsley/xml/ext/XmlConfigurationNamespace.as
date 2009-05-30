@@ -15,14 +15,16 @@
  */
 
 package org.spicefactory.parsley.xml.ext {
-import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
+import org.spicefactory.lib.xml.NamingStrategy;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
+import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 
+import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
@@ -33,15 +35,20 @@ public class XmlConfigurationNamespace {
 	
 	private var _uri:String;
 	
+	private var _domain:ApplicationDomain;
+	private var _namingStrategy:NamingStrategy;
+	
 	private var factories:Dictionary = new Dictionary();
 	
 	private var decorators:Dictionary = new Dictionary();
 	
 	
-	function XmlConfigurationNamespace (uri:String) {
+	function XmlConfigurationNamespace (uri:String, namingStrategy:NamingStrategy = null, domain:ApplicationDomain = null) {
 		_uri = uri;
+		_namingStrategy = namingStrategy;
+		_domain = domain;
 	}
-	
+
 	
 	public function get uri ():String {
 		return _uri;
@@ -66,7 +73,7 @@ public class XmlConfigurationNamespace {
 	}
 
 	public function addDefaultObjectMapper (type:Class, tagName:String) : void {
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassInfo.forClass(type), new QName(_uri, tagName));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, new QName(_uri, tagName), _namingStrategy, _domain);
 		builder.mapAllToAttributes();
 		addCustomObjectMapper(builder.build());
 	}
@@ -78,24 +85,24 @@ public class XmlConfigurationNamespace {
 	}
 
 	public function addDefaultDecoratorMapper (type:Class, tagName:String) : void {
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassInfo.forClass(type), new QName(_uri, tagName));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, new QName(_uri, tagName), _namingStrategy, _domain);
 		builder.mapAllToAttributes();
 		addCustomDecoratorMapper(builder.build());
 	}
 
 	private function newFactoryMapperBuilder (type:Class, tagName:String, decoratorArray:String = "decorators") : PropertyMapperBuilder {
-		var ci:ClassInfo = ClassInfo.forClass(type);
+		var ci:ClassInfo = ClassInfo.forClass(type, _domain);
 		var elementName:QName = new QName(_uri, tagName);
 		validateFactory(ci, tagName, true);
 		return (decoratorArray == null) 
-			? new PropertyMapperBuilder(ci, elementName) 
+			? new PropertyMapperBuilder(type, elementName, _namingStrategy, _domain) 
 			: XmlObjectDefinitionMapperFactory.createObjectDefinitionFactoryMapperBuilder(ci, elementName, decoratorArray);
 	}
 	
 	public function createObjectMapperBuilder (type:Class, tagName:String) : PropertyMapperBuilder {
-		var ci:ClassInfo = ClassInfo.forClass(type);
+		var ci:ClassInfo = ClassInfo.forClass(type, _domain);
 		validateFactory(ci, tagName);
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ci, new QName(_uri, tagName));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, new QName(_uri, tagName));
 		factories[tagName] = builder;
 		return builder;
 	}
@@ -107,9 +114,9 @@ public class XmlConfigurationNamespace {
 	}
 	
 	public function createDecoratorMapperBuilder (type:Class, tagName:String) : PropertyMapperBuilder {
-		var ci:ClassInfo = ClassInfo.forClass(type);
+		var ci:ClassInfo = ClassInfo.forClass(type, _domain);
 		validateDecorator(ci, tagName);
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ci, new QName(_uri, tagName));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, new QName(_uri, tagName));
 		decorators[tagName] = builder;
 		return builder;
 	}

@@ -73,8 +73,8 @@ public class XmlObjectDefinitionMapperFactory {
 	
 	
 	public static function createObjectDefinitionFactoryMapperBuilder (objectType:ClassInfo, 
-			elementName:QName, decoratorArray:String) : PropertyMapperBuilder {
-		return new ObjectDefinitionFactoryMapperBuilder(objectType, elementName, decoratorArray);
+			elementName:QName, decoratorArray:String, namingStrategy:NamingStrategy = null) : PropertyMapperBuilder {
+		return new ObjectDefinitionFactoryMapperBuilder(objectType, elementName, decoratorArray, namingStrategy);
 	}
 
 	
@@ -222,7 +222,7 @@ public class XmlObjectDefinitionMapperFactory {
 	
 	
 	private function getMapperBuilder (type:Class, tagName:String) : PropertyMapperBuilder {
-		return new PropertyMapperBuilder(ClassInfo.forClass(type), 
+		return new PropertyMapperBuilder(type, 
 				new QName(PARSLEY_NAMESPACE_URI, tagName));
 	}
 }
@@ -284,7 +284,7 @@ class StaticPropertyRefMapper extends AbstractXmlObjectMapper {
 	
 	function StaticPropertyRefMapper () {
 		super(ClassInfo.forClass(Any), new QName(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI, "static-property"));
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassInfo.forClass(StaticPropertyRef), elementName);
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(StaticPropertyRef, elementName);
 		builder.mapAllToAttributes();
 		delegate = builder.build();
 	}
@@ -307,7 +307,7 @@ class ObjectDefinitionFactoryMapperBuilder extends PropertyMapperBuilder {
 	
 	function ObjectDefinitionFactoryMapperBuilder (objectType:ClassInfo, elementName:QName, 
 			decoratorArray:String, namingStrategy:NamingStrategy = null) {
-		super(objectType, elementName, namingStrategy);
+		super(objectType.getClass(), elementName, namingStrategy);
 		this.decoratorArray = decoratorArray;
 	}
 	
