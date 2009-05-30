@@ -13,9 +13,9 @@ public class FlashLoggingXmlTagTest extends XmlContextTestBase {
 	
 	public static const config:XML = <objects 
 		xmlns="http://www.spicefactory.org/parsley"
-		xmlns:log="http://www.spicefactory.org/parsley/logging/flash"
+		xmlns:log="http://www.spicefactory.org/parsley/flash/logging"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://www.spicefactory.org/parsley http://www.spicefactory.org/parsley/schema/2.0/parsley-core.xsd http://www.spicefactory.org/parsley/logging/flash http://www.spicefactory.org/parsley/schema/2.0/parsley-logging-flash.xsd"
+		xsi:schemaLocation="http://www.spicefactory.org/parsley http://www.spicefactory.org/parsley/schema/2.0/parsley-core.xsd http://www.spicefactory.org/parsley/flash/logging http://www.spicefactory.org/parsley/schema/2.0/parsley-logging-flash.xsd"
 		>
 		<log:factory id="logFactory">
 			<log:appender ref="appender" threshold="trace"/>

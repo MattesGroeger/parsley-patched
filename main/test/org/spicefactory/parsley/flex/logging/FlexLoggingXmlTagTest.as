@@ -15,9 +15,9 @@ public class FlexLoggingXmlTagTest extends XmlContextTestBase {
 	
 	public static const config:XML = <objects 
 		xmlns="http://www.spicefactory.org/parsley"
-		xmlns:log="http://www.spicefactory.org/parsley/logging/flex"
+		xmlns:log="http://www.spicefactory.org/parsley/flex/logging"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://www.spicefactory.org/parsley http://www.spicefactory.org/parsley/schema/2.0/parsley-core.xsd http://www.spicefactory.org/parsley/logging/flex http://www.spicefactory.org/parsley/schema/2.0/parsley-logging-flex.xsd"
+		xsi:schemaLocation="http://www.spicefactory.org/parsley http://www.spicefactory.org/parsley/schema/2.0/parsley-core.xsd http://www.spicefactory.org/parsley/flex/logging http://www.spicefactory.org/parsley/schema/2.0/parsley-logging-flex.xsd"
 		>
 		<log:target id="debugTarget" type="org.spicefactory.parsley.flex.logging.LogCounterTarget" level="debug">
 			<log:filter>log.debug.*</log:filter>		
