@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.flex.logging {
+import org.spicefactory.lib.logging.flex.FlexLogFactory;
+import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.parsley.core.errors.ContextError;
 
 import mx.logging.ILoggingTarget;
@@ -53,6 +55,8 @@ public class LogTargetTag {
 	
 	[Factory]
 	public function createTarget () : ILoggingTarget {
+		if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
+		
 		var targetObj:Object = new type();
 		if (!(targetObj is ILoggingTarget)) {
 			throw new ContextError("Object of type " + getQualifiedClassName(targetObj) 
