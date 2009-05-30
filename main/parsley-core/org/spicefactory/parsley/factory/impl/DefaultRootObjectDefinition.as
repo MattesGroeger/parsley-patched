@@ -22,6 +22,8 @@ import org.spicefactory.parsley.factory.impl.DefaultObjectDefinition;
 import org.spicefactory.parsley.util.IdGenerator;
 
 /**
+ * Default implementation of the RootObjectDefinition interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultRootObjectDefinition extends DefaultObjectDefinition implements RootObjectDefinition {
@@ -32,7 +34,15 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 	private var _singleton:Boolean;
 
 
-	public function DefaultRootObjectDefinition (type:ClassInfo, id:String, 
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param type the type to create a definition for
+	 * @param id the id the object should be registered with
+	 * @param lazy whether the object is lazy initializing
+	 * @param singleton whether the object should be treated as a singleton
+	 */
+	function DefaultRootObjectDefinition (type:ClassInfo, id:String, 
 			lazy:Boolean = false, singleton:Boolean = true) : void {
 		super(type);
 		_id = id;
@@ -41,6 +51,14 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 	}
 	
 	
+	/**
+	 * Creates a new root definition copying the internal state from the specified existing definition.
+	 * 
+	 * @param definition the defintion to copy the state from
+	 * @param id the id the object should be registered with
+	 * @param lazy whether the object is lazy initializing
+	 * @param singleton whether the object should be treated as a singleton
+	 */
 	public static function fromDefinition (definition:ObjectDefinition, id:String = null, 
 			lazy:Boolean = true, singleton:Boolean = true) : DefaultRootObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
@@ -50,13 +68,24 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 	} 
 
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get id () : String {
 		return _id;
 	}
-	
+
+	/**
+	 * @inheritDoc
+	 */
+		
 	public function get lazy () : Boolean {
 		return _lazy;
 	}
+	
+	/**
+	 * @inheritDoc
+	 */
 	
 	public function get singleton () : Boolean {
 		return _singleton;

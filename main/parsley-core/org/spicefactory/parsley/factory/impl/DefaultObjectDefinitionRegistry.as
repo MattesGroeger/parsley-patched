@@ -26,6 +26,8 @@ import flash.system.ApplicationDomain;
 import flash.utils.getQualifiedClassName;
 
 /**
+ * Default implementation of the ObjectDefinitionRegistry interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry {
@@ -38,24 +40,41 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 	private var definitions:SimpleMap = new SimpleMap();
 
 
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param domain the ApplicationDomain to use for reflecting on types added to this registry
+	 */
 	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain = null) {
 		_domain = domain;
 	}
 
-	
+
+	/**
+	 * @inheritDoc
+	 */	
 	public function get domain () : ApplicationDomain {
 		return _domain;
 	}
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function containsDefinition (id:String) : Boolean {
 		return definitions.containsKey(id);
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getDefinition (id:String) : RootObjectDefinition {
 		return definitions.get(id) as RootObjectDefinition;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function registerDefinition (definition:RootObjectDefinition) : void {
 		checkState();
 		if (definitions.containsKey(definition.id)) {
@@ -63,7 +82,10 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 		}
 		definitions.put(definition.id, definition);
 	}
-
+	
+	/**
+	 * @inheritDoc
+	 */
 	public function unregisterDefinition (definition:RootObjectDefinition) : void {
 		checkState();
 		if (containsDefinition(definition.id)) {
@@ -75,6 +97,9 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 		}
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getDefinitionCount (type:Class = null) : uint {
 		if (type == null) {
 			return definitions.getSize();
@@ -84,6 +109,9 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 		}
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getDefinitionIds (type:Class = null) : Array {
 		if (type == null) {
 			return definitions.keys;
@@ -94,6 +122,9 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 	}
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getDefinitionByType (type:Class, required:Boolean = false) : RootObjectDefinition {
 		var defs:Array = getAllDefinitionsByType(type);
 		if (defs.length > 1) {
@@ -107,6 +138,9 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 		return (defs.length == 0) ? null : defs[0];
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getAllDefinitionsByType (type:Class) : Array {
 		return definitions.values.filter(getTypeFilter(type));
 	}
@@ -123,6 +157,9 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 	}
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function freeze () : void {
 		_frozen = true;
 		for each (var definition:ObjectDefinition in definitions.values) {
@@ -130,6 +167,9 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 		}
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get frozen () : Boolean {
 		return _frozen;
 	}

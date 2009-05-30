@@ -21,6 +21,8 @@ import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.util.IdGenerator;
 
 /**
+ * Default implementation of the FactoryObjectDefintion interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultFactoryObjectDefinition extends DefaultRootObjectDefinition implements FactoryObjectDefinition {
@@ -29,6 +31,12 @@ public class DefaultFactoryObjectDefinition extends DefaultRootObjectDefinition 
 	private var _targetDefinition:ObjectDefinition;
 	
 	
+	/**
+	 * Creates a new instance
+	 * 
+	 * @param target the definition the object described by this factory definiton creates
+	 * 
+	 */
 	function DefaultFactoryObjectDefinition (target:ObjectDefinition, type:ClassInfo, id:String, 
 			lazy:Boolean = true, singleton:Boolean = true) {
 		super(type, id, lazy, singleton);
@@ -36,6 +44,15 @@ public class DefaultFactoryObjectDefinition extends DefaultRootObjectDefinition 
 	}
 
 
+	/**
+	 * Creates a new factory definition from the specified definitions for the target object and the factory itself.
+	 * 
+	 * @param factoryDefinition the definition for the factory object
+	 * @param targetDefinition the definition for the target object (the object created by the factory object)
+	 * @param id the id the object should be registered with
+	 * @param lazy whether the object is lazy initializing
+	 * @param singleton whether the object should be treated as a singleton
+	 */
 	public static function fromDefinition (factoryDefinition:ObjectDefinition, targetDefinition:ObjectDefinition, 
 			id:String = null, lazy:Boolean = true, singleton:Boolean = true) : DefaultFactoryObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
@@ -46,6 +63,9 @@ public class DefaultFactoryObjectDefinition extends DefaultRootObjectDefinition 
 	} 
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get targetDefinition () : ObjectDefinition {
 		return _targetDefinition;
 	}	

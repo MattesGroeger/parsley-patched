@@ -33,6 +33,8 @@ import flash.utils.getQualifiedClassName;
 [DefaultProperty("decorators")]
 
 /**
+ * Default implementation of the ObjectDefinitionFactory interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
@@ -43,17 +45,36 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	
 	public var type:Class = Object;
 	
-	
+	/**
+	 * @copy ObjectDefinitionMetadata#id
+	 */
 	public var id:String;
 	
+	/**
+	 * @copy ObjectDefinitionMetadata#lazy
+	 */
 	public var lazy:Boolean = false;
 	
+	/**
+	 * @copy ObjectDefinitionMetadata#singleton
+	 */
 	public var singleton:Boolean = true;
 	
 	
+	/**
+	 * The ObjectDefinitionDecorator instances added to this definition.
+	 */
 	public var decorators:Array = new Array();
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param type the type this factory should create a definition for
+	 * @param id the id the object should be registered with
+	 * @param lazy whether the object is lazy initializing
+	 * @param singleton whether the object should be treated as a singleton
+	 */
 	function DefaultObjectDefinitionFactory (type:Class, id:String = null, lazy:Boolean = false, singleton:Boolean = true) {
 		this.type = type;
 		this.id = id;
@@ -62,6 +83,9 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	}
 
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
 		var ci:ClassInfo = ClassInfo.forClass(type, registry.domain);
@@ -70,6 +94,9 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 		return def;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		var ci:ClassInfo = ClassInfo.forClass(type, registry.domain);
 		var def:ObjectDefinition = new DefaultObjectDefinition(ci);
@@ -78,6 +105,15 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	}
 	
 	
+	/**
+	 * Processes the decorators for this factory. This implementation processes decorators added
+	 * as metadata to the class definitions along with decorators added to the <code>decorators</code>
+	 * property explicitly, possibly through some additional configuration mechanism like MXML or XML.
+	 * 
+	 * @param registry the registry the defintion belongs to
+	 * @param definition the definition to process
+	 * @param definition the resulting definition (possibly the same instance that was passed to this method)
+	 */
 	protected function processDecorators (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : ObjectDefinition {
 		var decorators:Array = MetadataDecoratorExtractor.extract(definition.type).concat(this.decorators);
 		var errors:Array = new Array();

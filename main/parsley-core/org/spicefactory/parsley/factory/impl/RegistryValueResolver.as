@@ -26,11 +26,22 @@ import org.spicefactory.parsley.factory.tag.ArrayTag;
 import org.spicefactory.parsley.factory.tag.ObjectReferenceTag;
 
 /**
+ * Responsible for resolving some special tags that can be used in MXML or XML configuration
+ * for specifying object references or arrays possibly containing references.
+ * 
  * @author Jens Halm
  */
 public class RegistryValueResolver {
 	
 	
+	/**
+	 * Resolves special tags for object references or inline object definitions
+	 * and returns representations that can be used in object definitions.
+	 * 
+	 * @param value the value (tag) to resolve
+	 * @param registry the associated registry
+	 * @return the resolved configuration value
+	 */
 	public function resolveValue (value:*, registry:ObjectDefinitionRegistry) : * {
 		if (value is ObjectDefinitionFactory) {
 			return ObjectDefinitionFactory(value).createNestedDefinition(registry);
@@ -59,8 +70,17 @@ public class RegistryValueResolver {
 			return value;
 		}
 	} 
-	
-	public function resolveValues (values:Array, registry:ObjectDefinitionRegistry):void {
+
+	/**
+	 * Resolves special tags for object references or inline object definitions
+	 * that the specified Array possibly contains
+	 * and replaces them with representations that can be used in object definitions.
+	 * 
+	 * @param values the Array to resolve
+	 * @param registry the associated registry
+	 * @return the resolved configuration value
+	 */	
+	public function resolveValues (values:Array, registry:ObjectDefinitionRegistry) : void {
 		for (var i:int = 0; i < values.length; i++) {
 			values[i] = resolveValue(values[i], registry);
 		}

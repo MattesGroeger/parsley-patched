@@ -30,6 +30,8 @@ import org.spicefactory.parsley.factory.registry.impl.DefaultMethodRegistry;
 import org.spicefactory.parsley.factory.registry.impl.DefaultPropertyRegistry;
 
 /**
+ * Default implementation of the ObjectDefintion interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultObjectDefinition implements ObjectDefinition {
@@ -47,6 +49,11 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	private var _frozen:Boolean;
 
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param type the type to create a definition for
+	 */
 	function DefaultObjectDefinition (type:ClassInfo) {
 		_type = type;
 		_constructorArgs = new DefaultConstructorArgRegistry(this);
@@ -56,6 +63,11 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	}
 
 
+	/**
+	 * Copies the internal state of the specified definition to this instance.
+	 * 
+	 * @param definition the definition whose state should be copied into this instance
+	 */
 	public function populateFrom (definition:ObjectDefinition) : void {
 		checkState();
 		_instantiator = definition.instantiator;
@@ -67,38 +79,65 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	}
 
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get type () : ClassInfo {
 		return _type;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get constructorArgs () : ConstructorArgRegistry {
 		return _constructorArgs;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function get properties () : PropertyRegistry {
 		return _properties;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function get injectorMethods () : MethodRegistry {
 		return _methods;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function get lifecycleListeners () : LifecycleListenerRegistry {
 		return _listeners;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get asyncInitConfig () : AsyncInitConfig {
 		return _asyncInitConfig;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function set asyncInitConfig (config:AsyncInitConfig) : void {
 		_asyncInitConfig = config;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function get instantiator () : ObjectInstantiator {
 		return _instantiator;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function set instantiator (value:ObjectInstantiator) : void {
 		checkState();
 		_instantiator = value;
@@ -111,15 +150,24 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function freeze () : void {
 		_frozen = true;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get frozen () : Boolean {
 		return _frozen;
 	}
 	
 	
+	/**
+	 * @private
+	 */
 	public function toString () : String {
 		return "ObjectDefinition for Class " + _type.name;
 	}
