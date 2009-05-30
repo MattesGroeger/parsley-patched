@@ -19,16 +19,50 @@ import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 
 /**
+ * Responsible for managing the lifecycle of objects based on their <code>ObjectDefinition</code>s.
+ * It is used as a strategy in the builtin <code>Context</code> implementations.
+ * 
  * @author Jens Halm
  */
 public interface ObjectFactory {
 	
+	/**
+	 * Instantiates a new object based on the specified ObjectDefinition.
+	 * This should not include processing its configuration, like performing dependency injection or message handler registration.
+	 * To allow bidirectional associations this step is deferred until <code>configureObject</code> is invoked.
+	 * 
+	 * @param definition the definition to create a new instance for
+	 * @param context the Context the object belongs to
+	 * @return the new instance
+	 */
 	function createObject (definition:ObjectDefinition, context:Context) : Object;	
 
+	/**
+	 * Processes the configuration for the specified instance and performs dependency injection, message handler registration
+	 * or invocation of methods marked with PostConstruct and similar tasks.
+	 * 
+	 * @param instance the instance to configure
+	 * @param definition the definition of the specified instance
+	 * @param context the Context the object belongs to
+	 */
 	function configureObject (instance:Object, definition:ObjectDefinition, context:Context) : void;	
 
+	/**
+	 * Processes lifecycle listeners for the object before it will be removed from the Context.
+	 * This includes invoking methods marked with PreDestroy.
+	 * 
+	 * @param instance the instance to process
+	 * @param definition the definition of the specified instance
+	 * @param context the Context the object belongs to
+	 */
 	function destroyObject (instance:Object, definition:ObjectDefinition, context:Context) : void;	
 	
+	/**
+	 * Processes lifecycle listeners for all objects created by this factory. This means that
+	 * implementation have to keep track of all instance they create.
+	 * 
+	 * @param context The associated Context
+	 */
 	function destroyAll (context:Context) : void;
 	
 }

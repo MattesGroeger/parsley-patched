@@ -29,6 +29,8 @@ import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
 
 /**
+ * Responsible for processing the instance markey with AsyncInit tags upon Context creation.
+ * 
  * @author Jens Halm
  */
 public class AsyncInitializerSequence {
@@ -46,16 +48,28 @@ public class AsyncInitializerSequence {
 	private var context:DefaultContext;
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param context the associated Context
+	 */
 	function AsyncInitializerSequence (context:DefaultContext) {
 		this.context = context;
 	}
 
-	
+
+	/**
+	 * Adds a definition to this sequence.
+	 * 
+	 * @param def the definition to add to this sequence
+	 */	
 	public function addDefinition (def:ObjectDefinition) : void {
 		queuedInits.push(def);
 	}
 	
-	
+	/**
+	 * Starts processing the definitons that were added to this sequence.
+	 */
 	public function start () : void {
 		var sortFunc:Function = function (def1:ObjectDefinition, def2:ObjectDefinition) : int {
 			return def1.asyncInitConfig.order - def2.asyncInitConfig.order;
@@ -64,6 +78,9 @@ public class AsyncInitializerSequence {
 		createNextInstance();
 	}
 	
+	/**
+	 * Cancels the initialization sequence.
+	 */
 	public function cancel () : void {
 		if (activeInstance != null) {
 			removeListeners(activeInstance, activeInstanceComplete, activeInstanceError);
@@ -77,6 +94,9 @@ public class AsyncInitializerSequence {
 		parallelInitCount = 0;
 	}
 
+	/**
+	 * Indicates whether all definitions of this sequence have completed their asynchronous initialization.
+	 */
 	public function get complete () : Boolean {
 		return queuedInits.length == 0 && parallelInitCount == 0;
 	}
@@ -95,6 +115,12 @@ public class AsyncInitializerSequence {
 		}
 	}
 
+	/**
+	 * Adds a new instance to be watched by this sequence for completion of its asynchronous initialization.
+	 * 
+	 * @param def the definition of the specified instance
+	 * @param instance the instance to watch
+	 */
 	public function addInstance (def:ObjectDefinition, instance:Object) : void {
 		var asyncObj:IEventDispatcher = IEventDispatcher(instance);
 		if (def == activeDefinition) {

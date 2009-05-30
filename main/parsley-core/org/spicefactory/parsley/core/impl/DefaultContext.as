@@ -35,7 +35,15 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.utils.Dictionary;
 
-import flash.utils.getQualifiedClassName;/**
+/**
+ * Default implementation of the <code>Context</code> interface. 
+ * 
+ * <p>This implementation is not capable of handling a parent <code>Context</code>.
+ * A big part of the internal work is delegated to the collaborators passed to the constructor:
+ * The <code>ObjectDefinitionRegistry</code>, <code>ObjectFactory</code> and <code>MessageRouter</code>
+ * implementations. If they are omitted this implementation will use the default implementations of
+ * these interfaces.</p> 
+ * 
  * @author Jens Halm
  */
 public class DefaultContext extends EventDispatcher implements Context {
@@ -59,6 +67,13 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private var _destroyed:Boolean;
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param registry The internal registry to use
+	 * @param messageRouter The router implementation to use
+	 * @param factory The factory that this class should use to instantiate objects from ObjectDefinitions
+	 */
 	function DefaultContext (registry:ObjectDefinitionRegistry = null, 
 			messageRouter:MessageRouter = null,
 			factory:ObjectFactory = null) {
@@ -68,7 +83,11 @@ public class DefaultContext extends EventDispatcher implements Context {
 		addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, 1);
 	}
 
-	
+	/**
+	 * Initializes this Context. Performs the following operations: Freezes the ObjectDefinitions in the internal
+	 * registry so that can no longer be modified and then creates all instance which are configured as non-lazy
+	 * singletons, optionally processing their asynchronous initialization if they are marked with <code>[AsyncInit]</code>.
+	 */
 	public function initialize () : void {
 		
 		// freeze configuration
@@ -113,45 +132,70 @@ public class DefaultContext extends EventDispatcher implements Context {
 	}
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get configured () : Boolean {
 		return _configured;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get initialized () : Boolean {
 		return _initialized;
 	}
 
-
+	/**
+	 * The registry used by this Context.
+	 */
 	public function get registry () : ObjectDefinitionRegistry {
 		return _registry;
 	}
 	
+	/**
+	 * The factory that creates objects from ObjectDefinitions for this Context.
+	 */
 	public function get factory () : ObjectFactory {
 		return _factory;
 	}
 	
-	
+	/**
+	 * @inheritDoc
+	 */
 	public function getObjectCount (type:Class = null) : uint {
 		checkState();
 		return _registry.getDefinitionCount(type);
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getObjectIds (type:Class = null) : Array {
 		checkState();
 		return _registry.getDefinitionIds(type);
 	}
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function containsObject (id:String) : Boolean {
 		checkState();
 		return _registry.containsDefinition(id);
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getObject (id:String) : Object {
 		checkState();
 		return getInstance(getDefinition(id));
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getType (id:String) : Class {
 		checkState();
 		var def:ObjectDefinition = getDefinition(id);
@@ -159,6 +203,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 	}
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getAllObjectsByType (type:Class) : Array {
 		checkState();
 		var defs:Array = _registry.getAllDefinitionsByType(type);
@@ -169,6 +216,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 		return defs;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getObjectByType (type:Class, required:Boolean = false) : Object {
 		checkState();
 		var def:RootObjectDefinition = _registry.getDefinitionByType(type, required);
@@ -233,6 +283,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 		destroy();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function destroy () : void {
 		if (_destroyed) {
 			return;
@@ -249,6 +302,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 		}
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get destroyed () : Boolean {
 		return _destroyed;
 	}
@@ -264,6 +320,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 		_messageRouter = null;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function get messageRouter () : MessageRouter {
 		return _messageRouter;
 	}

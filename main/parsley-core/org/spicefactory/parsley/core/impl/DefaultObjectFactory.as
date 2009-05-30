@@ -30,6 +30,8 @@ import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReferenc
 import flash.utils.Dictionary;
 
 /**
+ * Default implementation of the ObjectFactory interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultObjectFactory implements ObjectFactory {
@@ -38,6 +40,9 @@ public class DefaultObjectFactory implements ObjectFactory {
 	private var processedInstances:Dictionary = new Dictionary();
 
 
+	/**
+	 * @inheritDoc
+	 */
 	public function createObject (definition:ObjectDefinition, context:Context) : Object {
 		if (definition.instantiator != null) {
 			return definition.instantiator.instantiate(context);
@@ -48,6 +53,9 @@ public class DefaultObjectFactory implements ObjectFactory {
 		}
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function configureObject (instance:Object, definition:ObjectDefinition, context:Context) : void {
 	 	processProperties(instance, definition, context);
 	 	processMethods(instance, definition, context);
@@ -55,11 +63,17 @@ public class DefaultObjectFactory implements ObjectFactory {
 		processedInstances[instance] = definition;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function destroyObject (instance:Object, definition:ObjectDefinition, context:Context) : void {
 		processPreDestroyListeners(instance, definition, context);
 		delete processedInstances[instance];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function destroyAll (context:Context) : void {
 		for (var instance:Object in processedInstances) {
 			var definition:ObjectDefinition = ObjectDefinition(processedInstances[instance]);
@@ -68,7 +82,13 @@ public class DefaultObjectFactory implements ObjectFactory {
 		processedInstances = new Dictionary();
 	}
 	
-
+	/**
+	 * Processes the configuration of the properties for the specified instance.
+	 * 
+	 * @param instance the instance to process
+	 * @param definition the definition of the specified instance
+	 * @param context the Context the instance belongs to
+	 */
 	protected function processProperties (instance:Object, definition:ObjectDefinition, context:Context) : void {
 	 	var props:Array = definition.properties.getAll();
 	 	for each (var prop:PropertyValue in props) {
@@ -76,7 +96,14 @@ public class DefaultObjectFactory implements ObjectFactory {
 	 		prop.property.setValue(instance, value);
 		}		
 	}
-	
+
+	/**
+	 * Processes the configuration of the methods for the specified instance, performing method injection.
+	 * 
+	 * @param instance the instance to process
+	 * @param definition the definition of the specified instance
+	 * @param context the Context the instance belongs to
+	 */	
 	protected function processMethods (instance:Object, definition:ObjectDefinition, context:Context) : void {
 	 	var methods:Array = definition.injectorMethods.getAll();
 	 	for each (var mpr:MethodParameterRegistry in methods) {
@@ -85,13 +112,27 @@ public class DefaultObjectFactory implements ObjectFactory {
 		}		
 	}
 	
+	/**
+	 * Processes the lifecycle listeners for the specified instance after it has been created.
+	 * 
+	 * @param instance the instance to process
+	 * @param definition the definition of the specified instance
+	 * @param context the Context the instance belongs to
+	 */
 	protected function processPostConstructListeners (instance:Object, definition:ObjectDefinition, context:Context) : void {
 	 	var listeners:Array = definition.lifecycleListeners.getAll();
 	 	for each (var listener:ObjectLifecycleListener in listeners) {
  			listener.postConstruct(instance, context);
 		}		
 	}
-	
+
+	/**
+	 * Processes the lifecycle listeners for the specified instance before it gets removed from the Context.
+	 * 
+	 * @param instance the instance to process
+	 * @param definition the definition of the specified instance
+	 * @param context the Context the instance belongs to
+	 */	
 	protected function processPreDestroyListeners (instance:Object, definition:ObjectDefinition, context:Context) : void {
 	 	var listeners:Array = definition.lifecycleListeners.getAll();
 	 	for each (var listener:ObjectLifecycleListener in listeners) {
@@ -99,6 +140,13 @@ public class DefaultObjectFactory implements ObjectFactory {
 		}		
 	}
 	
+	/**
+	 * Resolves the specified value, resolving any object references or inline object definitions.
+	 * 
+	 * @param value the value to resolve
+	 * @param context the associated Context
+	 * @return the resolved value
+	 */
 	protected function resolveValue (value:*, context:Context) : * {
 		if (value is ObjectIdReference) {
 			var idRef:ObjectIdReference = ObjectIdReference(value);
@@ -160,6 +208,14 @@ public class DefaultObjectFactory implements ObjectFactory {
 		}
 	}
 
+	/**
+	 * Resolves the specified Array, recursively resolving any object references or inline object definitions 
+	 * of its elements.
+	 * 
+	 * @param array the Array to resolve
+	 * @param context the associated Context
+	 * @return the resolved Array
+	 */
 	protected function resolveArray (array:Array, context:Context) : Array {
 		for (var i:uint = 0; i < array.length; i++) {
 			array[i] = resolveValue(array[i], context);
