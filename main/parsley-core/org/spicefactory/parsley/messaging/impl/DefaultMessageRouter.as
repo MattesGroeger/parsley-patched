@@ -29,6 +29,8 @@ import org.spicefactory.parsley.messaging.MessageTarget;
 import flash.utils.Dictionary;
 
 /**
+ * Default implementation of the MessageRouter interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultMessageRouter implements MessageRouter {
@@ -43,6 +45,8 @@ public class DefaultMessageRouter implements MessageRouter {
 	
 	/**
 	 * Creates a new instance.
+	 * 
+	 * @param context the associated context instance
 	 */
 	function DefaultMessageRouter (context:Context) {
 		init();
@@ -55,6 +59,9 @@ public class DefaultMessageRouter implements MessageRouter {
 	}
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	private function init () : void {
 		targets = new Array();
 		targetSelectionCache = new Dictionary();
@@ -71,7 +78,9 @@ public class DefaultMessageRouter implements MessageRouter {
 		deferredMessages = new Array();
 	}
 	
-	
+	/**
+	 * @inheritDoc
+	 */
 	public function dispatchMessage (message:Object) : void {
 		if (!activated) {
 			deferredMessages.push(message);
@@ -98,7 +107,9 @@ public class DefaultMessageRouter implements MessageRouter {
 		processor.proceed();
 	}	
 	
-	
+	/**
+	 * @inheritDoc
+	 */
 	public function registerMessageBinding (targetInstance:Object, targetProperty:String, 
 			messageType:Class, messageProperty:String, selector:* = undefined) : MessageTarget {
 		var targetType:ClassInfo = ClassInfo.forInstance(targetInstance);
@@ -129,6 +140,9 @@ public class DefaultMessageRouter implements MessageRouter {
 		return target;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function registerMessageHandler (targetInstance:Object, targetMethod:String, 
 			messageType:Class = null, messageProperties:Array = null, selector:* = undefined) : MessageTarget {
 		var targetType:ClassInfo = ClassInfo.forInstance(targetInstance);
@@ -194,6 +208,9 @@ public class DefaultMessageRouter implements MessageRouter {
 		return target;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function registerMessageInterceptor (targetInstance:Object, targetMethod:String, 
 			messageType:Class = null, selector:* = undefined) : MessageTarget {
 		var targetType:ClassInfo = ClassInfo.forInstance(targetInstance);
@@ -226,6 +243,9 @@ public class DefaultMessageRouter implements MessageRouter {
 		targetSelectionCache = new Dictionary();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function unregister (target:MessageTarget) : void {
 		var index:int = targets.indexOf(target);
 		if (index != -1) {
@@ -234,7 +254,9 @@ public class DefaultMessageRouter implements MessageRouter {
 		}
 	}
 	
-	
+	/**
+	 * @inheritDoc
+	 */
 	public function destroy () : void {
 		init();
 	}

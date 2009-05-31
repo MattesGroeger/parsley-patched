@@ -17,6 +17,8 @@
 package org.spicefactory.parsley.messaging.impl {
 
 /**
+ * Represents a reference to a message dispatcher function. To be used in MXML and XML configuration.
+ * 
  * @author Jens Halm
  */
 public class MessageDispatcherFunctionReference {

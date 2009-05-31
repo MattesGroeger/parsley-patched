@@ -21,6 +21,8 @@ import org.spicefactory.parsley.messaging.MessageProcessor;
 import org.spicefactory.parsley.messaging.MessageTarget;
 
 /**
+ * Default implementation of the MessageProcessor interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultMessageProcessor implements MessageProcessor {
@@ -37,12 +39,22 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	private var _currentIndex:uint = 0;
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param message the message to process
+	 * @param targets the regular target for the message (handlers and bindings)
+	 * @param interceptors the interceptors for this message
+	 */
 	function DefaultMessageProcessor (message:Object, targets:Array, interceptors:Array) {
 		_message = message;
 		_targets = targets;
 		_interceptors = interceptors;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function proceed () : void {
 		if (_interceptors.length > _currentIndex) {
 			var ic:MessageTarget = _interceptors[_currentIndex++];
@@ -64,10 +76,16 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		}
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function rewind () : void {
 		_currentIndex = 0;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get message () : Object {
 		return _message;
 	}

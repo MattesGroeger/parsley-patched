@@ -24,6 +24,9 @@ import flash.events.Event;
 import flash.utils.Dictionary;
 
 /**
+ * A cached selection of targets for a particular message type.
+ * Will be used by the default MessageRouter implementation as a performance optimization.
+ * 
  * @author Jens Halm
  */
 public class MessageTargetSelection {
@@ -42,6 +45,11 @@ public class MessageTargetSelection {
 	private var _interceptorSelectorMap:Dictionary = new Dictionary();
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param type the type of the message
+	 */
 	function MessageTargetSelection (type:ClassInfo) {
 		_messageType = type;
 		for each (var p:Property in type.getProperties()) {
@@ -59,11 +67,19 @@ public class MessageTargetSelection {
 		}
 	}
 	
-	
+	/**
+	 * The type of the message.
+	 */
 	public function get messageType () : ClassInfo {
 		return _messageType;
 	}
 	
+	/**
+	 * Returns the value of the selector property of the specified message instance.
+	 * 
+	 * @param message the message instance
+	 * @return the value of the selector property of the specified message instance
+	 */
 	public function getSelectorValue (message:Object) : * {
 		if (_selectorProperty != null) {
 			return _selectorProperty.getValue(message);
@@ -73,6 +89,12 @@ public class MessageTargetSelection {
 		}
 	}
 	
+	/**
+	 * Returns all regular targets (handlers and bindings) that match for the specified selector value.
+	 * 
+	 * @param selectorValue the value of the selector property
+	 * @return all regular targets that match for the specified selector value
+	 */	
 	public function getTargets (selectorValue:*) : Array {
 		var targets:Array = null;
 		if (_targetSelectorMap[selectorValue] != undefined) {
@@ -90,6 +112,12 @@ public class MessageTargetSelection {
 		return targets.concat(_targetsWithoutSelector);
 	}
 	
+	/**
+	 * Returns all interceptors that match for the specified selector value.
+	 * 
+	 * @param selectorValue the value of the selector property
+	 * @return all interceptors that match for the specified selector value
+	 */	
 	public function getInterceptors (selectorValue:*) : Array {
 		var interceptors:Array = null;
 		if (_interceptorSelectorMap[selectorValue] != undefined) {
@@ -107,6 +135,11 @@ public class MessageTargetSelection {
 		return interceptors.concat(_interceptorsWithoutSelector);
 	}
 	
+	/**
+	 * Adds a message target (handler, binding, interceptor) to this selection.
+	 * 
+	 * @param target the target to add
+	 */
 	public function addTarget (target:MessageTarget) : void {
 		var collection:Array = (target.interceptor) ?
 				((target.selector == undefined) ? _interceptorsWithoutSelector : _interceptorsWithSelector)
