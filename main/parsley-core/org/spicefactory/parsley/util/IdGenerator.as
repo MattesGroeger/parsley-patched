@@ -17,6 +17,8 @@
 package org.spicefactory.parsley.util {
 
 /**
+ * Simple generator for internal object ids in case they are not specified by the user.
+ * 
  * @author Jens Halm
  */
 public class IdGenerator {
@@ -24,7 +26,10 @@ public class IdGenerator {
 
 	private static var _nextId:int = 1;
 	
-	
+
+	/**	
+	 * The next available obejct id.
+	 */
 	public static function get nextObjectId () : String {
 		return "[[Object " + _nextId++ + "]]";
 	}
