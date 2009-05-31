@@ -29,7 +29,7 @@ import org.spicefactory.parsley.factory.ObjectLifecycleListener;
  * the object has been created and fully configured.
  *
  * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
- * thus both interfaces are implemented.
+ * thus both interfaces are implemented.</p>
  * 
  * @author Jens Halm
  */

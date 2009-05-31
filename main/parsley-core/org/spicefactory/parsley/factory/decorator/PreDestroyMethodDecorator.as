@@ -29,7 +29,7 @@ import org.spicefactory.parsley.factory.ObjectLifecycleListener;
  * that the object belongs to gets destroyed.
  *
  * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
- * thus both interfaces are implemented.
+ * thus both interfaces are implemented.</p>
  * 
  * @author Jens Halm
  */
