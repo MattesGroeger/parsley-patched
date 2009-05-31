@@ -23,7 +23,11 @@ import org.spicefactory.lib.xml.mapper.PropertyHandler;
 
 import flash.utils.Dictionary;
 
-import flash.utils.getQualifiedClassName;/**
+/**
+ * Default implementation of the XmlObjectMapper interface that gets produced by the PropertyMapperBuilder.
+ * Usually instances of this class will not be created by application code directly. Use the PropertyMapperBuilder 
+ * class instead. 
+ * 
  * @author Jens Halm
  */
 public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObjectMapper {
@@ -44,6 +48,9 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 	private static const XSI_URI:String = "http://www.w3.org/2001/XMLSchema-instance";
 
 
+	/**
+	 * @private
+	 */
 	function PropertyMapper (objectType:ClassInfo, elementName:QName, handlers:Array, 
 			ignoreUnmappedAttributes:Boolean, ignoreUnmappedChildren:Boolean) {
 		super(objectType, elementName);

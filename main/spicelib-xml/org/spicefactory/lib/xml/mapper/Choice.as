@@ -23,6 +23,10 @@ import org.spicefactory.lib.xml.XmlValidationError;
 import flash.utils.Dictionary;
 
 /**
+ * Choices represent several XML child elements that should be mapped to the same property of the mapped class.
+ * They are somewhat similar to choices in XML Schema definitions. Instances of this class can be passed to
+ * <code>PropertyMapperBuilder.mapToChildElementChoice()</code>.
+ * 
  * @author Jens Halm
  */
 public class Choice {
@@ -32,11 +36,19 @@ public class Choice {
 	private var mappersByType:Dictionary = new Dictionary();
 	
 	
+	/**
+	 * Adds a mapper to this choice.
+	 * 
+	 * @param mapper the mapper to add
+	 */
 	public function addMapper (mapper:XmlObjectMapper) : void {
 		mappersByXmlName[mapper.elementName.toString()] = mapper;
 		mappersByType[mapper.objectType.getClass()] = mapper;
 	}
 
+	/**
+	 * @private
+	 */
 	public function getMapperForInstance (instance:Object, context:XmlProcessorContext):XmlObjectMapper {
 		var ci:ClassInfo = ClassInfo.forInstance(instance, context.applicationDomain);
 		var mapper:XmlObjectMapper = mappersByType[ci.getClass()];
@@ -46,6 +58,9 @@ public class Choice {
 		return mapper;
 	}
 	
+	/**
+	 * @private
+	 */
 	public function getMapperForElementName (name:QName) : XmlObjectMapper {
 		var mapper:XmlObjectMapper = mappersByXmlName[name.toString()];
 		if (mapper == null) {
@@ -54,6 +69,9 @@ public class Choice {
 		return mapper;
 	}
 	
+	/**
+	 * @private
+	 */
 	public function getAllMappers () : Array {
 		var result:Array = new Array();
 		for each (var mapper:Object in mappersByXmlName) {
@@ -62,6 +80,9 @@ public class Choice {
 		return result;
 	}
 
+	/**
+	 * @private
+	 */
 	public function get xmlNames () : Array {
 		var names:Array = new Array();
 		for each (var mapper:XmlObjectMapper in mappersByXmlName) {

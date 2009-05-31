@@ -19,23 +19,46 @@ import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.lib.reflect.Property;
 
 /**
+ * Responsible for mapping a single property of a mapped class to an XML element, attribute or text node.
+ * 
  * @author Jens Halm
  */
 public interface PropertyHandler {
 	
 	
 	/**
-	 * The Property the attribute should map to.
+	 * The Property the XML element, attribute or text node should map to.
 	 */
 	function get property () : Property;
 	
+	/**
+	 * The names of the mapped XML elements, attributes or text nodes.
+	 * For Array properties the Array may contain more than one XML name.
+	 */
 	function get xmlNames () : Array;
 	
+	/**
+	 * The kind of the mapped node. Either <code>element</code>, <code>attribute</code> or <code>text</code>.
+	 */
 	function get nodeKind () : String;
 	
 	
+	/**
+	 * Maps the specified XML elements, attributes or text nodes to the mapped property of the specified instance.
+	 * 
+	 * @param nodes the XML elements, attributes or text nodes to apply as a property value
+	 * @param parentInstance the instance the property should be set for
+	 * @param context the processing context
+	 */
 	function toObject (nodes:Array, parentInstance:Object, context:XmlProcessorContext) : void;
 
+	/**
+	 * Maps the property value this handler is responsible for to the specified XML elements.
+	 * 
+	 * @param instance the instance the to read the property value from
+	 * @param parentElement the XML element to apply the property value to, either as an attribute, text node or child element
+	 * @param context the processing context
+	 */
 	function toXML (instance:Object, parentElement:XML, context:XmlProcessorContext) : void;
 	
 	

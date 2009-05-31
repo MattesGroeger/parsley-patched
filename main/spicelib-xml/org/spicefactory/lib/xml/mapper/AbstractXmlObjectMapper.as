@@ -21,6 +21,9 @@ import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 
 /**
+ * Base class for XmlObjectMapper implementations providing default implementations for the two property getter methods.
+ * The two actual mapping methods are not implemented by this base class.
+ * 
  * @author Jens Halm
  */
 public class AbstractXmlObjectMapper implements XmlObjectMapper {
@@ -30,24 +33,42 @@ public class AbstractXmlObjectMapper implements XmlObjectMapper {
 	private var _elementName:QName;
 	
 
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param objectType the type of the mapped object
+	 * @param elementName the name of the mapped XML element
+	 */
 	function AbstractXmlObjectMapper (objectType:ClassInfo, elementName:QName) {
 		_objectType = objectType;
 		_elementName = elementName;
 	}	
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get objectType () : ClassInfo {
 		return _objectType;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get elementName () : QName {
 		return _elementName;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function mapToObject (element:XML, context:XmlProcessorContext) : Object {
 		throw new AbstractMethodError();
 	}
-
+	
+	/**
+	 * @inheritDoc
+	 */
 	public function mapToXml (object:Object, context:XmlProcessorContext) : XML {
 		throw new AbstractMethodError();
 	}
