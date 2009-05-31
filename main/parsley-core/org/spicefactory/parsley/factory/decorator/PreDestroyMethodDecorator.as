@@ -24,6 +24,12 @@ import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 
 /**
+ * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked before the Context
+ * that the object belongs to gets destroyed.
+ *
+ * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
+ * thus both interfaces are implemented.
+ * 
  * @author Jens Halm
  */
 [Metadata(name="PreDestroy", types="method")]
@@ -31,22 +37,34 @@ public class PreDestroyMethodDecorator implements ObjectDefinitionDecorator, Obj
 
 	
 	[Target]
+	/**
+	 * The name of the method.
+	 */
 	public var method:String;
 	
 	
 	private var targetMethod:Method;	
 
 
+	/**
+	 * @inheritDoc
+	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		targetMethod = DecoratorUtil.getMethod(method, definition);
 		definition.lifecycleListeners.addLifecycleListener(this);
 		return definition;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function postConstruct (instance:Object, context:Context) : void {
 		/* nothing to do here */
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function preDestroy (instance:Object, context:Context) : void {
 		targetMethod.invoke(instance, []);
 	}

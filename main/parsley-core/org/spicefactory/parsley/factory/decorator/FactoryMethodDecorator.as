@@ -27,6 +27,8 @@ import org.spicefactory.parsley.factory.impl.DefaultFactoryObjectDefinition;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 
 /**
+ * Represents a Metadata, MXML or XML tag that can be used to mark a method as a factory method.
+ * 
  * @author Jens Halm
  */
 [Metadata(name="Factory", types="method")]
@@ -34,9 +36,15 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 
 	
 	[Target]
+	/**
+	 * The name of the factory method.
+	 */
 	public var method:String;
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		
 		// Must create a new definition for the target type

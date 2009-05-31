@@ -20,12 +20,21 @@ import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 
 /**
+ * Represents a Metadata, MXML or XML tag that can be used on clases for which constructor injection should
+ * be performed. 
+ * 
+ * <p>Note that since the Flash Player currently ignores metadata on constructors this tag has to be added
+ * to the class declaration.</p>
+ *
  * @author Jens Halm
  */
 [Metadata(name="InjectConstructor", types="class")]
 public class InjectConstructorDecorator implements ObjectDefinitionDecorator {
 
 
+	/**
+	 * @inheritDoc
+	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		for (var i:uint = 0; i < definition.type.getConstructor().parameters.length; i++) {
 			definition.constructorArgs.addTypeReference();

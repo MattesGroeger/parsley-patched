@@ -20,6 +20,9 @@ import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 
 /**
+ * Represents a Metadata, MXML or XML tag that can be used on properties for which dependency injection should
+ * be performed.
+ *
  * @author Jens Halm
  */
 [Metadata(name="Inject", types="property")]
@@ -27,14 +30,27 @@ public class InjectPropertyDecorator implements ObjectDefinitionDecorator {
 
 
 	[DefaultProperty]
+	/**
+	 * The id of the dependency to inject. If this property is null,
+	 * dependency injection by type will be performed.
+	 */
 	public var id:String;
 	
+	/**
+	 * Indicates whether the dependency is required or optional.
+	 */
 	public var required:Boolean = true;
 
 	[Target]
+	/**
+	 * The name of the property.
+	 */
 	public var property:String;
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		if (id == null) {
 			definition.properties.addTypeReference(property, required);

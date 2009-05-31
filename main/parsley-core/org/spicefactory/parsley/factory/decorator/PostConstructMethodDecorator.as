@@ -24,6 +24,12 @@ import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 
 /**
+ * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked after
+ * the object has been created and fully configured.
+ *
+ * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
+ * thus both interfaces are implemented.
+ * 
  * @author Jens Halm
  */
 [Metadata(name="PostConstruct", types="method")]
@@ -32,22 +38,34 @@ public class PostConstructMethodDecorator implements ObjectDefinitionDecorator, 
 
 
 	[Target]
+	/**
+	 * The name of the method.
+	 */
 	public var method:String;
 	
 	
 	private var targetMethod:Method;	
 
-
+	
+	/**
+	 * @inheritDoc
+	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		targetMethod = DecoratorUtil.getMethod(method, definition);
 		definition.lifecycleListeners.addLifecycleListener(this);
 		return definition;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function postConstruct (instance:Object, context:Context) : void {
 		targetMethod.invoke(instance, []);
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function preDestroy (instance:Object, context:Context) : void {
 		/* nothing to do here */
 	}

@@ -21,12 +21,17 @@ import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.model.AsyncInitConfig;
 
 /**
+ * Represents a Metadata, MXML or XML tag that can be used to mark an object as being asynchronously initializing.
+ * 
  * @author Jens Halm
  */
 [Metadata(name="AsyncInit", types="class")]
 public class AsyncInitDecorator extends AsyncInitConfig implements ObjectDefinitionDecorator {
 
 
+	/**
+	 * @inheritDoc
+	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		definition.asyncInitConfig = this;
 		return definition;
