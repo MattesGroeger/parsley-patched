@@ -75,7 +75,7 @@ public class ActionScriptContextBuilder {
 	/**
 	 * Merges the specified ActionScript configuration classes with the specified composite builder.
 	 * 
-	 * @param container the classes that contain the ActionScript configuration to be merged into the composite builder
+	 * @param containers the classes that contain the ActionScript configuration to be merged into the composite builder
 	 * @param builder the builder to add the configuration to
 	 * 
 	 */
