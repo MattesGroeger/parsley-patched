@@ -26,6 +26,10 @@ import flash.utils.ByteArray;
 import mx.modules.ModuleLoader;
 
 /**
+ * A loader for Parsley ContextModules to be used instead of the default Flex ModuleLoader.
+ * This loader allows to specify a parent Context to be used for the Module Context, facilitating
+ * the building of Context hierarchies which correspond to Flex Module hierarchies.
+ * 
  * @author Jens Halm
  */
 public class ModuleLoader extends mx.modules.ModuleLoader {

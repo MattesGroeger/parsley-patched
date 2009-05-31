@@ -24,6 +24,15 @@ import mx.modules.Module;
 import flash.system.ApplicationDomain;
 
 /**
+ * Base class for MXML Modules that can be used instead of the default Flex Module base class
+ * to associate a Parsley MXML configuration class with the Flex Module. The associated configuration 
+ * will be processed as soon as the Module is loaded and the Context created this way will be automatically
+ * destroyed when the Flex Module gets unloaded.
+ * 
+ * <p>If the Context creation for the Module requires more than just a single MXML configuration class,
+ * the <code>buildContext</code> method can be overridden instead. You can then use any configuration mechanism
+ * you would normally use, including asynchronous mechanisms like XML configuration.</p>
+ * 
  * @author Jens Halm
  */
 public class ContextModule extends Module {
@@ -32,10 +41,25 @@ public class ContextModule extends Module {
 	private static const log:Logger = LogContext.getLogger(ContextModule);
 
 	
+	/**
+	 * The class holding the MXML configuration for this Module.
+	 */
 	public var configClass:Class;
+	
+	/**
+	 * The event type to use to trigger configuration of Flex Components that wish to be wired to the IOC Container.
+	 */
 	public var viewTriggerEvent:String = "configureIOC";
 	
 	
+	/**
+	 * Invoked by the framework after the Flex Module has been loaded and initialized.
+	 * The method should return a new Context instance using the specified parent Context and ApplicationDomain.
+	 * 
+	 * @param parent the Context to use as the parent for the new Context
+	 * @param domain the ApplicationDomain to use for reflection
+	 * @return a new Context instance, possibly not fully initialized yet
+	 */
 	public function buildContext (parent:Context, domain:ApplicationDomain) : Context {
 		if (configClass == null) {
 			log.warn("No configurationClass specified - skipping context creation");

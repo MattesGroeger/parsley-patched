@@ -27,6 +27,8 @@ import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;	
 
 /**
+ * Represents the registration of a single Flex Module managed by Parsley.
+ * 
  * @author Jens Halm
  */
 public class ModuleRegistration {
@@ -44,6 +46,13 @@ public class ModuleRegistration {
 	private var _modules:Dictionary = new Dictionary();
 
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param info the regular Flex Module Info
+	 * @param parentContext the Context to use as the parent for the Context created for the loaded Flex Module
+	 * @param moduleDomain the ApplicationDomain the Module will be loaded into
+	 */
 	function ModuleRegistration (info:IModuleInfo, parentContext:Context = null, moduleDomain:ApplicationDomain = null) {
 		this._info = info;
 		this._parentContext = parentContext;
@@ -52,19 +61,30 @@ public class ModuleRegistration {
 	}
 
 
+	/**
+	 * The Flex Module Info for this managed Module.
+	 */
 	public function get info () : IModuleInfo {
 		return _info; 	
 	}
 
+	/**
+	 * Indicates whether the Parsley Context for the Flex Module has already been created.
+	 */
 	public function get active () : Boolean {
 		return (_moduleContext != null);
 	}
 	
-	
+	/**
+	 * The Context to use as the parent for the Context created for the loaded Flex Module.
+	 */
 	public function get parentContext () : Context {
 		return _parentContext;
 	}
 	
+	/**
+	 * The ApplicationDomain the Module will be loaded into.
+	 */
 	public function get moduleDomain () : ApplicationDomain {
 		return _moduleDomain;
 	}
@@ -84,6 +104,13 @@ public class ModuleRegistration {
 		}		
 	}
 
+	/**
+	 * Creates the view manager for the specified Module.
+	 * This method will register a listener for the root module class that will be used
+	 * for the module in addition to the listener registered for the Flex SystemManager.
+	 * 
+	 * @param module the Module to create the view manager for
+	 */
 	public function createViewManager (module:ContextModule) : void {
 		log.info("Create ViewManager for {0}", module);
 		checkModuleDomain();
@@ -101,6 +128,13 @@ public class ModuleRegistration {
 		}
 	}
 	
+	/**
+	 * Creates the Parsley Context for the specified Module.
+	 * This method will do nothing if the Context has already been created for other
+	 * Module instances created from the same Flex Module.
+	 * 
+	 * @param module the Module to create the Parsley Context for
+	 */
 	public function createContext (module:ContextModule) : void {
 		log.info("Create Context for {0}", module);
 		checkModuleDomain();

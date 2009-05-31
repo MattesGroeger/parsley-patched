@@ -26,6 +26,8 @@ import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
+ * Manages Parsley ContextModules, usually not used by application code.
+ * 
  * @author Jens Halm
  */
 public class ModuleManager {
@@ -36,6 +38,11 @@ public class ModuleManager {
 	
 	private static var instance:ModuleManager = new ModuleManager();
 
+	/**
+	 * Returns the singleton manager instance.
+	 * 
+	 * @return the singleton manager instance
+	 */
 	public static function getInstance () : ModuleManager {
 		return instance;
 	}
@@ -43,6 +50,14 @@ public class ModuleManager {
 
 	private var registrations:Dictionary = new Dictionary();
 
+	/**
+	 * Registers a Flex Module to be managed by Parsley.
+	 * 
+	 * @param url the URL of the Module.
+	 * @param parentContext the Context to use as the parent for the Context created for the loaded Flex Module
+	 * @param moduleDomain the ApplicationDomain the Module will be loaded into
+	 * @return a registration instance for the Module
+	 */
 	public function registerModule (url:String, parentContext:Context = null, moduleDomain:ApplicationDomain = null) : ModuleRegistration {
 		var reg:ModuleRegistration = registrations[url]	as ModuleRegistration;
 		if (reg == null) {
