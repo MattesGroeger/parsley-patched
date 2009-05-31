@@ -24,11 +24,16 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 
 /**
+ * Adapts the ResourceBinding facility to the Flex ResourceManager.
+ * 
  * @author Jens Halm
  */
 public class FlexResourceBindingAdapter extends EventDispatcher implements ResourceBindingAdapter {
 
 
+	/**
+	 * @private
+	 */
 	function FlexResourceBindingAdapter () {
 		ResourceManager.getInstance().addEventListener(Event.CHANGE, dispatchUpdateEvent);
 	}
@@ -39,6 +44,9 @@ public class FlexResourceBindingAdapter extends EventDispatcher implements Resou
 	}
 
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getResource (bundleName:String, resourceName:String) :* {
 		return ResourceManager.getInstance().getObject(bundleName, resourceName);
 	}
