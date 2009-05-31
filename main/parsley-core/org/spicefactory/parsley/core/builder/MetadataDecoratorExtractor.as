@@ -45,6 +45,10 @@ import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
+ * Static Utility method that can be used by all object definiton builders that wish to process
+ * metadata tags on classes. All builtin configuration mechanisms (MXML, XML and ActionScript)
+ * use this method.
+ * 
  * @author Jens Halm
  */
 public class MetadataDecoratorExtractor {
@@ -55,6 +59,11 @@ public class MetadataDecoratorExtractor {
 	private static var initialized:Boolean = false;
 	
 	
+	/**
+	 * Initializes the metadata tag registrations for all builtin metadata tags.
+	 * Will be called by all the builtin ContextBuilder entry point methods
+	 * and usually does not need to be called by an application.
+	 */
 	public static function initialize (domain:ApplicationDomain) : void {
 		if (initialized) return;
 		initialized = true;
@@ -82,7 +91,13 @@ public class MetadataDecoratorExtractor {
 		Metadata.registerMetadataClass(ObjectDefinitionMetadata, domain);
 	}
 
-	
+
+	/**
+	 * Extracts the metadata configuration for the specified class.
+	 * The returned array contains instances of the <code>ObjectDefinitionDecorator</code> interface.
+	 * 
+	 * @return the metadata configuration for the specified class
+	 */	
 	public static function extract (type:ClassInfo) : Array {
 		var decorators:Array = new Array();
 		extractMetadataDecorators(type, decorators);

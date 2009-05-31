@@ -33,6 +33,8 @@ import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 import flash.utils.getQualifiedClassName;
 
 /**
+ * ObjectDefinitionBuilder implementation that processes ActionScript configuration classes.
+ * 
  * @author Jens Halm
  */
 public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuilder {
@@ -44,11 +46,19 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 	private var containers:Array;
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param containers the classes that contain the ActionScript configuration
+	 */
 	function ActionScriptObjectDefinitionBuilder (containers:Array) {
 		this.containers = containers;
 	}
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function build (registry:ObjectDefinitionRegistry) : void {
 		var containerErrors:Array = new Array();
 		for each (var containerClass:Class in containers) {
