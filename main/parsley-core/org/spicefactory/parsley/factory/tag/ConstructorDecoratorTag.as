@@ -23,6 +23,8 @@ import org.spicefactory.parsley.factory.model.ObjectIdReference;
 import org.spicefactory.parsley.factory.model.ObjectTypeReference;
 
 /**
+ * Represent the constructor arguments for an object definition. Can be used in MXML and XML configuration.
+ * 
  * @author Jens Halm
  */
 public class ConstructorDecoratorTag extends ArrayTag implements ObjectDefinitionDecorator {
@@ -31,6 +33,9 @@ public class ConstructorDecoratorTag extends ArrayTag implements ObjectDefinitio
 	private static const valueResolver:RegistryValueResolver = new RegistryValueResolver(); 
 
 
+	/**
+	 * @inheritDoc
+	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		valueResolver.resolveValues(values, registry);
 		for each (var arg:* in values) {

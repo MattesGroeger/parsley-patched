@@ -19,11 +19,16 @@ package org.spicefactory.parsley.factory.tag {
 [DefaultProperty("values")]
 
 /**
+ * Represents an Array value. Can be used in MXML and XML configuration.
+ * 
  * @author Jens Halm
  */
 public class ArrayTag {
 	
 	
+	/**
+	 * The elements of the Array.
+	 */
 	public var values:Array;
 	
 	

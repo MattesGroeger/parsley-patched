@@ -18,12 +18,16 @@ package org.spicefactory.parsley.factory.tag {
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 
 /**
+ * Represents the root object tag for an object definition in MXML or XML configuration.
+ * 
  * @author Jens Halm
  */
 public class ObjectDefinitionFactoryTag extends DefaultObjectDefinitionFactory {
 	
 	
-	
+	/**
+	 * Creates a new instance.
+	 */
 	function ObjectDefinitionFactoryTag () {
 		super(null); // type will be set via property
 	}

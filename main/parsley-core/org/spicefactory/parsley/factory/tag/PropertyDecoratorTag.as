@@ -23,8 +23,9 @@ import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.impl.RegistryValueResolver;
 
 [DefaultProperty("value")]
-
 /**
+ * Represent the property value for an object definition. Can be used in MXML and XML configuration.
+ * 
  * @author Jens Halm
  */
 public class PropertyDecoratorTag extends ObjectReferenceTag implements ObjectDefinitionDecorator {
@@ -32,15 +33,26 @@ public class PropertyDecoratorTag extends ObjectReferenceTag implements ObjectDe
 
 	private static const valueResolver:RegistryValueResolver = new RegistryValueResolver(); 
 
-	
+	/**
+	 * The value of the property mapped as a child element.
+	 */
 	public var childValue:*;
 
+	/**
+	 * The value of the property mapped as an attribute.
+	 */
 	public var value:*;
 
 	[Required]
+	/**
+	 * The name of the property. 
+	 */
 	public var name:String;
 
 
+	/**
+	 * @inheritDoc
+	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		var valueCount:int = 0;
 		if (childValue !== undefined) valueCount++;

@@ -17,15 +17,27 @@
 package org.spicefactory.parsley.factory.tag {
 
 /**
+ * Represents a reference to another object in the container (either by id or by type) in MXML or XML configuration.
+ * The <code>idRef</code> and <code>typeRef</code> properties are mutually exclusive.
+ * 
  * @author Jens Halm
  */
 public class ObjectReferenceTag {
 	
 	
+	/**
+	 * The id of the referenced object.
+	 */
 	public var idRef:String;
 	
+	/**
+	 * The type of the referenced object.
+	 */
 	public var typeRef:String;
 	
+	/**
+	 * Indicates whether this instance represents a required dependency.
+	 */
 	public var required:Boolean = true;
 	
 	
