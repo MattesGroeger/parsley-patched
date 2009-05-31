@@ -17,11 +17,16 @@
 package org.spicefactory.parsley.factory {
 
 /**
+ * Instantiator that delegates object creation to a factory.
+ * 
  * @author Jens Halm
  */
 public interface FactoryObjectInstantiator extends ObjectInstantiator {
 	
 	
+	/**
+	 * The definition of the factory that this instantiator uses for creating new instances.
+	 */
 	function get factoryDefinition () : ObjectDefinition;
 	
 	

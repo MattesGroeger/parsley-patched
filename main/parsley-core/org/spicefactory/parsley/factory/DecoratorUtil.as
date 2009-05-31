@@ -19,11 +19,20 @@ import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.errors.ContextError;
 
 /**
+ * Static utility methods for decorator implementations.
+ * 
  * @author Jens Halm
  */
 public class DecoratorUtil {
 	
 	
+	/**
+	 * Returns the method with the specified name for the class configured by the specified definition.
+	 * 
+	 * @param name the name of the method.
+	 * @param definition the object definition
+	 * @return the Method instance for the specified name
+	 */
 	public static function getMethod (name:String, definition:ObjectDefinition) : Method {
 		var method:Method = definition.type.getMethod(name);
 		if (method == null) {

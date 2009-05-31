@@ -17,11 +17,18 @@
 package org.spicefactory.parsley.factory {
 
 /**
+ * Object definition for factories. Such a definition is always associated with a second definition representing
+ * the object type the factory produces.
+ * 
  * @author Jens Halm
  */
 public interface FactoryObjectDefinition extends RootObjectDefinition {
 	
 	
+	/**
+	 * The definition representing
+ 	 * the target object type that the factory represented by this definition produces.
+	 */
 	function get targetDefinition () : ObjectDefinition;
 	
 	

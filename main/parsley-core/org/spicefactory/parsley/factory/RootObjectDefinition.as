@@ -17,15 +17,28 @@
 package org.spicefactory.parsley.factory {
 
 import org.spicefactory.parsley.factory.ObjectDefinition;
+
 /**
+ * Represents the configuration for an object that can be accessed directly by id in a Parsley Context.
+ * Such an object has additional properties not needed for inline object definitions.
+ * 
  * @author Jens Halm
  */
 public interface RootObjectDefinition extends ObjectDefinition {
 	
+	/**
+	 * @copy org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata#id
+	 */
 	function get id () : String;
 	
+	/**
+	 * @copy org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata#lazy
+	 */
 	function get lazy () : Boolean;
 	
+	/**
+	 * @copy org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata#singleton
+	 */
 	function get singleton () : Boolean;
 	
 }

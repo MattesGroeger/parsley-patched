@@ -18,10 +18,20 @@ package org.spicefactory.parsley.factory {
 import org.spicefactory.parsley.core.Context;
 
 /**
+ * An object responsible for creating instances. Such an object may be registered with a
+ * <code>ObjectDefinition</code> to delegate the object instantiation instead of simply invoking the constructor.
+ * 
  * @author Jens Halm
  */
 public interface ObjectInstantiator {
 	
+	/**
+	 * Creates a new instance. The specified Context instance may be used to fetch dependencies
+	 * for the new object.
+	 * 
+	 * @param context the Context that the new instance will belong to
+	 * @return a new instance
+	 */
 	function instantiate (context:Context) : Object;
 	
 }

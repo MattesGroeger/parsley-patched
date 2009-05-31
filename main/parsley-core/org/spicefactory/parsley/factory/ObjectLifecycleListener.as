@@ -18,12 +18,29 @@ package org.spicefactory.parsley.factory {
 import org.spicefactory.parsley.core.Context;
 
 /**
+ * Listener to be invoked when the associated object gets created or when it gets destroyed.
+ * Implementations of this interface may be added to an <code>ObjectDefinition</code>.
+ * 
  * @author Jens Halm
  */
 public interface ObjectLifecycleListener {
 	
+	/**
+	 * Method to be invoked after an instance has been created and configured, including
+	 * dependency injection or message handler registrations.
+	 * 
+	 * @param instance the instance that has been fully configured
+	 * @param context the Context the instance belongs to
+	 */
 	function postConstruct (instance:Object, context:Context) : void;
 
+	/**
+	 * Method to be invoked before the Context that the specified instance belongs to
+	 * gets destroyed.
+	 * 
+	 * @param instance the instance that belongs to a Context about to get destroyed
+	 * @param context the Context the instance belongs to
+	 */
 	function preDestroy (instance:Object, context:Context) : void;
 	
 }
