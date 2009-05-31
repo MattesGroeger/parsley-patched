@@ -17,14 +17,27 @@
 package org.spicefactory.parsley.messaging {
 
 /**
+ * Responsible for processing a single message. Will be passed to registered message interceptors
+ * which may chose to cancel or suspend and later resume the message processing.
+ * 
  * @author Jens Halm
  */
 public interface MessageProcessor {
 	
+	/**
+	 * The message instance.
+	 */
 	function get message () : Object;
 	
+	/**
+	 * Proceeds with processing the message, invoking the next interceptor or handler.
+	 */
 	function proceed () : void;
 	
+	/**
+	 * Rewinds the processor so it will start with the first interceptor or handler again 
+	 * the next time the proceed method gets invoked.
+	 */
 	function rewind () : void;
 	
 }

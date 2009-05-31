@@ -18,23 +18,48 @@ package org.spicefactory.parsley.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
 
 /**
+ * Represent a registered target for a message.
+ * 
  * @author Jens Halm
  */
 public interface MessageTarget {
 	
 	
+	/**
+	 * The type of the target object receiving the messages.
+	 */
 	function get targetType () : ClassInfo ;
 	
+	/**
+	 * The instance receiving the messages.
+	 */
 	function get targetInstance () : Object ;
 	
+	/**
+	 * The message type that the target registered for.
+	 */
 	function get messageType () : ClassInfo ;
 	
+	/**
+	 * An optional selector value to be used for selecting matching message targets.
+	 */
 	function get selector () : * ;
 	
+	/**
+	 * Indicates whether this target is an interceptor or a regular target (handler or binding).
+	 */
 	function get interceptor () : Boolean ;
 	
+	/**
+	 * Handles a message for this target.
+	 * 
+	 * @param processor the processor for the message
+	 */
 	function handleMessage (processor:MessageProcessor) : void ;
 
+	/**
+	 * Unregisters this target so that it no longer receives messages.
+	 */
 	function unregister () : void ;
 	
 	
