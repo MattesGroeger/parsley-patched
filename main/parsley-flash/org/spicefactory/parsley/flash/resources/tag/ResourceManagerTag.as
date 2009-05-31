@@ -26,23 +26,46 @@ import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
 import flash.utils.getQualifiedClassName;
 
 /**
+ * Represent the resource-manager XML tag.
+ * 
  * @author Jens Halm
  */
 public class ResourceManagerTag {
 	
 	
+	/**
+	 * The id of the ResourceManager in the Parsley Context.
+	 */
 	public var id:String;
 	
+	/**
+	 * The supported locales.
+	 */
 	public var locales:Array;
 	
+	/**
+	 * The type of the ResourceManager implementation.
+	 */
 	public var type:Class = DefaultResourceManager;
 	
+	/**
+	 * Indicates whether loaded bundles should be cached.
+	 */
 	public var cacheable:Boolean = false;
 
+	/**
+	 * Indicates whether the ResourceManager
+	 * should store the last active locale in a Local Shared Object and restore it on the next application start.
+	 */
 	public var persistent:Boolean = false;
 	
 	
 	[Factory]
+	/**
+	 * Creates a new ResourceManager instance based on the properties of this tag class.
+	 * 
+	 * @return a new ResourceManager instance
+	 */
 	public function createResourceManager () : ResourceManagerSpi {
 		var typeInfo:ClassInfo = ClassInfo.forClass(type);
 		if (!typeInfo.isType(ResourceManagerSpi)) {

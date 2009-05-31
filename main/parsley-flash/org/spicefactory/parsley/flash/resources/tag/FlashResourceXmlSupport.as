@@ -20,14 +20,23 @@ import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 
 /**
+ * Provides a static method to initalize the Flash Localization XML tag extension.
+ * 
  * @author Jens Halm
  */
 public class FlashResourceXmlSupport {
 	
 	
+	/**
+	 * The XML Namespace of the Flash Localization tag extension.
+	 */
 	public static const FLASH_RESOURCE_NAMESPACE:String = "http://www.spicefactory.org/parsley/flash/resources";
 	
 	
+	/**
+	 * Initializes the Flash Localization XML tag extension.
+	 * Must be invoked before the <code>XmlContextBuilder</code> is used for the first time.
+	 */
 	public static function initialize () : void {
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(FLASH_RESOURCE_NAMESPACE);
 		ns.addDefaultObjectMapper(ResourceBundleTag, "resource-bundle");

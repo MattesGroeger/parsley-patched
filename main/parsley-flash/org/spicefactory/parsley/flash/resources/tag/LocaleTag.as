@@ -17,13 +17,20 @@
 package org.spicefactory.parsley.flash.resources.tag {
 
 /**
+ * Represents the locale XML tag.
+ * 
  * @author Jens Halm
  */
 public class LocaleTag {
 	
-	
+	/**
+	 * The language code for this locale, a lowercase ISO 639 code.
+	 */
 	public var language:String = "";
 	
+	/**
+	 * The country/region code for this locale, an uppercase ISO 3166 2-letter code.
+	 */
 	public var country:String = "";
 	
 	

@@ -31,6 +31,8 @@ import flash.events.EventDispatcher;
 import flash.utils.getQualifiedClassName;
 
 /**
+ * Represent the resource-bundle XML tag.
+ * 
  * @author Jens Halm
  */
 [AsyncInit(order="-2147483648")]
@@ -38,26 +40,54 @@ public class ResourceBundleTag extends EventDispatcher {
 	
 	
 	[Required]
+	/**
+	 * The id of the bundle.
+	 */
 	public var id:String;
 	
 	[Required]
+	/** 
+     * The basename of files containing messages for this bundle.
+	 * For the locale #cdi en_US #cdi for example the basename messages/tooltips will instruct Parsley to load the 
+	 * following files: #cdi messages/tooltips_en_US.xml #cdi, #cdi messages/tooltips_en.xml #cdi and #cdi messages/tooltips.xml #cdi.
+     */ 
 	public var basename:String;
 
-
+	/**
+	 * The type of the ResourceBundle implementation.
+	 */
 	public var type:Class = DefaultResourceBundle;
 	
+	/**
+	 * The type of the BundleLoaderFactory to use when loading bundle files.
+	 */
 	public var loaderFactory:Class = DefaultBundleLoaderFactory;
 	
+	/**
+	 * Indicates whether the bundle is localized.
+	 * If set to false the framework will only load 
+     * the resources for the basename like #cdi messages/tooltips.xml #cdi and not look for files with localized messages.
+	 */
 	public var localized:Boolean = true;
 	
+	/**
+	 * Indicates whether the framework should 
+     * ignore the country code of the active locale for this bundle.
+	 */
 	public var ignoreCountry:Boolean = false;
 	
 	
 	[Inject]
+	/**
+	 * The ResourceManager this bundle belongs to.
+	 */
 	public var resourceManager:ResourceManagerSpi;
 	
 	
 	[PostConstruct]
+	/**
+	 * Loads the bundle configured by this tag class and adds it to the ResourceManager.
+	 */
 	public function loadBundle () : void {
 		var bundleInstance:Object = new type();
 		if (!(bundleInstance is ResourceBundleSpi)) {

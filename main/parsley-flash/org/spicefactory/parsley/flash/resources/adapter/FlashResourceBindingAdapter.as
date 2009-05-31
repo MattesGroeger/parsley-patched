@@ -26,11 +26,16 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 
 /**
+ * Adapts the ResourceBinding facility to Parsleys Flash ResourceManager.
+ * 
  * @author Jens Halm
  */
 public class FlashResourceBindingAdapter extends EventDispatcher implements ResourceBindingAdapter {
 
 
+	/**
+	 * The resource manager instance to use for processing the bindings.
+	 */
 	public static var manager:ResourceManager;
 
 	
@@ -46,6 +51,9 @@ public class FlashResourceBindingAdapter extends EventDispatcher implements Reso
 		dispatchEvent(new ResourceBindingEvent(ResourceBindingEvent.UPDATE));
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getResource (bundleName:String, resourceName:String) : * {
 		if (manager == null) {
 			throw new IllegalStateError("ResourceManager has not been set for this adapter");
