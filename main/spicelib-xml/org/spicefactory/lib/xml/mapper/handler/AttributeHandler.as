@@ -19,16 +19,27 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 
 /**
+ * Responsible for mapping properties to attribute values.
+ * 
  * @author Jens Halm
  */
 public class AttributeHandler extends AbstractPropertyHandler {
 	
 	
-	public function AttributeHandler (property:Property, xmlName:QName) {
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param property the property the attribute value should be applied to
+	 * @param xmlNames the names of the mapped XML attributes or elements
+	 */
+	function AttributeHandler (property:Property, xmlName:QName) {
 		super(property, "attribute", [xmlName]);
 	}
 	
 	
+	/**
+	 * @private
+	 */
 	public override function toObject (nodes:Array, parentInstance:Object, context:XmlProcessorContext) : void {
 		validateValueCount(nodes.length);
 		if (nodes.length > 0) {
@@ -36,6 +47,9 @@ public class AttributeHandler extends AbstractPropertyHandler {
 		}
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public override function toXML (instance:Object, parentElement:XML, context:XmlProcessorContext) : void {
 		var value:String = getValueAsString(instance);
 		if (value.length > 0) {

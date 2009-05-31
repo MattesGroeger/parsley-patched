@@ -20,6 +20,8 @@ import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 
 /**
+ * Responsible for mapping properties to objects mapped to child elements.
+ * 
  * @author Jens Halm
  */
 public class ChildElementHandler extends AbstractChildElementHandler {
@@ -28,16 +30,28 @@ public class ChildElementHandler extends AbstractChildElementHandler {
 	private var mapper:XmlObjectMapper;
 
 	
-	public function ChildElementHandler (property:Property, mapper:XmlObjectMapper) {
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param property the property the child element should be applied to
+	 * @param mapper the mapper responsible for mapping the child element to objects
+	 */
+	function ChildElementHandler (property:Property, mapper:XmlObjectMapper) {
 		super(property, [mapper.elementName]);
 		this.mapper = mapper;
 	}
 	
 	
+	/**
+	 * @private
+	 */
 	protected override function getMapperForInstance (instance:Object, context:XmlProcessorContext) : XmlObjectMapper {
 		return mapper;
 	}
 	
+	/**
+	 * @private
+	 */
 	protected override function getMapperForXmlName (xmlName:QName) : XmlObjectMapper {
 		return mapper;
 	}

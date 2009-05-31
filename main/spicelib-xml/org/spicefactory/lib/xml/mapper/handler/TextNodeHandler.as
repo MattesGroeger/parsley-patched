@@ -19,16 +19,26 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 
 /**
+ * Responsible for mapping properties to text nodes.
+ * 
  * @author Jens Halm
  */
 public class TextNodeHandler extends AbstractPropertyHandler {
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param property the property the text node should be applied to
+	 */
 	public function TextNodeHandler (property:Property) {
 		super(property, "text");
 	}
 	
 	
+	/**
+	 * @private
+	 */
 	public override function toObject (nodes:Array, parentInstance:Object, context:XmlProcessorContext) : void {
 		validateValueCount(nodes.length);
 		if (nodes.length > 0) {
@@ -36,6 +46,9 @@ public class TextNodeHandler extends AbstractPropertyHandler {
 		}
 	}
 	
+	/**
+	 * @private
+	 */
 	public override function toXML (instance:Object, parentElement:XML, context:XmlProcessorContext) : void {
 		var value:String = getValueAsString(instance);
 		if (value.length > 0) {

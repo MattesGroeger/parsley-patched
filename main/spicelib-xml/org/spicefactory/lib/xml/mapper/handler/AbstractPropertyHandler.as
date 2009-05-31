@@ -22,7 +22,11 @@ import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.lib.xml.XmlValidationError;
 import org.spicefactory.lib.xml.mapper.PropertyHandler;
 
-import flash.utils.getQualifiedClassName;/**
+import flash.utils.getQualifiedClassName;
+
+/**
+ * Abstract base impelementation of the PropertyHandler interface.
+ * 
  * @author Jens Halm
  */
 public class AbstractPropertyHandler implements PropertyHandler {
@@ -37,9 +41,10 @@ public class AbstractPropertyHandler implements PropertyHandler {
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param attributeName the local name of the attribute
-	 * @param property the property the attribute value should be applied to
-	 * @param required whether this attribute is required
+	 * @param property the property the XML value should be applied to
+	 * @param nodeKind the node kind (attribute, text or element)
+	 * @param xmlNames the names of the mapped XML attributes or elements
+	 * @param allowArrayProperty whether this handler is able to handle multi-value mappings
 	 */
 	public function AbstractPropertyHandler (property:Property, nodeKind:String, 
 			xmlNames:Array = null, allowArrayProperty:Boolean = false) {
@@ -55,22 +60,21 @@ public class AbstractPropertyHandler implements PropertyHandler {
 	}
 	
 	/**
-	 * The Property the attribute should map to.
+	 * @inheritDoc
 	 */
 	public function get property () : Property {
 		return _property;
 	}
 	
 	/**
-	 * The local name of the attribute.
+	 * @inheritDoc
 	 */
 	public function get xmlNames () : Array {
 		return _xmlNames;
 	}
 	
 	/**
-	 * The kind of node this handler deals with.
-	 * Valid values are element, attribute and text.
+	 * @inheritDoc
 	 */
 	public function get nodeKind () : String {
 		return _nodeKind;
@@ -83,10 +87,17 @@ public class AbstractPropertyHandler implements PropertyHandler {
 		return _required;
 	}
 	
+	/**
+	 * Indicates whether this handler maps a single-valued or multi-valued (Array) property.
+	 */
 	protected function get singleValue () : Boolean {
 		return _singleValue;
 	}
 	
+	/**
+	 * Validates the specified number of mapped XML elements, attributes or text nodes.
+	 * For any invalid number this method throws an Error.
+	 */
 	protected function validateValueCount (count:int) : void {
 		if (count == 0 && _required) {
 			throw new XmlValidationError("No element mapping to required " + property);
@@ -96,10 +107,24 @@ public class AbstractPropertyHandler implements PropertyHandler {
 		}
 	}
 	
+	/**
+	 * Extracts the value from the specified node, resolving any variables that nodes with simple content
+	 * possibly contain.
+	 * 
+	 * @param node the node to extract the value from
+	 * @param context the processing context
+	 * @return the value extracted fron the node to be applied to the property
+	 */
 	protected function getValueFromNode (node:XML, context:XmlProcessorContext) : * {
 		return context.expressionContext.createExpression(node.toString()).value;
 	}
 	
+	/**
+	 * Gets the value of the mapped property from the specified instance.
+	 * 
+	 * @param instance the instance to get the property value from
+	 * @return the value of the mapped property from the specified instance
+	 */
 	protected function getValue (instance:Object) : * {
 		var value:* = property.getValue(instance);
 		if (_required && (value == null || value === "" || (value is Array && value.length == 0))) {
@@ -108,15 +133,27 @@ public class AbstractPropertyHandler implements PropertyHandler {
 		return value;
 	}
 	
+	/**
+	 * Gets the value of the mapped property from the specified instance as a String.
+	 * 
+	 * @param instance the instance to get the property value from
+	 * @return the value of the mapped property from the specified instance as a String
+	 */
 	protected function getValueAsString (instance:Object) : String {
 		var value:* = getValue(instance);
 		return (value == null) ? "" : value.toString();
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function toObject (nodes:Array, parentInstance:Object, context:XmlProcessorContext) : void {
 		throw new AbstractMethodError();
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function toXML (instance:Object, parentElement:XML, context:XmlProcessorContext) : void {
 		throw new AbstractMethodError();
 	}

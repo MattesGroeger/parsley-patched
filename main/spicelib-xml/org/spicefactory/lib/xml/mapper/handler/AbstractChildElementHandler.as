@@ -21,16 +21,26 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 
 /**
+ * Abstract base class for PropertyHandler implementations that deal with XML child elements.
+ * 
  * @author Jens Halm
  */
 public class AbstractChildElementHandler extends AbstractPropertyHandler {
 	
 	
-	public function AbstractChildElementHandler (property:Property, xmlNames:Array) {
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param property the property the child element should be applied to
+	 * @param xmlNames the names of the mapped XML attributes or elements
+	 */
+	function AbstractChildElementHandler (property:Property, xmlNames:Array) {
 		super(property, "element", xmlNames, true);
 	}
 	
-	
+	/**
+	 * @private
+	 */
 	public override function toObject (nodes:Array, parentInstance:Object, context:XmlProcessorContext) : void {
 		validateValueCount(nodes.length);
 		if (nodes.length > 0) {
@@ -57,7 +67,10 @@ public class AbstractChildElementHandler extends AbstractPropertyHandler {
 		return getMapperForXmlName(node.name() as QName).mapToObject(node, context);
 	}
 	
-		
+	
+	/**
+	 * @private
+	 */	
 	public override function toXML (instance:Object, parentElement:XML, context:XmlProcessorContext) : void {
 		var value:Object = getValue(instance);
 		if (value is Array) {
@@ -80,11 +93,23 @@ public class AbstractChildElementHandler extends AbstractPropertyHandler {
 	}
 	
 	
-	
-	protected function getMapperForInstance (instance:Object, context:XmlProcessorContext):XmlObjectMapper {
+	/**
+	 * Returns the mapper responsible for the specified instance.
+	 * 
+	 * @param instance the instance to return the mapper for
+	 * @param context the processing context
+	 * @return the mapper responsible for the specified instance
+	 */
+	protected function getMapperForInstance (instance:Object, context:XmlProcessorContext) : XmlObjectMapper {
 		throw new AbstractMethodError();
 	}
 	
+	/**
+	 * Returns the mapper responsible for the specified XML name.
+	 * 
+	 * @param xmlName the XML name to return the mapper for
+	 * @return the mapper responsible for the specified XML name
+	 */
 	protected function getMapperForXmlName (xmlName:QName) : XmlObjectMapper {
 		throw new AbstractMethodError();
 	}

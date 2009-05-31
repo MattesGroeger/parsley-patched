@@ -21,6 +21,8 @@ import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.Choice;
 
 /**
+ * Responsible for mapping properties to objects mapped to a choice of child elements.
+ * 
  * @author Jens Halm
  */
 public class ChoiceHandler extends AbstractChildElementHandler {
@@ -29,19 +31,34 @@ public class ChoiceHandler extends AbstractChildElementHandler {
 	private var choice:Choice;
 
 	
-	public function ChoiceHandler (property:Property, choice:Choice) {
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param property the property the child element choice should be applied to
+	 * @param choice the choice containing the mappers responsible for mapping the child elements to objects
+	 */
+	function ChoiceHandler (property:Property, choice:Choice) {
 		super(property, []);
 		this.choice = choice;
 	}
 	
+	/**
+	 * @private
+	 */
 	public override function get xmlNames () : Array {
 		return choice.xmlNames;
 	}
 	
+	/**
+	 * @private
+	 */
 	protected override function getMapperForInstance (instance:Object, context:XmlProcessorContext):XmlObjectMapper {
 		return choice.getMapperForInstance(instance, context);
 	}
 	
+	/**
+	 * @private
+	 */
 	protected override function getMapperForXmlName (xmlName:QName) : XmlObjectMapper {
 		return choice.getMapperForElementName(xmlName);
 	}
