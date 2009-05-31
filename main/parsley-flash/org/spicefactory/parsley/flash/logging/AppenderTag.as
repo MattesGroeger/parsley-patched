@@ -21,18 +21,31 @@ import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 
 /**
+ * Represents the appender XML tag.
+ * 
  * @author Jens Halm
  */
 public class AppenderTag {
 	
 	
 	[Required]
+	/**
+	 * The id of the refernced appender.
+	 */
 	public var ref:String;
 	
+	/**
+	 * The threshold for the appender.
+	 */
 	public var threshold:LogLevel = LogLevel.TRACE;
 	
 	
-	
+	/**
+	 * Returns the appender, fetching it from the specified context and setting its threshold.
+	 * 
+	 * @param context the context to fetch the appender from
+	 * @return the configured appender instance
+	 */
 	public function createAppender (context:Context) : Appender {
 		var appObj:Object = context.getObject(ref);
 		if (!(appObj is Appender)) {

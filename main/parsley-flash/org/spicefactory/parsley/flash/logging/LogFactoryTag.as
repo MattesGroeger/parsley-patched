@@ -25,31 +25,59 @@ import org.spicefactory.parsley.core.errors.ContextError;
 import flash.utils.getQualifiedClassName;
 
 /**
+ * Represents the factory XML tag.
+ * 
  * @author Jens Halm
  */
 public class LogFactoryTag {
 	
 	
+	/**
+	 * The id of the log factory.
+	 */
 	public var id:String;
 	
+	/**
+	 * The type of the log factory, defaults to DefaultLogFactory.
+	 */
 	public var type:Class = DefaultLogFactory;
 	
+	/**
+	 * Indicates whether the log factory produced by this tag should be set as the factory for the LogContext class.
+	 */
 	public var context:Boolean = true;
 	
+	/**
+	 * The root log level to be used for all loggers that don't have a level set explicitly.
+	 */
 	public var rootLevel:LogLevel = LogLevel.TRACE;
 	
 	
+	/**
+	 * The appenders to add to the factory.
+	 */
 	public var appenders:Array;
 	
+	/**
+	 * The loggers to add to the factory.
+	 */
 	public var loggers:Array;
 	
 	
 	[Inject]
+	/**
+	 * The Context this tag belongs to.
+	 */
 	public var contextRef:Context;
 	
 	
 	
 	[Factory]
+	/**
+	 * Creates a new log factory, processing the properties of this tag class.
+	 * 
+	 * @return a new log factory instance
+	 */
 	public function createLogFactory () : FlashLogFactory {
 		var fObj:Object = new type();
 		if (!(fObj is FlashLogFactory)) {

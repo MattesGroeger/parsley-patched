@@ -16,21 +16,29 @@
 
 package org.spicefactory.parsley.flash.logging {
 import org.spicefactory.lib.flash.logging.LogLevel;
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Converters;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 
 /**
+ * Provides a static method to initalize the Flash Logging XML tag extension.
+ * 
  * @author Jens Halm
  */
 public class FlashLoggingXmlSupport {
 	
 	
+	/**
+	 * The XML Namespace of the Flash Logging tag extension.
+	 */
 	public static const FLASH_LOGGING_NAMESPACE:String = "http://www.spicefactory.org/parsley/flash/logging";
 	
 	
+	/**
+	 * Initializes the Flash Logging XML tag extension.
+	 * Must be invoked before the <code>XmlContextBuilder</code> is used for the first time.
+	 */
 	public static function initialize () : void {
 		Converters.addConverter(LogLevel, new LogLevelConverter());
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(FLASH_LOGGING_NAMESPACE);

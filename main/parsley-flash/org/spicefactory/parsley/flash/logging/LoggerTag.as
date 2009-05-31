@@ -18,15 +18,23 @@ package org.spicefactory.parsley.flash.logging {
 import org.spicefactory.lib.flash.logging.LogLevel;
 
 /**
+ * Represents the logger XML tag.
+ * 
  * @author Jens Halm
  */
 public class LoggerTag {
 	
 	
 	[Required]
+	/**
+	 * The name of the logger.
+	 */
 	public var name:String;
 	
 	[Required]
+	/**
+	 * The minimum level required for the logger to produce output.
+	 */
 	public var level:LogLevel;
 	
 	
