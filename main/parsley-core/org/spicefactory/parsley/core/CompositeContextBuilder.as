@@ -33,6 +33,18 @@ import flash.events.EventDispatcher;
 import flash.system.ApplicationDomain;
 
 /**
+ * Responsible for building Context instances using one or more ObjectDefinitionBuilder.
+ * 
+ * <p>This builder may be used when combining multiple configuration mechanisms like MXML or XML
+ * into a single Context.</p>
+ * 
+ * <p>Example usage:</p>
+ * 
+ * <pre><code>var builder:CompositeContextBuilder = new CompositeContextBuilder();
+ * FlexContextBuilder.merge(BookStoreConfig, builder);
+ * XmlContextBuilder.merge("logging.xml", builder);
+ * builder.build();</code></pre>	 
+ * 
  * @author Jens Halm
  */
 public class CompositeContextBuilder extends EventDispatcher {
@@ -52,6 +64,12 @@ public class CompositeContextBuilder extends EventDispatcher {
 	private var async:Boolean = false;
 
 	
+	/**
+	 * Creates a new instance
+	 * 
+	 * @param parent the (optional) parent of the Context to build
+	 * @param domain the ApplicationDomain to use for reflection
+	 */
 	function CompositeContextBuilder (parent:Context = null, domain:ApplicationDomain = null) {
 		_parent = parent;
 		if (domain == null) domain = ApplicationDomain.currentDomain;
@@ -62,18 +80,36 @@ public class CompositeContextBuilder extends EventDispatcher {
 	}
 	
 	
+	/**
+	 * Adds an ObjectDefinitionBuilder.
+	 * 
+	 * @param builder the builder to add
+	 */
 	public function addBuilder (builder:ObjectDefinitionBuilder) : void {
 		_builders.push(builder);
 	}
 
+	/**
+	 * The ApplicationDomain this builder uses for reflection.
+	 */
 	public function get domain () : ApplicationDomain {
 		return _registry.domain;
 	}
 	
+	/**
+	 * The Context built by this instance, possibly still under construction.
+	 */
 	public function get context () : Context {
 		return _context;
 	}
 
+	/**
+	 * Builds the Context, using all definition builders that were added with the addBuilder method.
+	 * The returned Context instance may not be fully initialized if it requires asynchronous operations.
+	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
+	 * 
+	 * @return a new Context instance, possibly not fully initialized yet
+	 */
 	public function build () : Context {
 		invokeNextBuilder();
 		if (_builders.length > 0) {

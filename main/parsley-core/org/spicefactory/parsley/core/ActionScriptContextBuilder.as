@@ -20,26 +20,65 @@ import org.spicefactory.parsley.core.builder.ActionScriptObjectDefinitionBuilder
 import flash.system.ApplicationDomain;
 
 /**
+ * Static entry point methods for building a Context from ActionScript configuration classes.
+ * 
+ * <p>For details see 
+ * <a href="http://www.spicefactory.org/parsley/docs/2.0/manual?page=config&section=as3>3.4 ActionScript Configuration</a>
+ * in the Parsley Manual.</p>
+ * 
  * @author Jens Halm
  */
 public class ActionScriptContextBuilder {
 	
 	
+	/**
+	 * Builds a Context from the specified ActionScript configuration class.
+	 * The returned Context instance may not be fully initialized if it requires asynchronous operations.
+	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
+	 * 
+	 * @param container the class that contains the ActionScript configuration
+	 * @param parent the parent to use for the Context to build
+	 * @param domain the ApplicationDomain to use for reflection
+	 * @return a new Context instance, possibly not fully initialized yet
+	 */
 	public static function build (container:Class, parent:Context = null, domain:ApplicationDomain = null) : Context {
 		return buildAll([container], parent, domain);		
 	}
 	
+	/**
+	 * Builds a Context from the specified ActionScript configuration classes.
+	 * The returned Context instance may not be fully initialized if it requires asynchronous operations.
+	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
+	 * 
+	 * @param containers the classes that contain the ActionScript configuration
+	 * @param parent the parent to use for the Context to build
+	 * @param domain the ApplicationDomain to use for reflection
+	 * @return a new Context instance, possibly not fully initialized yet
+	 */
 	public static function buildAll (containers:Array, parent:Context = null, domain:ApplicationDomain = null) : Context {
 		var builder:CompositeContextBuilder = new CompositeContextBuilder(parent, domain);
 		mergeAll(containers, builder);
 		return builder.build();
 	}
 	
-	
+	/**
+	 * Merges the specified ActionScript configuration class with the specified composite builder.
+	 * 
+	 * @param container the class that contains the ActionScript configuration to be merged into the composite builder
+	 * @param builder the builder to add the configuration to
+	 * 
+	 */
 	public static function merge (container:Class, builder:CompositeContextBuilder) : void {
 		mergeAll([container], builder);
 	}
 	
+	/**
+	 * Merges the specified ActionScript configuration classes with the specified composite builder.
+	 * 
+	 * @param container the classes that contain the ActionScript configuration to be merged into the composite builder
+	 * @param builder the builder to add the configuration to
+	 * 
+	 */
 	public static function mergeAll (containers:Array, builder:CompositeContextBuilder) : void {
 		builder.addBuilder(new ActionScriptObjectDefinitionBuilder(containers));
 	}
