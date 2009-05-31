@@ -18,17 +18,28 @@ package org.spicefactory.parsley.resources {
 import flash.events.IEventDispatcher;
 
 /**
+ * Dispatched when the adapted ResourceManager changed the active locale or locale chain respectively.
+ * 
  * @eventType org.spicefactory.parsley.resources.ResouceBindingEvent.UPDATE
  */
 [Event(name="update", type="org.spicefactory.parsley.resources.ResouceBindingEvent")]
 
 /**
+ * Adapts Parsleys ResourceBinding either to the Flex ResourceManager or the Parsley Flash ResourceManager.
+ * 
  * @author Jens Halm
  */
 public interface ResourceBindingAdapter extends IEventDispatcher {
 
 	
-	function getResource (bundleName:String, resourceName:String) : *;
+	/**	
+	 * Returns the resource for the specified bundle and key.
+	 * 
+	 * @param bundle the bundle name
+	 * @param key the resource key
+	 * @return the resource for the specified bundle and key
+	 */
+	function getResource (bundle:String, key:String) : *;
 	
 	
 }

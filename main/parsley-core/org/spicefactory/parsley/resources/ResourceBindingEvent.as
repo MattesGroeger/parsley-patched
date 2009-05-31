@@ -18,7 +18,7 @@ package org.spicefactory.parsley.resources {
 import flash.events.Event;
 
 /**
- * Event that fires when a Context changes its internal state.
+ * Event that fires when a ResourceManager has been updated.
  * 
  * @author Jens Halm
  */
@@ -26,6 +26,8 @@ public class ResourceBindingEvent extends Event {
 
 
 	/**
+	 * Constant for the event type that fires when a ResourceManager has been updated. 
+	 * 
 	 * @eventType update
 	 */
 	public static const UPDATE : String = "update";

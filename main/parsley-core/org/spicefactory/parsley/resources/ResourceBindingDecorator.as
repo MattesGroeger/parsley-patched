@@ -28,19 +28,38 @@ import flash.utils.getQualifiedClassName;
 
 [Metadata(name="ResourceBinding", types="property")]
 /**
+ * Represents a Metadata, MXML or XML tag that can be used to bind a property value to a resource, updating
+ * automatically when the ResourceManager updates.
+ * 
+ * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
+ * thus both interfaces are implemented.
+ * 
  * @author Jens Halm
  */
 public class ResourceBindingDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
 
+	/**
+	 * The type of the adapter to use. 
+	 * The decorator need to adapt to either the Flex ResourceManager or the Parsley Flash ResourceManager.
+	 */
 	public static var adapterClass:Class;
 
 
-	public var resourceName:String;
+	/**
+	 * The resource key.
+	 */
+	public var key:String;
 
-	public var bundleName:String;
+	/**
+	 * The bundle name.
+	 */
+	public var bundle:String;
 
 	[Target]
+	/**
+	 * The property to bind to.
+	 */
 	public var property:String;
 	
 
@@ -66,6 +85,9 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Obje
 	}
 
 	
+	/**
+	 * @private
+	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		initializeAdapter();
 		adapter.addEventListener(ResourceBindingEvent.UPDATE, handleUpdate);
@@ -78,17 +100,23 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Obje
 		return definition;
 	}
 
+	/**
+	 * @private
+	 */
 	public function postConstruct (instance:Object, context:Context) : void {
-		_property.setValue(instance, adapter.getResource(bundleName, resourceName));
+		_property.setValue(instance, adapter.getResource(bundle, key));
 		managedObjects[instance] = true;
 	}
 
+	/**
+	 * @private
+	 */
 	public function preDestroy (instance:Object, context:Context) : void {
 		delete managedObjects[instance];
 	}
 
 	private function handleUpdate (event:ResourceBindingEvent) : void {
-		var resource:* = adapter.getResource(bundleName, resourceName);
+		var resource:* = adapter.getResource(bundle, key);
 		for (var instance:Object in managedObjects) {
 			_property.setValue(instance, resource);
 		}
