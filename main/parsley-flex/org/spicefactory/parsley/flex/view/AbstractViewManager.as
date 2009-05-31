@@ -22,7 +22,11 @@ import org.spicefactory.lib.logging.Logger;
 import flash.display.DisplayObject;
 import flash.events.Event;
 
-import flash.utils.getQualifiedClassName;/**
+import flash.utils.getQualifiedClassName;
+
+/**
+ * Abstract base class for the Root and Module ViewManagers.
+ * 
  * @author Jens Halm
  */
 public class AbstractViewManager {
@@ -34,26 +38,49 @@ public class AbstractViewManager {
 	private var _triggerEvent:String = "configureIOC";
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param triggerEvent the event type components will use to signal that they wish to get wired
+	 */
 	function AbstractViewManager (triggerEvent:String = null) {
 		if (triggerEvent != null) {
 			_triggerEvent = triggerEvent;
 		}
 	}
 	
-	
+	/**
+	 * The event type components will use to signal that they wish to get wired.
+	 */
 	public function get triggerEvent () : String {
 		return _triggerEvent;
 	}
 	
+	/**
+	 * Returns the Context the specified component should be wired to.
+	 * 
+	 * @param component the component to be wired
+	 * @return the Context to wire the component to
+	 */
 	protected function getContext (component:DisplayObject) : FlexViewContext {
 		throw new AbstractMethodError();
 	}
 	
+	/**
+	 * Adds a listener for the trigger event type to the specified component.
+	 * 
+	 * @param component the component to add the listener to
+	 */
 	protected function addListener (component:DisplayObject) : void {
 		log.info("Add listener for {0}/{1} ", component.name, getQualifiedClassName(component));
 		component.addEventListener(_triggerEvent, handleConfigureEvent);
 	}
 	
+	/**
+	 * Removes the listener for the trigger event type from the specified component.
+	 * 
+	 * @param component the component to remove the listener from
+	 */
 	protected function removeListener (component:DisplayObject) : void {
 		component.removeEventListener(_triggerEvent, handleConfigureEvent);
 	}
@@ -65,6 +92,11 @@ public class AbstractViewManager {
 		addComponent(component);
 	}
 	
+	/**
+	 * Adds the specified component to the Parsley Context.
+	 * 
+	 * @param component the component to add to the Parsley Context
+	 */
 	protected function addComponent (component:DisplayObject) : void {
 		var context:FlexViewContext = getContext(component);
 		if (context == null) {

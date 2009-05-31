@@ -24,6 +24,8 @@ import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
 
 /**
+ * ViewManager that handles component wiring for a single Flex Module.
+ * 
  * @author Jens Halm
  */
 public class ModuleViewManager extends AbstractViewManager {
@@ -34,14 +36,26 @@ public class ModuleViewManager extends AbstractViewManager {
 	
 	private var deferredComponents:Array = new Array();
 	
-
-	public function ModuleViewManager (container:DisplayObject, triggerEventType:String = null) {
+	
+	/**
+	 * Creates a new instance
+	 * 
+	 * @param container the view root of the Flex Module
+	 * @param triggerEvent the event type components will use to signal that they wish to get wired
+	 */
+	function ModuleViewManager (container:DisplayObject, triggerEventType:String = null) {
 		super(triggerEventType);
 		this.container = container;
 		addListener(container);
 	}
 
 	
+	/**
+	 * Initializes the view manager for the specfied Context and domain.
+	 * 
+	 * @param parent the Context to use as a parent for the view Context the components get wired to
+	 * @param domain the ApplicationDomain the Module was loaded into
+	 */
 	public function init (parent:Context, domain:ApplicationDomain) : void {
 		context = new FlexViewContext(parent, new DefaultObjectDefinitionRegistry(domain));
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
@@ -55,7 +69,9 @@ public class ModuleViewManager extends AbstractViewManager {
 		removeListener(container);	
 	}
 
-
+	/**
+	 * @private
+	 */
 	protected override function addComponent (component:DisplayObject) : void {
 		if (context == null) {
 			deferredComponents.push(component);
@@ -66,6 +82,9 @@ public class ModuleViewManager extends AbstractViewManager {
 	}
 	
 	
+	/**
+	 * @private
+	 */
 	protected override function getContext (component:DisplayObject) : FlexViewContext {
 		return context;
 	}

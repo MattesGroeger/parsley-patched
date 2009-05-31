@@ -32,6 +32,8 @@ import flash.events.Event;
 import flash.utils.Dictionary;
 
 /**
+ * Special Context implementation that allows components to be added and removed dynamically.
+ * 
  * @author Jens Halm
  */
 public class FlexViewContext extends ChildContext {
@@ -45,7 +47,13 @@ public class FlexViewContext extends ChildContext {
 	private var deferredComponents:Array = new Array();
 	
 
-	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param parent the Context to be used as the parent for the view Context
+	 * @param registry the registry to use
+	 * @param factory the factory responsible for instantiating objects based on their definitions
+	 */
 	public function FlexViewContext (parent:Context, registry:ObjectDefinitionRegistry = null, 
 			factory:ObjectFactory = null) {
 		super(parent, registry, factory);
@@ -60,6 +68,11 @@ public class FlexViewContext extends ChildContext {
 		deferredComponents = new Array();
 	}
 
+	/**
+	 * Dynamically adds the specified component to the Context until it gets removed from the stage.
+	 * 
+	 * @param component the component to add to the Context
+	 */
 	public function addComponent (component:DisplayObject) : void {
 		if (!initialized) {
 			deferredComponents.push(component);

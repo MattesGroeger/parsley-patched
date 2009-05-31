@@ -29,6 +29,9 @@ import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
+ * The ViewManager that listens for configuration events on the Flex SystemManager and wires components
+ * to the Parsley Context.
+ * 
  * @author Jens Halm
  */
 public class RootViewManager extends AbstractViewManager {
@@ -40,6 +43,14 @@ public class RootViewManager extends AbstractViewManager {
 	private static const managersByTrigger:Dictionary = new Dictionary();
 	
 	
+	/**
+	 * Adds the specified Context to be managed by this ViewManager, allowing it
+	 * to wire components to the Context based on the ApplicationDomain they live in.
+	 * 
+	 * @param parent the parent for the Flex ViewContext
+	 * @param triggerEvent the event type components will use to signal that they wish to get wired
+	 * @param domain the ApplicationDomain of components that will get wired to the specified parent Context
+	 */
 	public static function addContext (parent:Context, triggerEvent:String = "configureIOC", domain:ApplicationDomain = null) : void {
 		log.info("Add Context for trigger event " + triggerEvent);
 		if (domain == null) domain = ApplicationDomain.currentDomain;
@@ -56,12 +67,16 @@ public class RootViewManager extends AbstractViewManager {
 	
 	private const contextsByDomain:Dictionary = new Dictionary();
 
-		
+	/**
+	 * @private
+	 */	
 	function RootViewManager (triggerEventType:String = null) {
 		super(triggerEventType);
 	}
 	
-	
+	/**
+	 * @private
+	 */
 	public function init () : void {
 		addListener(Application.application.systemManager);
 	}
@@ -85,6 +100,9 @@ public class RootViewManager extends AbstractViewManager {
 		delete contextsByDomain[context.registry.domain];
 	}
 
+	/**
+	 * @private
+	 */
 	protected override function getContext (component:DisplayObject) : FlexViewContext {
 		var domains:Array = new Array();
 		for (var domainObj:Object in contextsByDomain) { 
