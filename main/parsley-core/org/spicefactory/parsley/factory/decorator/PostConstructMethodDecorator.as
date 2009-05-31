@@ -23,6 +23,7 @@ import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 
+[Metadata(name="PostConstruct", types="method")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked after
  * the object has been created and fully configured.
@@ -32,8 +33,6 @@ import org.spicefactory.parsley.factory.ObjectLifecycleListener;
  * 
  * @author Jens Halm
  */
-[Metadata(name="PostConstruct", types="method")]
-
 public class PostConstructMethodDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
 

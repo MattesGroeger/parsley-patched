@@ -23,6 +23,7 @@ import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 
+[Metadata(name="PreDestroy", types="method")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked before the Context
  * that the object belongs to gets destroyed.
@@ -32,7 +33,6 @@ import org.spicefactory.parsley.factory.ObjectLifecycleListener;
  * 
  * @author Jens Halm
  */
-[Metadata(name="PreDestroy", types="method")]
 public class PreDestroyMethodDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
 	

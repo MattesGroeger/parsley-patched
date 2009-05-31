@@ -19,6 +19,7 @@ import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 
+[Metadata(name="InjectConstructor", types="class")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on clases for which constructor injection should
  * be performed. 
@@ -28,7 +29,6 @@ import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
  *
  * @author Jens Halm
  */
-[Metadata(name="InjectConstructor", types="class")]
 public class InjectConstructorDecorator implements ObjectDefinitionDecorator {
 
 

@@ -19,13 +19,13 @@ import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
 
+[Metadata(name="Inject", types="method")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on methods for which dependency injection should
  * be performed.
  *
  * @author Jens Halm
  */
-[Metadata(name="Inject", types="method")]
 public class InjectMethodDecorator implements ObjectDefinitionDecorator {
 
 

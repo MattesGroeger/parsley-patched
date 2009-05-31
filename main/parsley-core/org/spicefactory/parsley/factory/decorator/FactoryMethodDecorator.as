@@ -26,12 +26,12 @@ import org.spicefactory.parsley.factory.RootObjectDefinition;
 import org.spicefactory.parsley.factory.impl.DefaultFactoryObjectDefinition;
 import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 
+[Metadata(name="Factory", types="method")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used to mark a method as a factory method.
  * 
  * @author Jens Halm
  */
-[Metadata(name="Factory", types="method")]
 public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 
 	
