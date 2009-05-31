@@ -24,24 +24,45 @@ import org.spicefactory.parsley.messaging.MessageTarget;
 
 [Metadata(name="MessageInterceptor", types="method")]
 /**
+ * Represents a Metadata, MXML or XML tag that can be used on methods that want to intercept messages of a particular type
+ * dispatched through Parsleys central message router.
+ * 
+ * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
+ * thus both interfaces are implemented.</p>
+ *
  * @author Jens Halm
  */
 public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
 
+	/**
+	 * The type of the message to intercept.
+	 */
 	public var type:Class;
 
+	/**
+	 * @copy org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator#selector
+	 */
 	public var selector:String;
 	
 	[Target]
+	/**
+	 * The name of the interceptor method.
+	 */
 	public var method:String;
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		definition.lifecycleListeners.addLifecycleListener(this);
 		return definition;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function postConstruct (instance:Object, context:Context) : void {
 		var target:MessageTarget = context.messageRouter.registerMessageInterceptor(instance, method, type, selector);
 		addTarget(instance, target);

@@ -22,6 +22,8 @@ import org.spicefactory.parsley.messaging.MessageTarget;
 import flash.utils.Dictionary;
 
 /**
+ * Abstract base class for decorators used for message targets.
+ * 
  * @author Jens Halm
  */
 public class AbstractMessageTargetDecorator {
@@ -30,6 +32,9 @@ public class AbstractMessageTargetDecorator {
 	private var targets:Dictionary = new Dictionary();
 	
 	
+	/**
+	 * Adds this target to this decorator for later disposal.
+	 */
 	protected function addTarget (instance:Object, target:MessageTarget) : void {
 		if (targets[instance] != undefined) {
 			throw new IllegalArgumentError("Attempt to add more than one target for the same instance: " + instance);
@@ -37,7 +42,7 @@ public class AbstractMessageTargetDecorator {
 		targets[instance] = target;
 	}
 	
-	protected function removeTarget (instance:Object) : MessageTarget {
+	private function removeTarget (instance:Object) : MessageTarget {
 		if (targets[instance] == undefined) {
 			throw new IllegalArgumentError("No MesssageTarget was added for the specified instance: " + instance);
 		}
@@ -46,6 +51,9 @@ public class AbstractMessageTargetDecorator {
 		return target;
 	}
 	
+	/**
+	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
+	 */
 	public function preDestroy (instance:Object, context:Context) : void {
 		removeTarget(instance).unregister();
 	}

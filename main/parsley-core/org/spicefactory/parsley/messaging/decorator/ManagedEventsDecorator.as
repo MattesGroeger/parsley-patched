@@ -28,15 +28,30 @@ import flash.events.IEventDispatcher;
 
 [Metadata(name="ManagedEvents", types="class")]
 /**
+ * Represents a Metadata, MXML or XML tag that can be used on classes that dispatch events
+ * that should be dispatched through Parsleys central message router.
+ * 
+ * May only be place on classes that implement <code>IEventDispatcher</code>. The class definition
+ * should contain additional regular <code>[Event]</code> tags for all events it dispatches.
+ * 
+ * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
+ * thus both interfaces are implemented.</p>
+ *
  * @author Jens Halm
  */
 public class ManagedEventsDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
 
 	[DefaultProperty]
+	/**
+	 * The event names/types of all events dispatched by the annotated class that should be mamaged by Parsley.
+	 */
 	public var names:Array;
 
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		if (names == null) {
 			names = new Array();
@@ -53,6 +68,9 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 		return definition;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function postConstruct (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
 		for each (var name:String in names) {		
@@ -60,6 +78,9 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 		}
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function preDestroy (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
 		for each (var name:String in names) {		

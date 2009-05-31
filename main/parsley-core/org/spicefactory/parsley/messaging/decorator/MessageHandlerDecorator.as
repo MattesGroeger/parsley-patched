@@ -24,29 +24,54 @@ import org.spicefactory.parsley.messaging.MessageRouter;
 import org.spicefactory.parsley.messaging.MessageTarget;
 
 [Metadata(name="MessageHandler", types="method")]
-
 /**
+ * Represents a Metadata, MXML or XML tag that can be used on methods which wish to handle messages
+ * dispatched through Parsleys central message router.
+ * 
+ * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
+ * thus both interfaces are implemented.</p>
+ *
  * @author Jens Halm
  */
 public class MessageHandlerDecorator extends AbstractMessageTargetDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
 
+	/**
+	 * The type of the messages the target method wishes to handle.
+	 */
 	public var type:Class;
 
+	/**
+	 * An optional selector value to be used in addition to selecting messages by type.
+	 * Will be checked against the value of the property in the message marked with <code>[Selector]</code>
+	 * or against the event type if the message is an event and does not have a selector property specified explicitly.
+	 */
 	public var selector:String;
 	
+	/**
+	 * Optional list of names of properties of the message that should be used as method parameters
+	 * instead passing the message itself as a parameter.
+	 */
 	public var messageProperties:Array;
 
 	[Target]
+	/**
+	 * The name of the method that wishes to handle the message.
+	 */
 	public var method:String;
 	
 	
-	
+	/**
+	 * @inheritDoc
+	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		definition.lifecycleListeners.addLifecycleListener(this);
 		return definition;
 	}
-
+	
+	/**
+	 * @inheritDoc
+	 */
 	public function postConstruct (instance:Object, context:Context) : void {
 		var target:MessageTarget = context.messageRouter.registerMessageHandler(instance, method, 
 				type, messageProperties, selector);

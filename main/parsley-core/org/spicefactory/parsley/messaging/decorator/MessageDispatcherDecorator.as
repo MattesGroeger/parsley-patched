@@ -22,19 +22,32 @@ import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReferenc
 
 [Metadata(name="MessageDispatcher", types="property")]
 /**
+ * Represents a Metadata, MXML or XML tag that can be used on properties where a message dispatcher function
+ * should be injected.
+ * 
+ * This is an alternative to declaring managed events, useful when working with message types which do not
+ * extend <code>flash.events.Event</code>.
+ * 
  * @author Jens Halm
  */
 public class MessageDispatcherDecorator implements ObjectDefinitionDecorator {
 
 
 	[Target]
+	/**
+	 * The name of the property.
+	 */
 	public var property:String;
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		definition.properties.addValue(property, new MessageDispatcherFunctionReference());
 		return definition;
 	}
+	
 }
 
 }
