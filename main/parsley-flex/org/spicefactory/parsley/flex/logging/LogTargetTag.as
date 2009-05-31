@@ -28,32 +28,66 @@ import mx.logging.targets.TraceTarget;
 import flash.utils.getQualifiedClassName;
 
 /**
+ * Represents the target XML tag, defining a single Flex LogTarget.
+ * 
  * @author Jens Halm
  */
 public class LogTargetTag {
 	
 	
+	/**
+	 * The id of the LogTarget in the Parsley Context. Usually no need to be specified explicitly.
+	 */
 	public var id:String;
 	
+	/**
+	 * The type of the LogTarget. Defaults to <code>TraceTarget</code>.
+	 */
 	public var type:Class = TraceTarget;
 	
+	/**
+	 * The filters for this LogTarget.
+	 */
 	public var filters:Array;
 	
+	/**
+	 * The required minimum level for this LogTarget to produce output. Defaults to <code>LogEventLevel.ALL</code>.
+	 */
 	public var level:int = LogEventLevel.ALL;
 	
 	
+	/**
+	 * The field seperator. Only processed for target extending <code>LineFormattedTarget</code>.
+	 */
 	public var fieldSeparator:String = " ";
 	
+	/**
+	 * Indicates whether the category for this target should be added to the output.
+	 */
 	public var includeCategory:Boolean = true;
 	
+	/**
+	 * Indicates whether the level for the event should be added to the output.
+	 */
 	public var includeLevel:Boolean = true;
 	
+	/**
+	 * Indicates whether the date should be added to the output.
+	 */
 	public var includeDate:Boolean = true;
 	
+	/**
+	 * Indicates whether the time should be added to the output.
+	 */
 	public var includeTime:Boolean = true;
 	
 	
 	[Factory]
+	/**
+	 * Creates a new LogTarget based on the properties of this tag class.
+	 * 
+	 * @return a new LogTarget instance
+	 */
 	public function createTarget () : ILoggingTarget {
 		if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
 		
