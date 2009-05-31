@@ -86,7 +86,7 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Obje
 
 	
 	/**
-	 * @private
+	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		initializeAdapter();
@@ -101,7 +101,7 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Obje
 	}
 
 	/**
-	 * @private
+	 * @inheritDoc
 	 */
 	public function postConstruct (instance:Object, context:Context) : void {
 		_property.setValue(instance, adapter.getResource(bundle, key));
@@ -109,7 +109,7 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Obje
 	}
 
 	/**
-	 * @private
+	 * @inheritDoc
 	 */
 	public function preDestroy (instance:Object, context:Context) : void {
 		delete managedObjects[instance];
