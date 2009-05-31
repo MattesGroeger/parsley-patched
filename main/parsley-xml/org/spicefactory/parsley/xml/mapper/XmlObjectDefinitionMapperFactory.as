@@ -280,7 +280,7 @@ class SimpleValueXmlObjectMapper extends AbstractXmlObjectMapper {
 
 class StaticPropertyRefMapper extends AbstractXmlObjectMapper {
 	
-	private var delegate:PropertyMapper;
+	private var delegate:XmlObjectMapper;
 	
 	function StaticPropertyRefMapper () {
 		super(ClassInfo.forClass(Any), new QName(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI, "static-property"));
@@ -322,7 +322,7 @@ class DelegatingXmlObjectMapper implements XmlObjectMapper {
 	
 	
 	private var builder:PropertyMapperBuilder;
-	private var mapper:PropertyMapper;
+	private var mapper:XmlObjectMapper;
 	
 	
 	function DelegatingXmlObjectMapper (builder:PropertyMapperBuilder) {
