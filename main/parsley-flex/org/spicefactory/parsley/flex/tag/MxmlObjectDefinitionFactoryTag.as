@@ -20,11 +20,16 @@ import org.spicefactory.parsley.factory.tag.ObjectDefinitionFactoryTag;
 import mx.core.IMXMLObject;
 
 /**
+ * Extension of the default object definition tag that handles ids set in MXML.
+ * 
  * @author Jens Halm
  */
 public class MxmlObjectDefinitionFactoryTag extends ObjectDefinitionFactoryTag implements IMXMLObject {
 
 
+	/**
+	 * @private
+	 */
 	public function initialized (document:Object, id:String) : void {
 		this.id = id;
 	}

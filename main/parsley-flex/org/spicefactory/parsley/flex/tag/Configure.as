@@ -17,6 +17,9 @@
 package org.spicefactory.parsley.flex.tag {
 
 /**
+ * MXML Tag that can be used for View that wish to be wired to the IOC Container.
+ * Should be placed as an immediate child of the Flex Component that should be wired.
+ * 
  * @author Jens Halm
  */
 import mx.core.UIComponent;
@@ -25,8 +28,16 @@ import flash.events.Event;
 
 public class Configure extends UIComponent {
 	
+	/**
+	 * The event type to use for the event dispatched to trigger configuration.
+	 * Should only be changed from the default if the alternative value has also
+	 * been passed to one of the methods of the <code>FlexContextBuilder</code> class.
+	 */
 	public var triggerEvent:String = "configureIOC";
 		
+	/**
+	 * @private
+	 */
 	public override function initialize () : void {
 		parent.addEventListener(Event.ADDED_TO_STAGE, dispatchConfigureEvent);
 		if (parent.stage != null) {
@@ -39,6 +50,9 @@ public class Configure extends UIComponent {
 		parent.dispatchEvent(new Event(triggerEvent, true));
 	}
 	
+	/**
+	 * @private
+	 */
 	override public function get includeInLayout () : Boolean {
 		return false;
 	}
