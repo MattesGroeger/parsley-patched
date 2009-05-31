@@ -18,18 +18,51 @@ package org.spicefactory.parsley.factory.registry {
 import org.spicefactory.lib.reflect.ClassInfo;
 
 /**
+ * Registry for the constructor arguments for a single object.
+ * 
  * @author Jens Halm
  */
 public interface ConstructorArgRegistry {
 	
+	/**
+	 * Adds a value to the list of constructor arguments.
+	 * 
+	 * @param value the value to add
+	 * @return this registry instance for method chaining
+	 */
 	function addValue (value:*) : ConstructorArgRegistry;
-	
+
+	/**
+	 * Adds a reference to another object in the registry by id to the list of constructor arguments.
+	 * 
+	 * @param id the id of the referenced object
+	 * @return this registry instance for method chaining
+	 */	
 	function addIdReference (id:String) : ConstructorArgRegistry;
 
+	/**
+	 * Adds a reference to another object in the registry by type to the list of constructor arguments.
+	 * If the type parameter is omitted the registry will reflect on the type of the next constructor 
+	 * parameter the reference will be associated with.
+	 * 
+	 * @param type the type of the referenced object or null for auto-resolving
+	 * @return this registry instance for method chaining
+	 */	
 	function addTypeReference (type:ClassInfo = null) : ConstructorArgRegistry;
 	
+	/**
+	 * Returns the constructor argument value for the specified argument index.
+	 * 
+	 * @param index the index to return the value for
+	 * @return the constructor argument value for the specified argument index
+	 */
 	function getAt (index:uint) : *;
 	
+	/**
+	 * Returns all constructor argument values added to this registry.
+	 * 
+	 * @return all constructor argument values added to this registry
+	 */
 	function getAll () : Array;
 	
 }

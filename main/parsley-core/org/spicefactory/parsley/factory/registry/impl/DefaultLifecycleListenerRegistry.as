@@ -20,6 +20,8 @@ import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 import org.spicefactory.parsley.factory.registry.LifecycleListenerRegistry;
 
 /**
+ * Default implementation of the LifecycleListenerRegistry interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultLifecycleListenerRegistry extends AbstractRegistry implements LifecycleListenerRegistry {
@@ -28,11 +30,19 @@ public class DefaultLifecycleListenerRegistry extends AbstractRegistry implement
 	private var listeners:Array = new Array();
 
 
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param def the definition of the object this registry is associated with
+	 */
 	function DefaultLifecycleListenerRegistry (def:ObjectDefinition) {
 		super(def);
 	}
 
-	
+
+	/**
+	 * @inheritDoc
+	 */
 	public function addLifecycleListener (listener:ObjectLifecycleListener,
 			priority:int = 0) : LifecycleListenerRegistry {
 		checkState();
@@ -40,6 +50,9 @@ public class DefaultLifecycleListenerRegistry extends AbstractRegistry implement
 		return this;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function removeLifecycleListener (listener:ObjectLifecycleListener) : LifecycleListenerRegistry {
 		checkState();
 		for (var i:uint = 0; i < listeners.length; i++) {
@@ -51,6 +64,9 @@ public class DefaultLifecycleListenerRegistry extends AbstractRegistry implement
 		return this;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getAll () : Array {
 		listeners.sortOn("priority", Array.NUMERIC | Array.DESCENDING);
 		var result:Array = new Array();

@@ -19,19 +19,32 @@ import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 
 /**
+ * Abstract registry base class.
+ * 
  * @author Jens Halm
  */
 public class AbstractRegistry {
 	
 	
+	/**
+	 * The definition of the object this registry is associated with.
+	 */
 	protected var definition:ObjectDefinition;
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param def the definition of the object this registry is associated with
+	 */
 	function AbstractRegistry (def:ObjectDefinition) {
 		this.definition = def;
 	}
 	
 	
+	/**
+	 * Checks if the associated definition has already been frozen and throws an error in that case.
+	 */
 	protected function checkState () : void {
 		if (definition.frozen) {
 			throw new IllegalStateError("" + definition + " is frozen");

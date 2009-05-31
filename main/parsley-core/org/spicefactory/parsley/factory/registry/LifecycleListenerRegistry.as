@@ -18,14 +18,34 @@ package org.spicefactory.parsley.factory.registry {
 import org.spicefactory.parsley.factory.ObjectLifecycleListener;
 
 /**
+ * A registry for all lifecycle listeners registered for a single instance.
+ * 
  * @author Jens Halm
  */
 public interface LifecycleListenerRegistry {
 	
+	/**
+	 * Adds a lifecycle listener to this registry.
+	 * 
+	 * @param listener the listener to add
+	 * @param priority the priority (determining the order in which listeners get executed)
+	 * @return this registry instance for method chaining
+	 */
 	function addLifecycleListener (listener:ObjectLifecycleListener, priority:int = 0) : LifecycleListenerRegistry;
 	
+	/**
+	 * Removes the specified listener from this registry.
+	 * 
+	 * @listener the listener to remove
+	 * @return this registry instance for method chaining
+	 */
 	function removeLifecycleListener (listener:ObjectLifecycleListener) : LifecycleListenerRegistry;
 	
+	/**
+	 * Returns all listeners added to this registry sorted by priority (highest priority first).
+	 * 
+	 * @return all listeners added to this registry sorted by priority (highest priority first)
+	 */
 	function getAll () : Array;
 	
 }
