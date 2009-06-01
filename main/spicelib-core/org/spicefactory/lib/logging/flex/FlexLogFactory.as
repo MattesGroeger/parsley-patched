@@ -23,10 +23,15 @@ import mx.logging.ILogger;
 import mx.logging.Log;
 
 /**
+ * LogFactory implementation that adapts the Spicelib Log Wrapper with the Flex Logging API.
+ * 
  * @author Jens Halm
  */
 public class FlexLogFactory implements LogFactory {
 
+	/**
+	 * @inheritDoc
+	 */
 	public function getLogger (name:Object) : Logger {
 		var flexLogger:ILogger = Log.getLogger(LogUtil.getLogName(name));
 		return new FlexDelegateLogger(flexLogger);
