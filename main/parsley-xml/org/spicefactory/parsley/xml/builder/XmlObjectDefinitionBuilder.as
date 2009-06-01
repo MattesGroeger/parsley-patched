@@ -39,6 +39,9 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 
 /**
+ * ObjectDefinitionBuilder implementation that processes XML configuration files.
+ * This builder operates asynchronously.
+ * 
  * @author Jens Halm
  */
 public class XmlObjectDefinitionBuilder extends EventDispatcher implements AsyncObjectDefinitionBuilder {
@@ -54,6 +57,11 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	private var registry:ObjectDefinitionRegistry;
 
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param containers the classes that contain the ActionScript configuration
+	 */
 	function XmlObjectDefinitionBuilder (files:Array, expressionContext:ExpressionContext = null, loader:XmlObjectDefinitionLoader = null) {
 		if (expressionContext == null) expressionContext = new DefaultExpressionContext();
 		this.expressionContext = expressionContext;
@@ -63,14 +71,25 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	}
 
 	
+	/**
+	 * The loader that loads the XML configuration files.
+	 */	
 	public function get loader () : XmlObjectDefinitionLoader {
 		return _loader;
 	}
 	
+	/**
+	 * Adds an XML reference containing Parsley XML configuration to be processed alongside the loaded files.
+	 * 
+	 * @param xml an XML reference containing Parsley XML configuration
+	 */
 	public function addXml (xml:XML) : void {
 		loadedFiles.push(new XmlFile("<local XML reference>", xml));
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function build (registry:ObjectDefinitionRegistry) : void {
 		this.registry = registry;
 		_loader.addEventListener(Event.COMPLETE, loaderComplete);
@@ -150,6 +169,9 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 		dispatchEvent(event.clone());
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function cancel () : void {
 		_loader.cancel();
 	}

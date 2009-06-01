@@ -39,6 +39,8 @@ import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
 
 /**
+ * Responsible for loading Parsley XML configuration files.
+ * 
  * @author Jens Halm
  */
 public class XmlObjectDefinitionLoader extends EventDispatcher {
@@ -61,6 +63,12 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 	private var includeMapper:XmlObjectMapper;
 
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param files the names of the files to load
+	 * @param expressionContext the expression context to use for preprocessing the loaded files
+	 */
 	function XmlObjectDefinitionLoader (files:Array, expressionContext:ExpressionContext) {
 		this.files = files;
 		this.expressionContext = expressionContext;
@@ -70,15 +78,26 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 	}
 	
 	
+	/**
+	 * The files that were already loaded. An Array of <code>XmlFile</code> instances.
+	 */
 	public function get loadedFiles () : Array {
 		return _loadedFiles.concat();
 	}
 	
+	/**
+	 * The name of the file currently loading.
+	 */
 	public function get currentFile () : String {
 		return _currentFile;
 	}
 
 	
+	/**
+	 * Loads the XML configuration files.
+	 * 
+	 * @param domain the ApplicationDomain for preprocessing the loaded files
+	 */
 	public function load (domain:ApplicationDomain) : void {
 		this.domain = domain;
 		dispatchEvent(new Event(Event.INIT));
@@ -96,6 +115,11 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 		loadFile(_currentFile);
 	}
 	
+	/**
+	 * Starts the loading operation for a single file.
+	 * 
+	 * @param file the name of the file to load
+	 */
 	protected function loadFile (file:String) : void {
 		log.info("Start loading XML configuration file {0}", file);
 		_currentLoader = new URLLoader();
@@ -122,6 +146,11 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 		handleLoadedFile(_currentLoader.data);
 	}
 	
+	/**
+	 * Invoked when the loading operation for a single file has completed.
+	 * 
+	 * @param fileContent the content of the file as a String (containing the loaded XML)
+	 */
 	protected function handleLoadedFile (fileContent:String) : void {
 		var xml:XML;
 		try {
@@ -142,6 +171,12 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 		loadNextFile();
 	}
 
+	/**
+	 * Invoked when the loading operation for a single file failed.
+	 * 
+	 * @param message the error message
+	 * @param cause the cause of the failure
+	 */
 	protected function handleError (message:String, cause:Object = null) : void {
 		var msg:String = "Error loading " + _currentFile + ": " + message;
 		if (cause == null) {
@@ -153,6 +188,15 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 		dispatchEvent(new NestedErrorEvent(msg, cause));
 	}
 
+	/**
+	 * Preprocesses the loaded XML. This includes processing variable elements and include elements.
+	 * For each include element the name of the file will be added to the internal list of files to load.
+	 * After preprocessing variable and include nodes will be removed from the XML as the main
+	 * XML-to-Object Mapper for Parsley XML configuration does not know/accept them (and wouldn't be
+	 * able to deal with them).
+	 * 
+	 * @param xml the loaded XML to preprocess
+	 */
 	protected function preprocess (xml:XML) : void {
 		var parsley:Namespace = new Namespace(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI);
 		var context:XmlProcessorContext = new XmlProcessorContext(expressionContext, domain);
@@ -175,6 +219,9 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 		}
 	}
 	
+	/**
+	 * Cancels the loading operation.
+	 */
 	public function cancel () : void {
 		_currentLoader.close();
 		_currentLoader = null;
