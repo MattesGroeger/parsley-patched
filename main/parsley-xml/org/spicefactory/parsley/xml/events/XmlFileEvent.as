@@ -18,17 +18,23 @@ package org.spicefactory.parsley.xml.events {
 import flash.events.Event;
 
 /**
+ * Event dispatched when an XML file loading operation starts or completes.
+ * 
  * @author Jens Halm
  */
 public class XmlFileEvent extends Event {
 
 
 	/**
+	 * Constant for the type of event dispatched when an XML file starts to load.
+	 * 
 	 * @eventType org.spicefactory.parsley.xml.events.XmlFileEvent.FILE_INIT
 	 */
 	public static const FILE_INIT : String = "fileInit";
 	
 	/**
+	 * Constant for the type of event dispatched when an XML file has completed to load.
+	 * 
 	 * @eventType org.spicefactory.parsley.xml.events.XmlFileEvent.FILE_COMPLETE
 	 */
 	public static const FILE_COMPLETE : String = "fileComplete";
@@ -41,6 +47,7 @@ public class XmlFileEvent extends Event {
 	 * Creates a new event instance.
 	 * 
 	 * @param type the type of this event
+	 * @param filename the name of the XML configuration file
 	 */
 	public function XmlFileEvent (type:String, filename:String) {
 		super(type);
@@ -48,6 +55,9 @@ public class XmlFileEvent extends Event {
 	}		
 	
 	
+	/**
+	 * The name of the XML configuration file.
+	 */
 	public function get filename () : String {
 		return _filename;
 	}		

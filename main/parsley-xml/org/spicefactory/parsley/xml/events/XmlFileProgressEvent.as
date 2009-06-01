@@ -18,12 +18,16 @@ package org.spicefactory.parsley.xml.events {
 import flash.events.ProgressEvent;
 
 /**
+ * Event dispatched for signalling progress of an XML loading operation.
+ * 
  * @author Jens Halm
  */
 public class XmlFileProgressEvent extends ProgressEvent {
 
 
 	/**
+	 * Constant for the type of event dispatched to signal progress of an XML loading operation.
+	 * 
 	 * @eventType org.spicefactory.parsley.xml.events.XmlFileProgressEvent.FILE_PROGRESS
 	 */
 	public static const FILE_PROGRESS : String = "fileProgress";
@@ -36,6 +40,9 @@ public class XmlFileProgressEvent extends ProgressEvent {
 	 * Creates a new event instance.
 	 * 
 	 * @param type the type of this event
+	 * @param filename filename the name of the XML configuration file
+	 * @param bytesLoaded the number of bytes already loaded
+	 * @param bytesTotal the total number of bytes
 	 */
 	public function XmlFileProgressEvent (type:String, filename:String, bytesLoaded:int, bytesTotal:int) {
 		super(type, false, false, bytesLoaded, bytesTotal);
@@ -43,6 +50,9 @@ public class XmlFileProgressEvent extends ProgressEvent {
 	}		
 	
 	
+	/**
+	 * The name of the XML configuration file.
+	 */
 	public function get filename () : String {
 		return _filename;
 	}
