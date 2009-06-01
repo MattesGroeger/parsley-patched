@@ -17,6 +17,11 @@
 package org.spicefactory.parsley.xml.ext {
 
 /**
+ * The central registry for custom XML configuration namespaces.
+ * 
+ * Namespaces have to be created and configured before the first XML configuration file containing tags from
+ * that namespace gets loaded.
+ * 
  * @author Jens Halm
  */
 public class XmlConfigurationNamespaceRegistry {
@@ -25,12 +30,25 @@ public class XmlConfigurationNamespaceRegistry {
 	private static const namespaces:Array = new Array();	
 
 	
+	/**
+	 * Registers a new XML configuration namespace for the specified URI.
+	 * The instance returned by this namespace can be used to configure the namespace,
+	 * adding XML-to-Object Mappers for the custom tags.
+	 * 
+	 * @param uri the URI of the custom XML configuration namespace
+	 * @return an instance that can be used to configure the namespace
+	 */
 	public static function registerNamespace (uri:String) : XmlConfigurationNamespace {
 		var ns:XmlConfigurationNamespace = new XmlConfigurationNamespace(uri);
 		namespaces.push(ns);
 		return ns;
 	}
 	
+	/**
+	 * Returns all custom XML configuration namespaces that have been added to the registry.
+	 * 
+	 * @return all custom XML configuration namespaces that have been added to the registry
+	 */
 	public static function getRegisteredNamespaces () : Array {
 		return namespaces.concat();
 	}
