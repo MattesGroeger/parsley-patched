@@ -133,11 +133,10 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 				var message:String = "Error processing file " + file;
 				log.error(message + "{0}", e);
 				containerErrors.push(message + ":\n " + e.message);
-}
-}
+			}
+		}
 
-import flash.events.ErrorEvent;
-import flash.events.Event;		if (containerErrors.length > 0) {
+		if (containerErrors.length > 0) {
 			var eventText:String = "One or more errors in XmlObjectDefinitionBuilder:\n " 
 					+ containerErrors.join("\n ");	
 			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, eventText));
