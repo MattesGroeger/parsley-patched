@@ -22,22 +22,41 @@ import org.spicefactory.parsley.core.errors.ContextError;
 import flash.utils.getQualifiedClassName;
 
 /**
+ * Represents the Channel MXML or XML tag, defining the configuration for a Cinnamon ServiceChannel.
+ * 
  * @author Jens Halm
  */
 public class ChannelTag {
 	
-            
+    
+    /**
+	 * The id that the channel will be registered with in the Parsley IOC Container. Usually no need to be specified explicitly.
+	 */ 
 	public var id:String;
 	
+	/**
+	 * The type (class) of the channel, defaults to NetConnectionServiceChannel.
+	 */
 	public var type:Class = NetConnectionServiceChannel;
 
 	[Required]
+	/**
+	 * The URL that the channel should connect to.
+	 */
 	public var url:String;
 	
+	/**
+	 * The request timeout in milliseconds.
+	 */
 	public var timeout:uint;
 
 
 	[Factory]
+	/**
+	 * Creates the ServiceChannel instance based on the property values of this tag instance.
+	 * 
+	 * @return a new ServiceChannel instance, fully configured
+	 */
 	public function createChannel () : ServiceChannel {
 		var channelObj:Object = new type();
 		if (!(channelObj is ServiceChannel)) {

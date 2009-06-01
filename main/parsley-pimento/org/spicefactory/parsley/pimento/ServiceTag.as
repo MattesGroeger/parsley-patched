@@ -32,7 +32,7 @@ public class ServiceTag implements ObjectDefinitionFactory {
 	
     
     /**
-	 * The id that this service will be registered with in the Parsley IOC Container. Usually no need to be specified explicitly.
+	 * The id that the service will be registered with in the Parsley IOC Container. Usually no need to be specified explicitly.
 	 */  
 	public var id:String;
 
@@ -50,7 +50,7 @@ public class ServiceTag implements ObjectDefinitionFactory {
 	
 	/**
 	 * The id of the PimentoConfig instance to use for this service. Only required
-	 * if you have more than one #cdi config #cdi tag in your Context. If there is only one (like in most use cases)
+	 * if you have more than one config tag in your Context. If there is only one (like in most use cases)
 	 * it will be automatically detected.
 	 */
 	public var config:String;

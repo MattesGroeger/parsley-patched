@@ -24,24 +24,46 @@ import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
 import flash.errors.IllegalOperationError;
 
 /**
+ * Represents the Service MXML or XML tag, defining the configuration for a Cinnamon service.
+ * 
  * @author Jens Halm
  */
 public class ServiceTag implements ObjectDefinitionFactory {
 	
-            
+    
+    /**
+	 * The id that the service will be registered with in the Parsley IOC Container. Usually no need to be specified explicitly.
+	 */ 
 	public var id:String;
 
 	[Required]
+	/**
+	 * The name of the service as configured on the server-side.
+	 */
 	public var name:String;
 	
 	[Required]
+	/**
+	 * The AS3 service implementation (usually generated with Pimentos Ant Task).
+	 */
 	public var type:Class;
 	
+	/**
+	 * The id of the ServiceChannel instance to use for this service. Only required
+	 * if you have more than one channel tag in your Context. If there is only one (like in most use cases)
+	 * it will be automatically detected.
+	 */
 	public var channel:String;
 	
+	/**
+	 * The request timeout in milliseconds.
+	 */
 	public var timeout:uint = 0;
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
 		if (id == null) id = name;
 		var factory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(type, id);
@@ -50,6 +72,9 @@ public class ServiceTag implements ObjectDefinitionFactory {
 		return definition;
 	}
 
+	/**
+	 * @private
+	 */
 	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		throw new IllegalOperationError("Services must be defined as root objects");
 	}
