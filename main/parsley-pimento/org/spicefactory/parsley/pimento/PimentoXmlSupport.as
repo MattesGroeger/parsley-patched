@@ -19,14 +19,23 @@ import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 
 /**
+ * Provides a static method to initalize the Pimento XML tag extension.
+ * 
  * @author Jens Halm
  */
 public class PimentoXmlSupport {
 	
 	
+	/**
+	 * The XML Namespace of the Pimento tag extension.
+	 */
 	public static const NAMESPACE_URI:String = "http://www.spicefactory.org/parsley/pimento";
 	
 	
+	/**
+	 * Initializes the Pimento XML tag extension.
+	 * Must be invoked before the <code>XmlContextBuilder</code> is used for the first time.
+	 */
 	public static function initialize () : void {
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(NAMESPACE_URI);
 		ns.addDefaultObjectMapper(ServiceTag, "service");

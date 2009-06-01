@@ -26,20 +26,34 @@ import org.spicefactory.pimento.service.EntityManager;
 import flash.errors.IllegalOperationError;
 
 /**
+ * Represents the Config MXML or XML tag, defining the configuration for a Pimento EntityManager.
+ * 
  * @author Jens Halm
  */
 public class ConfigTag implements ObjectDefinitionFactory {
 
 	
+	/**
+	 * The id of the Pimento configuration produced by this tag in the Parsley Context. Usually no need to be specified explicitly.
+	 */
 	public var id:String;
 
 	
 	[Required]
+	/**
+	 * The service URL the EntityManager produced by this tag should connect to.
+	 */
 	public var url:String;
 	
+	/**
+	 * The request timeout in milliseconds.
+	 */
 	public var timeout:uint;
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
 		
 		var configFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(PimentoConfig, id);
@@ -55,6 +69,9 @@ public class ConfigTag implements ObjectDefinitionFactory {
 		return configDef;
 	}
 
+	/**
+	 * @private
+	 */
 	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		throw new IllegalOperationError("Pimento config tag must be used for a root object definition");
 	}

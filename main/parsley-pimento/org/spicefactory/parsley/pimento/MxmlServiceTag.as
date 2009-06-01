@@ -18,11 +18,16 @@ package org.spicefactory.parsley.pimento {
 import mx.core.IMXMLObject;
 
 /**
+ * MXML variant of the service tag that handles the id that was specified for the MXML tag.
+ * 
  * @author Jens Halm
  */
 public class MxmlServiceTag extends ServiceTag implements IMXMLObject {
 	
 	
+	/**
+	 * @private
+	 */
 	public function initialized (document:Object, id:String) : void {
 		this.id = id;
 	}
