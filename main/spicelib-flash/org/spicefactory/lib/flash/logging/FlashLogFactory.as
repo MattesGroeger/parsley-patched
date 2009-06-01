@@ -22,7 +22,7 @@ import org.spicefactory.lib.flash.logging.Appender;
  * and offers configuration options for setting log levels and adding <code>Appender</code> instances.
  * Usually you would not use this interface in application code except for startup logic that configures
  * the factory. The default way to obtain <code>Logger</code> instances is the static
- * <code>LogContext.getLogger</code> method. 
+ * <code>LogContext.getLogger</code> method of the Spicelib Log Wrapper. 
  * 
  * @author Jens Halm
  */	
