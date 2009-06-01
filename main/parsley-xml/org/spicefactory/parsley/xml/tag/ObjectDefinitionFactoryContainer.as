@@ -17,11 +17,16 @@
 package org.spicefactory.parsley.xml.tag {
 
 /**
+ * Represents the root objects tag of an XML configuration file.
+ * 
  * @author Jens Halm
  */
 public class ObjectDefinitionFactoryContainer {
 	
 	
+	/**
+	 * The objects defined in the XML configuration file.
+	 */
 	public var objects:Array;
 	
 	

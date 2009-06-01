@@ -22,18 +22,32 @@ import org.spicefactory.lib.reflect.Property;
 import flash.system.ApplicationDomain;
 
 /**
+ * Represents the static-property-ref XML tag.
+ * 
  * @author Jens Halm
  */
 public class StaticPropertyRef {
 
 
 	[Required]
+	/**
+	 * The type to extract the value of a static property from.
+	 */
 	public var type:Class;
 	
 	[Required]
+	/**
+	 * The name of the static property.
+	 */
 	public var property:String;
 	
 	
+	/**
+	 * Resolves the static property, using the specified domain for reflection.
+	 * 
+	 * @param domain the ApplicationDomain to use for reflection
+	 * @return the value of the static property
+	 */
 	public function resolve (domain:ApplicationDomain) : * {
 		var ci:ClassInfo = ClassInfo.forClass(type, domain);
 		var p:Property = ci.getStaticProperty(property);

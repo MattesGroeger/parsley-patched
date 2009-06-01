@@ -18,11 +18,17 @@ package org.spicefactory.parsley.xml.tag {
 import org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator;
 
 /**
+ * Represents the message-handler XML tag.
+ * 
  * @author Jens Halm
  */
 public class MessageHandlerDecoratorTag extends MessageHandlerDecorator {
 
 	
+	/**
+	 * The names of the properties of the message instance to be applied as method parameters on
+	 * the target handler method as a single String concatenated with a ','.
+	 */
 	public function set messagePropertiesAsString (props:String) : void {
 		messageProperties = props.split(",");
 	}

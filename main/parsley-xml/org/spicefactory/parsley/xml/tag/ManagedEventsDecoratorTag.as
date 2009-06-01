@@ -18,11 +18,16 @@ package org.spicefactory.parsley.xml.tag {
 import org.spicefactory.parsley.messaging.decorator.ManagedEventsDecorator;
 
 /**
+ * Represents the managed-events XML tag.
+ * 
  * @author Jens Halm
  */
 public class ManagedEventsDecoratorTag extends ManagedEventsDecorator {
 
 	
+	/**
+	 * The names of the events to manage as a single String concatenated with a ','.
+	 */
 	public function set namesAsString (nameStr:String) : void {
 		names = nameStr.split(",");
 	}

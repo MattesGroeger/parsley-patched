@@ -17,11 +17,16 @@
 package org.spicefactory.parsley.xml.tag {
 
 /**
+ * Represents the include XML tag, defining an additional file to load by the definition builder.
+ * 
  * @author Jens Halm
  */
 public class Include {
 	
 	
+	/**
+	 * The name of the file to load.
+	 */
 	public var filename:String;
 	
 	

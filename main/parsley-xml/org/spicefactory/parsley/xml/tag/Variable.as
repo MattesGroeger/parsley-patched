@@ -17,15 +17,24 @@
 package org.spicefactory.parsley.xml.tag {
 
 /**
+ * Represents the variable XML tag, defining a single variable value. This value may be referenced in 
+ * XML text nodes and attributes with the notation <code>${variablename}</code>.
+ * 
  * @author Jens Halm
  */
 public class Variable {
 
 	
 	[Required]
+	/**
+	 * The name of the variable.
+	 */
 	public var name:String;
 	
 	[Required]
+	/**
+	 * The value of the variable.
+	 */
 	public var value:String;
 	
 	
