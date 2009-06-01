@@ -18,6 +18,8 @@ package org.spicefactory.lib.logging {
 import flash.utils.getQualifiedClassName;
 
 /**
+ * Static utility methods for logging.
+ * 
  * @author Jens Halm
  */
 public class LogUtil {
@@ -37,7 +39,15 @@ public class LogUtil {
 		}
 	}
 	
-	
+	/**
+	 * Builds the log message from the specified message and parameters.
+	 * The message may contain numered placeholders like '{0}' which will be replaced by the
+	 * specified parameters. For parameters of type Error the whole stacktrace will be included.
+	 * 
+	 * @param message the message, possibly containing parameter placeholders
+	 * @param params the parameters to fill the placeholders with
+	 * @return the fully resolved log message 
+	 */
 	public static function buildLogMessage (message:String, params:Array) : String {
 		if (params == null) return message;
 		for (var i:int = 0; i < params.length; i++) {

@@ -17,18 +17,22 @@
 package org.spicefactory.lib.logging {
 
 /**
- * Central entry point to the Logging Framework. The static <code>getLogger</code> method
- * is the default way for obtaining a <code>Logger</code> instance. While 
- * the correspondig <code>getLogger</code> method on a <code>LogFactory</code> instance
- * could also be used, using the <code>LogContext</code> is more convenient and the only way
- * to align the Loggers of custom application code with the log output of Spicefactory libraries,
- * since all Spicefactory classes use the <code>LogContext</code> internally to obtain Logger instances.
+ * Central entry point to the Spicelib Log Wrapper. The static <code>getLogger</code> method
+ * is the default way for obtaining a <code>Logger</code> instance. Depending on the type of Application
+ * implementations will delegate to the Flex Logging API or to the Spicelib Flash Logging Framework.
  * 
- * <p>Per default <code>LogContext</code> uses an instance of <code>DefaultLogFactory</code>
- * internally. But using the static <code>factory</code> property you could switch to a
- * custom <code>LogFactory</code> implementation if necessary. You could even switch at
- * runtime and all existing <code>Logger</code> instances obtained through <code>LogContext</code>
- * will be refreshed with instances from the new factory.
+ * <p>Which type of delegate the wrapper will use depends on the <code>LogFactory</code> implementation
+ * you provide. Instances of <code>FlexLogFactory</code> will delegate to the Flex Logging API,
+ * instances of <code>FlashLogFactory</code> will delegate to the old Spicelib Flash Logging Framework.</p>
+ * 
+ * <p>When using Parsley the corresponding delegate will usually be set automatically.
+ * When using Spicelib on its own you have to specify the factory manually.</p>
+ * 
+ * <p>All Spicefactory classes use the <code>LogContext</code> internally to obtain Logger instances.
+ * In regular Flex application code there is usually no need to use this class. But if you create
+ * libraries which might be used in Flex or Flash Applications this class may come in handy as it
+ * allows you to add log statements to your classes and decide at deployment time whether they should
+ * delegate to the Flex Logging API or to the Spicelib Flash Logging Framework.</p>
  * 
  * @author Jens Halm
  */
@@ -44,6 +48,9 @@ public class LogContext {
 	 * Returns the logger for the specified name. If the name parameter is a Class
 	 * instance, the fully qualified class name will be used. Otherwise the <code>toString</code>
 	 * method will be invoked on the given name instance.
+	 * 
+	 * <p>The returned logger is actually a delegate. See the documentation for the LogContext class above
+	 * for details.
 	 * 
 	 * @param name the name of the logger
 	 * @return the logger for the specified name
@@ -62,9 +69,10 @@ public class LogContext {
 	/**
 	 * The LogFactory for the global LogContext.
 	 * This is the factory that will be used for all Loggers obtained with
-	 * <code>LogContext.getLogger</code>. If you later switch to a different LogFactory
-	 * all Loggers obtained with that method will be refreshed to use Logger instances
-	 * from the new factory.
+	 * <code>LogContext.getLogger</code>. 
+	 * 
+	 * <p>Instances of <code>FlexLogFactory</code> will delegate to the Flex Logging API,
+ 	 * while instances of <code>FlashLogFactory</code> will delegate to the old Spicelib Flash Logging Framework. 
 	 */
 	public static function get factory () : LogFactory {
 		return _factory;

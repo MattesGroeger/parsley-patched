@@ -15,14 +15,10 @@
  */
  
 package org.spicefactory.lib.logging {
-	
-import flash.events.IEventDispatcher;
 
 /**
- * All logging operations are done through this interface. It contains
- * log methods for all existing log levels, methods to check if a particular
- * log level is active for a Logger instance and the <code>level</code> property
- * for filtering log output.
+ * The Logger interface of the Spicelib Log Wrapper API. Depending on the type of Application
+ * implementations will delegate to the Flex Logging API or to the Spicelib Flash Logging Framework.
  * 
  * @author Jens Halm
  */

@@ -17,11 +17,8 @@
 package org.spicefactory.lib.logging {
 
 /**
- * A <code>LogFactory</code> is responsible for creating and caching <code>Logger</code> instances
- * and offers configuration options for setting log levels and adding <code>Appender</code> instances.
- * Usually you would not use this interface in application code except for startup logic that configures
- * the factory. The default way to obtain <code>Logger</code> instances is the static
- * <code>LogContext.getLogger</code> method. 
+ * Factory interface of the Spicelib Log Wrapper API. Depending on the type of Application
+ * implementations will delegate to the Flex Logging API or to the Spicelib Flash Logging Framework.
  * 
  * @author Jens Halm
  */	
