@@ -17,11 +17,19 @@
 package org.spicefactory.lib.xml {
 
 /**
+ * Responsible for transforming property names to XML notation.
+ * 
  * @author Jens Halm
  */
 public interface NamingStrategy {
 	
 	
+	/**
+	 * Returns the XML name for the specified ActionScript name.
+	 * 
+	 * @param actionScriptName the ActionScript name
+	 * @return the corresponding XML name
+	 */
 	function toXmlName (actionScriptName:String) : String;
 	
 	

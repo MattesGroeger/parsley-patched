@@ -18,10 +18,17 @@ package org.spicefactory.lib.xml {
 import org.spicefactory.lib.xml.NamingStrategy;
 
 /**
+ * Default implementation of the NamingStrategy interface, transforming camel-case property names
+ * to XML names with dashes. The property name <code>objectCount</code> for example would be transformed
+ * to <code>object-count</code>.
+ * 
  * @author Jens Halm
  */
 public class DefaultNamingStrategy implements NamingStrategy {
 
+	/**
+	 * @inheritDoc
+	 */
 	public function toXmlName (actionScriptName:String) : String {
 		var xmlName:String = "";
 		for (var i:int = 0; i < actionScriptName.length; i++) {

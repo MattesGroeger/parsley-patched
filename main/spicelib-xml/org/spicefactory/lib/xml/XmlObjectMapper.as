@@ -18,6 +18,14 @@ package org.spicefactory.lib.xml {
 import org.spicefactory.lib.reflect.ClassInfo;
 
 /**
+ * The core interface of the XML-to-Object mapping framework.
+ * 
+ * <p>In most cases applications should be able to use the XmlObjectMapper implementation produced by the
+ * <code>PropertyMapperBuilder</code> class. But for unusual use cases new implementations of this interface
+ * can be created from scratch to be combined with the existing ones. In a complex XML hierarchy it is 
+ * usually recommended to create a corresponding hierarchy of mappers where each mapper is only responsible
+ * for mapping a single element, delegating work to child mapper for child elements.</p>
+ * 
  * @author Jens Halm
  */
 public interface XmlObjectMapper {
@@ -34,8 +42,22 @@ public interface XmlObjectMapper {
 	function get elementName () : QName;
 	
 	
+	/**
+	 * Maps from XML to object. Should always return objects of the type the <code>objectType</code> property was set to.
+	 * 
+	 * @param element the XML element to be transformed to an object
+	 * @param context the processing context
+	 * @return a new object that maps to the specified XML element
+	 */
 	function mapToObject (element:XML, context:XmlProcessorContext) : Object;
 
+	/**
+	 * Maps from object to XML. Should always return XML elements with the name the <code>elementName</code> property was set to.
+	 * 
+	 * @param object the object to be transformed to an XML element
+	 * @param context the processing context
+	 * @return a new XML element that maps to the specified object
+	 */
 	function mapToXml (object:Object, context:XmlProcessorContext) : XML;
 	
 	

@@ -17,12 +17,19 @@
 package org.spicefactory.lib.xml {
 
 /**
+ * Error thrown when validating a mapped XML element failed.
+ * 
  * @author Jens Halm
  */
 public class XmlValidationError extends Error {
 
 
-	public function XmlValidationError (message:String = "") {
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param message the error message
+	 */
+	function XmlValidationError (message:String = "") {
 		super(message);
 	}
 
