@@ -39,7 +39,7 @@ public class PimentoXmlSupport {
 	public static function initialize () : void {
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(NAMESPACE_URI);
 		ns.addDefaultObjectMapper(ServiceTag, "service");
-		ns.addDefaultFactoryMapper(ConfigTag, "config");
+		ns.addDefaultDefinitionFactoryMapper(ConfigTag, "config");
 	}
 	
 	
