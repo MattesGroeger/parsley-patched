@@ -54,11 +54,17 @@ import org.spicefactory.parsley.xml.tag.Variable;
 import flash.utils.getQualifiedClassName;
 
 /**
+ * Factory that build the XML-to-Object mappers for the Parsley XML configuration format.
+ * Built upon the Spicelib XML-to-Object Mapping Framework.
+ * 
  * @author Jens Halm
  */
 public class XmlObjectDefinitionMapperFactory {
 	
 
+	/**
+	 * The main Parsley XML configuration namespace.
+	 */
 	public static const PARSLEY_NAMESPACE_URI:String = "http://www.spicefactory.org/parsley";
 	
 	private static const namingStrategy:NamingStrategy = new DefaultNamingStrategy();
@@ -71,13 +77,21 @@ public class XmlObjectDefinitionMapperFactory {
 	private var valueChoice:Choice = new Choice();
 	
 	
-	
+	/**
+	 * @private
+	 */
 	public static function createObjectDefinitionFactoryMapperBuilder (objectType:ClassInfo, 
 			elementName:QName, decoratorArray:String, namingStrategy:NamingStrategy = null) : PropertyMapperBuilder {
+		// TODO - may be obsolete as soon as the PropertyMapperBuilder always creates delegates
 		return new ObjectDefinitionFactoryMapperBuilder(objectType, elementName, decoratorArray, namingStrategy);
 	}
 
 	
+	/**
+	 * Creates the mapper for the root objects tag of Parsley XML configuration files.
+	 * 
+	 * @return the mapper for the root objects tag of Parsley XML configuration files
+	 */
 	public function createObjectDefinitionMapper () : XmlObjectMapper {
 		addCustomConfigurationNamespaces();
 		buildValueChoice();
@@ -88,12 +102,22 @@ public class XmlObjectDefinitionMapperFactory {
 		return builder.build();
 	}
 	
+	/**
+	 * Creates the mapper for the variable XML tag.
+	 * 
+	 * @return the mapper for the variable XML tag
+	 */
 	public function createVariableMapper () : XmlObjectMapper {
 		var builder:PropertyMapperBuilder = getMapperBuilder(Variable, "variable");
 		builder.mapAllToAttributes();
 		return builder.build(); 
 	}
 	
+	/**
+	 * Creates the mapper for the include XML tag.
+	 * 
+	 * @return the mapper for the include XML tag
+	 */
 	public function createIncludeMapper () : XmlObjectMapper {
 		var builder:PropertyMapperBuilder = getMapperBuilder(Include, "include");
 		builder.mapAllToAttributes();
