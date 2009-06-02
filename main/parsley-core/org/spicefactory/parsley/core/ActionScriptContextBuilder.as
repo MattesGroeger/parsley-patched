@@ -36,13 +36,13 @@ public class ActionScriptContextBuilder {
 	 * The returned Context instance may not be fully initialized if it requires asynchronous operations.
 	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
 	 * 
-	 * @param container the class that contains the ActionScript configuration
+	 * @param configClass the class that contains the ActionScript configuration
 	 * @param parent the parent to use for the Context to build
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @return a new Context instance, possibly not fully initialized yet
 	 */
-	public static function build (container:Class, parent:Context = null, domain:ApplicationDomain = null) : Context {
-		return buildAll([container], parent, domain);		
+	public static function build (configClass:Class, parent:Context = null, domain:ApplicationDomain = null) : Context {
+		return buildAll([configClass], parent, domain);		
 	}
 	
 	/**
@@ -50,37 +50,37 @@ public class ActionScriptContextBuilder {
 	 * The returned Context instance may not be fully initialized if it requires asynchronous operations.
 	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
 	 * 
-	 * @param containers the classes that contain the ActionScript configuration
+	 * @param configClasses the classes that contain the ActionScript configuration
 	 * @param parent the parent to use for the Context to build
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @return a new Context instance, possibly not fully initialized yet
 	 */
-	public static function buildAll (containers:Array, parent:Context = null, domain:ApplicationDomain = null) : Context {
+	public static function buildAll (configClasses:Array, parent:Context = null, domain:ApplicationDomain = null) : Context {
 		var builder:CompositeContextBuilder = new CompositeContextBuilder(parent, domain);
-		mergeAll(containers, builder);
+		mergeAll(configClasses, builder);
 		return builder.build();
 	}
 	
 	/**
 	 * Merges the specified ActionScript configuration class with the specified composite builder.
 	 * 
-	 * @param container the class that contains the ActionScript configuration to be merged into the composite builder
+	 * @param configClass the class that contains the ActionScript configuration to be merged into the composite builder
 	 * @param builder the builder to add the configuration to
 	 * 
 	 */
-	public static function merge (container:Class, builder:CompositeContextBuilder) : void {
-		mergeAll([container], builder);
+	public static function merge (configClass:Class, builder:CompositeContextBuilder) : void {
+		mergeAll([configClass], builder);
 	}
 	
 	/**
 	 * Merges the specified ActionScript configuration classes with the specified composite builder.
 	 * 
-	 * @param containers the classes that contain the ActionScript configuration to be merged into the composite builder
+	 * @param configClasses the classes that contain the ActionScript configuration to be merged into the composite builder
 	 * @param builder the builder to add the configuration to
 	 * 
 	 */
-	public static function mergeAll (containers:Array, builder:CompositeContextBuilder) : void {
-		builder.addBuilder(new ActionScriptObjectDefinitionBuilder(containers));
+	public static function mergeAll (configClasses:Array, builder:CompositeContextBuilder) : void {
+		builder.addBuilder(new ActionScriptObjectDefinitionBuilder(configClasses));
 	}
 	
 	

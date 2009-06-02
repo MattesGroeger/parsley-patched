@@ -32,7 +32,7 @@ public class ModuleViewManager extends AbstractViewManager {
 	
 	
 	private var context:FlexViewContext;
-	private var container:DisplayObject;
+	private var rootView:DisplayObject;
 	
 	private var deferredComponents:Array = new Array();
 	
@@ -40,13 +40,13 @@ public class ModuleViewManager extends AbstractViewManager {
 	/**
 	 * Creates a new instance
 	 * 
-	 * @param container the view root of the Flex Module
+	 * @param rootView the view root of the Flex Module
 	 * @param triggerEvent the event type components will use to signal that they wish to get wired
 	 */
-	function ModuleViewManager (container:DisplayObject, triggerEventType:String = null) {
+	function ModuleViewManager (rootView:DisplayObject, triggerEventType:String = null) {
 		super(triggerEventType);
-		this.container = container;
-		addListener(container);
+		this.rootView = rootView;
+		addListener(rootView);
 	}
 
 	
@@ -66,7 +66,7 @@ public class ModuleViewManager extends AbstractViewManager {
 	}
 
 	private function contextDestroyed (event:ContextEvent) : void {
-		removeListener(container);	
+		removeListener(rootView);	
 	}
 
 	/**

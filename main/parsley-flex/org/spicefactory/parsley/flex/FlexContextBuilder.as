@@ -48,15 +48,15 @@ public class FlexContextBuilder {
 	 * The returned Context instance may not be fully initialized if it requires asynchronous operations.
 	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
 	 * 
-	 * @param container the class that contains the MXML configuration
+	 * @param configClass the class that contains the MXML configuration
 	 * @param parent the parent to use for the Context to build
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @param viewTriggerEvent the event type that Flex Components will sent when they wish to be wired to the container
 	 * @return a new Context instance, possibly not fully initialized yet
 	 */	
-	public static function build (container:Class, parent:Context = null, domain:ApplicationDomain = null,
+	public static function build (configClass:Class, parent:Context = null, domain:ApplicationDomain = null,
 			viewTriggerEvent:String = "configureIOC") : Context {
-		return buildAll([container], parent, domain, viewTriggerEvent);
+		return buildAll([configClass], parent, domain, viewTriggerEvent);
 	}
 	
 	/**
@@ -64,16 +64,16 @@ public class FlexContextBuilder {
 	 * The returned Context instance may not be fully initialized if it requires asynchronous operations.
 	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
 	 * 
-	 * @param containers the classes that contains the MXML configuration
+	 * @param configClasses the classes that contains the MXML configuration
 	 * @param parent the parent to use for the Context to build
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @param viewTriggerEvent the event type that Flex Components will sent when they wish to be wired to the container
 	 * @return a new Context instance, possibly not fully initialized yet
 	 */	
-	public static function buildAll (containers:Array, parent:Context = null, domain:ApplicationDomain = null,
+	public static function buildAll (configClasses:Array, parent:Context = null, domain:ApplicationDomain = null,
 			viewTriggerEvent:String = "configureIOC") : Context {
 		var builder:CompositeContextBuilder = new CompositeContextBuilder(parent, domain);
-		mergeAll(containers, builder, viewTriggerEvent);
+		mergeAll(configClasses, builder, viewTriggerEvent);
 		return builder.build();		
 	}
 	
@@ -81,29 +81,29 @@ public class FlexContextBuilder {
 	/**
 	 * Merges the specified MXML configuration class with the specified composite builder.
 	 * 
-	 * @param container the class that contains the MXML configuration to be merged into the composite builder
+	 * @param configClass the class that contains the MXML configuration to be merged into the composite builder
 	 * @param builder the builder to add the configuration to
 	 * @param viewTriggerEvent the event type that Flex Components will sent when they wish to be wired to the container
 	 * 
 	 */
-	public static function merge (container:Class, builder:CompositeContextBuilder,
+	public static function merge (configClass:Class, builder:CompositeContextBuilder,
 			viewTriggerEvent:String = "configureIOC") : void {
-		mergeAll([container], builder, viewTriggerEvent);
+		mergeAll([configClass], builder, viewTriggerEvent);
 	}
 
 	/**
 	 * Merges the specified MXML configuration classes with the specified composite builder.
 	 * 
-	 * @param containers the classes that contain the MXML configuration to be merged into the composite builder
+	 * @param configClasses the classes that contain the MXML configuration to be merged into the composite builder
 	 * @param builder the builder to add the configuration to
 	 * @param viewTriggerEvent the event type that Flex Components will sent when they wish to be wired to the container
 	 * 
 	 */
-	public static function mergeAll (containers:Array, builder:CompositeContextBuilder,
+	public static function mergeAll (configClasses:Array, builder:CompositeContextBuilder,
 			viewTriggerEvent:String = "configureIOC") : void {
 		RootViewManager.addContext(builder.context, viewTriggerEvent, builder.domain);
 		if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
-		builder.addBuilder(new ActionScriptObjectDefinitionBuilder(containers));
+		builder.addBuilder(new ActionScriptObjectDefinitionBuilder(configClasses));
 	}
 
 
