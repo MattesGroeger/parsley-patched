@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.flex.modules {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.flex.view.ModuleViewManager;
 
@@ -24,7 +25,7 @@ import mx.events.ModuleEvent;
 import mx.modules.IModuleInfo;
 
 import flash.system.ApplicationDomain;
-import flash.utils.Dictionary;	
+import flash.utils.Dictionary;
 
 /**
  * Represents the registration of a single Flex Module managed by Parsley.
@@ -154,6 +155,9 @@ public class ModuleRegistration {
 		log.info("Unload Module '{0}'", event.module.url);
 		if (_moduleContext != null) {
 			_moduleContext.destroy();
+		}
+		if (_moduleDomain != null) {
+			ClassInfo.purgeCache(_moduleDomain);
 		}
 		_moduleContext = null;
 		_moduleDomain = null;
