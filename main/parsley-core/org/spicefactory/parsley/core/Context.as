@@ -160,15 +160,15 @@ public interface Context extends IEventDispatcher {
 	
 	
 	/**
-	 * Returns an object of the specified type. If the <code>required</code> parameter is set to true
-	 * this method will throw an Error if no object with a matching type exists in this Context.
-	 * In either case it will throw an Error if it finds more than one match.
+	 * Returns an object of the specified type. 
+	 * This method will throw an Error if no object with a matching type exists in this Context
+	 * or if it finds more than one match.
 	 * 
 	 * @param type the type of the object to return
 	 * @param required whether a match is required
 	 * @return an object of the specified type
 	 */
-	function getObjectByType (type:Class, required:Boolean = false) : Object;
+	function getObjectByType (type:Class) : Object;
 
 	/**
 	 * Returns all objects that match the specified type. This includes subclasses or objects implementing

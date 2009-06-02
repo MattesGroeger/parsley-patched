@@ -219,9 +219,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 	/**
 	 * @inheritDoc
 	 */
-	public function getObjectByType (type:Class, required:Boolean = false) : Object {
+	public function getObjectByType (type:Class) : Object {
 		checkState();
-		var def:RootObjectDefinition = _registry.getDefinitionByType(type, required);
+		var def:RootObjectDefinition = _registry.getDefinitionByType(type);
 		return (def != null) ? getInstance(def) : null;
 	}
 	
