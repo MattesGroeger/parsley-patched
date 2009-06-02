@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.flex.view {
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
+import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.parsley.flex.view.AbstractViewManager;
 
 import flash.display.DisplayObject;

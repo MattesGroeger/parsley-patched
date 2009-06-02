@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.tag {
-import org.spicefactory.parsley.factory.tag.ObjectDefinitionFactoryTag;
+import org.spicefactory.parsley.registry.tag.ObjectDefinitionFactoryTag;
 
 import mx.core.IMXMLObject;
 

@@ -24,12 +24,12 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
-import org.spicefactory.parsley.factory.FactoryObjectInstantiator;
-import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
-import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.factory.ObjectInstantiator;
-import org.spicefactory.parsley.factory.RootObjectDefinition;
-import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.registry.FactoryObjectInstantiator;
+import org.spicefactory.parsley.registry.ObjectDefinitionFactory;
+import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.registry.ObjectInstantiator;
+import org.spicefactory.parsley.registry.RootObjectDefinition;
+import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionLoader;
 import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
@@ -179,7 +179,7 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 }
 
 import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.factory.ObjectInstantiator;
+import org.spicefactory.parsley.registry.ObjectInstantiator;
 
 class ObjectWrapperInstantiator implements ObjectInstantiator {
 

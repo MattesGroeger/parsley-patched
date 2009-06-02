@@ -20,8 +20,8 @@ import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
-import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
+import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 
 import flash.system.ApplicationDomain;
