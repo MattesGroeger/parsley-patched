@@ -60,7 +60,7 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param containers the classes that contain the ActionScript configuration
+	 * @param files the names of the XML configuration files
 	 */
 	function XmlObjectDefinitionBuilder (files:Array, expressionContext:ExpressionContext = null, loader:XmlObjectDefinitionLoader = null) {
 		if (expressionContext == null) expressionContext = new DefaultExpressionContext();
