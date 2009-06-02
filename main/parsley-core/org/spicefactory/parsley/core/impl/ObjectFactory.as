@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.core.impl {
 import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.factory.ObjectDefinition;
+import org.spicefactory.parsley.registry.ObjectDefinition;
 
 /**
  * Responsible for managing the lifecycle of objects based on their <code>ObjectDefinition</code>s.

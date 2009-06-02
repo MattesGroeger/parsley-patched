@@ -16,10 +16,10 @@
 
 package org.spicefactory.parsley.messaging.decorator {
 import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.factory.ObjectDefinition;
-import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.factory.ObjectLifecycleListener;
+import org.spicefactory.parsley.registry.ObjectDefinition;
+import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.registry.ObjectLifecycleListener;
 import org.spicefactory.parsley.messaging.MessageTarget;
 
 [Metadata(name="MessageInterceptor", types="method")]

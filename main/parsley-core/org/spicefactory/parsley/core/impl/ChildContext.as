@@ -18,7 +18,7 @@ package org.spicefactory.parsley.core.impl {
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.impl.DefaultContext;
-import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
 
 /**
  * Implementation of the <code>Context</code> interface that is capable of handling a parent <code>Context</code>.

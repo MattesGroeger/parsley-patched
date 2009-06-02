@@ -14,39 +14,36 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.messaging.decorator {
+package org.spicefactory.parsley.registry.decorator {
 import org.spicefactory.parsley.registry.ObjectDefinition;
 import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReference;
 
-[Metadata(name="MessageDispatcher", types="property")]
+[Metadata(name="Inject", types="method")]
 /**
- * Represents a Metadata, MXML or XML tag that can be used on properties where a message dispatcher function
- * should be injected.
- * 
- * This is an alternative to declaring managed events, useful when working with message types which do not
- * extend <code>flash.events.Event</code>.
- * 
+ * Represents a Metadata, MXML or XML tag that can be used on methods for which dependency injection should
+ * be performed.
+ *
  * @author Jens Halm
  */
-public class MessageDispatcherDecorator implements ObjectDefinitionDecorator {
+public class InjectMethodDecorator implements ObjectDefinitionDecorator {
 
 
 	[Target]
 	/**
-	 * The name of the property.
+	 * The name of the method.
 	 */
-	public var property:String;
-	
-	
+	public var method:String;
+
+
 	/**
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		definition.properties.addValue(property, new MessageDispatcherFunctionReference());
+		definition.injectorMethods.addTypeReferences(method);
 		return definition;
 	}
+	
 	
 }
 

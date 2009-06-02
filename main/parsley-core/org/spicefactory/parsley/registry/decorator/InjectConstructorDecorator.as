@@ -14,40 +14,34 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.messaging.decorator {
+package org.spicefactory.parsley.registry.decorator {
 import org.spicefactory.parsley.registry.ObjectDefinition;
 import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReference;
 
-[Metadata(name="MessageDispatcher", types="property")]
+[Metadata(name="InjectConstructor", types="class")]
 /**
- * Represents a Metadata, MXML or XML tag that can be used on properties where a message dispatcher function
- * should be injected.
+ * Represents a Metadata, MXML or XML tag that can be used on clases for which constructor injection should
+ * be performed. 
  * 
- * This is an alternative to declaring managed events, useful when working with message types which do not
- * extend <code>flash.events.Event</code>.
- * 
+ * <p>Note that since the Flash Player currently ignores metadata on constructors this tag has to be added
+ * to the class declaration.</p>
+ *
  * @author Jens Halm
  */
-public class MessageDispatcherDecorator implements ObjectDefinitionDecorator {
+public class InjectConstructorDecorator implements ObjectDefinitionDecorator {
 
 
-	[Target]
-	/**
-	 * The name of the property.
-	 */
-	public var property:String;
-	
-	
 	/**
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		definition.properties.addValue(property, new MessageDispatcherFunctionReference());
+		for (var i:uint = 0; i < definition.type.getConstructor().parameters.length; i++) {
+			definition.constructorArgs.addTypeReference();
+		}
 		return definition;
 	}
 	
+	
 }
-
 }

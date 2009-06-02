@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.builder {
-import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
+package org.spicefactory.parsley.registry.model {
 
 /**
- * Responsible for adding object definitions to a configuration registry.
- * Parsley contains implementations of this interface that process MXML, XML or ActionScript configuration respectively.
+ * Represents an Array that might contain special configuration values like object references or
+ * inline object definitons alongside simple values.
  * 
  * @author Jens Halm
  */
-public interface ObjectDefinitionBuilder {
-	
-	/**
-	 * Processes all configuration artifacts and adds object definitions to the specified registry.
-	 * 
-	 * @param registry the registry to add definitions to
-	 */
-	function build (registry:ObjectDefinitionRegistry) : void;
+public class ManagedArray extends Array {
 	
 	
 }

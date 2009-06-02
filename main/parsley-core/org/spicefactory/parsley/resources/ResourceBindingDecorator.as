@@ -18,10 +18,10 @@ package org.spicefactory.parsley.resources {
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
-import org.spicefactory.parsley.factory.ObjectDefinition;
-import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.factory.ObjectLifecycleListener;
+import org.spicefactory.parsley.registry.ObjectDefinition;
+import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.registry.ObjectLifecycleListener;
 
 import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;

@@ -14,23 +14,32 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.builder {
-import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
+package org.spicefactory.parsley.registry.model {
+import flash.events.ErrorEvent;
+import flash.events.Event;
 
 /**
- * Responsible for adding object definitions to a configuration registry.
- * Parsley contains implementations of this interface that process MXML, XML or ActionScript configuration respectively.
+ * The configuration for an asynchronously initializing object.
  * 
  * @author Jens Halm
  */
-public interface ObjectDefinitionBuilder {
+public class AsyncInitConfig {
+	
 	
 	/**
-	 * Processes all configuration artifacts and adds object definitions to the specified registry.
-	 * 
-	 * @param registry the registry to add definitions to
+	 * The event type that signals that object initialization has successfully completed.
 	 */
-	function build (registry:ObjectDefinitionRegistry) : void;
+	public var completeEvent:String = Event.COMPLETE;
+
+	/**
+	 * The event type that signals that object initialization has failed.
+	 */
+	public var errorEvent:String = ErrorEvent.ERROR;
+	
+	/**
+	 * The processing order for this object. Will be processed in ascending order.
+	 */
+	public var order:int = int.MAX_VALUE;
 	
 	
 }

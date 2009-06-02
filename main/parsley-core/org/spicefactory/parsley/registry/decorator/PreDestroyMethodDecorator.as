@@ -14,69 +14,61 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.messaging.decorator {
+package org.spicefactory.parsley.registry.decorator {
+import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.registry.DecoratorUtil;
 import org.spicefactory.parsley.registry.ObjectDefinition;
 import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.registry.ObjectLifecycleListener;
-import org.spicefactory.parsley.messaging.MessageTarget;
 
-[Metadata(name="MessageBinding", types="property")]
+[Metadata(name="PreDestroy", types="method")]
 /**
- * Represents a Metadata, MXML or XML tag that can be used on properties which wish to be bound to a property value
- * of a particular message type dispatched through Parsleys central message router.
- * 
+ * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked before the Context
+ * that the object belongs to gets destroyed.
+ *
  * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
  * thus both interfaces are implemented.</p>
- *
+ * 
  * @author Jens Halm
  */
-public class MessageBindingDecorator extends AbstractMessageTargetDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
+public class PreDestroyMethodDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
 
-
-	[Required]
-	/**
-	 * The type of the messages the property wants to bind to.
-	 */
-	public var type:Class;
-
-	/**
-	 * @copy org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator#selector
-	 */
-	public var selector:String;
 	
-	[Required]
-	/**
-	 * The name of the property of the message type whose value should be bound to the target property.
-	 */
-	public var messageProperty:String;
-
 	[Target]
 	/**
-	 * The name of the property of the managed object whose value should be bound to the message property.
+	 * The name of the method.
 	 */
-	public var targetProperty:String;
+	public var method:String;
 	
 	
+	private var targetMethod:Method;	
+
+
 	/**
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		targetMethod = DecoratorUtil.getMethod(method, definition);
 		definition.lifecycleListeners.addLifecycleListener(this);
 		return definition;
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
 	public function postConstruct (instance:Object, context:Context) : void {
-		var target:MessageTarget = context.messageRouter.registerMessageBinding(instance, targetProperty, 
-				type, messageProperty, selector);
-		addTarget(instance, target);
+		/* nothing to do here */
 	}
-
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function preDestroy (instance:Object, context:Context) : void {
+		targetMethod.invoke(instance, []);
+	}
+	
 	
 }
-
 }

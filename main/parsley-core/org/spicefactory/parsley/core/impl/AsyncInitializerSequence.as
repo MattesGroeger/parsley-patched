@@ -17,15 +17,13 @@
 package org.spicefactory.parsley.core.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.parsley.factory.ObjectDefinition;
-import org.spicefactory.parsley.factory.RootObjectDefinition;
-import org.spicefactory.parsley.factory.model.AsyncInitConfig;
+import org.spicefactory.parsley.registry.ObjectDefinition;
+import org.spicefactory.parsley.registry.RootObjectDefinition;
 
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.IEventDispatcher;
 import flash.utils.Dictionary;
-
 import flash.utils.getQualifiedClassName;
 
 /**

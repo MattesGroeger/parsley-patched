@@ -15,17 +15,17 @@
  */
 
 package org.spicefactory.parsley.core {
-import org.spicefactory.parsley.core.builder.MetadataDecoratorExtractor;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.builder.MetadataDecoratorExtractor;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.impl.ChildContext;
 import org.spicefactory.parsley.core.impl.DefaultContext;
-import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
+import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionRegistry;
 
 import flash.events.ErrorEvent;
 import flash.events.Event;

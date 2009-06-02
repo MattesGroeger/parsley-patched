@@ -14,23 +14,31 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.builder {
-import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
+package org.spicefactory.parsley.registry.tag {
 
 /**
- * Responsible for adding object definitions to a configuration registry.
- * Parsley contains implementations of this interface that process MXML, XML or ActionScript configuration respectively.
+ * Represents a reference to another object in the container (either by id or by type) in MXML or XML configuration.
+ * The <code>idRef</code> and <code>typeRef</code> properties are mutually exclusive.
  * 
  * @author Jens Halm
  */
-public interface ObjectDefinitionBuilder {
+public class ObjectReferenceTag {
+	
 	
 	/**
-	 * Processes all configuration artifacts and adds object definitions to the specified registry.
-	 * 
-	 * @param registry the registry to add definitions to
+	 * The id of the referenced object.
 	 */
-	function build (registry:ObjectDefinitionRegistry) : void;
+	public var idRef:String;
+	
+	/**
+	 * The type of the referenced object.
+	 */
+	public var typeRef:String;
+	
+	/**
+	 * Indicates whether this instance represents a required dependency.
+	 */
+	public var required:Boolean = true;
 	
 	
 }

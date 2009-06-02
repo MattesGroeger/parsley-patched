@@ -19,10 +19,10 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.metadata.EventInfo;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.factory.ObjectDefinition;
-import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.factory.ObjectLifecycleListener;
+import org.spicefactory.parsley.registry.ObjectDefinition;
+import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.registry.ObjectLifecycleListener;
 
 import flash.events.IEventDispatcher;
 

@@ -15,20 +15,20 @@
  */
 
 package org.spicefactory.parsley.core.impl {
-import org.spicefactory.lib.logging.LogContext;
-import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.events.NestedErrorEvent;
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.util.collection.SimpleMap;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.factory.ObjectDefinition;
-import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.factory.RootObjectDefinition;
-import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.parsley.messaging.MessageRouter;
 import org.spicefactory.parsley.messaging.impl.DefaultMessageRouter;
+import org.spicefactory.parsley.registry.ObjectDefinition;
+import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.registry.RootObjectDefinition;
+import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionRegistry;
 
 import flash.events.ErrorEvent;
 import flash.events.Event;

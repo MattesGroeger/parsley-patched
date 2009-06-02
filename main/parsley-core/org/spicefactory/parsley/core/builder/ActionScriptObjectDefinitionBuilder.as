@@ -22,13 +22,13 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.metadata.InternalProperty;
 import org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata;
-import org.spicefactory.parsley.factory.FactoryObjectInstantiator;
-import org.spicefactory.parsley.factory.ObjectDefinition;
-import org.spicefactory.parsley.factory.ObjectDefinitionFactory;
-import org.spicefactory.parsley.factory.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.factory.ObjectInstantiator;
-import org.spicefactory.parsley.factory.RootObjectDefinition;
-import org.spicefactory.parsley.factory.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.registry.FactoryObjectInstantiator;
+import org.spicefactory.parsley.registry.ObjectDefinition;
+import org.spicefactory.parsley.registry.ObjectDefinitionFactory;
+import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.registry.ObjectInstantiator;
+import org.spicefactory.parsley.registry.RootObjectDefinition;
+import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionFactory;
 
 import flash.utils.getQualifiedClassName;
 
@@ -127,7 +127,7 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.factory.ObjectInstantiator;
+import org.spicefactory.parsley.registry.ObjectInstantiator;
 
 class ConfingClassPropertyInstantiator implements ObjectInstantiator {
 

@@ -15,8 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.builder {
-import org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata;
-import org.spicefactory.parsley.core.metadata.InternalProperty;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Member;
 import org.spicefactory.lib.reflect.Metadata;
@@ -24,21 +22,23 @@ import org.spicefactory.lib.reflect.MetadataAware;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.metadata.InternalProperty;
+import org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata;
 import org.spicefactory.parsley.core.metadata.Target;
-import org.spicefactory.parsley.factory.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.factory.decorator.AsyncInitDecorator;
-import org.spicefactory.parsley.factory.decorator.FactoryMethodDecorator;
-import org.spicefactory.parsley.factory.decorator.InjectConstructorDecorator;
-import org.spicefactory.parsley.factory.decorator.InjectMethodDecorator;
-import org.spicefactory.parsley.factory.decorator.InjectPropertyDecorator;
-import org.spicefactory.parsley.factory.decorator.PostConstructMethodDecorator;
-import org.spicefactory.parsley.factory.decorator.PreDestroyMethodDecorator;
 import org.spicefactory.parsley.messaging.decorator.ManagedEventsDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageBindingDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageDispatcherDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator;
 import org.spicefactory.parsley.messaging.decorator.MessageInterceptorDecorator;
 import org.spicefactory.parsley.messaging.impl.Selector;
+import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.registry.decorator.AsyncInitDecorator;
+import org.spicefactory.parsley.registry.decorator.FactoryMethodDecorator;
+import org.spicefactory.parsley.registry.decorator.InjectConstructorDecorator;
+import org.spicefactory.parsley.registry.decorator.InjectMethodDecorator;
+import org.spicefactory.parsley.registry.decorator.InjectPropertyDecorator;
+import org.spicefactory.parsley.registry.decorator.PostConstructMethodDecorator;
+import org.spicefactory.parsley.registry.decorator.PreDestroyMethodDecorator;
 import org.spicefactory.parsley.resources.ResourceBindingDecorator;
 
 import flash.system.ApplicationDomain;
