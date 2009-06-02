@@ -43,16 +43,16 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 	private static const log:Logger = LogContext.getLogger(ActionScriptObjectDefinitionBuilder);
 
 	
-	private var containers:Array;
+	private var configClasses:Array;
 	
 	
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param containers the classes that contain the ActionScript configuration
+	 * @param configClasses the classes that contain the ActionScript configuration
 	 */
-	function ActionScriptObjectDefinitionBuilder (containers:Array) {
-		this.containers = containers;
+	function ActionScriptObjectDefinitionBuilder (configClasses:Array) {
+		this.configClasses = configClasses;
 	}
 	
 	
@@ -61,16 +61,16 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 	 */
 	public function build (registry:ObjectDefinitionRegistry) : void {
 		var containerErrors:Array = new Array();
-		for each (var containerClass:Class in containers) {
+		for each (var configClass:Class in configClasses) {
 			try {
-				var ci:ClassInfo = ClassInfo.forClass(containerClass, registry.domain);
-				var container:Object = new containerClass();
+				var ci:ClassInfo = ClassInfo.forClass(configClass, registry.domain);
+				var configInstance:Object = new configClass();
 				var factoryErrors:Array = new Array();
 				for each (var property:Property in ci.getProperties()) {
 					try {
 						var internalMeta:Array = property.getMetadata(InternalProperty);
 						if (internalMeta.length == 0 && property.readable) {
-							buildTargetDefinition(property, container, registry);
+							buildTargetDefinition(property, configInstance, registry);
 						} 
 					}
 					catch (e:Error) {
@@ -80,12 +80,12 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 					}
 				}
 				if (factoryErrors.length > 0) {
-					containerErrors.push("One or more errors processing " + getQualifiedClassName(container) 
+					containerErrors.push("One or more errors processing " + getQualifiedClassName(configInstance) 
 							+ ":\n " + factoryErrors.join("\n "));
 				}
 			}
 			catch (e:Error) {
-				var message:String = "Error processing " + getQualifiedClassName(container);
+				var message:String = "Error processing " + getQualifiedClassName(configInstance);
 				log.error(message + "{0}", e);
 				containerErrors.push(message + ":\n " + e.message);
 			}
@@ -96,24 +96,24 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 		}
 	}
 	
-	private function buildTargetDefinition (containerProperty:Property, container:Object, registry:ObjectDefinitionRegistry) : void {
+	private function buildTargetDefinition (configClassProperty:Property, configClass:Object, registry:ObjectDefinitionRegistry) : void {
 		var factory:ObjectDefinitionFactory;
-		if (containerProperty.type.isType(ObjectDefinitionFactory)) {
-			factory = containerProperty.getValue(container);
+		if (configClassProperty.type.isType(ObjectDefinitionFactory)) {
+			factory = configClassProperty.getValue(configClass);
 		}
 		else {
-			var definitionMetaArray:Array = containerProperty.getMetadata(ObjectDefinitionMetadata);
+			var definitionMetaArray:Array = configClassProperty.getMetadata(ObjectDefinitionMetadata);
 			var definitionMeta:ObjectDefinitionMetadata = (definitionMetaArray.length > 0) ? 
 					ObjectDefinitionMetadata(definitionMetaArray[0]) : null;
-			var id:String = (definitionMeta != null && definitionMeta.id != null) ? definitionMeta.id : containerProperty.name;
+			var id:String = (definitionMeta != null && definitionMeta.id != null) ? definitionMeta.id : configClassProperty.name;
 			var lazy:Boolean = (definitionMeta != null) ? definitionMeta.lazy : false;
 			var singleton:Boolean = (definitionMeta != null) ? definitionMeta.singleton : true;
-			factory = new DefaultObjectDefinitionFactory(containerProperty.type.getClass(), id, lazy, singleton);
+			factory = new DefaultObjectDefinitionFactory(configClassProperty.type.getClass(), id, lazy, singleton);
 		}
 		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
 		registry.registerDefinition(definition);
-		if (!containerProperty.type.isType(ObjectDefinitionFactory)) {
-			var inst:ObjectInstantiator = new ContainerPropertyInstantiator(container, containerProperty);
+		if (!configClassProperty.type.isType(ObjectDefinitionFactory)) {
+			var inst:ObjectInstantiator = new ConfingClassPropertyInstantiator(configClass, configClassProperty);
 			if (definition.instantiator is FactoryObjectInstantiator) {
 				FactoryObjectInstantiator(definition.instantiator).factoryDefinition.instantiator = inst;
 			}
@@ -129,18 +129,18 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.factory.ObjectInstantiator;
 
-class ContainerPropertyInstantiator implements ObjectInstantiator {
+class ConfingClassPropertyInstantiator implements ObjectInstantiator {
 
-	private var container:Object;
+	private var configClass:Object;
 	private var property:Property;
 
-	function ContainerPropertyInstantiator (container:Object, property:Property) {
-		this.container = container;
+	function ConfingClassPropertyInstantiator (configClass:Object, property:Property) {
+		this.configClass = configClass;
 		this.property = property;
 	}
 	
 	public function instantiate (context:Context) : Object {
-		return property.getValue(container);
+		return property.getValue(configClass);
 	}
 	
 }
