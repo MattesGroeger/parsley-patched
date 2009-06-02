@@ -7,7 +7,7 @@ public class AnnotatedResourceBinding {
 	
 	
 	[Bindable]
-	[ResourceBinding(bundleName="test", resourceName="bind")]
+	[ResourceBinding(bundle="test", key="bind")]
 	public var boundValue:String;
 	
 	
