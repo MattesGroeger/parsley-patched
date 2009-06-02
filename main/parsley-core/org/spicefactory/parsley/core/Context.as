@@ -165,7 +165,6 @@ public interface Context extends IEventDispatcher {
 	 * or if it finds more than one match.
 	 * 
 	 * @param type the type of the object to return
-	 * @param required whether a match is required
 	 * @return an object of the specified type
 	 */
 	function getObjectByType (type:Class) : Object;

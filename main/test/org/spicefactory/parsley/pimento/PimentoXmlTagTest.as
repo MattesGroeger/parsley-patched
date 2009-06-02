@@ -34,7 +34,7 @@ public class PimentoXmlTagTest extends XmlContextTestBase {
     	</objects>;
 		var context:Context = getContext(config);
 		checkState(context);
-		var service:EchoService = context.getObjectByType(EchoService, true) as EchoService;
+		var service:EchoService = context.getObjectByType(EchoService) as EchoService;
 		var proxy:ServiceProxy = ServiceProxy.forService(service);
 		assertNotNull("Expected proxy instance", proxy);
 		assertEquals("Unexpected service URL", "http://localhost/test/service/", proxy.channel.serviceUrl);
@@ -60,17 +60,17 @@ public class PimentoXmlTagTest extends XmlContextTestBase {
 		var context:Context = getContext(configXml);
 		checkState(context);
 		
-		var service:EchoService = context.getObjectByType(EchoService, true) as EchoService;
+		var service:EchoService = context.getObjectByType(EchoService) as EchoService;
 		var proxy:ServiceProxy = ServiceProxy.forService(service);
 		assertNotNull("Expected proxy instance", proxy);
 		assertEquals("Unexpected service URL", "http://localhost/test/service/", proxy.channel.serviceUrl);
 		assertTrue("Expected PimentoInvocationHandler", (proxy.invocationHandler is PimentoInvocationHandler));
 		
-		var config:PimentoConfig = context.getObjectByType(PimentoConfig, true) as PimentoConfig;
+		var config:PimentoConfig = context.getObjectByType(PimentoConfig) as PimentoConfig;
 		assertEquals("Unexpected config URL", "http://localhost/test/service/", config.serviceUrl);
 		assertEquals("Unexpected timeout", 3000, config.defaultTimeout);
 		
-		var entityManager:EntityManager = context.getObjectByType(EntityManager, true) as EntityManager;
+		var entityManager:EntityManager = context.getObjectByType(EntityManager) as EntityManager;
 		var emProxy:ServiceProxy = ServiceProxy.forService(entityManager);
 		assertNotNull("Expected proxy instance", emProxy);
 	}

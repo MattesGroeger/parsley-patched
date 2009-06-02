@@ -145,7 +145,7 @@ public class FlashResourcesTest extends XmlContextTestBase {
 	
 	private function onTestTwoBundles (event:ContextEvent) : void {
 		var context:Context = event.target as Context;
-		var rm:ResourceManager = context.getObjectByType(ResourceManager, true) as ResourceManager;
+		var rm:ResourceManager = context.getObjectByType(ResourceManager) as ResourceManager;
 		assertEquals("Unexpected message", "Text A", rm.getMessage("a", "a_text"));
 		assertEquals("Unexpected message", "Text B", rm.getMessage("b", "b_text"));
 	}
