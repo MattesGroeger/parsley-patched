@@ -106,7 +106,7 @@ class ServiceLifecycleListener implements ObjectLifecycleListener {
 			configInstance = configRef as PimentoConfig;
 		}
 		else {
-			configInstance = context.getObjectByType(PimentoConfig, true) as PimentoConfig;
+			configInstance = context.getObjectByType(PimentoConfig) as PimentoConfig;
 		}
 		configInstance.addService(tag.name, instance);
 		var proxy:ServiceProxy = ServiceProxy.forService(instance);

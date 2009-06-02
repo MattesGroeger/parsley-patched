@@ -106,7 +106,7 @@ class ServiceLifecycleListener implements ObjectLifecycleListener {
 			channelInstance = channelRef as ServiceChannel;
 		}
 		else {
-			channelInstance = context.getObjectByType(ServiceChannel, true) as ServiceChannel;
+			channelInstance = context.getObjectByType(ServiceChannel) as ServiceChannel;
 		}
 		var proxy:ServiceProxy = channelInstance.createProxy(tag.name, instance);
 		if (tag.timeout != 0) proxy.timeout = tag.timeout;
