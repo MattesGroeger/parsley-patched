@@ -18,6 +18,6 @@
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-flash</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-flash</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-pimento</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/cinnamon-1.0.0.swc</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/pimento-1.0.0.swc</AS3Classpath>
+<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/cinnamon-1.0.1.swc</AS3Classpath>
+<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/pimento-1.0.1.swc</AS3Classpath>
 </AS3Classpath>
