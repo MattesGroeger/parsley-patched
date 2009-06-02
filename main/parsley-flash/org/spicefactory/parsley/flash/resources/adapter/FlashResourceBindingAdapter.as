@@ -54,14 +54,14 @@ public class FlashResourceBindingAdapter extends EventDispatcher implements Reso
 	/**
 	 * @inheritDoc
 	 */
-	public function getResource (bundleName:String, resourceName:String) : * {
+	public function getResource (bundle:String, key:String) : * {
 		if (manager == null) {
 			throw new IllegalStateError("ResourceManager has not been set for this adapter");
 		}
 		if (!initialized) {
 			init(); // we wait until the first resource get accessed since we assume the ResourceManager has been set before
 		}
-		return manager.getMessage(resourceName, bundleName);
+		return manager.getMessage(key, bundle);
 	}
 	
 	

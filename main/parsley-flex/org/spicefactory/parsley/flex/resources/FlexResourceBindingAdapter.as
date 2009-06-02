@@ -47,8 +47,8 @@ public class FlexResourceBindingAdapter extends EventDispatcher implements Resou
 	/**
 	 * @inheritDoc
 	 */
-	public function getResource (bundleName:String, resourceName:String) :* {
-		return ResourceManager.getInstance().getObject(bundleName, resourceName);
+	public function getResource (bundle:String, key:String) :* {
+		return ResourceManager.getInstance().getObject(bundle, key);
 	}
 	
 	
