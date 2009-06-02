@@ -125,13 +125,13 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 	/**
 	 * @inheritDoc
 	 */
-	public function getDefinitionByType (type:Class, required:Boolean = false) : RootObjectDefinition {
+	public function getDefinitionByType (type:Class) : RootObjectDefinition {
 		var defs:Array = getAllDefinitionsByType(type);
 		if (defs.length > 1) {
 			throw new IllegalArgumentError("More than one object of type " + getQualifiedClassName(type) 
 					+ " was registered");
 		}
-		else if (required && defs.length == 0) {
+		else if (defs.length == 0) {
 			throw new IllegalArgumentError("No object of type " + getQualifiedClassName(type) 
 					+ " was registered");
 		}

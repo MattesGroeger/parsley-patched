@@ -76,10 +76,9 @@ public interface ObjectDefinitionRegistry {
 	 * In either case it will throw an Error if it finds more than one match.
 	 * 
 	 * @param type the type for which the defintion should be returned
-	 * @param required whether a match is required
 	 * @return the definition for the specified type
 	 */
-	function getDefinitionByType (type:Class, required:Boolean = false) : RootObjectDefinition;
+	function getDefinitionByType (type:Class) : RootObjectDefinition;
 
 	/**
 	 * Returns all defintions that match the specified type. This includes subclasses or objects implementing
