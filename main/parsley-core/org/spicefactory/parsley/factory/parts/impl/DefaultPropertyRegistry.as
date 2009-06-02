@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.factory.registry.impl {
+package org.spicefactory.parsley.factory.parts.impl {
 import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.lib.errors.IllegalArgumentError;
@@ -23,7 +23,7 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.factory.model.ObjectIdReference;
 import org.spicefactory.parsley.factory.model.ObjectTypeReference;
 import org.spicefactory.parsley.factory.model.PropertyValue;
-import org.spicefactory.parsley.factory.registry.PropertyRegistry;
+import org.spicefactory.parsley.factory.parts.PropertyRegistry;
 
 import flash.utils.Dictionary;
 

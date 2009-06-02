@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.factory.registry {
+package org.spicefactory.parsley.factory.parts {
 
 /**
  * Registry for the parameters for all configured methods for a single instance.

@@ -14,45 +14,33 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.factory.registry.impl {
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.reflect.Method;
+package org.spicefactory.parsley.factory.parts.impl {
 import org.spicefactory.parsley.factory.ObjectDefinition;
-import org.spicefactory.parsley.factory.registry.MethodParameterRegistry;
+import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.factory.parts.ConstructorArgRegistry;
 
 /**
- * Default implementation of the MethodParameterRegistry interface.
+ * Default implementation of the ConstructorArgRegistry interface.
  * 
  * @author Jens Halm
  */
-public class DefaultMethodParameterRegistry extends AbstractParameterRegistry implements MethodParameterRegistry {
+public class DefaultConstructorArgRegistry extends AbstractParameterRegistry implements ConstructorArgRegistry {
 
 
-	private var _method:Method;
-
-	
 	/**
 	 * Creates a new instance.
 	 * 
 	 * @param def the definition of the object this registry is associated with
 	 */
-	function DefaultMethodParameterRegistry (method:Method, def:ObjectDefinition) {
-		super(method, def);
-		_method = method;
+	function DefaultConstructorArgRegistry (def:ObjectDefinition) {
+		super(def.type.getConstructor(), def);
 	}
-	
+		
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function get method () : Method {
-		return _method;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function addValue (value:*) : MethodParameterRegistry {
+	public function addValue (value:*) : ConstructorArgRegistry {
 		doAddValue(value);
 		return this;
 	}
@@ -60,19 +48,19 @@ public class DefaultMethodParameterRegistry extends AbstractParameterRegistry im
 	/**
 	 * @inheritDoc
 	 */
-	public function addIdReference (id:String) : MethodParameterRegistry {
+	public function addIdReference (id:String) : ConstructorArgRegistry {
 		doAddIdReference(id);
 		return this;
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
-	public function addTypeReference (type:ClassInfo = null) : MethodParameterRegistry {
+	public function addTypeReference (type:ClassInfo = null) : ConstructorArgRegistry {
 		doAddTypeReference(type);
 		return this;
 	}
-
+	
 	
 }
 

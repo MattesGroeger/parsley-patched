@@ -24,7 +24,7 @@ import org.spicefactory.parsley.factory.model.ManagedArray;
 import org.spicefactory.parsley.factory.model.ObjectIdReference;
 import org.spicefactory.parsley.factory.model.ObjectTypeReference;
 import org.spicefactory.parsley.factory.model.PropertyValue;
-import org.spicefactory.parsley.factory.registry.MethodParameterRegistry;
+import org.spicefactory.parsley.factory.parts.MethodParameterRegistry;
 import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReference;
 
 import flash.utils.Dictionary;

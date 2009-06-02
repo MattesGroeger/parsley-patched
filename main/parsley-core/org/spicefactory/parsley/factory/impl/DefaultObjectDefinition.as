@@ -20,16 +20,16 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectInstantiator;
 import org.spicefactory.parsley.factory.model.AsyncInitConfig;
-import org.spicefactory.parsley.factory.registry.ConstructorArgRegistry;
-import org.spicefactory.parsley.factory.registry.LifecycleListenerRegistry;
-import org.spicefactory.parsley.factory.registry.MethodRegistry;
-import org.spicefactory.parsley.factory.registry.PropertyRegistry;
-import org.spicefactory.parsley.factory.registry.impl.DefaultConstructorArgRegistry;
-import org.spicefactory.parsley.factory.registry.impl.DefaultLifecycleListenerRegistry;
-import org.spicefactory.parsley.factory.registry.impl.DefaultMethodRegistry;
-import org.spicefactory.parsley.factory.registry.impl.DefaultPropertyRegistry;
+import org.spicefactory.parsley.factory.parts.ConstructorArgRegistry;
+import org.spicefactory.parsley.factory.parts.LifecycleListenerRegistry;
+import org.spicefactory.parsley.factory.parts.MethodRegistry;
+import org.spicefactory.parsley.factory.parts.PropertyRegistry;
+import org.spicefactory.parsley.factory.parts.impl.DefaultConstructorArgRegistry;
+import org.spicefactory.parsley.factory.parts.impl.DefaultLifecycleListenerRegistry;
+import org.spicefactory.parsley.factory.parts.impl.DefaultMethodRegistry;
+import org.spicefactory.parsley.factory.parts.impl.DefaultPropertyRegistry;
 
-/**
+/** 
  * Default implementation of the ObjectDefintion interface.
  * 
  * @author Jens Halm

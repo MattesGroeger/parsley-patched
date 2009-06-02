@@ -17,10 +17,10 @@
 package org.spicefactory.parsley.factory {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.factory.model.AsyncInitConfig;
-import org.spicefactory.parsley.factory.registry.ConstructorArgRegistry;
-import org.spicefactory.parsley.factory.registry.LifecycleListenerRegistry;
-import org.spicefactory.parsley.factory.registry.MethodRegistry;
-import org.spicefactory.parsley.factory.registry.PropertyRegistry;
+import org.spicefactory.parsley.factory.parts.ConstructorArgRegistry;
+import org.spicefactory.parsley.factory.parts.LifecycleListenerRegistry;
+import org.spicefactory.parsley.factory.parts.MethodRegistry;
+import org.spicefactory.parsley.factory.parts.PropertyRegistry;
 
 /**
  * Represents the configuration for a single object definition.

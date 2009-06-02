@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.factory.registry {
+package org.spicefactory.parsley.factory.parts {
 import org.spicefactory.lib.reflect.ClassInfo;
 
 /**

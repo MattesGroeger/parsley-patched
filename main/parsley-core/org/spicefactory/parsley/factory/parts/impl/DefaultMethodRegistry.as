@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.factory.registry.impl {
+package org.spicefactory.parsley.factory.parts.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.factory.ObjectDefinition;
-import org.spicefactory.parsley.factory.registry.MethodParameterRegistry;
-import org.spicefactory.parsley.factory.registry.MethodRegistry;
+import org.spicefactory.parsley.factory.parts.MethodParameterRegistry;
+import org.spicefactory.parsley.factory.parts.MethodRegistry;
 
 import flash.utils.Dictionary;
 

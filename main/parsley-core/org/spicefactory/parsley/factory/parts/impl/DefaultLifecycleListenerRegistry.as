@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.factory.registry.impl {
+package org.spicefactory.parsley.factory.parts.impl {
 import org.spicefactory.parsley.factory.ObjectDefinition;
 import org.spicefactory.parsley.factory.ObjectLifecycleListener;
-import org.spicefactory.parsley.factory.registry.LifecycleListenerRegistry;
+import org.spicefactory.parsley.factory.parts.LifecycleListenerRegistry;
 
 /**
  * Default implementation of the LifecycleListenerRegistry interface.
