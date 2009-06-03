@@ -13,7 +13,6 @@ public class CoreMxmlTagTest extends ContextTestBase {
 	public function testCoreTags () : void {
 		var context:Context = FlexContextBuilder.build(CoreMxmlTagContainer);
 		checkState(context);
-		trace("?? " + context.getObjectIds());
 		checkObjectIds(context, ["dependency"], InjectedDependency);	
 		checkObjectIds(context, ["object"], CoreModel);	
 		var obj:CoreModel 
@@ -27,6 +26,7 @@ public class CoreMxmlTagTest extends ContextTestBase {
 		assertEquals("Unexpected Array element 0", "AA", arr[0]);
 		assertEquals("Unexpected Array element 1", "BB", arr[1]);
 		assertEquals("Unexpected Array element 2", obj.refProp, arr[2]);
+		assertEquals("Unexpected Array element 2", obj.refProp, arr[3]);
 	}
 }
 }

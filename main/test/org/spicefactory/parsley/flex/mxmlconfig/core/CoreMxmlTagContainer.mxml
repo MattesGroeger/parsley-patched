@@ -1,12 +1,13 @@
 <mx:Object 
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:tag="org.spicefactory.parsley.factory.tag.*"
+	xmlns:tag="org.spicefactory.parsley.registry.tag.*"
 	xmlns:flextag="org.spicefactory.parsley.flex.tag.*"
 	xmlns:model="org.spicefactory.parsley.core.decorator.injection.*">
 	
 	<mx:Script>
 		<![CDATA[
 			import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;		
+			import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 		]]>
 	</mx:Script>
 	
@@ -26,6 +27,7 @@
 				<mx:String>AA</mx:String>
 				<mx:String>BB</mx:String>
 				<tag:ObjectReferenceTag idRef="dependency"/>
+				<tag:ObjectReferenceTag typeRef="{InjectedDependency}"/>
 			</tag:ArrayTag>
 		</tag:PropertyDecoratorTag>
 	</flextag:MxmlObjectDefinitionFactoryTag> 
