@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.registry.tag {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.reflect.types.Any;
 import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
 import org.spicefactory.parsley.registry.ObjectDefinition;
 import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
@@ -67,7 +68,7 @@ public class PropertyDecoratorTag extends ObjectReferenceTag implements ObjectDe
 			definition.properties.addIdReference(name, idRef, required);
 		}
 		else if (typeRef != null) {
-			var ci:ClassInfo = (typeRef == "*") ? null : ClassInfo.forClass(typeRef, registry.domain);
+			var ci:ClassInfo = ClassInfo.forClass(typeRef, registry.domain);
 			definition.properties.addTypeReference(name, required, ci);
 		}
 		else if (childValue != null) {
@@ -75,6 +76,9 @@ public class PropertyDecoratorTag extends ObjectReferenceTag implements ObjectDe
 		}
 		else if (value != null) {
 			definition.properties.addValue(name, valueResolver.resolveValue(value, registry));
+		}
+		else {
+			definition.properties.addTypeReference(name, required);
 		}
 		return definition;
 	}
