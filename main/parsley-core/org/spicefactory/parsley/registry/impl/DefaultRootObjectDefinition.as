@@ -18,7 +18,6 @@ package org.spicefactory.parsley.registry.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.registry.ObjectDefinition;
 import org.spicefactory.parsley.registry.RootObjectDefinition;
-impororg.spicefactory.parsley.registry.impl.DefaultObjectDefinitionon;
 import org.spicefactory.parsley.util.IdGenerator;
 
 /**
