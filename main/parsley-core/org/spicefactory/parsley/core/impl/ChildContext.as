@@ -114,8 +114,8 @@ public class ChildContext extends DefaultContext {
 	 * @inheritDoc
 	 */
 	public override function getObjectByType (type:Class) : Object {
-		var local:Object = super.getObjectByType(type);
-		return (local == null) ? _parent.getObjectByType(type) : local; 
+		var localCount:int = super.getObjectCount(type);
+		return (localCount == 0) ? _parent.getObjectByType(type) : super.getObjectByType(type); 
 	}
 	
 	
