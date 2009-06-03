@@ -1,8 +1,8 @@
 <message-bundle 
-		xmlns="http://www.spicefactory.org/parsley/1.0/messages"
+		xmlns="http://www.spicefactory.org/parsley/flash/resource-bundle"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://www.spicefactory.org/parsley/1.0/messages 
-			http://www.spicefactory.org/parsley/schema/1.0/parsley-messages.xsd"
+		xsi:schemaLocation="http://www.spicefactory.org/parsley/flash/resource-bundle 
+			http://www.spicefactory.org/parsley/schema/2.0/parsley-resources-flash-bundle.xsd"
 		>
     <message key="us">USA</message>
 </message-bundle>
