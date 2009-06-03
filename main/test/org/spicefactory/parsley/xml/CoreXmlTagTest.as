@@ -35,6 +35,7 @@ public class CoreXmlTagTest extends XmlContextTestBase {
 					</object>
 					<static-property type="org.spicefactory.parsley.xml.XmlModel" property="STATIC_PROP"/>
 					<object-ref id-ref="dependency"/>
+					<object-ref type-ref="org.spicefactory.parsley.core.decorator.injection.InjectedDependency"/>
 				</array>
 			</property>
 		</object> 
@@ -56,7 +57,7 @@ public class CoreXmlTagTest extends XmlContextTestBase {
 		assertNotNull("Dependency not resolved", obj.refProp);
 		var arr:Array = obj.arrayProp;
 		assertNotNull("Expected Array instance", arr);
-		assertEquals("Unexpected Array length", 7, arr.length);
+		assertEquals("Unexpected Array length", 8, arr.length);
 		assertEquals("Unexpected Array element 0", "AA", arr[0]);
 		assertEquals("Unexpected Array element 1", 7, arr[1]);
 		assertEquals("Unexpected Array element 2", true, arr[2]);
@@ -66,6 +67,7 @@ public class CoreXmlTagTest extends XmlContextTestBase {
 		assertEquals("Unexpected string property for XmlModel", "nested", model.prop);
 		assertEquals("Unexpected Array element 5", "static-foo", arr[5]);
 		assertEquals("Unexpected Array element 6", obj.refProp, arr[6]);
+		assertEquals("Unexpected Array element 7", obj.refProp, arr[7]);
 	}
 	
 	
