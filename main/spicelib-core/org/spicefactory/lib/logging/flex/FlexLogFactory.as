@@ -33,7 +33,8 @@ public class FlexLogFactory implements LogFactory {
 	 * @inheritDoc
 	 */
 	public function getLogger (name:Object) : Logger {
-		var flexLogger:ILogger = Log.getLogger(LogUtil.getLogName(name));
+		var nameAsString:String = LogUtil.getLogName(name).replace("::", ".");
+		var flexLogger:ILogger = Log.getLogger(nameAsString);
 		return new FlexDelegateLogger(flexLogger);
 	}
 	
