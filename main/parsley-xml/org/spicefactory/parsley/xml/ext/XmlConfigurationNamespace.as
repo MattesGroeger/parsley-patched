@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml.ext {
+import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.lib.xml.NamingStrategy;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -73,7 +74,7 @@ public class XmlConfigurationNamespace {
 	 */
 	public function addCustomObjectMapper (mapper:XmlObjectMapper) : void {
 		validateFactory(mapper.objectType, mapper.elementName.localName);
-		checkNamspace(mapper);
+		checkNamespace(mapper);
 		factories[mapper.elementName.localName] = mapper;
 	}
 	
@@ -85,7 +86,7 @@ public class XmlConfigurationNamespace {
 	 */
 	public function addCustomDefinitionFactoryMapper (mapper:XmlObjectMapper) : void {
 		validateFactory(mapper.objectType, mapper.elementName.localName, true);
-		checkNamspace(mapper);
+		checkNamespace(mapper);
 		factories[mapper.elementName.localName] = mapper;
 	}
 	
@@ -97,7 +98,7 @@ public class XmlConfigurationNamespace {
 	 */
 	public function addCustomDecoratorMapper (mapper:XmlObjectMapper) : void {
 		validateDecorator(mapper.objectType, mapper.elementName.localName);
-		checkNamspace(mapper);
+		checkNamespace(mapper);
 		decorators[mapper.elementName.localName] = mapper;
 	}
 
@@ -124,12 +125,13 @@ public class XmlConfigurationNamespace {
 	 * @param type the class the XML element should be mapped to
 	 * @param tagName the name of the XML element to map
 	 * @param decoratorArray the name of the property holding the decorators that were added as child elemens (or null if
-	 * you do not want to allow regular decorator child elements)
+	 * you do not want to allow regular decorator child elements or if the tag extends DefaultObjectDefinitionFactory where the
+	 * decorator Array will be auto-detected)
 	 */	
-	public function addDefaultDefinitionFactoryMapper (type:Class, tagName:String, decoratorArray:String = "decorators") : void {
+	public function addDefaultDefinitionFactoryMapper (type:Class, tagName:String, decoratorArray:String = null) : void {
 		var builder:PropertyMapperBuilder = newFactoryMapperBuilder(type, tagName, decoratorArray);
 		builder.mapAllToAttributes();
-		addCustomDefinitionFactoryMapper(builder.build());
+		factories[tagName] = builder;
 	}
 	
 	/**
@@ -147,8 +149,9 @@ public class XmlConfigurationNamespace {
 		addCustomDecoratorMapper(builder.build());
 	}
 
-	private function newFactoryMapperBuilder (type:Class, tagName:String, decoratorArray:String = "decorators") : PropertyMapperBuilder {
+	private function newFactoryMapperBuilder (type:Class, tagName:String, decoratorArray:String) : PropertyMapperBuilder {
 		var ci:ClassInfo = ClassInfo.forClass(type, _domain);
+		if (ci.isType(DefaultObjectDefinitionFactory)) decoratorArray = "decorators";
 		var elementName:QName = new QName(_uri, tagName);
 		validateFactory(ci, tagName, true);
 		return (decoratorArray == null) 
@@ -177,6 +180,9 @@ public class XmlConfigurationNamespace {
 	 * 
 	 * @param type the class the XML element should be mapped to
 	 * @param tagName the name of the XML element to map
+	 * @param decoratorArray the name of the property holding the decorators that were added as child elemens (or null if
+	 * you do not want to allow regular decorator child elements or if the tag extends DefaultObjectDefinitionFactory where the
+	 * decorator Array will be auto-detected)
 	 * @return the builder that can be used to configure the mapper
 	 */
 	public function createDefinitionFactoryMapperBuilder (type:Class, tagName:String, decoratorArray:String = null) : PropertyMapperBuilder {
@@ -249,7 +255,7 @@ public class XmlConfigurationNamespace {
 		}
 	}
 	
-	private function checkNamspace (mapper:XmlObjectMapper) : void {
+	private function checkNamespace (mapper:XmlObjectMapper) : void {
 		if (mapper.elementName.uri != _uri) {
 			throw new IllegalArgumentError("Namespace " + mapper.elementName.uri 
 					+ " of mapper " + mapper + " does not match this configuration namespace: " + _uri);
