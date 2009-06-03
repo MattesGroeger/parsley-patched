@@ -121,16 +121,15 @@ public class CompositeContextBuilder extends EventDispatcher {
 	private function invokeNextBuilder () : void {
 		if (_builders.length == 0) {
 			if (_errors.length > 0) {
-				var errorMsg:String = "One or more errors processing CompositeContextBuilder: \n " + _errors.join("\n ");
-				if (async) {
-					_context.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, errorMsg));
-				}
-				else {
-					throw new ContextBuilderError(errorMsg);
-				}
+				handleErrors();
 			}
 			else {
+				_context.addEventListener(ErrorEvent.ERROR, contextError);
 				_context.initialize();
+				_context.removeEventListener(ErrorEvent.ERROR, contextError);
+				if (_errors.length > 0) {
+					handleErrors();
+				}
 			}
 		}
 		else {
@@ -156,6 +155,16 @@ public class CompositeContextBuilder extends EventDispatcher {
 		}
 	}
 	
+	private function handleErrors () : void {
+		var errorMsg:String = "One or more errors processing CompositeContextBuilder: \n " + _errors.join("\n ");
+		if (async) {
+			_context.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, errorMsg));
+		}
+		else {
+			throw new ContextBuilderError(errorMsg);
+		}		
+	}
+	
 	private function builderComplete (event:Event) : void {
 		removeCurrentBuilder();
 		invokeNextBuilder();
@@ -174,6 +183,12 @@ public class CompositeContextBuilder extends EventDispatcher {
 		_currentBuilder.removeEventListener(Event.COMPLETE, builderComplete);				
 		_currentBuilder.removeEventListener(ErrorEvent.ERROR, builderError);
 		_currentBuilder = null;			
+	}
+	
+	private function contextError (event:ErrorEvent) : void {
+		var msg:String = "Error initializing Context: " + event.text;
+		log.error(msg);
+		_errors.push(msg);
 	}
 	
 	private function contextDestroyed (event:Event) : void {
