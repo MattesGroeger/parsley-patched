@@ -29,6 +29,9 @@ import org.spicefactory.lib.xml.NamingStrategy;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.Choice;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
+import org.spicefactory.parsley.messaging.decorator.MessageBindingDecorator;
+import org.spicefactory.parsley.messaging.decorator.MessageDispatcherDecorator;
+import org.spicefactory.parsley.messaging.decorator.MessageInterceptorDecorator;
 import org.spicefactory.parsley.registry.decorator.AsyncInitDecorator;
 import org.spicefactory.parsley.registry.decorator.FactoryMethodDecorator;
 import org.spicefactory.parsley.registry.decorator.PostConstructMethodDecorator;
@@ -38,9 +41,6 @@ import org.spicefactory.parsley.registry.tag.ConstructorDecoratorTag;
 import org.spicefactory.parsley.registry.tag.ObjectDefinitionFactoryTag;
 import org.spicefactory.parsley.registry.tag.ObjectReferenceTag;
 import org.spicefactory.parsley.registry.tag.PropertyDecoratorTag;
-import org.spicefactory.parsley.messaging.decorator.MessageBindingDecorator;
-import org.spicefactory.parsley.messaging.decorator.MessageDispatcherDecorator;
-import org.spicefactory.parsley.messaging.decorator.MessageInterceptorDecorator;
 import org.spicefactory.parsley.resources.ResourceBindingDecorator;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
@@ -48,7 +48,6 @@ import org.spicefactory.parsley.xml.tag.Include;
 import org.spicefactory.parsley.xml.tag.ManagedEventsDecoratorTag;
 import org.spicefactory.parsley.xml.tag.MessageHandlerDecoratorTag;
 import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
-import org.spicefactory.parsley.xml.tag.StaticPropertyRef;
 import org.spicefactory.parsley.xml.tag.Variable;
 
 import flash.utils.getQualifiedClassName;
@@ -149,7 +148,7 @@ public class XmlObjectDefinitionMapperFactory {
 				rootObjectChoice.addMapper(fMapper);
 				valueChoice.addMapper(fMapper);
 			}
-			var decorators:Array = ns.getAllFactoryMappers();
+			var decorators:Array = ns.getAllDecoratorMappers();
 			for each (var dObj:Object in decorators) {
 				var dMapper:XmlObjectMapper = getCustomMapper(dObj);
 				decoratorChoice.addMapper(dMapper);
@@ -158,6 +157,7 @@ public class XmlObjectDefinitionMapperFactory {
 	}
 	
 	private function getCustomMapper (obj:Object) : XmlObjectMapper {
+		// TODO - this method will be obsolete in 2.0.1 when PropertyMapperBuilder always creates delegates
 		if (obj is XmlObjectMapper) {
 			return obj as XmlObjectMapper;
 		}
@@ -260,7 +260,6 @@ import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.lib.xml.mapper.AbstractXmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.Choice;
-import org.spicefactory.lib.xml.mapper.PropertyMapper;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import org.spicefactory.parsley.xml.tag.StaticPropertyRef;
