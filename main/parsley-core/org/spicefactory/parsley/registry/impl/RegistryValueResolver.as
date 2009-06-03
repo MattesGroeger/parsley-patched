@@ -55,7 +55,7 @@ public class RegistryValueResolver {
 				return new ObjectIdReference(objRef.idRef, objRef.required);
 			}
 			else {
-				return new ObjectTypeReference(ClassInfo.forName(objRef.typeRef, registry.domain), objRef.required);
+				return new ObjectTypeReference(ClassInfo.forClass(objRef.typeRef, registry.domain), objRef.required);
 			}
 		}
 		else if (value is ArrayTag) {

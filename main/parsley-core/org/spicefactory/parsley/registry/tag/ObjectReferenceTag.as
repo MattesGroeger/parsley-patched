@@ -33,7 +33,7 @@ public class ObjectReferenceTag {
 	/**
 	 * The type of the referenced object.
 	 */
-	public var typeRef:String;
+	public var typeRef:Class;
 	
 	/**
 	 * Indicates whether this instance represents a required dependency.

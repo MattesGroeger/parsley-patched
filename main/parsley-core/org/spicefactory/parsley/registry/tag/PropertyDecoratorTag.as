@@ -67,7 +67,7 @@ public class PropertyDecoratorTag extends ObjectReferenceTag implements ObjectDe
 			definition.properties.addIdReference(name, idRef, required);
 		}
 		else if (typeRef != null) {
-			var ci:ClassInfo = (typeRef == "*") ? null : ClassInfo.forName(typeRef, registry.domain);
+			var ci:ClassInfo = (typeRef == "*") ? null : ClassInfo.forClass(typeRef, registry.domain);
 			definition.properties.addTypeReference(name, required, ci);
 		}
 		else if (childValue != null) {
