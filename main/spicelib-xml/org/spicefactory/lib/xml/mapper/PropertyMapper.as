@@ -16,6 +16,7 @@
 
 package org.spicefactory.lib.xml.mapper {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.xml.MappingError;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.lib.xml.XmlValidationError;
@@ -120,14 +121,9 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 			context.addError(error);
 		}
 		if (hasErrors) {
-			trace("Errors: " + context.errors.length);
-			for each (var e:Object in context.errors) {
-				trace("E " + e);
-				var er:Error = e as Error;
-				if (er is Error) trace(er.getStackTrace());
-			}
+			throw new PropertyMappingError("Error processing element " + element.name(), context.errors);
 		}
-		return (hasErrors) ? null : targetInstance;
+		return targetInstance;
 	}
 	
 	
@@ -180,7 +176,7 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 			}
 			catch (e:Error) {
 				hasErrors = true;
-				context.addError(e);
+				if (!(e is PropertyMappingError)) context.addError(e);
 			}
 		}
 		return hasErrors;
@@ -208,17 +204,26 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 			}
 		}
 		if (hasErrors) {
-			trace("Errors: " + context.errors.length);
-			for each (var er:Object in context.errors) {
-				trace("E " + er);
-				var err:Error = er as Error;
-				if (err is Error) trace(err.getStackTrace());
-			}
+			throw new PropertyMappingError("Error processing object " + object.toString(), context.errors);
 		}
-		return (hasErrors) ? null : parentElement;
+		return parentElement;
 	}		 
 	
 		 
 }
-
 }
+
+import org.spicefactory.lib.xml.MappingError;
+
+/**
+ * Used to distinguish Errors thrown from nested PropertyMappers (not adding them to the context again)
+ * from other Errors.
+ */
+class PropertyMappingError extends MappingError {
+	
+	function PropertyMappingError (message:String, causes:Array) {
+		super(message, causes);
+	}
+	
+}
+
