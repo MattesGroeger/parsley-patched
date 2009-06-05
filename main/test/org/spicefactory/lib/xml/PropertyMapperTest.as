@@ -53,9 +53,14 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var context:XmlProcessorContext = new XmlProcessorContext();
-		var obj:Object = mapper.mapToObject(xml, context);
-		assertNull("Expected null result", obj);
-		assertTrue("Expected context with errors", context.hasErrors());
+		try {
+			mapper.mapToObject(xml, context);
+		} catch (e:MappingError) {
+			assertTrue("Expected context with errors", context.hasErrors());
+			assertEquals("Unexpected number of errors", 1, context.errors.length);
+			return;
+		}
+		fail("Expected mapping error");
 	}
 	
 	public function testTextNodeMapper () : void {
@@ -104,9 +109,14 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapAllToChildTextNodes();
 		var mapper:XmlObjectMapper = builder.build();
 		var context:XmlProcessorContext = new XmlProcessorContext();
-		var obj:Object = mapper.mapToObject(xml, context);
-		assertNull("Expected null result", obj);
-		assertTrue("Expected context with errors", context.hasErrors());
+		try {
+			mapper.mapToObject(xml, context);
+		} catch (e:MappingError) {
+			assertTrue("Expected context with errors", context.hasErrors());
+			assertEquals("Unexpected number of errors", 1, context.errors.length);
+			return;
+		}
+		fail("Expected mapping error");
 	}
 	
 	public function testMapSingleAttribute () : void {
@@ -182,9 +192,6 @@ public class PropertyMapperTest extends TestCase {
 		assertEquals("Unexpected int Property", 7, cwc.intProp);
 		assertTrue("Expected ChildA as child property", cwc.child != null);
 		assertEquals("Unexpected name Property", "foo", cwc.child.name);
-		
-		var xml2:XML = mapper.mapToXml(cwc, new XmlProcessorContext());
-		trace(xml2.toXMLString());
 	}
 	
 	public function testMapSingleChildElementExplicit () : void {
@@ -249,9 +256,6 @@ public class PropertyMapperTest extends TestCase {
 		assertTrue("Unexpected child type", cwc.children[1] is ChildB);
 		assertEquals("Unexpected name Property", "A", cwc.children[0].name);
 		assertEquals("Unexpected name Property", "B", cwc.children[1].name);
-		
-		var xml2:XML = mapper.mapToXml(cwc, new XmlProcessorContext());
-		trace(xml2.toXMLString());
 	}
 	
 	public function testMissingRequiredChildren () : void {
@@ -261,9 +265,14 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var context:XmlProcessorContext = new XmlProcessorContext();
-		var obj:Object = mapper.mapToObject(xml, context);
-		assertNull("Expected null result", obj);
-		assertTrue("Expected context with errors", context.hasErrors());
+		try {
+			mapper.mapToObject(xml, context);
+		} catch (e:MappingError) {
+			assertTrue("Expected context with errors", context.hasErrors());
+			assertEquals("Unexpected number of errors", 1, context.errors.length);
+			return;
+		}
+		fail("Expected mapping error");
 	}
 	
 	public function testMissingRequiredChild () : void {
@@ -273,9 +282,32 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var context:XmlProcessorContext = new XmlProcessorContext();
-		var obj:Object = mapper.mapToObject(xml, context);
-		assertNull("Expected null result", obj);
-		assertTrue("Expected context with errors", context.hasErrors());
+		try {
+			mapper.mapToObject(xml, context);
+		} catch (e:MappingError) {
+			assertTrue("Expected context with errors", context.hasErrors());
+			assertEquals("Unexpected number of errors", 1, context.errors.length);
+			return;
+		}
+		fail("Expected mapping error");
+	}
+	
+	public function testTwoErrors () : void {
+		var xml:XML = <tag><child/></tag>;
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChild, new QName("", "tag"));
+		builder.createChildElementMapperBuilder("child").mapAllToAttributes();
+		builder.mapAllToAttributes();
+		var mapper:XmlObjectMapper = builder.build();
+		var context:XmlProcessorContext = new XmlProcessorContext();
+		try {
+			mapper.mapToObject(xml, context);
+		} catch (e:MappingError) {
+			assertTrue("Expected context with errors", context.hasErrors());
+			assertEquals("Unexpected number of errors", 2, e.causes.length);
+			assertEquals("Unexpected number of errors", 2, context.errors.length);
+			return;
+		}
+		fail("Expected mapping error");
 	}
 	
 	public function testNamespace () : void {
@@ -292,13 +324,6 @@ public class PropertyMapperTest extends TestCase {
 		assertEquals("Unexpected int Property", 7, cwc.intProp);
 		assertTrue("Expected ChildA as child property", cwc.child != null);
 		assertEquals("Unexpected name Property", "foo", cwc.child.name);
-		
-		var context:XmlProcessorContext = new XmlProcessorContext();
-		context.addNamespace(new Namespace("ns", "testuri"));
-		var xml2:XML = mapper.mapToXml(cwc, context);
-		trace(xml2.toXMLString());		
-		context.addNamespaceDeclarations(xml2);
-		trace(xml2.toXMLString());		
 	}
 
 
