@@ -107,12 +107,14 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 			hasErrors = processNodes(element, element.attributes(), "attribute", attributeHandlerMap, 
 					targetInstance, context, ignoreUnmappedAttributes);
 			if (expectsChildElements || (!expectsTextNode && !ignoreUnmappedChildren)) {
-				hasErrors ||= processNodes(element, element.children(), "element", elementHandlerMap, 
+				var elementErrors:Boolean = processNodes(element, element.children(), "element", elementHandlerMap, 
 						targetInstance, context, ignoreUnmappedChildren);
+				hasErrors ||= elementErrors;
 			}
 			else if (expectsTextNode) {
-				hasErrors ||= processNodes(element, element.children(), "text", textNodeHandlerMap, 
+				var textNodeErrors:Boolean = processNodes(element, element.children(), "text", textNodeHandlerMap, 
 						targetInstance, context, ignoreUnmappedChildren);
+				hasErrors ||= textNodeErrors;
 			}
 		}
 		catch (error:Error) {
