@@ -1,4 +1,6 @@
 package org.spicefactory.parsley.flex.logging {
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.xml.XmlContextTestBase;
 
@@ -58,7 +60,7 @@ public class FlexLoggingXmlTagTest extends XmlContextTestBase {
 	
 	private function basicLoggerTest (name:String, count:uint) : void {
 		var msg:String = "The message does not matter";
-		var logger:ILogger = Log.getLogger(name);
+		var logger:Logger = LogContext.getLogger(name);
 		logger.debug(msg);
 		logger.info(msg);
 		logger.warn(msg);
