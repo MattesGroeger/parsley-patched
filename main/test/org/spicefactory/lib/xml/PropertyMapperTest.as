@@ -1,7 +1,6 @@
 package org.spicefactory.lib.xml {
 import flexunit.framework.TestCase;
 
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.mapper.Choice;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.lib.xml.model.ChildA;
@@ -21,7 +20,7 @@ public class PropertyMapperTest extends TestCase {
 	
 	public function testAttributeMapper () : void {
 		var xml:XML = <tag boolean-prop="true" string-prop="foo" int-prop="7" class-prop="flash.events.Event"/>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
@@ -35,7 +34,7 @@ public class PropertyMapperTest extends TestCase {
 	
 	public function testAttributeMapperWithMissingOptionalAttr () : void {
 		var xml:XML = <tag boolean-prop="true" string-prop="foo" int-prop="7"/>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
@@ -49,7 +48,7 @@ public class PropertyMapperTest extends TestCase {
 	
 	public function testAttributeMapperWithMissingRequiredAttr () : void {
 		var xml:XML = <tag boolean-prop="true" int-prop="7"/>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var context:XmlProcessorContext = new XmlProcessorContext();
@@ -70,7 +69,7 @@ public class PropertyMapperTest extends TestCase {
 			<boolean-prop>true</boolean-prop>
 			<class-prop>flash.events.Event</class-prop>
 		</tag>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapAllToChildTextNodes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
@@ -88,7 +87,7 @@ public class PropertyMapperTest extends TestCase {
 			<int-prop>7</int-prop>
 			<boolean-prop>true</boolean-prop>
 		</tag>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapAllToChildTextNodes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
@@ -105,7 +104,7 @@ public class PropertyMapperTest extends TestCase {
 			<int-prop>7</int-prop>
 			<boolean-prop>true</boolean-prop>
 		</tag>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapAllToChildTextNodes();
 		var mapper:XmlObjectMapper = builder.build();
 		var context:XmlProcessorContext = new XmlProcessorContext();
@@ -121,7 +120,7 @@ public class PropertyMapperTest extends TestCase {
 	
 	public function testMapSingleAttribute () : void {
 		var xml:XML = <tag string-prop="foo"/>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapToAttribute("stringProp");
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
@@ -137,7 +136,7 @@ public class PropertyMapperTest extends TestCase {
 		var xml:XML = <tag>
 			<string-prop>foo</string-prop>
 		</tag>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapToChildTextNode("stringProp");
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
@@ -151,7 +150,7 @@ public class PropertyMapperTest extends TestCase {
 	
 	public function testMapSingleTextNode () : void {
 		var xml:XML = <tag>foo</tag>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapToTextNode("stringProp");
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
@@ -165,7 +164,7 @@ public class PropertyMapperTest extends TestCase {
 	
 	public function testMapTextNodeAndAttribute () : void {
 		var xml:XML = <tag int-prop="7">foo</tag>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapToTextNode("stringProp");
 		builder.mapToAttribute("intProp");
 		var mapper:XmlObjectMapper = builder.build();
@@ -182,7 +181,7 @@ public class PropertyMapperTest extends TestCase {
 		var xml:XML = <tag int-prop="7">
 			<child name="foo"/>
 		</tag>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChild, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChild, new QName("tag"));
 		builder.createChildElementMapperBuilder("child").mapAllToAttributes();
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
@@ -198,8 +197,8 @@ public class PropertyMapperTest extends TestCase {
 		var xml:XML = <tag int-prop="7">
 			<child name="foo"/>
 		</tag>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChild, new QName("", "tag"));
-		var childBuilder:PropertyMapperBuilder = new PropertyMapperBuilder(ChildA, new QName("", "child"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChild, new QName("tag"));
+		var childBuilder:PropertyMapperBuilder = new PropertyMapperBuilder(ChildA, new QName("child"));
 		childBuilder.mapAllToAttributes();
 		builder.mapToChildElement("child", childBuilder.build());
 		builder.mapAllToAttributes();
@@ -217,8 +216,8 @@ public class PropertyMapperTest extends TestCase {
 			<child name="A"/>
 			<child name="B"/>
 		</tag>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChildren, new QName("", "tag"));
-		builder.createChildElementMapperBuilder("children", ChildA, new QName("", "child")).mapAllToAttributes();
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChildren, new QName("tag"));
+		builder.createChildElementMapperBuilder("children", ChildA, new QName("child")).mapAllToAttributes();
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
@@ -235,11 +234,11 @@ public class PropertyMapperTest extends TestCase {
 			<child-a name="A"/>
 			<child-b name="B"/>
 		</tag>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChildren, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChildren, new QName( "tag"));
 		var choice:Choice = new Choice();
-		var childABuilder:PropertyMapperBuilder = new PropertyMapperBuilder(ChildA, new QName("", "child-a"));
+		var childABuilder:PropertyMapperBuilder = new PropertyMapperBuilder(ChildA, new QName("child-a"));
 		childABuilder.mapAllToAttributes();
-		var childBBuilder:PropertyMapperBuilder = new PropertyMapperBuilder(ChildB, new QName("", "child-b"));
+		var childBBuilder:PropertyMapperBuilder = new PropertyMapperBuilder(ChildB, new QName("child-b"));
 		childBBuilder.mapAllToAttributes();
 		choice.addMapper(childABuilder.build());
 		choice.addMapper(childBBuilder.build());
@@ -260,8 +259,8 @@ public class PropertyMapperTest extends TestCase {
 	
 	public function testMissingRequiredChildren () : void {
 		var xml:XML = <tag int-prop="7"/>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChildren, new QName("", "tag"));
-		builder.createChildElementMapperBuilder("children", ChildA, new QName("", "child")).mapAllToAttributes();
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChildren, new QName("tag"));
+		builder.createChildElementMapperBuilder("children", ChildA, new QName("child")).mapAllToAttributes();
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var context:XmlProcessorContext = new XmlProcessorContext();
@@ -277,7 +276,7 @@ public class PropertyMapperTest extends TestCase {
 	
 	public function testMissingRequiredChild () : void {
 		var xml:XML = <tag int-prop="7"/>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChild, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChild, new QName("tag"));
 		builder.createChildElementMapperBuilder("child").mapAllToAttributes();
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
@@ -294,7 +293,7 @@ public class PropertyMapperTest extends TestCase {
 	
 	public function testTwoErrors () : void {
 		var xml:XML = <tag><child/></tag>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChild, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChild, new QName("tag"));
 		builder.createChildElementMapperBuilder("child").mapAllToAttributes();
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
@@ -314,7 +313,7 @@ public class PropertyMapperTest extends TestCase {
 		var xml:XML = <tag int-prop="7" xmlns:ns="testuri">
 			<ns:child name="foo"/>
 		</tag>;
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChild, new QName("", "tag"));
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChild, new QName("tag"));
 		builder.createChildElementMapperBuilder("child", null, new QName("testuri", "child")).mapAllToAttributes();
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
