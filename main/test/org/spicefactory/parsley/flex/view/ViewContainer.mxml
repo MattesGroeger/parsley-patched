@@ -1,7 +1,6 @@
 <mx:Object 
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:tag="org.spicefactory.parsley.factory.tag.*"
-	xmlns:flextag="org.spicefactory.parsley.flex.tag.*"
+	xmlns:tag="org.spicefactory.parsley.registry.tag.*"
 	xmlns:test="org.spicefactory.parsley.testmodel.*"
 	xmlns:model="org.spicefactory.parsley.core.decorator.injection.*">
 	
@@ -17,7 +16,7 @@
 	<test:AnnotatedResourceBinding/>
 	
 	
-	<flextag:MxmlObjectDefinitionFactoryTag id="object" type="{CoreModel}">
+	<tag:MxmlObjectDefinitionFactoryTag id="object" type="{CoreModel}">
 		<tag:ConstructorDecoratorTag>
 			<mx:String>foo</mx:String>
 			<mx:int>7</mx:int>
@@ -31,7 +30,7 @@
 				<tag:ObjectReferenceTag idRef="dependency"/>
 			</tag:ArrayTag>
 		</tag:PropertyDecoratorTag>
-	</flextag:MxmlObjectDefinitionFactoryTag> 
+	</tag:MxmlObjectDefinitionFactoryTag> 
 	
 	
 </mx:Object> 
