@@ -53,6 +53,15 @@ public class CompositeContextBuilder extends EventDispatcher {
 	private static const log:Logger = LogContext.getLogger(CompositeContextBuilder);
 
 	
+	/**
+	 * The ApplicationDomain to be used when no domain was explicitly specified.
+	 * Points to ApplicationDomain.currentDomain but makes sure that always the
+	 * same instance will be used since several Parsley and Spicelib classes
+	 * use domains as keys in Dictionaries.
+	 */
+	public static const defaultDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+	
+	
 	private var _context:DefaultContext;
 	private var _parent:Context;
 	private var _registry:ObjectDefinitionRegistry;
@@ -72,7 +81,7 @@ public class CompositeContextBuilder extends EventDispatcher {
 	 */
 	function CompositeContextBuilder (parent:Context = null, domain:ApplicationDomain = null) {
 		_parent = parent;
-		if (domain == null) domain = ApplicationDomain.currentDomain;
+		if (domain == null) domain = defaultDomain;
 		MetadataDecoratorExtractor.initialize(domain);
 		_registry = new DefaultObjectDefinitionRegistry(domain);
 		_context = (_parent != null) ? new ChildContext(_parent, _registry) : new DefaultContext(_registry);
