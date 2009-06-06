@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<componentPackage>
-    <component id="Module" class="org.spicefactory.parsley.flex.modules.Module"/>
-    <component id="ModuleLoader" class="org.spicefactory.parsley.flex.modules.ModuleLoader"/>
-</componentPackage>
