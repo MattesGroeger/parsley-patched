@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <componentPackage>
     <component id="Config" class="org.spicefactory.parsley.pimento.MxmlConfigTag"/>
-    <component id="Service" class="org.spicefactory.parsley.pimento.ServiceTag"/>
+    <component id="Service" class="org.spicefactory.parsley.pimento.MxmlServiceTag"/>
 </componentPackage>
