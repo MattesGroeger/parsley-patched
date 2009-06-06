@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.flex.tag {
+package org.spicefactory.parsley.registry.tag {
 import org.spicefactory.parsley.registry.tag.ObjectDefinitionFactoryTag;
 
 import mx.core.IMXMLObject;
