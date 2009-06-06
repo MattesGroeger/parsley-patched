@@ -1,24 +1,26 @@
 <?xml version="1.0"?>
 <componentPackage>
-    <component id="Object" class="org.spicefactory.parsley.flex.tag.MxmlObjectDefinitionFactoryTag"/>
+    <component id="Object" class="org.spicefactory.parsley.registry.tag.MxmlObjectDefinitionFactoryTag"/>
     
-    <component id="ConstructorArgs" class="org.spicefactory.parsley.factory.tag.ConstructorDecoratorTag"/>
-    <component id="Property" class="org.spicefactory.parsley.factory.tag.PropertyDecoratorTag"/>
-    <component id="AsyncInit" class="org.spicefactory.parsley.factory.decorator.AsyncInitDecorator"/>
+    <component id="ConstructorArgs" class="org.spicefactory.parsley.registry.tag.ConstructorDecoratorTag"/>
+    <component id="Property" class="org.spicefactory.parsley.registry.tag.PropertyDecoratorTag"/>
+    <component id="AsyncInit" class="org.spicefactory.parsley.registry.decorator.AsyncInitDecorator"/>
     
-    <component id="Factory" class="org.spicefactory.parsley.factory.decorator.FactoryMethodDecorator"/>
-    <component id="PostConstruct" class="org.spicefactory.parsley.factory.decorator.PostConstructMethodDecorator"/>
-    <component id="PreDestroy" class="org.spicefactory.parsley.factory.decorator.PreDestroyMethodDecorator"/>
+    <component id="Factory" class="org.spicefactory.parsley.registry.decorator.FactoryMethodDecorator"/>
+    <component id="PostConstruct" class="org.spicefactory.parsley.registry.decorator.PostConstructMethodDecorator"/>
+    <component id="PreDestroy" class="org.spicefactory.parsley.registry.decorator.PreDestroyMethodDecorator"/>
     
     <component id="ManagedEvents" class="org.spicefactory.parsley.messaging.decorator.ManagedEventsDecorator"/>
+    <component id="MessageDispatcher" class="org.spicefactory.parsley.messaging.decorator.MessageDispatcherDecorator"/>
     <component id="MessageHandler" class="org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator"/>
     <component id="MessageBinding" class="org.spicefactory.parsley.messaging.decorator.MessageBindingDecorator"/>
     <component id="MessageInterceptor" class="org.spicefactory.parsley.messaging.decorator.MessageInterceptorDecorator"/>
 
     <component id="ResourceBinding" class="org.spicefactory.parsley.resources.ResourceBindingDecorator"/>
     
-    <component id="Array" class="org.spicefactory.parsley.factory.tag.ArrayTag"/>
-    <component id="ObjectRef" class="org.spicefactory.parsley.factory.tag.ObjectReferenceTag"/>
+    <component id="Array" class="org.spicefactory.parsley.registry.tag.ArrayTag"/>
+    <component id="ObjectRef" class="org.spicefactory.parsley.registry.tag.ObjectReferenceTag"/>
+
 </componentPackage>
 
 
