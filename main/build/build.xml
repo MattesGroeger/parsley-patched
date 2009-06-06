@@ -3,8 +3,8 @@
 	
 	<property file="build.properties" />
 	
-	<property name="version" value="2.0.0-SNAPSHOT"/>
-	<property name="cinnamon.version" value="0.3.1"/>
+	<property name="version" value="2.0.0"/>
+	<property name="pimento.version" value="1.0.1"/>
 	<property name="project.dir" value="${basedir}/.."/>
 	<property name="lib.dir" value="${project.dir}/lib"/>
 	
@@ -18,35 +18,80 @@
 		<mkdir dir="${release.target.dir}"/>
 	</target>
 	
-	<target name="compile_parsley_full">
+	<target name="compile_parsley_complete_flash">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-o ${release.target.dir}/release/parsley-${version}.swc" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-o ${release.target.dir}/release/parsley-complete-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/framework.swc" />
-			<arg line="-el ${flex.sdk}/frameworks/libs/rpc.swc" />
-			<arg line="-el ${flex.sdk}/frameworks/libs/utilities.swc" />
-			<arg line="-el ${release.target.dir}/release/spicelib-${version}.swc" />
-			<arg line="-el ${lib.dir}/cinnamon-${cinnamon.version}.swc" />
-			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-flex ${project.dir}/parsley-localization ${project.dir}/parsley-xml"/>
+			<arg line="-el ${release.target.dir}/release/spicelib-complete-flash-${version}.swc" />
+			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
+			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
+			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-flash ${project.dir}/parsley-pimento ${project.dir}/parsley-xml"/>
 			<arg line="-is ${project.dir}/parsley-core" />
-			<arg line="-is ${project.dir}/parsley-flex" />
+			<arg line="-is ${project.dir}/parsley-flash" />
 			<arg line="-is ${project.dir}/parsley-xml" />
-			<arg line="-is ${project.dir}/parsley-localization" />
+			<arg line="-is ${project.dir}/parsley-pimento" />
 			<arg line="-debug=true"/>
 			<arg line="-verbose-stacktraces"/>
 		</exec>
 	</target>
 	
-	<target name="compile_spicelib_full">
+	<target name="compile_parsley_complete_flex">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,AssignableTo" />
-			<arg line="-o ${release.target.dir}/release/spicelib-${version}.swc" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-o ${release.target.dir}/release/parsley-complete-flex-${version}.swc" />
+			<arg line="-namespace http://www.spicefacory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
+			<arg line="-namespace http://www.spicefacory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
+			<arg line="-namespace http://www.spicefacory.org/parsley/pimento ${project.dir}/manifest/parsley-pimento-manifest.xml" />
+			<arg line="-namespace http://www.spicefacory.org/parsley/cinnamon ${project.dir}/manifest/parsley-cinnamon-manifest.xml" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
-			<arg line="-sp ${project.dir}/spicelib-core ${project.dir}/spicelib-expressions ${project.dir}/spicelib-logging ${project.dir}/spicelib-reflect ${project.dir}/spicelib-task ${project.dir}/spicelib-xml" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-el ${release.target.dir}/release/spicelib-complete-flash-${version}.swc" />
+			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
+			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
+			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-flex ${project.dir}/parsley-pimento ${project.dir}/parsley-xml"/>
+			<arg line="-include-namespaces=http://www.spicefacory.org/parsley,http://www.spicefacory.org/parsley/flex,http://www.spicefacory.org/parsley/pimento,http://www.spicefacory.org/parsley/cinnamon" />
+			<arg line="-is ${project.dir}/parsley-xml" />
+			<arg line="-include-classes CoreFrameworkClasses org.spicefactory.parsley.flex.logging.FlexLoggingXmlSupport org.spicefactory.parsley.cinnamon.CinnamonXmlSupport org.spicefactory.parsley.pimento.PimentoXmlSupport" />
+			<arg line="-debug=true"/>
+			<arg line="-verbose-stacktraces"/>
+		</exec>
+	</target>
+	
+	<target name="compile_spicelib_complete_flex">
+		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo" />
+			<arg line="-o ${release.target.dir}/release/spicelib-complete-flex-${version}.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/rpc.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/utilities.swc" />
+			<arg line="-sp ${project.dir}/spicelib-core ${project.dir}/spicelib-expressions ${project.dir}/spicelib-reflect ${project.dir}/spicelib-task ${project.dir}/spicelib-xml" />
 			<arg line="-is ${project.dir}/spicelib-core" />
 			<arg line="-is ${project.dir}/spicelib-expressions" />
-			<arg line="-is ${project.dir}/spicelib-logging" />
+			<arg line="-is ${project.dir}/spicelib-reflect" />
+			<arg line="-is ${project.dir}/spicelib-task" />
+			<arg line="-is ${project.dir}/spicelib-xml" />
+		</exec>
+	</target>
+	
+	<target name="compile_spicelib_complete_flash">
+		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo" />
+			<arg line="-o ${release.target.dir}/release/spicelib-complete-flash-${version}.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/rpc.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/utilities.swc" />
+			<arg line="-sp ${project.dir}/spicelib-core ${project.dir}/spicelib-expressions ${project.dir}/spicelib-flash ${project.dir}/spicelib-reflect ${project.dir}/spicelib-task ${project.dir}/spicelib-xml" />
+			<arg line="-is ${project.dir}/spicelib-core" />
+			<arg line="-is ${project.dir}/spicelib-expressions" />
+			<arg line="-is ${project.dir}/spicelib-flash" />
 			<arg line="-is ${project.dir}/spicelib-reflect" />
 			<arg line="-is ${project.dir}/spicelib-task" />
 			<arg line="-is ${project.dir}/spicelib-xml" />
@@ -57,24 +102,28 @@
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/rpc.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/utilities.swc" />
 			<arg line="-sp ${project.dir}/spicelib-core" />
 			<arg line="-is ${project.dir}/spicelib-core" />
 		</exec>
 	</target>
 	
-	<target name="compile_spicelib_logging">
+	<target name="compile_spicelib_flash">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-o ${release.target.dir}/release/modules/spicelib-logging-${version}.swc" />
+			<arg line="-o ${release.target.dir}/release/modules/spicelib-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
-			<arg line="-sp ${project.dir}/spicelib-logging" />
-			<arg line="-is ${project.dir}/spicelib-logging" />
+			<arg line="-sp ${project.dir}/spicelib-flash" />
+			<arg line="-is ${project.dir}/spicelib-flash" />
 		</exec>
 	</target>
 	
 	<target name="compile_spicelib_reflect">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,AssignableTo" />
+			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo" />
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
@@ -98,7 +147,6 @@
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-task-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
-			<arg line="-el ${release.target.dir}/release/modules/spicelib-logging-${version}.swc" />
 			<arg line="-sp ${project.dir}/spicelib-task" />
 			<arg line="-is ${project.dir}/spicelib-task" />
 		</exec>
@@ -109,7 +157,8 @@
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
-			<arg line="-el ${release.target.dir}/release/modules/spicelib-logging-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-expressions-${version}.swc" />
 			<arg line="-sp ${project.dir}/spicelib-xml" />
 			<arg line="-is ${project.dir}/spicelib-xml" />
 		</exec>
@@ -117,25 +166,41 @@
 	
 	<target name="compile_parsley_core">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
+			<arg line="-namespace http://www.spicefacory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
-			<arg line="-el ${release.target.dir}/release/spicelib-${version}.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/rpc.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/utilities.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-task-${version}.swc" />
 			<arg line="-sp ${project.dir}/parsley-core" />
-			<arg line="-is ${project.dir}/parsley-core" />
+			<arg line="-include-namespaces http://www.spicefacory.org/parsley" />
+			<arg line="-include-classes CoreFrameworkClasses" />
 		</exec>
 	</target>
 	
 	<target name="compile_parsley_flex">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/modules/parsley-flex-${version}.swc" />
+			<arg line="-namespace http://www.spicefacory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/framework.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/rpc.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/utilities.swc" />
-			<arg line="-el ${release.target.dir}/release/spicelib-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-expressions-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/parsley-xml-${version}.swc" />
 			<arg line="-sp ${project.dir}/parsley-flex" />
-			<arg line="-is ${project.dir}/parsley-flex" />
+			<arg line="-include-namespaces http://www.spicefacory.org/parsley/flex" />
+			<arg line="-include-classes org.spicefactory.parsley.flex.logging.FlexLoggingXmlSupport" />
 		</exec>
 	</target>
 			
@@ -143,38 +208,73 @@
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/modules/parsley-xml-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
-			<arg line="-el ${release.target.dir}/release/spicelib-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-expressions-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
 			<arg line="-sp ${project.dir}/parsley-xml" />
 			<arg line="-is ${project.dir}/parsley-xml" />
 		</exec>
 	</target>
 	
-	<target name="compile_parsley_localization">
+	<target name="compile_parsley_flash">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/modules/parsley-localization-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
-			<arg line="-el ${release.target.dir}/release/spicelib-${version}.swc" />
-			<arg line="-sp ${project.dir}/parsley-localization" />
-			<arg line="-is ${project.dir}/parsley-localization" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-task-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-flash-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-expressions-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/parsley-xml-${version}.swc" />
+			<arg line="-sp ${project.dir}/parsley-flash" />
+			<arg line="-is ${project.dir}/parsley-flash" />
+		</exec>
+	</target>
+	
+	<target name="compile_parsley_pimento">
+		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+			<arg line="-o ${release.target.dir}/release/modules/parsley-pimento-${version}.swc" />
+			<arg line="-namespace http://www.spicefacory.org/parsley/pimento ${project.dir}/manifest/parsley-pimento-manifest.xml" />
+			<arg line="-namespace http://www.spicefacory.org/parsley/cinnamon ${project.dir}/manifest/parsley-cinnamon-manifest.xml" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-expressions-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/parsley-xml-${version}.swc" />
+			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
+			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
+			<arg line="-sp ${project.dir}/parsley-pimento" />
+			<arg line="-include-namespaces=http://www.spicefacory.org/parsley/pimento,http://www.spicefacory.org/parsley/cinnamon" />
+			<arg line="-include-classes org.spicefactory.parsley.cinnamon.CinnamonXmlSupport org.spicefactory.parsley.pimento.PimentoXmlSupport" />
 		</exec>
 	</target>
 	
 	<target name="compile_spicelib_all">
-		<antcall target="compile_spicelib_full"/>
+		<antcall target="compile_spicelib_complete_flash"/>
+		<antcall target="compile_spicelib_complete_flex"/>
 		<antcall target="compile_spicelib_core"/>
-		<antcall target="compile_spicelib_logging"/>
-		<antcall target="compile_spicelib_expressions"/>
 		<antcall target="compile_spicelib_reflect"/>
-		<antcall target="compile_spicelib_task"/>
+		<antcall target="compile_spicelib_expressions"/>
 		<antcall target="compile_spicelib_xml"/>
+		<antcall target="compile_spicelib_task"/>
+		<antcall target="compile_spicelib_flash"/>
 	</target>
 	
 	<target name="compile_parsley_all">
-		<antcall target="compile_parsley_full"/>
+		<antcall target="compile_parsley_complete_flash"/>
+		<antcall target="compile_parsley_complete_flex"/>
 		<antcall target="compile_parsley_core"/>
-		<antcall target="compile_parsley_flex"/>
 		<antcall target="compile_parsley_xml"/>
-		<antcall target="compile_parsley_localization"/>
+		<antcall target="compile_parsley_flex"/>
+		<antcall target="compile_parsley_flash"/>
+		<antcall target="compile_parsley_pimento"/>
 	</target>
 	
 	<target name="compile_all" description="Compile all Parsley and Spicelib SWCs">
