@@ -1,7 +1,6 @@
 <mx:Object 
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:tag="org.spicefactory.parsley.registry.tag.*"
-	xmlns:flextag="org.spicefactory.parsley.flex.tag.*"
 	xmlns:model="org.spicefactory.parsley.core.decorator.injection.*">
 	
 	<mx:Script>
@@ -15,7 +14,7 @@
 	<model:InjectedDependency id="dependency"/>
 	
 	
-	<flextag:MxmlObjectDefinitionFactoryTag id="object" type="{CoreModel}">
+	<tag:MxmlObjectDefinitionFactoryTag id="object" type="{CoreModel}">
 		<tag:ConstructorDecoratorTag>
 			<mx:String>foo</mx:String>
 			<mx:int>7</mx:int>
@@ -30,7 +29,7 @@
 				<tag:ObjectReferenceTag typeRef="{InjectedDependency}"/>
 			</tag:ArrayTag>
 		</tag:PropertyDecoratorTag>
-	</flextag:MxmlObjectDefinitionFactoryTag> 
+	</tag:MxmlObjectDefinitionFactoryTag> 
 	
 	
 </mx:Object> 
