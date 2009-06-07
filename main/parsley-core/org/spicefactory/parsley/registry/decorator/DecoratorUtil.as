@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.registry {
+package org.spicefactory.parsley.registry.decorator {
 	import org.spicefactory.parsley.registry.ObjectDefinition;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.errors.ContextError;

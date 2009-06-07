@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.registry.decorator {
 import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.parsley.registry.DecoratorUtil;
+import org.spicefactory.parsley.registry.decorator.DecoratorUtil;
 import org.spicefactory.parsley.registry.FactoryObjectDefinition;
 import org.spicefactory.parsley.registry.ObjectDefinition;
 import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
