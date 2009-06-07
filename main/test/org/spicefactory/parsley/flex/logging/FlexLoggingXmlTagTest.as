@@ -1,4 +1,5 @@
 package org.spicefactory.parsley.flex.logging {
+import org.spicefactory.lib.logging.flex.FlexLogFactory;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.Context;
@@ -41,6 +42,7 @@ public class FlexLoggingXmlTagTest extends XmlContextTestBase {
 	
 	public function testLogTargetConfig () : void {
 		LogCounterTarget.reset();
+		LogContext.factory = new FlexLogFactory(); // not necessary in application code, but this test runs together with Flash Logging Tests
 		var context:Context = getContext(config);
 		checkState(context);
 		checkObjectIds(context, ["debugTarget", "infoTarget", "warnTarget", "errorTarget", "fatalTarget"], ILoggingTarget);	
