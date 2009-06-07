@@ -220,7 +220,7 @@
 	
 	<target name="compile_parsley_flash">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-o ${release.target.dir}/release/modules/parsley-localization-${version}.swc" />
+			<arg line="-o ${release.target.dir}/release/modules/parsley-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
