@@ -602,12 +602,13 @@
 				 <include name="spicelib-reflect/**/*"/>
 				 <include name="spicelib-expressions/**/*"/>
 				 <include name="spicelib-task/**/*"/>
-				 <include name="spicelib-logging/**/*"/>
+				 <include name="spicelib-flash/**/*"/>
 				 <include name="spicelib-xml/**/*"/>
 				 <include name="parsley-core/**/*"/>
 				 <include name="parsley-flex/**/*"/>
 				 <include name="parsley-xml/**/*"/>
-				 <include name="parsley-localization/**/*"/>
+				 <include name="parsley-flash/**/*"/>
+				 <include name="parsley-pimento/**/*"/>
 				 <include name="test/**/*"/>
 			</fileset>
 		</copy>
@@ -618,7 +619,5 @@
 		<!-- create zip -->
 		<zip basedir="${release.target.dir}" zipfile="${release.target.dir}/../parsley-${version}.zip"/>
 	</target>
-	
-
 	
 </project>
