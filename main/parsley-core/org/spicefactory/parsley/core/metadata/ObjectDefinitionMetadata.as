@@ -16,13 +16,13 @@
 
 package org.spicefactory.parsley.core.metadata {
 
+[Metadata(name="ObjectDefinition", types="property")]
 /**
  * Represents a metadata tag that can be used to specify additional configuration for object definitions
  * in an ActionScript configuration class.
  * 
  * @author Jens Halm
  */
-[Metadata(name="ObjectDefinition", types="property")]
 public class ObjectDefinitionMetadata {
 	
 

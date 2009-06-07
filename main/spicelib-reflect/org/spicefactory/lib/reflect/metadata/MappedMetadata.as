@@ -16,6 +16,7 @@
 
 package org.spicefactory.lib.reflect.metadata {
 
+[Metadata(name="Metadata", types="class")]
 /**
  * Represents a metadata tag that marks a class as a mapped metadata class.
  * These classes can be registered with <code>Metadata.registerMetadataClass</code>.
@@ -25,7 +26,6 @@ package org.spicefactory.lib.reflect.metadata {
  * 
  * @author Jens Halm
  */
-[Metadata(name="Metadata", types="class")]
 public class MappedMetadata {
 	
 

@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.metadata {
 
+[Metadata(types="property")]
 /**
  * Represents a metadata tag that can be used in metadata configuration extensions.
  * For any extension tag that can be place on properties or methods the framework will
@@ -24,7 +25,6 @@ package org.spicefactory.parsley.core.metadata {
  * 
  * @author Jens Halm
  */
-[Metadata(types="property")]
 public class Target {
 	
 	

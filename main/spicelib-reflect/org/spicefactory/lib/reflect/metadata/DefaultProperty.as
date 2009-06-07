@@ -16,6 +16,7 @@
  
 package org.spicefactory.lib.reflect.metadata {
 
+[Metadata(types="property")] 
 /**
  * Represents a metadata tag that marks a property as the default property.
  * These will be mapped for attributes in metadata tags where no key is specified
@@ -23,7 +24,6 @@ package org.spicefactory.lib.reflect.metadata {
  * 
  * @author Jens Halm
  */
-[Metadata(types="property")] 
 public class DefaultProperty {
 	
 }

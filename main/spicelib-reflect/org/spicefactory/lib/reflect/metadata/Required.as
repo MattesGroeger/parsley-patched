@@ -16,13 +16,13 @@
  
 package org.spicefactory.lib.reflect.metadata {
 
+[Metadata(types="property")]
 /**
  * Represents a metadata tag that marks a property as required.
  * The tag may be used on properties that map to attributes from metadata tags or XML tags. 
  * 
  * @author Jens Halm
  */
-[Metadata(types="property")]
 public class Required {
 	
 	

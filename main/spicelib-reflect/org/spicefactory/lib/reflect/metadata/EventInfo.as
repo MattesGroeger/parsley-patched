@@ -16,12 +16,12 @@
 
 package org.spicefactory.lib.reflect.metadata {
 
+[Metadata(name="Event", types="class", multiple="true")]
 /**
  * Represent a single Event metadata tag.
  * 
  * @author Jens Halm
  */
-[Metadata(name="Event", types="class", multiple="true")]
 public class EventInfo {
 	
 	

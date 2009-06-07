@@ -16,6 +16,7 @@
  
 package org.spicefactory.lib.reflect.metadata {
 
+[Metadata(types="property")]
 /**
  * Represents a metadata tag that may be used on properties of type Class or ClassInfo 
  * in mapped metadata classes. For these properties the corresponding attributes in 
@@ -24,7 +25,6 @@ package org.spicefactory.lib.reflect.metadata {
  * 
  * @author Jens Halm
  */
-[Metadata(types="property")]
 public class AssignableTo {
 	
 

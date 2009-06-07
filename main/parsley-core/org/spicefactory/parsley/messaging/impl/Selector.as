@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.messaging.impl {
 
+[Metadata(types="property")]
 /**
  * Represents a metadata tag that can be used to specify a property for a message that can be
  * used as a selector. Selectors may refine the message selection process for registered message handlers
@@ -23,7 +24,6 @@ package org.spicefactory.parsley.messaging.impl {
  * 
  * @author Jens Halm
  */
-[Metadata(types="property")]
 public class Selector {
 }
 }
