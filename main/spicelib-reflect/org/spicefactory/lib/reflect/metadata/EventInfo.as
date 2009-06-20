@@ -29,13 +29,13 @@ public class EventInfo {
 	 * The name of the event.
 	 */
 	[Required]
+	[DefaultProperty]
 	public var name:String;
 	
 	/**
 	 * The type of the event (a fully qualified class name).
 	 */
-	[Required]
-	public var type:String;
+	public var type:String = "";
 	
 	
 }
