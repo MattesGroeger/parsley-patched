@@ -97,6 +97,7 @@ public class SOSAppender extends AbstractAppender {
 	
 	/**
 	 * Initializes the <code>XMLSocket</code> and connects to Powerflasher SOS.	 */
+	[PostConstruct]
 	public function init () : void {
 		cache = new ArrayList(); // just in case the first logs arrive before socket is ready
 		socket = new XMLSocket();
