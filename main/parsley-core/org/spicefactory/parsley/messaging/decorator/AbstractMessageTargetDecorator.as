@@ -19,6 +19,7 @@ import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.messaging.MessageTarget;
 
+import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
@@ -30,6 +31,11 @@ public class AbstractMessageTargetDecorator {
 	
 	
 	private var targets:Dictionary = new Dictionary();
+	
+	/**
+	 * The ApplicationDomain associated with the registry this decorator belongs to.
+	 */
+	protected var domain:ApplicationDomain;
 	
 	
 	/**

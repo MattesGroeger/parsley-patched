@@ -63,6 +63,7 @@ public class MessageBindingDecorator extends AbstractMessageTargetDecorator impl
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		domain = registry.domain;
 		definition.lifecycleListeners.addLifecycleListener(this);
 		return definition;
 	}
@@ -72,7 +73,7 @@ public class MessageBindingDecorator extends AbstractMessageTargetDecorator impl
 	 */
 	public function postConstruct (instance:Object, context:Context) : void {
 		var target:MessageTarget = context.messageRouter.registerMessageBinding(instance, targetProperty, 
-				type, messageProperty, selector);
+				type, messageProperty, selector, domain);
 		addTarget(instance, target);
 	}
 

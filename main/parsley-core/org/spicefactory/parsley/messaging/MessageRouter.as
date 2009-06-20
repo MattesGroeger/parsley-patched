@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.messaging {
+import flash.system.ApplicationDomain;
 
 /**
  * The central message routing facility. Usually only a single instance 
@@ -34,9 +35,10 @@ public interface MessageRouter {
 	 * @param messageType the type of the message
 	 * @param messageProperty the name of the property of the message that should be bound to the target property
 	 * @param selector an optional selector value to be used for selecting matching message targets
+	 * @param domain the ApplicationDomain for reflecting on the targetInstance and messageType
 	 */
 	function registerMessageBinding (targetInstance:Object, targetProperty:String, 
-			messageType:Class, messageProperty:String, selector:* = undefined) : MessageTarget;
+			messageType:Class, messageProperty:String, selector:* = undefined, domain:ApplicationDomain = null) : MessageTarget;
 	
 	/**
 	 * Registers a message handler. The specified target method will be invoked each time
@@ -49,9 +51,10 @@ public interface MessageRouter {
 	 * @param messageProperties an optional list of names of properties of the message that should be used as method
 	 * parameters instead of the message itself
 	 * @param selector an optional selector value to be used for selecting matching message targets
+	 * @param domain the ApplicationDomain for reflecting on the targetInstance and messageType
 	 */
 	function registerMessageHandler (targetInstance:Object, targetMethod:String, 
-			messageType:Class = null, messageProperties:Array = null, selector:* = undefined) : MessageTarget;
+			messageType:Class = null, messageProperties:Array = null, selector:* = undefined, domain:ApplicationDomain = null) : MessageTarget;
 	
 	/**
 	 * Registers a message interceptor. The specified target method will be invoked each time
@@ -62,17 +65,19 @@ public interface MessageRouter {
 	 * @param targetMethod the name of the interceptor method that should be invoked
 	 * @param messageType the type of the message
 	 * @param selector an optional selector value to be used for selecting matching message targets
+	 * @param domain the ApplicationDomain for reflecting on the targetInstance and messageType
 	 */	
 	function registerMessageInterceptor (targetInstance:Object, targetMethod:String, 
-			messageType:Class = null, selector:* = undefined) : MessageTarget;
+			messageType:Class = null, selector:* = undefined, domain:ApplicationDomain = null) : MessageTarget;
 		
 	/**
 	 * Dispatches the specified message, processing all interceptors, handlers and bindings that have
 	 * registered for that message type.
 	 * 
 	 * @param message the message to dispatch
+	 * @param domain the ApplicationDomain for reflecting on the type of the message
 	 */	
-	function dispatchMessage (message:Object) : void;
+	function dispatchMessage (message:Object, domain:ApplicationDomain = null) : void;
 	
 	
 }

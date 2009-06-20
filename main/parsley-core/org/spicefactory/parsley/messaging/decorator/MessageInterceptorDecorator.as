@@ -56,6 +56,7 @@ public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator 
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		domain = registry.domain;
 		definition.lifecycleListeners.addLifecycleListener(this);
 		return definition;
 	}
@@ -64,7 +65,7 @@ public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator 
 	 * @inheritDoc
 	 */
 	public function postConstruct (instance:Object, context:Context) : void {
-		var target:MessageTarget = context.messageRouter.registerMessageInterceptor(instance, method, type, selector);
+		var target:MessageTarget = context.messageRouter.registerMessageInterceptor(instance, method, type, selector, domain);
 		addTarget(instance, target);
 	}
 	

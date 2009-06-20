@@ -79,7 +79,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 			factory:ObjectFactory = null) {
 		_registry = (registry != null) ? registry : new DefaultObjectDefinitionRegistry();
 		_messageRouter = (messageRouter != null) ? messageRouter : new DefaultMessageRouter(this);
-		_factory = (factory != null) ? factory : new DefaultObjectFactory();
+		_factory = (factory != null) ? factory : new DefaultObjectFactory(registry.domain);
 		addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, 1);
 	}
 

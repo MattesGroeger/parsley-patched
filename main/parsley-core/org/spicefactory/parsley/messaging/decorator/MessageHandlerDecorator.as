@@ -65,6 +65,7 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		domain = registry.domain;
 		definition.lifecycleListeners.addLifecycleListener(this);
 		return definition;
 	}
@@ -74,7 +75,7 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 	 */
 	public function postConstruct (instance:Object, context:Context) : void {
 		var target:MessageTarget = context.messageRouter.registerMessageHandler(instance, method, 
-				type, messageProperties, selector);
+				type, messageProperties, selector, domain);
 		addTarget(instance, target);
 	}
 	

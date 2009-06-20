@@ -18,12 +18,14 @@ package org.spicefactory.parsley.messaging.decorator {
 import org.spicefactory.lib.reflect.metadata.EventInfo;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.messaging.impl.MessageDispatcherFunctionReference;
 import org.spicefactory.parsley.registry.ObjectDefinition;
 import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.registry.ObjectLifecycleListener;
 
 import flash.events.IEventDispatcher;
+import flash.system.ApplicationDomain;
 
 [Metadata(name="ManagedEvents", types="class")]
 /**
@@ -46,12 +48,17 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 	 * The event names/types of all events dispatched by the annotated class that should be mamaged by Parsley.
 	 */
 	public var names:Array;
+	
+	private var domain:ApplicationDomain;
+	
+	private var delegate:MessageDispatcherFunctionReference;
 
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		delegate = new MessageDispatcherFunctionReference(domain);
 		if (names == null) {
 			names = new Array();
 			var events:Array = definition.type.getMetadata(EventInfo);
@@ -72,8 +79,9 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 	 */
 	public function postConstruct (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
+		if (delegate.router == null) delegate.router = context.messageRouter;
 		for each (var name:String in names) {		
-			eventDispatcher.addEventListener(name, context.messageRouter.dispatchMessage);
+			eventDispatcher.addEventListener(name, delegate.dispatchMessage);
 		}
 	}
 	
@@ -83,7 +91,7 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 	public function preDestroy (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
 		for each (var name:String in names) {		
-			eventDispatcher.removeEventListener(name, context.messageRouter.dispatchMessage);
+			eventDispatcher.removeEventListener(name, delegate.dispatchMessage);
 		}
 	}
 

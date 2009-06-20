@@ -26,6 +26,7 @@ import org.spicefactory.parsley.registry.model.ObjectTypeReference;
 import org.spicefactory.parsley.registry.model.PropertyValue;
 import org.spicefactory.parsley.registry.parts.MethodParameterRegistry;
 
+import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
@@ -37,6 +38,18 @@ public class DefaultObjectFactory implements ObjectFactory {
 	
 	
 	private var processedInstances:Dictionary = new Dictionary();
+
+	private var domain:ApplicationDomain;
+
+
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param domain the ApplicationDomain to use for reflection
+	 */
+	function DefaultObjectFactory (domain:ApplicationDomain) {
+		this.domain = domain;		
+	}
 
 
 	/**
@@ -191,7 +204,10 @@ public class DefaultObjectFactory implements ObjectFactory {
 		}
 		else if (value is MessageDispatcherFunctionReference) {
 			// two lines to avoid compiler warning
-			var r:* = context.messageRouter.dispatchMessage;
+			var delegate:MessageDispatcherFunctionReference = MessageDispatcherFunctionReference(value);
+			delegate.domain = domain;
+			delegate.router = context.messageRouter;
+			var r:* = delegate.dispatchMessage;
 			return r;
 		}
 		else if (value is ManagedArray) {

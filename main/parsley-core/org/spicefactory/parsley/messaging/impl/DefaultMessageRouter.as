@@ -26,6 +26,7 @@ import org.spicefactory.parsley.messaging.MessageProcessor;
 import org.spicefactory.parsley.messaging.MessageRouter;
 import org.spicefactory.parsley.messaging.MessageTarget;
 
+import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
@@ -81,11 +82,11 @@ public class DefaultMessageRouter implements MessageRouter {
 	/**
 	 * @inheritDoc
 	 */
-	public function dispatchMessage (message:Object) : void {
+	public function dispatchMessage (message:Object, domain:ApplicationDomain = null) : void {
 		if (!activated) {
 			deferredMessages.push(message);
 		}
-		var type:ClassInfo = ClassInfo.forInstance(message);
+		var type:ClassInfo = ClassInfo.forInstance(message, domain);
 		var targetSelection:MessageTargetSelection = null;
 		
 		if (targetSelectionCache[type.getClass()] != null) {
@@ -111,8 +112,8 @@ public class DefaultMessageRouter implements MessageRouter {
 	 * @inheritDoc
 	 */
 	public function registerMessageBinding (targetInstance:Object, targetProperty:String, 
-			messageType:Class, messageProperty:String, selector:* = undefined) : MessageTarget {
-		var targetType:ClassInfo = ClassInfo.forInstance(targetInstance);
+			messageType:Class, messageProperty:String, selector:* = undefined, domain:ApplicationDomain = null) : MessageTarget {
+		var targetType:ClassInfo = ClassInfo.forInstance(targetInstance, domain);
 		var resolvedTargetProperty:Property = targetType.getProperty(targetProperty);
 		if (resolvedTargetProperty == null) {
 			throw new ContextError("Target instance of type " + targetType.name 
@@ -122,7 +123,7 @@ public class DefaultMessageRouter implements MessageRouter {
 			throw new ContextError("Target property with name " + targetProperty + " of type " + targetType.name 
 					+ " is not writable");
 		}
-		var messageTypeInfo:ClassInfo = ClassInfo.forClass(messageType);
+		var messageTypeInfo:ClassInfo = ClassInfo.forClass(messageType, domain);
 		var resolvedMessageProperty:Property = messageTypeInfo.getProperty(messageProperty);
 		if (resolvedMessageProperty == null) {
 			throw new ContextError("Message type " + messageTypeInfo.name 
@@ -144,15 +145,15 @@ public class DefaultMessageRouter implements MessageRouter {
 	 * @inheritDoc
 	 */
 	public function registerMessageHandler (targetInstance:Object, targetMethod:String, 
-			messageType:Class = null, messageProperties:Array = null, selector:* = undefined) : MessageTarget {
-		var targetType:ClassInfo = ClassInfo.forInstance(targetInstance);
+			messageType:Class = null, messageProperties:Array = null, selector:* = undefined, domain:ApplicationDomain = null) : MessageTarget {
+		var targetType:ClassInfo = ClassInfo.forInstance(targetInstance, domain);
 		var resolvedTargetMethod:Method = targetType.getMethod(targetMethod);
 		if (resolvedTargetMethod == null) {
 			throw new ContextError("Target instance of type " + targetType.name 
 					+ " does not contain a method with name " + targetMethod);
 		}
 		var params:Array = resolvedTargetMethod.parameters;
-		var messageTypeInfo:ClassInfo = (messageType == null) ? ClassInfo.forClass(Object) : ClassInfo.forClass(messageType);
+		var messageTypeInfo:ClassInfo = (messageType == null) ? ClassInfo.forClass(Object) : ClassInfo.forClass(messageType, domain);
 		var resolvedMessageProperties:Array = null;
 		if (messageProperties != null) {
 			resolvedMessageProperties = new Array();
@@ -212,8 +213,8 @@ public class DefaultMessageRouter implements MessageRouter {
 	 * @inheritDoc
 	 */
 	public function registerMessageInterceptor (targetInstance:Object, targetMethod:String, 
-			messageType:Class = null, selector:* = undefined) : MessageTarget {
-		var targetType:ClassInfo = ClassInfo.forInstance(targetInstance);
+			messageType:Class = null, selector:* = undefined, domain:ApplicationDomain = null) : MessageTarget {
+		var targetType:ClassInfo = ClassInfo.forInstance(targetInstance, domain);
 		var resolvedTargetMethod:Method = targetType.getMethod(targetMethod);
 		if (resolvedTargetMethod == null) {
 			throw new ContextError("Target instance of type " + targetType.name 
@@ -221,7 +222,7 @@ public class DefaultMessageRouter implements MessageRouter {
 		}
 		var params:Array = resolvedTargetMethod.parameters;
 		if (messageType == null) messageType = Object;
-		var messageTypeInfo:ClassInfo = ClassInfo.forClass(messageType);
+		var messageTypeInfo:ClassInfo = ClassInfo.forClass(messageType, domain);
 		if (params.length != 1) {
 			throw new ContextError("Target method with name " + targetMethod + " of type " + targetType.name 
 				+ ": Method must have exactly one parameter of type org.spicefactory.parsley.messaging.MessageProcessor.");
@@ -265,13 +266,13 @@ public class DefaultMessageRouter implements MessageRouter {
 }
 }
 
-import org.spicefactory.parsley.messaging.impl.DefaultMessageRouter;
 import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.messaging.MessageProcessor;
 import org.spicefactory.parsley.messaging.MessageTarget;
+import org.spicefactory.parsley.messaging.impl.DefaultMessageRouter;
 
 class AbstractMessageTarget implements MessageTarget {
 	
@@ -288,7 +289,7 @@ class AbstractMessageTarget implements MessageTarget {
 	
 	function AbstractMessageTarget (targetInstance:Object, messageType:ClassInfo, selector:*, 
 			interceptor:Boolean, router:DefaultMessageRouter) {
-		this._targetType = ClassInfo.forInstance(targetInstance);
+		this._targetType = ClassInfo.forInstance(targetInstance, messageType.applicationDomain);
 		this._targetInstance = targetInstance;
 		this._messageType = messageType;
 		this._selector = selector;
