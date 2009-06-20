@@ -35,8 +35,8 @@ public class MetadataTest extends TestCase {
 		assertEquals("Unexpected number of metadata tags", 3, meta.length);
 		meta.sortOn("name");
 		checkEventInfo(meta[0], "start", "TaskEvent");
-		checkEventInfo(meta[1], "start2", "flash.events.Event");
-		checkEventInfo(meta[2], "start3", "flash.events.Event");
+		checkEventInfo(meta[1], "start2", "");
+		checkEventInfo(meta[2], "start3", "");
 	}
 	
 	private function checkEventInfo (meta:*, expectedName:String, expectedType:String) : void {
