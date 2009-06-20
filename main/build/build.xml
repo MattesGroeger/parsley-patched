@@ -63,7 +63,7 @@
 	
 	<target name="compile_spicelib_complete_flex">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo" />
+			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo,PostConstruct" />
 			<arg line="-o ${release.target.dir}/release/spicelib-complete-flex-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
@@ -81,7 +81,7 @@
 	
 	<target name="compile_spicelib_complete_flash">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo" />
+			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo,PostConstruct" />
 			<arg line="-o ${release.target.dir}/release/spicelib-complete-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
@@ -113,6 +113,7 @@
 	
 	<target name="compile_spicelib_flash">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+			<arg line="-keep-as3-metadata+=PostConstruct" />
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
