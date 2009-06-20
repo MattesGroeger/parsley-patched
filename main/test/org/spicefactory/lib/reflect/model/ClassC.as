@@ -5,7 +5,17 @@ package org.spicefactory.lib.reflect.model {
  * Documentation.
  */
 [Event(name="start", type="TaskEvent")]
- 
+
+/**
+ * Documentation.
+ */
+[Event(name="start2")]
+
+/**
+ * Documentation.
+ */
+[Event("start3")]
+
 
 /**
  * Documentation.

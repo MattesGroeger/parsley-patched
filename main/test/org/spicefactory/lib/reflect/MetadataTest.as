@@ -32,11 +32,18 @@ public class MetadataTest extends TestCase {
 	
 	public function testClassMetadata () : void {
 		var meta:Array = classCInfo.getMetadata(EventInfo);
-		assertEquals("Unexpected number of metadata tags", 1, meta.length);
-		assertTrue("Unexpected type for metadata", meta[0] is EventInfo);
-		var ei:EventInfo = EventInfo(meta[0]);
-		assertEquals("Unexpected value for metadata property", "start", ei.name);
-		assertEquals("Unexpected value for metadata property", "TaskEvent", ei.type);
+		assertEquals("Unexpected number of metadata tags", 3, meta.length);
+		meta.sortOn("name");
+		checkEventInfo(meta[0], "start", "TaskEvent");
+		checkEventInfo(meta[1], "start2", "flash.events.Event");
+		checkEventInfo(meta[2], "start3", "flash.events.Event");
+	}
+	
+	private function checkEventInfo (meta:*, expectedName:String, expectedType:String) : void {
+		assertTrue("Unexpected type for metadata", meta is EventInfo);
+		var ei:EventInfo = EventInfo(meta);
+		assertEquals("Unexpected value for name property", expectedName, ei.name);
+		assertEquals("Unexpected value for type property", expectedType, ei.type);
 	}
 	
 	public function testVarMetadata () : void {
