@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.messaging.decorator {
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.metadata.EventInfo;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
