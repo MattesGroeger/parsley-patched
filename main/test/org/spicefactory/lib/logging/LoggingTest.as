@@ -69,6 +69,15 @@ public class LoggingTest extends TestCase {
 		assertEquals("Unexpected log count", 6, counter.getCount("org.spicefactory.lib.logging::LoggingTest"));
 	}
 	
+	public function testLogMessageParameters () : void {
+		var app:CachingAppender = new CachingAppender();
+		FlashLogFactory(LogContext.factory).addAppender(app);
+		var logger:Logger = LogContext.getLogger(LoggingTest);
+		logger.warn("AA {0} BB{1}CC", "foo", 27);
+		assertEquals("Unexpected log count", 1, app.getCount("org.spicefactory.lib.logging::LoggingTest"));
+		assertEquals("Unexpected log message", "AA foo BB27CC", app.getCache("org.spicefactory.lib.logging::LoggingTest")[0]);
+	}
+	
 	private function basicLoggerTest (counter:LogCounterAppender, 
 			name:String, level:LogLevel, count:uint) : void {
 		if (level != null) {
