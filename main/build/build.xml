@@ -3,7 +3,7 @@
 	
 	<property file="build.properties" />
 	
-	<property name="version" value="2.0.0"/>
+	<property name="version" value="2.0.1-SNAPSHOT"/>
 	<property name="pimento.version" value="1.0.1"/>
 	<property name="project.dir" value="${basedir}/.."/>
 	<property name="lib.dir" value="${project.dir}/lib"/>
@@ -49,7 +49,7 @@
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/framework.swc" />
-			<arg line="-el ${release.target.dir}/release/spicelib-complete-flash-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/spicelib-complete-flex-${version}.swc" />
 			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
 			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
 			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-flex ${project.dir}/parsley-pimento ${project.dir}/parsley-xml"/>
