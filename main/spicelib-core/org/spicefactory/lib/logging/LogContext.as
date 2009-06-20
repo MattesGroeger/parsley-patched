@@ -152,32 +152,38 @@ class DelegateLogger implements Logger {
 
 	public function trace (message : String, ...params) : void {
 		if (_delegate == null) { log("TRACE: ", message, params); return; }
-		_delegate.trace(message, params);
+		params.unshift(message);
+		_delegate.trace.apply(_delegate, params);
 	}
 
 	public function debug (message : String, ...params) : void {
 		if (_delegate == null) { log("DEBUG: ", message, params); return; }
-		_delegate.debug(message, params);
+		params.unshift(message);
+		_delegate.debug.apply(_delegate, params);
 	}
 
 	public function info (message : String, ...params) : void {
 		if (_delegate == null) { log("INFO:  ", message, params); return; }
-		_delegate.info(message, params);
+		params.unshift(message);
+		_delegate.info.apply(_delegate, params);
 	}
 
 	public function warn (message : String, ...params) : void {
 		if (_delegate == null) { log("WARN:  ", message, params); return; }
-		_delegate.warn(message, params); 
+		params.unshift(message);
+		_delegate.warn.apply(_delegate, params); 
 	}
 
 	public function error (message : String, ...params) : void {
 		if (_delegate == null) { log("ERROR: ", message, params); return; }
-		_delegate.error(message, params);
+		params.unshift(message);
+		_delegate.error.apply(_delegate, params);
 	}
 
 	public function fatal (message : String, ...params) : void {
 		if (_delegate == null) { log("FATAL: ", message, params); return; }
-		_delegate.fatal(message, params);
+		params.unshift(message);
+		_delegate.fatal.apply(_delegate, params);
 	}
 
 	private function log (level:String, message:String, params:Array) : void {
