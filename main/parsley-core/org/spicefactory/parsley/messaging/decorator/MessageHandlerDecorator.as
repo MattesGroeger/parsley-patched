@@ -65,7 +65,7 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 	 * <p>If this property is set to false, the object has to be created by some other means
 	 * before it becomes a valid message handler. This includes being explicitly fetched from
 	 * the Context, being needed as a dependency of another object or simply being configured as 
-	 * a non-lazy singleton.</p>
+	 * a non-lazy singleton (which is the default setting).</p>
 	 * <p>If this property is set to true, a proxy will be registered with the MessageRouter.
 	 * Whenever a matching message is dispatched the proxy will fetch the real target from
 	 * the Context. For an object configured with <code>singleton="false"</code> this means
