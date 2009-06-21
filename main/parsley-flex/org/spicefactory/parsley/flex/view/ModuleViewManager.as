@@ -66,6 +66,7 @@ public class ModuleViewManager extends AbstractViewManager {
 	}
 
 	private function contextDestroyed (event:ContextEvent) : void {
+		context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		removeListener(rootView);	
 	}
 

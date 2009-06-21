@@ -129,6 +129,7 @@ public class CompositeContextBuilder extends EventDispatcher {
 	
 	private function invokeNextBuilder () : void {
 		if (_builders.length == 0) {
+			_context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 			if (_errors.length > 0) {
 				handleErrors();
 			}
@@ -201,6 +202,7 @@ public class CompositeContextBuilder extends EventDispatcher {
 	}
 	
 	private function contextDestroyed (event:Event) : void {
+		_context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		if (_currentBuilder != null) {
 			_currentBuilder.cancel();
 		}

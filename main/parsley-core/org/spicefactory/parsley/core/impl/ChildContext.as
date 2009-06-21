@@ -42,6 +42,7 @@ public class ChildContext extends DefaultContext {
 		super(registry, parent.messageRouter, factory);
 		_parent = parent;
 		_parent.addEventListener(ContextEvent.DESTROYED, parentDestroyed, false, 2); // want to process before parent
+		addEventListener(ContextEvent.DESTROYED, childDestroyed, false);
 	}
 	
 
@@ -118,7 +119,10 @@ public class ChildContext extends DefaultContext {
 		return (localCount == 0) ? _parent.getObjectByType(type) : super.getObjectByType(type); 
 	}
 	
-	
+	private function childDestroyed (event:ContextEvent) : void {
+		removeEventListener(ContextEvent.DESTROYED, childDestroyed);
+		_parent.removeEventListener(ContextEvent.DESTROYED, parentDestroyed);
+	}
 	
 	private function parentDestroyed (event:ContextEvent) : void {
 		destroy();

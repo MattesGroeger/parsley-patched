@@ -62,6 +62,7 @@ public class FlexViewContext extends ChildContext {
 	}
 	
 	private function contextInitialized (event:Event) : void {
+		removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		for each (var component:DisplayObject in deferredComponents) {
 			addComponent(component);
 		}

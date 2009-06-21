@@ -310,6 +310,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	}
 	
 	private function contextDestroyed (event:Event) : void {
+		removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		if (_configured) {
 			_factory.destroyAll(this);
 		}
