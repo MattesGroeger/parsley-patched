@@ -27,7 +27,7 @@ import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
 
 /**
- * Responsible for processing the instance markey with AsyncInit tags upon Context creation.
+ * Responsible for processing the instance marked with AsyncInit tags upon Context creation.
  * 
  * @author Jens Halm
  */

@@ -54,7 +54,7 @@ public interface ObjectDefinitionRegistry {
 
 	
 	/**
-	 * Checks whether this registry contains an definition with the specified id.
+	 * Checks whether this registry contains a definition with the specified id.
 	 * 
 	 * @param id the id to check
 	 * @return true if this registry contains an definition with the specified id  

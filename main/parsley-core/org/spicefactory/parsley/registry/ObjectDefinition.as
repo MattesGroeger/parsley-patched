@@ -46,7 +46,7 @@ public interface ObjectDefinition {
 
 	
 	/**
-	 * The values to be used as constructor arguments when creating instance from this definition.
+	 * The values to be used as constructor arguments when creating instances from this definition.
 	 */
 	function get constructorArgs () : ConstructorArgRegistry;
 	
@@ -62,7 +62,7 @@ public interface ObjectDefinition {
 
 	
 	/**
-	 * The lifecycle listeners to process for instance created from this definition.
+	 * The lifecycle listeners to process for instances created from this definition.
 	 */
 	function get lifecycleListeners () : LifecycleListenerRegistry;
 	

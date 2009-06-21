@@ -53,7 +53,7 @@ import org.spicefactory.parsley.xml.tag.Variable;
 import flash.utils.getQualifiedClassName;
 
 /**
- * Factory that build the XML-to-Object mappers for the Parsley XML configuration format.
+ * Factory that builds the XML-to-Object mappers for the Parsley XML configuration format.
  * Built upon the Spicelib XML-to-Object Mapping Framework.
  * 
  * @author Jens Halm
