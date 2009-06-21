@@ -16,16 +16,16 @@
 
 package org.spicefactory.parsley.flex.tag {
 
+import mx.core.UIComponent;
+
+import flash.events.Event;
+
 /**
  * MXML Tag that can be used for View that wish to be wired to the IOC Container.
  * Should be placed as an immediate child of the Flex Component that should be wired.
  * 
  * @author Jens Halm
  */
-import mx.core.UIComponent;
-
-import flash.events.Event;
-
 public class Configure extends UIComponent {
 	
 	/**
