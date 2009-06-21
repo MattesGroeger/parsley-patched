@@ -1,12 +1,12 @@
 package org.spicefactory.parsley.xml {
 import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.core.ContextTestBase;
 import org.spicefactory.parsley.core.messaging.TestEvent;
 import org.spicefactory.parsley.core.messaging.TestMessage;
 import org.spicefactory.parsley.flex.mxmlconfig.messaging.EventSource;
 import org.spicefactory.parsley.flex.mxmlconfig.messaging.MessageBindings;
 import org.spicefactory.parsley.flex.mxmlconfig.messaging.MessageHandlers;
 import org.spicefactory.parsley.flex.mxmlconfig.messaging.MessageInterceptors;
+import org.spicefactory.parsley.flex.mxmlconfig.messaging.ProxyMessageHandlers;
 import org.spicefactory.parsley.flex.mxmlconfig.messaging.TestMessageDispatcher;
 import org.spicefactory.parsley.flex.mxmlconfig.messaging.TestMessageHandlers;
 
@@ -33,6 +33,13 @@ public class MessagingXmlTagTest extends XmlContextTestBase {
 			<message-handler method="allTestMessages" type="org.spicefactory.parsley.core.messaging.TestMessage"/>
 			<message-handler method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestMessage"/>
 			<message-handler method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestMessage"/>
+		</object> 
+		
+		<object id="proxyMessageHandlers" type="org.spicefactory.parsley.flex.mxmlconfig.messaging.ProxyMessageHandlers" singleton="false">
+			<message-handler method="allTestEvents" type="org.spicefactory.parsley.core.messaging.TestEvent" create-instance="true"/>
+			<message-handler method="allEvents" type="flash.events.Event" create-instance="true"/>
+			<message-handler method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestEvent" create-instance="true"/>
+			<message-handler method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent" create-instance="true"/>
 		</object> 
 	
 		<object id="messageHandlers" type="org.spicefactory.parsley.flex.mxmlconfig.messaging.MessageHandlers" lazy="true">
@@ -75,6 +82,23 @@ public class MessagingXmlTagTest extends XmlContextTestBase {
 		assertEquals("Unexpected count for generic event handler", 3, handlers.genericEventCount);
 		assertEquals("Unexpected string property", "foo2", handlers.stringProp);
 		assertEquals("Unexpected int property", 9, handlers.intProp);
+	}
+	
+	public function testProxyMessageHandlers () : void {
+		ProxyMessageHandlers.reset();
+		var context:Context = getContext(config);
+		checkState(context);
+		checkObjectIds(context, ["eventSource"], EventSource);	
+		checkObjectIds(context, ["proxyMessageHandlers"], ProxyMessageHandlers);	
+		var source:EventSource
+				= getAndCheckObject(context, "eventSource", EventSource) as EventSource;
+		source.dispatchEvent(new TestEvent(TestEvent.TEST1, "foo1", 7));
+		source.dispatchEvent(new TestEvent(TestEvent.TEST2, "foo2", 9));
+		source.dispatchEvent(new Event("foo"));
+		assertEquals("Unexpected count for event test1", 2, ProxyMessageHandlers.test1Count);
+		assertEquals("Unexpected count for event test2", 2, ProxyMessageHandlers.test2Count);
+		assertEquals("Unexpected count for generic event handler", 3, ProxyMessageHandlers.genericEventCount);
+		assertEquals("Unexpected instance count", 7, ProxyMessageHandlers.instanceCount);
 	}
 	
 	public function testMessageBindings () : void {

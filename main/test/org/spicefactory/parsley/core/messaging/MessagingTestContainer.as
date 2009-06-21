@@ -19,6 +19,11 @@ public class MessagingTestContainer {
 		return new TestMessageHandlers();
 	}
 	
+	[ObjectDefinition(singleton="false")]
+	public function get proxyMessageHandlers () : ProxyMessageHandlers {
+		return new ProxyMessageHandlers();
+	}
+	
 	
 	[ObjectDefinition(lazy="true")]
 	public function get messageHandlers () : MessageHandlers {

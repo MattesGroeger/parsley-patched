@@ -31,6 +31,23 @@ public class MessagingTest extends ContextTestBase {
 		assertEquals("Unexpected int property", 9, handlers.intProp);
 	}
 	
+	public function testProxyMessageHandlers () : void {
+		ProxyMessageHandlers.reset();
+		var context:Context = ActionScriptContextBuilder.build(MessagingTestContainer);
+		checkState(context);
+		checkObjectIds(context, ["eventSource"], EventSource);	
+		checkObjectIds(context, ["proxyMessageHandlers"], ProxyMessageHandlers);	
+		var source:EventSource
+				= getAndCheckObject(context, "eventSource", EventSource) as EventSource;
+		source.dispatchEvent(new TestEvent(TestEvent.TEST1, "foo1", 7));
+		source.dispatchEvent(new TestEvent(TestEvent.TEST2, "foo2", 9));
+		source.dispatchEvent(new Event("foo"));
+		assertEquals("Unexpected count for event test1", 2, ProxyMessageHandlers.test1Count);
+		assertEquals("Unexpected count for event test2", 2, ProxyMessageHandlers.test2Count);
+		assertEquals("Unexpected count for generic event handler", 3, ProxyMessageHandlers.genericEventCount);
+		assertEquals("Unexpected instance count", 7, ProxyMessageHandlers.instanceCount);
+	}
+	
 	public function testMessageBindings () : void {
 		var context:Context = ActionScriptContextBuilder.build(MessagingTestContainer);
 		checkState(context);
