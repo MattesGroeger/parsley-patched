@@ -96,6 +96,7 @@ public class MetadataDecoratorExtractor {
 	 * Extracts the metadata configuration for the specified class.
 	 * The returned array contains instances of the <code>ObjectDefinitionDecorator</code> interface.
 	 * 
+	 * @param type the class to extract all decorator tags from
 	 * @return the metadata configuration for the specified class
 	 */	
 	public static function extract (type:ClassInfo) : Array {
