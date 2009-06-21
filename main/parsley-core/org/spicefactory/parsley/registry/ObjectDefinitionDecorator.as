@@ -56,6 +56,10 @@ public interface ObjectDefinitionDecorator {
 	 * Since ObjectDefinition is an interface it may even be a custom definition implementation. 
 	 * But in such a case you should make sure that you copy the configuration artifacts 
 	 * already added to the definition as other tags may have already processed this definition.</p>
+	 * 
+	 * @param definition the definition currently processed
+	 * @param registry the registry the definition belongs to
+	 * @return the resulting definition (usually the modified instance that was passed to the method, but may be a replacement)
 	 */
 	function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition;
 	
