@@ -112,7 +112,7 @@ public class DefaultPropertyRegistry extends AbstractRegistry implements Propert
 	 * @inheritDoc
 	 */
 	public function getValue (name:String) : * {
-		return properties[name];
+		return PropertyValue(properties[name]).value;
 	}
 	
 	/**
