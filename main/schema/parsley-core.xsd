@@ -90,6 +90,7 @@
         <xs:attribute name="type" type="xs:token" use="optional"/>
         <xs:attribute name="selector" type="xs:token" use="optional"/>
         <xs:attribute name="message-properties" type="xs:token" use="optional"/>
+        <xs:attribute name="create-instance" type="xs:boolean" use="optional"/>
     </xs:complexType>
     
     <xs:complexType name="messageInterceptorType">
