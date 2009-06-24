@@ -135,7 +135,7 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 			throw new IllegalArgumentError("No object of type " + getQualifiedClassName(type) 
 					+ " was registered");
 		}
-		return (defs.length == 0) ? null : defs[0];
+		return defs[0];
 	}
 	
 	/**
