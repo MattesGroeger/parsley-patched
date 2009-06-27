@@ -5,16 +5,16 @@
 	
 	<mx:Script>
 		<![CDATA[
-			import org.spicefactory.parsley.flex.mxmlconfig.asyncinit.*;		
+			import org.spicefactory.parsley.core.decorator.asyncinit.model.*;		
 		]]>
 	</mx:Script>
 	
 	
-	<flextag:MxmlObjectDefinitionFactoryTag id="asyncInitModel1" type="{AsyncInitOrderedModel1}">
+	<flextag:MxmlObjectDefinitionFactoryTag id="asyncInitModel1" type="{AsyncInitModel}">
 		<dec:AsyncInitDecorator order="1"/>
 	</flextag:MxmlObjectDefinitionFactoryTag> 
 	
-	<flextag:MxmlObjectDefinitionFactoryTag id="asyncInitModel2" type="{AsyncInitOrderedModel2}">
+	<flextag:MxmlObjectDefinitionFactoryTag id="asyncInitModel2" type="{AsyncInitModel}">
 		<dec:AsyncInitDecorator order="2" completeEvent="customComplete" errorEvent="customError"/>
 	</flextag:MxmlObjectDefinitionFactoryTag> 
 	
