@@ -18,7 +18,7 @@ import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionFactory;
 /**
  * @author Jens Halm
  */
-public class InjectionDecoratorTestContainer {
+public class InjectTestContainer {
 	
 	
 	public function get injectedDependency () : InjectedDependency {
