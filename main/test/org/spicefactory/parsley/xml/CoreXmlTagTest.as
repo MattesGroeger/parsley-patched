@@ -46,7 +46,6 @@ public class CoreXmlTagTest extends XmlContextTestBase {
 	public function testCoreTags () : void {
 		var context:Context = getContext(config);
 		checkState(context);
-		trace("?? " + context.getObjectIds());
 		checkObjectIds(context, ["dependency"], InjectedDependency);	
 		checkObjectIds(context, ["object"], CoreModel);	
 		var obj:CoreModel 
