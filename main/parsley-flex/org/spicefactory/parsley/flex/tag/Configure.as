@@ -21,7 +21,7 @@ import mx.core.UIComponent;
 import flash.events.Event;
 
 /**
- * MXML Tag that can be used for View that wish to be wired to the IOC Container.
+ * MXML Tag that can be used for views that wish to be wired to the IOC Container.
  * Should be placed as an immediate child of the Flex Component that should be wired.
  * 
  * @author Jens Halm
