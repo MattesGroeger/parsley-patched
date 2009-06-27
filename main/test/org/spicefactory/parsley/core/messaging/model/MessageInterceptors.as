@@ -1,5 +1,6 @@
-package org.spicefactory.parsley.core.messaging {
+package org.spicefactory.parsley.core.messaging.model {
 import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.parsley.core.messaging.TestEvent;
 import org.spicefactory.parsley.messaging.MessageProcessor;
 
 /**
@@ -29,7 +30,6 @@ public class MessageInterceptors {
 	}
 	
 
-	[MessageInterceptor(type="org.spicefactory.parsley.core.messaging.TestEvent")]
 	public function interceptAllMessages (processor:MessageProcessor) : void {
 		if (processor.message.type == TestEvent.TEST1) {
 			_test1Count++;
@@ -43,13 +43,11 @@ public class MessageInterceptors {
 		processor.proceed();
 	}
 	
-	[MessageInterceptor]
 	public function allEvents (processor:MessageProcessor) : void {
 		_genericEventCount++;
 		processor.proceed();
 	}
 	
-	[MessageInterceptor(type="org.spicefactory.parsley.core.messaging.TestEvent", selector="test1")]
 	public function event1 (processor:MessageProcessor) : void {
 		if (processor.message.type == TestEvent.TEST1) {
 			_test1Count++;
@@ -60,7 +58,6 @@ public class MessageInterceptors {
 		processor.proceed();
 	}
 	
-	[MessageInterceptor(type="org.spicefactory.parsley.core.messaging.TestEvent", selector="test2")]
 	public function event2 (processor:MessageProcessor) : void {
 		if (processor.message.type == TestEvent.TEST2) {
 			_test2Count++;

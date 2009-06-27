@@ -1,4 +1,4 @@
-package org.spicefactory.parsley.flex.mxmlconfig.messaging {
+package org.spicefactory.parsley.core.messaging.model {
 import flash.events.EventDispatcher;
 
 [Event(name="test1",type="org.spicefactory.parsley.TestEvent")]

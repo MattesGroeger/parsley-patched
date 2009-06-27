@@ -1,4 +1,4 @@
-package org.spicefactory.parsley.flex.mxmlconfig.messaging {
+package org.spicefactory.parsley.core.messaging.model {
 
 /**
  * @author Jens Halm
@@ -17,10 +17,6 @@ public class MessageBindings {
 		_stringProp += value;
 	}
 	
-	public var intProp1:int;
-	
-	public var intProp2:int;
-
 	
 }
 }

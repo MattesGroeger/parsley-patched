@@ -1,4 +1,4 @@
-package org.spicefactory.parsley.flex.mxmlconfig.messaging {
+package org.spicefactory.parsley.core.messaging.model {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.messaging.TestEvent;
 import org.spicefactory.parsley.core.messaging.TestMessage;

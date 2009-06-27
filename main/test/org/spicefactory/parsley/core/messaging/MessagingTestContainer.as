@@ -1,43 +1,50 @@
 package org.spicefactory.parsley.core.messaging {
 
+	import org.spicefactory.parsley.core.messaging.model.TestMessageHandlersMetadata;
+	import org.spicefactory.parsley.core.messaging.model.TestMessageDispatcherMetadata;
+	import org.spicefactory.parsley.core.messaging.model.ProxyMessageHandlersMetadata;
+	import org.spicefactory.parsley.core.messaging.model.MessageInterceptorsMetadata;
+	import org.spicefactory.parsley.core.messaging.model.MessageHandlersMetadata;
+	import org.spicefactory.parsley.core.messaging.model.MessageBindingsMetadata;
+	import org.spicefactory.parsley.core.messaging.model.EventSourceMetadata;
 /**
  * @author Jens Halm
  */
 public class MessagingTestContainer {
 	
 
-	public function get eventSource () : EventSource {
-		return new EventSource();
+	public function get eventSource () : EventSourceMetadata {
+		return new EventSourceMetadata();
 	}
 	
-	public function get testDispatcher () : TestMessageDispatcher {
-		return new TestMessageDispatcher();
+	public function get testDispatcher () : TestMessageDispatcherMetadata {
+		return new TestMessageDispatcherMetadata();
 	}
 	
 	[ObjectDefinition(lazy="true")]
-	public function get testMessageHandlers () : TestMessageHandlers {
-		return new TestMessageHandlers();
+	public function get testMessageHandlers () : TestMessageHandlersMetadata {
+		return new TestMessageHandlersMetadata();
 	}
 	
 	[ObjectDefinition(singleton="false")]
-	public function get proxyMessageHandlers () : ProxyMessageHandlers {
-		return new ProxyMessageHandlers();
+	public function get proxyMessageHandlers () : ProxyMessageHandlersMetadata {
+		return new ProxyMessageHandlersMetadata();
 	}
 	
 	
 	[ObjectDefinition(lazy="true")]
-	public function get messageHandlers () : MessageHandlers {
-		return new MessageHandlers();
+	public function get messageHandlers () : MessageHandlersMetadata {
+		return new MessageHandlersMetadata();
 	}
 	
 	[ObjectDefinition(lazy="true")]
-	public function get messageBindings () : MessageBindings {
-		return new MessageBindings();
+	public function get messageBindings () : MessageBindingsMetadata {
+		return new MessageBindingsMetadata();
 	}
 	
 	[ObjectDefinition(lazy="true")]
-	public function get messageInterceptors () : MessageInterceptors {
-		return new MessageInterceptors();
+	public function get messageInterceptors () : MessageInterceptorsMetadata {
+		return new MessageInterceptorsMetadata();
 	}
 	
 	

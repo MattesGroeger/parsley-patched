@@ -1,21 +1,14 @@
-package org.spicefactory.parsley.core.messaging {
+package org.spicefactory.parsley.core.messaging.model {
 
 /**
  * @author Jens Halm
  */
-public class MessageBindings {
+public class MessageBindingsMetadata extends MessageBindings {
 
 	
-	private var _stringProp:String = "";
-	
-	
-	public function get stringProp ():String {
-		return _stringProp;
-	}
-	
 	[MessageBinding(type="org.spicefactory.parsley.core.messaging.TestEvent", messageProperty="stringProp")]
-	public function set stringProp (value:String) : void {
-		_stringProp += value;
+	public override function set stringProp (value:String) : void {
+		super.stringProp = value;
 	}
 	
 	[MessageBinding(type="org.spicefactory.parsley.core.messaging.TestEvent", messageProperty="intProp", selector="test1")]

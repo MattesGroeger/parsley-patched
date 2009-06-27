@@ -1,4 +1,4 @@
-package org.spicefactory.parsley.core.messaging {
+package org.spicefactory.parsley.core.messaging.model {
 
 /**
  * @author Jens Halm
@@ -9,7 +9,6 @@ public class TestMessageDispatcher {
 	private var _dispatcher:Function;
 	
 	
-	[MessageDispatcher]
 	public function set dispatcher (disp:Function) : void {
 		_dispatcher = disp;
 	}

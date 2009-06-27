@@ -5,7 +5,7 @@
 	
 	<mx:Script>
 		<![CDATA[
-			import org.spicefactory.parsley.flex.mxmlconfig.messaging.*;		
+			import org.spicefactory.parsley.core.messaging.model.*;		
 			import org.spicefactory.parsley.core.messaging.TestEvent;		
 			import org.spicefactory.parsley.core.messaging.TestMessage;		
 			import flash.events.*;		
@@ -42,7 +42,7 @@
 		<msg:MessageHandlerDecorator method="event2" selector="test2" type="{TestEvent}" createInstance="true"/>
 	</flextag:MxmlObjectDefinitionFactoryTag> 
 
-	<flextag:MxmlObjectDefinitionFactoryTag id="messageBindings" type="{MessageBindings}" lazy="true">
+	<flextag:MxmlObjectDefinitionFactoryTag id="messageBindings" type="{MessageBindingsBlank}" lazy="true">
 		<msg:MessageBindingDecorator targetProperty="stringProp" messageProperty="stringProp" type="{TestEvent}"/>
 		<msg:MessageBindingDecorator targetProperty="intProp1" messageProperty="intProp" selector="test1" type="{TestEvent}"/>
 		<msg:MessageBindingDecorator targetProperty="intProp2" messageProperty="intProp" selector="test2" type="{TestEvent}"/>
