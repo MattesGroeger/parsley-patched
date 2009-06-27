@@ -15,15 +15,15 @@
  */
 
 package org.spicefactory.parsley.xml.ext {
-import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionFactory;
-import org.spicefactory.lib.xml.NamingStrategy;
+	import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.xml.NamingStrategy;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.registry.ObjectDefinitionFactory;
-import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
+import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionFactory;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
@@ -131,7 +131,8 @@ public class XmlConfigurationNamespace {
 	public function addDefaultDefinitionFactoryMapper (type:Class, tagName:String, decoratorArray:String = null) : void {
 		var builder:PropertyMapperBuilder = newFactoryMapperBuilder(type, tagName, decoratorArray);
 		builder.mapAllToAttributes();
-		factories[tagName] = builder;
+		//factories[tagName] = builder; ???
+		addCustomDefinitionFactoryMapper(builder.build());
 	}
 	
 	/**
@@ -154,9 +155,9 @@ public class XmlConfigurationNamespace {
 		if (ci.isType(DefaultObjectDefinitionFactory)) decoratorArray = "decorators";
 		var elementName:QName = new QName(_uri, tagName);
 		validateFactory(ci, tagName, true);
-		return (decoratorArray == null) 
-			? new PropertyMapperBuilder(type, elementName, _namingStrategy, _domain) 
-			: XmlObjectDefinitionMapperFactory.createObjectDefinitionFactoryMapperBuilder(ci, elementName, decoratorArray);
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, elementName, _namingStrategy, _domain);
+		if (decoratorArray != null) builder.mapToChildElementChoice(decoratorArray, XmlObjectDefinitionMapperFactory.getDecoratorChoice());
+		return builder;
 	}
 	
 	/**
@@ -170,7 +171,7 @@ public class XmlConfigurationNamespace {
 		var ci:ClassInfo = ClassInfo.forClass(type, _domain);
 		validateFactory(ci, tagName);
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, new QName(_uri, tagName));
-		factories[tagName] = builder;
+		factories[tagName] = builder.build();
 		return builder;
 	}
 
@@ -187,7 +188,7 @@ public class XmlConfigurationNamespace {
 	 */
 	public function createDefinitionFactoryMapperBuilder (type:Class, tagName:String, decoratorArray:String = null) : PropertyMapperBuilder {
 		var builder:PropertyMapperBuilder = newFactoryMapperBuilder(type, tagName, decoratorArray);
-		factories[tagName] = builder;
+		factories[tagName] = builder.build();
 		return builder;
 	}
 	
@@ -203,7 +204,7 @@ public class XmlConfigurationNamespace {
 		var ci:ClassInfo = ClassInfo.forClass(type, _domain);
 		validateDecorator(ci, tagName);
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, new QName(_uri, tagName));
-		decorators[tagName] = builder;
+		decorators[tagName] = builder.build();
 		return builder;
 	}
 	

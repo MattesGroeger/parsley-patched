@@ -15,8 +15,6 @@
  */
 
 package org.spicefactory.parsley.xml.mapper {
-import org.spicefactory.lib.errors.IllegalArgumentError;
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.converter.BooleanConverter;
 import org.spicefactory.lib.reflect.converter.ClassConverter;
 import org.spicefactory.lib.reflect.converter.DateConverter;
@@ -50,8 +48,6 @@ import org.spicefactory.parsley.xml.tag.MessageHandlerDecoratorTag;
 import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
 import org.spicefactory.parsley.xml.tag.Variable;
 
-import flash.utils.getQualifiedClassName;
-
 /**
  * Factory that builds the XML-to-Object mappers for the Parsley XML configuration format.
  * Built upon the Spicelib XML-to-Object Mapping Framework.
@@ -75,14 +71,16 @@ public class XmlObjectDefinitionMapperFactory {
 
 	private var valueChoice:Choice = new Choice();
 	
+	private static var decoratorChoiceDelegate:ChoiceDelegate;
+	
 	
 	/**
-	 * @private
+	 * Returns the Choice that will be used to hold the mappers for ObjectDefinitionDecorators.
+	 * This method will be primarily used by the <code>XmlConfigurationNamespace</code> class.
 	 */
-	public static function createObjectDefinitionFactoryMapperBuilder (objectType:ClassInfo, 
-			elementName:QName, decoratorArray:String, namingStrategy:NamingStrategy = null) : PropertyMapperBuilder {
-		// TODO - may be obsolete as soon as the PropertyMapperBuilder always creates delegates
-		return new ObjectDefinitionFactoryMapperBuilder(objectType, elementName, decoratorArray, namingStrategy);
+	public static function getDecoratorChoice () : Choice {
+		if (decoratorChoiceDelegate == null) decoratorChoiceDelegate = new ChoiceDelegate();
+		return decoratorChoiceDelegate;
 	}
 
 	
@@ -135,46 +133,26 @@ public class XmlObjectDefinitionMapperFactory {
 		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectDefinitionFactoryTag, "object"); 
 		builder.mapToChildElementChoice("decorators", decoratorChoice);
 		builder.mapToAttribute("type");
-		return new DelegatingXmlObjectMapper(builder);
+		return builder.build();
 	}
 
 	
 	private function addCustomConfigurationNamespaces () : void {
 		var namespaces:Array = XmlConfigurationNamespaceRegistry.getRegisteredNamespaces();
+		var choiceDelegate:ChoiceDelegate = getDecoratorChoice() as ChoiceDelegate;
+		choiceDelegate.delegate = decoratorChoice; // TODO - this is a bit hacky
 		for each (var ns:XmlConfigurationNamespace in namespaces) {
 			var factories:Array = ns.getAllFactoryMappers();
-			for each (var fObj:Object in factories) {
-				var fMapper:XmlObjectMapper = getCustomMapper(fObj);
+			for each (var fMapper:XmlObjectMapper in factories) {
 				rootObjectChoice.addMapper(fMapper);
 				valueChoice.addMapper(fMapper);
 			}
 			var decorators:Array = ns.getAllDecoratorMappers();
-			for each (var dObj:Object in decorators) {
-				var dMapper:XmlObjectMapper = getCustomMapper(dObj);
+			for each (var dMapper:XmlObjectMapper in decorators) {
 				decoratorChoice.addMapper(dMapper);
 			}
 		}
 	}
-	
-	private function getCustomMapper (obj:Object) : XmlObjectMapper {
-		// TODO - this method will be obsolete in 2.0.1 when PropertyMapperBuilder always creates delegates
-		if (obj is XmlObjectMapper) {
-			return obj as XmlObjectMapper;
-		}
-		else if (obj is ObjectDefinitionFactoryMapperBuilder) {
-			var factoryBuilder:ObjectDefinitionFactoryMapperBuilder = obj as ObjectDefinitionFactoryMapperBuilder;
-			factoryBuilder.applyDecoratorChoice(decoratorChoice);
-			return factoryBuilder.build();
-		}
-		else if (obj is PropertyMapperBuilder) {
-			return PropertyMapperBuilder(obj).build();
-		}
-		else {
-			throw new IllegalArgumentError("Object type " + getQualifiedClassName(obj) 
-					+ " is neither an XmlObjectMapper nor a PropertyMapperBuilder");	
-		}
-	}
-
 	
 	private function buildDecoratorChoice () : void {
 		var childBuilder:PropertyMapperBuilder = getMapperBuilder(ConstructorDecoratorTag, "constructor-args");
@@ -255,7 +233,6 @@ public class XmlObjectDefinitionMapperFactory {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Converter;
 import org.spicefactory.lib.reflect.types.Any;
-import org.spicefactory.lib.xml.NamingStrategy;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.lib.xml.mapper.AbstractXmlObjectMapper;
@@ -324,53 +301,31 @@ class StaticPropertyRefMapper extends AbstractXmlObjectMapper {
 	
 }
 
-class ObjectDefinitionFactoryMapperBuilder extends PropertyMapperBuilder {
+class ChoiceDelegate extends Choice {
 	
-	private var decoratorArray:String;
+	public var delegate:Choice;
 	
-	function ObjectDefinitionFactoryMapperBuilder (objectType:ClassInfo, elementName:QName, 
-			decoratorArray:String, namingStrategy:NamingStrategy = null) {
-		super(objectType.getClass(), elementName, namingStrategy);
-		this.decoratorArray = decoratorArray;
+	public override function addMapper (mapper:XmlObjectMapper) : void {
+		delegate.addMapper(mapper);
 	}
 	
-	public function applyDecoratorChoice (choice:Choice) : void {
-		mapToChildElementChoice(decoratorArray, choice);
+	public override function getMapperForInstance (instance:Object, context:XmlProcessorContext) : XmlObjectMapper {
+		return delegate.getMapperForInstance(instance, context);
 	}
 	
+	public override function getMapperForElementName (name:QName) : XmlObjectMapper {
+		return delegate.getMapperForElementName(name);
+	}
+	
+	public override function getAllMappers () : Array {
+		return delegate.getAllMappers();
+	}
+
+	public override function get xmlNames () : Array {
+		return delegate.xmlNames;
+	}
 	
 }
 
-class DelegatingXmlObjectMapper implements XmlObjectMapper {
-	
-	
-	private var builder:PropertyMapperBuilder;
-	private var mapper:XmlObjectMapper;
-	
-	
-	function DelegatingXmlObjectMapper (builder:PropertyMapperBuilder) {
-		this.builder = builder;
-	}
 
-	
-	public function mapToObject (element:XML, context:XmlProcessorContext) : Object {
-		if (mapper == null) mapper = builder.build();
-		return mapper.mapToObject(element, context);
-	}
-	
-	public function mapToXml (object:Object, context:XmlProcessorContext) : XML {
-		if (mapper == null) mapper = builder.build();
-		return mapper.mapToXml(object, context);
-	}
-	
-	public function get objectType () : ClassInfo {
-		return builder.objectType;
-	}
-	
-	public function get elementName () : QName {
-		return builder.elementName;
-	}
-	
-	
-}
 
