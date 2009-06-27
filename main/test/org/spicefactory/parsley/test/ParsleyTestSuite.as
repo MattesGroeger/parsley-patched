@@ -2,14 +2,14 @@ package org.spicefactory.parsley.test {
 import flexunit.framework.TestSuite;
 
 import org.spicefactory.parsley.core.builder.ActionScriptObjectDefinitionBuilderTest;
-import org.spicefactory.parsley.core.decorator.asyncinit.AsyncInitTest;
-import org.spicefactory.parsley.core.decorator.factory.FactoryDecoratorTest;
-import org.spicefactory.parsley.core.decorator.injection.InjectionDecoratorTest;
+import org.spicefactory.parsley.core.decorator.asyncinit.AsyncInitMetadataTagTest;
+import org.spicefactory.parsley.core.decorator.factory.FactoryMetadataTagTest;
+import org.spicefactory.parsley.core.decorator.injection.InjectMetadataTagTest;
 import org.spicefactory.parsley.core.decorator.injection.MissingConstructorInjection;
 import org.spicefactory.parsley.core.decorator.injection.OptionalConstructorInjection;
 import org.spicefactory.parsley.core.decorator.injection.RequiredConstructorInjection;
-import org.spicefactory.parsley.core.decorator.lifecycle.LifecycleDecoratorTest;
-import org.spicefactory.parsley.core.messaging.MessagingTest;
+import org.spicefactory.parsley.core.decorator.lifecycle.LifecycleMetadataTagTest;
+import org.spicefactory.parsley.core.messaging.MessagingMetadataTagTest;
 import org.spicefactory.parsley.flash.logging.FlashLoggingXmlTagTest;
 import org.spicefactory.parsley.flash.resources.FlashResourcesTest;
 import org.spicefactory.parsley.flex.logging.FlexLoggingXmlTagTest;
@@ -39,27 +39,38 @@ public class ParsleyTestSuite {
 		
 		var suite:TestSuite = new TestSuite();
 		suite.addTestSuite(ActionScriptObjectDefinitionBuilderTest);
-		suite.addTestSuite(InjectionDecoratorTest);
-		suite.addTestSuite(LifecycleDecoratorTest);
-		suite.addTestSuite(FactoryDecoratorTest);
-		suite.addTestSuite(MessagingTest);
-		suite.addTestSuite(AsyncInitTest);
-		suite.addTestSuite(CoreMxmlTagTest);
-		suite.addTestSuite(LifecycleMxmlTagTest);
-		suite.addTestSuite(FactoryMxmlTagTest);
+
+		suite.addTestSuite(InjectMetadataTagTest);
+
+		suite.addTestSuite(AsyncInitMetadataTagTest);
 		suite.addTestSuite(AsyncInitMxmlTagTest);
-		suite.addTestSuite(MessagingMxmlTagTest);
-		suite.addTestSuite(CoreXmlTagTest);
-		suite.addTestSuite(LifecycleXmlTagTest);
-		suite.addTestSuite(FactoryXmlTagTest);
 		suite.addTestSuite(AsyncInitXmlTagTest);
+		
+		suite.addTestSuite(FactoryMetadataTagTest);
+		suite.addTestSuite(FactoryMxmlTagTest);
+		suite.addTestSuite(FactoryXmlTagTest);
+		
+		suite.addTestSuite(LifecycleMetadataTagTest);
+		suite.addTestSuite(LifecycleMxmlTagTest);
+		suite.addTestSuite(LifecycleXmlTagTest);
+
+		suite.addTestSuite(MessagingMetadataTagTest);
+		suite.addTestSuite(MessagingMxmlTagTest);
 		suite.addTestSuite(MessagingXmlTagTest);
+
+		suite.addTestSuite(CoreMxmlTagTest);
+		suite.addTestSuite(CoreXmlTagTest);
+
 		suite.addTestSuite(ExternalXmlConfigTest);
+
 		suite.addTestSuite(FlashLoggingXmlTagTest);
+		suite.addTestSuite(FlexLoggingXmlTagTest);
+
 		suite.addTestSuite(FlashResourcesTest);
+
 		suite.addTestSuite(PimentoXmlTagTest);
 		suite.addTestSuite(PimentoMxmlTagTest);
-		suite.addTestSuite(FlexLoggingXmlTagTest);
+
 		return suite;
 	}
 	
