@@ -1,4 +1,4 @@
-package org.spicefactory.parsley.flex.mxmlconfig.lifecycle {
+package org.spicefactory.parsley.core.decorator.lifecycle.model {
 
 /**
  * @author Jens Halm
