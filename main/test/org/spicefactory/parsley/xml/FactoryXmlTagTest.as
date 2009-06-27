@@ -1,13 +1,11 @@
 package org.spicefactory.parsley.xml {
 import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.core.ContextTestBase;
-import org.spicefactory.parsley.core.decorator.injection.RequiredMethodInjection;
-import org.spicefactory.parsley.flex.mxmlconfig.factory.TestFactory;
+import org.spicefactory.parsley.core.decorator.factory.FactoryDecoratorTestBase;
 
 /**
  * @author Jens Halm
  */
-public class FactoryXmlTagTest extends XmlContextTestBase {
+public class FactoryXmlTagTest extends FactoryDecoratorTestBase {
 
 	
 	public static const config:XML = <objects 
@@ -15,20 +13,13 @@ public class FactoryXmlTagTest extends XmlContextTestBase {
 		
 		<object id="dependency" type="org.spicefactory.parsley.core.decorator.injection.InjectedDependency"/>
 		
-		<object id="factoryWithDependency" type="org.spicefactory.parsley.flex.mxmlconfig.factory.TestFactory">
+		<object id="factoryWithDependency" type="org.spicefactory.parsley.core.decorator.factory.model.TestFactory">
 			<factory method="createInstance"/>
 		</object> 
 	</objects>; 
 
-	
-	public function testFactoryWithDependency () : void {
-		var context:Context = getContext(config);
-		checkState(context);
-		checkObjectIds(context, ["factoryWithDependency"], RequiredMethodInjection);	
-		assertTrue("Expected Factory to be accessible in Context", 1, context.getObjectIds(TestFactory).length);
-		var obj:RequiredMethodInjection 
-				= getAndCheckObject(context, "factoryWithDependency", RequiredMethodInjection) as RequiredMethodInjection;
-		assertNotNull("Missing dependency", obj.dependency);
+	public override function get context () : Context {
+		return XmlContextTestBase.getContext(config);
 	}
 	
 	

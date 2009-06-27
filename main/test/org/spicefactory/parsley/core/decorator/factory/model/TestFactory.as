@@ -1,5 +1,5 @@
-package org.spicefactory.parsley.core.decorator.factory {
-	import org.spicefactory.parsley.core.decorator.injection.RequiredMethodInjection;
+package org.spicefactory.parsley.core.decorator.factory.model {
+import org.spicefactory.parsley.core.decorator.injection.RequiredMethodInjection;
 	import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 import org.spicefactory.lib.errors.IllegalStateError;
 
@@ -13,7 +13,6 @@ public class TestFactory {
 	public var dependency:InjectedDependency;
 	
 	
-	[Factory]
 	public function createInstance () : RequiredMethodInjection {
 		if (dependency == null) {
 			throw new IllegalStateError("Dependency not injected");
