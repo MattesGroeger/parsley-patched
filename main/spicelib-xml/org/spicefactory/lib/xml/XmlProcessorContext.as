@@ -15,11 +15,11 @@
  */
 
 package org.spicefactory.lib.xml {
-import flash.utils.Dictionary;
-
-import org.spicefactory.lib.expr.impl.DefaultExpressionContext;import flash.system.ApplicationDomain;
-
 import org.spicefactory.lib.expr.ExpressionContext;
+import org.spicefactory.lib.expr.impl.DefaultExpressionContext;
+
+import flash.system.ApplicationDomain;
+import flash.utils.Dictionary;
 
 /**
  * The context for a recursive XML processing operation. Holds the <code>ApplicationDomain</code> and
