@@ -373,7 +373,7 @@ public class PropertyMapperBuilder {
 		var property:Property = getProperty(propertyName);
 		if (type == null) type = property.type.getClass();
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, elementName, namingStrategy, _objectType.applicationDomain);
-		addPropertyHandler(new BuilderHandler(getProperty(propertyName), elementName, builder));
+		addPropertyHandler(new ChildElementHandler(property, builder.build()));
 		return builder;
 	}
 	
@@ -403,44 +403,25 @@ public class PropertyMapperBuilder {
 	
 	/**
 	 * Builds the final mapper based on the instructions that were given through the various
-	 * mapXXX methods of this class.
+	 * mapXXX methods of this class. The returned mapper instance is lazy-initializing, so the real
+	 * mapper does not get created until it is used for the first time through a call to <code>mapToObject</object>
+	 * or <code>mapToXml</code>. So calling some of the mapXXX methods of this builder will still modify the 
+	 * behaviour of the returned mapper. This mechanism makes it easier to build a nested structure of mappers
+	 * with circular references.
 	 * 
 	 * @return the mapper produced based on instructions given to this class
 	 */
 	public function build () : XmlObjectMapper {
-		var handlers:Array = new Array();
-		for each (var handler:PropertyHandler in propertyHandlerList) {
-			if (handler is BuilderHandler) {
-				handlers.push(BuilderHandler(handler).createHandler());
-			}
-			else {
-				handlers.push(handler);
-			}
-		}
-		return new PropertyMapper(_objectType, _elementName, handlers, _ignoreUnmappedAttributes, _ignoreUnmappedChildren);
+		return new PropertyMapperDelegate(this);
 	}
 	
-
-}
-}
-
-import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.lib.xml.mapper.PropertyHandler;
-import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
-import org.spicefactory.lib.xml.mapper.handler.AbstractPropertyHandler;
-import org.spicefactory.lib.xml.mapper.handler.ChildElementHandler;
-
-class BuilderHandler extends AbstractPropertyHandler {
-	
-	private var builder:PropertyMapperBuilder;
-	
-	function BuilderHandler (property:Property, xmlName:QName, builder:PropertyMapperBuilder) {
-		super(property, "element", [xmlName], true);
-		this.builder = builder;
+	/**
+	 * @private
+	 */
+	internal function get mapper () : PropertyMapper {
+		return new PropertyMapper(_objectType, _elementName, propertyHandlerList, _ignoreUnmappedAttributes, _ignoreUnmappedChildren);
 	}
 	
-	public function createHandler () : PropertyHandler {
-		return new ChildElementHandler(property, builder.build());
-	}
+	
 }
-
+}
