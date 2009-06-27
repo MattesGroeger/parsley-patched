@@ -104,8 +104,8 @@
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/framework.swc" />
-			<arg line="-el ${flex.sdk}/frameworks/libs/rpc.swc" />
-			<arg line="-el ${flex.sdk}/frameworks/libs/utilities.swc" />
+			<!--<arg line="-el ${flex.sdk}/frameworks/libs/rpc.swc" />
+			<arg line="-el ${flex.sdk}/frameworks/libs/utilities.swc" />-->
 			<arg line="-sp ${project.dir}/spicelib-core" />
 			<arg line="-is ${project.dir}/spicelib-core" />
 		</exec>
@@ -133,16 +133,6 @@
 		</exec>
 	</target>
 	
-	<target name="compile_spicelib_expressions">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-o ${release.target.dir}/release/modules/spicelib-expressions-${version}.swc" />
-			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
-			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
-			<arg line="-sp ${project.dir}/spicelib-expressions" />
-			<arg line="-is ${project.dir}/spicelib-expressions" />
-		</exec>
-	</target>
-				
 	<target name="compile_spicelib_task">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-task-${version}.swc" />
@@ -159,9 +149,9 @@
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
-			<arg line="-el ${release.target.dir}/release/modules/spicelib-expressions-${version}.swc" />
-			<arg line="-sp ${project.dir}/spicelib-xml" />
+			<arg line="-sp ${project.dir}/spicelib-xml ${project.dir}/spicelib-expressions" />
 			<arg line="-is ${project.dir}/spicelib-xml" />
+			<arg line="-is ${project.dir}/spicelib-expressions" />
 		</exec>
 	</target>
 	
@@ -195,7 +185,6 @@
 			<arg line="-el ${flex.sdk}/frameworks/libs/utilities.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
-			<arg line="-el ${release.target.dir}/release/modules/spicelib-expressions-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/parsley-xml-${version}.swc" />
@@ -211,7 +200,6 @@
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
-			<arg line="-el ${release.target.dir}/release/modules/spicelib-expressions-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
 			<arg line="-sp ${project.dir}/parsley-xml" />
@@ -227,7 +215,6 @@
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-task-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-flash-${version}.swc" />
-			<arg line="-el ${release.target.dir}/release/modules/spicelib-expressions-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/parsley-xml-${version}.swc" />
@@ -245,7 +232,6 @@
 			<arg line="-el ${flex.sdk}/frameworks/libs/framework.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
-			<arg line="-el ${release.target.dir}/release/modules/spicelib-expressions-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/parsley-xml-${version}.swc" />
@@ -262,7 +248,6 @@
 		<antcall target="compile_spicelib_complete_flex"/>
 		<antcall target="compile_spicelib_core"/>
 		<antcall target="compile_spicelib_reflect"/>
-		<antcall target="compile_spicelib_expressions"/>
 		<antcall target="compile_spicelib_xml"/>
 		<antcall target="compile_spicelib_task"/>
 		<antcall target="compile_spicelib_flash"/>
