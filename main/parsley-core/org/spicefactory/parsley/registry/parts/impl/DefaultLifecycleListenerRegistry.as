@@ -59,7 +59,7 @@ public class DefaultLifecycleListenerRegistry extends AbstractRegistry implement
 		for (var i:uint = 0; i < listeners.length; i++) {
 			var reg:LifecycleListenerRegistration = LifecycleListenerRegistration(listeners[i]);
 			if (reg.listener == listener) {
-				listeners.slice(i,1);
+				listeners.splice(i,1);
 			}
 		}
 		return this;
