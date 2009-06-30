@@ -51,13 +51,9 @@ public class ModuleRegistration {
 	 * Creates a new instance.
 	 * 
 	 * @param info the regular Flex Module Info
-	 * @param parentContext the Context to use as the parent for the Context created for the loaded Flex Module
-	 * @param moduleDomain the ApplicationDomain the Module will be loaded into
 	 */
-	function ModuleRegistration (info:IModuleInfo, parentContext:Context = null, moduleDomain:ApplicationDomain = null) {
+	function ModuleRegistration (info:IModuleInfo) {
 		this._info = info;
-		this._parentContext = parentContext;
-		this._moduleDomain = moduleDomain;
 		info.addEventListener(ModuleEvent.UNLOAD, onModuleUnloaded);
 	}
 
@@ -93,8 +89,9 @@ public class ModuleRegistration {
 	/**
 	 * @private
 	 */
-	internal function setModuleDomain (domain:ApplicationDomain) : void {
-		_moduleDomain = domain;
+	internal function init (parentContext:Context = null, moduleDomain:ApplicationDomain = null) : void {
+		this._parentContext = parentContext;
+		this._moduleDomain = moduleDomain;
 	}
 	
 	private function checkModuleDomain () : void {
@@ -113,9 +110,9 @@ public class ModuleRegistration {
 	 * @param module the Module to create the view manager for
 	 */
 	public function createViewManager (module:ContextModule) : void {
-		log.info("Create ViewManager for {0}", module);
 		checkModuleDomain();
 		if (module.viewTriggerEvent != null) {
+			log.info("Create ViewManager for {0}", module);
 			if (_modules[module] != undefined) {
 				log.error("Module with URL {0}: Attempt to add the same Module instance more than once.", _info.url);
 				return;
@@ -137,9 +134,10 @@ public class ModuleRegistration {
 	 * @param module the Module to create the Parsley Context for
 	 */
 	public function createContext (module:ContextModule) : void {
-		log.info("Create Context for {0}", module);
 		checkModuleDomain();
 		if (_moduleContext == null) {
+			log.info("Create Context for {0}", module);
+			if (_parentContext != null) log.debug("Parent Context contains {0} objects", _parentContext.getObjectCount());
 			// only build context for the first Module instance created from a loaded module
 			_moduleContext = module.buildContext(_parentContext, _moduleDomain);
 			var viewManager:ModuleViewManager = _modules[module] as ModuleViewManager;

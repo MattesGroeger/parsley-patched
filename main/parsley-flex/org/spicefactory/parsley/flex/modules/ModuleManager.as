@@ -60,8 +60,13 @@ public class ModuleManager {
 	 */
 	public function registerModule (url:String, parentContext:Context = null, moduleDomain:ApplicationDomain = null) : ModuleRegistration {
 		var reg:ModuleRegistration = registrations[url]	as ModuleRegistration;
+		var info:IModuleInfo = mx.modules.ModuleManager.getModule(url);
 		if (reg == null) {
-			var info:IModuleInfo = mx.modules.ModuleManager.getModule(url);
+			reg = new ModuleRegistration(info);
+			registrations[url] = reg;
+		}
+		if (!reg.active) {
+			log.info("Initialize ModuleRegistration for Module with URL {0}", url);
 			if (info.loaded) {
 				log.error("Module with URL {0} was already loaded before registering - unable to determine ApplicationDomain.", url);
 				moduleDomain = null;
@@ -73,10 +78,11 @@ public class ModuleManager {
 			if (parentContext == null) {
 				log.warn("Parent context not specified for module with URL {0}", url);
 			}
-			reg = new ModuleRegistration(info, parentContext, moduleDomain);
-			registrations[url] = reg;
+			reg.init(parentContext, moduleDomain);
 		}
 		else {
+			log.info("Module with URL {0} has already been loaded, reusing existing ModuleContext", url);
+			/*
 			if (reg.moduleDomain == null && !reg.info.loaded) {
 				// Could not register domain when initial registration was created.
 				if (moduleDomain == null) {
@@ -85,7 +91,8 @@ public class ModuleManager {
 				}
 				reg.setModuleDomain(moduleDomain);
 			}
-			else if (moduleDomain != null && moduleDomain != reg.moduleDomain) {
+			*/
+			if (moduleDomain != null && moduleDomain != reg.moduleDomain) {
 				log.warn("Module with URL {0} has already been registered with a different ApplicationDomain." 
 						+ " The existing registration instance will be returned.", url);
 			}
