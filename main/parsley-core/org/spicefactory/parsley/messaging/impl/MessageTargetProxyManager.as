@@ -21,6 +21,7 @@ public class MessageTargetProxyManager {
 		for each (var proxy:Object in proxies) {
 			proxy.init(context);	
 		}
+		proxies = null;
 	}
 	
 	
