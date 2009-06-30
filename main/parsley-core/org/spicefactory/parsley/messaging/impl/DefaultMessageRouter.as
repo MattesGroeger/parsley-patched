@@ -250,7 +250,7 @@ public class DefaultMessageRouter implements MessageRouter {
 	public function unregister (target:MessageTarget) : void {
 		var index:int = targets.indexOf(target);
 		if (index != -1) {
-			targets.slice(index, 1);
+			targets.splice(index, 1);
 			clearCache();
 		}
 	}
