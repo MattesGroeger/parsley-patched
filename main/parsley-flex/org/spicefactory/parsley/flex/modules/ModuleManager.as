@@ -20,7 +20,6 @@ import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.Context;
 
 import mx.modules.IModuleInfo;
-import mx.modules.ModuleManager;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
