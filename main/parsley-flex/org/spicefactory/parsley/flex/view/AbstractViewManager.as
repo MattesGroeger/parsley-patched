@@ -72,7 +72,7 @@ public class AbstractViewManager {
 	 * @param component the component to add the listener to
 	 */
 	protected function addListener (component:DisplayObject) : void {
-		log.info("Add listener for {0}/{1} ", component.name, getQualifiedClassName(component));
+		log.info("Add listener for {0}/{1} and triggerEvent {2}", component.name, getQualifiedClassName(component), _triggerEvent);
 		component.addEventListener(_triggerEvent, handleConfigureEvent);
 	}
 	
