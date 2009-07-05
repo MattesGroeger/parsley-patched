@@ -58,7 +58,7 @@ public class RootViewManager extends AbstractViewManager {
 		var manager:RootViewManager = managersByTrigger[triggerEvent] as RootViewManager;
 		if (manager == null) {
 			log.info("Create new RootViewManager");
-			manager = new RootViewManager();
+			manager = new RootViewManager(triggerEvent);
 			managersByTrigger[triggerEvent] = manager;
 			manager.init();
 		}
