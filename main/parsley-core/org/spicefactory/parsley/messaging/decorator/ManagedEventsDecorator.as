@@ -25,7 +25,6 @@ import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.registry.ObjectLifecycleListener;
 
 import flash.events.IEventDispatcher;
-import flash.system.ApplicationDomain;
 
 [Metadata(name="ManagedEvents", types="class")]
 /**
@@ -49,8 +48,6 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 	 */
 	public var names:Array;
 	
-	private var domain:ApplicationDomain;
-	
 	private var delegate:MessageDispatcherFunctionReference;
 
 	
@@ -58,7 +55,7 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		delegate = new MessageDispatcherFunctionReference(domain);
+		delegate = new MessageDispatcherFunctionReference(registry.domain);
 		if (names == null) {
 			names = new Array();
 			var events:Array = definition.type.getMetadata(EventInfo);
