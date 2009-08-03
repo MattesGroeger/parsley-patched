@@ -15,9 +15,9 @@
  */
 
 package org.spicefactory.parsley.flex.view {
-import org.spicefactory.parsley.core.CompositeContextBuilder;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.ClassUtil;
 import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
@@ -54,7 +54,7 @@ public class RootViewManager extends AbstractViewManager {
 	 */
 	public static function addContext (parent:Context, triggerEvent:String = "configureIOC", domain:ApplicationDomain = null) : void {
 		log.info("Add Context for trigger event " + triggerEvent);
-		if (domain == null) domain = CompositeContextBuilder.defaultDomain;
+		if (domain == null) domain = ClassInfo.currentDomain;
 		var manager:RootViewManager = managersByTrigger[triggerEvent] as RootViewManager;
 		if (manager == null) {
 			log.info("Create new RootViewManager");
