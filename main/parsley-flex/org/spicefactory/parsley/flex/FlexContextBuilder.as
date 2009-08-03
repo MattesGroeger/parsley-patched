@@ -33,7 +33,7 @@ import flash.system.ApplicationDomain;
  * <a href="http://www.spicefactory.org/parsley/docs/2.0/manual?page=config&section=mxml>3.2 MXML Configuration</a>
  * in the Parsley Manual.</p>
  * 
- * <p>All methods of this class additionally intialized the Flex View Wiring mechanism.</p>
+ * <p>All methods of this class additionally initialize the Flex view wiring mechanism.</p>
  * 
  * @author Jens Halm
  */
