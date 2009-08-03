@@ -41,7 +41,14 @@ public class ClassInfo extends MetadataAware {
 
 	private static var cache:Dictionary = new Dictionary();
 	
-	private static var currentDomain:ApplicationDomain = ApplicationDomain.currentDomain; // make sure it's always the same instance
+	/**
+	 * The ApplicationDomain to be used when no domain was explicitly specified.
+	 * Points to ApplicationDomain.currentDomain but makes sure that always the
+	 * same instance will be used. Since ApplicationDomain.currentDomain always
+	 * returns a different instance it would be difficult to use domains as keys 
+	 * in Dictionaries otherwise.
+	 */
+	public static const currentDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 	
 	
 	/**
@@ -249,7 +256,7 @@ public class ClassInfo extends MetadataAware {
 		}
 		if (!_interface && _constructor == null) {
 			// empty default constructor
-			_constructor = new Constructor([], new Dictionary(), this);
+			_constructor = new Constructor([], new MetadataCollection([]), this);
 		}
 		initialized = true;
 	}

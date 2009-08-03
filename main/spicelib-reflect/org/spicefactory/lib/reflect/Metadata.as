@@ -15,8 +15,15 @@
  */
 
 package org.spicefactory.lib.reflect {
+import org.spicefactory.lib.reflect.mapping.MappedClass;
+import org.spicefactory.lib.reflect.mapping.MappedProperty;
 import org.spicefactory.lib.reflect.mapping.ValidationError;
+import org.spicefactory.lib.reflect.metadata.AssignableTo;
+import org.spicefactory.lib.reflect.metadata.DefaultProperty;
 import org.spicefactory.lib.reflect.metadata.EventInfo;
+import org.spicefactory.lib.reflect.metadata.MappedMetadata;
+import org.spicefactory.lib.reflect.metadata.Required;
+import org.spicefactory.lib.reflect.metadata.Types;
 
 import flash.system.ApplicationDomain;
 
@@ -32,6 +39,7 @@ public class Metadata {
 	private static var initialized:Boolean = false;
 	
 	private var _name:String;
+	private var _type:String;
 	private var _arguments:Object;
 	private var registration:MetadataClassRegistration;
 	
@@ -39,16 +47,11 @@ public class Metadata {
 	/**
 	 * @private
 	 */
-	function Metadata (name:String, args:Object, reg:MetadataClassRegistration = null) {
+	function Metadata (name:String, args:Object, type:String) {
 		_name = name;
 		_arguments = args;
-		registration = reg;
-		if (registration != null && registration.defaultProperty != null && _arguments[""] != undefined) {
-			_arguments[registration.defaultProperty] = _arguments[""];
-			delete _arguments[""];
-		}
+		_type = type;
 	}
-
 	
 	/**
 	 * @private
@@ -60,7 +63,7 @@ public class Metadata {
 		for each (var argTag:XML in xml.arg) {
 			args[argTag.@key] = argTag.@value;
 		} 
-		return new Metadata(name, args, MetadataClassRegistration(metadataClasses[name + " " + type]));
+		return new Metadata(name, args, type);
 	}
 	
 	
@@ -94,7 +97,7 @@ public class Metadata {
 	
 	private static function initialize () : void {
 		initialized = true;
-		for each (var reg:MetadataClassRegistration in MetadataClassRegistration.createInternalRegistrations()) {
+		for each (var reg:MetadataClassRegistration in createInternalRegistrations()) {
 			for each (var key:String in reg.registrationKeys) {
 				metadataClasses[key] = reg;
 			} 
@@ -130,6 +133,20 @@ public class Metadata {
 		return _arguments[""];
 	} 
 	
+	/**
+	 * @private
+	 */
+	internal function resolve () : Boolean {
+		registration = MetadataClassRegistration(metadataClasses[name + " " + _type]);
+		if (registration == null) {
+			return false;
+		}
+		if (registration.defaultProperty != null && _arguments[""] != undefined) {
+			_arguments[registration.defaultProperty] = _arguments[""];
+			delete _arguments[""];
+		}
+		return true;
+	}
 	
 	/**
 	 * @private
@@ -138,19 +155,55 @@ public class Metadata {
 		if (registration == null) {
 			return this;
 		}
-		else {
-			if (validate && !first && !registration.allowMultiple) {
-				throw new ValidationError("Multiple occurrences of the tag mapped to " 
-						+ registration.mappedClass.type.name + " on the same element are not allowed");
-			}
-			// Create a new instance on each access so that modifications of property values
-			// have no effect.
-			var values:Object = new Object();
-			for (var key:String in _arguments) {
-				values[key] = _arguments[key];
-			}
-			return registration.mappedClass.newInstance(values, validate);
+		if (validate && !first && !registration.allowMultiple) {
+			throw new ValidationError("Multiple occurrences of the tag mapped to " 
+					+ registration.mappedClass.type.name + " on the same element are not allowed");
 		}
+		// Create a new instance on each access so that modifications of property values
+		// have no effect.
+		var values:Object = new Object();
+		for (var key:String in _arguments) {
+			values[key] = _arguments[key];
+		}
+		return registration.mappedClass.newInstance(values, validate);
+	}
+	
+	public static function createInternalRegistrations () : Array {
+		/* Internal tags like [Metadata] cannot be created through Reflection
+		   as this would lead to a chicken-and-egg problem. */
+	    var internalRegs:Array = new Array();
+	    var ci:ClassInfo = ClassInfo.forClass(MappedMetadata);
+	    var props:Array = [new MappedProperty(ci.getProperty("name")), 
+	    		new MappedProperty(ci.getProperty("types")), 
+	    		new MappedProperty(ci.getProperty("multiple"))];
+	    internalRegs.push(createRegistration("Metadata", 
+	   			ci, [Types.CLASS], null, props));
+	    internalRegs.push(createRegistration("DefaultProperty", 
+	    		ClassInfo.forClass(DefaultProperty), [Types.PROPERTY]));
+	    internalRegs.push(createRegistration("Required", 
+	    		ClassInfo.forClass(Required), [Types.PROPERTY]));
+	    ci = ClassInfo.forClass(AssignableTo);
+	    internalRegs.push(createRegistration("AssignableTo", 
+	    		ci, [Types.PROPERTY], "type", [new MappedProperty(ci.getProperty("type"), true)]));
+	    		
+	    return internalRegs;
+	}
+	
+	private static function createRegistration (name:String, metadataType:ClassInfo, annotatedTypes:Array, 
+			defaultProperty:String = null, properties:Array = null)
+			: MetadataClassRegistration {
+		if (properties == null) properties = [];
+		var reg:MetadataClassRegistration = new MetadataClassRegistration();
+		reg.name = name;
+		reg.mappedClass = new MappedClass(metadataType, properties);
+		reg.annotatedTypes = annotatedTypes;
+		reg.defaultProperty = defaultProperty;
+		
+		for each (var key:String in reg.registrationKeys) {
+			metadataClasses[key] = reg;
+		} 
+		
+		return reg;
 	}
 	
 	/**
@@ -180,11 +233,8 @@ import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.reflect.mapping.MappedClass;
-import org.spicefactory.lib.reflect.mapping.MappedProperty;
-import org.spicefactory.lib.reflect.metadata.AssignableTo;
 import org.spicefactory.lib.reflect.metadata.DefaultProperty;
 import org.spicefactory.lib.reflect.metadata.MappedMetadata;
-import org.spicefactory.lib.reflect.metadata.Required;
 import org.spicefactory.lib.reflect.metadata.Types;
 
 class MetadataClassRegistration {
@@ -196,39 +246,6 @@ class MetadataClassRegistration {
 	public var annotatedTypes:Array;
 	public var allowMultiple:Boolean;
 	
-	
-	public static function createInternalRegistrations () : Array {
-		/* Internal tags like [Metadata] cannot be created through Reflection
-		   as this would lead to a chicken-and-egg problem. */
-	    var internalRegs:Array = new Array();
-	    var ci:ClassInfo = ClassInfo.forClass(MappedMetadata);
-	    var props:Array = [new MappedProperty(ci.getProperty("name")), 
-	    		new MappedProperty(ci.getProperty("types")), 
-	    		new MappedProperty(ci.getProperty("multiple"))];
-	    internalRegs.push(createRegistration("Metadata", 
-	   			ci, [Types.CLASS], null, props));
-	    internalRegs.push(createRegistration("DefaultProperty", 
-	    		ClassInfo.forClass(DefaultProperty), [Types.PROPERTY]));
-	    internalRegs.push(createRegistration("Required", 
-	    		ClassInfo.forClass(Required), [Types.PROPERTY]));
-	    ci = ClassInfo.forClass(AssignableTo);
-	    internalRegs.push(createRegistration("AssignableTo", 
-	    		ci, [Types.PROPERTY], "type", [new MappedProperty(ci.getProperty("type"), true)]));
-	    return internalRegs;
-	}
-	
-	private static function createRegistration (name:String, metadataType:ClassInfo, annotatedTypes:Array, 
-			defaultProperty:String = null, properties:Array = null)
-			: MetadataClassRegistration {
-		if (properties == null) properties = [];
-		var reg:MetadataClassRegistration = new MetadataClassRegistration();
-		reg.name = name;
-		reg.mappedClass = new MappedClass(metadataType, properties);
-		reg.annotatedTypes = annotatedTypes;
-		reg.defaultProperty = defaultProperty;
-		return reg;
-	}
-
 	
 	function MetadataClassRegistration (type:ClassInfo = null) {
 		if (type != null) {

@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.lib.reflect {
-import flash.utils.Dictionary;
+
 
 /**
  * Base class for all types that can have associated metadata tags.
@@ -25,20 +25,20 @@ import flash.utils.Dictionary;
 public class MetadataAware {
 	
 	
-	private var _metadata:Dictionary;
+	private var _metadata:MetadataCollection;
 	
 	
 	/**
 	 * @private
 	 */
-	function MetadataAware (metadata:Dictionary) {
+	function MetadataAware (metadata:MetadataCollection) {
 		_metadata = metadata;
 	}
 	
 	/**
 	 * @private
 	 */
-	internal function setMetadata (metadata:Dictionary) : void {
+	internal function setMetadata (metadata:MetadataCollection) : void {
 		// in some cases metadata will be lazily initialized
 		_metadata = metadata;
 	}
@@ -46,18 +46,13 @@ public class MetadataAware {
 	/**
 	 * @private
 	 */
-	internal static function metadataFromXml (xml:XML, type:String) : Dictionary {
-		var metadata:Dictionary = new Dictionary();
+	internal static function metadataFromXml (xml:XML, type:String) : MetadataCollection {
+		var tags:Array = new Array();
 		for each (var metadataTag:XML in xml.metadata) {
 			var meta:Metadata = Metadata.fromXml(metadataTag, type);
-			var tagsForName:Array = metadata[meta.getKey()];
-			if (tagsForName == null) {
-				tagsForName = new Array();
-				metadata[meta.getKey()] = tagsForName;
-			}
-			tagsForName.push(meta);
-		} 
-		return metadata;
+			tags.push(meta);
+		}
+		return new MetadataCollection(tags);
 	}
 	
 	/**
@@ -78,8 +73,7 @@ public class MetadataAware {
 	 * @return all metadata tags for the specified type for this element
 	 */
 	public function getMetadata (type:Object, validate:Boolean = true) : Array {
-		// clone Array to prevent modifications
-		return (_metadata[type] == undefined) ? [] : prepareMetadata(_metadata[type] as Array, validate);
+		return _metadata.getMetadata(type, validate);
 	}
 	
 	/**
@@ -89,24 +83,9 @@ public class MetadataAware {
 	 * @return all metadata tags for this type
 	 */
 	public function getAllMetadata (validate:Boolean = true) : Array {
-		// clone Arrays to prevent modifications
-		var all:Array = new Array();
-		for each (var metadata:Array in _metadata) {
-			all = all.concat(prepareMetadata(metadata, validate));
-		}
-		return all;
-	}
-	
-	
-	private function prepareMetadata (metas:Array, validate:Boolean) : Array {
-		var prepared:Array = new Array();
-		for (var i:uint = 0; i < metas.length; i++) {
-			prepared[i] = Metadata(metas[i]).getExternalValue(validate, i == 0);
-		}
-		return prepared;
+		return _metadata.getAllMetadata(validate);
 	}
 	
 	
 }
-
 }

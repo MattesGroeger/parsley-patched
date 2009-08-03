@@ -15,11 +15,10 @@
  */
  
 package org.spicefactory.lib.reflect {
-import flash.utils.Dictionary;
-import flash.utils.getQualifiedClassName;
-
 import org.spicefactory.lib.reflect.errors.MethodInvocationError;
 import org.spicefactory.lib.reflect.metadata.Types;
+
+import flash.utils.getQualifiedClassName;
 
 /**
  * Represents a single method.
@@ -37,7 +36,7 @@ public class Method	extends FunctionBase {
 	 * @private
 	 */
 	function Method (name:String, returnType:ClassInfo, params:Array, 
-			s:Boolean, metadata:Dictionary, owner:ClassInfo) {
+			s:Boolean, metadata:MetadataCollection, owner:ClassInfo) {
 		super(name, params, owner, metadata);
 		this._returnType = returnType;
 		this._static = s;
@@ -48,7 +47,7 @@ public class Method	extends FunctionBase {
 	 */
 	internal static function fromXML (xml:XML, isStatic:Boolean, owner:ClassInfo) : Method {
 		var params:Array = parametersFromXml(xml, owner);
-		var metadata:Dictionary = metadataFromXml(xml, Types.METHOD);
+		var metadata:MetadataCollection = metadataFromXml(xml, Types.METHOD);
 		var type:ClassInfo = ClassInfo.forName(xml.@returnType, owner.applicationDomain);
 		return new Method(xml.@name, type, params, isStatic, metadata, owner);
 	}

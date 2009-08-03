@@ -15,7 +15,6 @@
  */
  
 package org.spicefactory.lib.reflect {
-import flash.utils.Dictionary;
 
 /**
  * Abstract base class for Function types (Methods and Constructors).
@@ -34,7 +33,7 @@ public class FunctionBase extends Member {
 	/**
 	 * @private
 	 */
-	function FunctionBase (name:String, params:Array, owner:ClassInfo, metadata:Dictionary) {
+	function FunctionBase (name:String, params:Array, owner:ClassInfo, metadata:MetadataCollection) {
 		super(name, owner, metadata);
 		_parameters = params;
 		for each (var param:Parameter in _parameters) {

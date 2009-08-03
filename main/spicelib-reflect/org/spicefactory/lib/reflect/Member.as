@@ -15,8 +15,6 @@
  */
 
 package org.spicefactory.lib.reflect {
-import flash.utils.Dictionary;
-
 import org.spicefactory.lib.reflect.MetadataAware;
 
 /**
@@ -34,7 +32,7 @@ public class Member extends MetadataAware {
 	/**
 	 * @private
 	 */
-	function Member (name:String, owner:ClassInfo, metadata:Dictionary) {
+	function Member (name:String, owner:ClassInfo, metadata:MetadataCollection) {
 		super(metadata);
 		_name = name;
 		_owner = owner;

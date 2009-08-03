@@ -20,8 +20,6 @@ import org.spicefactory.lib.reflect.errors.MethodInvocationError;
 import org.spicefactory.lib.reflect.metadata.Types;
 import org.spicefactory.lib.util.ClassUtil;
 
-import flash.utils.Dictionary;
-
 /**
  * Represents a Constructor.
  * 
@@ -33,7 +31,7 @@ public class Constructor extends FunctionBase {
 	/**
 	 * @private
 	 */
-	function Constructor (params:Array, metadata:Dictionary, owner:ClassInfo) {
+	function Constructor (params:Array, metadata:MetadataCollection, owner:ClassInfo) {
 		super(owner.simpleName, params, owner, metadata);
 	}
 	
@@ -43,7 +41,7 @@ public class Constructor extends FunctionBase {
 	 */
 	internal static function fromXML (xml:XML, owner:ClassInfo) : Constructor {
 		 // Metadata for constructor is ignored in Flash Player 9
-		var metadata:Dictionary = metadataFromXml(xml, Types.CONSTRUCTOR);
+		var metadata:MetadataCollection = metadataFromXml(xml, Types.CONSTRUCTOR);
 		return new Constructor(parametersFromXml(xml, owner), metadata, owner);
 	}
 	

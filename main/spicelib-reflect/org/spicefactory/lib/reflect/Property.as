@@ -18,8 +18,6 @@ package org.spicefactory.lib.reflect {
 import org.spicefactory.lib.reflect.errors.PropertyError;
 import org.spicefactory.lib.reflect.metadata.Types;
 
-import flash.utils.Dictionary;
-
 /**
  * Represents a single property. 
  * The property may have been declared with var, const or implicit getter/setter functions
@@ -40,7 +38,7 @@ public class Property extends Member {
 	 * @private
 	 */
 	function Property (name:String, type:ClassInfo, readable:Boolean, writable:Boolean, s:Boolean, 
-			metadata:Dictionary, owner:ClassInfo) {
+			metadata:MetadataCollection, owner:ClassInfo) {
 		super(name, owner, metadata);
 		this._type = type;
 		this._readable = readable;
@@ -75,7 +73,7 @@ public class Property extends Member {
 	private static function fromXML 
 			(x:XML, readable:Boolean, writable:Boolean, isStatic:Boolean, owner:ClassInfo) : Property {
 		var type:ClassInfo = ClassInfo.forName(x.@type, owner.applicationDomain);
-		var metadata:Dictionary = MetadataAware.metadataFromXml(x, Types.PROPERTY);
+		var metadata:MetadataCollection = MetadataAware.metadataFromXml(x, Types.PROPERTY);
 		return new Property(x.@name, type, readable, writable, isStatic, metadata, owner); 		
 	}
 	
