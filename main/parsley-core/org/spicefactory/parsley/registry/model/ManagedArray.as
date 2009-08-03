@@ -22,7 +22,7 @@ package org.spicefactory.parsley.registry.model {
  * 
  * @author Jens Halm
  */
-public class ManagedArray extends Array {
+public dynamic class ManagedArray extends Array {
 	
 	
 }
