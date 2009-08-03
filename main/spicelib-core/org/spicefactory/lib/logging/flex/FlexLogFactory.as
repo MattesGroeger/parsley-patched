@@ -87,27 +87,32 @@ class FlexDelegateLogger implements Logger {
 	}
 
 	public function trace (message : String, ...params) : void {
-		delegate.debug(message, params);
+		invokeDelegate(delegate.debug, message, params);
 	}
 
 	public function debug (message : String, ...params) : void {
-		delegate.debug(message, params);
+		invokeDelegate(delegate.debug, message, params);
 	}
 
 	public function info (message : String, ...params) : void {
-		delegate.info(message, params);
+		invokeDelegate(delegate.info, message, params);
 	}
 
 	public function warn (message : String, ...params) : void {
-		delegate.warn(message, params); 
+		invokeDelegate(delegate.warn, message, params);
 	}
 
 	public function error (message : String, ...params) : void {
-		delegate.error(message, params);
+		invokeDelegate(delegate.error, message, params);
 	}
 
 	public function fatal (message : String, ...params) : void {
-		delegate.fatal(message, params);
+		invokeDelegate(delegate.fatal, message, params);
+	}
+	
+	private function invokeDelegate (f:Function, message:String, params:Array) : void {
+		params.unshift(message);
+		f.apply(delegate, params);
 	}
 
 	
