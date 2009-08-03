@@ -31,9 +31,9 @@
             <xs:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="async-init" type="asyncInitType" minOccurs="0"/>
 	        
-	        <xs:element name="pre-destroy" type="xs:token" minOccurs="0"/>
-	        <xs:element name="post-construct" type="xs:token" minOccurs="0"/>
-	        <xs:element name="factory" type="xs:token" minOccurs="0"/>
+	        <xs:element name="pre-destroy" type="methodType" minOccurs="0"/>
+	        <xs:element name="post-construct" type="methodType" minOccurs="0"/>
+	        <xs:element name="factory" type="methodType" minOccurs="0"/>
             
             <xs:element name="managed-events" type="managedEventsType" minOccurs="0"/>
             <xs:element name="message-handler" type="messageHandlerType" minOccurs="0"/>
@@ -73,6 +73,10 @@
         <xs:attribute name="value" type="xs:token" use="optional"/>
         <xs:attribute name="id-ref" type="xs:token" use="optional"/>
         <xs:attribute name="type-ref" type="xs:token" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="methodType">
+        <xs:attribute name="method" type="xs:token" use="required"/>
     </xs:complexType>
     
     <xs:complexType name="asyncInitType">
