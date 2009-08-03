@@ -59,7 +59,7 @@ public class MappedProperty {
 		if (values[targetProperty.name] != undefined) {
 			var stringValue:String = values[targetProperty.name];
 			try {
-				var value:* = (targetProperty.type.isType(Array)) ? stringValue.split(",") : stringValue;
+				var value:* = (targetProperty.type.isType(Array)) ? splitAndTrim(stringValue) : stringValue;
 				if (assignableTo != null) {
 					value = Converters.convert(value, targetProperty.type.getClass());
 					var validatable:ClassInfo = (value is Class) ? ClassInfo.forClass(value as Class) : value as ClassInfo;
@@ -91,6 +91,16 @@ public class MappedProperty {
 		else if (validate && required) {
 			throw new ValidationError("Missing required attribute for property " + targetProperty);
 		}
+	}
+	
+	/**
+	 * @private
+	 */
+	public static function splitAndTrim (value:String) : Array {
+		value = value.replace(/^\s+|\s+$/g, '');
+		value = value.replace(/\s+,\s+/g, ',');
+		value = value.replace(/,\s+|\s+,/g, ',');
+		return value.split(",");
 	}
 
 	

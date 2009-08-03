@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml.tag {
+import org.spicefactory.lib.reflect.mapping.MappedProperty;
 import org.spicefactory.parsley.messaging.decorator.ManagedEventsDecorator;
 
 /**
@@ -29,7 +30,7 @@ public class ManagedEventsDecoratorTag extends ManagedEventsDecorator {
 	 * The names of the events to manage as a single String concatenated with a ','.
 	 */
 	public function set namesAsString (nameStr:String) : void {
-		names = nameStr.split(",");
+		names = MappedProperty.splitAndTrim(nameStr);
 	}
 	
 	

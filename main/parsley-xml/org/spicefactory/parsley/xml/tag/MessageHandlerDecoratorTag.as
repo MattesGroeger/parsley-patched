@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml.tag {
+import org.spicefactory.lib.reflect.mapping.MappedProperty;
 import org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator;
 
 /**
@@ -30,7 +31,7 @@ public class MessageHandlerDecoratorTag extends MessageHandlerDecorator {
 	 * the target handler method as a single String concatenated with a ','.
 	 */
 	public function set messagePropertiesAsString (props:String) : void {
-		messageProperties = props.split(",");
+		messageProperties = MappedProperty.splitAndTrim(props);
 	}
 	
 	

@@ -16,7 +16,7 @@ public class MessagingXmlTagTest extends MessagingTestBase {
 		xmlns="http://www.spicefactory.org/parsley">
 		
 		<object id="eventSource" type="org.spicefactory.parsley.core.messaging.model.EventSource" lazy="true">
-			<managed-events names="test1,test2,foo"/>
+			<managed-events names="test1, test2, foo"/>
 		</object> 
 		
 		<object id="testDispatcher" type="org.spicefactory.parsley.core.messaging.model.TestMessageDispatcher" lazy="true">
