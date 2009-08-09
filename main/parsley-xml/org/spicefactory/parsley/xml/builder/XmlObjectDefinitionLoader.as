@@ -185,7 +185,7 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 		else {
 			log.error(msg + "{0}", cause);
 		}
-		dispatchEvent(new NestedErrorEvent(msg, cause));
+		dispatchEvent(new NestedErrorEvent(ErrorEvent.ERROR, cause, msg)); 
 	}
 
 	/**
