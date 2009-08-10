@@ -46,7 +46,8 @@ public interface MessageTarget {
 	function get selector () : * ;
 	
 	/**
-	 * Indicates whether this target is an interceptor or a regular target (handler or binding).
+	 * Indicates whether this target is an interceptor or a regular target.
+	 * Interceptors will always be executed before regular targets.
 	 */
 	function get interceptor () : Boolean ;
 	
