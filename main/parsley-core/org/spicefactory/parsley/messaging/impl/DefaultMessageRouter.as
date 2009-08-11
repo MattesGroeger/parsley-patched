@@ -85,6 +85,7 @@ public class DefaultMessageRouter implements MessageRouter {
 	public function dispatchMessage (message:Object, domain:ApplicationDomain = null) : void {
 		if (!activated) {
 			deferredMessages.push(message);
+			return;
 		}
 		var type:ClassInfo = ClassInfo.forInstance(message, domain);
 		var targetSelection:MessageTargetSelection = null;
