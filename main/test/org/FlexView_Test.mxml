@@ -25,8 +25,23 @@
         ]]>
     </mx:Script>    
     
+    <mx:TraceTarget id="logTarget" 
+        includeTime="true" 
+        includeCategory="true" 
+        includeLevel="true"
+    	>
+        <mx:filters>
+            <mx:Array>
+                <mx:String>org.spicefactory.*</mx:String>
+            </mx:Array>
+        </mx:filters>
+        <mx:level>0</mx:level>
+    </mx:TraceTarget>
+
+    
     <mx:ApplicationControlBar dock="true">
 		<mx:Button label="Unload module" click="{module.unloadModule();}"/>   
+		<mx:Button label="Load module" click="{module.loadModule();}"/>   
     </mx:ApplicationControlBar>
     
     
