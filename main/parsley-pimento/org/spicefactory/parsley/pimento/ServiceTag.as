@@ -15,10 +15,10 @@
  */
 
 package org.spicefactory.parsley.pimento {
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 
 import flash.errors.IllegalOperationError;
@@ -84,8 +84,8 @@ public class ServiceTag implements ObjectDefinitionFactory {
 import org.spicefactory.cinnamon.service.ServiceProxy;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.pimento.ServiceTag;
 import org.spicefactory.parsley.core.registry.ObjectLifecycleListener;
+import org.spicefactory.parsley.pimento.ServiceTag;
 import org.spicefactory.pimento.config.PimentoConfig;
 
 class ServiceLifecycleListener implements ObjectLifecycleListener {
