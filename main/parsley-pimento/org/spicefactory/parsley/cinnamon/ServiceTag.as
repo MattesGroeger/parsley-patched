@@ -86,7 +86,7 @@ import org.spicefactory.cinnamon.service.ServiceProxy;
 import org.spicefactory.parsley.cinnamon.ServiceTag;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.registry.ObjectLifecycleListener;
+import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 
 class ServiceLifecycleListener implements ObjectLifecycleListener {
 

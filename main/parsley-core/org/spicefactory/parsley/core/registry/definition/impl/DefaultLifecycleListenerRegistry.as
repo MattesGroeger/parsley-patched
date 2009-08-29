@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.core.registry.definition.impl {
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectLifecycleListener;
+import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
 
 /**
@@ -80,7 +80,7 @@ public class DefaultLifecycleListenerRegistry extends AbstractRegistry implement
 }
 }
 
-import org.spicefactory.parsley.core.registry.ObjectLifecycleListener;
+import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 
 class LifecycleListenerRegistration {
 	public var priority:int;

@@ -20,7 +20,7 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectLifecycleListener;
+import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 

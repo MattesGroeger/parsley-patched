@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.registry {
+package org.spicefactory.parsley.core.registry.definition {
 import org.spicefactory.parsley.core.context.Context;
 
 /**

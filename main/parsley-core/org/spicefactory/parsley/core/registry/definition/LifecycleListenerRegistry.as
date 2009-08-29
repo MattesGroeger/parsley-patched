@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry.definition {
-import org.spicefactory.parsley.core.registry.ObjectLifecycleListener;
+
 
 /**
  * A registry for all lifecycle listeners registered for a single instance.

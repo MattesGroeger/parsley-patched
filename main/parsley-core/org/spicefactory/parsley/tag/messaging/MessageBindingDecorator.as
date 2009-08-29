@@ -20,7 +20,7 @@ import org.spicefactory.parsley.core.messaging.MessageTarget;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectLifecycleListener;
+import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 
 [Metadata(name="MessageBinding", types="property")]
 /**
