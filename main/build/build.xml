@@ -3,7 +3,7 @@
 	
 	<property file="build.properties" />
 	
-	<property name="version" value="2.0.1"/>
+	<property name="version" value="2.1.0-SNAPSHOT"/>
 	<property name="pimento.version" value="1.0.1"/>
 	<property name="project.dir" value="${basedir}/.."/>
 	<property name="lib.dir" value="${project.dir}/lib"/>
