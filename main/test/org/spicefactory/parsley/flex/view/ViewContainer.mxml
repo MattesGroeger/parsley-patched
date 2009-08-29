@@ -1,6 +1,6 @@
 <mx:Object 
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:tag="org.spicefactory.parsley.registry.tag.*"
+	xmlns:tag="org.spicefactory.parsley.tag.core.*"
 	xmlns:test="org.spicefactory.parsley.testmodel.*"
 	xmlns:model="org.spicefactory.parsley.core.decorator.injection.*">
 	

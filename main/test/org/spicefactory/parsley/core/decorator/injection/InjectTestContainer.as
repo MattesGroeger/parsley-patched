@@ -12,8 +12,8 @@ import org.spicefactory.parsley.core.decorator.injection.RequiredConstructorInje
 import org.spicefactory.parsley.core.decorator.injection.RequiredMethodInjection;
 import org.spicefactory.parsley.core.decorator.injection.RequiredPropertyIdInjection;
 import org.spicefactory.parsley.core.decorator.injection.RequiredPropertyInjection;
-import org.spicefactory.parsley.registry.ObjectDefinitionFactory;
-import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionFactory;	
+import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 
 /**
  * @author Jens Halm

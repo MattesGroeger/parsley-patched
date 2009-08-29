@@ -19,7 +19,7 @@ import org.spicefactory.lib.flash.logging.FlashLogFactory;
 import org.spicefactory.lib.flash.logging.LogLevel;
 import org.spicefactory.lib.flash.logging.impl.DefaultLogFactory;
 import org.spicefactory.lib.logging.LogContext;
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 
 import flash.utils.getQualifiedClassName;

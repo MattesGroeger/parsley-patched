@@ -1,6 +1,6 @@
 package org.spicefactory.parsley.xml {
-import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.ContextTestBase;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;

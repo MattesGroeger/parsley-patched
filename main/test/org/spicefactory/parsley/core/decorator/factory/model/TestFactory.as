@@ -1,7 +1,7 @@
 package org.spicefactory.parsley.core.decorator.factory.model {
-import org.spicefactory.parsley.core.decorator.injection.RequiredMethodInjection;
-	import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 import org.spicefactory.lib.errors.IllegalStateError;
+import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
+import org.spicefactory.parsley.core.decorator.injection.RequiredMethodInjection;
 
 /**
  * @author Jens Halm

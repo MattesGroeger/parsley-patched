@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.xml.tag {
 import org.spicefactory.lib.reflect.mapping.MappedProperty;
-import org.spicefactory.parsley.messaging.decorator.ManagedEventsDecorator;
+import org.spicefactory.parsley.tag.messaging.ManagedEventsDecorator;
 
 /**
  * Represents the managed-events XML tag.

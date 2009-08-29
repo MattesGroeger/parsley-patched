@@ -1,6 +1,8 @@
 package org.spicefactory.parsley.core {
 import flexunit.framework.TestCase;
 
+import org.spicefactory.parsley.core.context.Context;
+
 /**
  * @author Jens Halm
  */

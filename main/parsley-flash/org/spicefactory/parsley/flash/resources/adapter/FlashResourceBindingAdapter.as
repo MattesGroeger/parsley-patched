@@ -18,8 +18,8 @@ package org.spicefactory.parsley.flash.resources.adapter {
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.flash.resources.events.LocaleSwitchEvent;
 import org.spicefactory.parsley.flash.resources.ResourceManager;
-import org.spicefactory.parsley.resources.ResourceBindingEvent;
-import org.spicefactory.parsley.resources.ResourceBindingAdapter;
+import org.spicefactory.parsley.tag.resources.ResourceBindingEvent;
+import org.spicefactory.parsley.tag.resources.ResourceBindingAdapter;
 
 
 import flash.events.Event;

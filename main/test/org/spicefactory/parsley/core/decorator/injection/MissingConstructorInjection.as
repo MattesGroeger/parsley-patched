@@ -1,6 +1,6 @@
 package org.spicefactory.parsley.core.decorator.injection {
+import org.spicefactory.parsley.core.decorator.injection.MissingDependency;
 
-	import org.spicefactory.parsley.core.decorator.injection.MissingDependency;
 [InjectConstructor]
 /**
  * @author Jens Halm

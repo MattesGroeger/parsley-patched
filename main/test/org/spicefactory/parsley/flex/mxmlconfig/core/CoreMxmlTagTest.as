@@ -1,6 +1,6 @@
 package org.spicefactory.parsley.flex.mxmlconfig.core {
-import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.ContextTestBase;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 import org.spicefactory.parsley.flex.FlexContextBuilder;
 

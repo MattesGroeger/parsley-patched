@@ -15,11 +15,11 @@
  */
 
 package org.spicefactory.parsley.pimento {
-import org.spicefactory.parsley.registry.ObjectDefinition;
-import org.spicefactory.parsley.registry.ObjectDefinitionFactory;
-import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.registry.RootObjectDefinition;
-import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.pimento.config.PimentoConfig;
 import org.spicefactory.pimento.service.EntityManager;
 
@@ -78,8 +78,8 @@ public class ConfigTag implements ObjectDefinitionFactory {
 }
 }
 
-import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.registry.ObjectInstantiator;
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.pimento.config.PimentoConfig;
 
 class EntityManagerInstantiator implements ObjectInstantiator {

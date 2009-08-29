@@ -1,7 +1,7 @@
 package org.spicefactory.parsley.pimento {
 import org.spicefactory.cinnamon.service.ServiceProxy;
 import org.spicefactory.lib.errors.AbstractMethodError;
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.xml.XmlContextTestBase;
 import org.spicefactory.pimento.config.PimentoConfig;
 import org.spicefactory.pimento.service.EntityManager;

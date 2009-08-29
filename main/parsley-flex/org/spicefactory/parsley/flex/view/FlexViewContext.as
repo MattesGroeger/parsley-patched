@@ -18,14 +18,14 @@ package org.spicefactory.parsley.flex.view {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.impl.ChildContext;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.impl.ChildContext;
-import org.spicefactory.parsley.core.impl.ObjectFactory;
-import org.spicefactory.parsley.registry.ObjectDefinition;
-import org.spicefactory.parsley.registry.ObjectDefinitionFactory;
-import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
@@ -55,7 +55,7 @@ public class FlexViewContext extends ChildContext {
 	 * @param factory the factory responsible for instantiating objects based on their definitions
 	 */
 	public function FlexViewContext (parent:Context, registry:ObjectDefinitionRegistry = null, 
-			factory:ObjectFactory = null) {
+			factory:ObjectLifecycleManager = null) {
 		super(parent, registry, factory);
 		addEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		initialize();

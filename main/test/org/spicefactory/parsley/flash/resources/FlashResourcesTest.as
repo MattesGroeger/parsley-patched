@@ -1,7 +1,7 @@
 package org.spicefactory.parsley.flash.resources {
-import org.spicefactory.lib.expr.impl.DefaultExpressionContext;
-import org.spicefactory.parsley.core.CompositeContextBuilder;
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.flash.resources.events.LocaleSwitchEvent;
 import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
@@ -132,7 +132,7 @@ public class FlashResourcesTest extends XmlContextTestBase {
 			
 	        <res:resource-bundle id="b_text" basename="textB" localized="false" ignore-country="true"/>
     	</objects>;  
-		var builder:CompositeContextBuilder = new CompositeContextBuilder();
+		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
 		var xmlBuilder:XmlObjectDefinitionBuilder = new XmlObjectDefinitionBuilder([]);
 		xmlBuilder.addXml(xml1);
 		xmlBuilder.addXml(xml2);

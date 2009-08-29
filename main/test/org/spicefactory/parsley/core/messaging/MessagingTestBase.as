@@ -1,17 +1,14 @@
 package org.spicefactory.parsley.core.messaging {
-	import org.spicefactory.lib.errors.AbstractMethodError;
-import org.spicefactory.parsley.core.ActionScriptContextBuilder;
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.parsley.core.ContextTestBase;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.messaging.model.EventSource;
 import org.spicefactory.parsley.core.messaging.model.MessageBindings;
 import org.spicefactory.parsley.core.messaging.model.MessageHandlers;
 import org.spicefactory.parsley.core.messaging.model.MessageInterceptors;
 import org.spicefactory.parsley.core.messaging.model.ProxyMessageHandlers;
 import org.spicefactory.parsley.core.messaging.model.TestMessageDispatcher;
-import org.spicefactory.parsley.core.messaging.model.TestMessageDispatcherMetadata;
 import org.spicefactory.parsley.core.messaging.model.TestMessageHandlers;
-import org.spicefactory.parsley.core.messaging.model.TestMessageHandlersMetadata;
 
 import flash.events.Event;
 

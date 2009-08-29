@@ -1,13 +1,11 @@
 package org.spicefactory.parsley.core.builder {
-	import org.spicefactory.parsley.core.builder.Container2;
-	import org.spicefactory.parsley.core.Context;
-	import org.spicefactory.parsley.core.builder.Container1;
-	import org.spicefactory.parsley.core.ContextTestBase;
-	import org.spicefactory.parsley.core.ActionScriptContextBuilder;
-import org.spicefactory.parsley.testmodel.LazyTestClass;
+import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
+import org.spicefactory.parsley.core.ContextTestBase;
+import org.spicefactory.parsley.core.builder.Container1;
+import org.spicefactory.parsley.core.builder.Container2;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.testmodel.ClassWithSimpleProperties;
-
-import flexunit.framework.TestCase;
+import org.spicefactory.parsley.testmodel.LazyTestClass;
 
 /**
  * @author Jens Halm

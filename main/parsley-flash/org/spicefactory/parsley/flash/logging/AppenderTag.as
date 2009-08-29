@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.flash.logging {
 import org.spicefactory.lib.flash.logging.Appender;
 import org.spicefactory.lib.flash.logging.LogLevel;
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 
 /**

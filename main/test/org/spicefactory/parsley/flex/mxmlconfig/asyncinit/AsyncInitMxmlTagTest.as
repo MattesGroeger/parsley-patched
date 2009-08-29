@@ -1,6 +1,6 @@
 package org.spicefactory.parsley.flex.mxmlconfig.asyncinit {
-import org.spicefactory.parsley.core.ActionScriptContextBuilder;
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.decorator.asyncinit.AsyncInitTestBase;
 
 /**

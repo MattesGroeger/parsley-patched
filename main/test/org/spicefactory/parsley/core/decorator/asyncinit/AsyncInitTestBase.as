@@ -1,7 +1,7 @@
 package org.spicefactory.parsley.core.decorator.asyncinit {
 import org.spicefactory.lib.errors.AbstractMethodError;
-import org.spicefactory.parsley.core.Context;
 import org.spicefactory.parsley.core.ContextTestBase;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.decorator.asyncinit.model.AsyncInitModel;
 
 import flash.events.Event;

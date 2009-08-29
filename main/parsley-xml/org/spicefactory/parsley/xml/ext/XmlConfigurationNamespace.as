@@ -21,9 +21,9 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.NamingStrategy;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
-import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.registry.ObjectDefinitionFactory;
-import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;

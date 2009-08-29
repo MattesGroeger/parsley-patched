@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.flex.resources {
-import org.spicefactory.parsley.resources.ResourceBindingEvent;
-import org.spicefactory.parsley.resources.ResourceBindingAdapter;
+import org.spicefactory.parsley.tag.resources.ResourceBindingAdapter;
+import org.spicefactory.parsley.tag.resources.ResourceBindingEvent;
 
 import mx.resources.ResourceManager;
 

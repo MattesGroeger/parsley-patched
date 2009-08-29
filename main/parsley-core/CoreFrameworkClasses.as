@@ -15,18 +15,18 @@
  */
 
 package {
-import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.ActionScriptContextBuilder;
-import org.spicefactory.parsley.core.CompositeContextBuilder;
-import org.spicefactory.parsley.core.builder.ActionScriptObjectDefinitionBuilder;
+import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
+import org.spicefactory.parsley.asconfig.builder.ActionScriptObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
+import org.spicefactory.parsley.core.context.impl.ChildContext;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
-import org.spicefactory.parsley.core.impl.ChildContext;
-import org.spicefactory.parsley.core.impl.DefaultObjectFactory;
-import org.spicefactory.parsley.core.task.CompositeContextBuilderTask;
-import org.spicefactory.parsley.messaging.impl.DefaultMessageProcessor;
-import org.spicefactory.parsley.messaging.impl.DefaultMessageRouter;
-import org.spicefactory.parsley.messaging.impl.MessageTargetSelection;
+import org.spicefactory.parsley.core.lifecycle.impl.DefaultObjectLifecycleManager;
+import org.spicefactory.parsley.core.messaging.impl.DefaultMessageProcessor;
+import org.spicefactory.parsley.core.messaging.impl.DefaultMessageRouter;
+import org.spicefactory.parsley.core.messaging.impl.MessageTargetSelection;
+import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
+import org.spicefactory.parsley.task.CompositeContextBuilderTask;
 
 /**
  * @private 
@@ -42,10 +42,10 @@ public class CoreFrameworkClasses {
 	ActionScriptObjectDefinitionBuilder;
 	ContextBuilderError;
 	ChildContext;
-	DefaultObjectFactory;
+	DefaultObjectLifecycleManager;
 	CompositeContextBuilderTask;
 	ActionScriptContextBuilder;
-	CompositeContextBuilder;
+	DefaultCompositeContextBuilder;
 	MessageTargetSelection;
 	DefaultMessageProcessor;
 	DefaultMessageRouter;

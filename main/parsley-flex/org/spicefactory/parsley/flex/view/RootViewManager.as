@@ -19,9 +19,9 @@ import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.ClassUtil;
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
 
 import mx.core.Application;
 

@@ -1,7 +1,7 @@
 <mx:Object 
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:msg="org.spicefactory.parsley.messaging.decorator.*"
-	xmlns:flextag="org.spicefactory.parsley.registry.tag.*">
+	xmlns:msg="org.spicefactory.parsley.tag.messaging.*"
+	xmlns:flextag="org.spicefactory.parsley.tag.core.*">
 	
 	<mx:Script>
 		<![CDATA[

@@ -15,10 +15,10 @@
  */
 
 package org.spicefactory.parsley.flex.view {
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.parsley.flex.view.AbstractViewManager;
+import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
 
 import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;

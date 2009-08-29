@@ -1,13 +1,11 @@
 package org.spicefactory.parsley.flex.logging {
-import org.spicefactory.lib.logging.flex.FlexLogFactory;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.lib.logging.flex.FlexLogFactory;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.xml.XmlContextTestBase;
 
-import mx.logging.ILogger;
 import mx.logging.ILoggingTarget;
-import mx.logging.Log;
 
 public class FlexLoggingXmlTagTest extends XmlContextTestBase {
 

@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.pimento {
-import org.spicefactory.cinnamon.service.ServiceRequest;	
+import org.spicefactory.cinnamon.service.ServiceRequest;
 
 public interface EchoService {
 	

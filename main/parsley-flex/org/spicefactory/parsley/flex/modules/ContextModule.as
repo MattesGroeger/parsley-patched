@@ -17,8 +17,9 @@
 package org.spicefactory.parsley.flex.modules {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.flex.FlexContextBuilder;
+
 import mx.modules.Module;
 
 import flash.system.ApplicationDomain;

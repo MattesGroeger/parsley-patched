@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.xml.tag {
 import org.spicefactory.lib.reflect.mapping.MappedProperty;
-import org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator;
+import org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator;
 
 /**
  * Represents the message-handler XML tag.

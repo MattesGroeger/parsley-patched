@@ -3,7 +3,7 @@ import org.spicefactory.lib.flash.logging.FlashLogFactory;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.LogCounterAppender;
 import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.xml.XmlContextTestBase;
 
 //import org.spicefactory.parsley.context.ns.context_internal;

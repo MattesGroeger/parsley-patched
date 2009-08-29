@@ -1,12 +1,12 @@
 package org.spicefactory.parsley.core.messaging {
+import org.spicefactory.parsley.core.messaging.model.EventSourceMetadata;
+import org.spicefactory.parsley.core.messaging.model.MessageBindingsMetadata;
+import org.spicefactory.parsley.core.messaging.model.MessageHandlersMetadata;
+import org.spicefactory.parsley.core.messaging.model.MessageInterceptorsMetadata;
+import org.spicefactory.parsley.core.messaging.model.ProxyMessageHandlersMetadata;
+import org.spicefactory.parsley.core.messaging.model.TestMessageDispatcherMetadata;
+import org.spicefactory.parsley.core.messaging.model.TestMessageHandlersMetadata;
 
-	import org.spicefactory.parsley.core.messaging.model.TestMessageHandlersMetadata;
-	import org.spicefactory.parsley.core.messaging.model.TestMessageDispatcherMetadata;
-	import org.spicefactory.parsley.core.messaging.model.ProxyMessageHandlersMetadata;
-	import org.spicefactory.parsley.core.messaging.model.MessageInterceptorsMetadata;
-	import org.spicefactory.parsley.core.messaging.model.MessageHandlersMetadata;
-	import org.spicefactory.parsley.core.messaging.model.MessageBindingsMetadata;
-	import org.spicefactory.parsley.core.messaging.model.EventSourceMetadata;
 /**
  * @author Jens Halm
  */

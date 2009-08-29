@@ -2,9 +2,9 @@ package org.spicefactory.parsley.samples {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.registry.ObjectDefinition;
-import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 
 /**
  * @author Jens Halm
@@ -54,8 +54,8 @@ public class Singleton implements ObjectDefinitionDecorator {
 
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.registry.ObjectInstantiator;
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 
 class SingletonPropertyInstantiator implements ObjectInstantiator {
 	

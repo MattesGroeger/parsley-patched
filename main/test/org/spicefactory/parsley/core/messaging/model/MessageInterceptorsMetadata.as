@@ -1,5 +1,5 @@
 package org.spicefactory.parsley.core.messaging.model {
-import org.spicefactory.parsley.messaging.MessageProcessor;
+import org.spicefactory.parsley.core.messaging.MessageProcessor;
 
 /**
  * @author Jens Halm

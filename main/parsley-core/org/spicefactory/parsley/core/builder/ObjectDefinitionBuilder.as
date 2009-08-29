@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.builder {
-import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
 /**
  * Responsible for adding object definitions to a configuration registry.

@@ -1,6 +1,6 @@
 package org.spicefactory.parsley.pimento {
-import org.spicefactory.parsley.core.ActionScriptContextBuilder;
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
+import org.spicefactory.parsley.core.context.Context;
 
 public class PimentoMxmlTagTest extends PimentoTestBase {
 

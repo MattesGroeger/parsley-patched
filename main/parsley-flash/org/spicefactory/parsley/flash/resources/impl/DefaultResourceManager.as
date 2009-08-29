@@ -29,7 +29,7 @@ import org.spicefactory.parsley.flash.resources.events.LocaleSwitchEvent;
 import org.spicefactory.parsley.flash.resources.impl.LocaleUtil;
 import org.spicefactory.parsley.flash.resources.spi.ResourceBundleSpi;
 import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
-import org.spicefactory.parsley.resources.ResourceBindingDecorator;
+import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
 
 import flash.events.ErrorEvent;
 import flash.events.EventDispatcher;

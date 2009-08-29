@@ -10,7 +10,7 @@
         <![CDATA[
         	import org.spicefactory.parsley.flex.view.ViewContainer;
         	import org.spicefactory.parsley.flex.FlexContextBuilder;
-        	import org.spicefactory.parsley.core.Context;
+        	import org.spicefactory.parsley.core.context.Context;
         	import mx.containers.TitleWindow;
         	import mx.managers.PopUpManager;
         	

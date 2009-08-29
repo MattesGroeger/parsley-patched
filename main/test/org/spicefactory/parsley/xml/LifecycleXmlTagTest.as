@@ -1,5 +1,5 @@
 package org.spicefactory.parsley.xml {
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.decorator.lifecycle.LifecycleTestBase;
 
 /**

@@ -17,12 +17,13 @@
 package org.spicefactory.parsley.flex {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.flex.FlexLogFactory;
-import org.spicefactory.parsley.core.CompositeContextBuilder;
-import org.spicefactory.parsley.core.Context;
-import org.spicefactory.parsley.core.builder.ActionScriptObjectDefinitionBuilder;
+import org.spicefactory.parsley.asconfig.builder.ActionScriptObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.flex.resources.FlexResourceBindingAdapter;
 import org.spicefactory.parsley.flex.view.RootViewManager;
-import org.spicefactory.parsley.resources.ResourceBindingDecorator;
+import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
 
 import flash.system.ApplicationDomain;
 
@@ -72,7 +73,7 @@ public class FlexContextBuilder {
 	 */	
 	public static function buildAll (configClasses:Array, parent:Context = null, domain:ApplicationDomain = null,
 			viewTriggerEvent:String = "configureIOC") : Context {
-		var builder:CompositeContextBuilder = new CompositeContextBuilder(parent, domain);
+		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder(parent, domain);
 		mergeAll(configClasses, builder, viewTriggerEvent);
 		return builder.build();		
 	}

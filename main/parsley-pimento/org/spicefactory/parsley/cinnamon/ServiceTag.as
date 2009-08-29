@@ -15,11 +15,11 @@
  */
 
 package org.spicefactory.parsley.cinnamon {
-import org.spicefactory.parsley.registry.ObjectDefinition;
-import org.spicefactory.parsley.registry.ObjectDefinitionFactory;
-import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.registry.RootObjectDefinition;
-import org.spicefactory.parsley.registry.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 
 import flash.errors.IllegalOperationError;
 
@@ -84,9 +84,9 @@ public class ServiceTag implements ObjectDefinitionFactory {
 import org.spicefactory.cinnamon.service.ServiceChannel;
 import org.spicefactory.cinnamon.service.ServiceProxy;
 import org.spicefactory.parsley.cinnamon.ServiceTag;
-import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.registry.ObjectLifecycleListener;
+import org.spicefactory.parsley.core.registry.ObjectLifecycleListener;
 
 class ServiceLifecycleListener implements ObjectLifecycleListener {
 

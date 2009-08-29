@@ -1,7 +1,7 @@
 package org.spicefactory.parsley.core.messaging.model {
 import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.TestEvent;
-import org.spicefactory.parsley.messaging.MessageProcessor;
 
 /**
  * @author Jens Halm
