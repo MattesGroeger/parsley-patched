@@ -19,14 +19,13 @@ import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.registry.FactoryObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.metadata.MetadataDecoratorExtractor;
-
 
 import flash.utils.getQualifiedClassName;
 
@@ -67,6 +66,9 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	public var decorators:Array = new Array();
 	
 	
+	private var instantiator:ObjectInstantiator;
+	
+	
 	/**
 	 * Creates a new instance.
 	 * 
@@ -74,12 +76,15 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	 * @param id the id the object should be registered with
 	 * @param lazy whether the object is lazy initializing
 	 * @param singleton whether the object should be treated as a singleton
+	 * @param instantiator the ObjectInstantiator to use in case it is predetermined by the configuration mechanism
 	 */
-	function DefaultObjectDefinitionFactory (type:Class, id:String = null, lazy:Boolean = false, singleton:Boolean = true) {
+	function DefaultObjectDefinitionFactory (type:Class, id:String = null, 
+			lazy:Boolean = false, singleton:Boolean = true, instantiator:ObjectInstantiator = null) {
 		this.type = type;
 		this.id = id;
 		this.lazy = lazy;
 		this.singleton = singleton;
+		this.instantiator = instantiator;
 	}
 
 	
@@ -90,6 +95,7 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 		if (id == null) id = IdGenerator.nextObjectId;
 		var ci:ClassInfo = ClassInfo.forClass(type, registry.domain);
 		var def:RootObjectDefinition = new DefaultRootObjectDefinition(ci, id, lazy, singleton);
+		def.instantiator = instantiator;
 		def = processDecorators(registry, def) as RootObjectDefinition;
 		return def;
 	}
@@ -117,12 +123,13 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	protected function processDecorators (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : ObjectDefinition {
 		var decorators:Array = MetadataDecoratorExtractor.extract(definition.type).concat(this.decorators);
 		var errors:Array = new Array();
+		var finalDefinition:ObjectDefinition = definition;
 		for each (var decorator:ObjectDefinitionDecorator in decorators) {
 			try {
 				var newDef:ObjectDefinition = decorator.decorate(definition, registry);
-				if (newDef != definition) {
+				if (newDef != finalDefinition) {
 					validateDefinitionReplacement(definition, newDef, decorator);
-					definition = newDef;
+					finalDefinition = newDef;
 				}
 			}
 			catch (e:Error) {
@@ -134,16 +141,12 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 		if (errors.length > 0) {
 			throw new ContextError("One or more errors processing " + definition + ":\n " + errors.join("\n "));
 		} 
-		return (definition is FactoryObjectDefinition) ? FactoryObjectDefinition(definition).targetDefinition : definition;
+		return finalDefinition;
 	}
 
 	private function validateDefinitionReplacement (oldDef:ObjectDefinition, newDef:ObjectDefinition, 
 			decorator:ObjectDefinitionDecorator) : void {
 		// we cannot allow "downgrades"
-		if (oldDef is FactoryObjectDefinition && (!(newDef is FactoryObjectDefinition))) {
-			throw new ContextError("Decorator of type " + getQualifiedClassName(decorator) 
-					+ " attempts to downgrade a FactoryObjectDefinition to " + getQualifiedClassName(newDef));
-		}
 		if (oldDef is RootObjectDefinition && (!(newDef is RootObjectDefinition))) {
 			throw new ContextError("Decorator of type " + getQualifiedClassName(decorator) 
 					+ " attempts to downgrade a RootObjectDefinition to " + getQualifiedClassName(newDef));

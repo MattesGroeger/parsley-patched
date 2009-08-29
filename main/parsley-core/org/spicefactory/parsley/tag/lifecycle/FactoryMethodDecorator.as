@@ -17,14 +17,13 @@
 package org.spicefactory.parsley.tag.lifecycle {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.FactoryObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.util.DecoratorUtil;
-import org.spicefactory.parsley.core.registry.impl.DefaultFactoryObjectDefinition;
+import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.impl.ObjectDefinitionWrapper;
+import org.spicefactory.parsley.tag.util.DecoratorUtil;
 
 [Metadata(name="Factory", types="method")]
 /**
@@ -47,23 +46,27 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		
+		// Specified definition is for the factory, must be registered as a root factory, 
+		// even if the original definition is for a nested object
+		var factoryDefinition:RootObjectDefinition = new ObjectDefinitionWrapper(definition);
+		registry.registerDefinition(factoryDefinition);
+		
 		// Must create a new definition for the target type
 		var method:Method = DecoratorUtil.getMethod(this.method, definition);
 		var targetType:Class = method.returnType.getClass();
-		var id:String = (definition is RootObjectDefinition) ? RootObjectDefinition(definition).id : null;
-		var targetFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(targetType, id);
-		var targetDefinition:ObjectDefinition = (definition is RootObjectDefinition) 
-				? targetFactory.createRootDefinition(registry) 
-				: targetFactory.createNestedDefinition(registry);
-		
-		// Specified definition is for the factory, must be registered as a root factory, 
-		// even if the original definition is for a nested object
-		var factoryDefinition:FactoryObjectDefinition 
-				= DefaultFactoryObjectDefinition.fromDefinition(definition, targetDefinition);
-		registry.registerDefinition(factoryDefinition);
+		var targetFactory:ObjectDefinitionFactory;
+		var targetDefinition:ObjectDefinition;
+		if (definition is RootObjectDefinition) {
+			var rootDefinition:RootObjectDefinition = RootObjectDefinition(definition);
+			targetFactory = new DefaultObjectDefinitionFactory(targetType, rootDefinition.id, rootDefinition.lazy, rootDefinition.singleton);
+			targetDefinition = targetFactory.createRootDefinition(registry);
+		}
+		else {
+			targetFactory = new DefaultObjectDefinitionFactory(targetType);
+			targetDefinition = targetFactory.createNestedDefinition(registry);
+		}
 		targetDefinition.instantiator = new FactoryMethodInstantiator(factoryDefinition, method);
-
-		return factoryDefinition;		
+		return targetDefinition;		
 	}
 }
 }
@@ -72,10 +75,9 @@ import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.registry.FactoryObjectInstantiator;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 
-class FactoryMethodInstantiator implements FactoryObjectInstantiator {
+class FactoryMethodInstantiator implements ObjectInstantiator {
 
 	
 	private var definition:RootObjectDefinition;
@@ -96,8 +98,5 @@ class FactoryMethodInstantiator implements FactoryObjectInstantiator {
 		return method.invoke(factory, []);
 	}
 	
-	public function get factoryDefinition () : ObjectDefinition {
-		return definition;
-	}
 	
 }

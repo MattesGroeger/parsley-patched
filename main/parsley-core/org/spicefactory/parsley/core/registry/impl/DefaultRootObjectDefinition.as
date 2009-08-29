@@ -17,8 +17,6 @@
 package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-
 
 /**
  * Default implementation of the RootObjectDefinition interface.
@@ -49,23 +47,6 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 		_singleton = singleton;
 	}
 	
-	
-	/**
-	 * Creates a new root definition copying the internal state from the specified existing definition.
-	 * 
-	 * @param definition the defintion to copy the state from
-	 * @param id the id the object should be registered with
-	 * @param lazy whether the object is lazy initializing
-	 * @param singleton whether the object should be treated as a singleton
-	 */
-	public static function fromDefinition (definition:ObjectDefinition, id:String = null, 
-			lazy:Boolean = true, singleton:Boolean = true) : DefaultRootObjectDefinition {
-		if (id == null) id = IdGenerator.nextObjectId;
-		var def:DefaultRootObjectDefinition = new DefaultRootObjectDefinition(definition.type, id, lazy, singleton);
-		def.populateFrom(definition);
-		return def;
-	} 
-
 	
 	/**
 	 * @inheritDoc

@@ -24,10 +24,9 @@ import org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.FactoryObjectInstantiator;
+import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 
 import flash.utils.getQualifiedClassName;
@@ -108,28 +107,20 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 			var id:String = (definitionMeta != null && definitionMeta.id != null) ? definitionMeta.id : configClassProperty.name;
 			var lazy:Boolean = (definitionMeta != null) ? definitionMeta.lazy : false;
 			var singleton:Boolean = (definitionMeta != null) ? definitionMeta.singleton : true;
-			factory = new DefaultObjectDefinitionFactory(configClassProperty.type.getClass(), id, lazy, singleton);
+			var inst:ObjectInstantiator = new ConfingClassPropertyInstantiator(configClass, configClassProperty);
+			factory = new DefaultObjectDefinitionFactory(configClassProperty.type.getClass(), id, lazy, singleton, inst);
 		}
 		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
 		registry.registerDefinition(definition);
-		if (!configClassProperty.type.isType(ObjectDefinitionFactory)) {
-			var inst:ObjectInstantiator = new ConfingClassPropertyInstantiator(configClass, configClassProperty);
-			if (definition.instantiator is FactoryObjectInstantiator) {
-				FactoryObjectInstantiator(definition.instantiator).factoryDefinition.instantiator = inst;
-			}
-			else {
-				definition.instantiator = inst;
-			} 
-		}
 	}
 }
 }
 
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
+import org.spicefactory.parsley.core.registry.definition.ContainerObjectInstantiator;
 
-class ConfingClassPropertyInstantiator implements ObjectInstantiator {
+class ConfingClassPropertyInstantiator implements ContainerObjectInstantiator {
 
 	private var configClass:Object;
 	private var property:Property;

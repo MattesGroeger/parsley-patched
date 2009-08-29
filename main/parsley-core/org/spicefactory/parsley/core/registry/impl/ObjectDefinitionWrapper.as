@@ -45,10 +45,10 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 	 * @param lazy whether the object is lazy initializing
 	 * @param singleton whether the object should be treated as a singleton
 	 */
-	function DefaultRootObjectDefinition (wrappedDefinition:ObjectDefinition, id:String, 
+	function ObjectDefinitionWrapper (wrappedDefinition:ObjectDefinition, id:String = null, 
 			lazy:Boolean = false, singleton:Boolean = true) : void {
 		this.wrappedDefintion = wrappedDefinition;
-		_id = id;
+		_id = (id != null) ? id : IdGenerator.nextObjectId;
 		_lazy = lazy;
 		_singleton = singleton;
 	}
