@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry.impl {
+	import org.spicefactory.parsley.core.registry.definition.ContainerObjectInstantiator;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
@@ -140,6 +141,9 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	 */
 	public function set instantiator (value:ObjectInstantiator) : void {
 		checkState();
+		if (_instantiator != null && (_instantiator is ContainerObjectInstantiator)) {
+			throw IllegalStateError("Instantiator has been set by the container and cannot be overwritten");
+		}
 		_instantiator = value;
 	}
 
