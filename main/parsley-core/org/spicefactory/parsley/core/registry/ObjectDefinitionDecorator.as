@@ -53,8 +53,10 @@ public interface ObjectDefinitionDecorator {
 	 * In most cases this will be the same instance that was passed to the decorate method. 
 	 * But you are allowed to replace it with a completely new definition instance. 
 	 * Since ObjectDefinition is an interface it may even be a custom definition implementation. 
-	 * But in such a case you should make sure that you copy the configuration artifacts 
-	 * already added to the definition as other tags may have already processed this definition.</p>
+	 * The returned definition will be the one that finally gets added to the registry
+	 * (if it is a root definition) or added to its parent (if it is a nested definition).
+	 * The definiton passed to this method will continue to be processed though, so if you return
+	 * a replacement, it is very likely that it should make use of the original definition internally.</p>
 	 * 
 	 * @param definition the definition currently processed
 	 * @param registry the registry the definition belongs to
