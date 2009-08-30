@@ -25,6 +25,7 @@ import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.events.Event;
 import flash.system.ApplicationDomain;
@@ -61,10 +62,11 @@ public class DynamicContext extends ChildContext {
 	 * @param parent the Context to be used as the parent for the dynamic Context
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @param factories the factories to create collaborating services with
+	 * @param viewManager the view manager in case this Context should not create its own
 	 */
 	public function DynamicContext (parent:Context, domain:ApplicationDomain, 
-			factories:FactoryRegistry) {
-		super(parent, factories.definitionRegistry.create(domain), factories);
+			factories:FactoryRegistry, viewManager:ViewManager = null) {
+		super(parent, factories.definitionRegistry.create(domain), factories, null, viewManager);
 		if (!parent.initialized) {
 			addEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		}
@@ -91,7 +93,7 @@ public class DynamicContext extends ChildContext {
 	public function addDefinition (definition:ObjectDefinition) : Object {
 		if (!initialized) {
 			deferredDefinitions.push(definition);
-			return;			
+			return null; // TODO - must return something			
 		}
 		var instance:Object = lifecycleManager.createObject(definition, this);
 		addObject(instance, definition);

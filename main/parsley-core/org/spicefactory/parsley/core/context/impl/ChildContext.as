@@ -19,6 +19,9 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.view.ViewManager;
+
+import flash.display.DisplayObject;
 
 /**
  * Implementation of the <code>Context</code> interface that is capable of handling a parent <code>Context</code>.
@@ -36,9 +39,12 @@ public class ChildContext extends DefaultContext {
 	 * @param parent the Context that should be used as a parent of this Context
 	 * @param registry the internal registry to use
 	 * @param factories the factories to create collaborating services with
+	 * @param viewRoot the initial view root to manage for dynamically wiring view objects
+	 * @param viewManager the view manager in case this Context should not create its own
 	 */
-	public function ChildContext (parent:Context, registry:ObjectDefinitionRegistry, factories:FactoryRegistry) {
-		super(registry, factories, parent.messageRouter);
+	public function ChildContext (parent:Context, registry:ObjectDefinitionRegistry, factories:FactoryRegistry,
+			viewRoot:DisplayObject = null, viewManager:ViewManager = null) {
+		super(registry, factories, viewRoot, parent.messageRouter, viewManager);
 		_parent = parent;
 		_parent.addEventListener(ContextEvent.DESTROYED, parentDestroyed, false, 2); // want to process before parent
 		addEventListener(ContextEvent.DESTROYED, childDestroyed, false);

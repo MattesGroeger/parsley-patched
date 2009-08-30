@@ -13,7 +13,7 @@ public class XmlContextTestBase extends ContextTestBase {
 	
 	
 	public static function getContext (xml:XML, parent:Context = null) : Context {
-		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder(parent);
+		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder(null, parent);
 		var xmlBuilder:XmlObjectDefinitionBuilder = new XmlObjectDefinitionBuilder([], new DefaultExpressionContext());
 		xmlBuilder.addXml(xml);
 		builder.addBuilder(xmlBuilder);

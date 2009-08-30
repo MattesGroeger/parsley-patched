@@ -48,7 +48,7 @@
     <mx:TabNavigator width="100%" height="100%">
     	<view:Panel1 label="Panel1"/>
     	<view:Panel2 label="Panel2"/>
-    	<pm:ModuleLoader id="module" label="Panel3" url="TestModule.swf" parentContext="{context}" width="100%" height="100%"/>
+    	<mx:ModuleLoader id="module" label="Panel3" url="TestModule.swf" width="100%" height="100%"/>
     </mx:TabNavigator>
     
 	

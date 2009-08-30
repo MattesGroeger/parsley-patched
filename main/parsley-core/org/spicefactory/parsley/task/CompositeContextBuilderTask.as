@@ -22,6 +22,7 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 
+import flash.display.DisplayObject;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.system.ApplicationDomain;
@@ -42,11 +43,12 @@ public class CompositeContextBuilderTask extends Task {
 	/**
 	 * Creates a new instance.
 	 * 
+	 * @param viewRoot the initial view root to manage for the Context this instance creates
 	 * @param parent the Context to use as a parent for the Context this instance creates
 	 * @param domain the ApplicationDomain to use for reflecting on configured objects.
 	 */
-	function CompositeContextBuilderTask (parent:Context = null, domain:ApplicationDomain = null) {
-		_builder = GlobalFactoryRegistry.instance.contextBuilder.create(parent, domain);
+	function CompositeContextBuilderTask (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) {
+		_builder = GlobalFactoryRegistry.instance.contextBuilder.create(viewRoot, parent, domain);
 	}
 	
 	

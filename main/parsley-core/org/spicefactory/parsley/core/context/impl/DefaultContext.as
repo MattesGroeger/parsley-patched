@@ -30,7 +30,9 @@ import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.view.ViewManager;
 
+import flash.display.DisplayObject;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -56,6 +58,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private var _registry:ObjectDefinitionRegistry;
 	private var _lifecycleManager:ObjectLifecycleManager;
 	private var _messageRouter:MessageRouter;
+	private var _viewManager:ViewManager;
 	
 	private var singletonCache:SimpleMap = new SimpleMap();
 	
@@ -73,11 +76,15 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 * 
 	 * @param registry the internal registry to use
 	 * @param factories the factories to create collaborating services with
+	 * @param viewRoot the initial view root for dynamically wiring view objects
 	 * @param globalMessageRouter The global (shared) router implementation to use
+	 * @param viewManager the view manager in case this Context should not create its own
 	 */
-	function DefaultContext (registry:ObjectDefinitionRegistry, factories:FactoryRegistry, globalMessageRouter:MessageRouter = null) {
+	function DefaultContext (registry:ObjectDefinitionRegistry, factories:FactoryRegistry, 
+			viewRoot:DisplayObject, globalMessageRouter:MessageRouter = null, viewManager:ViewManager = null) {
 		_registry = registry;
 		_messageRouter = (globalMessageRouter == null) ? factories.messageRouter.create(this) : globalMessageRouter;
+		_viewManager = (viewManager == null) ? factories.viewManager.create(this, registry.domain, factories, viewRoot) : viewManager;
 		_lifecycleManager = factories.lifecycleManager.create(registry.domain);
 		addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, 1);
 		_registry.addEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
@@ -321,6 +328,13 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 */
 	public function get messageRouter () : MessageRouter {
 		return _messageRouter;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get viewManager () : ViewManager {
+		return _viewManager;
 	}
 	
 	

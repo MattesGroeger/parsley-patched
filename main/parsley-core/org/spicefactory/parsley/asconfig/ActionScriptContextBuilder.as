@@ -15,12 +15,12 @@
  */
 
 package org.spicefactory.parsley.asconfig {
-	import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.asconfig.builder.ActionScriptObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 
+import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
 
 /**
@@ -41,12 +41,14 @@ public class ActionScriptContextBuilder {
 	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
 	 * 
 	 * @param configClass the class that contains the ActionScript configuration
+	 * @param viewRoot the initial view root for dynamically wiring view objects
 	 * @param parent the parent to use for the Context to build
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @return a new Context instance, possibly not fully initialized yet
 	 */
-	public static function build (configClass:Class, parent:Context = null, domain:ApplicationDomain = null) : Context {
-		return buildAll([configClass], parent, domain);		
+	public static function build (configClass:Class, viewRoot:DisplayObject = null, 
+			parent:Context = null, domain:ApplicationDomain = null) : Context {
+		return buildAll([configClass], viewRoot, parent, domain);		
 	}
 	
 	/**
@@ -55,12 +57,14 @@ public class ActionScriptContextBuilder {
 	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
 	 * 
 	 * @param configClasses the classes that contain the ActionScript configuration
+	 * @param viewRoot the initial view root for dynamically wiring view objects
 	 * @param parent the parent to use for the Context to build
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @return a new Context instance, possibly not fully initialized yet
 	 */
-	public static function buildAll (configClasses:Array, parent:Context = null, domain:ApplicationDomain = null) : Context {
-		var builder:CompositeContextBuilder = GlobalFactoryRegistry.instance.contextBuilder.create(parent, domain);
+	public static function buildAll (configClasses:Array, viewRoot:DisplayObject = null, 
+			parent:Context = null, domain:ApplicationDomain = null) : Context {
+		var builder:CompositeContextBuilder = GlobalFactoryRegistry.instance.contextBuilder.create(viewRoot, parent, domain);
 		mergeAll(configClasses, builder);
 		return builder.build();
 	}

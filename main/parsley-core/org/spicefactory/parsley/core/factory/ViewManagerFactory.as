@@ -15,13 +15,20 @@
  */
 
 package org.spicefactory.parsley.core.factory {
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.view.ViewManager;
+
+import flash.display.DisplayObject;
+import flash.system.ApplicationDomain;
 
 /**
  * @author Jens Halm
  */
 public interface ViewManagerFactory {
 	
-	// TODO - implement after ViewManager has been implemented
+
+	function create (parent:Context, domain:ApplicationDomain, factories:FactoryRegistry, viewRoot:DisplayObject = null) : ViewManager;
+
 	
 }
 }

@@ -21,6 +21,7 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionBuilder;
 
+import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
 
 /**
@@ -41,14 +42,15 @@ public class XmlContextBuilder {
 	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
 	 * 
 	 * @param filename the name of the file that contains the XML configuration
+	 * @param viewRoot the initial view root for dynamically wiring view objects
 	 * @param parent the parent to use for the Context to build
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @param expressionContext an ExpressionContext that may contain variables that may be used in the configuration file
 	 * @return a new Context instance, possibly not fully initialized yet
 	 */		
-	public static function build (filename:String, parent:Context = null, domain:ApplicationDomain = null, 
-			expressionContext:ExpressionContext = null) : Context {
-		return buildAll([filename], parent, domain, expressionContext);		
+	public static function build (filename:String, viewRoot:DisplayObject = null, parent:Context = null, 
+			domain:ApplicationDomain = null, expressionContext:ExpressionContext = null) : Context {
+		return buildAll([filename], viewRoot, parent, domain, expressionContext);		
 	}
 	
 	/**
@@ -57,14 +59,15 @@ public class XmlContextBuilder {
 	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
 	 * 
 	 * @param filenames the names of the files that contain the XML configuration
+	 * @param viewRoot the initial view root for dynamically wiring view objects
 	 * @param parent the parent to use for the Context to build
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @param expressionContext an ExpressionContext that may contain variables that may be used in the configuration file
 	 * @return a new Context instance, possibly not fully initialized yet
 	 */	
-	public static function buildAll (filenames:Array, parent:Context = null, domain:ApplicationDomain = null, 
-			expressionContext:ExpressionContext = null) : Context {
-		var builder:CompositeContextBuilder = GlobalFactoryRegistry.instance.contextBuilder.create(parent, domain);
+	public static function buildAll (filenames:Array, viewRoot:DisplayObject = null, parent:Context = null, 
+			domain:ApplicationDomain = null, expressionContext:ExpressionContext = null) : Context {
+		var builder:CompositeContextBuilder = GlobalFactoryRegistry.instance.contextBuilder.create(viewRoot, parent, domain);
 		mergeAll(filenames, builder);
 		return builder.build();
 	}

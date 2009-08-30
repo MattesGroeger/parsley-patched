@@ -28,8 +28,8 @@ import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 
+import flash.display.DisplayObject;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.system.ApplicationDomain;
@@ -57,6 +57,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	
 	private var _factories:FactoryRegistry;
 	
+	private var _viewRoot:DisplayObject;
 	private var _context:Context;
 	private var _parent:Context;
 	private var _domain:ApplicationDomain;
@@ -72,11 +73,13 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	/**
 	 * Creates a new instance
 	 * 
+	 * @param viewRoot the initial view root to manage for the Context this instance creates
 	 * @param parent the (optional) parent of the Context to build
 	 * @param domain the ApplicationDomain to use for reflection
 	 */
-	function DefaultCompositeContextBuilder (parent:Context = null, domain:ApplicationDomain = null) {
+	function DefaultCompositeContextBuilder (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) {
 		_factories = new LocalFactoryRegistry(GlobalFactoryRegistry.instance);
+		_viewRoot = viewRoot;
 		_parent = parent;
 		_domain = (domain == null) ? ClassInfo.currentDomain : domain;
 	}
@@ -84,7 +87,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	
 	private function initialize () : void {
 		_registry = _factories.definitionRegistry.create(domain);
-		_context = _factories.context.create(_factories, _registry, _parent);
+		_context = _factories.context.create(_factories, _registry, _viewRoot, _parent);
 		_context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
 	

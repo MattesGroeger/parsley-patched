@@ -18,6 +18,7 @@ package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 
+import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
 
 /**
@@ -26,7 +27,7 @@ import flash.system.ApplicationDomain;
 public interface ContextBuilderFactory {
 	
 	
-	function create (parent:Context = null, domain:ApplicationDomain = null) : CompositeContextBuilder;
+	function create (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) : CompositeContextBuilder;
 	
 	
 }

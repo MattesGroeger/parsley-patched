@@ -132,7 +132,7 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 }
 }
 
-import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
+import org.spicefactory.parsley.core.view.impl.DefaultViewManager;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
@@ -151,21 +151,25 @@ import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageRouter;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.view.ViewManager;
+import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 
+import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
 
 class DefaultContextBuilderFactory implements ContextBuilderFactory {
 	
-	public function create (parent:Context = null, domain:ApplicationDomain = null) : CompositeContextBuilder {
-		return new DefaultCompositeContextBuilder(parent, domain);
+	public function create (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) : CompositeContextBuilder {
+		return new DefaultCompositeContextBuilder(viewRoot, parent, domain);
 	}
 	
 }
 
 class DefaultContextFactory implements ContextFactory {
 	
-	public function create (factories:FactoryRegistry, registry:ObjectDefinitionRegistry, parent:Context = null) : Context {
-		return (parent != null) ? new ChildContext(parent, registry, factories) : new DefaultContext(registry, factories);
+	public function create (factories:FactoryRegistry, registry:ObjectDefinitionRegistry, 
+			viewRoot:DisplayObject = null, parent:Context = null) : Context {
+		return (parent != null) ? new ChildContext(parent, registry, factories, viewRoot) : new DefaultContext(registry, factories, viewRoot);
 	}
 	
 }
@@ -187,7 +191,12 @@ class DefaultDefinitionRegistryFactory implements ObjectDefinitionRegistryFactor
 }
 
 class DefaultViewManagerFactory implements ViewManagerFactory {
-	// TODO - implement after ViewManager has been implemented
+	
+	public function create (parent:Context, domain:ApplicationDomain, 
+			factories:FactoryRegistry, viewRoot:DisplayObject = null) : ViewManager {
+		return new DefaultViewManager(parent, domain, factories, viewRoot);
+	}
+	
 }
 
 class DefaultMessageRouterFactory implements MessageRouterFactory {

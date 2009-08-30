@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.context {
 import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.events.IEventDispatcher;
 
@@ -226,6 +227,10 @@ public interface Context extends IEventDispatcher {
 	 */
 	function get messageRouter () : MessageRouter;
 	
+	/**
+	 * The view manager used to dynamically wire view instances to this Context.
+	 */
+	function get viewManager () : ViewManager;
 	
 }
 
