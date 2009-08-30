@@ -1,6 +1,4 @@
 <?xml version="1.0"?>
 <componentPackage>
 	<component id="Configure" class="org.spicefactory.parsley.flex.tag.Configure"/>
-    <component id="ContextModule" class="org.spicefactory.parsley.flex.modules.ContextModule"/>
-    <component id="ModuleLoader" class="org.spicefactory.parsley.flex.modules.ModuleLoader"/>
 </componentPackage>
