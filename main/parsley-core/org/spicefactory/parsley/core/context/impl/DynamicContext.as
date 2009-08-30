@@ -24,10 +24,10 @@ import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 
 import flash.events.Event;
+import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
@@ -59,12 +59,12 @@ public class DynamicContext extends ChildContext {
 	 * Creates a new instance.
 	 * 
 	 * @param parent the Context to be used as the parent for the dynamic Context
-	 * @param registry the registry to use
+	 * @param domain the ApplicationDomain to use for reflection
 	 * @param factories the factories to create collaborating services with
 	 */
-	public function DynamicContext (parent:Context, registry:ObjectDefinitionRegistry, 
+	public function DynamicContext (parent:Context, domain:ApplicationDomain, 
 			factories:FactoryRegistry) {
-		super(parent, registry, factories);
+		super(parent, factories.definitionRegistry.create(domain), factories);
 		if (!parent.initialized) {
 			addEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		}
