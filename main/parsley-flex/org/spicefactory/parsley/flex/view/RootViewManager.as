@@ -15,14 +15,15 @@
  */
 
 package org.spicefactory.parsley.flex.view {
-	import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.ClassUtil;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
+import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 
 import mx.core.Application;
 
@@ -91,7 +92,7 @@ public class RootViewManager extends AbstractViewManager {
 			}
 			return;
 		}
-		var context:FlexViewContext = new FlexViewContext(parent, new DefaultObjectDefinitionRegistry(domain), GlobalFactoryRegistry.instance); 
+		var context:FlexViewContext = new FlexViewContext(parent, new DefaultObjectDefinitionRegistry(domain, [new MetadataDecoratorAssembler(domain)]), GlobalFactoryRegistry.instance); 
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, 2); // must execute before DefaultContext's internal
 																			// listener: otherwise context.registry would be null
 		contextsByDomain[domain] = context;

@@ -19,13 +19,13 @@ import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.registry.DecoratorAssembler;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
-import org.spicefactory.parsley.metadata.MetadataDecoratorExtractor;
 
 import flash.utils.getQualifiedClassName;
 
@@ -121,7 +121,11 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	 * @param definition the resulting definition (possibly the same instance that was passed to this method)
 	 */
 	protected function processDecorators (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : ObjectDefinition {
-		var decorators:Array = MetadataDecoratorExtractor.extract(definition.type).concat(this.decorators);
+		var decorators:Array = new Array();
+		for each (var assembler:DecoratorAssembler in registry.decoratorAssemblers) {
+			decorators = decorators.concat(assembler.assemble(definition.type));
+		}
+		decorators = decorators.concat(this.decorators);
 		var errors:Array = new Array();
 		var finalDefinition:ObjectDefinition = definition;
 		for each (var decorator:ObjectDefinitionDecorator in decorators) {

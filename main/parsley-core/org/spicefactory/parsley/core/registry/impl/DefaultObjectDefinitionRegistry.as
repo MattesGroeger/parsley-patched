@@ -36,6 +36,7 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	
 	
 	private var _domain:ApplicationDomain;
+	private var _decoratorAssemblers:Array;
 	
 	private var _frozen:Boolean;
 	
@@ -47,11 +48,12 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	 * 
 	 * @param domain the ApplicationDomain to use for reflecting on types added to this registry
 	 */
-	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain = null) {
+	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain, decoratorAssemblers:Array) {
 		_domain = domain;
+		_decoratorAssemblers = decoratorAssemblers;
 	}
 
-
+	
 	/**
 	 * @inheritDoc
 	 */	
@@ -59,6 +61,13 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 		return _domain;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function get decoratorAssemblers () : Array {
+		return _decoratorAssemblers.concat();
+	}
+
 	
 	/**
 	 * @inheritDoc

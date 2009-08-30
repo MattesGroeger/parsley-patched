@@ -15,31 +15,30 @@
  */
 
 package org.spicefactory.parsley.metadata {
-	
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Member;
 import org.spicefactory.lib.reflect.Metadata;
 import org.spicefactory.lib.reflect.MetadataAware;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.asconfig.metadata.InternalProperty;
 import org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata;
-
-import org.spicefactory.parsley.tag.messaging.MessageInterceptorDecorator;
-import org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator;
-import org.spicefactory.parsley.tag.messaging.MessageBindingDecorator;
-import org.spicefactory.parsley.tag.messaging.MessageDispatcherDecorator;
-import org.spicefactory.parsley.tag.messaging.ManagedEventsDecorator;
+import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.impl.Selector;
+import org.spicefactory.parsley.core.registry.DecoratorAssembler;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator;
-import org.spicefactory.parsley.tag.lifecycle.PostConstructMethodDecorator;
+import org.spicefactory.parsley.tag.inject.InjectConstructorDecorator;
 import org.spicefactory.parsley.tag.inject.InjectMethodDecorator;
 import org.spicefactory.parsley.tag.inject.InjectPropertyDecorator;
-import org.spicefactory.parsley.tag.inject.InjectConstructorDecorator;
-import org.spicefactory.parsley.tag.lifecycle.PreDestroyMethodDecorator;
+import org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator;
 import org.spicefactory.parsley.tag.lifecycle.FactoryMethodDecorator;
+import org.spicefactory.parsley.tag.lifecycle.PostConstructMethodDecorator;
+import org.spicefactory.parsley.tag.lifecycle.PreDestroyMethodDecorator;
+import org.spicefactory.parsley.tag.messaging.ManagedEventsDecorator;
+import org.spicefactory.parsley.tag.messaging.MessageBindingDecorator;
+import org.spicefactory.parsley.tag.messaging.MessageDispatcherDecorator;
+import org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator;
+import org.spicefactory.parsley.tag.messaging.MessageInterceptorDecorator;
 import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
 
 import flash.system.ApplicationDomain;
@@ -52,7 +51,7 @@ import flash.utils.Dictionary;
  * 
  * @author Jens Halm
  */
-public class MetadataDecoratorExtractor {
+public class MetadataDecoratorAssembler implements DecoratorAssembler {
 	
 	
 	private static const targetPropertyMap:Dictionary = new Dictionary();
@@ -64,6 +63,8 @@ public class MetadataDecoratorExtractor {
 	 * Initializes the metadata tag registrations for all builtin metadata tags.
 	 * Will be called by all the builtin ContextBuilder entry point methods
 	 * and usually does not need to be called by an application.
+	 * 
+	 * @param domain the ApplicationDomain to use for reflection
 	 */
 	public static function initialize (domain:ApplicationDomain) : void {
 		if (initialized) return;
@@ -88,19 +89,24 @@ public class MetadataDecoratorExtractor {
 		Metadata.registerMetadataClass(Selector, domain);
 		Metadata.registerMetadataClass(Target, domain);
 		
-		Metadata.registerMetadataClass(InternalProperty, domain);
+		Metadata.registerMetadataClass(InternalProperty, domain); // TODO - move to ActionScriptContextBuilder
 		Metadata.registerMetadataClass(ObjectDefinitionMetadata, domain);
+	}
+	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param domain the ApplicationDomain to use for reflection
+	 */
+	function MetadataDecoratorAssembler (domain:ApplicationDomain) {
+		initialize(domain);
 	}
 
 
 	/**
-	 * Extracts the metadata configuration for the specified class.
-	 * The returned array contains instances of the <code>ObjectDefinitionDecorator</code> interface.
-	 * 
-	 * @param type the class to extract all decorator tags from
-	 * @return the metadata configuration for the specified class
+	 * @inheritDoc
 	 */	
-	public static function extract (type:ClassInfo) : Array {
+	public function assemble (type:ClassInfo) : Array {
 		var decorators:Array = new Array();
 		extractMetadataDecorators(type, decorators);
 		for each (var property:Property in type.getProperties()) {

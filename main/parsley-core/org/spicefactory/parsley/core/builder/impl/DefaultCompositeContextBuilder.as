@@ -28,7 +28,7 @@ import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.metadata.MetadataDecoratorExtractor;
+import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 
 import flash.events.ErrorEvent;
 import flash.events.Event;
@@ -84,7 +84,6 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	
 	private function initialize () : void {
 		_registry = _factories.definitionRegistry.create(domain);
-		MetadataDecoratorExtractor.initialize(_registry.domain);
 		_context = _factories.context.create(_factories, _registry, _parent);
 		_context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}

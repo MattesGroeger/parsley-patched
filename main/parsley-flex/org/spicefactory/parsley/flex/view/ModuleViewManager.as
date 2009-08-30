@@ -20,6 +20,7 @@ import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.parsley.flex.view.AbstractViewManager;
+import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 
 import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
@@ -58,7 +59,7 @@ public class ModuleViewManager extends AbstractViewManager {
 	 * @param domain the ApplicationDomain the Module was loaded into
 	 */
 	public function init (parent:Context, domain:ApplicationDomain) : void {
-		context = new FlexViewContext(parent, new DefaultObjectDefinitionRegistry(domain), GlobalFactoryRegistry.instance);
+		context = new FlexViewContext(parent, new DefaultObjectDefinitionRegistry(domain, [new MetadataDecoratorAssembler(domain)]), GlobalFactoryRegistry.instance);
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		for each (var component:DisplayObject in deferredComponents) {
 			super.addComponent(component);

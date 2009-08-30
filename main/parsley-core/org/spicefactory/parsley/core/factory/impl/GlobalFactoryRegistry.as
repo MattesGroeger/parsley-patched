@@ -132,6 +132,7 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 }
 }
 
+import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
@@ -180,7 +181,7 @@ class DefaultLifecycleManagerFactory implements ObjectLifecycleManagerFactory {
 class DefaultDefinitionRegistryFactory implements ObjectDefinitionRegistryFactory {
 
 	public function create (domain:ApplicationDomain) : ObjectDefinitionRegistry {
-		return new DefaultObjectDefinitionRegistry(domain);
+		return new DefaultObjectDefinitionRegistry(domain, [new MetadataDecoratorAssembler(domain)]);
 	}
 	
 }

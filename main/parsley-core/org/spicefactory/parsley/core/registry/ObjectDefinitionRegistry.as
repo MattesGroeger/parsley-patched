@@ -42,6 +42,11 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 */
 	function get domain () : ApplicationDomain;
 
+	/**
+	 * Assemblers used to gather additonal ObjectDefinitionDecorators for definitions managed by this class.
+	 * The Array is read-only and contains instances of <code>DecoratorAssembler</code>.
+	 */
+	function get decoratorAssemblers () : Array;
 	
 	/**
 	 * Returns the number of definitions in this registry that match the specified type.
