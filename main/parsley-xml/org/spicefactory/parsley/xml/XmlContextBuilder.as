@@ -17,8 +17,8 @@
 package org.spicefactory.parsley.xml {
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionBuilder;
 
 import flash.system.ApplicationDomain;
@@ -64,7 +64,7 @@ public class XmlContextBuilder {
 	 */	
 	public static function buildAll (filenames:Array, parent:Context = null, domain:ApplicationDomain = null, 
 			expressionContext:ExpressionContext = null) : Context {
-		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder(parent, domain);
+		var builder:CompositeContextBuilder = GlobalFactoryRegistry.instance.contextBuilder.create(parent, domain);
 		mergeAll(filenames, builder);
 		return builder.build();
 	}

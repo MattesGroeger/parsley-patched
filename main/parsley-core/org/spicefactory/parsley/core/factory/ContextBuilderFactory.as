@@ -15,10 +15,19 @@
  */
 
 package org.spicefactory.parsley.core.factory {
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.context.Context;
+
+import flash.system.ApplicationDomain;
 
 /**
  * @author Jens Halm
  */
 public interface ContextBuilderFactory {
+	
+	
+	function create (parent:Context = null, domain:ApplicationDomain = null) : CompositeContextBuilder;
+	
+	
 }
 }

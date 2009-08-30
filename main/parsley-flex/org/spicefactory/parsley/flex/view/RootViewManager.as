@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.view {
+	import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -90,7 +91,7 @@ public class RootViewManager extends AbstractViewManager {
 			}
 			return;
 		}
-		var context:FlexViewContext = new FlexViewContext(parent, new DefaultObjectDefinitionRegistry(domain)); 
+		var context:FlexViewContext = new FlexViewContext(parent, new DefaultObjectDefinitionRegistry(domain), GlobalFactoryRegistry.instance); 
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, 2); // must execute before DefaultContext's internal
 																			// listener: otherwise context.registry would be null
 		contextsByDomain[domain] = context;

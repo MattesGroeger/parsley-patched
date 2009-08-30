@@ -22,13 +22,12 @@ import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.impl.ChildContext;
-import org.spicefactory.parsley.core.context.impl.DefaultContext;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
+import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
+import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.parsley.metadata.MetadataDecoratorExtractor;
 
 import flash.events.ErrorEvent;
@@ -58,8 +57,9 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	
 	private var _factories:FactoryRegistry;
 	
-	private var _context:DefaultContext;
+	private var _context:Context;
 	private var _parent:Context;
+	private var _domain:ApplicationDomain;
 	private var _registry:ObjectDefinitionRegistry;
 	
 	private var _builders:Array = new Array();
@@ -76,12 +76,16 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 * @param domain the ApplicationDomain to use for reflection
 	 */
 	function DefaultCompositeContextBuilder (parent:Context = null, domain:ApplicationDomain = null) {
-		// TODO - 2.1.0 - create factories
+		_factories = new LocalFactoryRegistry(GlobalFactoryRegistry.instance);
 		_parent = parent;
-		if (domain == null) domain = ClassInfo.currentDomain;
-		MetadataDecoratorExtractor.initialize(domain);
-		_registry = new DefaultObjectDefinitionRegistry(domain);
-		_context = (_parent != null) ? new ChildContext(_parent, _registry) : new DefaultContext(_registry);
+		_domain = (domain == null) ? ClassInfo.currentDomain : domain;
+	}
+	
+	
+	private function initialize () : void {
+		_registry = _factories.definitionRegistry.create(domain);
+		MetadataDecoratorExtractor.initialize(_registry.domain);
+		_context = _factories.context.create(_factories, _registry, _parent);
 		_context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
 	
@@ -97,13 +101,14 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 * @inheritDoc
 	 */
 	public function get domain () : ApplicationDomain {
-		return _registry.domain;
+		return _domain;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function get context () : Context {
+		if (_context == null) initialize();
 		return _context;
 	}
 	
@@ -118,6 +123,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 * @inheritDoc
 	 */
 	public function build () : Context {
+		if (_context == null) initialize();
 		invokeNextBuilder();
 		if (_builders.length > 0) {
 			async = true;
@@ -133,7 +139,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 			}
 			else {
 				_context.addEventListener(ErrorEvent.ERROR, contextError);
-				_context.initialize();
+				_registry.freeze();
 				_context.removeEventListener(ErrorEvent.ERROR, contextError);
 				if (_errors.length > 0) {
 					handleErrors();

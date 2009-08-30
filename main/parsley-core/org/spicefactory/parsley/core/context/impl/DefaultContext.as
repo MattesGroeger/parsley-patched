@@ -23,14 +23,13 @@ import org.spicefactory.lib.util.collection.SimpleMap;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
+import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
-import org.spicefactory.parsley.core.lifecycle.impl.DefaultObjectLifecycleManager;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
-import org.spicefactory.parsley.core.messaging.impl.DefaultMessageRouter;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
 
 import flash.events.ErrorEvent;
 import flash.events.Event;
@@ -55,7 +54,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 
 	
 	private var _registry:ObjectDefinitionRegistry;
-	private var _factory:ObjectLifecycleManager;
+	private var _lifecycleManager:ObjectLifecycleManager;
 	private var _messageRouter:MessageRouter;
 	
 	private var singletonCache:SimpleMap = new SimpleMap();
@@ -76,24 +75,18 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 * @param messageRouter The router implementation to use
 	 * @param factory The factory that this class should use to instantiate objects from ObjectDefinitions
 	 */
-	function DefaultContext (registry:ObjectDefinitionRegistry = null, 
-			messageRouter:MessageRouter = null,
-			factory:ObjectLifecycleManager = null) {
-		_registry = (registry != null) ? registry : new DefaultObjectDefinitionRegistry();
-		_messageRouter = (messageRouter != null) ? messageRouter : new DefaultMessageRouter(this);
-		_factory = (factory != null) ? factory : new DefaultObjectLifecycleManager(registry.domain);
+	function DefaultContext (registry:ObjectDefinitionRegistry, factories:FactoryRegistry, globalMessageRouter:MessageRouter = null) {
+		_registry = registry;
+		_messageRouter = (globalMessageRouter == null) ? factories.messageRouter.create(this) : globalMessageRouter;
+		_lifecycleManager = factories.lifecycleManager.create(registry.domain);
 		addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, 1);
+		_registry.addEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
 	}
 
-	/**
-	 * Initializes this Context. Performs the following operations: Freezes the ObjectDefinitions in the internal
-	 * registry so that can no longer be modified and then creates all instance which are configured as non-lazy
-	 * singletons, optionally processing their asynchronous initialization if they are marked with <code>[AsyncInit]</code>.
-	 */
-	public function initialize () : void {
+	
+	private function registryFrozen (event:Event) : void {
 		
-		// freeze configuration
-		_registry.freeze();
+		_registry.removeEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
 		_configured = true;
 		asyncInitSequence = new AsyncInitializerSequence(this);
 		dispatchEvent(new ContextEvent(ContextEvent.CONFIGURED));
@@ -159,7 +152,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 * The factory that creates objects from ObjectDefinitions for this Context.
 	 */
 	public function get factory () : ObjectLifecycleManager {
-		return _factory;
+		return _lifecycleManager;
 	}
 	
 	/**
@@ -246,14 +239,14 @@ public class DefaultContext extends EventDispatcher implements Context {
 		underConstruction[id] = true;
 		
 		try {
-			var instance:Object = _factory.createObject(def, this);
+			var instance:Object = _lifecycleManager.createObject(def, this);
 			if (def.singleton) {
 				singletonCache.put(id, instance);
 				if (!initialized && def.asyncInitConfig != null && asyncInitSequence != null) {
 					asyncInitSequence.addInstance(def, instance);
 				}
 			}
-			_factory.configureObject(instance, def, this);
+			_lifecycleManager.configureObject(instance, def, this);
 		}
 		finally {
 			delete underConstruction[id];
@@ -312,14 +305,15 @@ public class DefaultContext extends EventDispatcher implements Context {
 	}
 	
 	private function contextDestroyed (event:Event) : void {
+		_registry.removeEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
 		removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		if (_configured) {
-			_factory.destroyAll(this);
+			_lifecycleManager.destroyAll(this);
 		}
 		_configured = false;
 		_initialized = false;
 		_registry = null;
-		_factory = null;
+		_lifecycleManager = null;
 		_messageRouter = null;
 	}
 

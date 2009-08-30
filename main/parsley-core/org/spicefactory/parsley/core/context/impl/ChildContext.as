@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.core.context.impl {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
+import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
 /**
@@ -37,9 +37,8 @@ public class ChildContext extends DefaultContext {
 	 * @param registry The internal registry to use
 	 * @param factory The factory that this class should use to instantiate objects from ObjectDefinitions
 	 */
-	public function ChildContext (parent:Context, registry:ObjectDefinitionRegistry = null, 
-			factory:ObjectLifecycleManager = null) {
-		super(registry, parent.messageRouter, factory);
+	public function ChildContext (parent:Context, registry:ObjectDefinitionRegistry, factories:FactoryRegistry) {
+		super(registry, factories, parent.messageRouter);
 		_parent = parent;
 		_parent.addEventListener(ContextEvent.DESTROYED, parentDestroyed, false, 2); // want to process before parent
 		addEventListener(ContextEvent.DESTROYED, childDestroyed, false);

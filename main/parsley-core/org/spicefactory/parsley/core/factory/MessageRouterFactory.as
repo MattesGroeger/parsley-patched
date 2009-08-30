@@ -15,10 +15,17 @@
  */
 
 package org.spicefactory.parsley.core.factory {
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.messaging.MessageRouter;
 
 /**
  * @author Jens Halm
  */
 public interface MessageRouterFactory {
+	
+	
+	function create (context:Context) : MessageRouter;
+	
+	
 }
 }

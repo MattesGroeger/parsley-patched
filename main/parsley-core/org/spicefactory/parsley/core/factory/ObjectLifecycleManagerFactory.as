@@ -15,10 +15,18 @@
  */
 
 package org.spicefactory.parsley.core.factory {
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
+
+import flash.system.ApplicationDomain;
 
 /**
  * @author Jens Halm
  */
 public interface ObjectLifecycleManagerFactory {
+	
+	
+	function create (domain:ApplicationDomain) : ObjectLifecycleManager;
+	
+	
 }
 }

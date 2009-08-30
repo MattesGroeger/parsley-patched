@@ -15,10 +15,17 @@
  */
 
 package org.spicefactory.parsley.core.factory {
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
 /**
  * @author Jens Halm
  */
 public interface ContextFactory {
+	
+	
+	function create (factories:FactoryRegistry, registry:ObjectDefinitionRegistry, parent:Context = null) : Context;
+	
+	
 }
 }

@@ -18,9 +18,9 @@ package org.spicefactory.parsley.task {
 import org.spicefactory.lib.task.Task;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
-import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 
 import flash.events.ErrorEvent;
 import flash.events.Event;
@@ -46,7 +46,7 @@ public class CompositeContextBuilderTask extends Task {
 	 * @param domain the ApplicationDomain to use for reflecting on configured objects.
 	 */
 	function CompositeContextBuilderTask (parent:Context = null, domain:ApplicationDomain = null) {
-		_builder = new DefaultCompositeContextBuilder(parent, domain);
+		_builder = GlobalFactoryRegistry.instance.contextBuilder.create(parent, domain);
 	}
 	
 	

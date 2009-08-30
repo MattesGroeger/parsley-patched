@@ -20,5 +20,8 @@ package org.spicefactory.parsley.core.factory {
  * @author Jens Halm
  */
 public interface ViewManagerFactory {
+	
+	// TODO - implement after ViewManager has been implemented
+	
 }
 }

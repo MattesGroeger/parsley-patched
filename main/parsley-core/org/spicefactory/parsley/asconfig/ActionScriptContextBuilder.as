@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.asconfig {
+	import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.asconfig.builder.ActionScriptObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
@@ -59,7 +60,7 @@ public class ActionScriptContextBuilder {
 	 * @return a new Context instance, possibly not fully initialized yet
 	 */
 	public static function buildAll (configClasses:Array, parent:Context = null, domain:ApplicationDomain = null) : Context {
-		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder(parent, domain);
+		var builder:CompositeContextBuilder = GlobalFactoryRegistry.instance.contextBuilder.create(parent, domain);
 		mergeAll(configClasses, builder);
 		return builder.build();
 	}

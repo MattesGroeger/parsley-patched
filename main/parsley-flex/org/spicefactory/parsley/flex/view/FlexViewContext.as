@@ -21,10 +21,10 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.impl.ChildContext;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 
 import flash.display.DisplayObject;
@@ -54,11 +54,10 @@ public class FlexViewContext extends ChildContext {
 	 * @param registry the registry to use
 	 * @param factory the factory responsible for instantiating objects based on their definitions
 	 */
-	public function FlexViewContext (parent:Context, registry:ObjectDefinitionRegistry = null, 
-			factory:ObjectLifecycleManager = null) {
-		super(parent, registry, factory);
+	public function FlexViewContext (parent:Context, registry:ObjectDefinitionRegistry, 
+			factories:FactoryRegistry) {
+		super(parent, registry, factories);
 		addEventListener(ContextEvent.INITIALIZED, contextInitialized);
-		initialize();
 	}
 	
 	private function contextInitialized (event:Event) : void {

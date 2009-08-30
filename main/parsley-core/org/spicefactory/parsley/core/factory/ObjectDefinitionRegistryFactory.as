@@ -15,10 +15,18 @@
  */
 
 package org.spicefactory.parsley.core.factory {
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+
+import flash.system.ApplicationDomain;
 
 /**
  * @author Jens Halm
  */
 public interface ObjectDefinitionRegistryFactory {
+	
+	
+	function create (domain:ApplicationDomain) : ObjectDefinitionRegistry;
+	
+	
 }
 }

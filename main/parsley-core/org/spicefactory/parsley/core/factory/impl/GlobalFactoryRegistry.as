@@ -132,34 +132,68 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 }
 }
 
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.impl.ChildContext;
+import org.spicefactory.parsley.core.context.impl.DefaultContext;
 import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
 import org.spicefactory.parsley.core.factory.ContextFactory;
+import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.factory.MessageRouterFactory;
 import org.spicefactory.parsley.core.factory.ObjectDefinitionRegistryFactory;
 import org.spicefactory.parsley.core.factory.ObjectLifecycleManagerFactory;
 import org.spicefactory.parsley.core.factory.ViewManagerFactory;
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
+import org.spicefactory.parsley.core.lifecycle.impl.DefaultObjectLifecycleManager;
+import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.messaging.impl.DefaultMessageRouter;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
+
+import flash.system.ApplicationDomain;
 
 class DefaultContextBuilderFactory implements ContextBuilderFactory {
+	
+	public function create (parent:Context = null, domain:ApplicationDomain = null) : CompositeContextBuilder {
+		return new DefaultCompositeContextBuilder(parent, domain);
+	}
 	
 }
 
 class DefaultContextFactory implements ContextFactory {
 	
+	public function create (factories:FactoryRegistry, registry:ObjectDefinitionRegistry, parent:Context = null) : Context {
+		return (parent != null) ? new ChildContext(parent, registry, factories) : new DefaultContext(registry, factories);
+	}
+	
 }
 
 class DefaultLifecycleManagerFactory implements ObjectLifecycleManagerFactory {
 	
+	public function create (domain:ApplicationDomain) : ObjectLifecycleManager {
+		return new DefaultObjectLifecycleManager(domain);
+	}
+	
 }
 
 class DefaultDefinitionRegistryFactory implements ObjectDefinitionRegistryFactory {
+
+	public function create (domain:ApplicationDomain) : ObjectDefinitionRegistry {
+		return new DefaultObjectDefinitionRegistry(domain);
+	}
 	
 }
 
 class DefaultViewManagerFactory implements ViewManagerFactory {
-	
+	// TODO - implement after ViewManager has been implemented
 }
 
 class DefaultMessageRouterFactory implements MessageRouterFactory {
+	
+	public function create (context:Context) : MessageRouter {
+		return new DefaultMessageRouter(context);
+	}
 	
 }
 
