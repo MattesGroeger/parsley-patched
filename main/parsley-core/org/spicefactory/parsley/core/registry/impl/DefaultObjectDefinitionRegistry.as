@@ -18,10 +18,12 @@ package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.util.collection.SimpleMap;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 
+import flash.events.EventDispatcher;
 import flash.system.ApplicationDomain;
 import flash.utils.getQualifiedClassName;
 
@@ -30,7 +32,7 @@ import flash.utils.getQualifiedClassName;
  * 
  * @author Jens Halm
  */
-public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry {
+public class DefaultObjectDefinitionRegistry extends EventDispatcher implements ObjectDefinitionRegistry {
 	
 	
 	private var _domain:ApplicationDomain;
@@ -165,6 +167,7 @@ public class DefaultObjectDefinitionRegistry implements ObjectDefinitionRegistry
 		for each (var definition:ObjectDefinition in definitions.values) {
 			definition.freeze();
 		}
+		dispatchEvent(new ObjectDefinitionRegistryEvent(ObjectDefinitionRegistryEvent.FROZEN));
 	}
 	
 	/**

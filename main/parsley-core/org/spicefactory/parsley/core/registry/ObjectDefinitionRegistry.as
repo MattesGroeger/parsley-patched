@@ -15,7 +15,17 @@
  */
 
 package org.spicefactory.parsley.core.registry {
+import flash.events.IEventDispatcher;
 import flash.system.ApplicationDomain;
+
+/**
+ * Dispatched when configuration for this registry has been frozen.
+ * After this event has been dispatched any attempt to modify this registry or any
+ * of the definitions it contains will lead to an Error.
+ * 
+ * @eventType org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent.FROZEN
+ */
+[Event(name="frozen", type="org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent")]
 
 /**
  * A registry for object definitions.
@@ -24,7 +34,7 @@ import flash.system.ApplicationDomain;
  * 
  * @author Jens Halm
  */
-public interface ObjectDefinitionRegistry {
+public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	
 	
 	/**
