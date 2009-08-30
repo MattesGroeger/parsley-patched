@@ -32,8 +32,14 @@ import flash.utils.Dictionary;
 
 /**
  * Special Context implementation that allows objects to be added and removed dynamically.
- * Will be used internally for any kind of short-lived object, like views or commands, but can also
+ * Will be used internally for any kind of short-lived objects, like views or commands, but can also
  * be used to build custom extensions.
+ * 
+ * <p>Objects that get added to a Context dynamically behave almost the same like regular managed objects.
+ * They can act as receivers or senders of messages, they can have lifecycle listeners and injections can 
+ * be performed for them. The only exception is that these objects may not be used as the source of an 
+ * injection as they can be added and removed to and from the Context at any point in time so that
+ * the validation that comes with dependency injection would not be possible.</p>
  * 
  * @author Jens Halm
  */
