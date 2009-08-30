@@ -15,6 +15,8 @@
  */
 
 package {
+	import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
+	import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
 import org.spicefactory.parsley.asconfig.builder.ActionScriptObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
@@ -50,6 +52,9 @@ public class CoreFrameworkClasses {
 	DefaultMessageProcessor;
 	DefaultMessageRouter;
 	DefaultObjectDefinitionRegistry;
+	
+	GlobalFactoryRegistry;
+	LocalFactoryRegistry;
 	
 }
 }
