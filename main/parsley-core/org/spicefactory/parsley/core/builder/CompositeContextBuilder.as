@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.builder {
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.factory.FactoryRegistry;
 
 import flash.system.ApplicationDomain;
 
@@ -40,6 +41,13 @@ public interface CompositeContextBuilder {
 	 * The Context built by this instance, possibly still under construction.
 	 */
 	function get context () : Context;
+	
+	/**
+	 * The factories to be used by this builder.
+	 * For all factories that are not explicitly specified for this builder the
+	 * corresponding factory will be fetched from the <code>GlobalFactoryRegistry</code>.
+	 */
+	function get factories () : FactoryRegistry;
 	
 	/**
 	 * Builds the Context, using all definition builders that were added with the addBuilder method.

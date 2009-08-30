@@ -26,6 +26,7 @@ import org.spicefactory.parsley.core.context.impl.ChildContext;
 import org.spicefactory.parsley.core.context.impl.DefaultContext;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.parsley.metadata.MetadataDecoratorExtractor;
@@ -55,6 +56,8 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	private static const log:Logger = LogContext.getLogger(DefaultCompositeContextBuilder);
 
 	
+	private var _factories:FactoryRegistry;
+	
 	private var _context:DefaultContext;
 	private var _parent:Context;
 	private var _registry:ObjectDefinitionRegistry;
@@ -73,6 +76,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 * @param domain the ApplicationDomain to use for reflection
 	 */
 	function DefaultCompositeContextBuilder (parent:Context = null, domain:ApplicationDomain = null) {
+		// TODO - 2.1.0 - create factories
 		_parent = parent;
 		if (domain == null) domain = ClassInfo.currentDomain;
 		MetadataDecoratorExtractor.initialize(domain);
@@ -83,34 +87,35 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	
 	
 	/**
-	 * Adds an ObjectDefinitionBuilder.
-	 * 
-	 * @param builder the builder to add
+	 * @inheritDoc
 	 */
 	public function addBuilder (builder:ObjectDefinitionBuilder) : void {
 		_builders.push(builder);
 	}
 
 	/**
-	 * The ApplicationDomain this builder uses for reflection.
+	 * @inheritDoc
 	 */
 	public function get domain () : ApplicationDomain {
 		return _registry.domain;
 	}
 	
 	/**
-	 * The Context built by this instance, possibly still under construction.
+	 * @inheritDoc
 	 */
 	public function get context () : Context {
 		return _context;
 	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get factories () : FactoryRegistry {
+		return _factories;
+	}
 
 	/**
-	 * Builds the Context, using all definition builders that were added with the addBuilder method.
-	 * The returned Context instance may not be fully initialized if it requires asynchronous operations.
-	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
-	 * 
-	 * @return a new Context instance, possibly not fully initialized yet
+	 * @inheritDoc
 	 */
 	public function build () : Context {
 		invokeNextBuilder();
