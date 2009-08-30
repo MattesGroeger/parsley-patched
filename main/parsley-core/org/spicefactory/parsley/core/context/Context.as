@@ -20,7 +20,7 @@ import org.spicefactory.parsley.core.messaging.MessageRouter;
 import flash.events.IEventDispatcher;
 
 /**
- * Indicates whether configuration for this Context has been fully processed.
+ * Dispatched when configuration for this Context has been fully processed.
  * This includes loading configuration files, reflecting on classes, processing metadata tags
  * or validating the configuration. After this property is set the configuration of the Context
  * is sealed an can no longer be modified.
