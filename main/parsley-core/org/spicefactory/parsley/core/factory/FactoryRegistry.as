@@ -23,16 +23,28 @@ public interface FactoryRegistry {
 	
 	
 	function get contextBuilder () : ContextBuilderFactory;
+	
+	function set contextBuilder (value:ContextBuilderFactory) : void;
 
 	function get context () : ContextFactory;
 
+	function set context (value:ContextFactory) : void;
+
 	function get lifecycleManager () : ObjectLifecycleManagerFactory;
+
+	function set lifecycleManager (value:ObjectLifecycleManagerFactory) : void;
 
 	function get definitionRegistry () : ObjectDefinitionRegistryFactory;
 
+	function set definitionRegistry (value:ObjectDefinitionRegistryFactory) : void;
+
 	function get viewManager () : ViewManagerFactory;
 
+	function set viewManager (value:ViewManagerFactory) : void;
+
 	function get messageRouter () : MessageRouterFactory;
+
+	function set messageRouter (value:MessageRouterFactory) : void;
 
 	
 }
