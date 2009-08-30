@@ -33,9 +33,9 @@ public class ChildContext extends DefaultContext {
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param parent The Context that should be used as a parent of this Context
-	 * @param registry The internal registry to use
-	 * @param factory The factory that this class should use to instantiate objects from ObjectDefinitions
+	 * @param parent the Context that should be used as a parent of this Context
+	 * @param registry the internal registry to use
+	 * @param factories the factories to create collaborating services with
 	 */
 	public function ChildContext (parent:Context, registry:ObjectDefinitionRegistry, factories:FactoryRegistry) {
 		super(registry, factories, parent.messageRouter);

@@ -71,9 +71,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param registry The internal registry to use
-	 * @param messageRouter The router implementation to use
-	 * @param factory The factory that this class should use to instantiate objects from ObjectDefinitions
+	 * @param registry the internal registry to use
+	 * @param factories the factories to create collaborating services with
+	 * @param globalMessageRouter The global (shared) router implementation to use
 	 */
 	function DefaultContext (registry:ObjectDefinitionRegistry, factories:FactoryRegistry, globalMessageRouter:MessageRouter = null) {
 		_registry = registry;
@@ -85,7 +85,6 @@ public class DefaultContext extends EventDispatcher implements Context {
 
 	
 	private function registryFrozen (event:Event) : void {
-		
 		_registry.removeEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
 		_configured = true;
 		asyncInitSequence = new AsyncInitializerSequence(this);
@@ -151,7 +150,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	/**
 	 * The factory that creates objects from ObjectDefinitions for this Context.
 	 */
-	public function get factory () : ObjectLifecycleManager {
+	public function get lifecycleManager () : ObjectLifecycleManager {
 		return _lifecycleManager;
 	}
 	
