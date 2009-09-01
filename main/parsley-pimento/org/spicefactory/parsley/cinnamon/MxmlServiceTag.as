@@ -29,7 +29,6 @@ public class MxmlServiceTag extends ServiceTag implements IMXMLObject {
 	 * @private
 	 */
 	public function initialized (document:Object, id:String) : void {
-		trace("SET ID " + id);
 		this.id = id;
 	}
 		
