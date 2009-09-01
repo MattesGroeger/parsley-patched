@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.context.impl {
+import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -50,10 +51,7 @@ public class DynamicContext extends ChildContext {
 	private static const log:Logger = LogContext.getLogger(DynamicContext);
 
 	
-	private var definitionMap:Dictionary = new Dictionary();
-	
-	private var deferredObjects:Dictionary = new Dictionary();
-	private var deferredDefinitions:Array = new Array();
+	private var objects:Dictionary = new Dictionary();
 	
 
 	/**
@@ -67,37 +65,23 @@ public class DynamicContext extends ChildContext {
 	public function DynamicContext (parent:Context, domain:ApplicationDomain, 
 			factories:FactoryRegistry, viewManager:ViewManager = null) {
 		super(parent, factories.definitionRegistry.create(domain), factories, null, viewManager);
-		if (!parent.initialized) {
-			addEventListener(ContextEvent.INITIALIZED, contextInitialized);
-		}
-	}
-	
-	private function contextInitialized (event:Event) : void {
-		removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
-		for (var instance:Object in deferredObjects) {
-			addObject(instance, deferredObjects[instance] as ObjectDefinition);
-		}
-		for each (var definition:ObjectDefinition in deferredDefinitions) {
-			addDefinition(definition);
-		}
-		deferredObjects = new Dictionary();
-		deferredDefinitions = new Array();
+		addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
 
+	
 	/**
 	 * Creates an object from the specified definition and dynamically adds it to the Context.
 	 * 
 	 * @param definition the definition to create an object from
-	 * @return the instance that was created from the defintion and added to the Context
+	 * @return an instance representing the dynamically created object and its defintion
 	 */
-	public function addDefinition (definition:ObjectDefinition) : Object {
-		if (!initialized) {
-			deferredDefinitions.push(definition);
-			return null; // TODO - must return something			
+	public function addDefinition (definition:ObjectDefinition) : DynamicObject {
+		checkState();
+		var object:DynamicObject = new DynamicObject(this, definition);
+		if (object.instance != null) {
+			addDynamicObject(object);		
 		}
-		var instance:Object = lifecycleManager.createObject(definition, this);
-		addObject(instance, definition);
-		return instance;
+		return object;
 	}
 
 	/**
@@ -105,19 +89,32 @@ public class DynamicContext extends ChildContext {
 	 * 
 	 * @param instance the object to add to the Context
 	 * @param definition optional definition to apply to the existing instance
+	 * @return an instance representing the dynamically created object and its defintion
 	 */
-	public function addObject (instance:Object, definition:ObjectDefinition = null) : void {
+	public function addObject (instance:Object, definition:ObjectDefinition = null) : DynamicObject {
+		checkState();
 		if (definition == null) {
 			var ci:ClassInfo = ClassInfo.forInstance(instance, registry.domain);
 			var defFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
 			definition = defFactory.createNestedDefinition(registry);
 		}
-		if (!initialized) {
-			deferredObjects[instance] = definition;
-			return;			
-		}
-		lifecycleManager.configureObject(instance, definition, this);
-		definitionMap[instance] = definition;
+		var object:DynamicObject = new DynamicObject(this, definition, instance);
+		addDynamicObject(object);
+		return object;
+	}
+	
+	/**
+	 * @private
+	 */
+	internal function addDynamicObject (object:DynamicObject) : void {
+		objects[object.instance] = object;	
+	}
+	
+	/**
+	 * @private
+	 */
+	internal function removeDynamicObject (object:DynamicObject) : void {
+		if (objects != null) delete objects[object.instance];	
 	}
 	
 	/**
@@ -127,9 +124,24 @@ public class DynamicContext extends ChildContext {
 	 */
 	public function removeObject (instance:Object) : void {
 		if (destroyed) return;
-		var definition:ObjectDefinition = ObjectDefinition(definitionMap[instance]);
-		if (definition != null) {
-			lifecycleManager.destroyObject(instance, definition, this);
+		var object:DynamicObject = DynamicObject(objects[instance]);
+		if (object != null) {
+			object.remove();
+		}
+	}
+	
+	private function contextDestroyed (event:Event) : void {
+		removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		var remaining:Dictionary = objects;
+		objects = null;
+		for each (var object:DynamicObject in remaining) {
+			object.remove();
+		}
+	}
+	
+	private function checkState () : void {
+		if (destroyed) {
+			throw new IllegalStateError("Attempt to access Context after it was destroyed");
 		}
 	}
 	
