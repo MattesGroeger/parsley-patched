@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.tag {
+import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 
 import mx.core.UIComponent;
 
@@ -28,12 +29,6 @@ import flash.events.Event;
  */
 public class Configure extends UIComponent {
 	
-	/**
-	 * The event type to use for the event dispatched to trigger configuration.
-	 * Should only be changed from the default if the alternative value has also
-	 * been passed to one of the methods of the <code>FlexContextBuilder</code> class.
-	 */
-	public var triggerEvent:String = "configureIOC";
 		
 	/**
 	 * @private
@@ -47,7 +42,7 @@ public class Configure extends UIComponent {
 	}
 	
 	private function dispatchConfigureEvent (event:Event = null) : void  { 
-		parent.dispatchEvent(new Event(triggerEvent, true));
+		parent.dispatchEvent(new ViewConfigurationEvent());
 	}
 	
 	/**

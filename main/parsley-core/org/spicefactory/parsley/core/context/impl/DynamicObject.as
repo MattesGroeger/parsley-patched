@@ -35,8 +35,8 @@ public class DynamicObject {
 		_context = context;
 		_definition = definition;
 		_instance = instance;
-		if (!context.initialized) {
-			context.addEventListener(ContextEvent.INITIALIZED, contextInitialized);
+		if (!context.parent.initialized) {
+			context.parent.addEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		}
 		else {
 			processInstance();
@@ -44,7 +44,7 @@ public class DynamicObject {
 	}
 	
 	private function contextInitialized (event:Event) : void {
-		context.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
+		context.parent.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		processInstance();
 	}
 	
@@ -76,11 +76,11 @@ public class DynamicObject {
 	
 	
 	public function remove () : void {
-		if (context.initialized) {
+		if (context.parent.initialized) {
 			context.lifecycleManager.destroyObject(instance, definition, context);
 		}
 		else {
-			context.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
+			context.parent.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		}
 		context.removeDynamicObject(this);
 	}

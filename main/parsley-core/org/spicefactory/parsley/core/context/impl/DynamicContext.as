@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.context.impl {
+	import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
@@ -64,8 +65,13 @@ public class DynamicContext extends ChildContext {
 	 */
 	public function DynamicContext (parent:Context, domain:ApplicationDomain, 
 			factories:FactoryRegistry, viewManager:ViewManager = null) {
-		super(parent, factories.definitionRegistry.create(domain), factories, null, viewManager);
+		super(parent, createRegistry(factories, domain), factories, null, viewManager);
 		addEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		registry.freeze();
+	}
+	
+	private function createRegistry (factories:FactoryRegistry, domain:ApplicationDomain) : ObjectDefinitionRegistry {
+		return factories.definitionRegistry.create(domain);
 	}
 
 	
@@ -132,11 +138,11 @@ public class DynamicContext extends ChildContext {
 	
 	private function contextDestroyed (event:Event) : void {
 		removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		var remaining:Dictionary = objects;
+		//var remaining:Dictionary = objects;
 		objects = null;
-		for each (var object:DynamicObject in remaining) {
-			object.remove();
-		}
+		//for each (var object:DynamicObject in remaining) {
+			//object.remove();
+		//}
 	}
 	
 	private function checkState () : void {

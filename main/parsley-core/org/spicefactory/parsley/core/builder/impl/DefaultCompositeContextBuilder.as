@@ -23,6 +23,7 @@ import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
+import org.spicefactory.parsley.core.events.ContextCreationEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
@@ -38,11 +39,12 @@ import flash.system.ApplicationDomain;
  * Responsible for building Context instances using one or more ObjectDefinitionBuilder.
  * 
  * <p>This builder may be used when combining multiple configuration mechanisms like MXML or XML
- * into a single Context.</p>
+ * into a single Context. It is also used by all short cut entry points that only use a single
+ * configuration mechanism under the hood.</p>
  * 
  * <p>Example usage:</p>
  * 
- * <pre><code>var builder:CompositeContextBuilder = new CompositeContextBuilder();
+ * <pre><code>var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
  * FlexContextBuilder.merge(BookStoreConfig, builder);
  * XmlContextBuilder.merge("logging.xml", builder);
  * builder.build();</code></pre>	 
@@ -80,8 +82,13 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	function DefaultCompositeContextBuilder (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) {
 		_factories = new LocalFactoryRegistry(GlobalFactoryRegistry.instance);
 		_viewRoot = viewRoot;
-		_parent = parent;
-		_domain = (domain == null) ? ClassInfo.currentDomain : domain;
+		var event:ContextCreationEvent = null;
+		if ((parent == null || domain == null) && viewRoot != null) {
+			event = new ContextCreationEvent();
+			viewRoot.dispatchEvent(event);
+		}
+		_parent = (parent != null) ? parent : (event != null) ? event.parent : null;
+		_domain = (domain != null) ? domain : (event != null && event.domain != null) ? event.domain : ClassInfo.currentDomain;
 	}
 	
 	

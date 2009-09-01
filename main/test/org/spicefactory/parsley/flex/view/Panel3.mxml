@@ -3,7 +3,7 @@
 	width="100%"
 	height="100%"
 	title="Panel3b"
-	addedToStage="trace('ADD 3'); dispatchEvent(new Event('configureIOC', true));"
+	addedToStage="trace('ADD 3'); dispatchEvent(new Event('configureView', true));"
 	>
 	
 	<mx:Script>
@@ -11,6 +11,7 @@
 			import flash.events.Event;
 			import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
 			import org.spicefactory.parsley.testmodel.AnnotatedResourceBinding;
+			import org.spicefactory.parsley.core.context.Context;
 			import mx.resources.ResourceManager;
 			import mx.managers.PopUpManager;
 			import mx.containers.TitleWindow;
@@ -23,12 +24,17 @@
 			[Bindable]
 			public var resourceBinding:AnnotatedResourceBinding;
 			
+			[Inject]
+			public var context:Context;
+			
 			private function showPopup () : void {
 				var tw:TitleWindow = new TitleWindow();
+				context.viewManager.addViewRoot(tw);
 				tw.addChild(new Panel4());
 				tw.title = "Window";
 				tw.width = 600;
 				tw.height = 400;
+				trace("Now add popup");
 				PopUpManager.addPopUp(tw, this);
 			}
 		]]>

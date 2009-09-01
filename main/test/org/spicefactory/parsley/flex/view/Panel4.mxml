@@ -3,7 +3,7 @@
 	width="100%"
 	height="100%"
 	title="Panel4"
-	addedToStage="trace('4 addedToStage'); dispatchEvent(new Event('configureIOC', true));"
+	addedToStage="trace('4 addedToStage'); dispatchEvent(new Event('configureView', true));"
 	creationComplete="trace('4 creationComplete');"
 	preinitialize="trace('4 preinitialize');"
 	initialize="trace('4 initialize');"

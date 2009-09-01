@@ -19,7 +19,9 @@ import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.impl.DynamicContext;
+import org.spicefactory.parsley.core.events.ContextCreationEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.view.ViewManager;
 
@@ -36,12 +38,12 @@ public class DefaultViewManager implements ViewManager {
 
 	private static const log:Logger = LogContext.getLogger(DefaultViewManager);
 	
-	private static const CONFIGURE_EVENT:String = "configureIOC";
 	
-	
-	private var _autoRemove:Boolean;
+	private var _viewRootRemovedEvent:String = Event.REMOVED_FROM_STAGE;
+	private var _componentRemovedEvent:String = Event.REMOVED_FROM_STAGE;
+	private var _componentAddedEvent:String = ViewConfigurationEvent.CONFIGURE_VIEW;
+
 	private var viewRoots:Array = new Array();
-	
 	private var viewContext:DynamicContext;
 	
 	
@@ -55,8 +57,7 @@ public class DefaultViewManager implements ViewManager {
 	private function contextDestroyed (event:ContextEvent) : void {
 		viewContext.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		for each (var view:DisplayObject in viewRoots) {
-			view.removeEventListener(CONFIGURE_EVENT, componentAdded);
-	 		view.removeEventListener(Event.REMOVED_FROM_STAGE, viewRootRemoved);	
+			removeListeners(view);	
 		}
 		viewRoots = new Array();
 	}
@@ -66,15 +67,12 @@ public class DefaultViewManager implements ViewManager {
 	 */
 	public function addViewRoot (view:DisplayObject) : void {
 		log.info("Add view root: {0}/{1}", view.name, getQualifiedClassName(view));
-		view.addEventListener(CONFIGURE_EVENT, componentAdded);
-		view.addEventListener(Event.REMOVED_FROM_STAGE, viewRootRemoved);
+		addListeners(view);
 		viewRoots.push(view);
 	}
 
 	private function viewRootRemoved (event:Event) : void {
-		if (autoRemove) {
-			removeViewRoot(DisplayObject(event.target));
-		}
+		removeViewRoot(DisplayObject(event.target));
 	}
 	
 	/**
@@ -84,13 +82,36 @@ public class DefaultViewManager implements ViewManager {
 		var index:int = viewRoots.indexOf(view);
 		if (index > -1) {
 			log.info("Remove view root: {0}/{1}", view.name, getQualifiedClassName(view));
-	 		view.removeEventListener(CONFIGURE_EVENT, componentAdded);
-	 		view.removeEventListener(Event.REMOVED_FROM_STAGE, viewRootRemoved);
+	 		removeListeners(view);
 			viewRoots.splice(index, 1);
 			if (viewRoots.length == 0) {
+				log.info("Last view root removed from ViewManager - Destroy Context");
 				viewContext.parent.destroy();
 			}
 		}
+	}
+	
+	private function addListeners (viewRoot:DisplayObject) : void {
+		viewRoot.addEventListener(viewRootRemovedEvent, viewRootRemoved);
+		viewRoot.addEventListener(componentAddedEvent, componentAdded);
+		viewRoot.addEventListener(ContextCreationEvent.CREATE_CONTEXT, contextCreated);
+	}
+	
+	private function removeListeners (viewRoot:DisplayObject) : void {
+	 	viewRoot.removeEventListener(viewRootRemovedEvent, viewRootRemoved);
+		viewRoot.removeEventListener(componentAddedEvent, componentAdded);
+		viewRoot.removeEventListener(ContextCreationEvent.CREATE_CONTEXT, contextCreated);
+	}
+	
+	
+	private function contextCreated (event:ContextCreationEvent) : void {
+		if (event.domain == null) {
+			event.domain = viewContext.registry.domain;
+		}
+		if (event.parent == null) {
+			event.parent = viewContext.parent;
+		}
+		event.stopImmediatePropagation();
 	}
 	
 	
@@ -98,29 +119,51 @@ public class DefaultViewManager implements ViewManager {
 		event.stopImmediatePropagation();
 		var component:DisplayObject = DisplayObject(event.target);
 		log.debug("Add component '{0}' to view Context", component);
-		component.addEventListener(Event.REMOVED_FROM_STAGE, componentRemoved);
+		component.addEventListener(componentRemovedEvent, componentRemoved);
 		viewContext.addObject(component);
 	}
 	
 	private function componentRemoved (event:Event) : void {
 		var component:DisplayObject = DisplayObject(event.target);
 		log.debug("Remove component '{0}' from view Context", component);
-		component.removeEventListener(Event.REMOVED_FROM_STAGE, componentRemoved);
+		component.removeEventListener(componentRemovedEvent, componentRemoved);
 		viewContext.removeObject(component);
 	}
 	
-
+	
 	/**
 	 * @inheritDoc
 	 */
-	public function get autoRemove () : Boolean {
-		return _autoRemove;
+	public function get viewRootRemovedEvent () : String {
+		return _viewRootRemovedEvent;
 	}
 	
-	public function set autoRemove (value:Boolean) : void {
-		_autoRemove = value;
+	public function set viewRootRemovedEvent (viewRootRemovedEvent:String) : void {
+		_viewRootRemovedEvent = viewRootRemovedEvent;
 	}
 	
-		
+	/**
+	 * @inheritDoc
+	 */
+	public function get componentRemovedEvent () : String {
+		return _componentRemovedEvent;
+	}
+	
+	public function set componentRemovedEvent (componentRemovedEvent:String) : void {
+		_componentRemovedEvent = componentRemovedEvent;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get componentAddedEvent () : String {
+		return _componentAddedEvent;
+	}
+	
+	public function set componentAddedEvent (componentAddedEvent:String) : void {
+		_componentAddedEvent = componentAddedEvent;
+	}
+	
+	
 }
 }
