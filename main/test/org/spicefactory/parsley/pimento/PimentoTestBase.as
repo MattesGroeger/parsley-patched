@@ -5,7 +5,6 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.xml.XmlContextTestBase;
 import org.spicefactory.pimento.config.PimentoConfig;
 import org.spicefactory.pimento.service.EntityManager;
-import org.spicefactory.pimento.service.impl.PimentoInvocationHandler;
 
 public class PimentoTestBase extends XmlContextTestBase {
 
@@ -29,7 +28,6 @@ public class PimentoTestBase extends XmlContextTestBase {
 		var proxy:ServiceProxy = ServiceProxy.forService(service);
 		assertNotNull("Expected proxy instance", proxy);
 		assertEquals("Unexpected service URL", "http://localhost/test/service/", proxy.channel.serviceUrl);
-		assertTrue("Expected PimentoInvocationHandler", (proxy.invocationHandler is PimentoInvocationHandler));
 		
 		var config:PimentoConfig = context.getObjectByType(PimentoConfig) as PimentoConfig;
 		assertEquals("Unexpected config URL", "http://localhost/test/service/", config.serviceUrl);
