@@ -19,7 +19,7 @@ import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.impl.DynamicContext;
-import org.spicefactory.parsley.core.events.ContextCreationEvent;
+import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
@@ -94,17 +94,17 @@ public class DefaultViewManager implements ViewManager {
 	private function addListeners (viewRoot:DisplayObject) : void {
 		viewRoot.addEventListener(viewRootRemovedEvent, viewRootRemoved);
 		viewRoot.addEventListener(componentAddedEvent, componentAdded);
-		viewRoot.addEventListener(ContextCreationEvent.CREATE_CONTEXT, contextCreated);
+		viewRoot.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
 	}
 	
 	private function removeListeners (viewRoot:DisplayObject) : void {
 	 	viewRoot.removeEventListener(viewRootRemovedEvent, viewRootRemoved);
 		viewRoot.removeEventListener(componentAddedEvent, componentAdded);
-		viewRoot.removeEventListener(ContextCreationEvent.CREATE_CONTEXT, contextCreated);
+		viewRoot.removeEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
 	}
 	
 	
-	private function contextCreated (event:ContextCreationEvent) : void {
+	private function contextCreated (event:ContextBuilderEvent) : void {
 		if (event.domain == null) {
 			event.domain = viewContext.registry.domain;
 		}

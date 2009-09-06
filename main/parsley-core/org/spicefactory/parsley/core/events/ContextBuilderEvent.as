@@ -26,7 +26,7 @@ import flash.system.ApplicationDomain;
  * 
  * @author Jens Halm
  */
-public class ContextCreationEvent extends Event {
+public class ContextBuilderEvent extends Event {
 
 
 	/**
@@ -37,7 +37,7 @@ public class ContextCreationEvent extends Event {
 	 * 
 	 * @eventType configureView
 	 */
-	public static const CREATE_CONTEXT : String = "createContext";
+	public static const BUILD_CONTEXT : String = "createContext";
 	
 	
 	private var _domain:ApplicationDomain;
@@ -47,8 +47,8 @@ public class ContextCreationEvent extends Event {
 	/**
 	 * Creates a new event instance.
 	 */
-	public function ContextCreationEvent () {
-		super(CREATE_CONTEXT, true);
+	public function ContextBuilderEvent () {
+		super(BUILD_CONTEXT, true);
 	}
 	
 	/**

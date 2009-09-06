@@ -23,7 +23,7 @@ import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
-import org.spicefactory.parsley.core.events.ContextCreationEvent;
+import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
@@ -82,9 +82,9 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	function DefaultCompositeContextBuilder (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) {
 		_factories = new LocalFactoryRegistry(GlobalFactoryRegistry.instance);
 		_viewRoot = viewRoot;
-		var event:ContextCreationEvent = null;
+		var event:ContextBuilderEvent = null;
 		if ((parent == null || domain == null) && viewRoot != null) {
-			event = new ContextCreationEvent();
+			event = new ContextBuilderEvent();
 			viewRoot.dispatchEvent(event);
 		}
 		_parent = (parent != null) ? parent : (event != null) ? event.parent : null;
