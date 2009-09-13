@@ -15,41 +15,31 @@
  */
 
 package org.spicefactory.parsley.core.context.impl {
-	import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.context.impl.ChildContext;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.factory.FactoryRegistry;
+import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
-import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.events.Event;
-import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
- * Special Context implementation that allows objects to be added and removed dynamically.
- * Will be used internally for any kind of short-lived objects, like views or commands, but can also
- * be used to build custom extensions.
- * 
- * <p>Objects that get added to a Context dynamically behave almost the same like regular managed objects.
- * They can act as receivers or senders of messages, they can have lifecycle listeners and injections can 
- * be performed for them. The only exception is that these objects may not be used as the source of an 
- * injection as they can be added and removed to and from the Context at any point in time so that
- * the validation that comes with dependency injection would not be possible.</p>
+ * Default implementation of the DynamicContext interface.
  * 
  * @author Jens Halm
  */
-public class DynamicContext extends ChildContext {
+public class DefaultDynamicContext extends ChildContext implements DynamicContext {
 	
 	
-	private static const log:Logger = LogContext.getLogger(DynamicContext);
+	private static const log:Logger = LogContext.getLogger(DefaultDynamicContext);
 
 	
 	private var objects:Dictionary = new Dictionary();
@@ -58,28 +48,18 @@ public class DynamicContext extends ChildContext {
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param parent the Context to be used as the parent for the dynamic Context
-	 * @param domain the ApplicationDomain to use for reflection
-	 * @param factories the factories to create collaborating services with
-	 * @param viewManager the view manager in case this Context should not create its own
+	 * @param provider instances to fetch all required strategies from
+	 * @param parent the Context that should be used as a parent of this Context
 	 */
-	public function DynamicContext (parent:Context, domain:ApplicationDomain, 
-			factories:FactoryRegistry, viewManager:ViewManager = null) {
-		super(parent, createRegistry(factories, domain), factories, null, viewManager);
+	public function DefaultDynamicContext (provider:ContextStrategyProvider, parent:Context) {
+		super(provider, parent);
 		addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		registry.freeze();
 	}
 	
-	private function createRegistry (factories:FactoryRegistry, domain:ApplicationDomain) : ObjectDefinitionRegistry {
-		return factories.definitionRegistry.create(domain);
-	}
-
 	
 	/**
-	 * Creates an object from the specified definition and dynamically adds it to the Context.
-	 * 
-	 * @param definition the definition to create an object from
-	 * @return an instance representing the dynamically created object and its defintion
+	 * @inheritDoc
 	 */
 	public function addDefinition (definition:ObjectDefinition) : DynamicObject {
 		checkState();
@@ -91,11 +71,7 @@ public class DynamicContext extends ChildContext {
 	}
 
 	/**
-	 * Dynamically adds the specified object to the Context.
-	 * 
-	 * @param instance the object to add to the Context
-	 * @param definition optional definition to apply to the existing instance
-	 * @return an instance representing the dynamically created object and its defintion
+	 * @inheritDoc
 	 */
 	public function addObject (instance:Object, definition:ObjectDefinition = null) : DynamicObject {
 		checkState();
@@ -124,9 +100,7 @@ public class DynamicContext extends ChildContext {
 	}
 	
 	/**
-	 * Removes the specified object from the Context. This method may be used
-	 * for objects added with <code>addObject</code> as well as for those added with
-	 * <code>addDefinition</code>.
+	 * @inheritDoc
 	 */
 	public function removeObject (instance:Object) : void {
 		if (destroyed) return;
@@ -138,11 +112,7 @@ public class DynamicContext extends ChildContext {
 	
 	private function contextDestroyed (event:Event) : void {
 		removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		//var remaining:Dictionary = objects;
 		objects = null;
-		//for each (var object:DynamicObject in remaining) {
-			//object.remove();
-		//}
 	}
 	
 	private function checkState () : void {

@@ -18,11 +18,10 @@ package org.spicefactory.parsley.core.view.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.impl.DynamicContext;
+import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
-import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.display.DisplayObject;
@@ -43,16 +42,22 @@ public class DefaultViewManager implements ViewManager {
 	private var _componentRemovedEvent:String = Event.REMOVED_FROM_STAGE;
 	private var _componentAddedEvent:String = ViewConfigurationEvent.CONFIGURE_VIEW;
 
+	private var parent:Context;
+	private var domain:ApplicationDomain;
 	private var viewRoots:Array = new Array();
 	private var viewContext:DynamicContext;
 	
 	
-	function DefaultViewManager (parent:Context, domain:ApplicationDomain, factories:FactoryRegistry, viewRoot:DisplayObject = null) {
-		viewContext = new DynamicContext(parent, domain, factories, this);
-		viewContext.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		if (viewRoot != null) addViewRoot(viewRoot);
+	function DefaultViewManager (context:Context, domain:ApplicationDomain) {
+		this.parent = context;
+		this.domain = domain;
 	}
 
+
+	private function initialize () : void {
+		viewContext = parent.createDynamicContext();
+		viewContext.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
+	}
 	
 	private function contextDestroyed (event:ContextEvent) : void {
 		viewContext.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
@@ -67,6 +72,7 @@ public class DefaultViewManager implements ViewManager {
 	 */
 	public function addViewRoot (view:DisplayObject) : void {
 		log.info("Add view root: {0}/{1}", view.name, getQualifiedClassName(view));
+		if (viewContext == null) initialize();
 		addListeners(view);
 		viewRoots.push(view);
 	}
@@ -86,7 +92,7 @@ public class DefaultViewManager implements ViewManager {
 			viewRoots.splice(index, 1);
 			if (viewRoots.length == 0) {
 				log.info("Last view root removed from ViewManager - Destroy Context");
-				viewContext.parent.destroy();
+				parent.destroy();
 			}
 		}
 	}
@@ -106,10 +112,10 @@ public class DefaultViewManager implements ViewManager {
 	
 	private function contextCreated (event:ContextBuilderEvent) : void {
 		if (event.domain == null) {
-			event.domain = viewContext.registry.domain;
+			event.domain = domain;
 		}
 		if (event.parent == null) {
-			event.parent = viewContext.parent;
+			event.parent = parent;
 		}
 		event.stopImmediatePropagation();
 	}

@@ -16,9 +16,6 @@
 
 package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-
-import flash.display.DisplayObject;
 
 /**
  * @author Jens Halm
@@ -26,8 +23,7 @@ import flash.display.DisplayObject;
 public interface ContextFactory {
 	
 	
-	function create (factories:FactoryRegistry, registry:ObjectDefinitionRegistry, 
-			viewRoot:DisplayObject = null, parent:Context = null) : Context;
+	function create (provider:ContextStrategyProvider, parent:Context = null) : Context;
 	
 	
 }

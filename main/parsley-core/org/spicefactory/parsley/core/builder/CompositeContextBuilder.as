@@ -18,8 +18,6 @@ package org.spicefactory.parsley.core.builder {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 
-import flash.system.ApplicationDomain;
-
 /**
  * @author Jens Halm
  */
@@ -31,16 +29,6 @@ public interface CompositeContextBuilder {
 	 * @param builder the builder to add
 	 */
 	function addBuilder (builder:ObjectDefinitionBuilder) : void;
-	
-	/**
-	 * The ApplicationDomain this builder uses for reflection.
-	 */
-	function get domain () : ApplicationDomain;
-	
-	/**
-	 * The Context built by this instance, possibly still under construction.
-	 */
-	function get context () : Context;
 	
 	/**
 	 * The factories to be used by this builder.

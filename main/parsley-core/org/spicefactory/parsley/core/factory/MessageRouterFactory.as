@@ -18,13 +18,15 @@ package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
 
+import flash.system.ApplicationDomain;
+
 /**
  * @author Jens Halm
  */
 public interface MessageRouterFactory {
 	
 	
-	function create (context:Context) : MessageRouter;
+	function create (context:Context, domain:ApplicationDomain) : MessageRouter;
 	
 	
 }

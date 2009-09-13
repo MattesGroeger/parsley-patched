@@ -16,18 +16,29 @@
 
 package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
+import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.view.ViewManager;
-
-import flash.system.ApplicationDomain;
 
 /**
  * @author Jens Halm
  */
-public interface ViewManagerFactory {
+public interface ContextStrategyProvider {
 	
-
-	function create (context:Context, domain:ApplicationDomain) : ViewManager;
-
+	
+	function init (context:Context) : void;
+	
+	function get registry () : ObjectDefinitionRegistry;
+	
+	function get lifecycleManager () : ObjectLifecycleManager;
+	
+	function get messageRouter () : MessageRouter;
+	
+	function get viewManager () : ViewManager;
+	
+	function get createDynamicProvider () : ContextStrategyProvider;
+	
 	
 }
 }

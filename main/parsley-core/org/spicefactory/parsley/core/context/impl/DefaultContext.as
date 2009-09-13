@@ -21,10 +21,11 @@ import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.util.collection.SimpleMap;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
-import org.spicefactory.parsley.core.factory.FactoryRegistry;
+import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
@@ -32,7 +33,6 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.view.ViewManager;
 
-import flash.display.DisplayObject;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -55,6 +55,8 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private static const log:Logger = LogContext.getLogger(DefaultContext);
 
 	
+	private var strategyProvider:ContextStrategyProvider;
+	
 	private var _registry:ObjectDefinitionRegistry;
 	private var _lifecycleManager:ObjectLifecycleManager;
 	private var _messageRouter:MessageRouter;
@@ -74,18 +76,15 @@ public class DefaultContext extends EventDispatcher implements Context {
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param registry the internal registry to use
-	 * @param factories the factories to create collaborating services with
-	 * @param viewRoot the initial view root for dynamically wiring view objects
-	 * @param globalMessageRouter The global (shared) router implementation to use
-	 * @param viewManager the view manager in case this Context should not create its own
+	 * @param provider instances to fetch all required strategies from
 	 */
-	function DefaultContext (registry:ObjectDefinitionRegistry, factories:FactoryRegistry, 
-			viewRoot:DisplayObject, globalMessageRouter:MessageRouter = null, viewManager:ViewManager = null) {
-		_registry = registry;
-		_messageRouter = (globalMessageRouter == null) ? factories.messageRouter.create(this) : globalMessageRouter;
-		_viewManager = (viewManager == null) ? factories.viewManager.create(this, registry.domain, factories, viewRoot) : viewManager;
-		_lifecycleManager = factories.lifecycleManager.create(registry.domain);
+	function DefaultContext (provider:ContextStrategyProvider) {
+		this.strategyProvider = provider;
+		provider.init(this);
+		_registry = provider.registry;
+		_lifecycleManager = provider.lifecycleManager;
+		_messageRouter = provider.messageRouter;
+		_viewManager = provider.viewManager;
 		addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, 1);
 		_registry.addEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
 	}
@@ -337,6 +336,12 @@ public class DefaultContext extends EventDispatcher implements Context {
 		return _viewManager;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function createDynamicContext () : DynamicContext {
+		return new DefaultDynamicContext(strategyProvider.createDynamicProvider, this);
+	}
 	
 	private function checkState () : void {
 		if (!_configured) {

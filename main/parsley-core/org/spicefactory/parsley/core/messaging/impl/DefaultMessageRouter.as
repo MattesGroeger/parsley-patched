@@ -49,7 +49,7 @@ public class DefaultMessageRouter implements MessageRouter {
 	 * 
 	 * @param context the associated context instance
 	 */
-	function DefaultMessageRouter (context:Context) {
+	function DefaultMessageRouter (context:Context, domain:ApplicationDomain) {
 		init();
 		if (context.initialized) {
 			activated = true;

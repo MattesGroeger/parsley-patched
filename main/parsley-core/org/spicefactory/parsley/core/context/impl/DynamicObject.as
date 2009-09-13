@@ -26,12 +26,12 @@ import flash.events.Event;
 public class DynamicObject {
 	
 	
-	private var _context:DynamicContext;
+	private var _context:DefaultDynamicContext;
 	private var _definition:ObjectDefinition;
 	private var _instance:Object;
 	
 	
-	function DynamicObject (context:DynamicContext, definition:ObjectDefinition, instance:Object = null) {
+	function DynamicObject (context:DefaultDynamicContext, definition:ObjectDefinition, instance:Object = null) {
 		_context = context;
 		_definition = definition;
 		_instance = instance;
@@ -70,7 +70,7 @@ public class DynamicObject {
 		return _instance;
 	}
 	
-	public function get context () : DynamicContext {
+	public function get context () : DefaultDynamicContext {
 		return _context;
 	}
 	

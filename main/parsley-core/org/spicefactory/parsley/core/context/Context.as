@@ -232,6 +232,22 @@ public interface Context extends IEventDispatcher {
 	 */
 	function get viewManager () : ViewManager;
 	
+	/**
+	 * Creates a new dynamic Context instance that is associated with this Context.
+	 * A dynamic Context allows to add and remove instances and object definitions
+	 * on-the-fly. You can create multiple dynamic instances from the same parent 
+	 * Context. They will share the MessageRouter and ViewManager of this instance,
+	 * but create their own internal strategies like lifecycle managers, so that they
+	 * can be destroyed individually without affecting this Context instance or other
+	 * dynamic Context instances.
+	 * 
+	 * <p>Internally Parsley uses such a Context type for dynamically wiring views
+	 * or managing other types of short-lives objects like Commands.</p>
+	 * 
+	 * @return a new instance of a dynamic Context
+	 */
+	function createDynamicContext () : DynamicContext;
+	
 }
 
 }

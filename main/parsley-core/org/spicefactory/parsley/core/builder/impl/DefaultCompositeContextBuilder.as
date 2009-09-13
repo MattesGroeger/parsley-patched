@@ -25,7 +25,9 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
+import org.spicefactory.parsley.core.factory.impl.DefaultContextStrategyProvider;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
@@ -92,13 +94,6 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	}
 	
 	
-	private function initialize () : void {
-		_registry = _factories.definitionRegistry.create(domain);
-		_context = _factories.context.create(_factories, _registry, _viewRoot, _parent);
-		_context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
-	}
-	
-	
 	/**
 	 * @inheritDoc
 	 */
@@ -109,30 +104,26 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	/**
 	 * @inheritDoc
 	 */
-	public function get domain () : ApplicationDomain {
-		return _domain;
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function get context () : Context {
-		if (_context == null) initialize();
-		return _context;
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
 	public function get factories () : FactoryRegistry {
 		return _factories;
+	}
+
+
+	private function createContext () : void {
+		_registry = _factories.definitionRegistry.create(_domain);
+		var provider:ContextStrategyProvider = new DefaultContextStrategyProvider(_factories, _domain, _registry);
+		_context = _factories.context.create(provider, _parent);
+		_context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		if (_viewRoot != null) {
+			_context.viewManager.addViewRoot(_viewRoot);
+		}
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function build () : Context {
-		if (_context == null) initialize();
+		createContext();
 		invokeNextBuilder();
 		if (_builders.length > 0) {
 			async = true;

@@ -38,6 +38,7 @@ public class CompositeContextBuilderTask extends Task {
 
 	
 	private var _builder:CompositeContextBuilder;
+	private var _context:Context;
 
 	
 	/**
@@ -53,10 +54,11 @@ public class CompositeContextBuilderTask extends Task {
 	
 	
 	/**
-	 * The Context this builder creates, possibly still under construction.
+	 * The Context this builder created. This property is null before <code>TaskEvent.COMPLETE</code>
+	 * has fired.
 	 */
 	public function get context () : Context {
-		return _builder.context;
+		return _context;
 	}
 	
 	/**
@@ -72,10 +74,15 @@ public class CompositeContextBuilderTask extends Task {
 	 * @private
 	 */
 	protected override function doStart () : void {
-		_builder.build();
-		context.addEventListener(ContextEvent.INITIALIZED, contextInitialized);		
-		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);		
-		context.addEventListener(ErrorEvent.ERROR, contextError);		
+		_context = _builder.build();
+		if (!_context.initialized) {
+			_context.addEventListener(ContextEvent.INITIALIZED, contextInitialized);		
+			_context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);		
+			_context.addEventListener(ErrorEvent.ERROR, contextError);	
+		}
+		else {
+			complete();	
+		}
 	}
 	
 	private function contextInitialized (event:Event) : void {
