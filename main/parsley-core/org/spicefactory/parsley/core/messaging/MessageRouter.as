@@ -15,6 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.messaging {
+import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
+import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
+import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
+
 import flash.system.ApplicationDomain;
 
 /**
@@ -26,7 +30,7 @@ import flash.system.ApplicationDomain;
 public interface MessageRouter {
 	
 	
-	/**
+	/*
 	 * Registers a message binding. The specified target property will be updated each time
 	 * a message of a matching type gets dispatched through this router.
 	 * 
@@ -37,10 +41,7 @@ public interface MessageRouter {
 	 * @param selector an optional selector value to be used for selecting matching message targets
 	 * @param domain the ApplicationDomain for reflecting on the targetInstance and messageType
 	 */
-	function registerMessageBinding (targetInstance:Object, targetProperty:String, 
-			messageType:Class, messageProperty:String, selector:* = undefined, domain:ApplicationDomain = null) : MessageTarget;
-	
-	/**
+	/*
 	 * Registers a message handler. The specified target method will be invoked each time
 	 * a message of a matching type gets dispatched through this router. Unless the <code>messageProperties</code>
 	 * parameter is used the target method must have a single parameter matching the type of the method.
@@ -53,10 +54,7 @@ public interface MessageRouter {
 	 * @param selector an optional selector value to be used for selecting matching message targets
 	 * @param domain the ApplicationDomain for reflecting on the targetInstance and messageType
 	 */
-	function registerMessageHandler (targetInstance:Object, targetMethod:String, 
-			messageType:Class = null, messageProperties:Array = null, selector:* = undefined, domain:ApplicationDomain = null) : MessageTarget;
-	
-	/**
+	/*
 	 * Registers a message interceptor. The specified target method will be invoked each time
 	 * a message of a matching type gets dispatched through this router.
 	 * The target method must have a single parameter of type <code>org.spicefactory.parsley.messaging.MessageProcessor</code>.
@@ -67,17 +65,29 @@ public interface MessageRouter {
 	 * @param selector an optional selector value to be used for selecting matching message targets
 	 * @param domain the ApplicationDomain for reflecting on the targetInstance and messageType
 	 */	
-	function registerMessageInterceptor (targetInstance:Object, targetMethod:String, 
-			messageType:Class = null, selector:* = undefined, domain:ApplicationDomain = null) : MessageTarget;
-		
+	 
+	 
+	function addTarget (target:MessageTarget) : void;
+
+	function removeTarget (target:MessageTarget) : void;
+	
+	function addInterceptor (target:MessageInterceptor) : void;
+
+	function removeInterceptor (target:MessageInterceptor) : void;
+	
+	function addErrorHandler (target:MessageErrorHandler) : void;
+
+	function removeErrorHandler (target:MessageErrorHandler) : void;
+	
 	/**
 	 * Dispatches the specified message, processing all interceptors, handlers and bindings that have
 	 * registered for that message type.
 	 * 
 	 * @param message the message to dispatch
-	 * @param domain the ApplicationDomain for reflecting on the type of the message
+	 * @param domain the domain to use to reflect on the message type
+	 * @param selector the selector to use if it cannot be determined from the message instance itself
 	 */	
-	function dispatchMessage (message:Object, domain:ApplicationDomain = null) : void;
+	function dispatchMessage (message:Object, domain:ApplicationDomain = null, selector:* = undefined) : void;
 	
 	
 }

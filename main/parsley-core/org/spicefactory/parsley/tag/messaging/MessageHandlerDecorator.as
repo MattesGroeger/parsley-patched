@@ -15,19 +15,18 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.lib.reflect.Parameter;
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
-import org.spicefactory.parsley.core.messaging.MessageTarget;
-import org.spicefactory.parsley.core.messaging.impl.MessageTargetProxyManager;
+import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
+import org.spicefactory.parsley.core.messaging.receiver.impl.MessageHandler;
+import org.spicefactory.parsley.core.messaging.receiver.impl.MessagePropertyHandler;
+import org.spicefactory.parsley.core.messaging.receiver.impl.Providers;
+import org.spicefactory.parsley.core.messaging.receiver.impl.TargetInstanceProvider;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 
 [Metadata(name="MessageHandler", types="method")]
 /**
@@ -60,24 +59,6 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 	 */
 	public var messageProperties:Array;
 
-	/**
-	 * Indicates whether matching messages can trigger instance creation. The default is false.
-	 * <p>If this property is set to false, the object has to be created by some other means
-	 * before it becomes a valid message handler. This includes being explicitly fetched from
-	 * the Context, being needed as a dependency of another object or simply being configured as 
-	 * a non-lazy singleton (which is the default setting).</p>
-	 * <p>If this property is set to true, a proxy will be registered with the MessageRouter.
-	 * Whenever a matching message is dispatched the proxy will fetch the real target from
-	 * the Context. For an object configured with <code>singleton="false"</code> this means
-	 * that a new instance will be created each time a matching message gets dispatched.
-	 * For a lazy singleton it means that the singleton will be created at the time the
-	 * first matching message gets dispatched. For non-lazy singletons setting this property
-	 * does not make any difference.</p>
-	 * <p>This property can only be set to true for root object definitions. For inline
-	 * object definitions the framework will throw an Error if it is set to true.</p>
-	 */
-	public var createInstance:Boolean = false;
-	
 	[Target]
 	/**
 	 * The name of the method that wishes to handle the message.
@@ -89,13 +70,11 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		if (messageProperties != null && type == null) {
+			throw new ContextError("Message type must be specified if messageProperties attribute is used");
+		}
 		domain = registry.domain;
-		if (createInstance) {
-			registerProxy(definition, registry);
-		}
-		else {
-			definition.lifecycleListeners.addLifecycleListener(this);
-		}
+		definition.lifecycleListeners.addLifecycleListener(this);
 		return definition;
 	}
 	
@@ -103,83 +82,27 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 	 * @inheritDoc
 	 */
 	public function postConstruct (instance:Object, context:Context) : void {
-		var target:MessageTarget = context.messageRouter.registerMessageHandler(instance, method, 
-				type, messageProperties, selector, domain);
+		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type) : null;
+		var provider:TargetInstanceProvider = Providers.forInstance(instance, domain);
+		var target:MessageTarget;
+		if (messageProperties != null) {
+			target = new MessagePropertyHandler(provider, method, messageType, messageProperties, selector);
+		}
+		else {
+			target = new MessageHandler(provider, method, selector, messageType);
+		}
+		context.messageRouter.addTarget(target);
 		addTarget(instance, target);
 	}
 	
-	
 	/**
-	 * Temporary solution. Impl will be different in 2.1.
+	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
 	 */
-	private function registerProxy (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : void {
-		if (!(definition is RootObjectDefinition)) {
-			throw new ObjectDefinitionBuilderError("For inline object definitions the createInstance property" +
-					" cannot be set to true");
-			
-		}
-		if (messageProperties != null) {
-			throw new ObjectDefinitionBuilderError("createInstance and messageProperties attributes cannot be" +
-					" combined in this release");
-		}	
-		if (registry.getDefinitionCount(MessageTargetProxyManager) == 0) {
-			var factory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(MessageTargetProxyManager);
-			var managerDef:RootObjectDefinition = factory.createRootDefinition(registry);
-			registry.registerDefinition(managerDef);
-			managerDef.properties.addValue("proxies", []);
-		}
-		var def:ObjectDefinition = registry.getDefinitionByType(MessageTargetProxyManager);
-		var proxies:Array = def.properties.getValue("proxies");
-		var methodRef:Method = definition.type.getMethod(method);
-		var messageType:Class = (type == null) ? Parameter(methodRef.parameters[0]).type.getClass() : type;
-		proxies.push(new MessageHandlerProxy(RootObjectDefinition(definition).id, messageType, methodRef, selector, registry.domain));
+	public function preDestroy (instance:Object, context:Context) : void {
+		context.messageRouter.removeTarget(MessageTarget(removeTarget(instance)));
 	}
 	
 	
 }
 }
-
-import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.messaging.MessageTarget;
-
-import flash.system.ApplicationDomain;
-
-class MessageHandlerProxy {
-	
-	private var context:Context;
-	private var id:String;
-	private var messageType:Class;
-	private var method:Method;
-	private var selector:*;
-	private var domain:ApplicationDomain;
-	private var target:MessageTarget;
-	
-	function MessageHandlerProxy (id:String, messageType:Class, method:Method, selector:*, domain:ApplicationDomain) {
-		this.id = id;
-		this.messageType = messageType;
-		this.method = method;
-		this.selector = selector;
-		this.domain = domain;
-	}
-	
-	public function init (context:Context) : void {
-		this.context = context;
-		target = context.messageRouter.registerMessageHandler(this, "handleMessage", messageType, null, selector, domain);
-		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed); 
-	}
-	
-	private function contextDestroyed (event:ContextEvent) : void {
-		context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		target.unregister();
-	}
-	
-	public function handleMessage (param1:Object = undefined, ...params) : void {
-		params.unshift(param1);
-		method.invoke(context.getObject(id), params);
-	}
-	
-}
-
 

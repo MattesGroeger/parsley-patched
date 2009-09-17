@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,11 @@
 package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.parsley.core.messaging.MessageTarget;
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
+import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
+import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
+import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 /**
  * Default implementation of the MessageProcessor interface.
@@ -33,54 +36,88 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	
 	private var _message:Object;
 	
-	private var _targets:Array;
-	private var _interceptors:Array;
+	private var messageType:ClassInfo;
+	private var router:DefaultMessageRouter;
 	
-	private var _currentIndex:uint = 0;
+	private var remainingProcessors:Array;
+	private var currentProcessor:Processor;
+	private var errorProcessor:Processor;
+	private var currentError:Error;
 	
 	
 	/**
 	 * Creates a new instance.
 	 * 
 	 * @param message the message to process
-	 * @param targets the regular target for the message (handlers and bindings)
-	 * @param interceptors the interceptors for this message
+	 * @param messageType the type of the message
+	 * @param router the router that created this processor
 	 */
-	function DefaultMessageProcessor (message:Object, targets:Array, interceptors:Array) {
+	function DefaultMessageProcessor (message:Object, messageType:ClassInfo, router:DefaultMessageRouter) {
 		_message = message;
-		_targets = targets;
-		_interceptors = interceptors;
+		this.messageType = messageType;
+		this.router = router;
+		rewind();
 	}
 	
+
 	/**
 	 * @inheritDoc
 	 */
 	public function proceed () : void {
-		if (_interceptors.length > _currentIndex) {
-			var ic:MessageTarget = _interceptors[_currentIndex++];
-			invokeMessageTarget(ic);
-		}
-		else {
-			for each (var target:MessageTarget in _targets) {
-				invokeMessageTarget(target);
+		var async:Boolean;
+		do {
+			while (!currentProcessor.hasNext()) {
+				if (remainingProcessors.length == 0) return;
+				currentProcessor = remainingProcessors.shift() as Processor;
 			}
-		}
+			async = currentProcessor.async;
+			try {
+				currentProcessor.proceed();
+			}
+			catch (e:Error) {
+				log.error("Message Target threw Error {0}", e);
+				if (currentProcessor == errorProcessor) {
+					// avoid the risk of endless loops
+					throw e;
+				}
+				else {
+					errorProcessor.rewind();
+					if (errorProcessor.hasNext()) {
+						currentError = e;
+						remainingProcessors.unshift(currentProcessor);
+						currentProcessor = errorProcessor;
+					}
+					// TODO - UnhandledError.RETHROW - IGNORE - ABORT
+				}
+			}
+		} while (!async);
 	}
 	
-	private function invokeMessageTarget (target:MessageTarget) : void {
-		try {
-			target.handleMessage(this);
-		}
-		catch (e:Error) {
-			log.error("Message Target threw Error {0}", e);
-		}
+	private function invokeInterceptor (interceptor:MessageInterceptor) : void {
+		interceptor.intercept(this);
+	}
+	
+	private function invokeTarget (target:MessageTarget) : void {
+		target.handleMessage(message);
+	}
+	
+	private function invokeErrorHandler (errorHandler:MessageErrorHandler) : void {
+		errorHandler.handleError(this, currentError);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function rewind () : void {
-		_currentIndex = 0;
+		fetchReceivers();
+	}
+	
+	private function fetchReceivers () : void {	
+		var receiverSelection:MessageReceiverSelection = router.getReceiverSelection(messageType);
+		var selectorValue:* = receiverSelection.getSelectorValue(message);
+		errorProcessor = new Processor(receiverSelection.getErrorHandlers(selectorValue), invokeErrorHandler);
+		currentProcessor = new Processor(receiverSelection.getInterceptors(selectorValue), invokeInterceptor);
+		remainingProcessors = [new Processor(receiverSelection.getTargets(selectorValue), invokeTarget, false)];
 	}
 	
 	/**
@@ -93,3 +130,34 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	
 }
 }
+
+class Processor {
+	
+	private var receivers:Array;
+	private var handler:Function;
+	private var currentIndex:uint = 0;
+	var async:Boolean;
+	
+	function Processor (receivers:Array, handler:Function, async:Boolean = true) {
+		this.receivers = receivers;
+		this.handler = handler;
+		this.async = async;
+	}
+	
+	function hasNext () : Boolean {
+		return (receivers.length > currentIndex);
+	}
+	
+	function rewind () : void {
+		currentIndex = 0;
+	}
+
+	function proceed () : void {
+		handler(receivers[currentIndex++]);
+	}
+	
+}
+
+
+
+

@@ -29,13 +29,6 @@ public class MessagingXmlTagTest extends MessagingTestBase {
 			<message-handler method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestMessage"/>
 		</object> 
 		
-		<object id="proxyMessageHandlers" type="org.spicefactory.parsley.core.messaging.model.ProxyMessageHandlers" singleton="false">
-			<message-handler method="allTestEvents" type="org.spicefactory.parsley.core.messaging.TestEvent" create-instance="true"/>
-			<message-handler method="allEvents" type="flash.events.Event" create-instance="true"/>
-			<message-handler method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestEvent" create-instance="true"/>
-			<message-handler method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent" create-instance="true"/>
-		</object> 
-	
 		<object id="messageHandlers" type="org.spicefactory.parsley.core.messaging.model.MessageHandlers" lazy="true">
 			<message-handler method="allTestEvents" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
 			<message-handler method="allEvents" type="flash.events.Event"/>

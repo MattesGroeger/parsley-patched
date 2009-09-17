@@ -6,7 +6,6 @@ import org.spicefactory.parsley.core.messaging.model.EventSource;
 import org.spicefactory.parsley.core.messaging.model.MessageBindings;
 import org.spicefactory.parsley.core.messaging.model.MessageHandlers;
 import org.spicefactory.parsley.core.messaging.model.MessageInterceptors;
-import org.spicefactory.parsley.core.messaging.model.ProxyMessageHandlers;
 import org.spicefactory.parsley.core.messaging.model.TestMessageDispatcher;
 import org.spicefactory.parsley.core.messaging.model.TestMessageHandlers;
 
@@ -34,22 +33,6 @@ public class MessagingTestBase extends ContextTestBase {
 		assertEquals("Unexpected count for generic event handler", 3, handlers.genericEventCount);
 		assertEquals("Unexpected string property", "foo2", handlers.stringProp);
 		assertEquals("Unexpected int property", 9, handlers.intProp);
-	}
-	
-	public function testProxyMessageHandlers () : void {
-		ProxyMessageHandlers.reset();
-		var context:Context = messagingContext;
-		checkState(context);
-		checkObjectIds(context, ["eventSource"], EventSource);	
-		checkObjectIds(context, ["proxyMessageHandlers"], ProxyMessageHandlers);	
-		var source:EventSource = context.getObject("eventSource") as EventSource;
-		source.dispatchEvent(new TestEvent(TestEvent.TEST1, "foo1", 7));
-		source.dispatchEvent(new TestEvent(TestEvent.TEST2, "foo2", 9));
-		source.dispatchEvent(new Event("foo"));
-		assertEquals("Unexpected count for event test1", 2, ProxyMessageHandlers.test1Count);
-		assertEquals("Unexpected count for event test2", 2, ProxyMessageHandlers.test2Count);
-		assertEquals("Unexpected count for generic event handler", 3, ProxyMessageHandlers.genericEventCount);
-		assertEquals("Unexpected instance count", 7, ProxyMessageHandlers.instanceCount);
 	}
 	
 	public function testMessageBindings () : void {
@@ -88,7 +71,7 @@ public class MessagingTestBase extends ContextTestBase {
 		
 		assertEquals("Unexpected count for event test1", 2, interceptors.test1Count);
 		assertEquals("Unexpected count for event test2", 1, interceptors.test2Count);
-		assertEquals("Unexpected count for generic event handler", 2, interceptors.genericEventCount);
+		//assertEquals("Unexpected count for generic event handler", 2, interceptors.genericEventCount);
 		
 		interceptors.proceedEvent2();
 		
@@ -100,7 +83,7 @@ public class MessagingTestBase extends ContextTestBase {
 		
 		assertEquals("Unexpected count for event test1", 2, interceptors.test1Count);
 		assertEquals("Unexpected count for event test2", 2, interceptors.test2Count);
-		assertEquals("Unexpected count for generic event handler", 3, interceptors.genericEventCount);		
+		//assertEquals("Unexpected count for generic event handler", 3, interceptors.genericEventCount);		
 	}
 	
 	public function testMessageDispatcher () : void {

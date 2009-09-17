@@ -15,11 +15,14 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.messaging.MessageTarget;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
+import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultMessageInterceptor;
+import org.spicefactory.parsley.core.messaging.receiver.impl.Providers;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 
 [Metadata(name="MessageInterceptor", types="method")]
@@ -45,6 +48,12 @@ public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator 
 	 */
 	public var selector:String;
 	
+	/**
+	 * The scope this interceptor wants to be applied to.
+	 * The default is ScopeName.GLOBAL.
+	 */
+	public var scope:String;
+	
 	[Target]
 	/**
 	 * The name of the interceptor method.
@@ -65,8 +74,18 @@ public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator 
 	 * @inheritDoc
 	 */
 	public function postConstruct (instance:Object, context:Context) : void {
-		var target:MessageTarget = context.messageRouter.registerMessageInterceptor(instance, method, type, selector, domain);
-		addTarget(instance, target);
+		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type) : null;
+		var ic:MessageInterceptor = 
+				new DefaultMessageInterceptor(Providers.forInstance(instance, domain), method, messageType, selector);
+		context.messageRouter.addInterceptor(ic);
+		addTarget(instance, ic);
+	}
+	
+	/**
+	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
+	 */
+	public function preDestroy (instance:Object, context:Context) : void {
+		context.messageRouter.removeInterceptor(MessageInterceptor(removeTarget(instance)));
 	}
 	
 	

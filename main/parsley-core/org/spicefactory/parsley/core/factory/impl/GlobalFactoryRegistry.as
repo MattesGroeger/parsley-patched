@@ -200,7 +200,7 @@ class DefaultViewManagerFactory implements ViewManagerFactory {
 class DefaultMessageRouterFactory implements MessageRouterFactory {
 	
 	public function create (context:Context, domain:ApplicationDomain) : MessageRouter {
-		return new DefaultMessageRouter(context, domain);
+		return new DefaultMessageRouter(context);
 	}
 	
 }

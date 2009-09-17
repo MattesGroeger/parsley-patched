@@ -44,7 +44,7 @@ public class MessageDispatcherDecorator implements ObjectDefinitionDecorator {
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		definition.properties.addValue(property, new MessageDispatcherFunctionReference(registry.domain));
+		definition.properties.addValue(property, new MessageDispatcherFunctionReference());
 		return definition;
 	}
 	

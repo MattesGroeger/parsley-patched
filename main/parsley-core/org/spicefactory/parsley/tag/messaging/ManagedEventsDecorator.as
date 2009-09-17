@@ -55,7 +55,7 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		delegate = new MessageDispatcherFunctionReference(registry.domain);
+		delegate = new MessageDispatcherFunctionReference();
 		if (names == null) {
 			names = new Array();
 			var events:Array = definition.type.getMetadata(EventInfo);

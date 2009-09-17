@@ -17,8 +17,6 @@
 package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.parsley.core.messaging.MessageRouter;
 
-import flash.system.ApplicationDomain;
-
 /**
  * Represents a reference to a message dispatcher function. To be used in MXML and XML configuration.
  * 
@@ -27,22 +25,15 @@ import flash.system.ApplicationDomain;
 public class MessageDispatcherFunctionReference {
 	
 	/**
-	 * The ApplicationDomain to pass to the MessageRouter for reflecting on message types.
-	 */
-	public var domain:ApplicationDomain;
-	
-	/**
 	 * The MessageRouter to use for dispatching messages.
 	 */
 	public var router:MessageRouter;
 	
 	/**
-	 * Creates a new instance.
-	 * 
-	 * @param domain the ApplicationDomain to pass to the MessageRouter
+	 * Creates a new instance. TODO - remove
 	 */
-	function MessageDispatcherFunctionReference (domain:ApplicationDomain = null) {
-		this.domain = domain;
+	function MessageDispatcherFunctionReference () {
+		
 	}
 	
 	
@@ -52,7 +43,7 @@ public class MessageDispatcherFunctionReference {
 	 * @param message the message to dispatch
 	 */
 	public function dispatchMessage (message:Object) : void {
-		router.dispatchMessage(message, domain);
+		router.dispatchMessage(message);
 	}
 	
 	

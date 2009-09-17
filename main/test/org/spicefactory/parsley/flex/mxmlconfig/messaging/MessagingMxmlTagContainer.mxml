@@ -35,13 +35,6 @@
 		<msg:MessageHandlerDecorator method="mappedProperties" messageProperties="['stringProp','intProp']" type="{TestEvent}"/>
 	</flextag:MxmlObjectDefinitionFactoryTag> 
 	
-	<flextag:MxmlObjectDefinitionFactoryTag id="proxyMessageHandlers" type="{ProxyMessageHandlers}" singleton="false">
-		<msg:MessageHandlerDecorator method="allTestEvents" type="{TestEvent}" createInstance="true"/>
-		<msg:MessageHandlerDecorator method="allEvents" type="{Event}" createInstance="true"/>
-		<msg:MessageHandlerDecorator method="event1" selector="test1" type="{TestEvent}" createInstance="true"/>
-		<msg:MessageHandlerDecorator method="event2" selector="test2" type="{TestEvent}" createInstance="true"/>
-	</flextag:MxmlObjectDefinitionFactoryTag> 
-
 	<flextag:MxmlObjectDefinitionFactoryTag id="messageBindings" type="{MessageBindingsBlank}" lazy="true">
 		<msg:MessageBindingDecorator targetProperty="stringProp" messageProperty="stringProp" type="{TestEvent}"/>
 		<msg:MessageBindingDecorator targetProperty="intProp1" messageProperty="intProp" selector="test1" type="{TestEvent}"/>

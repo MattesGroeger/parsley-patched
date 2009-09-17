@@ -15,11 +15,14 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.messaging.MessageTarget;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
+import org.spicefactory.parsley.core.messaging.receiver.impl.MessageBinding;
+import org.spicefactory.parsley.core.messaging.receiver.impl.Providers;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 
 [Metadata(name="MessageBinding", types="property")]
@@ -72,9 +75,18 @@ public class MessageBindingDecorator extends AbstractMessageTargetDecorator impl
 	 * @inheritDoc
 	 */
 	public function postConstruct (instance:Object, context:Context) : void {
-		var target:MessageTarget = context.messageRouter.registerMessageBinding(instance, targetProperty, 
-				type, messageProperty, selector, domain);
+		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type) : null;
+		var target:MessageTarget = new MessageBinding(Providers.forInstance(instance, domain), 
+				targetProperty, messageType, messageProperty, selector);
+		context.messageRouter.addTarget(target);
 		addTarget(instance, target);
+	}
+	
+	/**
+	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
+	 */
+	public function preDestroy (instance:Object, context:Context) : void {
+		context.messageRouter.removeTarget(MessageTarget(removeTarget(instance)));
 	}
 
 	

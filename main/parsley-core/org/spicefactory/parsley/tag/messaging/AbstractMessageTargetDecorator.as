@@ -17,7 +17,8 @@
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.messaging.MessageTarget;
+import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
+import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
@@ -41,27 +42,20 @@ public class AbstractMessageTargetDecorator {
 	/**
 	 * Adds this target to this decorator for later disposal.
 	 */
-	protected function addTarget (instance:Object, target:MessageTarget) : void {
+	protected function addTarget (instance:Object, target:MessageReceiver) : void {
 		if (targets[instance] != undefined) {
 			throw new IllegalArgumentError("Attempt to add more than one target for the same instance: " + instance);
 		}
 		targets[instance] = target;
 	}
 	
-	private function removeTarget (instance:Object) : MessageTarget {
+	protected function removeTarget (instance:Object) : MessageReceiver {
 		if (targets[instance] == undefined) {
 			throw new IllegalArgumentError("No MesssageTarget was added for the specified instance: " + instance);
 		}
 		var target:MessageTarget = targets[instance];
 		delete targets[instance];
 		return target;
-	}
-	
-	/**
-	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
-	 */
-	public function preDestroy (instance:Object, context:Context) : void {
-		removeTarget(instance).unregister();
 	}
 	
 	

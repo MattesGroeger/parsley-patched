@@ -26,7 +26,7 @@ import org.spicefactory.parsley.core.errors.ContextBuilderError;
 import org.spicefactory.parsley.core.lifecycle.impl.DefaultObjectLifecycleManager;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageProcessor;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageRouter;
-import org.spicefactory.parsley.core.messaging.impl.MessageTargetSelection;
+import org.spicefactory.parsley.core.messaging.impl.MessageReceiverSelection;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.parsley.task.CompositeContextBuilderTask;
 
@@ -48,7 +48,7 @@ public class CoreFrameworkClasses {
 	CompositeContextBuilderTask;
 	ActionScriptContextBuilder;
 	DefaultCompositeContextBuilder;
-	MessageTargetSelection;
+	MessageReceiverSelection;
 	DefaultMessageProcessor;
 	DefaultMessageRouter;
 	DefaultObjectDefinitionRegistry;
