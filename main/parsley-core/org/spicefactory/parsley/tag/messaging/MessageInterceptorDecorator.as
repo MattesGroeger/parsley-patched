@@ -25,7 +25,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 
-[Metadata(name="MessageInterceptor", types="method")]
+[Metadata(name="MessageInterceptor", types="method", multiple="true")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on methods that want to intercept messages of a particular type
  * dispatched through Parsleys central message router.

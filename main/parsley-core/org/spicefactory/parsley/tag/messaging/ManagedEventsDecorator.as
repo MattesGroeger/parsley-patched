@@ -27,7 +27,7 @@ import org.spicefactory.parsley.tag.core.NestedTag;
 
 import flash.events.IEventDispatcher;
 
-[Metadata(name="ManagedEvents", types="class")]
+[Metadata(name="ManagedEvents", types="class", multiple="true")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on classes that dispatch events
  * that should be dispatched through Parsleys central message router.

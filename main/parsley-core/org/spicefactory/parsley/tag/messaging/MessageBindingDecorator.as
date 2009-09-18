@@ -25,7 +25,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 
-[Metadata(name="MessageBinding", types="property")]
+[Metadata(name="MessageBinding", types="property", multiple="true")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on properties which wish to be bound to a property value
  * of a particular message type dispatched through Parsleys central message router.
