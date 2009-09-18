@@ -75,7 +75,7 @@ public class MessageBindingDecorator extends AbstractMessageTargetDecorator impl
 	 * @inheritDoc
 	 */
 	public function postConstruct (instance:Object, context:Context) : void {
-		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type) : null;
+		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
 		var target:MessageTarget = new MessageBinding(Providers.forInstance(instance, domain), 
 				targetProperty, messageType, messageProperty, selector);
 		context.messageRouter.addTarget(target);

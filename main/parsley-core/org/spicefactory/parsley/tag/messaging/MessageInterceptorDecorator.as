@@ -74,7 +74,7 @@ public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator 
 	 * @inheritDoc
 	 */
 	public function postConstruct (instance:Object, context:Context) : void {
-		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type) : null;
+		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
 		var ic:MessageInterceptor = 
 				new DefaultMessageInterceptor(Providers.forInstance(instance, domain), method, messageType, selector);
 		context.messageRouter.addInterceptor(ic);

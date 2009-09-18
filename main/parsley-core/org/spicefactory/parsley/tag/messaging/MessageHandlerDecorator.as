@@ -82,7 +82,7 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 	 * @inheritDoc
 	 */
 	public function postConstruct (instance:Object, context:Context) : void {
-		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type) : null;
+		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
 		var provider:TargetInstanceProvider = Providers.forInstance(instance, domain);
 		var target:MessageTarget;
 		if (messageProperties != null) {
