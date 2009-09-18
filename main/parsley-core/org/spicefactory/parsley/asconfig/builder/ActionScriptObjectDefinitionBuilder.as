@@ -23,6 +23,7 @@ import org.spicefactory.parsley.asconfig.metadata.InternalProperty;
 import org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
@@ -69,7 +70,8 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 				for each (var property:Property in ci.getProperties()) {
 					try {
 						var internalMeta:Array = property.getMetadata(InternalProperty);
-						if (internalMeta.length == 0 && property.readable && !property.type.isType(NestedTag)) {
+						if (internalMeta.length == 0 && property.readable 
+								&& !property.type.isType(NestedTag) && !property.type.isType(ObjectDefinitionDecorator)) {
 							buildTargetDefinition(property, configInstance, registry);
 						} 
 					}
