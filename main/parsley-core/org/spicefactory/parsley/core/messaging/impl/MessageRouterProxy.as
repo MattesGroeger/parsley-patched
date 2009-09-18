@@ -46,19 +46,28 @@ public class MessageRouterProxy implements MessageRouter {
 		else {
 			deferredMessages = new Array();
 			context.addEventListener(ContextEvent.CONFIGURED, contextConfigured);
+			context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		}
 		this.context = context;
 		this.domain = domain;
 	}
 
 	private function contextConfigured (event:ContextEvent) : void {
-		context.removeEventListener(ContextEvent.CONFIGURED, contextConfigured);
-		if (activated) return;
+		removeListeners();
 		activated = true;
 		for each (var deferred:DeferredMessage in deferredMessages) {
 			delegate.dispatchMessage(deferred.message, deferred.domain);
 		}
 		deferredMessages = new Array();
+	}
+	
+	private function contextDestroyed (event:ContextEvent) : void {
+		removeListeners();
+	}
+	
+	private function removeListeners () : void {
+		context.removeEventListener(ContextEvent.CONFIGURED, contextConfigured);
+		context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
 	
 	
