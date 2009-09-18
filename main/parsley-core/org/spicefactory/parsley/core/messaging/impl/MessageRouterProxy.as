@@ -56,7 +56,7 @@ public class MessageRouterProxy implements MessageRouter {
 		removeListeners();
 		activated = true;
 		for each (var deferred:DeferredMessage in deferredMessages) {
-			delegate.dispatchMessage(deferred.message, deferred.domain);
+			delegate.dispatchMessage(deferred.message, deferred.domain, deferred.selector);
 		}
 		deferredMessages = new Array();
 	}
@@ -74,12 +74,13 @@ public class MessageRouterProxy implements MessageRouter {
 	/**
 	 * @inheritDoc
 	 */
-	public function dispatchMessage (message:Object, domain:ApplicationDomain = null) : void {
+	public function dispatchMessage (message:Object, domain:ApplicationDomain = null, selector:* = undefined) : void {
 		if (!activated) {
-			deferredMessages.push(new DeferredMessage(message, domain));
+			deferredMessages.push(new DeferredMessage(message, domain, selector));
 		}
 		else {
-			delegate.dispatchMessage(message, this.domain);
+			domain = (domain == null) ? this.domain : domain;
+			delegate.dispatchMessage(message, domain, selector);
 		}
 	}	
 
@@ -134,9 +135,11 @@ import flash.system.ApplicationDomain;
 class DeferredMessage {
 	internal var message:Object;
 	internal var domain:ApplicationDomain;
-	function DeferredMessage (message:Object, domain:ApplicationDomain) {
+	internal var selector:*;
+	function DeferredMessage (message:Object, domain:ApplicationDomain, selector:*) {
 		this.message = message;
 		this.domain = domain;
+		this.selector = selector;
 	}
 }
 
