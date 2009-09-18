@@ -18,10 +18,11 @@ package org.spicefactory.parsley.tag.resources {
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.tag.core.NestedTag;
 
 import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
@@ -36,7 +37,7 @@ import flash.utils.getQualifiedClassName;
  * 
  * @author Jens Halm
  */
-public class ResourceBindingDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
+public class ResourceBindingDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener, NestedTag {
 
 
 	/**

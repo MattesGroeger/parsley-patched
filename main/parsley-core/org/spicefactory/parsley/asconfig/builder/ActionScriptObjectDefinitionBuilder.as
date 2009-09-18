@@ -28,6 +28,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.tag.core.NestedTag;
 
 import flash.utils.getQualifiedClassName;
 
@@ -68,7 +69,7 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 				for each (var property:Property in ci.getProperties()) {
 					try {
 						var internalMeta:Array = property.getMetadata(InternalProperty);
-						if (internalMeta.length == 0 && property.readable) {
+						if (internalMeta.length == 0 && property.readable && !property.type.isType(NestedTag)) {
 							buildTargetDefinition(property, configInstance, registry);
 						} 
 					}

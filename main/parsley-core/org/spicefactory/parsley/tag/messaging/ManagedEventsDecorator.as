@@ -19,10 +19,11 @@ import org.spicefactory.lib.reflect.metadata.EventInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
+import org.spicefactory.parsley.tag.core.NestedTag;
 
 import flash.events.IEventDispatcher;
 
@@ -39,7 +40,7 @@ import flash.events.IEventDispatcher;
  *
  * @author Jens Halm
  */
-public class ManagedEventsDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
+public class ManagedEventsDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener, NestedTag {
 
 
 	[DefaultProperty]

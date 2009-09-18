@@ -15,10 +15,11 @@
  */
 
 package org.spicefactory.parsley.tag.lifecycle {
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
+import org.spicefactory.parsley.tag.core.NestedTag;
 
 [Metadata(name="AsyncInit", types="class")]
 /**
@@ -26,7 +27,7 @@ import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
  * 
  * @author Jens Halm
  */
-public class AsyncInitDecorator extends AsyncInitConfig implements ObjectDefinitionDecorator {
+public class AsyncInitDecorator extends AsyncInitConfig implements ObjectDefinitionDecorator, NestedTag {
 
 
 	/**

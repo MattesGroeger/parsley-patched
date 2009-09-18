@@ -23,6 +23,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.impl.ObjectDefinitionWrapper;
+import org.spicefactory.parsley.tag.core.NestedTag;
 import org.spicefactory.parsley.tag.util.DecoratorUtil;
 
 [Metadata(name="Factory", types="method")]
@@ -31,7 +32,7 @@ import org.spicefactory.parsley.tag.util.DecoratorUtil;
  * 
  * @author Jens Halm
  */
-public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
+public class FactoryMethodDecorator implements ObjectDefinitionDecorator, NestedTag {
 
 	
 	[Target]

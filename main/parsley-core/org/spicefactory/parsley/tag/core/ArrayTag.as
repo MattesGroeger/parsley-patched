@@ -23,7 +23,7 @@ package org.spicefactory.parsley.tag.core {
  * 
  * @author Jens Halm
  */
-public class ArrayTag {
+public class ArrayTag implements NestedTag {
 	
 	
 	/**

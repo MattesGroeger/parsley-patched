@@ -15,7 +15,12 @@
  */
 
 package org.spicefactory.parsley.tag.core {
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+
 import mx.core.IMXMLObject;
+
+import flash.errors.IllegalOperationError;
 
 /**
  * Extension of the default object definition tag that handles ids set in MXML.
@@ -25,6 +30,13 @@ import mx.core.IMXMLObject;
 public class MxmlObjectDefinitionFactoryTag extends ObjectDefinitionFactoryTag implements IMXMLObject {
 
 
+	/**
+	 * @private
+	 */
+	public override function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		throw new IllegalOperationError("This tag may only be used for root object declarations");
+	}
+	
 	/**
 	 * @private
 	 */

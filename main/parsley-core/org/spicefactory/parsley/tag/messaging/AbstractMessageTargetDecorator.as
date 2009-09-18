@@ -16,9 +16,9 @@
 
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.errors.IllegalArgumentError;
-import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
+import org.spicefactory.parsley.tag.core.NestedTag;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
@@ -28,7 +28,7 @@ import flash.utils.Dictionary;
  * 
  * @author Jens Halm
  */
-public class AbstractMessageTargetDecorator {
+public class AbstractMessageTargetDecorator implements NestedTag {
 	
 	
 	private var targets:Dictionary = new Dictionary();

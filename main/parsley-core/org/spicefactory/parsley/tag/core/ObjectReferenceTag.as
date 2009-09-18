@@ -22,7 +22,7 @@ package org.spicefactory.parsley.tag.core {
  * 
  * @author Jens Halm
  */
-public class ObjectReferenceTag {
+public class ObjectReferenceTag implements NestedTag {
 	
 	
 	/**

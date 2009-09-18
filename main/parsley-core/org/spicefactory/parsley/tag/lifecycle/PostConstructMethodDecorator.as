@@ -18,9 +18,10 @@ package org.spicefactory.parsley.tag.lifecycle {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.tag.core.NestedTag;
 import org.spicefactory.parsley.tag.util.DecoratorUtil;
 
 [Metadata(name="PostConstruct", types="method")]
@@ -33,7 +34,7 @@ import org.spicefactory.parsley.tag.util.DecoratorUtil;
  * 
  * @author Jens Halm
  */
-public class PostConstructMethodDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
+public class PostConstructMethodDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener, NestedTag {
 
 
 	[Target]
