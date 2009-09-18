@@ -6,4 +6,5 @@
 		>
     <message key="test">Drei Worte Deutsch</message>
     <message key="bind">Deutsch</message>
+    <message key="bind2">Deutsch 2</message>
 </message-bundle>

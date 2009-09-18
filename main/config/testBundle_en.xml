@@ -6,4 +6,5 @@
 		>
     <message key="test">{0} + {1} = {2}</message>
     <message key="bind">English</message>
+    <message key="bind2">English 2</message>
 </message-bundle>
