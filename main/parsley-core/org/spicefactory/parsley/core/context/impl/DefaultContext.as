@@ -28,6 +28,7 @@ import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.messaging.impl.MessageRouterProxy;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
@@ -83,7 +84,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 		provider.init(this);
 		_registry = provider.registry;
 		_lifecycleManager = provider.lifecycleManager;
-		_messageRouter = provider.messageRouter;
+		_messageRouter = new MessageRouterProxy(provider.messageRouter, this, _registry.domain);
 		_viewManager = provider.viewManager;
 		addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, 1);
 		_registry.addEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
