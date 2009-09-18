@@ -25,7 +25,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 
-[Metadata(name="MessageErrorHandler", types="method", multiple="true")]
+[Metadata(name="MessageError", types="method", multiple="true")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on methods that want to handle errors that were thrown
  * by a message target or interceptor.
