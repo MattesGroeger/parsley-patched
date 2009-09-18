@@ -8,6 +8,7 @@ import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
 import org.spicefactory.parsley.flash.resources.tag.FlashResourceXmlSupport;
 import org.spicefactory.parsley.flash.resources.tag.ResourceBundleTag;
 import org.spicefactory.parsley.testmodel.AnnotatedResourceBinding;
+import org.spicefactory.parsley.testmodel.SecondResourceBinding;
 import org.spicefactory.parsley.xml.XmlContextTestBase;
 import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionBuilder;
 
@@ -20,6 +21,7 @@ public class FlashResourcesTest extends XmlContextTestBase {
 	
 	
 	private var binding:AnnotatedResourceBinding;
+	private var binding2:SecondResourceBinding;
 
 	
 	public override function setUp () : void {
@@ -96,6 +98,7 @@ public class FlashResourcesTest extends XmlContextTestBase {
 	        </res:resource-manager>
 	        <res:resource-bundle id="test" basename="testBundle" localized="true" ignore-country="true"/>
 	        <object id="binding" type="org.spicefactory.parsley.testmodel.AnnotatedResourceBinding"/>
+	        <object id="binding2" type="org.spicefactory.parsley.testmodel.SecondResourceBinding"/>
     	</objects>;  
     	prepareContext(xml, onTestResourceBinding);	
 	}
@@ -104,14 +107,18 @@ public class FlashResourcesTest extends XmlContextTestBase {
 		var context:Context = event.target as Context;
 		var rm:ResourceManager = checkContextAndGetResourceManager(context);
 		checkObjectIds(context, ["binding"], AnnotatedResourceBinding);	
+		checkObjectIds(context, ["binding2"], SecondResourceBinding);	
 		binding = getAndCheckObject(context, "binding", AnnotatedResourceBinding) as AnnotatedResourceBinding;
+		binding2 = getAndCheckObject(context, "binding2", SecondResourceBinding) as SecondResourceBinding;
     	assertEquals("Unexpected message", "English", binding.boundValue);	
+    	assertEquals("Unexpected message", "English 2", binding2.boundValue);	
 		rm.addEventListener(LocaleSwitchEvent.COMPLETE, addAsync(onSwitchLocale, 3000));
     	rm.currentLocale = new Locale("de", "DE");
 	}
 	
 	private function onSwitchLocale (event:LocaleSwitchEvent) : void {
 		assertEquals("Unexpected message", "Deutsch", binding.boundValue);
+		assertEquals("Unexpected message", "Deutsch 2", binding2.boundValue);
 	}
 	
 	public function testTwoBundles () : void {
