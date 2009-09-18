@@ -65,7 +65,7 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Obje
 
 	private static var adapter:ResourceBindingAdapter;
 	
-	private static var managedObjects:Dictionary = new Dictionary();
+	private var managedObjects:Dictionary = new Dictionary();
 	
 	private var _property:Property;
 	
