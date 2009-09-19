@@ -22,7 +22,23 @@ package org.spicefactory.parsley.core.lifecycle {
 public class ObjectLifecycle {
 	
 	
+	public static const PRE_CONFIGURE:ObjectLifecycle = new ObjectLifecycle("preConfigure");
+
+	public static const PRE_INIT:ObjectLifecycle = new ObjectLifecycle("preConfigure");
+
+	public static const POST_INIT:ObjectLifecycle = new ObjectLifecycle("preConfigure");
+
+	public static const PRE_DESTROY:ObjectLifecycle = new ObjectLifecycle("preConfigure");
+
+	public static const POST_DESTROY:ObjectLifecycle = new ObjectLifecycle("preConfigure");
+	
+	
 	private var _key:String;
+	
+	
+	function ObjectLifecycle (key:String) {
+		_key = key;
+	}
 	
 	
 	public function get key () : String {
