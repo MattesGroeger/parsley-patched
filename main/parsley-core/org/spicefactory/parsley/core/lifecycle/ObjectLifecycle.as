@@ -20,5 +20,19 @@ package org.spicefactory.parsley.core.lifecycle {
  * @author Jens Halm
  */
 public class ObjectLifecycle {
+	
+	
+	private var _key:String;
+	
+	
+	public function get key () : String {
+		return _key;
+	}
+	
+	public function toSting () : String {
+		return _key;
+	}
+	
+	
 }
 }
