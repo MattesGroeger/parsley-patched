@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.scopes {
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 
 import flash.system.ApplicationDomain;
@@ -26,10 +25,10 @@ import flash.system.ApplicationDomain;
 public interface ObjectLifecycleScope {
 	
 	
-	function addListener (type:ClassInfo, event:ObjectLifecycle, listener:Function, 
+	function addListener (type:Class, event:ObjectLifecycle, listener:Function, 
 			id:String = null, domain:ApplicationDomain = null) : void;
 
-	function removeListener (type:ClassInfo, event:ObjectLifecycle, listener:Function, 
+	function removeListener (type:Class, event:ObjectLifecycle, listener:Function, 
 			id:String = null, domain:ApplicationDomain = null) : void;
 	
 	
