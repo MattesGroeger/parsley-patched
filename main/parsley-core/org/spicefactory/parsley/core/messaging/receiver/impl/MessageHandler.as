@@ -27,7 +27,16 @@ import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 public class MessageHandler extends AbstractMethodReceiver implements MessageTarget {
 	
 	
-	
+	/*
+	 * Creates a new instance.
+	 * 
+	 * @param provider the provider for the instance that contains the target method
+	 * @param methodName the name of the target method that should be invoked
+	 * @param selector an optional selector value to be used for selecting matching message targets
+	 * @param messageType the type of the message or null if it should be autodetected by the parameter of the target method
+	 * @param messageProperties an optional list of names of properties of the message that should be used as method
+	 * parameters instead of the message itself
+	 */
 	function MessageHandler (provider:TargetInstanceProvider, methodName:String, selector:* = undefined, messageType:ClassInfo = null) {
 		super(provider, methodName, getMessageType(provider, methodName, messageType), selector);
 	}

@@ -30,6 +30,15 @@ public class MessagePropertyHandler extends AbstractMethodReceiver implements Me
 	private var messageProperties:Array;
 	
 	
+	/*
+	 * Creates a new instance.
+	 * 
+	 * @param provider the provider for the instance that contains the target method
+	 * @param methodName the name of the target method that should be invoked
+	 * @param messageType the type of the message or null if it should be autodetected by the parameter of the target method
+	 * @param messageProperties the list of names of properties of the message that should be used as method parameters
+	 * @param selector an optional selector value to be used for selecting matching message targets
+	 */
 	function MessagePropertyHandler (provider:TargetInstanceProvider, methodName:String, messageType:ClassInfo,
 			messageProperties:Array, selector:* = undefined) {
 		super(provider, methodName, messageType, selector);

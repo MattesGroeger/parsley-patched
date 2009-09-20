@@ -21,6 +21,7 @@ import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 /**
+ * 
  * @author Jens Halm
  */
 public class MessageBinding extends AbstractTargetInstanceReceiver implements MessageTarget {
@@ -30,6 +31,15 @@ public class MessageBinding extends AbstractTargetInstanceReceiver implements Me
 	private var messageProperty:Property;
 	
 	
+	/*
+	 * Creates a new instance. 
+	 * 
+	 * @param provider the provider for the instance that contains the target property
+	 * @param targetPropertyName the name of the target property that should be bound
+	 * @param messageType the type of the message
+	 * @param messagePropertyName the name of the property of the message that should be bound to the target property
+	 * @param selector an optional selector value to be used for selecting matching message targets
+	 */
 	function MessageBinding (provider:TargetInstanceProvider, targetPropertyName:String, 
 			messageType:ClassInfo, messagePropertyName:String, selector:* = undefined) {
 		super(provider, messageType, selector);
