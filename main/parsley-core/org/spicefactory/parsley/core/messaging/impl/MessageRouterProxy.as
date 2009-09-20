@@ -50,6 +50,7 @@ public class MessageRouterProxy implements MessageRouter {
 		}
 		this.context = context;
 		this.domain = domain;
+		this.delegate = delegate;
 	}
 
 	private function contextConfigured (event:ContextEvent) : void {
