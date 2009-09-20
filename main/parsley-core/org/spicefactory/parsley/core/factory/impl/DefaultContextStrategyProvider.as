@@ -17,21 +17,14 @@
 package org.spicefactory.parsley.core.factory.impl {
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
-import org.spicefactory.parsley.core.messaging.MessageRouter;
-import org.spicefactory.parsley.core.messaging.impl.MessageRouterProxy;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.scopes.Scope;
 import org.spicefactory.parsley.core.scopes.ScopeManager;
-import org.spicefactory.parsley.core.scopes.ScopeName;
-import org.spicefactory.parsley.core.scopes.impl.ScopeDefinition;
 import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.system.ApplicationDomain;
-import flash.utils.Dictionary;
 
 /**
  * @author Jens Halm
@@ -45,20 +38,15 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	private var _viewManager:ViewManager;
 	
 	private var factories:FactoryRegistry;
-	private var context:Context;
-	private var parent:Context;
 	private var domain:ApplicationDomain;
-	private var newScopes:Array;
+	private var scopeDefs:Array;
+	private var context:Context;
 	
-	private static const inheritedScopeMap:Dictionary = new Dictionary();
 
-
-	function DefaultContextStrategyProvider (factories:FactoryRegistry, parent:Context, domain:ApplicationDomain, 
-			newScopes:Array) {
+	function DefaultContextStrategyProvider (factories:FactoryRegistry, domain:ApplicationDomain, scopeDefs:Array) {
 		this.factories = factories;
-		this.parent = parent;
 		this.domain = domain;
-		this.newScopes = newScopes;
+		this.scopeDefs = scopeDefs;
 	}
 
 	
@@ -97,7 +85,7 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	public function get scopeManager () : ScopeManager {
 		checkState();
 		if (_scopeManager == null) {
-			_scopeManager =	factories.scopeManager.createManager(createScopes(), domain);
+			_scopeManager =	factories.scopeManager.create(context, scopeDefs, domain);
 		}
 		return _scopeManager;
 	}
@@ -118,7 +106,7 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	 */
 	public function createDynamicProvider () : ContextStrategyProvider {
 		checkState();
-		var provider:DefaultContextStrategyProvider = new DefaultContextStrategyProvider(factories, context, domain, []);
+		var provider:DefaultContextStrategyProvider = new DefaultContextStrategyProvider(factories, domain, scopeDefs);
 		provider._scopeManager = scopeManager;
 		provider._viewManager = viewManager;
 		return provider;
@@ -129,37 +117,6 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 		if (context == null) {
 			throw new IllegalStateError("Provider has not been initialized yet");
 		}
-	}
-	
-	
-	protected function createScopes () : Dictionary {
-		var scopes:Dictionary = new Dictionary();
-		newScopes.push(new ScopeDefinition(ScopeName.LOCAL, false));
-		if (parent == null) {
-			newScopes.push(new ScopeDefinition(ScopeName.GLOBAL, true));
-		}
-		else {
-			for each (var scope:Scope in parent.scopeManager.getAllScopes()) {
-				if (scope.inherited) {
-					scopes[scope.name] = scope;
-				}
-			}
-		}
-		for each (var scopeDef:ScopeDefinition in newScopes) {
-			if (scopes[scopeDef.name] != undefined) {
-				throw new ContextError("Overlapping scopes with name " + scopeDef.name);
-			}
-			var messageRouter:MessageRouter 
-					= factories.messageRouter.create(context, domain);
-			var messageRouterProxy:MessageRouter 
-					= new MessageRouterProxy(messageRouter, context, domain);
-			var lifecycleEventRouter:MessageRouter 
-					= factories.messageRouter.create(context, domain);
-			var newScope:Scope 
-					= factories.scopeManager.createScope(scopeDef, messageRouterProxy, lifecycleEventRouter);
-			scopes[newScope.name] = newScope;
-		}
-		return scopes;
 	}
 	
 	

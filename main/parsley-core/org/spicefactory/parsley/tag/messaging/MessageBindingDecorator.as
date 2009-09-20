@@ -86,7 +86,7 @@ public class MessageBindingDecorator extends AbstractMessageReceiverDecorator im
 		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
 		var target:MessageTarget = new MessageBinding(Providers.forInstance(instance, domain), 
 				targetProperty, messageType, messageProperty, selector);
-		context.scopeManager.getScope(scope).messageRouter.addTarget(target);
+		context.scopeManager.getScope(scope).messageReceivers.addTarget(target);
 		addReceiver(instance, target);
 	}
 	
@@ -94,7 +94,7 @@ public class MessageBindingDecorator extends AbstractMessageReceiverDecorator im
 	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
 	 */
 	public function preDestroy (instance:Object, context:Context) : void {
-		context.scopeManager.getScope(scope).messageRouter.removeTarget(MessageTarget(removeReceiver(instance)));
+		context.scopeManager.getScope(scope).messageReceivers.removeTarget(MessageTarget(removeReceiver(instance)));
 	}
 
 	

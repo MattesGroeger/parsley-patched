@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.scopes.impl {
+import org.spicefactory.parsley.core.factory.FactoryRegistry;
+import org.spicefactory.parsley.core.messaging.MessageRouter;
 
 /**
  * @author Jens Halm
@@ -22,14 +24,20 @@ package org.spicefactory.parsley.core.scopes.impl {
 public class ScopeDefinition {
 	
 	
+	private var factories:FactoryRegistry;
+	
 	private var _name:String;
 	private var _inherited:Boolean;
+	private var _lifecycleEventRouter:MessageRouter;
+	private var _messageRouter:MessageRouter;
 	
 	
-	function ScopeDefinition (name:String, inherited:Boolean = true) {
+	function ScopeDefinition (name:String, inherited:Boolean, factories:FactoryRegistry) {
 		_name = name;
 		_inherited = inherited;
+		this.factories = factories;
 	}
+
 	
 	public function get name () : String {
 		return _name;
@@ -37,6 +45,20 @@ public class ScopeDefinition {
 	
 	public function get inherited () : Boolean {
 		return _inherited;
+	}
+		
+	public function get lifecycleEventRouter () : MessageRouter {
+		if (_lifecycleEventRouter == null) {
+			_lifecycleEventRouter = factories.messageRouter.create();
+		}
+		return _lifecycleEventRouter;
+	}
+	
+	public function get messageRouter () : MessageRouter {
+		if (_messageRouter == null) {
+			_messageRouter = factories.messageRouter.create();
+		}
+		return _messageRouter;
 	}
 	
 	

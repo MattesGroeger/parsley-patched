@@ -99,7 +99,7 @@ public class MessageHandlerDecorator extends AbstractMessageReceiverDecorator im
 		else {
 			target = new MessageHandler(provider, method, selector, messageType);
 		}
-		context.scopeManager.getScope(scope).messageRouter.addTarget(target);
+		context.scopeManager.getScope(scope).messageReceivers.addTarget(target);
 		addReceiver(instance, target);
 	}
 	
@@ -107,7 +107,7 @@ public class MessageHandlerDecorator extends AbstractMessageReceiverDecorator im
 	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
 	 */
 	public function preDestroy (instance:Object, context:Context) : void {
-		context.scopeManager.getScope(scope).messageRouter.removeTarget(MessageTarget(removeReceiver(instance)));
+		context.scopeManager.getScope(scope).messageReceivers.removeTarget(MessageTarget(removeReceiver(instance)));
 	}
 	
 	

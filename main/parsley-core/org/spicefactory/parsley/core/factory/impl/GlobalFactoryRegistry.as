@@ -167,11 +167,8 @@ import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageRouter;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.scopes.Scope;
 import org.spicefactory.parsley.core.scopes.ScopeManager;
-import org.spicefactory.parsley.core.scopes.impl.DefaultScope;
 import org.spicefactory.parsley.core.scopes.impl.DefaultScopeManager;
-import org.spicefactory.parsley.core.scopes.impl.ScopeDefinition;
 import org.spicefactory.parsley.core.view.ViewManager;
 import org.spicefactory.parsley.core.view.impl.DefaultViewManager;
 import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
@@ -222,21 +219,16 @@ class DefaultViewManagerFactory implements ViewManagerFactory {
 
 class DefaultScopeManagerFactory implements ScopeManagerFactory {
 	
-	public function createManager (scopes:Dictionary, domain:ApplicationDomain) : ScopeManager {
-		return new DefaultScopeManager(scopes, domain);
-	}
-	
-	public function createScope (scopeDef:ScopeDefinition, 
-			messageRouter:MessageRouter, lifecycleEventRouter:MessageRouter) : Scope {
-		return new DefaultScope(scopeDef, messageRouter, lifecycleEventRouter);
+	public function create (context:Context, scopeDefs:Array, domain:ApplicationDomain) : ScopeManager {
+		return new DefaultScopeManager(context, scopeDefs, domain);
 	}
 	
 }
 
 class DefaultMessageRouterFactory implements MessageRouterFactory {
 	
-	public function create (context:Context, domain:ApplicationDomain) : MessageRouter {
-		return new DefaultMessageRouter(context);
+	public function create () : MessageRouter {
+		return new DefaultMessageRouter();
 	}
 	
 }

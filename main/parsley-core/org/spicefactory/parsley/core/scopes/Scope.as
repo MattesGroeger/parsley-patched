@@ -15,8 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.scopes {
-
-import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 
 /**
  * @author Jens Halm
@@ -28,9 +27,11 @@ public interface Scope {
 	
 	function get inherited () : Boolean;
 	
-	function get messageRouter () : MessageRouter;
+	function get messageReceivers () : MessageReceiverRegistry;
 	
 	function get objectLifecycle () : ObjectLifecycleScope;
+	
+	function dispatchMessage (message:Object, selector:* = undefined) : void;
 	
 	
 }

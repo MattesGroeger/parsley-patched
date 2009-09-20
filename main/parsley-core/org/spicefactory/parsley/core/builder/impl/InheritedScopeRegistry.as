@@ -41,6 +41,7 @@ public class InheritedScopeRegistry {
 			throw new IllegalArgumentError("Scopes already registered for the specified Context instance");
 		}
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		scopeMap[context] = scopes;
 	}
 
 	private static function contextDestroyed (event:ContextEvent) : void {
@@ -53,7 +54,7 @@ public class InheritedScopeRegistry {
 		if (scopeMap[context] == undefined) {
 			throw new IllegalArgumentError("No Scopes registered for the specified Context instance");
 		}
-		return scopeMap[context];
+		return scopeMap[context].concat();
 	}
 	
 	

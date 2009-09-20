@@ -15,13 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.factory {
-import org.spicefactory.parsley.core.messaging.MessageRouter;
-import org.spicefactory.parsley.core.scopes.Scope;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.scopes.ScopeManager;
-import org.spicefactory.parsley.core.scopes.impl.ScopeDefinition;
 
 import flash.system.ApplicationDomain;
-import flash.utils.Dictionary;
 
 /**
  * @author Jens Halm
@@ -29,9 +26,7 @@ import flash.utils.Dictionary;
 public interface ScopeManagerFactory {
 	
 	
-	function createManager (scopes:Dictionary, domain:ApplicationDomain) : ScopeManager;
-	
-	function createScope (scopeDef:ScopeDefinition, messageRouter:MessageRouter, lifecycleEventRouter:MessageRouter) : Scope;
+	function create (context:Context, scopeDefs:Array, domain:ApplicationDomain) : ScopeManager;
 	
 	
 }

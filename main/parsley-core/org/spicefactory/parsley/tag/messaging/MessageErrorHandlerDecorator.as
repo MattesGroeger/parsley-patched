@@ -87,7 +87,7 @@ public class MessageErrorHandlerDecorator extends AbstractMessageReceiverDecorat
 		var handler:MessageErrorHandler = 
 				new DefaultMessageErrorHandler(Providers.forInstance(instance, domain), method, 
 				messageType, selector, ClassInfo.forClass(errorType, domain));
-		context.scopeManager.getScope(scope).messageRouter.addErrorHandler(handler);
+		context.scopeManager.getScope(scope).messageReceivers.addErrorHandler(handler);
 		addReceiver(instance, handler);
 	}
 	
@@ -95,7 +95,7 @@ public class MessageErrorHandlerDecorator extends AbstractMessageReceiverDecorat
 	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
 	 */
 	public function preDestroy (instance:Object, context:Context) : void {
-		context.scopeManager.getScope(scope).messageRouter.removeErrorHandler(MessageErrorHandler(removeReceiver(instance)));
+		context.scopeManager.getScope(scope).messageReceivers.removeErrorHandler(MessageErrorHandler(removeReceiver(instance)));
 	}
 	
 	

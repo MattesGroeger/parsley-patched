@@ -28,7 +28,7 @@ public interface ScopeManager {
 	
 	function getAllScopes () : Array;
 	
-	function dispatchMessage (message:Object, scope:String = null, selector:* = undefined) : void;
+	function dispatchMessage (message:Object, selector:* = undefined) : void;
 	
 	
 }

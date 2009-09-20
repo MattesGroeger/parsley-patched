@@ -15,49 +15,116 @@
  */
 
 package org.spicefactory.parsley.core.scopes.impl {
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.scopes.ObjectLifecycleScope;
-import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.scopes.Scope;
+
+import flash.system.ApplicationDomain;
 
 /**
  * @author Jens Halm
  */
-public class DefaultScope implements InternalScope {
+public class DefaultScope implements Scope {
 
-
-	private var definition:ScopeDefinition;
-	private var _messageRouter:MessageRouter;
-	private var _lifecycleEventRouter:MessageRouter;
+	private var context:Context;
+	private var deferredMessages:Array;
+	private var activated:Boolean = false;	
+	
+	private var domain:ApplicationDomain;
+	private var scopeDef:ScopeDefinition;
 	private var _objectLifecycle:ObjectLifecycleScope;
 	
 	
-	function DefaultScope (definition:ScopeDefinition, messageRouter:MessageRouter, lifecycleEventRouter:MessageRouter) {
-		this.definition = definition;
-		this._messageRouter = messageRouter;
-		this._lifecycleEventRouter = lifecycleEventRouter;
-		this._objectLifecycle = new DefaultObjectLifecycleScope(lifecycleEventRouter);
+	function DefaultScope (context:Context, scopeDef:ScopeDefinition, domain:ApplicationDomain) {
+		this.context = context;
+		this.scopeDef = scopeDef;
+		this.domain = domain;
+		this._objectLifecycle = new DefaultObjectLifecycleScope(scopeDef.lifecycleEventRouter, domain);
+		
+		if (context.configured) {
+			activated = true;
+		}
+		else {
+			deferredMessages = new Array();
+			context.addEventListener(ContextEvent.CONFIGURED, contextConfigured);
+			context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		}
 	}
 
+	private function contextConfigured (event:ContextEvent) : void {
+		removeListeners();
+		activated = true;
+		for each (var deferred:DeferredMessage in deferredMessages) {
+			doDispatch(deferred.message, deferred.selector);
+		}
+		deferredMessages = new Array();
+	}
 	
+	private function contextDestroyed (event:ContextEvent) : void {
+		removeListeners();
+	}
+	
+	private function removeListeners () : void {
+		context.removeEventListener(ContextEvent.CONFIGURED, contextConfigured);
+		context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
+	}
+	
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function dispatchMessage (message:Object, selector:* = undefined) : void {
+		if (!activated) {
+			deferredMessages.push(new DeferredMessage(message, selector));
+		}
+		else {
+			doDispatch(message, selector);
+		}
+	}	
+	
+	private function doDispatch (message:Object, selector:* = undefined) : void {
+		scopeDef.messageRouter.dispatchMessage(message, domain, selector);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
 	public function get name () : String {
-		return definition.name;
+		return scopeDef.name;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get inherited () : Boolean {
-		return definition.inherited;
+		return scopeDef.inherited;
 	}
 	
-	public function get messageRouter () : MessageRouter {
-		return _messageRouter;
+	/**
+	 * @inheritDoc
+	 */
+	public function get messageReceivers () : MessageReceiverRegistry {
+		return scopeDef.messageRouter.receivers;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get objectLifecycle () : ObjectLifecycleScope {
 		return _objectLifecycle;
 	}
 	
-	public function get lifecycleEventRouter () : MessageRouter {
-		return _lifecycleEventRouter;
+}
+}
+
+class DeferredMessage {
+	internal var message:Object;
+	internal var selector:*;
+	function DeferredMessage (message:Object, selector:*) {
+		this.message = message;
+		this.selector = selector;
 	}
-	
-	
 }
-}
+

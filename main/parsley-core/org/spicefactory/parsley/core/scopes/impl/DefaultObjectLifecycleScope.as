@@ -33,15 +33,15 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 
 	private var listeners:Dictionary = new Dictionary();
 	private var router:MessageRouter;
+	private var domain:ApplicationDomain;
 	
 	
-	function DefaultObjectLifecycleScope (router:MessageRouter) {
+	function DefaultObjectLifecycleScope (router:MessageRouter, domain:ApplicationDomain) {
 		this.router = router;
 	}
 
 
-	public function addListener (type:Class, event:ObjectLifecycle, listener:Function, 
-			id:String = null, domain:ApplicationDomain = null) : void {
+	public function addListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void {
 		var typeInfo:ClassInfo = ClassInfo.forClass(type, domain);
 		var selector:String = (id == null) ? event.key : event.key + ":" + id;
 		var target:MessageTarget = new ObjectLifecycleListener(typeInfo, selector, listener);
@@ -51,11 +51,10 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 			listeners[listener] = targets;
 		}
 		targets.push(target);
-		router.addTarget(target);
+		router.receivers.addTarget(target);
 	}
 	
-	public function removeListener (type:Class, event:ObjectLifecycle, listener:Function, 
-			id:String = null, domain:ApplicationDomain = null) : void {
+	public function removeListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void {
 		var selector:String = (id == null) ? event.key : event.key + ":" + id;
 		var targets:Array = listeners[listener];
 		if (targets == null) {
@@ -64,7 +63,7 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 		for each (var target:MessageTarget in targets) {
 			if (target.messageType.getClass() == type && target.selector == selector) {
 				ArrayUtil.remove(targets, target);
-				router.removeTarget(target);
+				router.receivers.removeTarget(target);
 				if (targets.length == 0) {
 					delete listeners[listener];
 				}
@@ -72,8 +71,6 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 			}
 		}
 	}
-	
-	
 }
 }
 

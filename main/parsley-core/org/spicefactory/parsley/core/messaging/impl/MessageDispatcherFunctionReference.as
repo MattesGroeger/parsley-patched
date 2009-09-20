@@ -49,7 +49,12 @@ public class MessageDispatcherFunctionReference {
 	 * @param message the message to dispatch
 	 */
 	public function dispatchMessage (message:Object) : void {
-		scopeManager.dispatchMessage(message, scope);
+		if (scope == null) {
+			scopeManager.dispatchMessage(message);
+		}
+		else {
+			scopeManager.getScope(scope).dispatchMessage(message);
+		}
 	}
 	
 	

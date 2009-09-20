@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.scopes.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.scopes.Scope;
 import org.spicefactory.parsley.core.scopes.ScopeManager;
 
@@ -28,7 +29,7 @@ import flash.utils.Dictionary;
 public class DefaultScopeManager implements ScopeManager {
 	
 	
-	private var scopes:Dictionary;
+	private var scopes:Dictionary = new Dictionary();
 	private var domain:ApplicationDomain;
 	
 	
@@ -37,11 +38,13 @@ public class DefaultScopeManager implements ScopeManager {
 	 * 
 	 * @param scopes the scopes this instance should manage
 	 */
-	function DefaultScopeManager (scopes:Dictionary, domain:ApplicationDomain) {
-		this.scopes = scopes;
+	function DefaultScopeManager (context:Context, scopeDefs:Array, domain:ApplicationDomain) {
+		for each (var scopeDef:ScopeDefinition in scopeDefs) {
+			scopes[scopeDef.name] = new DefaultScope(context, scopeDef, domain);
+		}
 		this.domain = domain;
 	}
-
+	
 	
 	public function hasScope (name:String) : Boolean {
 		return (scopes[name] != undefined);
@@ -71,14 +74,9 @@ public class DefaultScopeManager implements ScopeManager {
 	/**
 	 * @inheritDoc
 	 */
-	public function dispatchMessage (message:Object, scope:String = null, selector:* = undefined) : void {
-		if (scope == null) {
-			for each (var sc:Scope in scopes) {
-				sc.messageRouter.dispatchMessage(message, domain, selector);
-			}
-		}
-		else {
-			getScope(scope).messageRouter.dispatchMessage(message, domain, selector);
+	public function dispatchMessage (message:Object, selector:* = undefined) : void {
+		for each (var sc:Scope in scopes) {
+			sc.dispatchMessage(message, selector);
 		}
 	}
 	

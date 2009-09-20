@@ -79,7 +79,7 @@ public class MessageInterceptorDecorator extends AbstractMessageReceiverDecorato
 		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
 		var ic:MessageInterceptor = 
 				new DefaultMessageInterceptor(Providers.forInstance(instance, domain), method, messageType, selector);
-		context.scopeManager.getScope(scope).messageRouter.addInterceptor(ic);
+		context.scopeManager.getScope(scope).messageReceivers.addInterceptor(ic);
 		addReceiver(instance, ic);
 	}
 	
@@ -87,7 +87,7 @@ public class MessageInterceptorDecorator extends AbstractMessageReceiverDecorato
 	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
 	 */
 	public function preDestroy (instance:Object, context:Context) : void {
-		context.scopeManager.getScope(scope).messageRouter.removeInterceptor(MessageInterceptor(removeReceiver(instance)));
+		context.scopeManager.getScope(scope).messageReceivers.removeInterceptor(MessageInterceptor(removeReceiver(instance)));
 	}
 	
 	

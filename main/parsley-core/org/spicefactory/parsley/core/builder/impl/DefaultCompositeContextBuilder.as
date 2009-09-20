@@ -23,6 +23,7 @@ import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
+import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
@@ -31,12 +32,14 @@ import org.spicefactory.parsley.core.factory.impl.DefaultContextStrategyProvider
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.scopes.ScopeName;
 import org.spicefactory.parsley.core.scopes.impl.ScopeDefinition;
 
 import flash.display.DisplayObject;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.system.ApplicationDomain;
+import flash.utils.Dictionary;
 
 /**
  * Responsible for building Context instances using one or more ObjectDefinitionBuilder.
@@ -68,7 +71,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	private var domain:ApplicationDomain;
 	private var registry:ObjectDefinitionRegistry;
 	
-	private var newScopes:Array = new Array();
+	private var scopes:ScopeCollection = new ScopeCollection();
 	private var builders:Array = new Array();
 	private var currentBuilder:AsyncObjectDefinitionBuilder;
 	
@@ -107,7 +110,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 * @inheritDoc
 	 */
 	public function addScope (name:String, inherited:Boolean):void {
-		newScopes.push(new ScopeDefinition(name, inherited));
+		scopes.addScope(new ScopeDefinition(name, inherited, factories));
 	}
 
 	/**
@@ -118,25 +121,42 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	}
 
 
+	private function assembleScopeDefinitions () : void {
+		scopes.addScope(new ScopeDefinition(ScopeName.LOCAL, false, factories));
+		if (parent == null) {
+			scopes.addScope(new ScopeDefinition(ScopeName.GLOBAL, true, factories));
+		}
+		else {
+			for each (var inheritedScope:ScopeDefinition in InheritedScopeRegistry.getScopes(parent)) {
+				scopes.addScope(inheritedScope);
+			}
+		}
+	}
+	
 	private function createContext () : void {
-		var provider:ContextStrategyProvider = createContextStrategyProvider(parent, domain, newScopes);
+		var provider:ContextStrategyProvider = createContextStrategyProvider(domain, scopes.getAll());
 		context = _factories.context.create(provider, parent);
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		InheritedScopeRegistry.addScopes(context, scopes.getInherited());
 		registry = provider.registry;
 		if (viewRoot != null) {
 			context.viewManager.addViewRoot(viewRoot);
 		}
 	}
 	
-	protected function createContextStrategyProvider (parent:Context, 
-			domain:ApplicationDomain, newScopes:Array) : ContextStrategyProvider {
-		return new DefaultContextStrategyProvider(factories, parent, domain, newScopes);
+	protected function createContextStrategyProvider (domain:ApplicationDomain, scopeDefs:Array) : ContextStrategyProvider {
+		return new DefaultContextStrategyProvider(factories, domain, scopeDefs);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function build () : Context {
+		if (context != null) {
+			log.warn("Context was already built. Returning existing instance");
+			return context;
+		}
+		assembleScopeDefinitions();
 		createContext();
 		invokeNextBuilder();
 		if (builders.length > 0) {
@@ -228,5 +248,36 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	
 
 }
+}
 
+import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.scopes.impl.ScopeDefinition;
+
+import flash.utils.Dictionary;
+
+class ScopeCollection {
+
+	private var scopes:Array = new Array();
+	private var inherited:Array = new Array();
+	private var nameLookup:Dictionary = new Dictionary();
+	
+	public function addScope (scopeDef:ScopeDefinition) : void { 
+		if (nameLookup[scopeDef.name] != undefined) {
+			throw new ContextError("Overlapping scopes with name " + scopeDef.name);
+		}
+		nameLookup[scopeDef.name] = true;
+		scopes.push(scopeDef);
+		if (scopeDef.inherited) {
+			inherited.push(scopeDef);
+		}
+	}
+	
+	public function getAll () : Array {
+		return scopes;
+	}
+	
+	public function getInherited () : Array {
+		return inherited;
+	}
+	
 }

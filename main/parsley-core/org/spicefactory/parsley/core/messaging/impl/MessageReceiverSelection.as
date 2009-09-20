@@ -18,6 +18,7 @@ package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 
 import flash.events.Event;
 
@@ -43,12 +44,11 @@ public class MessageReceiverSelection {
 	 * 
 	 * @param type the type of the message
 	 */
-	function MessageReceiverSelection (type:ClassInfo, interceptors:MessageReceiverCollection,
-			targets:MessageReceiverCollection, errorHandlers:MessageReceiverCollection) {
+	function MessageReceiverSelection (type:ClassInfo, interceptors:Array, targets:Array, errorHandlers:Array) {
 		_messageType = type;
-		this.interceptors = interceptors;
-		this.targets = targets;
-		this.errorHandlers = errorHandlers;
+		this.interceptors = getReceivers(interceptors, type);
+		this.targets = getReceivers(targets, type);
+		this.errorHandlers = getReceivers(errorHandlers, type);
 		for each (var p:Property in type.getProperties()) {
 			if (p.getMetadata(Selector).length > 0) {
 				if (selectorProperty == null) {
@@ -63,6 +63,17 @@ public class MessageReceiverSelection {
 			selectorProperty = _messageType.getProperty("type");
 		}
 	}
+	
+	private function getReceivers (receivers:Array, messageType:ClassInfo) : MessageReceiverCollection {
+		var collection:MessageReceiverCollection = new MessageReceiverCollection();
+		for each (var receiver:MessageReceiver in receivers) {
+			if (messageType.isType(receiver.messageType.getClass())) {
+				collection.addReceiver(receiver);
+			}
+		}
+		return collection;
+	}
+	
 	
 	/**
 	 * Returns the value of the selector property of the specified message instance.
@@ -111,5 +122,54 @@ public class MessageReceiverSelection {
 	
 
 }
+}
 
+import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
+
+import flash.utils.Dictionary;
+
+class MessageReceiverCollection {
+	
+	
+	private var receiversWithSelector:Array = new Array();
+	private var receiversWithoutSelector:Array = new Array();
+	private var selectorMap:Dictionary = new Dictionary();
+	
+	
+	function MessageReceiverCollection () {
+		
+	}
+	
+	/**
+	 * Adds a message receiver to this selection.
+	 * 
+	 * @param receiver the receiver to add
+	 */
+	public function addReceiver (receiver:MessageReceiver) : void {
+		if (receiver.selector == undefined) {
+			receiversWithoutSelector.push(receiver);
+		}
+		else {
+			receiversWithSelector[receiver.selector] = receiver;
+		}
+	}
+	
+	public function getReceicers (selectorValue:*) : Array {
+		var receivers:Array = null;
+		if (selectorMap[selectorValue] != undefined) {
+			receivers = selectorMap[selectorValue];
+		}
+		else {
+			receivers = new Array();
+			selectorMap[selectorValue] = receivers;
+			for each (var target:MessageReceiver in receiversWithSelector) {
+				if (target.selector == selectorValue) {
+					receivers.push(target);
+				}
+			}
+		}
+		return receivers.concat(receiversWithoutSelector);
+	}
+	
+	
 }

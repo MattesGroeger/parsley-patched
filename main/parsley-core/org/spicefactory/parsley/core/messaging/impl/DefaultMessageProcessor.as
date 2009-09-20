@@ -37,7 +37,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	private var _message:Object;
 	
 	private var messageType:ClassInfo;
-	private var router:DefaultMessageRouter;
+	private var receivers:DefaultMessageReceiverRegistry;
 	
 	private var remainingProcessors:Array;
 	private var currentProcessor:Processor;
@@ -52,10 +52,10 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	 * @param messageType the type of the message
 	 * @param router the router that created this processor
 	 */
-	function DefaultMessageProcessor (message:Object, messageType:ClassInfo, router:DefaultMessageRouter) {
+	function DefaultMessageProcessor (message:Object, messageType:ClassInfo, receivers:DefaultMessageReceiverRegistry) {
 		_message = message;
 		this.messageType = messageType;
-		this.router = router;
+		this.receivers = receivers;
 		rewind();
 	}
 	
@@ -113,7 +113,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	}
 	
 	private function fetchReceivers () : void {	
-		var receiverSelection:MessageReceiverSelection = router.getReceiverSelection(messageType);
+		var receiverSelection:MessageReceiverSelection = receivers.getSelection(messageType);
 		var selectorValue:* = receiverSelection.getSelectorValue(message);
 		errorProcessor = new Processor(receiverSelection.getErrorHandlers(selectorValue), invokeErrorHandler);
 		currentProcessor = new Processor(receiverSelection.getInterceptors(selectorValue), invokeInterceptor);
