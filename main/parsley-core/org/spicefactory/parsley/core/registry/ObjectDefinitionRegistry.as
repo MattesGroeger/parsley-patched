@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.registry {
+import org.spicefactory.parsley.core.scopes.ScopeManager;
+
 import flash.events.IEventDispatcher;
 import flash.system.ApplicationDomain;
 
@@ -130,6 +132,15 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 * of the definitions it contains will lead to an Error.
 	 */	
 	function get frozen () : Boolean;
+	
+	/**
+	 * The ScopeManager associated with this registry.
+	 * Primary intended to be used for registering message receivers and
+	 * lifecycle listeners. Any messages dispatched before the registry
+	 * is frozen will be deferred, so messaging can not be used to 
+	 * communicate between configuration tags.
+	 */
+	function get scopeManager () : ScopeManager;
 	
 	
 }

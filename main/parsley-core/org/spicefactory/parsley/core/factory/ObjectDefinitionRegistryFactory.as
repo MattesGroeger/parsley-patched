@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.scopes.ScopeManager;
 
 import flash.system.ApplicationDomain;
 
@@ -25,7 +26,7 @@ import flash.system.ApplicationDomain;
 public interface ObjectDefinitionRegistryFactory {
 	
 	
-	function create (domain:ApplicationDomain) : ObjectDefinitionRegistry;
+	function create (domain:ApplicationDomain, scopeManager:ScopeManager) : ObjectDefinitionRegistry;
 	
 	
 }

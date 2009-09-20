@@ -22,6 +22,7 @@ import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.scopes.ScopeManager;
 
 import flash.events.EventDispatcher;
 import flash.system.ApplicationDomain;
@@ -37,6 +38,7 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	
 	private var _domain:ApplicationDomain;
 	private var _decoratorAssemblers:Array;
+	private var _scopeManager:ScopeManager;
 	
 	private var _frozen:Boolean;
 	
@@ -48,8 +50,9 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	 * 
 	 * @param domain the ApplicationDomain to use for reflecting on types added to this registry
 	 */
-	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain, decoratorAssemblers:Array) {
+	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain, scopeManager:ScopeManager, decoratorAssemblers:Array) {
 		_domain = domain;
+		_scopeManager = scopeManager;
 		_decoratorAssemblers = decoratorAssemblers;
 	}
 
@@ -68,6 +71,12 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 		return _decoratorAssemblers.concat();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function get scopeManager () : ScopeManager {
+		return _scopeManager;
+	}
 	
 	/**
 	 * @inheritDoc
