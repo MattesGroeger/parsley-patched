@@ -27,6 +27,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
+import org.spicefactory.parsley.core.scopes.ScopeName;
 
 [Metadata(name="MessageHandler", types="method", multiple="true")]
 /**
@@ -52,7 +53,13 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 	 * or against the event type if the message is an event and does not have a selector property specified explicitly.
 	 */
 	public var selector:String;
-	
+
+	/**
+	 * The scope this handler wants to be applied to.
+	 * The default is ScopeName.GLOBAL.
+	 */
+	public var scope:String = ScopeName.GLOBAL;
+		
 	/**
 	 * Optional list of names of properties of the message that should be used as method parameters
 	 * instead passing the message itself as a parameter.
@@ -91,7 +98,7 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 		else {
 			target = new MessageHandler(provider, method, selector, messageType);
 		}
-		context.messageRouter.addTarget(target);
+		context.scopeManager.getScope(scope).messageRouter.addTarget(target);
 		addTarget(instance, target);
 	}
 	
@@ -99,7 +106,7 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
 	 */
 	public function preDestroy (instance:Object, context:Context) : void {
-		context.messageRouter.removeTarget(MessageTarget(removeTarget(instance)));
+		context.scopeManager.getScope(scope).messageRouter.removeTarget(MessageTarget(removeTarget(instance)));
 	}
 	
 	

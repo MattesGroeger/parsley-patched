@@ -31,6 +31,7 @@ import org.spicefactory.parsley.core.factory.impl.DefaultContextStrategyProvider
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.scopes.impl.ScopeDefinition;
 
 import flash.display.DisplayObject;
 import flash.events.ErrorEvent;
@@ -61,16 +62,17 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	
 	private var _factories:FactoryRegistry;
 	
-	private var _viewRoot:DisplayObject;
-	private var _context:Context;
-	private var _parent:Context;
-	private var _domain:ApplicationDomain;
-	private var _registry:ObjectDefinitionRegistry;
+	private var viewRoot:DisplayObject;
+	private var context:Context;
+	private var parent:Context;
+	private var domain:ApplicationDomain;
+	private var registry:ObjectDefinitionRegistry;
 	
-	private var _builders:Array = new Array();
-	private var _currentBuilder:AsyncObjectDefinitionBuilder;
+	private var newScopes:Array = new Array();
+	private var builders:Array = new Array();
+	private var currentBuilder:AsyncObjectDefinitionBuilder;
 	
-	private var _errors:Array = new Array();
+	private var errors:Array = new Array();
 	private var async:Boolean = false;
 
 	
@@ -83,14 +85,14 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 */
 	function DefaultCompositeContextBuilder (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) {
 		_factories = new LocalFactoryRegistry(GlobalFactoryRegistry.instance);
-		_viewRoot = viewRoot;
+		viewRoot = viewRoot;
 		var event:ContextBuilderEvent = null;
 		if ((parent == null || domain == null) && viewRoot != null) {
 			event = new ContextBuilderEvent();
 			viewRoot.dispatchEvent(event);
 		}
-		_parent = (parent != null) ? parent : (event != null) ? event.parent : null;
-		_domain = (domain != null) ? domain : (event != null && event.domain != null) ? event.domain : ClassInfo.currentDomain;
+		this.parent = (parent != null) ? parent : (event != null) ? event.parent : null;
+		this.domain = (domain != null) ? domain : (event != null && event.domain != null) ? event.domain : ClassInfo.currentDomain;
 	}
 	
 	
@@ -98,7 +100,14 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 * @inheritDoc
 	 */
 	public function addBuilder (builder:ObjectDefinitionBuilder) : void {
-		_builders.push(builder);
+		builders.push(builder);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function addScope (name:String, inherited:Boolean):void {
+		newScopes.push(new ScopeDefinition(name, inherited));
 	}
 
 	/**
@@ -110,13 +119,18 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 
 
 	private function createContext () : void {
-		_registry = _factories.definitionRegistry.create(_domain);
-		var provider:ContextStrategyProvider = new DefaultContextStrategyProvider(_factories, _domain, _registry);
-		_context = _factories.context.create(provider, _parent);
-		_context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		if (_viewRoot != null) {
-			_context.viewManager.addViewRoot(_viewRoot);
+		var provider:ContextStrategyProvider = createContextStrategyProvider(parent, domain, newScopes);
+		context = _factories.context.create(provider, parent);
+		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		registry = provider.registry;
+		if (viewRoot != null) {
+			context.viewManager.addViewRoot(viewRoot);
 		}
+	}
+	
+	protected function createContextStrategyProvider (parent:Context, 
+			domain:ApplicationDomain, newScopes:Array) : ContextStrategyProvider {
+		return new DefaultContextStrategyProvider(factories, parent, domain, newScopes);
 	}
 
 	/**
@@ -125,54 +139,54 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	public function build () : Context {
 		createContext();
 		invokeNextBuilder();
-		if (_builders.length > 0) {
+		if (builders.length > 0) {
 			async = true;
 		}
-		return _context;	
+		return context;	
 	}
 	
 	private function invokeNextBuilder () : void {
-		if (_builders.length == 0) {
-			_context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
-			if (_errors.length > 0) {
+		if (builders.length == 0) {
+			context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
+			if (errors.length > 0) {
 				handleErrors();
 			}
 			else {
-				_context.addEventListener(ErrorEvent.ERROR, contextError);
-				_registry.freeze();
-				_context.removeEventListener(ErrorEvent.ERROR, contextError);
-				if (_errors.length > 0) {
+				context.addEventListener(ErrorEvent.ERROR, contextError);
+				registry.freeze();
+				context.removeEventListener(ErrorEvent.ERROR, contextError);
+				if (errors.length > 0) {
 					handleErrors();
 				}
 			}
 		}
 		else {
-			var builder:ObjectDefinitionBuilder = _builders.shift();
+			var builder:ObjectDefinitionBuilder = builders.shift();
 			try {
 				if (builder is AsyncObjectDefinitionBuilder) {
-					_currentBuilder = AsyncObjectDefinitionBuilder(builder);
-					_currentBuilder.addEventListener(Event.COMPLETE, builderComplete);				
-					_currentBuilder.addEventListener(ErrorEvent.ERROR, builderError);		
-					_currentBuilder.build(_registry);
+					currentBuilder = AsyncObjectDefinitionBuilder(builder);
+					currentBuilder.addEventListener(Event.COMPLETE, builderComplete);				
+					currentBuilder.addEventListener(ErrorEvent.ERROR, builderError);		
+					currentBuilder.build(registry);
 				}
 				else {
-					builder.build(_registry);
+					builder.build(registry);
 					invokeNextBuilder();
 				}
 			} catch (e:Error) {
 				removeCurrentBuilder();
 				var msg:String = "Error processing " + builder;
 				log.error(msg + "{0}", e);
-				_errors.push(msg + ": " + e.message);
+				errors.push(msg + ": " + e.message);
 				invokeNextBuilder();
 			}
 		}
 	}
 	
 	private function handleErrors () : void {
-		var errorMsg:String = "One or more errors processing CompositeContextBuilder: \n " + _errors.join("\n ");
+		var errorMsg:String = "One or more errors processing CompositeContextBuilder: \n " + errors.join("\n ");
 		if (async) {
-			_context.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, errorMsg));
+			context.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, errorMsg));
 		}
 		else {
 			throw new ContextBuilderError(errorMsg);
@@ -188,31 +202,31 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		removeCurrentBuilder();
 		var msg:String = "Error processing " + event.target + ": " + event.text;
 		log.error(msg);
-		_errors.push(msg);
+		errors.push(msg);
 		invokeNextBuilder();
 	}
 	
 	private function removeCurrentBuilder () : void {
-		if (_currentBuilder == null) return;
-		_currentBuilder.removeEventListener(Event.COMPLETE, builderComplete);				
-		_currentBuilder.removeEventListener(ErrorEvent.ERROR, builderError);
-		_currentBuilder = null;			
+		if (currentBuilder == null) return;
+		currentBuilder.removeEventListener(Event.COMPLETE, builderComplete);				
+		currentBuilder.removeEventListener(ErrorEvent.ERROR, builderError);
+		currentBuilder = null;			
 	}
 	
 	private function contextError (event:ErrorEvent) : void {
 		var msg:String = "Error initializing Context: " + event.text;
 		log.error(msg);
-		_errors.push(msg);
+		errors.push(msg);
 	}
 	
 	private function contextDestroyed (event:Event) : void {
-		_context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		if (_currentBuilder != null) {
-			_currentBuilder.cancel();
+		context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		if (currentBuilder != null) {
+			currentBuilder.cancel();
 		}
 	}
 	
-	
+
 }
 
 }

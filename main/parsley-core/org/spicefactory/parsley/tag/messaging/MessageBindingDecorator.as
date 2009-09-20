@@ -24,6 +24,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
+import org.spicefactory.parsley.core.scopes.ScopeName;
 
 [Metadata(name="MessageBinding", types="property", multiple="true")]
 /**
@@ -48,6 +49,12 @@ public class MessageBindingDecorator extends AbstractMessageTargetDecorator impl
 	 * @copy org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator#selector
 	 */
 	public var selector:String;
+	
+	/**
+	 * The scope this binding wants to be applied to.
+	 * The default is ScopeName.GLOBAL.
+	 */
+	public var scope:String = ScopeName.GLOBAL;
 	
 	[Required]
 	/**
@@ -78,7 +85,7 @@ public class MessageBindingDecorator extends AbstractMessageTargetDecorator impl
 		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
 		var target:MessageTarget = new MessageBinding(Providers.forInstance(instance, domain), 
 				targetProperty, messageType, messageProperty, selector);
-		context.messageRouter.addTarget(target);
+		context.scopeManager.getScope(scope).messageRouter.addTarget(target);
 		addTarget(instance, target);
 	}
 	
@@ -86,7 +93,7 @@ public class MessageBindingDecorator extends AbstractMessageTargetDecorator impl
 	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
 	 */
 	public function preDestroy (instance:Object, context:Context) : void {
-		context.messageRouter.removeTarget(MessageTarget(removeTarget(instance)));
+		context.scopeManager.getScope(scope).messageRouter.removeTarget(MessageTarget(removeTarget(instance)));
 	}
 
 	

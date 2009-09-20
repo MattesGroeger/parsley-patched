@@ -206,7 +206,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 		else if (value is MessageDispatcherFunctionReference) {
 			// two lines to avoid compiler warning
 			var delegate:MessageDispatcherFunctionReference = MessageDispatcherFunctionReference(value);
-			delegate.router = context.messageRouter;
+			delegate.scopeManager = context.scopeManager;
 			var r:* = delegate.dispatchMessage;
 			return r;
 		}

@@ -27,11 +27,10 @@ import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
-import org.spicefactory.parsley.core.messaging.MessageRouter;
-import org.spicefactory.parsley.core.messaging.impl.MessageRouterProxy;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.scopes.ScopeManager;
 import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.events.ErrorEvent;
@@ -60,7 +59,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	
 	private var _registry:ObjectDefinitionRegistry;
 	private var _lifecycleManager:ObjectLifecycleManager;
-	private var _messageRouter:MessageRouter;
+	private var _scopeManager:ScopeManager;
 	private var _viewManager:ViewManager;
 	
 	private var singletonCache:SimpleMap = new SimpleMap();
@@ -84,7 +83,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 		provider.init(this);
 		_registry = provider.registry;
 		_lifecycleManager = provider.lifecycleManager;
-		_messageRouter = new MessageRouterProxy(provider.messageRouter, this, _registry.domain);
+		_scopeManager = provider.scopeManager;
 		_viewManager = provider.viewManager;
 		addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, 1);
 		_registry.addEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
@@ -320,14 +319,14 @@ public class DefaultContext extends EventDispatcher implements Context {
 		_initialized = false;
 		_registry = null;
 		_lifecycleManager = null;
-		_messageRouter = null;
+		_scopeManager = null;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function get messageRouter () : MessageRouter {
-		return _messageRouter;
+	public function get scopeManager () : ScopeManager {
+		return _scopeManager;
 	}
 	
 	/**
@@ -341,7 +340,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 * @inheritDoc
 	 */
 	public function createDynamicContext () : DynamicContext {
-		return new DefaultDynamicContext(strategyProvider.createDynamicProvider, this);
+		return new DefaultDynamicContext(strategyProvider.createDynamicProvider(), this);
 	}
 	
 	private function checkState () : void {

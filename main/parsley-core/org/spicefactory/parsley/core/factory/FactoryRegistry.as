@@ -41,6 +41,10 @@ public interface FactoryRegistry {
 	function get viewManager () : ViewManagerFactory;
 
 	function set viewManager (value:ViewManagerFactory) : void;
+	
+	function get scopeManager () : ScopeManagerFactory;
+
+	function set scopeManager (value:ScopeManagerFactory) : void;
 
 	function get messageRouter () : MessageRouterFactory;
 

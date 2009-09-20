@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.impl {
-import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.scopes.ScopeManager;
 
 /**
  * Represents a reference to a message dispatcher function. To be used in MXML and XML configuration.
@@ -25,25 +25,31 @@ import org.spicefactory.parsley.core.messaging.MessageRouter;
 public class MessageDispatcherFunctionReference {
 	
 	/**
-	 * The MessageRouter to use for dispatching messages.
+	 * The ScopeManager to use for dispatching messages.
 	 */
-	public var router:MessageRouter;
+	public var scopeManager:ScopeManager;
+	
+	
+	private var scope:String;
+	
 	
 	/**
-	 * Creates a new instance. TODO - remove
+	 * Creates a new instance.
+	 * 
+	 * @param scope the scope the message should be dispatched to
 	 */
-	function MessageDispatcherFunctionReference () {
-		
+	function MessageDispatcherFunctionReference (scope:String = null) {
+		this.scope = scope;
 	}
 	
 	
 	/**
-	 * Dispatches the specified message through the MessageRouter associated with this reference.
+	 * Dispatches the specified message through the ScopeManager associated with this reference.
 	 * 
 	 * @param message the message to dispatch
 	 */
 	public function dispatchMessage (message:Object) : void {
-		router.dispatchMessage(message);
+		scopeManager.dispatchMessage(message, scope);
 	}
 	
 	

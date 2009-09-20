@@ -40,12 +40,19 @@ public class MessageDispatcherDecorator implements ObjectDefinitionDecorator, Ne
 	 */
 	public var property:String;
 	
+	/**
+	 * The scope messages should be dispatched through.
+	 * If this attribute is omitted the message will be dispatched through 
+	 * all scopes of the corresponding Context.
+	 */
+	public var scope:String;
+	
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		definition.properties.addValue(property, new MessageDispatcherFunctionReference());
+		definition.properties.addValue(property, new MessageDispatcherFunctionReference(scope));
 		return definition;
 	}
 	

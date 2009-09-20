@@ -49,6 +49,13 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 	 */
 	public var names:Array;
 	
+	/**
+	 * The scope these managed events should be dispatched to.
+	 * If this attribute is omitted the event will be dispatched through 
+	 * all scopes of the corresponding Context.
+	 */
+	public var scope:String;
+	
 	private var delegate:MessageDispatcherFunctionReference;
 
 	
@@ -56,7 +63,7 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		delegate = new MessageDispatcherFunctionReference();
+		delegate = new MessageDispatcherFunctionReference(scope);
 		if (names == null) {
 			names = new Array();
 			var events:Array = definition.type.getMetadata(EventInfo);
@@ -77,7 +84,7 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 	 */
 	public function postConstruct (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
-		if (delegate.router == null) delegate.router = context.messageRouter;
+		if (delegate.scopeManager == null) delegate.scopeManager = context.scopeManager;
 		for each (var name:String in names) {		
 			eventDispatcher.addEventListener(name, delegate.dispatchMessage);
 		}

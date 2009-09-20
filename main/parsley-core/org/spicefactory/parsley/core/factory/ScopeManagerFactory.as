@@ -15,29 +15,23 @@
  */
 
 package org.spicefactory.parsley.core.factory {
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.scopes.Scope;
 import org.spicefactory.parsley.core.scopes.ScopeManager;
-import org.spicefactory.parsley.core.view.ViewManager;
+import org.spicefactory.parsley.core.scopes.impl.ScopeDefinition;
+
+import flash.system.ApplicationDomain;
+import flash.utils.Dictionary;
 
 /**
  * @author Jens Halm
  */
-public interface ContextStrategyProvider {
+public interface ScopeManagerFactory {
 	
 	
-	function init (context:Context) : void;
+	function createManager (scopes:Dictionary, domain:ApplicationDomain) : ScopeManager;
 	
-	function get registry () : ObjectDefinitionRegistry;
-	
-	function get lifecycleManager () : ObjectLifecycleManager;
-	
-	function get scopeManager () : ScopeManager;
-	
-	function get viewManager () : ViewManager;
-	
-	function createDynamicProvider () : ContextStrategyProvider;
+	function createScope (scopeDef:ScopeDefinition, messageRouter:MessageRouter, lifecycleEventRouter:MessageRouter) : Scope;
 	
 	
 }

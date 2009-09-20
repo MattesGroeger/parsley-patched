@@ -24,6 +24,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
+import org.spicefactory.parsley.core.scopes.ScopeName;
 
 [Metadata(name="MessageInterceptor", types="method", multiple="true")]
 /**
@@ -52,7 +53,7 @@ public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator 
 	 * The scope this interceptor wants to be applied to.
 	 * The default is ScopeName.GLOBAL.
 	 */
-	public var scope:String;
+	public var scope:String = ScopeName.GLOBAL;
 	
 	[Target]
 	/**
@@ -77,7 +78,7 @@ public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator 
 		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
 		var ic:MessageInterceptor = 
 				new DefaultMessageInterceptor(Providers.forInstance(instance, domain), method, messageType, selector);
-		context.messageRouter.addInterceptor(ic);
+		context.scopeManager.getScope(scope).messageRouter.addInterceptor(ic);
 		addTarget(instance, ic);
 	}
 	
@@ -85,7 +86,7 @@ public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator 
 	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
 	 */
 	public function preDestroy (instance:Object, context:Context) : void {
-		context.messageRouter.removeInterceptor(MessageInterceptor(removeTarget(instance)));
+		context.scopeManager.getScope(scope).messageRouter.removeInterceptor(MessageInterceptor(removeTarget(instance)));
 	}
 	
 	

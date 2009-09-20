@@ -17,14 +17,21 @@
 package org.spicefactory.parsley.core.factory.impl {
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.messaging.impl.MessageRouterProxy;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.scopes.Scope;
+import org.spicefactory.parsley.core.scopes.ScopeManager;
+import org.spicefactory.parsley.core.scopes.ScopeName;
+import org.spicefactory.parsley.core.scopes.impl.ScopeDefinition;
 import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.system.ApplicationDomain;
+import flash.utils.Dictionary;
 
 /**
  * @author Jens Halm
@@ -34,19 +41,24 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 
 	private var _registry:ObjectDefinitionRegistry;
 	private var _lifecycleManager:ObjectLifecycleManager;
-	private var _messageRouter:MessageRouter;
+	private var _scopeManager:ScopeManager;
 	private var _viewManager:ViewManager;
 	
 	private var factories:FactoryRegistry;
 	private var context:Context;
+	private var parent:Context;
 	private var domain:ApplicationDomain;
+	private var newScopes:Array;
+	
+	private static const inheritedScopeMap:Dictionary = new Dictionary();
 
 
-	function DefaultContextStrategyProvider (factories:FactoryRegistry, domain:ApplicationDomain, 
-			registry:ObjectDefinitionRegistry = null) {
+	function DefaultContextStrategyProvider (factories:FactoryRegistry, parent:Context, domain:ApplicationDomain, 
+			newScopes:Array) {
 		this.factories = factories;
+		this.parent = parent;
 		this.domain = domain;
-		this._registry = registry;
+		this.newScopes = newScopes;
 	}
 
 	
@@ -82,12 +94,12 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get messageRouter () : MessageRouter {
+	public function get scopeManager () : ScopeManager {
 		checkState();
-		if (_messageRouter == null) {
-			_messageRouter =	factories.messageRouter.create(context, domain);
+		if (_scopeManager == null) {
+			_scopeManager =	factories.scopeManager.createManager(createScopes(), domain);
 		}
-		return _messageRouter;
+		return _scopeManager;
 	}
 
 	/**
@@ -104,10 +116,10 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get createDynamicProvider () : ContextStrategyProvider {
+	public function createDynamicProvider () : ContextStrategyProvider {
 		checkState();
-		var provider:DefaultContextStrategyProvider = new DefaultContextStrategyProvider(factories, domain);
-		provider._messageRouter = messageRouter;
+		var provider:DefaultContextStrategyProvider = new DefaultContextStrategyProvider(factories, context, domain, []);
+		provider._scopeManager = scopeManager;
 		provider._viewManager = viewManager;
 		return provider;
 	}	
@@ -118,6 +130,39 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 			throw new IllegalStateError("Provider has not been initialized yet");
 		}
 	}
+	
+	
+	protected function createScopes () : Dictionary {
+		var scopes:Dictionary = new Dictionary();
+		newScopes.push(new ScopeDefinition(ScopeName.LOCAL, false));
+		if (parent == null) {
+			newScopes.push(new ScopeDefinition(ScopeName.GLOBAL, true));
+		}
+		else {
+			for each (var scope:Scope in parent.scopeManager.getAllScopes()) {
+				if (scope.inherited) {
+					scopes[scope.name] = scope;
+				}
+			}
+		}
+		for each (var scopeDef:ScopeDefinition in newScopes) {
+			if (scopes[scopeDef.name] != undefined) {
+				throw new ContextError("Overlapping scopes with name " + scopeDef.name);
+			}
+			var messageRouter:MessageRouter 
+					= factories.messageRouter.create(context, domain);
+			var messageRouterProxy:MessageRouter 
+					= new MessageRouterProxy(messageRouter, context, domain);
+			var lifecycleEventRouter:MessageRouter 
+					= factories.messageRouter.create(context, domain);
+			var newScope:Scope 
+					= factories.scopeManager.createScope(scopeDef, messageRouterProxy, lifecycleEventRouter);
+			scopes[newScope.name] = newScope;
+		}
+		return scopes;
+	}
+	
+	
 }
 }
 

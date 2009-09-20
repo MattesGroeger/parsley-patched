@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.factory.impl {
+import org.spicefactory.parsley.core.factory.ScopeManagerFactory;
 import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
 import org.spicefactory.parsley.core.factory.ContextFactory;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
@@ -34,6 +35,7 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 	private var _lifecycleManager:ObjectLifecycleManagerFactory;
 	private var _definitionRegistry:ObjectDefinitionRegistryFactory;
 	private var _viewManager:ViewManagerFactory;
+	private var _scopeManager:ScopeManagerFactory;
 	private var _messageRouter:MessageRouterFactory;
 	
 	private var parent:FactoryRegistry;
@@ -75,6 +77,13 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 	/**
 	 * @inheritDoc
 	 */
+	public function get scopeManager () : ScopeManagerFactory {
+		return (_scopeManager == null) ? parent.scopeManager : _scopeManager;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
 	public function get viewManager () : ViewManagerFactory {
 		return (_viewManager == null) ? parent.viewManager : _viewManager;
 	}
@@ -102,6 +111,10 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 		_definitionRegistry = value;
 	}
 	
+	public function set scopeManager (value:ScopeManagerFactory) : void {
+		_scopeManager = value;
+	}
+	
 	public function set viewManager (value:ViewManagerFactory) : void {
 		_viewManager = value;
 	}
@@ -110,7 +123,7 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 		_messageRouter = value;
 	}
 	
-	
+
 }
 }
 

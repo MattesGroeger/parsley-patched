@@ -24,6 +24,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
+import org.spicefactory.parsley.core.scopes.ScopeName;
 
 [Metadata(name="MessageError", types="method", multiple="true")]
 /**
@@ -52,7 +53,7 @@ public class MessageErrorHandlerDecorator extends AbstractMessageTargetDecorator
 	 * The scope this error handler wants to be applied to.
 	 * The default is ScopeName.GLOBAL.
 	 */
-	public var scope:String;
+	public var scope:String = ScopeName.GLOBAL;
 	
 	[Target]
 	/**
@@ -85,7 +86,7 @@ public class MessageErrorHandlerDecorator extends AbstractMessageTargetDecorator
 		var handler:MessageErrorHandler = 
 				new DefaultMessageErrorHandler(Providers.forInstance(instance, domain), method, 
 				messageType, selector, ClassInfo.forClass(errorType, domain));
-		context.messageRouter.addErrorHandler(handler);
+		context.scopeManager.getScope(scope).messageRouter.addErrorHandler(handler);
 		addTarget(instance, handler);
 	}
 	
@@ -93,7 +94,7 @@ public class MessageErrorHandlerDecorator extends AbstractMessageTargetDecorator
 	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
 	 */
 	public function preDestroy (instance:Object, context:Context) : void {
-		context.messageRouter.removeErrorHandler(MessageErrorHandler(removeTarget(instance)));
+		context.scopeManager.getScope(scope).messageRouter.removeErrorHandler(MessageErrorHandler(removeTarget(instance)));
 	}
 	
 	

@@ -31,6 +31,15 @@ public interface CompositeContextBuilder {
 	function addBuilder (builder:ObjectDefinitionBuilder) : void;
 	
 	/**
+	 * Adds a new scope for the Context created by this builder.
+	 * The new scope will be added to the scope which may be inherited from a parent Context.
+	 * 
+	 * @param name the name of the scope
+	 * @param inherited whether child Contexts should inherit this scope
+	 */
+	function addScope (name:String, inherited:Boolean) : void;
+	
+	/**
 	 * The factories to be used by this builder.
 	 * For all factories that are not explicitly specified for this builder the
 	 * corresponding factory will be fetched from the <code>GlobalFactoryRegistry</code>.

@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.context {
-import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.scopes.ScopeManager;
 import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.events.IEventDispatcher;
@@ -221,11 +221,11 @@ public interface Context extends IEventDispatcher {
 	function destroy () : void;
 	
 	/**
-	 * The messaging subsystem used by this Context.
-	 * If you build a hierarchy of Context instances they should always refer to the same router instance,
-	 * so that communication between objects living in different sub-contexts is guaranteed.
+	 * The scope manager that handles all scopes that this Context belongs to.
+	 * This includes scopes inherited from parent Contexts as well as scopes
+	 * created for this Context.
 	 */
-	function get messageRouter () : MessageRouter;
+	function get scopeManager () : ScopeManager;
 	
 	/**
 	 * The view manager used to dynamically wire view instances to this Context.

@@ -21,6 +21,7 @@ import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.factory.MessageRouterFactory;
 import org.spicefactory.parsley.core.factory.ObjectDefinitionRegistryFactory;
 import org.spicefactory.parsley.core.factory.ObjectLifecycleManagerFactory;
+import org.spicefactory.parsley.core.factory.ScopeManagerFactory;
 import org.spicefactory.parsley.core.factory.ViewManagerFactory;
 
 /**
@@ -33,6 +34,7 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 	private var _context:ContextFactory;
 	private var _lifecycleManager:ObjectLifecycleManagerFactory;
 	private var _definitionRegistry:ObjectDefinitionRegistryFactory;
+	private var _scopeManager:ScopeManagerFactory;
 	private var _viewManager:ViewManagerFactory;
 	private var _messageRouter:MessageRouterFactory;
 	
@@ -99,6 +101,16 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 	/**
 	 * @inheritDoc
 	 */
+	public function get scopeManager () : ScopeManagerFactory {
+		if (_scopeManager == null) {
+			_scopeManager = new DefaultScopeManagerFactory();
+		}
+		return _scopeManager;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
 	public function get messageRouter () : MessageRouterFactory {
 		if (_messageRouter == null) {
 			_messageRouter = new DefaultMessageRouterFactory();
@@ -126,6 +138,10 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 		_viewManager = value;
 	}
 	
+	public function set scopeManager (value:ScopeManagerFactory) : void {
+		_scopeManager = value;
+	}
+	
 	public function set messageRouter (value:MessageRouterFactory) : void {
 		_messageRouter = value;
 	}
@@ -143,6 +159,7 @@ import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.factory.MessageRouterFactory;
 import org.spicefactory.parsley.core.factory.ObjectDefinitionRegistryFactory;
 import org.spicefactory.parsley.core.factory.ObjectLifecycleManagerFactory;
+import org.spicefactory.parsley.core.factory.ScopeManagerFactory;
 import org.spicefactory.parsley.core.factory.ViewManagerFactory;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.lifecycle.impl.DefaultObjectLifecycleManager;
@@ -150,12 +167,18 @@ import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageRouter;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.scopes.Scope;
+import org.spicefactory.parsley.core.scopes.ScopeManager;
+import org.spicefactory.parsley.core.scopes.impl.DefaultScope;
+import org.spicefactory.parsley.core.scopes.impl.DefaultScopeManager;
+import org.spicefactory.parsley.core.scopes.impl.ScopeDefinition;
 import org.spicefactory.parsley.core.view.ViewManager;
 import org.spicefactory.parsley.core.view.impl.DefaultViewManager;
 import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 
 import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
+import flash.utils.Dictionary;
 
 class DefaultContextBuilderFactory implements ContextBuilderFactory {
 	
@@ -193,6 +216,19 @@ class DefaultViewManagerFactory implements ViewManagerFactory {
 	
 	public function create (context:Context, domain:ApplicationDomain) : ViewManager {
 		return new DefaultViewManager(context, domain);
+	}
+	
+}
+
+class DefaultScopeManagerFactory implements ScopeManagerFactory {
+	
+	public function createManager (scopes:Dictionary, domain:ApplicationDomain) : ScopeManager {
+		return new DefaultScopeManager(scopes, domain);
+	}
+	
+	public function createScope (scopeDef:ScopeDefinition, 
+			messageRouter:MessageRouter, lifecycleEventRouter:MessageRouter) : Scope {
+		return new DefaultScope(scopeDef, messageRouter, lifecycleEventRouter);
 	}
 	
 }
