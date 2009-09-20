@@ -24,13 +24,13 @@ public class ObjectLifecycle {
 	
 	public static const PRE_CONFIGURE:ObjectLifecycle = new ObjectLifecycle("preConfigure");
 
-	public static const PRE_INIT:ObjectLifecycle = new ObjectLifecycle("preConfigure");
+	public static const PRE_INIT:ObjectLifecycle = new ObjectLifecycle("preInit");
 
-	public static const POST_INIT:ObjectLifecycle = new ObjectLifecycle("preConfigure");
+	public static const POST_INIT:ObjectLifecycle = new ObjectLifecycle("postInit");
 
-	public static const PRE_DESTROY:ObjectLifecycle = new ObjectLifecycle("preConfigure");
+	public static const PRE_DESTROY:ObjectLifecycle = new ObjectLifecycle("preDestroy");
 
-	public static const POST_DESTROY:ObjectLifecycle = new ObjectLifecycle("preConfigure");
+	public static const POST_DESTROY:ObjectLifecycle = new ObjectLifecycle("postDestroy");
 	
 	
 	private var _key:String;
