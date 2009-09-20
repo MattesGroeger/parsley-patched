@@ -27,7 +27,7 @@ public interface MessageReceiver {
 	
 	
 	/**
-	 * The class or interface of the message. A message descriptor 
+	 * The class or interface of the message. 
 	 */
 	function get messageType () : ClassInfo ;
 	
