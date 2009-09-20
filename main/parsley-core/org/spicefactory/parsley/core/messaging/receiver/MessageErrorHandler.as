@@ -19,17 +19,23 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
 
 /**
- * Handles errors thrown by regular message targets.
+ * Handles errors thrown by regular message targets or interceptors.
  * 
  * @author Jens Halm
  */
 public interface MessageErrorHandler extends MessageReceiver {
 	
 	
+	/**
+	 * The type of Error this handler is interested in.
+	 * Like with matching message classes this works in a polymorphic way.
+	 * Specifying the base Error class creates an ErrorHandler that handles
+	 * all errors for a particular message type.
+	 */
 	function get errorType () : ClassInfo;
 	
 	/**
-	 * Handles an error thrown by a regular message target. 
+	 * Handles an error thrown by a regular message target or interceptor. 
 	 * Processing further error handlers and targets will
 	 * only happen if proceed is called on the specified processor.
 	 * 
