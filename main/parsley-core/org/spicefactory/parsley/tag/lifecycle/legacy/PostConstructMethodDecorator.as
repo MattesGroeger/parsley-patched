@@ -14,27 +14,22 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.tag.lifecycle {
-import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.parsley.core.context.Context;
+package org.spicefactory.parsley.tag.lifecycle.legacy {
+import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.tag.core.NestedTag;
-import org.spicefactory.parsley.tag.util.DecoratorUtil;
 
 [Metadata(name="PostConstruct", types="method")]
 /**
- * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked after
- * the object has been created and fully configured.
- *
- * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
- * thus both interfaces are implemented.</p>
+ * @private
+ * 
+ * This tag is deprecated, use [Init] instead.
  * 
  * @author Jens Halm
  */
-public class PostConstructMethodDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener, NestedTag {
+public class PostConstructMethodDecorator implements ObjectDefinitionDecorator, NestedTag {
 
 
 	[Target]
@@ -44,31 +39,15 @@ public class PostConstructMethodDecorator implements ObjectDefinitionDecorator, 
 	public var method:String;
 	
 	
-	private var targetMethod:Method;	
-
-	
 	/**
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		targetMethod = DecoratorUtil.getMethod(method, definition);
-		definition.lifecycleListeners.addLifecycleListener(this);
+		LogContext.getLogger(PostConstructMethodDecorator).warn("The PostConstruct tag is deprecated. It has been renamed to Init");
+		definition.initMethod = method;
 		return definition;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
-	public function postConstruct (instance:Object, context:Context) : void {
-		targetMethod.invoke(instance, []);
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function preDestroy (instance:Object, context:Context) : void {
-		/* nothing to do here */
-	}
 	
 }
 }

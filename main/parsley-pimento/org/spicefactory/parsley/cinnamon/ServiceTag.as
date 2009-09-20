@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.cinnamon {
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
@@ -68,7 +69,8 @@ public class ServiceTag implements ObjectDefinitionFactory {
 		if (id == null) id = name;
 		var factory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(type, id);
 		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
-		definition.lifecycleListeners.addLifecycleListener(new ServiceLifecycleListener(this));
+		var listener:ServiceLifecycleListener = new ServiceLifecycleListener(this);
+		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, listener.postInit);
 		return definition;
 	}
 
@@ -86,9 +88,8 @@ import org.spicefactory.cinnamon.service.ServiceProxy;
 import org.spicefactory.parsley.cinnamon.ServiceTag;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 
-class ServiceLifecycleListener implements ObjectLifecycleListener {
+class ServiceLifecycleListener {
 
 	private var tag:ServiceTag;
 	
@@ -96,7 +97,7 @@ class ServiceLifecycleListener implements ObjectLifecycleListener {
 		this.tag = tag;
 	}
 
-	public function postConstruct (instance:Object, context:Context):void {
+	public function postInit (instance:Object, context:Context):void {
 		var channelInstance:ServiceChannel;
 		if (tag.channel != null) {
 			var channelRef:Object = context.getObject(tag.channel);
@@ -112,9 +113,6 @@ class ServiceLifecycleListener implements ObjectLifecycleListener {
 		if (tag.timeout != 0) proxy.timeout = tag.timeout;
 	}
 	
-	public function preDestroy (instance:Object, context:Context) : void {
-		/* ignore */
-	}
 	
 }
 

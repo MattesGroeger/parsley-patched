@@ -17,15 +17,15 @@
 package org.spicefactory.parsley.core.lifecycle.impl {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.definition.MethodParameterRegistry;
+import org.spicefactory.parsley.core.registry.model.ManagedArray;
 import org.spicefactory.parsley.core.registry.model.ObjectIdReference;
 import org.spicefactory.parsley.core.registry.model.ObjectTypeReference;
-import org.spicefactory.parsley.core.registry.model.ManagedArray;
 import org.spicefactory.parsley.core.registry.model.PropertyValue;
-import org.spicefactory.parsley.core.registry.definition.MethodParameterRegistry;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
@@ -70,9 +70,14 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	 * @inheritDoc
 	 */
 	public function configureObject (instance:Object, definition:ObjectDefinition, context:Context) : void {
-	 	processProperties(instance, definition, context);
+		processLifecycle(instance, definition, context, ObjectLifecycle.PRE_CONFIGURE);
+		processProperties(instance, definition, context);
 	 	processMethods(instance, definition, context);
-	 	processPostConstructListeners(instance, definition, context);
+		processLifecycle(instance, definition, context, ObjectLifecycle.PRE_INIT);
+		if (definition.initMethod != null) {
+			definition.type.getMethod(definition.initMethod).invoke(instance, []);
+		}
+		processLifecycle(instance, definition, context, ObjectLifecycle.POST_INIT);
 		processedInstances[instance] = definition;
 	}
 	
@@ -80,7 +85,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	 * @inheritDoc
 	 */
 	public function destroyObject (instance:Object, definition:ObjectDefinition, context:Context) : void {
-		processPreDestroyListeners(instance, definition, context);
+		doDestroy(instance, definition, context);
 		delete processedInstances[instance];
 	}
 
@@ -90,9 +95,17 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	public function destroyAll (context:Context) : void {
 		for (var instance:Object in processedInstances) {
 			var definition:ObjectDefinition = ObjectDefinition(processedInstances[instance]);
-			processPreDestroyListeners(instance, definition, context);
+			doDestroy(instance, definition, context);
 		}
 		processedInstances = new Dictionary();
+	}
+	
+	private function doDestroy (instance:Object, definition:ObjectDefinition, context:Context) : void {
+		processLifecycle(instance, definition, context, ObjectLifecycle.PRE_DESTROY);
+		if (definition.destroyMethod != null) {
+			definition.type.getMethod(definition.destroyMethod).invoke(instance, []);
+		}
+		processLifecycle(instance, definition, context, ObjectLifecycle.POST_DESTROY);
 	}
 	
 	/**
@@ -126,32 +139,19 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	}
 	
 	/**
-	 * Processes the lifecycle listeners for the specified instance after it has been created.
+	 * Processes the lifecycle listeners for the specified instance.
 	 * 
 	 * @param instance the instance to process
 	 * @param definition the definition of the specified instance
 	 * @param context the Context the instance belongs to
 	 */
-	protected function processPostConstructListeners (instance:Object, definition:ObjectDefinition, context:Context) : void {
-	 	var listeners:Array = definition.lifecycleListeners.getAll();
-	 	for each (var listener:ObjectLifecycleListener in listeners) {
- 			listener.postConstruct(instance, context);
+	protected function processLifecycle (instance:Object, definition:ObjectDefinition, context:Context, event:ObjectLifecycle) : void {
+	 	var listeners:Array = definition.objectLifecycle.getListeners(event);
+		for each (var listener:Function in listeners) {
+ 			listener(instance, context);
 		}		
 	}
 
-	/**
-	 * Processes the lifecycle listeners for the specified instance before it gets removed from the Context.
-	 * 
-	 * @param instance the instance to process
-	 * @param definition the definition of the specified instance
-	 * @param context the Context the instance belongs to
-	 */	
-	protected function processPreDestroyListeners (instance:Object, definition:ObjectDefinition, context:Context) : void {
-	 	var listeners:Array = definition.lifecycleListeners.getAll();
-	 	for each (var listener:ObjectLifecycleListener in listeners) {
- 			listener.preDestroy(instance, context);
-		}		
-	}
 	
 	/**
 	 * Resolves the specified value, resolving any object references or inline object definitions.

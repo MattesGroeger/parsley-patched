@@ -6,7 +6,7 @@ package org.spicefactory.parsley.core.decorator.lifecycle.model {
 public class PreDestroyMetadata extends PreDestroyModel {
 	
 	
-	[PreDestroy]
+	[Destroy]
 	public override function dispose () : void {
 		super.dispose();
 	}

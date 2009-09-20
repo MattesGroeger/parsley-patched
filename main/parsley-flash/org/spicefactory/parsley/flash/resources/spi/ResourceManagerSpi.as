@@ -26,7 +26,7 @@ import org.spicefactory.parsley.flash.resources.ResourceManager;
  */
 public interface ResourceManagerSpi extends ResourceManager {
 	
-	[PostConstruct]
+	[Init]
 	/**
 	 * Initializes the <code>ResourceManager</code>. Should be called once at application startup.
 	 * 

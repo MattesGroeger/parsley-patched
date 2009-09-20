@@ -202,7 +202,7 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	/**
 	 * @inheritDoc
 	 */
-	[PostConstruct]
+	[Init]
 	public function initialize (defaultLocale:Locale = null) : void {
 		if (_initialized) {
 			_logger.error("LocaleManager was already initialized");

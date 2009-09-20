@@ -8,8 +8,10 @@
     
     <component id="AsyncInit" class="org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator"/>
     <component id="Factory" class="org.spicefactory.parsley.tag.lifecycle.FactoryMethodDecorator"/>
-    <component id="PostConstruct" class="org.spicefactory.parsley.tag.lifecycle.PostConstructMethodDecorator"/>
-    <component id="PreDestroy" class="org.spicefactory.parsley.tag.lifecycle.PreDestroyMethodDecorator"/>
+    <component id="PostConstruct" class="org.spicefactory.parsley.tag.lifecycle.legacy.PostConstructMethodDecorator"/>
+    <component id="PreDestroy" class="org.spicefactory.parsley.tag.lifecycle.legacy.PreDestroyMethodDecorator"/>
+    <component id="Init" class="org.spicefactory.parsley.tag.lifecycle.InitMethodDecorator"/>
+    <component id="Destroy" class="org.spicefactory.parsley.tag.lifecycle.DestroyMethodDecorator"/>
     
     <component id="ManagedEvents" class="org.spicefactory.parsley.tag.messaging.ManagedEventsDecorator"/>
     <component id="MessageDispatcher" class="org.spicefactory.parsley.tag.messaging.MessageDispatcherDecorator"/>

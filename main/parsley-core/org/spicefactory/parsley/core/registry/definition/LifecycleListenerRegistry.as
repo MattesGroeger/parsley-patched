@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry.definition {
-
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 
 /**
  * A registry for all lifecycle listeners registered for a single instance.
@@ -26,27 +26,31 @@ public interface LifecycleListenerRegistry {
 	
 	/**
 	 * Adds a lifecycle listener to this registry.
+	 * The function must have two parameters, the first for the instance itself and
+	 * the second the Context the instance belongs to.
 	 * 
-	 * @param listener the listener to add
-	 * @param priority the priority (determining the order in which listeners get executed)
+	 * @param event the lifecycle event to listen for
+	 * @param listener the listener function to invoke
 	 * @return this registry instance for method chaining
 	 */
-	function addLifecycleListener (listener:ObjectLifecycleListener, priority:int = 0) : LifecycleListenerRegistry;
+	function addListener (event:ObjectLifecycle, listener:Function) : LifecycleListenerRegistry;
 	
 	/**
 	 * Removes the specified listener from this registry.
 	 * 
-	 * @listener the listener to remove
+	 * @param event the lifecycle event
+	 * @param listener the listener function
 	 * @return this registry instance for method chaining
 	 */
-	function removeLifecycleListener (listener:ObjectLifecycleListener) : LifecycleListenerRegistry;
+	function removeListener (event:ObjectLifecycle, listener:Function) : LifecycleListenerRegistry;
 	
 	/**
-	 * Returns all listeners added to this registry sorted by priority (highest priority first).
+	 * Returns all listeners for the specified event type.
 	 * 
-	 * @return all listeners added to this registry sorted by priority (highest priority first)
+	 * @param event the event to return the listeners for
+	 * @return all listeners added to this registry (an Array of function references)
 	 */
-	function getAll () : Array;
+	function getListeners (event:ObjectLifecycle) : Array;
 	
 }
 }

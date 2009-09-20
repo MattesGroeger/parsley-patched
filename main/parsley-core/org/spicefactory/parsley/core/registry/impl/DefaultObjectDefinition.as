@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry.impl {
+	import org.spicefactory.lib.errors.IllegalArgumentError;
 	import org.spicefactory.parsley.core.registry.definition.ContainerObjectInstantiator;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -46,6 +47,9 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	private var _methods:MethodRegistry;
 	private var _listeners:LifecycleListenerRegistry;
 	private var _asyncInitConfig:AsyncInitConfig;
+	
+	private var _initMethod:String;
+	private var _destroyMethod:String;
 
 	private var _frozen:Boolean;
 
@@ -75,7 +79,7 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		_constructorArgs = definition.constructorArgs;
 		_properties = definition.properties;
 		_methods = definition.injectorMethods;
-		_listeners = definition.lifecycleListeners;
+		_listeners = definition.objectLifecycle;
 		_asyncInitConfig = definition.asyncInitConfig;
 	}
 
@@ -111,7 +115,7 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	/**
 	 * @inheritDoc
 	 */
-	public function get lifecycleListeners () : LifecycleListenerRegistry {
+	public function get objectLifecycle () : LifecycleListenerRegistry {
 		return _listeners;
 	}
 	
@@ -146,8 +150,46 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		}
 		_instantiator = value;
 	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get initMethod () : String {
+		return _initMethod;
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function set initMethod (name:String) : void {
+		checkState();
+		checkMethodName(name);
+		_initMethod = name;
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function get destroyMethod () : String {
+		return _destroyMethod;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function set destroyMethod (name:String) : void {
+		checkState();
+		checkMethodName(name);
+		_destroyMethod = name;
+	}
+
+	private function checkMethodName (name:String) : void {
+		if (type.getMethod(name) == null) {
+			throw new IllegalArgumentError("Class " + type.name 
+					+ " does not contain a method with name " + name);
+		}
+	}
+	
 	private function checkState () : void {
 		if (_frozen) {
 			throw new IllegalStateError(toString() + " is frozen");

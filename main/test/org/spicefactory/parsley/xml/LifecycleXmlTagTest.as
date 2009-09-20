@@ -17,11 +17,11 @@ public class LifecycleXmlTagTest extends LifecycleTestBase {
 		xmlns="http://www.spicefactory.org/parsley">
 		
 		<object id="postConstructModel" type="org.spicefactory.parsley.core.decorator.lifecycle.model.PostConstructModel">
-			<post-construct method="init"/>		
+			<init method="init"/>		
 		</object>
 		
 		<object id="preDestroyModel" type="org.spicefactory.parsley.core.decorator.lifecycle.model.PreDestroyModel">
-			<pre-destroy method="dispose"/>		
+			<destroy method="dispose"/>		
 		</object>
 	</objects>; 
 	

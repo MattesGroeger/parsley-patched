@@ -31,9 +31,11 @@ import org.spicefactory.parsley.tag.inject.InjectConstructorDecorator;
 import org.spicefactory.parsley.tag.inject.InjectMethodDecorator;
 import org.spicefactory.parsley.tag.inject.InjectPropertyDecorator;
 import org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator;
+import org.spicefactory.parsley.tag.lifecycle.DestroyMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.FactoryMethodDecorator;
-import org.spicefactory.parsley.tag.lifecycle.PostConstructMethodDecorator;
-import org.spicefactory.parsley.tag.lifecycle.PreDestroyMethodDecorator;
+import org.spicefactory.parsley.tag.lifecycle.InitMethodDecorator;
+import org.spicefactory.parsley.tag.lifecycle.legacy.PostConstructMethodDecorator;
+import org.spicefactory.parsley.tag.lifecycle.legacy.PreDestroyMethodDecorator;
 import org.spicefactory.parsley.tag.messaging.ManagedEventsDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageBindingDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageDispatcherDecorator;
@@ -74,8 +76,8 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 		Metadata.registerMetadataClass(InjectPropertyDecorator, domain);
 		Metadata.registerMetadataClass(InjectMethodDecorator, domain);
 		Metadata.registerMetadataClass(FactoryMethodDecorator, domain);
-		Metadata.registerMetadataClass(PostConstructMethodDecorator, domain);
-		Metadata.registerMetadataClass(PreDestroyMethodDecorator, domain);
+		Metadata.registerMetadataClass(InitMethodDecorator, domain);
+		Metadata.registerMetadataClass(DestroyMethodDecorator, domain);
 		Metadata.registerMetadataClass(AsyncInitDecorator, domain);
 		
 		Metadata.registerMetadataClass(ManagedEventsDecorator, domain);
@@ -85,6 +87,10 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 		Metadata.registerMetadataClass(MessageInterceptorDecorator, domain);
 		
 		Metadata.registerMetadataClass(ResourceBindingDecorator, domain);
+		
+		// 2 deprecated tags:
+		Metadata.registerMetadataClass(PostConstructMethodDecorator, domain);
+		Metadata.registerMetadataClass(PreDestroyMethodDecorator, domain);
 
 		Metadata.registerMetadataClass(Selector, domain);
 		Metadata.registerMetadataClass(Target, domain);

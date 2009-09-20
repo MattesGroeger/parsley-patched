@@ -15,9 +15,12 @@
  */
 
 package org.spicefactory.parsley.core.registry.definition.impl {
+	import org.spicefactory.lib.util.ArrayUtil;
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
+
+import flash.utils.Dictionary;
 
 /**
  * Default implementation of the LifecycleListenerRegistry interface.
@@ -27,7 +30,7 @@ import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegist
 public class DefaultLifecycleListenerRegistry extends AbstractRegistry implements LifecycleListenerRegistry {
 
 
-	private var listeners:Array = new Array();
+	private var listeners:Dictionary = new Dictionary();
 
 
 	/**
@@ -43,50 +46,39 @@ public class DefaultLifecycleListenerRegistry extends AbstractRegistry implement
 	/**
 	 * @inheritDoc
 	 */
-	public function addLifecycleListener (listener:ObjectLifecycleListener,
-			priority:int = 0) : LifecycleListenerRegistry {
+	public function addListener (event:ObjectLifecycle, listener:Function) : LifecycleListenerRegistry {
 		checkState();
-		listeners.push(new LifecycleListenerRegistration(listener, priority));
+		var arr:Array = listeners[event.key];
+		if (arr == null) {
+			arr = new Array();
+			listeners[event.key] = arr;
+		}
+		arr.push(listener);
 		return this;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function removeLifecycleListener (listener:ObjectLifecycleListener) : LifecycleListenerRegistry {
+	public function removeListener (event:ObjectLifecycle, listener:Function) : LifecycleListenerRegistry {
 		checkState();
-		for (var i:uint = 0; i < listeners.length; i++) {
-			var reg:LifecycleListenerRegistration = LifecycleListenerRegistration(listeners[i]);
-			if (reg.listener == listener) {
-				listeners.splice(i,1);
-			}
+		var arr:Array = listeners[event.key];
+		if (arr == null) {
+			return this;
 		}
+		ArrayUtil.remove(arr, listener);
 		return this;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function getAll () : Array {
-		listeners.sortOn("priority", Array.NUMERIC | Array.DESCENDING);
-		var result:Array = new Array();
-		for each (var reg:LifecycleListenerRegistration in listeners) {
-			result.push(reg.listener);
-		}
-		return result;
+	public function getListeners (event:ObjectLifecycle) : Array {
+		var arr:Array = listeners[event.key];
+		return (arr == null) ? [] : arr.concat();
 	}
 	
-	
+
 }
 }
 
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
-
-class LifecycleListenerRegistration {
-	public var priority:int;
-	public var listener:ObjectLifecycleListener;
-	function LifecycleListenerRegistration (listener:ObjectLifecycleListener, priority:int) {
-		this.priority = priority;
-		this.listener = listener;
-	}
-}

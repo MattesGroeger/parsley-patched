@@ -33,6 +33,8 @@
 	        
 	        <xs:element name="pre-destroy" type="methodType" minOccurs="0"/>
 	        <xs:element name="post-construct" type="methodType" minOccurs="0"/>
+	        <xs:element name="destroy" type="methodType" minOccurs="0"/>
+	        <xs:element name="init" type="methodType" minOccurs="0"/>
 	        <xs:element name="factory" type="methodType" minOccurs="0"/>
             
             <xs:element name="managed-events" type="managedEventsType" minOccurs="0"/>

@@ -18,10 +18,10 @@ package org.spicefactory.parsley.tag.resources {
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.tag.core.NestedTag;
 
 import flash.utils.Dictionary;
@@ -37,7 +37,7 @@ import flash.utils.getQualifiedClassName;
  * 
  * @author Jens Halm
  */
-public class ResourceBindingDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener, NestedTag {
+public class ResourceBindingDecorator implements ObjectDefinitionDecorator, NestedTag {
 
 
 	/**
@@ -97,14 +97,15 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Obje
 			throw new ObjectDefinitionBuilderError("Class " + definition.type.name 
 					+ " does not contain a property with name " + _property);
 		}
-		definition.lifecycleListeners.addLifecycleListener(this);
+		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, postInit);
+		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy);
 		return definition;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function postConstruct (instance:Object, context:Context) : void {
+	public function postInit (instance:Object, context:Context) : void {
 		_property.setValue(instance, adapter.getResource(bundle, key));
 		managedObjects[instance] = true;
 	}

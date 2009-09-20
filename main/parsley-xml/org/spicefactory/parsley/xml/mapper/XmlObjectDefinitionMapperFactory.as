@@ -27,18 +27,20 @@ import org.spicefactory.lib.xml.NamingStrategy;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.Choice;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
-import org.spicefactory.parsley.tag.messaging.MessageBindingDecorator;
-import org.spicefactory.parsley.tag.messaging.MessageInterceptorDecorator;
-import org.spicefactory.parsley.tag.messaging.MessageDispatcherDecorator;
-import org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator;
-import org.spicefactory.parsley.tag.lifecycle.PostConstructMethodDecorator;
-import org.spicefactory.parsley.tag.lifecycle.PreDestroyMethodDecorator;
-import org.spicefactory.parsley.tag.lifecycle.FactoryMethodDecorator;
 import org.spicefactory.parsley.tag.core.ArrayTag;
-import org.spicefactory.parsley.tag.core.ObjectReferenceTag;
 import org.spicefactory.parsley.tag.core.ConstructorDecoratorTag;
-import org.spicefactory.parsley.tag.core.PropertyDecoratorTag;
 import org.spicefactory.parsley.tag.core.ObjectDefinitionFactoryTag;
+import org.spicefactory.parsley.tag.core.ObjectReferenceTag;
+import org.spicefactory.parsley.tag.core.PropertyDecoratorTag;
+import org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator;
+import org.spicefactory.parsley.tag.lifecycle.DestroyMethodDecorator;
+import org.spicefactory.parsley.tag.lifecycle.FactoryMethodDecorator;
+import org.spicefactory.parsley.tag.lifecycle.InitMethodDecorator;
+import org.spicefactory.parsley.tag.lifecycle.legacy.PostConstructMethodDecorator;
+import org.spicefactory.parsley.tag.lifecycle.legacy.PreDestroyMethodDecorator;
+import org.spicefactory.parsley.tag.messaging.MessageBindingDecorator;
+import org.spicefactory.parsley.tag.messaging.MessageDispatcherDecorator;
+import org.spicefactory.parsley.tag.messaging.MessageInterceptorDecorator;
 import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
@@ -167,6 +169,10 @@ public class XmlObjectDefinitionMapperFactory {
 		addDecoratorAttributeMapper(AsyncInitDecorator, "async-init");
 
 		addDecoratorAttributeMapper(FactoryMethodDecorator, "factory");
+		addDecoratorAttributeMapper(InitMethodDecorator, "init");
+		addDecoratorAttributeMapper(DestroyMethodDecorator, "destroy");
+		
+		// TODO - remove in 2.2
 		addDecoratorAttributeMapper(PostConstructMethodDecorator, "post-construct");
 		addDecoratorAttributeMapper(PreDestroyMethodDecorator, "pre-destroy");
 		

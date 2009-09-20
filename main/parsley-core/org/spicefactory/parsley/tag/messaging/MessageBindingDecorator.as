@@ -17,13 +17,13 @@
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.MessageBinding;
 import org.spicefactory.parsley.core.messaging.receiver.impl.Providers;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.core.scopes.ScopeName;
 
 [Metadata(name="MessageBinding", types="property", multiple="true")]
@@ -36,7 +36,7 @@ import org.spicefactory.parsley.core.scopes.ScopeName;
  *
  * @author Jens Halm
  */
-public class MessageBindingDecorator extends AbstractMessageTargetDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
+public class MessageBindingDecorator extends AbstractMessageReceiverDecorator implements ObjectDefinitionDecorator {
 
 
 	[Required]
@@ -74,26 +74,27 @@ public class MessageBindingDecorator extends AbstractMessageTargetDecorator impl
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		domain = registry.domain;
-		definition.lifecycleListeners.addLifecycleListener(this);
+		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, postInit);
+		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy);
 		return definition;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function postConstruct (instance:Object, context:Context) : void {
+	public function postInit (instance:Object, context:Context) : void {
 		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
 		var target:MessageTarget = new MessageBinding(Providers.forInstance(instance, domain), 
 				targetProperty, messageType, messageProperty, selector);
 		context.scopeManager.getScope(scope).messageRouter.addTarget(target);
-		addTarget(instance, target);
+		addReceiver(instance, target);
 	}
 	
 	/**
 	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
 	 */
 	public function preDestroy (instance:Object, context:Context) : void {
-		context.scopeManager.getScope(scope).messageRouter.removeTarget(MessageTarget(removeTarget(instance)));
+		context.scopeManager.getScope(scope).messageRouter.removeTarget(MessageTarget(removeReceiver(instance)));
 	}
 
 	

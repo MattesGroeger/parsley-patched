@@ -39,7 +39,7 @@ public interface ObjectLifecycleManager {
 
 	/**
 	 * Processes the configuration for the specified instance and performs dependency injection, message handler registration
-	 * or invocation of methods marked with PostConstruct and similar tasks.
+	 * or invocation of methods marked with Init and similar tasks.
 	 * 
 	 * @param instance the instance to configure
 	 * @param definition the definition of the specified instance

@@ -18,11 +18,11 @@ package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.metadata.EventInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.tag.core.NestedTag;
 
 import flash.events.IEventDispatcher;
@@ -40,7 +40,7 @@ import flash.events.IEventDispatcher;
  *
  * @author Jens Halm
  */
-public class ManagedEventsDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener, NestedTag {
+public class ManagedEventsDecorator implements ObjectDefinitionDecorator, NestedTag {
 
 
 	[DefaultProperty]
@@ -75,25 +75,21 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Object
 			throw new ContextError("ManagedEvents on class " + definition.type.name 
 					+ ": No event names specified in ManagedEvents tag and no Event tag on class");	
 		}
-		definition.lifecycleListeners.addLifecycleListener(this);
+		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, postInit);
+		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy);
 		return definition;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
-	public function postConstruct (instance:Object, context:Context) : void {
+	
+	private function postInit (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
 		if (delegate.scopeManager == null) delegate.scopeManager = context.scopeManager;
 		for each (var name:String in names) {		
 			eventDispatcher.addEventListener(name, delegate.dispatchMessage);
 		}
 	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function preDestroy (instance:Object, context:Context) : void {
+
+	private function preDestroy (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
 		for each (var name:String in names) {		
 			eventDispatcher.removeEventListener(name, delegate.dispatchMessage);

@@ -17,13 +17,13 @@
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultMessageInterceptor;
 import org.spicefactory.parsley.core.messaging.receiver.impl.Providers;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.core.scopes.ScopeName;
 
 [Metadata(name="MessageInterceptor", types="method", multiple="true")]
@@ -36,7 +36,7 @@ import org.spicefactory.parsley.core.scopes.ScopeName;
  *
  * @author Jens Halm
  */
-public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
+public class MessageInterceptorDecorator extends AbstractMessageReceiverDecorator implements ObjectDefinitionDecorator {
 
 
 	/**
@@ -67,26 +67,27 @@ public class MessageInterceptorDecorator extends AbstractMessageTargetDecorator 
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		domain = registry.domain;
-		definition.lifecycleListeners.addLifecycleListener(this);
+		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, postInit);
+		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy);
 		return definition;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function postConstruct (instance:Object, context:Context) : void {
+	public function postInit (instance:Object, context:Context) : void {
 		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
 		var ic:MessageInterceptor = 
 				new DefaultMessageInterceptor(Providers.forInstance(instance, domain), method, messageType, selector);
 		context.scopeManager.getScope(scope).messageRouter.addInterceptor(ic);
-		addTarget(instance, ic);
+		addReceiver(instance, ic);
 	}
 	
 	/**
 	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
 	 */
 	public function preDestroy (instance:Object, context:Context) : void {
-		context.scopeManager.getScope(scope).messageRouter.removeInterceptor(MessageInterceptor(removeTarget(instance)));
+		context.scopeManager.getScope(scope).messageRouter.removeInterceptor(MessageInterceptor(removeReceiver(instance)));
 	}
 	
 	

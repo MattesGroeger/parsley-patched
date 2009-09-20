@@ -65,7 +65,17 @@ public interface ObjectDefinition {
 	/**
 	 * The lifecycle listeners to process for instances created from this definition.
 	 */
-	function get lifecycleListeners () : LifecycleListenerRegistry;
+	function get objectLifecycle () : LifecycleListenerRegistry;
+
+
+	function get initMethod () : String;
+
+	function set initMethod (name:String) : void;
+
+	function get destroyMethod () : String;
+
+	function set destroyMethod (name:String) : void;
+
 	
 	/**
 	 * The configuration for asynchronously initializing objects.

@@ -90,8 +90,8 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 		return wrappedDefintion.injectorMethods;
 	}
 
-	public function get lifecycleListeners () : LifecycleListenerRegistry {
-		return wrappedDefintion.lifecycleListeners;
+	public function get objectLifecycle () : LifecycleListenerRegistry {
+		return wrappedDefintion.objectLifecycle;
 	}
 	
 	public function get asyncInitConfig () : AsyncInitConfig {
@@ -108,6 +108,34 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 
 	public function set asyncInitConfig (config:AsyncInitConfig) : void {
 		wrappedDefintion.asyncInitConfig = config;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get initMethod () : String {
+		return wrappedDefintion.initMethod;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function set initMethod (name:String) : void {
+		wrappedDefintion.initMethod = name;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get destroyMethod () : String {
+		return wrappedDefintion.destroyMethod;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function set destroyMethod (name:String) : void {
+		wrappedDefintion.destroyMethod = name;
 	}
 	
 	

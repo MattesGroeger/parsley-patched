@@ -15,18 +15,17 @@
  */
  
 package org.spicefactory.lib.flash.logging.impl {
-	import org.spicefactory.lib.flash.logging.impl.AbstractAppender;
+import org.spicefactory.lib.flash.logging.FlashLogger;
+import org.spicefactory.lib.flash.logging.LogEvent;
+import org.spicefactory.lib.flash.logging.impl.AbstractAppender;
+import org.spicefactory.lib.util.collection.ArrayList;
+import org.spicefactory.lib.util.collection.List;
+
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.events.SecurityErrorEvent;
 import flash.net.XMLSocket;
-
-import org.spicefactory.lib.flash.logging.LogEvent;
-import org.spicefactory.lib.flash.logging.LogLevel;
-import org.spicefactory.lib.flash.logging.FlashLogger;
-import org.spicefactory.lib.util.collection.ArrayList;
-import org.spicefactory.lib.util.collection.List;
 
 /**
  * Appender implementation that routes all log output to Powerflasher SOS through
@@ -97,7 +96,7 @@ public class SOSAppender extends AbstractAppender {
 	
 	/**
 	 * Initializes the <code>XMLSocket</code> and connects to Powerflasher SOS.	 */
-	[PostConstruct]
+	[Init]
 	public function init () : void {
 		cache = new ArrayList(); // just in case the first logs arrive before socket is ready
 		socket = new XMLSocket();

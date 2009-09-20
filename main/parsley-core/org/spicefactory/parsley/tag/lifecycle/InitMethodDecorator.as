@@ -15,28 +15,21 @@
  */
 
 package org.spicefactory.parsley.tag.lifecycle {
-import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.tag.core.NestedTag;
-import org.spicefactory.parsley.tag.util.DecoratorUtil;
 
-[Metadata(name="PreDestroy", types="method")]
+[Metadata(name="Init", types="method")]
 /**
- * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked before the Context
- * that the object belongs to gets destroyed.
- *
- * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
- * thus both interfaces are implemented.</p>
+ * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked after
+ * the object has been created and fully configured.
  * 
  * @author Jens Halm
  */
-public class PreDestroyMethodDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener, NestedTag {
+public class InitMethodDecorator implements ObjectDefinitionDecorator, NestedTag {
 
-	
+
 	[Target]
 	/**
 	 * The name of the method.
@@ -44,30 +37,12 @@ public class PreDestroyMethodDecorator implements ObjectDefinitionDecorator, Obj
 	public var method:String;
 	
 	
-	private var targetMethod:Method;	
-
-
 	/**
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		targetMethod = DecoratorUtil.getMethod(method, definition);
-		definition.lifecycleListeners.addLifecycleListener(this);
+		definition.initMethod = method;
 		return definition;
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function postConstruct (instance:Object, context:Context) : void {
-		/* nothing to do here */
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function preDestroy (instance:Object, context:Context) : void {
-		targetMethod.invoke(instance, []);
 	}
 	
 	

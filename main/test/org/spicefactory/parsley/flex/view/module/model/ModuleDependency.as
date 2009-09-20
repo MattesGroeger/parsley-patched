@@ -10,12 +10,12 @@ public class ModuleDependency {
 		trace("ModuleDependency constr");
 	}
 	
-	[PostConstruct]
+	[Init]
 	public function init () : void {
 		trace("++++ PostConstruct");
 	}
 	
-	[PreDestroy]
+	[Destroy]
 	public function destroy () : void {
 		trace("++++ PreDestroy");
 	}

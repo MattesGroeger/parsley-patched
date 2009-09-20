@@ -18,6 +18,7 @@ package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.MessageHandler;
 import org.spicefactory.parsley.core.messaging.receiver.impl.MessagePropertyHandler;
@@ -26,7 +27,6 @@ import org.spicefactory.parsley.core.messaging.receiver.impl.TargetInstanceProvi
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.core.scopes.ScopeName;
 
 [Metadata(name="MessageHandler", types="method", multiple="true")]
@@ -39,7 +39,7 @@ import org.spicefactory.parsley.core.scopes.ScopeName;
  *
  * @author Jens Halm
  */
-public class MessageHandlerDecorator extends AbstractMessageTargetDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
+public class MessageHandlerDecorator extends AbstractMessageReceiverDecorator implements ObjectDefinitionDecorator {
 
 
 	/**
@@ -81,14 +81,15 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 			throw new ContextError("Message type must be specified if messageProperties attribute is used");
 		}
 		domain = registry.domain;
-		definition.lifecycleListeners.addLifecycleListener(this);
+		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, postInit);
+		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy);
 		return definition;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function postConstruct (instance:Object, context:Context) : void {
+	public function postInit (instance:Object, context:Context) : void {
 		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
 		var provider:TargetInstanceProvider = Providers.forInstance(instance, domain);
 		var target:MessageTarget;
@@ -99,14 +100,14 @@ public class MessageHandlerDecorator extends AbstractMessageTargetDecorator impl
 			target = new MessageHandler(provider, method, selector, messageType);
 		}
 		context.scopeManager.getScope(scope).messageRouter.addTarget(target);
-		addTarget(instance, target);
+		addReceiver(instance, target);
 	}
 	
 	/**
 	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
 	 */
 	public function preDestroy (instance:Object, context:Context) : void {
-		context.scopeManager.getScope(scope).messageRouter.removeTarget(MessageTarget(removeTarget(instance)));
+		context.scopeManager.getScope(scope).messageRouter.removeTarget(MessageTarget(removeReceiver(instance)));
 	}
 	
 	

@@ -11,11 +11,11 @@
 	
 	
 	<flextag:MxmlObjectDefinitionFactoryTag id="postConstructModel" type="{PostConstructModel}" lazy="true">
-		<dec:PostConstructMethodDecorator method="init"/>
+		<dec:InitMethodDecorator method="init"/>
 	</flextag:MxmlObjectDefinitionFactoryTag> 
 	
 	<flextag:MxmlObjectDefinitionFactoryTag id="preDestroyModel" type="{PreDestroyModel}" lazy="true">
-		<dec:PreDestroyMethodDecorator method="dispose"/>
+		<dec:DestroyMethodDecorator method="dispose"/>
 	</flextag:MxmlObjectDefinitionFactoryTag> 
 	
 	

@@ -17,7 +17,6 @@
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
-import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.tag.core.NestedTag;
 
 import flash.system.ApplicationDomain;
@@ -28,7 +27,7 @@ import flash.utils.Dictionary;
  * 
  * @author Jens Halm
  */
-public class AbstractMessageTargetDecorator implements NestedTag {
+public class AbstractMessageReceiverDecorator implements NestedTag {
 	
 	
 	private var targets:Dictionary = new Dictionary();
@@ -42,20 +41,20 @@ public class AbstractMessageTargetDecorator implements NestedTag {
 	/**
 	 * Adds this target to this decorator for later disposal.
 	 */
-	protected function addTarget (instance:Object, target:MessageReceiver) : void {
+	protected function addReceiver (instance:Object, receiver:MessageReceiver) : void {
 		if (targets[instance] != undefined) {
 			throw new IllegalArgumentError("Attempt to add more than one target for the same instance: " + instance);
 		}
-		targets[instance] = target;
+		targets[instance] = receiver;
 	}
 	
-	protected function removeTarget (instance:Object) : MessageReceiver {
+	protected function removeReceiver (instance:Object) : MessageReceiver {
 		if (targets[instance] == undefined) {
 			throw new IllegalArgumentError("No MesssageTarget was added for the specified instance: " + instance);
 		}
-		var target:MessageTarget = targets[instance];
+		var receiver:MessageReceiver = targets[instance];
 		delete targets[instance];
-		return target;
+		return receiver;
 	}
 	
 	

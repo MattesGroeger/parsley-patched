@@ -84,7 +84,7 @@ public class ResourceBundleTag extends EventDispatcher {
 	public var resourceManager:ResourceManagerSpi;
 	
 	
-	[PostConstruct]
+	[Init]
 	/**
 	 * Loads the bundle configured by this tag class and adds it to the ResourceManager.
 	 */

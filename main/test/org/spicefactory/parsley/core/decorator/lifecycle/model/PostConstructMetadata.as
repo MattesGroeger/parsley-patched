@@ -6,7 +6,7 @@ package org.spicefactory.parsley.core.decorator.lifecycle.model {
 public class PostConstructMetadata extends PostConstructModel {
 	
 	
-	[PostConstruct]
+	[Init]
 	public override function init () : void {
 		super.init();
 	}

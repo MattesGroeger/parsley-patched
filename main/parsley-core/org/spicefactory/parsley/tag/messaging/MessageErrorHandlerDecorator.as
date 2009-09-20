@@ -17,13 +17,13 @@
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultMessageErrorHandler;
 import org.spicefactory.parsley.core.messaging.receiver.impl.Providers;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.core.scopes.ScopeName;
 
 [Metadata(name="MessageError", types="method", multiple="true")]
@@ -36,7 +36,7 @@ import org.spicefactory.parsley.core.scopes.ScopeName;
  *
  * @author Jens Halm
  */
-public class MessageErrorHandlerDecorator extends AbstractMessageTargetDecorator implements ObjectDefinitionDecorator, ObjectLifecycleListener {
+public class MessageErrorHandlerDecorator extends AbstractMessageReceiverDecorator implements ObjectDefinitionDecorator {
 
 
 	/**
@@ -74,27 +74,28 @@ public class MessageErrorHandlerDecorator extends AbstractMessageTargetDecorator
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		domain = registry.domain;
-		definition.lifecycleListeners.addLifecycleListener(this);
+		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, postInit);
+		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy); 	
 		return definition;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function postConstruct (instance:Object, context:Context) : void {
+	public function postInit (instance:Object, context:Context) : void {
 		var messageType:ClassInfo = (messageType != null) ? ClassInfo.forClass(type, domain) : null;
 		var handler:MessageErrorHandler = 
 				new DefaultMessageErrorHandler(Providers.forInstance(instance, domain), method, 
 				messageType, selector, ClassInfo.forClass(errorType, domain));
 		context.scopeManager.getScope(scope).messageRouter.addErrorHandler(handler);
-		addTarget(instance, handler);
+		addReceiver(instance, handler);
 	}
 	
 	/**
 	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
 	 */
 	public function preDestroy (instance:Object, context:Context) : void {
-		context.scopeManager.getScope(scope).messageRouter.removeErrorHandler(MessageErrorHandler(removeTarget(instance)));
+		context.scopeManager.getScope(scope).messageRouter.removeErrorHandler(MessageErrorHandler(removeReceiver(instance)));
 	}
 	
 	

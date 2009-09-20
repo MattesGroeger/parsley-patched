@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.pimento {
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
@@ -68,7 +69,8 @@ public class ServiceTag implements ObjectDefinitionFactory {
 		if (id == null) id = name;
 		var factory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(type, id);
 		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
-		definition.lifecycleListeners.addLifecycleListener(new ServiceLifecycleListener(this));
+		var listener:ServiceLifecycleListener = new ServiceLifecycleListener(this);
+		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, listener.postInit);
 		return definition;
 	}
 
@@ -84,11 +86,10 @@ public class ServiceTag implements ObjectDefinitionFactory {
 import org.spicefactory.cinnamon.service.ServiceProxy;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.registry.definition.ObjectLifecycleListener;
 import org.spicefactory.parsley.pimento.ServiceTag;
 import org.spicefactory.pimento.config.PimentoConfig;
 
-class ServiceLifecycleListener implements ObjectLifecycleListener {
+class ServiceLifecycleListener {
 
 	private var tag:ServiceTag;
 	
@@ -96,7 +97,7 @@ class ServiceLifecycleListener implements ObjectLifecycleListener {
 		this.tag = tag;
 	}
 
-	public function postConstruct (instance:Object, context:Context):void {
+	public function postInit (instance:Object, context:Context):void {
 		var configInstance:PimentoConfig;
 		if (tag.config != null) {
 			var configRef:Object = context.getObject(tag.config);
@@ -113,8 +114,5 @@ class ServiceLifecycleListener implements ObjectLifecycleListener {
 		if (tag.timeout != 0) proxy.timeout = tag.timeout;
 	}
 	
-	public function preDestroy (instance:Object, context:Context) : void {
-		/* ignore */
-	}
 	
 }
