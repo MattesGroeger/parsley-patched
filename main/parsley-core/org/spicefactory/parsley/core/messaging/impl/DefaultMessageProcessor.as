@@ -42,7 +42,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	
 	private var remainingProcessors:Array;
 	private var currentProcessor:Processor;
-	private var errorProcessor:Processor;
+	private var errorHandlers:Array;
 	private var currentError:Error;
 	
 	
@@ -79,22 +79,30 @@ public class DefaultMessageProcessor implements MessageProcessor {
 			}
 			catch (e:Error) {
 				log.error("Message Target threw Error {0}", e);
-				if (currentProcessor == errorProcessor) {
+				if (!currentProcessor.handleErrors) {
 					// avoid the risk of endless loops
 					throw e;
 				}
 				else {
-					errorProcessor.rewind();
-					if (errorProcessor.hasNext()) {
+					var handlers:Array = new Array();
+					for each (var errorHandler:MessageErrorHandler in errorHandlers) {
+						if (e is errorHandler.errorType.getClass()) {
+							handlers.push(errorHandler);
+						}
+					}
+					if (handlers.length > 0) {
 						currentError = e;
 						remainingProcessors.unshift(currentProcessor);
-						currentProcessor = errorProcessor;
+						currentProcessor = new Processor(handlers, invokeErrorHandler, true, false);
 					}
-					// TODO - UnhandledError.RETHROW - IGNORE - ABORT
+					else {
+						// TODO - UnhandledError.RETHROW - IGNORE - ABORT
+					}
 				}
 			}
 		} while (!async);
 	}
+	
 	
 	private function invokeInterceptor (interceptor:MessageInterceptor) : void {
 		interceptor.intercept(this);
@@ -118,7 +126,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	private function fetchReceivers () : void {	
 		var receiverSelection:MessageReceiverSelection = receivers.getSelection(messageType);
 		var selectorValue:* = (selector == undefined) ? receiverSelection.getSelectorValue(message) : selector;
-		errorProcessor = new Processor(receiverSelection.getErrorHandlers(selectorValue), invokeErrorHandler);
+		errorHandlers = receiverSelection.getErrorHandlers(selectorValue);
 		currentProcessor = new Processor(receiverSelection.getInterceptors(selectorValue), invokeInterceptor);
 		remainingProcessors = [new Processor(receiverSelection.getTargets(selectorValue), invokeTarget, false)];
 	}
@@ -140,11 +148,13 @@ class Processor {
 	private var handler:Function;
 	private var currentIndex:uint = 0;
 	var async:Boolean;
+	var handleErrors:Boolean;
 	
-	function Processor (receivers:Array, handler:Function, async:Boolean = true) {
+	function Processor (receivers:Array, handler:Function, async:Boolean = true, handleErrors:Boolean = true) {
 		this.receivers = receivers;
 		this.handler = handler;
 		this.async = async;
+		this.handleErrors = handleErrors;
 	}
 	
 	function hasNext () : Boolean {
