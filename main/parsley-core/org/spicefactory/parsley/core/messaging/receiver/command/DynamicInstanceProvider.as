@@ -18,13 +18,13 @@ package org.spicefactory.parsley.core.messaging.receiver.command {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.context.impl.DynamicObject;
-import org.spicefactory.parsley.core.messaging.receiver.impl.TargetInstanceProvider;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 
 /**
  * @author Jens Halm
  */
-public class DynamicInstanceProvider implements TargetInstanceProvider {
+public class DynamicInstanceProvider implements ObjectProvider {
 	
 	
 	private var definition:ObjectDefinition;

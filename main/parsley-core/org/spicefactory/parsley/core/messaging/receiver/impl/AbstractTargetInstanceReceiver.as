@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
+	import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.lib.reflect.ClassInfo;
 
 /**
@@ -23,10 +24,10 @@ import org.spicefactory.lib.reflect.ClassInfo;
 public class AbstractTargetInstanceReceiver extends AbstractMessageReceiver {
 	
 	
-	private var provider:TargetInstanceProvider;
+	private var provider:ObjectProvider;
 	
 	
-	function AbstractTargetInstanceReceiver (provider:TargetInstanceProvider, messageType:Class = null, selector:* = undefined) {
+	function AbstractTargetInstanceReceiver (provider:ObjectProvider, messageType:Class = null, selector:* = undefined) {
 		super(messageType, selector);
 		this.provider = provider;
 	}

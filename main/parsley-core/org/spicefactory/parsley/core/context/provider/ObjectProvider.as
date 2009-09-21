@@ -14,17 +14,31 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.messaging.receiver.impl {
+package org.spicefactory.parsley.core.context.provider {
 import org.spicefactory.lib.reflect.ClassInfo;
 
 /**
+ * Provider for a (possibly lazily initializing) instance.
+ * A provider for an object living in a Parsley Context can be obtained with 
+ * <code>ObjectDefinitionRegistry.createObjectProvider</code>.
+ * A simple wrapper for an existing instance can be obtained with
+ * <code>Provider.forInstance</code>.
+ * 
  * @author Jens Halm
  */
-public interface TargetInstanceProvider {
+public interface ObjectProvider {
 	
 	
+	/**
+	 * The actual instance. May be null if it is a 
+	 * lazy initializing provider.
+	 */
 	function get instance () : Object;
 	
+	/**
+	 * The type of the instance.
+	 * This property must be set even if the actual instance does not exist yet.
+	 */
 	function get type () : ClassInfo;
 	
 	

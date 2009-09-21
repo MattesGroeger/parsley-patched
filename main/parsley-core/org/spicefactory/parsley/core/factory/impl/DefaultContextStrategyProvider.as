@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.core.factory.impl {
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
@@ -32,20 +33,21 @@ import flash.system.ApplicationDomain;
 public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 
 
+	private var _domain:ApplicationDomain;
 	private var _registry:ObjectDefinitionRegistry;
 	private var _lifecycleManager:ObjectLifecycleManager;
 	private var _scopeManager:ScopeManager;
 	private var _viewManager:ViewManager;
 	
 	private var factories:FactoryRegistry;
-	private var domain:ApplicationDomain;
 	private var scopeDefs:Array;
 	private var context:Context;
+	private var providerFactory:ObjectProviderFactory;
 	
 
 	function DefaultContextStrategyProvider (factories:FactoryRegistry, domain:ApplicationDomain, scopeDefs:Array) {
 		this.factories = factories;
-		this.domain = domain;
+		this._domain = domain;
 		this.scopeDefs = scopeDefs;
 	}
 
@@ -53,17 +55,25 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	/**
 	 * @inheritDoc
 	 */
-	public function init (context:Context) : void {
+	public function init (context:Context, providerFactory:ObjectProviderFactory) : void {
 		this.context = context;
+		this.providerFactory = providerFactory;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function get domain () : ApplicationDomain {
+		return _domain;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
 	public function get registry () : ObjectDefinitionRegistry {
 		checkState();
 		if (_registry == null) {
-			_registry =	factories.definitionRegistry.create(domain, scopeManager);
+			_registry =	factories.definitionRegistry.create(domain, scopeManager, providerFactory);
 		}
 		return _registry;
 	}

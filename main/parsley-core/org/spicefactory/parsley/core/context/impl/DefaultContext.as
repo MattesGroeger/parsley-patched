@@ -22,6 +22,7 @@ import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.util.collection.SimpleMap;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
+import org.spicefactory.parsley.core.context.provider.impl.ContextObjectProviderFactory;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
@@ -56,6 +57,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 
 	
 	private var strategyProvider:ContextStrategyProvider;
+	private var objectProviderFactory:ContextObjectProviderFactory;
 	
 	private var _registry:ObjectDefinitionRegistry;
 	private var _lifecycleManager:ObjectLifecycleManager;
@@ -80,7 +82,8 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 */
 	function DefaultContext (provider:ContextStrategyProvider) {
 		this.strategyProvider = provider;
-		provider.init(this);
+		this.objectProviderFactory = new ContextObjectProviderFactory(this, strategyProvider.domain);
+		provider.init(this, objectProviderFactory);
 		_registry = provider.registry;
 		_lifecycleManager = provider.lifecycleManager;
 		_scopeManager = provider.scopeManager;
@@ -93,6 +96,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private function registryFrozen (event:Event) : void {
 		_registry.removeEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
 		_configured = true;
+		
+		objectProviderFactory.initialize();
+		
 		asyncInitSequence = new AsyncInitializerSequence(this);
 		dispatchEvent(new ContextEvent(ContextEvent.CONFIGURED));
 		

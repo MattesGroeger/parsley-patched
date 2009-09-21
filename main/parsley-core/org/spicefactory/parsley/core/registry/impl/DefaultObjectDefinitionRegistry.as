@@ -18,6 +18,8 @@ package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.util.collection.SimpleMap;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
+import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
 import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
@@ -42,6 +44,7 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	
 	private var _frozen:Boolean;
 	
+	private var objectProviderFactory:ObjectProviderFactory;
 	private var definitions:SimpleMap = new SimpleMap();
 
 
@@ -50,10 +53,12 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	 * 
 	 * @param domain the ApplicationDomain to use for reflecting on types added to this registry
 	 */
-	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain, scopeManager:ScopeManager, decoratorAssemblers:Array) {
+	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain, scopeManager:ScopeManager, 
+			objectProviderFactory:ObjectProviderFactory, decoratorAssemblers:Array) {
 		_domain = domain;
 		_scopeManager = scopeManager;
 		_decoratorAssemblers = decoratorAssemblers;
+		this.objectProviderFactory = objectProviderFactory;
 	}
 
 	
@@ -201,7 +206,12 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 		}
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function createObjectProvider (type:Class, id:String = null) : ObjectProvider {
+		return objectProviderFactory.createProvider(type, id);
+	}
 	
 }
-
 }

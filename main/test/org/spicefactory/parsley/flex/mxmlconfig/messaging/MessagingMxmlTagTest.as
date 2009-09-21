@@ -9,6 +9,10 @@ import org.spicefactory.parsley.core.messaging.MessagingTestBase;
 public class MessagingMxmlTagTest extends MessagingTestBase {
 	
 	
+	function MessagingMxmlTagTest () {
+		super(true);
+	}
+	
 	public override function get messagingContext () : Context {
 		return ActionScriptContextBuilder.build(MessagingMxmlTagContainer);
 	}

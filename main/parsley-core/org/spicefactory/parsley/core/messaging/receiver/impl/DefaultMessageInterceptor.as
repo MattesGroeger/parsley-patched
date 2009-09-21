@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
+	import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
@@ -35,7 +36,7 @@ public class DefaultMessageInterceptor extends AbstractMethodReceiver implements
 	 * @param messageType the type of the message to intercept
 	 * @param selector an optional selector value to be used for selecting matching message targets
 	 */	
-	function DefaultMessageInterceptor (provider:TargetInstanceProvider, methodName:String, messageType:Class,
+	function DefaultMessageInterceptor (provider:ObjectProvider, methodName:String, messageType:Class,
 			selector:* = undefined) {
 		super(provider, methodName, messageType, selector);
 		var params:Array = targetMethod.parameters;

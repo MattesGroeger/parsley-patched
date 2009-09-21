@@ -9,6 +9,7 @@ import org.spicefactory.parsley.core.decorator.injection.MissingConstructorInjec
 import org.spicefactory.parsley.core.decorator.injection.OptionalConstructorInjection;
 import org.spicefactory.parsley.core.decorator.injection.RequiredConstructorInjection;
 import org.spicefactory.parsley.core.decorator.lifecycle.LifecycleMetadataTagTest;
+import org.spicefactory.parsley.core.messaging.LazyMessagingMetadataTagTest;
 import org.spicefactory.parsley.core.messaging.MessagingMetadataTagTest;
 import org.spicefactory.parsley.flash.logging.FlashLoggingXmlTagTest;
 import org.spicefactory.parsley.flash.resources.FlashResourcesTest;
@@ -55,6 +56,7 @@ public class ParsleyTestSuite {
 		suite.addTestSuite(LifecycleXmlTagTest);
 
 		suite.addTestSuite(MessagingMetadataTagTest);
+		suite.addTestSuite(LazyMessagingMetadataTagTest);
 		suite.addTestSuite(MessagingMxmlTagTest);
 		suite.addTestSuite(MessagingXmlTagTest);
 

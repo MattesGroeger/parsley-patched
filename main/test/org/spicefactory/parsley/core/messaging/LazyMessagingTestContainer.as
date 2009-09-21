@@ -9,7 +9,7 @@ import org.spicefactory.parsley.core.messaging.model.TestMessageHandlersMetadata
 /**
  * @author Jens Halm
  */
-public class MessagingTestContainer {
+public class LazyMessagingTestContainer {
 	
 
 	public function get eventSource () : EventSourceMetadata {
@@ -20,14 +20,17 @@ public class MessagingTestContainer {
 		return new TestMessageDispatcherMetadata();
 	}
 	
+	[ObjectDefinition(lazy="true")]
 	public function get testMessageHandlers () : TestMessageHandlersMetadata {
 		return new TestMessageHandlersMetadata();
 	}
 	
+	[ObjectDefinition(lazy="true")]
 	public function get messageHandlers () : MessageHandlersMetadata {
 		return new MessageHandlersMetadata();
 	}
 	
+	[ObjectDefinition(lazy="true")]
 	public function get messageBindings () : MessageBindingsMetadata {
 		return new MessageBindingsMetadata();
 	}

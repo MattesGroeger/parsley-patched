@@ -5,15 +5,16 @@ import org.spicefactory.parsley.core.context.Context;
 /**
  * @author Jens Halm
  */
-public class MessagingMetadataTagTest extends MessagingTestBase {
+public class LazyMessagingMetadataTagTest extends MessagingTestBase {
 	
-
-	function MessagingMetadataTagTest () {
-		super(false);
+	
+	function LazyMessagingMetadataTagTest () {
+		super(true);
 	}
-		
+	
+	
 	public override function get messagingContext () : Context {
-		return ActionScriptContextBuilder.build(MessagingTestContainer);
+		return ActionScriptContextBuilder.build(LazyMessagingTestContainer);
 	}
 	
 	

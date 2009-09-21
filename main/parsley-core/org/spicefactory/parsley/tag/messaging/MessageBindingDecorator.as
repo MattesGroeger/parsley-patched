@@ -16,14 +16,12 @@
 
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
+import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.MessageBinding;
-import org.spicefactory.parsley.core.messaging.receiver.impl.Providers;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
+import org.spicefactory.parsley.core.scopes.ScopeManager;
 import org.spicefactory.parsley.core.scopes.ScopeName;
 
 [Metadata(name="MessageBinding", types="property", multiple="true")]
@@ -46,7 +44,7 @@ public class MessageBindingDecorator extends AbstractMessageReceiverDecorator im
 	public var type:Class;
 
 	/**
-	 * @copy org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator#selector
+	 * @copy org.spicefactory.parsley.tag.messaging.AbstractStandardReceiverDecorator#selector
 	 */
 	public var selector:String;
 	
@@ -69,32 +67,15 @@ public class MessageBindingDecorator extends AbstractMessageReceiverDecorator im
 	public var targetProperty:String;
 	
 	
-	/**
-	 * @inheritDoc
-	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		domain = registry.domain;
-		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, postInit);
-		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy);
-		return definition;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function postInit (instance:Object, context:Context) : void {
+	protected override function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
 		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
-		var target:MessageTarget = new MessageBinding(Providers.forInstance(instance, domain), 
-				targetProperty, messageType, messageProperty, selector);
-		context.scopeManager.getScope(scope).messageReceivers.addTarget(target);
-		addReceiver(instance, target);
+		var target:MessageTarget = new MessageBinding(provider,	targetProperty, messageType, messageProperty, selector);
+		scopeManager.getScope(scope).messageReceivers.addTarget(target);
+		return target;
 	}
 	
-	/**
-	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
-	 */
-	public function preDestroy (instance:Object, context:Context) : void {
-		context.scopeManager.getScope(scope).messageReceivers.removeTarget(MessageTarget(removeReceiver(instance)));
+	protected override function removeReceiver (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
+		scopeManager.getScope(scope).messageReceivers.removeTarget(MessageTarget(receiver));
 	}
 
 	

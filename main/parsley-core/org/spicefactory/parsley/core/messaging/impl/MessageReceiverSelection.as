@@ -19,6 +19,7 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
+import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 import flash.events.Event;
 
@@ -150,7 +151,7 @@ class MessageReceiverCollection {
 			receiversWithoutSelector.push(receiver);
 		}
 		else {
-			receiversWithSelector[receiver.selector] = receiver;
+			receiversWithSelector.push(receiver);
 		}
 	}
 	

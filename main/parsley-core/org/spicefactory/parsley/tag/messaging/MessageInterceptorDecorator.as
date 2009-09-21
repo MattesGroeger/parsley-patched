@@ -15,16 +15,12 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
+import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultMessageInterceptor;
-import org.spicefactory.parsley.core.messaging.receiver.impl.Providers;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.scopes.ScopeName;
+import org.spicefactory.parsley.core.scopes.ScopeManager;
 
 [Metadata(name="MessageInterceptor", types="method", multiple="true")]
 /**
@@ -36,25 +32,9 @@ import org.spicefactory.parsley.core.scopes.ScopeName;
  *
  * @author Jens Halm
  */
-public class MessageInterceptorDecorator extends AbstractMessageReceiverDecorator implements ObjectDefinitionDecorator {
+public class MessageInterceptorDecorator extends AbstractStandardReceiverDecorator implements ObjectDefinitionDecorator {
 
 
-	/**
-	 * The type of the message to intercept.
-	 */
-	public var type:Class;
-
-	/**
-	 * @copy org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator#selector
-	 */
-	public var selector:String;
-	
-	/**
-	 * The scope this interceptor wants to be applied to.
-	 * The default is ScopeName.GLOBAL.
-	 */
-	public var scope:String = ScopeName.GLOBAL;
-	
 	[Target]
 	/**
 	 * The name of the interceptor method.
@@ -62,31 +42,14 @@ public class MessageInterceptorDecorator extends AbstractMessageReceiverDecorato
 	public var method:String;
 	
 	
-	/**
-	 * @inheritDoc
-	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		domain = registry.domain;
-		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, postInit);
-		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy);
-		return definition;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function postInit (instance:Object, context:Context) : void {
-		var ic:MessageInterceptor = 
-				new DefaultMessageInterceptor(Providers.forInstance(instance, domain), method, type, selector);
-		context.scopeManager.getScope(scope).messageReceivers.addInterceptor(ic);
-		addReceiver(instance, ic);
+	protected override function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
+		var ic:MessageInterceptor = new DefaultMessageInterceptor(provider, method, type, selector);
+		scopeManager.getScope(scope).messageReceivers.addInterceptor(ic);
+		return ic;
 	}
 	
-	/**
-	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
-	 */
-	public function preDestroy (instance:Object, context:Context) : void {
-		context.scopeManager.getScope(scope).messageReceivers.removeInterceptor(MessageInterceptor(removeReceiver(instance)));
+	protected override function removeReceiver (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
+		scopeManager.getScope(scope).messageReceivers.removeInterceptor(MessageInterceptor(receiver));
 	}
 	
 	

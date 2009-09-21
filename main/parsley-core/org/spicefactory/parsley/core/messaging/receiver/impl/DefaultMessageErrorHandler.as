@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
+	import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.parsley.core.errors.ContextError;
@@ -30,7 +31,7 @@ public class DefaultMessageErrorHandler extends AbstractMethodReceiver implement
 	private var _errorType:Class;
 
 
-	function DefaultMessageErrorHandler (provider:TargetInstanceProvider, methodName:String, messageType:Class,
+	function DefaultMessageErrorHandler (provider:ObjectProvider, methodName:String, messageType:Class,
 			selector:* = undefined, errorType:Class = null) {
 		super(provider, methodName, messageType, selector);
 		var params:Array = targetMethod.parameters;

@@ -16,17 +16,14 @@
 
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
+import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.MessageHandler;
 import org.spicefactory.parsley.core.messaging.receiver.impl.MessagePropertyHandler;
-import org.spicefactory.parsley.core.messaging.receiver.impl.Providers;
-import org.spicefactory.parsley.core.messaging.receiver.impl.TargetInstanceProvider;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.scopes.ScopeManager;
 import org.spicefactory.parsley.core.scopes.ScopeName;
 
 [Metadata(name="MessageHandler", types="method", multiple="true")]
@@ -39,27 +36,9 @@ import org.spicefactory.parsley.core.scopes.ScopeName;
  *
  * @author Jens Halm
  */
-public class MessageHandlerDecorator extends AbstractMessageReceiverDecorator implements ObjectDefinitionDecorator {
+public class MessageHandlerDecorator extends AbstractStandardReceiverDecorator implements ObjectDefinitionDecorator {
 
 
-	/**
-	 * The type of the messages the target method wishes to handle.
-	 */
-	public var type:Class;
-
-	/**
-	 * An optional selector value to be used in addition to selecting messages by type.
-	 * Will be checked against the value of the property in the message marked with <code>[Selector]</code>
-	 * or against the event type if the message is an event and does not have a selector property specified explicitly.
-	 */
-	public var selector:String;
-
-	/**
-	 * The scope this handler wants to be applied to.
-	 * The default is ScopeName.GLOBAL.
-	 */
-	public var scope:String = ScopeName.GLOBAL;
-		
 	/**
 	 * Optional list of names of properties of the message that should be used as method parameters
 	 * instead passing the message itself as a parameter.
@@ -73,25 +52,11 @@ public class MessageHandlerDecorator extends AbstractMessageReceiverDecorator im
 	public var method:String;
 	
 	
-	/**
-	 * @inheritDoc
-	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+	protected override function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
 		if (messageProperties != null && type == null) {
 			throw new ContextError("Message type must be specified if messageProperties attribute is used");
 		}
-		domain = registry.domain;
-		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, postInit);
-		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy);
-		return definition;
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function postInit (instance:Object, context:Context) : void {
 		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
-		var provider:TargetInstanceProvider = Providers.forInstance(instance, domain);
 		var target:MessageTarget;
 		if (messageProperties != null) {
 			target = new MessagePropertyHandler(provider, method, messageType, messageProperties, selector);
@@ -99,15 +64,12 @@ public class MessageHandlerDecorator extends AbstractMessageReceiverDecorator im
 		else {
 			target = new MessageHandler(provider, method, selector, messageType);
 		}
-		context.scopeManager.getScope(scope).messageReceivers.addTarget(target);
-		addReceiver(instance, target);
+		scopeManager.getScope(scope).messageReceivers.addTarget(target);		
+		return target;
 	}
 	
-	/**
-	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
-	 */
-	public function preDestroy (instance:Object, context:Context) : void {
-		context.scopeManager.getScope(scope).messageReceivers.removeTarget(MessageTarget(removeReceiver(instance)));
+	protected override function removeReceiver (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
+		scopeManager.getScope(scope).messageReceivers.removeTarget(MessageTarget(receiver));
 	}
 	
 	

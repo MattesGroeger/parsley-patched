@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry {
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.scopes.ScopeManager;
 
 import flash.events.IEventDispatcher;
@@ -135,12 +136,29 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	
 	/**
 	 * The ScopeManager associated with this registry.
-	 * Primary intended to be used for registering message receivers and
+	 * Primarily intended to be used for registering message receivers and
 	 * lifecycle listeners. Any messages dispatched before the registry
-	 * is frozen will be deferred, so messaging can not be used to 
+	 * is frozen will be deferred, so messaging cannot be used to 
 	 * communicate between configuration tags.
 	 */
 	function get scopeManager () : ScopeManager;
+	
+	/**
+	 * Creates a provider for the specified type and optional id.
+	 * If the id is omitted the Context built for this registry must contain exactly
+	 * one instance with a matching type. The provider returned by this method
+	 * will be initialized when the registry dispatches its FROZEN event.
+	 * The Context building process will be aborted with an ErrorEvent if the Context
+	 * does not contain a matching instance.
+	 * 
+	 * <p>ObjectProviders are useful if a configuration tag wants to register a message
+	 * receiver for an object definition before the actual object is created from that definition.</p>
+	 * 
+	 * @param type the type of the object to provide
+	 * @param id the id of the object in the Context built from this registry
+	 * @return a new ObjectProvider instance
+ 	 */
+ 	 function createObjectProvider (type:Class, id:String = null) : ObjectProvider;
 	
 	
 }

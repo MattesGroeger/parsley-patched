@@ -130,7 +130,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		currentProcessor = new Processor(receiverSelection.getInterceptors(selectorValue), invokeInterceptor);
 		remainingProcessors = [new Processor(receiverSelection.getTargets(selectorValue), invokeTarget, false)];
 	}
-	
+
 	/**
 	 * @inheritDoc
 	 */

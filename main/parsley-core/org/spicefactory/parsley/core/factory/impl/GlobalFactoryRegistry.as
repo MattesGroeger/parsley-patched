@@ -153,6 +153,7 @@ import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.impl.ChildContext;
 import org.spicefactory.parsley.core.context.impl.DefaultContext;
+import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
 import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
 import org.spicefactory.parsley.core.factory.ContextFactory;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
@@ -175,7 +176,6 @@ import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 
 import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
-import flash.utils.Dictionary;
 
 class DefaultContextBuilderFactory implements ContextBuilderFactory {
 	
@@ -203,8 +203,10 @@ class DefaultLifecycleManagerFactory implements ObjectLifecycleManagerFactory {
 
 class DefaultDefinitionRegistryFactory implements ObjectDefinitionRegistryFactory {
 
-	public function create (domain:ApplicationDomain, scopeManager:ScopeManager) : ObjectDefinitionRegistry {
-		return new DefaultObjectDefinitionRegistry(domain, scopeManager, [new MetadataDecoratorAssembler(domain)]);
+	public function create (domain:ApplicationDomain, scopeManager:ScopeManager, 
+			providerFactory:ObjectProviderFactory) : ObjectDefinitionRegistry {
+		return new DefaultObjectDefinitionRegistry(domain, scopeManager, 
+				providerFactory, [new MetadataDecoratorAssembler(domain)]);
 	}
 	
 }

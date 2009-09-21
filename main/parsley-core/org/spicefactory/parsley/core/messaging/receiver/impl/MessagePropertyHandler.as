@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
+	import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.lib.reflect.Property;
@@ -39,7 +40,7 @@ public class MessagePropertyHandler extends AbstractMethodReceiver implements Me
 	 * @param messageProperties the list of names of properties of the message that should be used as method parameters
 	 * @param selector an optional selector value to be used for selecting matching message targets
 	 */
-	function MessagePropertyHandler (provider:TargetInstanceProvider, methodName:String, messageType:ClassInfo,
+	function MessagePropertyHandler (provider:ObjectProvider, methodName:String, messageType:ClassInfo,
 			messageProperties:Array, selector:* = undefined) {
 		super(provider, methodName, messageType.getClass(), selector);
 		checkParamCount(messageProperties);

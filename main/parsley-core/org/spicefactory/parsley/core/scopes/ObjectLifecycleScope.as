@@ -27,6 +27,10 @@ public interface ObjectLifecycleScope {
 
 	function removeListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void;
 	
+	//function addProvider (provider:ObjectProvider, methodName:String, event:ObjectLifecycle, id:String = null) : void;
+
+	//function removeProvider (provider:ObjectProvider, methodName:String, event:ObjectLifecycle, id:String = null) : void;
+
 	
 }
 }

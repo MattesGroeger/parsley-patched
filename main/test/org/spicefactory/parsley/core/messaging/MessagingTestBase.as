@@ -17,6 +17,13 @@ import flash.events.Event;
 public class MessagingTestBase extends ContextTestBase {
 	
 	
+	private var lazy:Boolean;
+	
+	
+	function MessagingTestBase (lazy:Boolean) {
+		this.lazy = lazy;
+	}
+
 	
 	public function testMessageHandlers () : void {
 		var context:Context = messagingContext;
@@ -24,10 +31,12 @@ public class MessagingTestBase extends ContextTestBase {
 		checkObjectIds(context, ["eventSource"], EventSource);	
 		checkObjectIds(context, ["messageHandlers"], MessageHandlers);	
 		var source:EventSource = context.getObject("eventSource") as EventSource;
-		var handlers:MessageHandlers = context.getObject("messageHandlers") as MessageHandlers;
+		var handlers:MessageHandlers;
+		if (lazy) handlers = context.getObject("messageHandlers") as MessageHandlers;
 		source.dispatchEvent(new TestEvent(TestEvent.TEST1, "foo1", 7));
 		source.dispatchEvent(new TestEvent(TestEvent.TEST2, "foo2", 9));
 		source.dispatchEvent(new Event("foo"));
+		if (!lazy) handlers = context.getObject("messageHandlers") as MessageHandlers;
 		assertEquals("Unexpected count for event test1", 2, handlers.test1Count);
 		assertEquals("Unexpected count for event test2", 2, handlers.test2Count);
 		assertEquals("Unexpected count for generic event handler", 3, handlers.genericEventCount);
@@ -41,9 +50,11 @@ public class MessagingTestBase extends ContextTestBase {
 		checkObjectIds(context, ["eventSource"], EventSource);	
 		checkObjectIds(context, ["messageBindings"], MessageBindings);	
 		var source:EventSource = context.getObject("eventSource") as EventSource;
-		var bindings:MessageBindings = context.getObject("messageBindings") as MessageBindings;
+		var bindings:MessageBindings;
+		if (lazy) bindings = context.getObject("messageBindings") as MessageBindings;
 		source.dispatchEvent(new TestEvent(TestEvent.TEST1, "foo1", 7));
 		source.dispatchEvent(new TestEvent(TestEvent.TEST2, "foo2", 9));
+		if (!lazy) bindings = context.getObject("messageBindings") as MessageBindings;
 		assertEquals("Unexpected value for string property", "foo1foo2", bindings.stringProp);
 		assertEquals("Unexpected value for int1 property", 7, bindings["intProp1"]);
 		assertEquals("Unexpected value for int2 property", 9, bindings["intProp2"]);
@@ -92,7 +103,8 @@ public class MessagingTestBase extends ContextTestBase {
 		checkObjectIds(context, ["testDispatcher"], TestMessageDispatcher);	
 		checkObjectIds(context, ["testMessageHandlers"], TestMessageHandlers);	
 		var dispatcher:TestMessageDispatcher = context.getObject("testDispatcher") as TestMessageDispatcher;
-		var handlers:TestMessageHandlers = context.getObject("testMessageHandlers") as TestMessageHandlers; 
+		var handlers:TestMessageHandlers;
+		if (lazy) handlers = context.getObject("testMessageHandlers") as TestMessageHandlers; 
 		var m1:TestMessage = new TestMessage();
 		m1.name = TestEvent.TEST1;
 		m1.value = 3;
@@ -101,6 +113,7 @@ public class MessagingTestBase extends ContextTestBase {
 		m2.name = TestEvent.TEST2;
 		m2.value = 5;
 		dispatcher.dispatchMessage(m2);
+		if (!lazy) handlers = context.getObject("testMessageHandlers") as TestMessageHandlers; 
 		assertEquals("Unexpected count for event test1", 2, handlers.test1Count);
 		assertEquals("Unexpected count for event test2", 2, handlers.test2Count);
 		assertEquals("Unexpected sum value", 16, handlers.sum);

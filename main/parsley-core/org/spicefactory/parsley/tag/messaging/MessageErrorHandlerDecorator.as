@@ -15,16 +15,12 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
+import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultMessageErrorHandler;
-import org.spicefactory.parsley.core.messaging.receiver.impl.Providers;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.scopes.ScopeName;
+import org.spicefactory.parsley.core.scopes.ScopeManager;
 
 [Metadata(name="MessageError", types="method", multiple="true")]
 /**
@@ -36,24 +32,8 @@ import org.spicefactory.parsley.core.scopes.ScopeName;
  *
  * @author Jens Halm
  */
-public class MessageErrorHandlerDecorator extends AbstractMessageReceiverDecorator implements ObjectDefinitionDecorator {
+public class MessageErrorHandlerDecorator extends AbstractStandardReceiverDecorator implements ObjectDefinitionDecorator {
 
-
-	/**
-	 * The type of the message to handle errors for.
-	 */
-	public var type:Class;
-
-	/**
-	 * @copy org.spicefactory.parsley.messaging.decorator.MessageHandlerDecorator#selector
-	 */
-	public var selector:String;
-	
-	/**
-	 * The scope this error handler wants to be applied to.
-	 * The default is ScopeName.GLOBAL.
-	 */
-	public var scope:String = ScopeName.GLOBAL;
 	
 	[Target]
 	/**
@@ -68,33 +48,15 @@ public class MessageErrorHandlerDecorator extends AbstractMessageReceiverDecorat
 	public var errorType:Class = Error;
 	
 	
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		domain = registry.domain;
-		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, postInit);
-		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy); 	
-		return definition;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function postInit (instance:Object, context:Context) : void {
+	protected override function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
 		var handler:MessageErrorHandler = 
-				new DefaultMessageErrorHandler(Providers.forInstance(instance, domain), 
-				method, type, selector, errorType);
-		context.scopeManager.getScope(scope).messageReceivers.addErrorHandler(handler);
-		addReceiver(instance, handler);
+				new DefaultMessageErrorHandler(provider, method, type, selector, errorType);
+		scopeManager.getScope(scope).messageReceivers.addErrorHandler(handler);
+		return handler;
 	}
 	
-	/**
-	 * @copy org.spicefactory.parsley.factory.ObjectLifecycleListener#preDestroy()
-	 */
-	public function preDestroy (instance:Object, context:Context) : void {
-		context.scopeManager.getScope(scope).messageReceivers.removeErrorHandler(MessageErrorHandler(removeReceiver(instance)));
+	protected override function removeReceiver (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
+		scopeManager.getScope(scope).messageReceivers.removeErrorHandler(MessageErrorHandler(receiver));
 	}
 	
 	

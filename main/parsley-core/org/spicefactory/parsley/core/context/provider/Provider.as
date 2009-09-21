@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.messaging.receiver.impl {
+package org.spicefactory.parsley.core.context.provider {
+	
 import flash.system.ApplicationDomain;
 
 /**
  * @author Jens Halm
  */
-public class Providers {
+public class Provider {
 	
 	
-	public static function forInstance (instance:Object, domain:ApplicationDomain = null) : TargetInstanceProvider {
+	public static function forInstance (instance:Object, domain:ApplicationDomain = null) : ObjectProvider {
 		return new SimpleInstanceProvider(instance, domain);
 	}
 	
-	
-	// forObjectProvider
-	
-	// forDynamicObject
 	
 }
 }
@@ -38,9 +35,9 @@ public class Providers {
 import org.spicefactory.lib.reflect.ClassInfo;
 
 import flash.system.ApplicationDomain;
-import org.spicefactory.parsley.core.messaging.receiver.impl.TargetInstanceProvider;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 
-class SimpleInstanceProvider implements TargetInstanceProvider {
+class SimpleInstanceProvider implements ObjectProvider {
 	
 	
 	private var _instance:Object;

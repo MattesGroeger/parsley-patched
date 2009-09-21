@@ -8,6 +8,10 @@ import org.spicefactory.parsley.core.messaging.MessagingTestBase;
 public class MessagingXmlTagTest extends MessagingTestBase {
 	
 	
+	function MessagingXmlTagTest () {
+		super(true);
+	}
+	
 	public override function get messagingContext () : Context {
 		return XmlContextTestBase.getContext(config);
 	}

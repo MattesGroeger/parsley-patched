@@ -23,7 +23,6 @@ import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
-import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
@@ -39,7 +38,6 @@ import flash.display.DisplayObject;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.system.ApplicationDomain;
-import flash.utils.Dictionary;
 
 /**
  * Responsible for building Context instances using one or more ObjectDefinitionBuilder.

@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
+	import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
@@ -40,7 +41,7 @@ public class MessageBinding extends AbstractTargetInstanceReceiver implements Me
 	 * @param messagePropertyName the name of the property of the message that should be bound to the target property
 	 * @param selector an optional selector value to be used for selecting matching message targets
 	 */
-	function MessageBinding (provider:TargetInstanceProvider, targetPropertyName:String, 
+	function MessageBinding (provider:ObjectProvider, targetPropertyName:String, 
 			messageType:ClassInfo, messagePropertyName:String, selector:* = undefined) {
 		super(provider, messageType.getClass(), selector);
 		targetProperty = targetType.getProperty(targetPropertyName);
@@ -63,6 +64,7 @@ public class MessageBinding extends AbstractTargetInstanceReceiver implements Me
 	
 	
 	public function handleMessage (message:Object) : void {
+		//trace("BBBB " + messageProperty);
 		var value:* = messageProperty.getValue(message);
 		targetProperty.setValue(targetInstance, value);
 	}
