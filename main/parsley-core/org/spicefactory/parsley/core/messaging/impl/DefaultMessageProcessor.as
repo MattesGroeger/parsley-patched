@@ -86,7 +86,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 				else {
 					var handlers:Array = new Array();
 					for each (var errorHandler:MessageErrorHandler in errorHandlers) {
-						if (e is errorHandler.errorType.getClass()) {
+						if (e is errorHandler.errorType) {
 							handlers.push(errorHandler);
 						}
 					}
@@ -147,8 +147,8 @@ class Processor {
 	private var receivers:Array;
 	private var handler:Function;
 	private var currentIndex:uint = 0;
-	var async:Boolean;
-	var handleErrors:Boolean;
+	internal var async:Boolean;
+	internal var handleErrors:Boolean;
 	
 	function Processor (receivers:Array, handler:Function, async:Boolean = true, handleErrors:Boolean = true) {
 		this.receivers = receivers;
@@ -157,15 +157,15 @@ class Processor {
 		this.handleErrors = handleErrors;
 	}
 	
-	function hasNext () : Boolean {
+	internal function hasNext () : Boolean {
 		return (receivers.length > currentIndex);
 	}
 	
-	function rewind () : void {
+	internal function rewind () : void {
 		currentIndex = 0;
 	}
 
-	function proceed () : void {
+	internal function proceed () : void {
 		handler(receivers[currentIndex++]);
 	}
 	

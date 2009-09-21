@@ -42,7 +42,7 @@ public class MessageBinding extends AbstractTargetInstanceReceiver implements Me
 	 */
 	function MessageBinding (provider:TargetInstanceProvider, targetPropertyName:String, 
 			messageType:ClassInfo, messagePropertyName:String, selector:* = undefined) {
-		super(provider, messageType, selector);
+		super(provider, messageType.getClass(), selector);
 		targetProperty = targetType.getProperty(targetPropertyName);
 		if (targetProperty == null) {
 			throw new ContextError("Target type " + targetType.name 

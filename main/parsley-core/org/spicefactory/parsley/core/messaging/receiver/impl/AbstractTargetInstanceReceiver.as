@@ -26,7 +26,7 @@ public class AbstractTargetInstanceReceiver extends AbstractMessageReceiver {
 	private var provider:TargetInstanceProvider;
 	
 	
-	function AbstractTargetInstanceReceiver (provider:TargetInstanceProvider, messageType:ClassInfo = null, selector:* = undefined) {
+	function AbstractTargetInstanceReceiver (provider:TargetInstanceProvider, messageType:Class = null, selector:* = undefined) {
 		super(messageType, selector);
 		this.provider = provider;
 	}

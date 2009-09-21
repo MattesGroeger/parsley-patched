@@ -15,14 +15,12 @@
  */
 
 package org.spicefactory.parsley.core.scopes.impl {
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.ArrayUtil;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.scopes.ObjectLifecycleScope;
 
-import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
@@ -33,18 +31,16 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 
 	private var listeners:Dictionary = new Dictionary();
 	private var router:MessageRouter;
-	private var domain:ApplicationDomain;
 	
 	
-	function DefaultObjectLifecycleScope (router:MessageRouter, domain:ApplicationDomain) {
+	function DefaultObjectLifecycleScope (router:MessageRouter) {
 		this.router = router;
 	}
 
 
 	public function addListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void {
-		var typeInfo:ClassInfo = ClassInfo.forClass(type, domain);
 		var selector:String = (id == null) ? event.key : event.key + ":" + id;
-		var target:MessageTarget = new ObjectLifecycleListener(typeInfo, selector, listener);
+		var target:MessageTarget = new ObjectLifecycleListener(type, selector, listener);
 		var targets:Array = targets[listener];
 		if (targets == null) {
 			targets = new Array();
@@ -61,7 +57,7 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 			return;
 		}
 		for each (var target:MessageTarget in targets) {
-			if (target.messageType.getClass() == type && target.selector == selector) {
+			if (target.messageType == type && target.selector == selector) {
 				ArrayUtil.remove(targets, target);
 				router.receivers.removeTarget(target);
 				if (targets.length == 0) {
@@ -74,7 +70,6 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 }
 }
 
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.AbstractMessageReceiver;
 
@@ -82,7 +77,7 @@ class ObjectLifecycleListener extends AbstractMessageReceiver implements Message
 	
 	private var listener:Function;
 	
-	function ObjectLifecycleListener (type:ClassInfo, selector:String, listener:Function) {
+	function ObjectLifecycleListener (type:Class, selector:String, listener:Function) {
 		super(type, selector);
 		this.listener = listener;
 	}

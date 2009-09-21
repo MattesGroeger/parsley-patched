@@ -27,11 +27,11 @@ import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 public class DefaultMessageErrorHandler extends AbstractMethodReceiver implements MessageErrorHandler {
 
 
-	private var _errorType:ClassInfo;
+	private var _errorType:Class;
 
 
-	function DefaultMessageErrorHandler (provider:TargetInstanceProvider, methodName:String, messageType:ClassInfo,
-			selector:* = undefined, errorType:ClassInfo = null) {
+	function DefaultMessageErrorHandler (provider:TargetInstanceProvider, methodName:String, messageType:Class,
+			selector:* = undefined, errorType:Class = null) {
 		super(provider, methodName, messageType, selector);
 		var params:Array = targetMethod.parameters;
 		if (params.length < 1 || params.length > 2) {
@@ -50,7 +50,7 @@ public class DefaultMessageErrorHandler extends AbstractMethodReceiver implement
 					+ ": Second parameter must be of type Error or a subtype");
 			}
 			if (errorType == null) {
-				_errorType = paramType;
+				_errorType = paramType.getClass();
 			}
 			else if (!errorType.isType(paramType.getClass())) {
 				throw new ContextError("Target " + targetMethod
@@ -59,13 +59,13 @@ public class DefaultMessageErrorHandler extends AbstractMethodReceiver implement
 			}
 		}
 		else if (errorType == null) {
-			return ClassInfo.forClass(Error);
+			_errorType = Error;
 		}			
 		_errorType = errorType;
 	}
 
 
-	public function get errorType () : ClassInfo {
+	public function get errorType () : Class {
 		return _errorType;
 	}
 		

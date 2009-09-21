@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 
 /**
@@ -24,17 +23,17 @@ import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 public class AbstractMessageReceiver implements MessageReceiver {
 
 
-	private var _messageType:ClassInfo;
+	private var _messageType:Class;
 	private var _selector:*;
 	
 	
-	function AbstractMessageReceiver (messageType:ClassInfo = null, selector:* = undefined) {
-		_messageType = (messageType != null) ? messageType : ClassInfo.forClass(Object);
+	function AbstractMessageReceiver (messageType:Class = null, selector:* = undefined) {
+		_messageType = (messageType != null) ? messageType : Object;
 		_selector = selector;
 	}
 
 
-	public function get messageType () : ClassInfo {
+	public function get messageType () : Class {
 		return _messageType;
 	}
 	

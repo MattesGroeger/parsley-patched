@@ -43,7 +43,7 @@ public class MessageHandler extends AbstractMethodReceiver implements MessageTar
 	
 
 	private function getMessageType (provider:TargetInstanceProvider, methodName:String, 
-			messageType:ClassInfo = null) : ClassInfo {
+			messageType:ClassInfo = null) : Class {
 		var targetMethod:Method = provider.type.getMethod(methodName);
 		if (targetMethod == null) {
 			throw new ContextError("Target instance of type " + provider.type..name 
@@ -57,7 +57,7 @@ public class MessageHandler extends AbstractMethodReceiver implements MessageTar
 		if (params.length == 1) {
 			var paramType:ClassInfo = Parameter(params[0]).type;
 			if (messageType == null) {
-				return paramType;
+				return paramType.getClass();
 			}
 			else if (!messageType.isType(paramType.getClass())) {
 				throw new ContextError("Target " + targetMethod
@@ -66,9 +66,9 @@ public class MessageHandler extends AbstractMethodReceiver implements MessageTar
 			}
 		}
 		else if (messageType == null) {
-			return ClassInfo.forClass(Object);
+			return Object;
 		}			
-		return messageType;
+		return messageType.getClass();
 	}
 	
 	

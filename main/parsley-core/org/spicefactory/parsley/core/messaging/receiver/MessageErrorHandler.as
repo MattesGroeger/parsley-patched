@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver {
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
 
 /**
@@ -32,7 +31,7 @@ public interface MessageErrorHandler extends MessageReceiver {
 	 * Specifying the base Error class creates an ErrorHandler that handles
 	 * all errors for a particular message type.
 	 */
-	function get errorType () : ClassInfo;
+	function get errorType () : Class;
 	
 	/**
 	 * Handles an error thrown by a regular message target or interceptor. 

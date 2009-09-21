@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver {
-import org.spicefactory.lib.reflect.ClassInfo;
 
 /**
  * Base interface for all types of message receivers a MessageRouter handles.
@@ -29,12 +28,12 @@ public interface MessageReceiver {
 	/**
 	 * The class or interface of the message. 
 	 */
-	function get messageType () : ClassInfo ;
+	function get messageType () : Class;
 	
 	/**
 	 * An optional selector value to be used for selecting matching messages.
 	 */
-	function get selector () : * ;
+	function get selector () : *;
 	
 	
 }

@@ -41,7 +41,7 @@ public class DefaultScope implements Scope {
 		this.context = context;
 		this.scopeDef = scopeDef;
 		this.domain = domain;
-		this._objectLifecycle = new DefaultObjectLifecycleScope(scopeDef.lifecycleEventRouter, domain);
+		this._objectLifecycle = new DefaultObjectLifecycleScope(scopeDef.lifecycleEventRouter);
 		
 		if (context.configured) {
 			activated = true;

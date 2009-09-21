@@ -41,9 +41,9 @@ public class MessagePropertyHandler extends AbstractMethodReceiver implements Me
 	 */
 	function MessagePropertyHandler (provider:TargetInstanceProvider, methodName:String, messageType:ClassInfo,
 			messageProperties:Array, selector:* = undefined) {
-		super(provider, methodName, messageType, selector);
+		super(provider, methodName, messageType.getClass(), selector);
 		checkParamCount(messageProperties);
-		setMessageProperties(messageProperties);
+		setMessageProperties(messageProperties, messageType);
 	}
 
 	private function checkParamCount (messageProperties:Array) : void {
@@ -60,7 +60,7 @@ public class MessagePropertyHandler extends AbstractMethodReceiver implements Me
 		}
 	}
 	
-	private function setMessageProperties (messageProperties:Array) : void {
+	private function setMessageProperties (messageProperties:Array, messageType:ClassInfo) : void {
 		this.messageProperties = new Array();
 		for each (var propertyName:String in messageProperties) {
 			var messageProperty:Property = messageType.getProperty(propertyName);

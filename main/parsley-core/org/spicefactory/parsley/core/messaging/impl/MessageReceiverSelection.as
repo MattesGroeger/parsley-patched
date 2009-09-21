@@ -67,7 +67,7 @@ public class MessageReceiverSelection {
 	private function getReceivers (receivers:Array, messageType:ClassInfo) : MessageReceiverCollection {
 		var collection:MessageReceiverCollection = new MessageReceiverCollection();
 		for each (var receiver:MessageReceiver in receivers) {
-			if (messageType.isType(receiver.messageType.getClass())) {
+			if (messageType.isType(receiver.messageType)) {
 				collection.addReceiver(receiver);
 			}
 		}

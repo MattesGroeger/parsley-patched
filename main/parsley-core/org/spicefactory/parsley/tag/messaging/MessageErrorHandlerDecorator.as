@@ -83,10 +83,9 @@ public class MessageErrorHandlerDecorator extends AbstractMessageReceiverDecorat
 	 * @inheritDoc
 	 */
 	public function postInit (instance:Object, context:Context) : void {
-		var messageType:ClassInfo = (messageType != null) ? ClassInfo.forClass(type, domain) : null;
 		var handler:MessageErrorHandler = 
-				new DefaultMessageErrorHandler(Providers.forInstance(instance, domain), method, 
-				messageType, selector, ClassInfo.forClass(errorType, domain));
+				new DefaultMessageErrorHandler(Providers.forInstance(instance, domain), 
+				method, type, selector, errorType);
 		context.scopeManager.getScope(scope).messageReceivers.addErrorHandler(handler);
 		addReceiver(instance, handler);
 	}

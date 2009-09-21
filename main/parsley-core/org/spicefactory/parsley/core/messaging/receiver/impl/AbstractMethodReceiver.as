@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.errors.ContextError;
 
@@ -29,7 +28,7 @@ public class AbstractMethodReceiver extends AbstractTargetInstanceReceiver {
 	
 	
 	function AbstractMethodReceiver (provider:TargetInstanceProvider, methodName:String, 
-			messageType:ClassInfo = null, selector:* = undefined) {
+			messageType:Class = null, selector:* = undefined) {
 		super(provider, messageType, selector);
 		_targetMethod = targetType.getMethod(methodName);
 		if (_targetMethod == null) {
