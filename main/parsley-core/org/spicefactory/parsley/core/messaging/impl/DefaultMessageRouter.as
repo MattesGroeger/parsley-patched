@@ -49,7 +49,7 @@ public class DefaultMessageRouter implements MessageRouter {
 	public function dispatchMessage (message:Object, domain:ApplicationDomain, selector:* = undefined) : void {
 		if (domain == null) domain = ClassInfo.currentDomain;
 		var messageType:ClassInfo = ClassInfo.forInstance(message, domain);
-		var processor:MessageProcessor = new DefaultMessageProcessor(message, messageType, _receivers);
+		var processor:MessageProcessor = new DefaultMessageProcessor(message, messageType, selector, _receivers);
 		processor.proceed();
 	}	
 	
