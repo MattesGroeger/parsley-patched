@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.lifecycle.impl {
+	import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
@@ -26,6 +27,7 @@ import org.spicefactory.parsley.core.registry.model.ManagedArray;
 import org.spicefactory.parsley.core.registry.model.ObjectIdReference;
 import org.spicefactory.parsley.core.registry.model.ObjectTypeReference;
 import org.spicefactory.parsley.core.registry.model.PropertyValue;
+import org.spicefactory.parsley.core.scopes.impl.ScopeDefinition;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
@@ -41,15 +43,18 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	private var processedInstances:Dictionary = new Dictionary();
 
 	private var domain:ApplicationDomain;
+	private var scopes:Array;
 
 
 	/**
 	 * Creates a new instance.
 	 * 
 	 * @param domain the ApplicationDomain to use for reflection
+	 * @param scopes the ScopeDefinitions for dispatching lifecycle events
 	 */
-	function DefaultObjectLifecycleManager (domain:ApplicationDomain) {
-		this.domain = domain;		
+	function DefaultObjectLifecycleManager (domain:ApplicationDomain, scopes:Array) {
+		this.domain = domain;
+		this.scopes = scopes;		
 	}
 
 
@@ -144,12 +149,20 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	 * @param instance the instance to process
 	 * @param definition the definition of the specified instance
 	 * @param context the Context the instance belongs to
+	 * @param event the lifecycle event type
 	 */
 	protected function processLifecycle (instance:Object, definition:ObjectDefinition, context:Context, event:ObjectLifecycle) : void {
 	 	var listeners:Array = definition.objectLifecycle.getListeners(event);
 		for each (var listener:Function in listeners) {
  			listener(instance, context);
-		}		
+		}	
+		var id:String = (definition is RootObjectDefinition) ? RootObjectDefinition(definition).id : null;
+		for each (var scope:ScopeDefinition in scopes) {
+			scope.lifecycleEventRouter.dispatchMessage(instance, domain, event.key);
+			if (id != null) {
+				scope.lifecycleEventRouter.dispatchMessage(instance, domain, event.key + ":" + id);				
+			}
+		}
 	}
 
 	

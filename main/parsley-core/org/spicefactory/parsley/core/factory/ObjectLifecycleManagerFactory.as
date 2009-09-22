@@ -25,7 +25,7 @@ import flash.system.ApplicationDomain;
 public interface ObjectLifecycleManagerFactory {
 	
 	
-	function create (domain:ApplicationDomain) : ObjectLifecycleManager;
+	function create (domain:ApplicationDomain, scopes:Array) : ObjectLifecycleManager;
 	
 	
 }

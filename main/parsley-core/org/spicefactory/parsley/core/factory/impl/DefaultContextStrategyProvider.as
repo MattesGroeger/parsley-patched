@@ -84,7 +84,7 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	public function get lifecycleManager () : ObjectLifecycleManager {
 		checkState();
 		if (_lifecycleManager == null) {
-			_lifecycleManager =	factories.lifecycleManager.create(domain);
+			_lifecycleManager =	factories.lifecycleManager.create(domain, scopeDefs);
 		}
 		return _lifecycleManager;
 	}

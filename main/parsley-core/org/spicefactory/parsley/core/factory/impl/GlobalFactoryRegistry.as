@@ -195,8 +195,8 @@ class DefaultContextFactory implements ContextFactory {
 
 class DefaultLifecycleManagerFactory implements ObjectLifecycleManagerFactory {
 	
-	public function create (domain:ApplicationDomain) : ObjectLifecycleManager {
-		return new DefaultObjectLifecycleManager(domain);
+	public function create (domain:ApplicationDomain, scopes:Array) : ObjectLifecycleManager {
+		return new DefaultObjectLifecycleManager(domain, scopes);
 	}
 	
 }
