@@ -16,9 +16,11 @@
 
 package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 
 import flash.system.ApplicationDomain;
 
@@ -31,6 +33,7 @@ public class DefaultMessageRouter implements MessageRouter {
 	
 	
 	private var _receivers:DefaultMessageReceiverRegistry;
+	private var _unhandledError:ErrorPolicy;
 	
 	
 	/**
@@ -38,8 +41,12 @@ public class DefaultMessageRouter implements MessageRouter {
 	 * 
 	 * @param context the associated context instance
 	 */
-	function DefaultMessageRouter () {
+	function DefaultMessageRouter (errorHandlers:Array, unhandledError:ErrorPolicy) {
 		_receivers = new DefaultMessageReceiverRegistry();
+		_unhandledError = unhandledError;
+		for each (var handler:MessageErrorHandler in errorHandlers) {
+			_receivers.addErrorHandler(handler);
+		}
 	}
 
 	
@@ -49,7 +56,7 @@ public class DefaultMessageRouter implements MessageRouter {
 	public function dispatchMessage (message:Object, domain:ApplicationDomain, selector:* = undefined) : void {
 		if (domain == null) domain = ClassInfo.currentDomain;
 		var messageType:ClassInfo = ClassInfo.forInstance(message, domain);
-		var processor:MessageProcessor = new DefaultMessageProcessor(message, messageType, selector, _receivers);
+		var processor:MessageProcessor = new DefaultMessageProcessor(message, messageType, selector, _receivers, _unhandledError);
 		processor.proceed();
 	}	
 	

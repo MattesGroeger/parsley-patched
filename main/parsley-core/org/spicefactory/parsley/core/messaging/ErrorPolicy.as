@@ -14,24 +14,32 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.factory {
-import org.spicefactory.parsley.core.messaging.ErrorPolicy;
-import org.spicefactory.parsley.core.messaging.MessageRouter;
-import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
+package org.spicefactory.parsley.core.messaging {
 
 /**
  * @author Jens Halm
  */
-public interface MessageRouterFactory {
+public class ErrorPolicy {
 	
 	
-	function get unhandledError () : ErrorPolicy;
+	public static const RETHROW:ErrorPolicy = new ErrorPolicy("rethrow");
 
-	function set unhandledError (policy:ErrorPolicy) : void;
+	public static const ABORT:ErrorPolicy = new ErrorPolicy("abort");
+
+	public static const IGNORE:ErrorPolicy = new ErrorPolicy("ignore");
+
 	
-	function addErrorHandler (target:MessageErrorHandler) : void;
+	private var _key:String;
 	
-	function create () : MessageRouter;
+	
+	function ErrorPolicy (key:String) {
+		_key = key;
+	}
+
+	
+	public function toSting () : String {
+		return _key;
+	}
 	
 	
 }

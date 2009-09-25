@@ -148,6 +148,8 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 }
 }
 
+import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
+import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
@@ -228,10 +230,27 @@ class DefaultScopeManagerFactory implements ScopeManagerFactory {
 }
 
 class DefaultMessageRouterFactory implements MessageRouterFactory {
+
+
+	private var _unhandledError:ErrorPolicy;
+	private var _errorHandlers:Array = new Array();
 	
-	public function create () : MessageRouter {
-		return new DefaultMessageRouter();
+	public function get unhandledError () : ErrorPolicy {
+		return _unhandledError;
 	}
+
+	public function set unhandledError (policy:ErrorPolicy) : void {
+		_unhandledError = policy;
+	}
+
+	public function addErrorHandler (handler:MessageErrorHandler) : void {
+		_errorHandlers.push(handler);
+	}
+
+	public function create () : MessageRouter {
+		return new DefaultMessageRouter(_errorHandlers, unhandledError);
+	}
+	
 	
 }
 

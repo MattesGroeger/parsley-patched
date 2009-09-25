@@ -18,6 +18,7 @@ package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
@@ -44,6 +45,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	private var currentProcessor:Processor;
 	private var errorHandlers:Array;
 	private var currentError:Error;
+	private var unhandledError:ErrorPolicy;
 	
 	
 	/**
@@ -52,13 +54,16 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	 * @param message the message to process
 	 * @param messageType the type of the message
 	 * @param selector the selector to use (will be extracted from the message itself if it is undefined)
-	 * @param router the router that created this processor
+	 * @param receivers the registry to obtain the matching receivers from
+	 * @param unhandledError policy for errors no error handler is registered for
 	 */
-	function DefaultMessageProcessor (message:Object, messageType:ClassInfo, selector:*, receivers:DefaultMessageReceiverRegistry) {
+	function DefaultMessageProcessor (message:Object, messageType:ClassInfo, selector:*, 
+			receivers:DefaultMessageReceiverRegistry, unhandledError:ErrorPolicy) {
 		_message = message;
 		this.messageType = messageType;
 		this.selector = selector;
 		this.receivers = receivers;
+		this.unhandledError = unhandledError;
 		rewind();
 	}
 	
@@ -96,7 +101,16 @@ public class DefaultMessageProcessor implements MessageProcessor {
 						currentProcessor = new Processor(handlers, invokeErrorHandler, true, false);
 					}
 					else {
-						// TODO - UnhandledError.RETHROW - IGNORE - ABORT
+						if (unhandledError == ErrorPolicy.RETHROW) {
+							throw e;
+						}
+						else if (unhandledError == ErrorPolicy.ABORT) {
+							log.info("Unhandled error - abort message processor");
+							return;
+						}
+						else {
+							log.info("Unhandled error - continue message processing");
+						}
 					}
 				}
 			}
