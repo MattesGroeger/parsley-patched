@@ -61,7 +61,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	private static const log:Logger = LogContext.getLogger(DefaultCompositeContextBuilder);
 
 	
-	private var _factories:FactoryRegistry;
+	private var _factories:LocalFactoryRegistry;
 	
 	private var viewRoot:DisplayObject;
 	private var context:Context;
@@ -85,7 +85,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 * @param domain the ApplicationDomain to use for reflection
 	 */
 	function DefaultCompositeContextBuilder (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) {
-		_factories = new LocalFactoryRegistry(GlobalFactoryRegistry.instance);
+		_factories = new LocalFactoryRegistry();
 		viewRoot = viewRoot;
 		var event:ContextBuilderEvent = null;
 		if ((parent == null || domain == null) && viewRoot != null) {
@@ -132,6 +132,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	}
 	
 	private function createContext () : void {
+		_factories.activate(GlobalFactoryRegistry.instance);
 		var provider:ContextStrategyProvider = createContextStrategyProvider(domain, scopes.getAll());
 		context = _factories.context.create(provider, parent);
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);

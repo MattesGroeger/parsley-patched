@@ -41,7 +41,12 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 	private var parent:FactoryRegistry;
 	
 
-	function LocalFactoryRegistry (parent:FactoryRegistry) {
+	function LocalFactoryRegistry () {
+		
+	}
+
+
+	public function activate (parent:FactoryRegistry) : void {
 		this.parent = parent;
 	}
 
@@ -50,49 +55,49 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 	 * @inheritDoc
 	 */
 	public function get contextBuilder () : ContextBuilderFactory {
-		return (_contextBuilder == null) ? parent.contextBuilder : _contextBuilder;
+		return (_contextBuilder != null) ? _contextBuilder : (parent != null) ? parent.contextBuilder : null;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function get context () : ContextFactory {
-		return (_context == null) ? parent.context : _context;
+		return (_context != null) ? _context : (parent != null) ? parent.context : null;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function get lifecycleManager () : ObjectLifecycleManagerFactory {
-		return (_lifecycleManager == null) ? parent.lifecycleManager : _lifecycleManager;
+		return (_lifecycleManager != null) ? _lifecycleManager : (parent != null) ? parent.lifecycleManager : null;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function get definitionRegistry () : ObjectDefinitionRegistryFactory {
-		return (_definitionRegistry == null) ? parent.definitionRegistry : _definitionRegistry;
+		return (_definitionRegistry != null) ? _definitionRegistry : (parent != null) ? parent.definitionRegistry : null;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function get scopeManager () : ScopeManagerFactory {
-		return (_scopeManager == null) ? parent.scopeManager : _scopeManager;
+		return (_scopeManager != null) ? _scopeManager : (parent != null) ? parent.scopeManager : null;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function get viewManager () : ViewManagerFactory {
-		return (_viewManager == null) ? parent.viewManager : _viewManager;
+		return (_viewManager != null) ? _viewManager : (parent != null) ? parent.viewManager : null;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function get messageRouter () : MessageRouterFactory {
-		return (_messageRouter == null) ? parent.messageRouter : _messageRouter;
+		return (_messageRouter != null) ? _messageRouter : (parent != null) ? parent.messageRouter : null;
 	}
 	
 	public function set contextBuilder (value:ContextBuilderFactory) : void {
