@@ -27,34 +27,6 @@ public interface ViewManager {
 
 	function removeViewRoot (view:DisplayObject) : void;
 	
-	/**
-	 * The event type that view roots dispatch to signal that they should no longer be managed
-	 * by this instance. The default is <code>Event.REMOVED_FROM_STAGE</code>.
-	 * The effect is the same as calling <code>removeViewRoot</code> for the view dispatching the event.
-	 * This event does not need to be a bubbling event.
-	 */
-	function get viewRootRemovedEvent () : String;
-	
-	function set viewRootRemovedEvent (value:String) : void;
-
-	/**
-	 * The event type that view components dispatch to signal that they wish to be
-	 * removed from the Context. The default is <code>Event.REMOVED_FROM_STAGE</code>.
-	 * This event does not need to be a bubbling event.
-	 */
-	function get componentRemovedEvent () : String;
-	
-	function set componentRemovedEvent (value:String) : void;
-
-	/**
-	 * The bubbling event type that view components dispatch to signal that they wish to be
-	 * added to the Context. The default is <code>ViewConfigurationEvent.CONFIGURE_VIEW</code>.
-	 * This event has to bubble so that the view roots managed by this instance can listen for it.
-	 */
-	function get componentAddedEvent () : String;
-	
-	function set componentAddedEvent (value:String) : void
-	
 	
 }
 }

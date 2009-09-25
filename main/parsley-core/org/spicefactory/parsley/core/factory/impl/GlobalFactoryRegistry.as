@@ -148,14 +148,13 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 }
 }
 
-import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
-import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.impl.ChildContext;
 import org.spicefactory.parsley.core.context.impl.DefaultContext;
 import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
+import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
 import org.spicefactory.parsley.core.factory.ContextFactory;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
@@ -166,8 +165,10 @@ import org.spicefactory.parsley.core.factory.ScopeManagerFactory;
 import org.spicefactory.parsley.core.factory.ViewManagerFactory;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.lifecycle.impl.DefaultObjectLifecycleManager;
+import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageRouter;
+import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.scopes.ScopeManager;
@@ -177,6 +178,7 @@ import org.spicefactory.parsley.core.view.impl.DefaultViewManager;
 import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 
 import flash.display.DisplayObject;
+import flash.events.Event;
 import flash.system.ApplicationDomain;
 
 class DefaultContextBuilderFactory implements ContextBuilderFactory {
@@ -215,8 +217,40 @@ class DefaultDefinitionRegistryFactory implements ObjectDefinitionRegistryFactor
 
 class DefaultViewManagerFactory implements ViewManagerFactory {
 	
+	private var _viewRootRemovedEvent:String = Event.REMOVED_FROM_STAGE;
+	private var _componentRemovedEvent:String = Event.REMOVED_FROM_STAGE;
+	private var _componentAddedEvent:String = ViewConfigurationEvent.CONFIGURE_VIEW;
+	
 	public function create (context:Context, domain:ApplicationDomain) : ViewManager {
-		return new DefaultViewManager(context, domain);
+		var viewManager:DefaultViewManager = new DefaultViewManager(context, domain);
+		viewManager.componentAddedEvent = componentAddedEvent;
+		viewManager.componentRemovedEvent = componentRemovedEvent;
+		viewManager.viewRootRemovedEvent = viewRootRemovedEvent;
+		return viewManager;
+	}
+	
+	public function get viewRootRemovedEvent () : String {
+		return _viewRootRemovedEvent;
+	}
+	
+	public function set viewRootRemovedEvent (viewRootRemovedEvent:String) : void {
+		_viewRootRemovedEvent = viewRootRemovedEvent;
+	}
+	
+	public function get componentRemovedEvent () : String {
+		return _componentRemovedEvent;
+	}
+	
+	public function set componentRemovedEvent (componentRemovedEvent:String) : void {
+		_componentRemovedEvent = componentRemovedEvent;
+	}
+	
+	public function get componentAddedEvent () : String {
+		return _componentAddedEvent;
+	}
+	
+	public function set componentAddedEvent (componentAddedEvent:String) : void {
+		_componentAddedEvent = componentAddedEvent;
 	}
 	
 }

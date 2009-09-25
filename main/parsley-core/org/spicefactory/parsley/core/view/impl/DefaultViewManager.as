@@ -101,6 +101,7 @@ public class DefaultViewManager implements ViewManager {
 		viewRoot.addEventListener(viewRootRemovedEvent, viewRootRemoved);
 		viewRoot.addEventListener(componentAddedEvent, componentAdded);
 		viewRoot.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
+		// TODO - add legacy configureIOC event
 	}
 	
 	private function removeListeners (viewRoot:DisplayObject) : void {
@@ -138,7 +139,7 @@ public class DefaultViewManager implements ViewManager {
 	
 	
 	/**
-	 * @inheritDoc
+	 * @copy org.spicefactory.parsley.core.factory.ViewManagerFactory#viewRootRemovedEvent
 	 */
 	public function get viewRootRemovedEvent () : String {
 		return _viewRootRemovedEvent;
@@ -149,7 +150,7 @@ public class DefaultViewManager implements ViewManager {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * @copy org.spicefactory.parsley.core.factory.ViewManagerFactory#componentRemovedEvent
 	 */
 	public function get componentRemovedEvent () : String {
 		return _componentRemovedEvent;
@@ -160,7 +161,7 @@ public class DefaultViewManager implements ViewManager {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * @copy org.spicefactory.parsley.core.factory.ViewManagerFactory#componentAddedEvent
 	 */
 	public function get componentAddedEvent () : String {
 		return _componentAddedEvent;
