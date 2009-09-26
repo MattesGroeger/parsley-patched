@@ -34,12 +34,21 @@ public class ViewConfigurationEvent extends Event {
 	public static const CONFIGURE_VIEW : String = "configureView";
 	
 	
+	private var explicitTarget:Object;
+	
+	
 	/**
 	 * Creates a new event instance.
 	 */
-	public function ViewConfigurationEvent () {
+	public function ViewConfigurationEvent (target:Object = null) {
 		super(CONFIGURE_VIEW, true);
+		this.explicitTarget = target;
 	}		
+	
+	public function get configurationTarget () : Object {
+		return (explicitTarget == null) ? target : explicitTarget;
+	}
+		
 		
 }
 	

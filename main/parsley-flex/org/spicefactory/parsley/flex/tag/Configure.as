@@ -15,10 +15,12 @@
  */
 
 package org.spicefactory.parsley.flex.tag {
+import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 
-import mx.core.UIComponent;
+import mx.core.IMXMLObject;
 
+import flash.display.DisplayObject;
 import flash.events.Event;
 
 /**
@@ -27,31 +29,42 @@ import flash.events.Event;
  * 
  * @author Jens Halm
  */
-public class Configure extends UIComponent {
+public class Configure implements IMXMLObject {
 	
-		
-	/**
-	 * @private
-	 */
-	public override function initialize () : void {
-		parent.addEventListener(Event.ADDED_TO_STAGE, dispatchConfigureEvent);
-		if (parent.stage != null) {
-			dispatchConfigureEvent();
+	
+	public var target:Object;
+	
+	public var repeat:Boolean = true;
+	
+	
+	private function addedToStage (event:Event) : void  {
+		var comp:DisplayObject = DisplayObject(event.target);
+		dispatchConfigureEvent(comp);
+		if (!repeat) {
+			comp.removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
 		}
-		super.initialize();
+	}
+		
+	private function dispatchConfigureEvent (comp:DisplayObject) : void  { 
+		comp.dispatchEvent(new ViewConfigurationEvent(target));
 	}
 	
-	private function dispatchConfigureEvent (event:Event = null) : void  { 
-		parent.dispatchEvent(new ViewConfigurationEvent());
+	
+	public function initialized (document:Object, id:String) : void {
+		if (!(document is DisplayObject)) {
+			throw new IllegalArgumentError("The Configure tag is supposed to be used within MXML components that extend DisplayObject");
+		}
+		var comp:DisplayObject = DisplayObject(document);
+		if (comp.stage != null) {
+			// TODO - check if this is ever going to happen 
+			// - at this point the binding for the target property has very likely not been executed
+			dispatchConfigureEvent(comp);
+		}
+		if (comp.stage == null || repeat) {		
+			comp.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
+		}
 	}
 	
-	/**
-	 * @private
-	 */
-	override public function get includeInLayout () : Boolean {
-		return false;
-	}
 	
 }
-
 }

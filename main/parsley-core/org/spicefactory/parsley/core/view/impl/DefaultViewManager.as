@@ -26,6 +26,7 @@ import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
+import flash.events.IEventDispatcher;
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
@@ -136,17 +137,20 @@ public class DefaultViewManager implements ViewManager {
 	
 	private function componentAdded (event:Event) : void {
 		event.stopImmediatePropagation();
-		var component:DisplayObject = DisplayObject(event.target);
-		log.debug("Add component '{0}' to view Context", component);
-		component.addEventListener(componentRemovedEvent, componentRemoved);
-		viewContext.addObject(component);
+		var target:Object = (event is ViewConfigurationEvent) 
+				? ViewConfigurationEvent(event).configurationTarget : event.target;
+		log.debug("Add object '{0}' to view Context", target);
+		if (target is IEventDispatcher) {
+			IEventDispatcher(target).addEventListener(componentRemovedEvent, componentRemoved);
+		}
+		viewContext.addObject(target);
 	}
 	
 	private function componentRemoved (event:Event) : void {
-		var component:DisplayObject = DisplayObject(event.target);
-		log.debug("Remove component '{0}' from view Context", component);
-		component.removeEventListener(componentRemovedEvent, componentRemoved);
-		viewContext.removeObject(component);
+		var view:IEventDispatcher = IEventDispatcher(event.target);
+		log.debug("Remove object '{0}' from view Context", view);
+		view.removeEventListener(componentRemovedEvent, componentRemoved);
+		viewContext.removeObject(view);
 	}
 	
 	
