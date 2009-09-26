@@ -27,6 +27,7 @@ import org.spicefactory.parsley.core.view.ViewManager;
 import flash.display.DisplayObject;
 import flash.events.Event;
 import flash.system.ApplicationDomain;
+import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
 
 /**
@@ -48,6 +49,9 @@ public class DefaultViewManager implements ViewManager {
 	private var viewContext:DynamicContext;
 	
 	
+	private static const globalViewRootRegistry:Dictionary = new Dictionary();
+	
+	
 	function DefaultViewManager (context:Context, domain:ApplicationDomain) {
 		this.parent = context;
 		this.domain = domain;
@@ -62,7 +66,7 @@ public class DefaultViewManager implements ViewManager {
 	private function contextDestroyed (event:ContextEvent) : void {
 		viewContext.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		for each (var view:DisplayObject in viewRoots) {
-			removeListeners(view);	
+			handleRemovedViewRoot(view);	
 		}
 		viewRoots = new Array();
 	}
@@ -73,6 +77,13 @@ public class DefaultViewManager implements ViewManager {
 	public function addViewRoot (view:DisplayObject) : void {
 		log.info("Add view root: {0}/{1}", view.name, getQualifiedClassName(view));
 		if (viewContext == null) initialize();
+		if (globalViewRootRegistry[view] != undefined) {
+			// we do not allow two view managers on the same view, but we allow switching them
+			log.info("Switching ViewManager for view root '{0}'", view);
+			var vm:ViewManager = globalViewRootRegistry[view];
+			vm.removeViewRoot(view);
+		}
+		globalViewRootRegistry[view] = this;
 		addListeners(view);
 		viewRoots.push(view);
 	}
@@ -88,7 +99,7 @@ public class DefaultViewManager implements ViewManager {
 		var index:int = viewRoots.indexOf(view);
 		if (index > -1) {
 			log.info("Remove view root: {0}/{1}", view.name, getQualifiedClassName(view));
-	 		removeListeners(view);
+	 		handleRemovedViewRoot(view);
 			viewRoots.splice(index, 1);
 			if (viewRoots.length == 0) {
 				log.info("Last view root removed from ViewManager - Destroy Context");
@@ -104,10 +115,11 @@ public class DefaultViewManager implements ViewManager {
 		// TODO - add legacy configureIOC event
 	}
 	
-	private function removeListeners (viewRoot:DisplayObject) : void {
+	private function handleRemovedViewRoot (viewRoot:DisplayObject) : void {
 	 	viewRoot.removeEventListener(viewRootRemovedEvent, viewRootRemoved);
 		viewRoot.removeEventListener(componentAddedEvent, componentAdded);
 		viewRoot.removeEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
+		delete globalViewRootRegistry[viewRoot];
 	}
 	
 	
