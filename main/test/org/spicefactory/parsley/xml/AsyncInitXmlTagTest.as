@@ -19,11 +19,11 @@ public class AsyncInitXmlTagTest extends AsyncInitTestBase {
 	public static const orderedConfig:XML = <objects 
 		xmlns="http://www.spicefactory.org/parsley">
 		
-		<object id="asyncInitModel1" type="org.spicefactory.parsley.core.decorator.asyncinit.model.AsyncInitModel">
-			<async-init order="1"/>
+		<object id="asyncInitModel1" type="org.spicefactory.parsley.core.decorator.asyncinit.model.AsyncInitModel" order="1">
+			<async-init/>
 		</object> 
-		<object id="asyncInitModel2" type="org.spicefactory.parsley.core.decorator.asyncinit.model.AsyncInitModel">
-			<async-init order="2" complete-event="customComplete" error-event="customError"/>
+		<object id="asyncInitModel2" type="org.spicefactory.parsley.core.decorator.asyncinit.model.AsyncInitModel" order="2">
+			<async-init complete-event="customComplete" error-event="customError"/>
 		</object> 
 	</objects>;
 

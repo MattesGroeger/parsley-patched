@@ -29,6 +29,7 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 	private var _id:String;
 	private var _lazy:Boolean;
 	private var _singleton:Boolean;
+	private var _order:int;
 
 
 	/**
@@ -38,13 +39,15 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 	 * @param id the id the object should be registered with
 	 * @param lazy whether the object is lazy initializing
 	 * @param singleton whether the object should be treated as a singleton
+	 * @param order the initialization order for non-lazy singletons
 	 */
 	function DefaultRootObjectDefinition (type:ClassInfo, id:String, 
-			lazy:Boolean = false, singleton:Boolean = true) : void {
+			lazy:Boolean = false, singleton:Boolean = true, order:int = int.MAX_VALUE):void {
 		super(type);
 		_id = id;
 		_lazy = lazy;
 		_singleton = singleton;
+		_order = order;
 	}
 	
 	
@@ -69,6 +72,14 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 	
 	public function get singleton () : Boolean {
 		return _singleton;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	
+	public function get order () : int {
+		return _order;
 	}
 	
 	

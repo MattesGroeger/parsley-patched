@@ -8,10 +8,12 @@ import org.spicefactory.parsley.core.decorator.asyncinit.model.AsyncInitModelMet
 public class AsyncInitOrderedContainer {
 
 	
+	[ObjectDefinition(order="1")]
 	public function get asyncInitModel1 () : AsyncInitModelMetadataOrder1 {
 		return new AsyncInitModelMetadataOrder1();
 	}
 	
+	[ObjectDefinition(order="2")]
 	public function get asyncInitModel2 () : AsyncInitModelMetadataOrder2 {
 		return new AsyncInitModelMetadataOrder2();
 	}

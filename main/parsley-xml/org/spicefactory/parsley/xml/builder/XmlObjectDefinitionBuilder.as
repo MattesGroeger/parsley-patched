@@ -117,7 +117,7 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 								var prop:Property = ci.getProperty("id");
 								var id:String = (prop == null) ? null : prop.getValue(obj);
 								var inst:ObjectInstantiator = new ObjectWrapperInstantiator(obj);
-								factory	= new DefaultObjectDefinitionFactory(ci.getClass(), id, false, true, inst);
+								factory	= new DefaultObjectDefinitionFactory(ci.getClass(), id, false, true, int.MAX_VALUE, inst);
 							}
 							var definition:RootObjectDefinition = factory.createRootDefinition(registry);
 							registry.registerDefinition(definition);

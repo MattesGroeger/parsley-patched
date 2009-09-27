@@ -34,6 +34,7 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 	private var _id:String;
 	private var _lazy:Boolean;
 	private var _singleton:Boolean;
+	private var _order:int;
 	private var wrappedDefintion:ObjectDefinition;
 
 
@@ -46,11 +47,12 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 	 * @param singleton whether the object should be treated as a singleton
 	 */
 	function ObjectDefinitionWrapper (wrappedDefinition:ObjectDefinition, id:String = null, 
-			lazy:Boolean = false, singleton:Boolean = true) : void {
+			lazy:Boolean = false, singleton:Boolean = true, order:int = int.MAX_VALUE):void {
 		this.wrappedDefintion = wrappedDefinition;
 		_id = (id != null) ? id : IdGenerator.nextObjectId;
 		_lazy = lazy;
 		_singleton = singleton;
+		_order = order;
 	}
 
 
@@ -64,6 +66,10 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 	
 	public function get singleton () : Boolean {
 		return _singleton;
+	}
+	
+	public function get order () : int {
+		return _order;
 	}
 	
 	public function freeze () : void {

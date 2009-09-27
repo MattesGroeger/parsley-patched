@@ -107,11 +107,16 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 			var definitionMetaArray:Array = configClassProperty.getMetadata(ObjectDefinitionMetadata);
 			var definitionMeta:ObjectDefinitionMetadata = (definitionMetaArray.length > 0) ? 
 					ObjectDefinitionMetadata(definitionMetaArray[0]) : null;
-			var id:String = (definitionMeta != null && definitionMeta.id != null) ? definitionMeta.id : configClassProperty.name;
-			var lazy:Boolean = (definitionMeta != null) ? definitionMeta.lazy : false;
-			var singleton:Boolean = (definitionMeta != null) ? definitionMeta.singleton : true;
+			var id:String = (definitionMeta != null && definitionMeta.id != null) 
+					? definitionMeta.id : configClassProperty.name;
+			var lazy:Boolean = (definitionMeta != null) 
+					? definitionMeta.lazy : false;
+			var singleton:Boolean = (definitionMeta != null) 
+					? definitionMeta.singleton : true;
+			var order:int = (definitionMeta != null) 
+					? definitionMeta.order : int.MAX_VALUE;
 			var inst:ObjectInstantiator = new ConfingClassPropertyInstantiator(configClass, configClassProperty);
-			factory = new DefaultObjectDefinitionFactory(configClassProperty.type.getClass(), id, lazy, singleton, inst);
+			factory = new DefaultObjectDefinitionFactory(configClassProperty.type.getClass(), id, lazy, singleton, order, inst);
 		}
 		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
 		registry.registerDefinition(definition);

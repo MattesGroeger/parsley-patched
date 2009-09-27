@@ -1,6 +1,6 @@
 package org.spicefactory.parsley.core.decorator.asyncinit.model {
 
-[AsyncInit(order="2", completeEvent="customComplete")]
+[AsyncInit(completeEvent="customComplete")]
 /**
  * @author Jens Halm
  */

@@ -44,6 +44,15 @@ public class ObjectDefinitionMetadata {
 	 */
 	public var singleton:Boolean = true;
 	
+	/**
+	 * The processing order for this object. 
+	 * 
+	 * Only has an effect for non-lazy singletons. Those are instantiated when the
+	 * Context initializes and this property allows to determine the initialization
+	 * order of these singletons. Will be processed in ascending order.
+	 */
+	public var order:int = int.MAX_VALUE;
+	
 	
 }
 

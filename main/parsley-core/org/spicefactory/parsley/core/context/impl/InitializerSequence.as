@@ -31,10 +31,10 @@ import flash.utils.getQualifiedClassName;
  * 
  * @author Jens Halm
  */
-public class AsyncInitializerSequence {
+public class InitializerSequence {
 	
 	
-	private static const log:Logger = LogContext.getLogger(AsyncInitializerSequence);
+	private static const log:Logger = LogContext.getLogger(InitializerSequence);
 	
 
 	private var queuedInits:Array = new Array();
@@ -51,7 +51,7 @@ public class AsyncInitializerSequence {
 	 * 
 	 * @param context the associated Context
 	 */
-	function AsyncInitializerSequence (context:DefaultContext) {
+	function InitializerSequence (context:DefaultContext) {
 		this.context = context;
 	}
 
@@ -69,11 +69,11 @@ public class AsyncInitializerSequence {
 	 * Starts processing the definitons that were added to this sequence.
 	 */
 	public function start () : void {
-		var sortFunc:Function = function (def1:ObjectDefinition, def2:ObjectDefinition) : int {
-			return def1.asyncInitConfig.order - def2.asyncInitConfig.order;
+		var sortFunc:Function = function (def1:RootObjectDefinition, def2:RootObjectDefinition) : int {
+			return (def1.order > def2.order) ? 1 : (def1.order < def2.order) ? -1 : 0;
 		};
 		queuedInits.sort(sortFunc);
-		createNextInstance();
+		createInstances();
 	}
 	
 	/**
@@ -99,17 +99,22 @@ public class AsyncInitializerSequence {
 		return queuedInits.length == 0 && parallelInitCount == 0;
 	}
 	
-	private function createNextInstance () : void {
-		if (complete) {
-			context.finishInitialization();
-			return;
-		}
-		activeDefinition = queuedInits.shift() as RootObjectDefinition;
-		try {
-			context.getInstance(activeDefinition);
-		}
-		catch (e:Error) {
-			context.destroyWithError("Initialization of " + activeDefinition + " failed", e);
+	private function createInstances () : void {
+		var async:Boolean = false;
+		while (!async) {
+			if (complete) {
+				context.finishInitialization();
+				return;
+			}
+			activeDefinition = queuedInits.shift() as RootObjectDefinition;
+			async = (activeDefinition.asyncInitConfig != null);
+			try {
+				context.getInstance(activeDefinition);
+			}
+			catch (e:Error) {
+				context.destroyWithError("Initialization of " + activeDefinition + " failed", e);
+				return;
+			}
 		}
 	}
 
@@ -152,7 +157,7 @@ public class AsyncInitializerSequence {
 	
 	private function activeInstanceComplete (event:Event) : void {
 		removeListeners(IEventDispatcher(event.target), activeInstanceComplete, activeInstanceError);
-		createNextInstance();
+		createInstances();
 	}
 	
 	private function activeInstanceError (event:ErrorEvent) : void {

@@ -1,6 +1,6 @@
 package org.spicefactory.parsley.core.decorator.asyncinit.model {
 
-[AsyncInit(order="1")]
+[AsyncInit]
 /**
  * @author Jens Halm
  */

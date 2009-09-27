@@ -19,12 +19,18 @@ import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.task.SequentialTaskGroup;
 import org.spicefactory.lib.task.TaskGroup;
 import org.spicefactory.lib.task.events.TaskEvent;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.parsley.flash.resources.impl.DefaultBundleLoaderFactory;
 import org.spicefactory.parsley.flash.resources.impl.DefaultResourceBundle;
 import org.spicefactory.parsley.flash.resources.spi.BundleLoaderFactory;
 import org.spicefactory.parsley.flash.resources.spi.ResourceBundleSpi;
 import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
 
+import flash.errors.IllegalOperationError;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -35,8 +41,8 @@ import flash.utils.getQualifiedClassName;
  * 
  * @author Jens Halm
  */
-[AsyncInit(order="-2147483648")]
-public class ResourceBundleTag extends EventDispatcher {
+[AsyncInit]
+public class ResourceBundleTag extends EventDispatcher implements ObjectDefinitionFactory {
 	
 	
 	[Required]
@@ -123,6 +129,28 @@ public class ResourceBundleTag extends EventDispatcher {
 		dispatchEvent(event.clone());
 	}
 	
+	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
+		var factory:ObjectDefinitionFactory 
+				= new DefaultObjectDefinitionFactory(ResourceBundleTag, id, false, true, int.MIN_VALUE, new TagInstantiator(this));		
+		return factory.createRootDefinition(registry);
+	}
 	
+	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		throw new IllegalOperationError("This tag can only be used as a root definition");
+	}
 }
+}
+
+import org.spicefactory.parsley.flash.resources.tag.ResourceBundleTag;
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
+
+class TagInstantiator implements ObjectInstantiator {
+	private var tag:ResourceBundleTag;
+	function TagInstantiator (tag:ResourceBundleTag) {
+		this.tag = tag;
+	}
+	public function instantiate (context:Context):Object {
+		return tag;
+	}
 }

@@ -45,20 +45,25 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	public var type:Class = Object;
 	
 	/**
-	 * @copy ObjectDefinitionMetadata#id
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#id
 	 */
 	public var id:String;
 	
 	/**
-	 * @copy ObjectDefinitionMetadata#lazy
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#lazy
 	 */
 	public var lazy:Boolean = false;
 	
 	/**
-	 * @copy ObjectDefinitionMetadata#singleton
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#singleton
 	 */
 	public var singleton:Boolean = true;
 	
+	/**
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#singleton
+	 */
+	public var order:int = int.MAX_VALUE;
+
 	
 	/**
 	 * The ObjectDefinitionDecorator instances added to this definition.
@@ -76,14 +81,16 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	 * @param id the id the object should be registered with
 	 * @param lazy whether the object is lazy initializing
 	 * @param singleton whether the object should be treated as a singleton
+	 * @param order the initialization order for non-lazy singletons
 	 * @param instantiator the ObjectInstantiator to use in case it is predetermined by the configuration mechanism
 	 */
 	function DefaultObjectDefinitionFactory (type:Class, id:String = null, 
-			lazy:Boolean = false, singleton:Boolean = true, instantiator:ObjectInstantiator = null) {
+			lazy:Boolean = false, singleton:Boolean = true, order:int = int.MAX_VALUE, instantiator:ObjectInstantiator = null) {
 		this.type = type;
 		this.id = id;
 		this.lazy = lazy;
 		this.singleton = singleton;
+		this.order = order;
 		this.instantiator = instantiator;
 	}
 
@@ -94,7 +101,7 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
 		var ci:ClassInfo = ClassInfo.forClass(type, registry.domain);
-		var def:RootObjectDefinition = new DefaultRootObjectDefinition(ci, id, lazy, singleton);
+		var def:RootObjectDefinition = new DefaultRootObjectDefinition(ci, id, lazy, singleton, order);
 		def.instantiator = instantiator;
 		def = processDecorators(registry, def) as RootObjectDefinition;
 		return def;
@@ -118,7 +125,7 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	 * 
 	 * @param registry the registry the defintion belongs to
 	 * @param definition the definition to process
-	 * @param definition the resulting definition (possibly the same instance that was passed to this method)
+	 * @return the resulting definition (possibly the same instance that was passed to this method)
 	 */
 	protected function processDecorators (registry:ObjectDefinitionRegistry, definition:ObjectDefinition) : ObjectDefinition {
 		var decorators:Array = new Array();

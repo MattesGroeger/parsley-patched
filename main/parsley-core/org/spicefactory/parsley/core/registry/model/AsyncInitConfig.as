@@ -35,11 +35,7 @@ public class AsyncInitConfig {
 	 * The event type that signals that object initialization has failed.
 	 */
 	public var errorEvent:String = ErrorEvent.ERROR;
-	
-	/**
-	 * The processing order for this object. Will be processed in ascending order.
-	 */
-	public var order:int = int.MAX_VALUE;
+
 	
 	
 }

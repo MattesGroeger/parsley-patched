@@ -66,8 +66,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	
 	private var singletonCache:SimpleMap = new SimpleMap();
 	
-	private var asyncInitSequence:AsyncInitializerSequence;
-	private var initSequence:Array;
+	private var initSequence:InitializerSequence;
 	private var underConstruction:Dictionary = new Dictionary();
 	
 	private var _initialized:Boolean;
@@ -99,39 +98,23 @@ public class DefaultContext extends EventDispatcher implements Context {
 		
 		objectProviderFactory.initialize();
 		
-		asyncInitSequence = new AsyncInitializerSequence(this);
+		initSequence = new InitializerSequence(this);
 		dispatchEvent(new ContextEvent(ContextEvent.CONFIGURED));
-		
-		// instantiate non-lazy singletons, those with asyncInitConfigs first
-		initSequence = new Array();
+
+		// instantiate non-lazy singletons, with or without AsyncInit config
 		for each (var id:String in _registry.getDefinitionIds()) {
 			var definition:RootObjectDefinition = _registry.getDefinition(id);
 			if (definition.singleton && !definition.lazy) {
-				if (definition.asyncInitConfig != null) {
-					asyncInitSequence.addDefinition(definition);
-				}
-				else {
-					initSequence.push(definition);
-				}
+				initSequence.addDefinition(definition);
 			}
 		}
-		asyncInitSequence.start();
+		initSequence.start();
 	}
 
 	/**
 	 * @private
 	 */
 	internal function finishInitialization () : void {
-		asyncInitSequence = null;
-		for each (var definition:RootObjectDefinition in initSequence) {
-			try {
-				getInstance(definition);
-			}
-			catch (e:Error) {
-				destroyWithError("Error instantiating " + definition, e);
-				return;
-			}
-		}
 		initSequence = null;
 		_initialized = true;
 		dispatchEvent(new ContextEvent(ContextEvent.INITIALIZED));
@@ -253,8 +236,8 @@ public class DefaultContext extends EventDispatcher implements Context {
 			var instance:Object = _lifecycleManager.createObject(def, this);
 			if (def.singleton) {
 				singletonCache.put(id, instance);
-				if (!initialized && def.asyncInitConfig != null && asyncInitSequence != null) {
-					asyncInitSequence.addInstance(def, instance);
+				if (!initialized && def.asyncInitConfig != null && initSequence != null) {
+					initSequence.addInstance(def, instance);
 				}
 			}
 			_lifecycleManager.configureObject(instance, def, this);
@@ -296,9 +279,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 		if (_destroyed) {
 			return;
 		}
-		if (asyncInitSequence != null) {
-			asyncInitSequence.cancel();
-			asyncInitSequence = null;
+		if (initSequence != null) {
+			initSequence.cancel();
+			initSequence = null;
 		}
 		try {
 			dispatchEvent(new ContextEvent(ContextEvent.DESTROYED));

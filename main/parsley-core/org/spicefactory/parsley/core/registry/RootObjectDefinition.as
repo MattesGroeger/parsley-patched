@@ -25,19 +25,24 @@ package org.spicefactory.parsley.core.registry {
 public interface RootObjectDefinition extends ObjectDefinition {
 	
 	/**
-	 * @copy org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata#id
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#id
 	 */
 	function get id () : String;
 	
 	/**
-	 * @copy org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata#lazy
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#lazy
 	 */
 	function get lazy () : Boolean;
 	
 	/**
-	 * @copy org.spicefactory.parsley.core.metadata.ObjectDefinitionMetadata#singleton
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#singleton
 	 */
 	function get singleton () : Boolean;
+	
+	/**
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#order
+	 */
+	function get order () : int;
 	
 }
 }
