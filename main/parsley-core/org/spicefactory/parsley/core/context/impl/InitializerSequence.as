@@ -27,7 +27,7 @@ import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
 
 /**
- * Responsible for processing the instance marked with AsyncInit tags upon Context creation.
+ * Responsible for processing all non-lazy singletons that need to be instantiated upon Context creation.
  * 
  * @author Jens Halm
  */
@@ -93,7 +93,7 @@ public class InitializerSequence {
 	}
 
 	/**
-	 * Indicates whether all definitions of this sequence have completed their asynchronous initialization.
+	 * Indicates whether all definitions of this sequence have completed their initialization.
 	 */
 	public function get complete () : Boolean {
 		return queuedInits.length == 0 && parallelInitCount == 0;
@@ -136,7 +136,7 @@ public class InitializerSequence {
 			 * Must be an initialization that was not triggered by this class.
 			 * Instead it was either tiggered by application code accessing the Context before the
 			 * INITIALIZED event or by a dependency of an object that this class initialized.
-			 * We remove it from the list of queued async inits and let it run in parallel to our queue. 
+			 * We remove it from the list of queued inits and let it run in parallel to our queue. 
 			 */
 			var index:int = queuedInits.indexOf(def);
 			if (index != -1) {
