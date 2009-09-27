@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex {
+	import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.flex.FlexLogFactory;
 import org.spicefactory.parsley.asconfig.builder.ActionScriptObjectDefinitionBuilder;
@@ -99,6 +100,7 @@ public class FlexContextBuilder {
 	 */
 	public static function mergeAll (configClasses:Array, builder:CompositeContextBuilder) : void {
 		if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
+		FlexModuleSupport.initialize();
 		builder.addBuilder(new ActionScriptObjectDefinitionBuilder(configClasses));
 	}
 
