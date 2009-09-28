@@ -185,7 +185,7 @@ class FlexModuleFactoryProxy implements IFlexModuleFactory {
 	public function create (...args:*) : Object {
 		var instance:Object = module.factory.create.apply(module.factory, args);
 		if (instance is DisplayObject) {
-			
+			new ContextBuilderEventListener(instance as DisplayObject, module, domain);
 		}
 		return null;
 	}
