@@ -32,7 +32,7 @@ public class DefaultMessageErrorHandler extends AbstractMethodReceiver implement
 
 
 	function DefaultMessageErrorHandler (provider:ObjectProvider, methodName:String, messageType:Class,
-			selector:* = undefined, errorType:Class = null) {
+			selector:* = undefined, errorType:ClassInfo = null) {
 		super(provider, methodName, messageType, selector);
 		var params:Array = targetMethod.parameters;
 		if (params.length < 1 || params.length > 2) {
@@ -62,7 +62,7 @@ public class DefaultMessageErrorHandler extends AbstractMethodReceiver implement
 		else if (errorType == null) {
 			_errorType = Error;
 		}			
-		_errorType = errorType;
+		_errorType = errorType.getClass();
 	}
 
 

@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
@@ -50,7 +51,7 @@ public class MessageErrorHandlerDecorator extends AbstractStandardReceiverDecora
 	
 	protected override function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
 		var handler:MessageErrorHandler = 
-				new DefaultMessageErrorHandler(provider, method, type, selector, errorType);
+				new DefaultMessageErrorHandler(provider, method, type, selector, ClassInfo.forClass(errorType, domain));
 		scopeManager.getScope(scope).messageReceivers.addErrorHandler(handler);
 		return handler;
 	}
