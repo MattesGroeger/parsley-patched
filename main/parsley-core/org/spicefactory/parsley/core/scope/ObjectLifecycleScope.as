@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.scopes {
+package org.spicefactory.parsley.core.scope {
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 
 /**
  * @author Jens Halm
  */
-public interface ScopeManager {
+public interface ObjectLifecycleScope {
 	
 	
-	function hasScope (name:String) : Boolean;
+	function addListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void;
+
+	function removeListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void;
 	
-	function getScope (name:String) : Scope;
-	
-	function getAllScopes () : Array;
-	
-	function dispatchMessage (message:Object, selector:* = undefined) : void;
-	
+	//function addProvider (provider:ObjectProvider, methodName:String, event:ObjectLifecycle, id:String = null) : void;
+
+	//function removeProvider (provider:ObjectProvider, methodName:String, event:ObjectLifecycle, id:String = null) : void;
+
 	
 }
 }

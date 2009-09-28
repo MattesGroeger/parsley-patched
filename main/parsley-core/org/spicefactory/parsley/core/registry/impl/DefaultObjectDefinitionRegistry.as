@@ -24,7 +24,7 @@ import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.scopes.ScopeManager;
+import org.spicefactory.parsley.core.scope.ScopeManager;
 
 import flash.events.EventDispatcher;
 import flash.system.ApplicationDomain;

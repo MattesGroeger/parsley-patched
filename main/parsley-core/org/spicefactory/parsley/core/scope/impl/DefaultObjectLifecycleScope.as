@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.scopes.impl {
+package org.spicefactory.parsley.core.scope.impl {
 import org.spicefactory.lib.util.ArrayUtil;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
-import org.spicefactory.parsley.core.scopes.ObjectLifecycleScope;
+import org.spicefactory.parsley.core.scope.ObjectLifecycleScope;
 
 import flash.utils.Dictionary;
 

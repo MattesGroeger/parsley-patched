@@ -31,8 +31,8 @@ import org.spicefactory.parsley.core.factory.impl.DefaultContextStrategyProvider
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.scopes.ScopeName;
-import org.spicefactory.parsley.core.scopes.impl.ScopeDefinition;
+import org.spicefactory.parsley.core.scope.ScopeName;
+import org.spicefactory.parsley.core.scope.impl.ScopeDefinition;
 
 import flash.display.DisplayObject;
 import flash.events.ErrorEvent;
@@ -250,7 +250,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 }
 
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.scopes.impl.ScopeDefinition;
+import org.spicefactory.parsley.core.scope.impl.ScopeDefinition;
 
 import flash.utils.Dictionary;
 

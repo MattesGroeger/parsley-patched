@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.parsley.core.scopes.ScopeName;
+import org.spicefactory.parsley.core.scope.ScopeName;
 
 /**
  * Convenient base class that tags for message receivers can extend if they

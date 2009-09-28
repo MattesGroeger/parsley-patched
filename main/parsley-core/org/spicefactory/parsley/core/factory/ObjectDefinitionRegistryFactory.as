@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.scopes.ScopeManager;
+import org.spicefactory.parsley.core.scope.ScopeManager;
 
 import flash.system.ApplicationDomain;
 

@@ -21,8 +21,8 @@ import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.MessageBinding;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
-import org.spicefactory.parsley.core.scopes.ScopeManager;
-import org.spicefactory.parsley.core.scopes.ScopeName;
+import org.spicefactory.parsley.core.scope.ScopeName;
+import org.spicefactory.parsley.core.scope.ScopeManager;
 
 [Metadata(name="MessageBinding", types="property", multiple="true")]
 /**

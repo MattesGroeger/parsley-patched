@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.scopes.impl {
+package org.spicefactory.parsley.core.scope.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.scopes.Scope;
-import org.spicefactory.parsley.core.scopes.ScopeManager;
+import org.spicefactory.parsley.core.scope.Scope;
+import org.spicefactory.parsley.core.scope.ScopeManager;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;

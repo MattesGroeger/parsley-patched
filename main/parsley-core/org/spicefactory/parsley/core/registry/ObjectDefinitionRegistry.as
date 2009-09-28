@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.core.registry {
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
-import org.spicefactory.parsley.core.scopes.ScopeManager;
+import org.spicefactory.parsley.core.scope.ScopeManager;
 
 import flash.events.IEventDispatcher;
 import flash.system.ApplicationDomain;

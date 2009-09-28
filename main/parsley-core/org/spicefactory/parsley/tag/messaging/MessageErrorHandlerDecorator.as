@@ -20,7 +20,7 @@ import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultMessageErrorHandler;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.scopes.ScopeManager;
+import org.spicefactory.parsley.core.scope.ScopeManager;
 
 [Metadata(name="MessageError", types="method", multiple="true")]
 /**

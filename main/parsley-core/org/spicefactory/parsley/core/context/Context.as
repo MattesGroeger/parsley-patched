@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.context {
-import org.spicefactory.parsley.core.scopes.ScopeManager;
+import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.events.IEventDispatcher;

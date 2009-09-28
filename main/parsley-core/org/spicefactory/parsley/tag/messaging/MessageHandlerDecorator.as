@@ -23,8 +23,7 @@ import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.MessageHandler;
 import org.spicefactory.parsley.core.messaging.receiver.impl.MessagePropertyHandler;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.scopes.ScopeManager;
-import org.spicefactory.parsley.core.scopes.ScopeName;
+import org.spicefactory.parsley.core.scope.ScopeManager;
 
 [Metadata(name="MessageHandler", types="method", multiple="true")]
 /**

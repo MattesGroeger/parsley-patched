@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.impl {
-import org.spicefactory.parsley.core.scopes.ScopeManager;
+import org.spicefactory.parsley.core.scope.ScopeManager;
 
 /**
  * Represents a reference to a message dispatcher function. To be used in MXML and XML configuration.

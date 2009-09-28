@@ -20,7 +20,7 @@ import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultMessageInterceptor;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.scopes.ScopeManager;
+import org.spicefactory.parsley.core.scope.ScopeManager;
 
 [Metadata(name="MessageInterceptor", types="method", multiple="true")]
 /**

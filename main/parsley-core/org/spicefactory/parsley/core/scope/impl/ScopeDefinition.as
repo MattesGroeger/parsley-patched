@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.scopes.impl {
+package org.spicefactory.parsley.core.scope.impl {
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
 

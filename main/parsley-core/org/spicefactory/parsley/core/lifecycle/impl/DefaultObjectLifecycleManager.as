@@ -27,7 +27,7 @@ import org.spicefactory.parsley.core.registry.model.ManagedArray;
 import org.spicefactory.parsley.core.registry.model.ObjectIdReference;
 import org.spicefactory.parsley.core.registry.model.ObjectTypeReference;
 import org.spicefactory.parsley.core.registry.model.PropertyValue;
-import org.spicefactory.parsley.core.scopes.impl.ScopeDefinition;
+import org.spicefactory.parsley.core.scope.impl.ScopeDefinition;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;

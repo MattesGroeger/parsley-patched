@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.scopes {
+package org.spicefactory.parsley.core.scope {
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 
 /**
