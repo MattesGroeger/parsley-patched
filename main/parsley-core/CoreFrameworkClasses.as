@@ -15,14 +15,14 @@
  */
 
 package {
-	import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
-	import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
 import org.spicefactory.parsley.asconfig.builder.ActionScriptObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.impl.ChildContext;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
+import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
+import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
 import org.spicefactory.parsley.core.lifecycle.impl.DefaultObjectLifecycleManager;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageProcessor;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageRouter;
