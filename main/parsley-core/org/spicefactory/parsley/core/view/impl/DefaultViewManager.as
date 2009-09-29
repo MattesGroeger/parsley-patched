@@ -39,6 +39,7 @@ public class DefaultViewManager implements ViewManager {
 
 	private static const log:Logger = LogContext.getLogger(DefaultViewManager);
 	
+	private static const LEGACY_CONFIGURE_EVENT:String = "configureIOC";
 	
 	private var _viewRootRemovedEvent:String = Event.REMOVED_FROM_STAGE;
 	private var _componentRemovedEvent:String = Event.REMOVED_FROM_STAGE;
@@ -112,13 +113,14 @@ public class DefaultViewManager implements ViewManager {
 	private function addListeners (viewRoot:DisplayObject) : void {
 		viewRoot.addEventListener(viewRootRemovedEvent, viewRootRemoved);
 		viewRoot.addEventListener(componentAddedEvent, componentAdded);
+		viewRoot.addEventListener(LEGACY_CONFIGURE_EVENT, componentAdded);
 		viewRoot.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
-		// TODO - add legacy configureIOC event
 	}
 	
 	private function handleRemovedViewRoot (viewRoot:DisplayObject) : void {
 	 	viewRoot.removeEventListener(viewRootRemovedEvent, viewRootRemoved);
 		viewRoot.removeEventListener(componentAddedEvent, componentAdded);
+		viewRoot.removeEventListener(LEGACY_CONFIGURE_EVENT, componentAdded);
 		viewRoot.removeEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
 		delete globalViewRootRegistry[viewRoot];
 	}
