@@ -3,7 +3,7 @@
 	
 	<property file="build.properties" />
 	
-	<property name="version" value="2.1.0-SNAPSHOT"/>
+	<property name="version" value="2.1.0"/>
 	<property name="pimento.version" value="1.1.0"/>
 	<property name="project.dir" value="${basedir}/.."/>
 	<property name="lib.dir" value="${project.dir}/lib"/>
@@ -40,7 +40,7 @@
 	
 	<target name="compile_parsley_complete_flex">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageErrorHandler,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/parsley-complete-flex-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
@@ -55,7 +55,7 @@
 			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-flex ${project.dir}/parsley-pimento ${project.dir}/parsley-xml"/>
 			<arg line="-include-namespaces=http://www.spicefactory.org/parsley,http://www.spicefactory.org/parsley/flex,http://www.spicefactory.org/parsley/pimento,http://www.spicefactory.org/parsley/cinnamon" />
 			<arg line="-is ${project.dir}/parsley-xml" />
-			<arg line="-include-classes CoreFrameworkClasses org.spicefactory.parsley.flex.logging.FlexLoggingXmlSupport org.spicefactory.parsley.cinnamon.CinnamonXmlSupport org.spicefactory.parsley.pimento.PimentoXmlSupport" />
+			<arg line="-include-classes CoreFrameworkClasses FlexSupportClasses org.spicefactory.parsley.cinnamon.CinnamonXmlSupport org.spicefactory.parsley.pimento.PimentoXmlSupport" />
 			<arg line="-debug=true"/>
 			<arg line="-verbose-stacktraces"/>
 		</exec>
@@ -157,7 +157,7 @@
 	
 	<target name="compile_parsley_core">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageInterceptor,MessageErrorHandler,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
@@ -190,7 +190,7 @@
 			<arg line="-el ${release.target.dir}/release/modules/parsley-xml-${version}.swc" />
 			<arg line="-sp ${project.dir}/parsley-flex" />
 			<arg line="-include-namespaces http://www.spicefactory.org/parsley/flex" />
-			<arg line="-include-classes org.spicefactory.parsley.flex.logging.FlexLoggingXmlSupport" />
+			<arg line="-include-classes FlexSupportClasses" />
 		</exec>
 	</target>
 			
