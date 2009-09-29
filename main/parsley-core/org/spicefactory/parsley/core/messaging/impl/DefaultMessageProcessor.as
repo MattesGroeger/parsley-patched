@@ -84,7 +84,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 			}
 			catch (e:Error) {
 				log.error("Message Target threw Error {0}", e);
-				if (!currentProcessor.handleErrors) {
+				if (!currentProcessor.handleErrors || (e is MessageProcessorError)) {
 					// avoid the risk of endless loops
 					throw e;
 				}
@@ -102,7 +102,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 					}
 					else {
 						if (unhandledError == ErrorPolicy.RETHROW) {
-							throw e;
+							throw new MessageProcessorError("Error in message receiver", e);
 						}
 						else if (unhandledError == ErrorPolicy.ABORT) {
 							log.info("Unhandled error - abort message processor");
@@ -156,6 +156,8 @@ public class DefaultMessageProcessor implements MessageProcessor {
 }
 }
 
+import org.spicefactory.lib.errors.NestedError;
+
 class Processor {
 	
 	private var receivers:Array;
@@ -185,6 +187,13 @@ class Processor {
 	
 }
 
+class MessageProcessorError extends NestedError {
+	
+	public function MessageProcessorError (message:String = "", cause:Error = null) {
+		super(message, cause);
+	}
+	
+}
 
 
 
