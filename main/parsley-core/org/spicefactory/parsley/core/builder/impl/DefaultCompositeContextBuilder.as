@@ -86,7 +86,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 */
 	function DefaultCompositeContextBuilder (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) {
 		_factories = new LocalFactoryRegistry();
-		viewRoot = viewRoot;
+		this.viewRoot = viewRoot;
 		var event:ContextBuilderEvent = null;
 		if ((parent == null || domain == null) && viewRoot != null) {
 			event = new ContextBuilderEvent();
