@@ -32,7 +32,7 @@ public interface CompositeContextBuilder {
 	
 	/**
 	 * Adds a new scope for the Context created by this builder.
-	 * The new scope will be added to the scope which may be inherited from a parent Context.
+	 * The new scope will be added to the scopes which may be inherited from a parent Context.
 	 * 
 	 * @param name the name of the scope
 	 * @param inherited whether child Contexts should inherit this scope
