@@ -35,10 +35,10 @@ public class FlexModuleSupport {
 		var originalManager:Object = ModuleManagerGlobals.managerSingleton;
 		ModuleManagerGlobals.managerSingleton = new ModuleManagerDecorator(originalManager);
 	}
-	
-	
 }
 }
+
+import flash.utils.Dictionary;
 
 import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
 import org.spicefactory.parsley.flex.modules.ModuleLoadingPolicy;
@@ -192,6 +192,18 @@ class FlexModuleFactoryProxy implements IFlexModuleFactory {
 	
 	public function info () : Object {
 		return module.factory.info();
+	}
+	
+	public function allowInsecureDomain (...args:*) : void {
+		module.factory.allowInsecureDomain.apply(module.factory, args);
+	}
+	
+	public function allowDomain (...args:*) : void {
+		module.factory.allowDomain.apply(module.factory, args);
+	}
+	
+	public function get preloadedRSLs () : Dictionary {
+		return module.factory.preloadedRSLs;
 	}
 	
 }
