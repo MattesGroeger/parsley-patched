@@ -70,6 +70,20 @@ public class ActionScriptObjectDefinitionBuilderTest extends ContextTestBase {
 		checkObjectIds(context, ["simpleObject", "foo", "prototypeInstance"], ClassWithSimpleProperties);	
 	}
 	
+	public function testGetAllObjectsByType () : void {
+		var context:Context = ActionScriptContextBuilder.buildAll([Container1, Container2]);
+		checkState(context);
+		checkObjectIds(context, ["simpleObject", "foo", "prototypeInstance", "lazyInstance", "eagerInstance"]);	
+		checkObjectIds(context, ["simpleObject", "foo", "prototypeInstance"], ClassWithSimpleProperties);
+		var cnt:int = context.getObjectCount(ClassWithSimpleProperties);	
+		assertEquals("Unexpected object count", 3, cnt);	
+		var objects:Array = context.getAllObjectsByType(ClassWithSimpleProperties);
+		assertEquals("Unexpected object count", 3, objects.length);	
+		for each (var obj:Object in objects) {
+			assertTrue("Unexpected object type", obj is ClassWithSimpleProperties);	
+		}
+	}
+	
 	
 }
 }

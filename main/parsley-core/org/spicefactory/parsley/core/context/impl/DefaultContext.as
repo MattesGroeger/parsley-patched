@@ -202,7 +202,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 		for each (var def:RootObjectDefinition in defs) {
 			objects.push(getInstance(def));
 		}
-		return defs;
+		return objects;
 	}
 	
 	/**
