@@ -140,7 +140,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	
 	private function createScopeDefinition (name:String, inherited:Boolean) : ScopeDefinition {
 		var extensions:ScopeExtensions = factories.scopeExtensions.getExtensions(name);
-		return new ScopeDefinition(ScopeName.LOCAL, false, factories, extensions);
+		return new ScopeDefinition(name, inherited, factories, extensions);
 	}
 	
 	private function createContext () : void {
