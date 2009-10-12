@@ -69,8 +69,8 @@ public class DefaultScopeExtensionRegistry implements ScopeExtensionRegistry {
 			ext.addExtension(factory.create());
 		}
 		for (var id:String in registry.byId) {
-			var factory:ScopeExtensionFactory = ScopeExtensionFactory(registry.byId[id]);
-			ext.addExtension(factory.create(), id);
+			var idFactory:ScopeExtensionFactory = ScopeExtensionFactory(registry.byId[id]);
+			ext.addExtension(idFactory.create(), id);
 		}
 	}
 	
