@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.factory.impl {
+import org.spicefactory.parsley.core.factory.ScopeExtensionRegistry;
 import org.spicefactory.parsley.core.factory.ScopeManagerFactory;
 import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
 import org.spicefactory.parsley.core.factory.ContextFactory;
@@ -37,6 +38,7 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 	private var _viewManager:ViewManagerFactory;
 	private var _scopeManager:ScopeManagerFactory;
 	private var _messageRouter:MessageRouterFactory;
+	private var _scopeExtensions:DefaultScopeExtensionRegistry = new DefaultScopeExtensionRegistry();
 	
 	private var parent:FactoryRegistry;
 	
@@ -48,6 +50,7 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 
 	public function activate (parent:FactoryRegistry) : void {
 		this.parent = parent;
+		_scopeExtensions.parent = parent.scopeExtensions;
 	}
 
 	
@@ -128,7 +131,10 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 		_messageRouter = value;
 	}
 	
-
+	public function get scopeExtensions () : ScopeExtensionRegistry {
+		return _scopeExtensions;
+	}
+	
 }
 }
 

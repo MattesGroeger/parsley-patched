@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.core.scope.impl {
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.scope.ScopeExtensions;
 
 /**
  * @author Jens Halm
@@ -30,12 +31,14 @@ public class ScopeDefinition {
 	private var _inherited:Boolean;
 	private var _lifecycleEventRouter:MessageRouter;
 	private var _messageRouter:MessageRouter;
+	private var _extensions:ScopeExtensions;
 	
 	
-	function ScopeDefinition (name:String, inherited:Boolean, factories:FactoryRegistry) {
+	function ScopeDefinition (name:String, inherited:Boolean, factories:FactoryRegistry, extensions:ScopeExtensions) {
 		_name = name;
 		_inherited = inherited;
 		this.factories = factories;
+		this._extensions = extensions;
 	}
 
 	
@@ -61,6 +64,9 @@ public class ScopeDefinition {
 		return _messageRouter;
 	}
 	
+	public function get extensions () : ScopeExtensions {
+		return _extensions;
+	}
 	
 }
 }

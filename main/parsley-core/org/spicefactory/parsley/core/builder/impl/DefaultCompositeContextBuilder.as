@@ -31,6 +31,7 @@ import org.spicefactory.parsley.core.factory.impl.DefaultContextStrategyProvider
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.scope.ScopeExtensions;
 import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.core.scope.impl.ScopeDefinition;
 
@@ -114,7 +115,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 * @inheritDoc
 	 */
 	public function addScope (name:String, inherited:Boolean):void {
-		scopes.addScope(new ScopeDefinition(name, inherited, factories));
+		scopes.addScope(createScopeDefinition(name, inherited));
 	}
 
 	/**
@@ -126,9 +127,9 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 
 
 	private function assembleScopeDefinitions () : void {
-		scopes.addScope(new ScopeDefinition(ScopeName.LOCAL, false, factories));
+		scopes.addScope(createScopeDefinition(ScopeName.LOCAL, false));
 		if (parent == null) {
-			scopes.addScope(new ScopeDefinition(ScopeName.GLOBAL, true, factories));
+			scopes.addScope(createScopeDefinition(ScopeName.GLOBAL, true));
 		}
 		else {
 			for each (var inheritedScope:ScopeDefinition in InheritedScopeRegistry.getScopes(parent)) {
@@ -137,8 +138,12 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		}
 	}
 	
+	private function createScopeDefinition (name:String, inherited:Boolean) : ScopeDefinition {
+		var extensions:ScopeExtensions = factories.scopeExtensions.getExtensions(name);
+		return new ScopeDefinition(ScopeName.LOCAL, false, factories, extensions);
+	}
+	
 	private function createContext () : void {
-		_factories.activate(GlobalFactoryRegistry.instance);
 		var provider:ContextStrategyProvider = createContextStrategyProvider(domain, scopes.getAll());
 		context = _factories.context.create(provider, parent);
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
@@ -161,6 +166,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 			log.warn("Context was already built. Returning existing instance");
 			return context;
 		}
+		_factories.activate(GlobalFactoryRegistry.instance);
 		assembleScopeDefinitions();
 		createContext();
 		invokeNextBuilder();

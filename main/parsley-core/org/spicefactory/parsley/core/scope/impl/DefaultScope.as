@@ -18,8 +18,9 @@ package org.spicefactory.parsley.core.scope.impl {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
-import org.spicefactory.parsley.core.scope.Scope;
 import org.spicefactory.parsley.core.scope.ObjectLifecycleScope;
+import org.spicefactory.parsley.core.scope.Scope;
+import org.spicefactory.parsley.core.scope.ScopeExtensions;
 
 import flash.system.ApplicationDomain;
 
@@ -114,6 +115,13 @@ public class DefaultScope implements Scope {
 	 */
 	public function get objectLifecycle () : ObjectLifecycleScope {
 		return _objectLifecycle;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get extensions () : ScopeExtensions {
+		return scopeDef.extensions;
 	}
 	
 }

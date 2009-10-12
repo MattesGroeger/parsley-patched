@@ -15,26 +15,15 @@
  */
 
 package org.spicefactory.parsley.core.scope {
-import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 
 /**
  * @author Jens Halm
  */
-public interface Scope {
+public interface ScopeExtensions {
 	
-	
-	function get name () : String;
-	
-	function get inherited () : Boolean;
-	
-	function get messageReceivers () : MessageReceiverRegistry;
-	
-	function get objectLifecycle () : ObjectLifecycleScope;
-	
-	function get extensions () : ScopeExtensions;
-	
-	function dispatchMessage (message:Object, selector:* = undefined) : void;
-	
+	function byType (type:Class) : Object;
+
+	function byId (id:String) : Object;
 	
 }
 }

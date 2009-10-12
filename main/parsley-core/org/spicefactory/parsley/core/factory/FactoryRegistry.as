@@ -45,6 +45,8 @@ public interface FactoryRegistry {
 	function get scopeManager () : ScopeManagerFactory;
 
 	function set scopeManager (value:ScopeManagerFactory) : void;
+	
+	function get scopeExtensions () : ScopeExtensionRegistry;
 
 	function get messageRouter () : MessageRouterFactory;
 

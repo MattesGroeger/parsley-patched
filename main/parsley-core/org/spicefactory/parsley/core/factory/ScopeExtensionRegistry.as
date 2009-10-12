@@ -14,26 +14,18 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.scope {
-import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
+package org.spicefactory.parsley.core.factory {
+import org.spicefactory.parsley.core.scope.ScopeExtensions;
 
 /**
  * @author Jens Halm
  */
-public interface Scope {
+public interface ScopeExtensionRegistry {
 	
 	
-	function get name () : String;
+	function addExtension (factory:ScopeExtensionFactory, scope:String = null, id:String = null) : void;
 	
-	function get inherited () : Boolean;
-	
-	function get messageReceivers () : MessageReceiverRegistry;
-	
-	function get objectLifecycle () : ObjectLifecycleScope;
-	
-	function get extensions () : ScopeExtensions;
-	
-	function dispatchMessage (message:Object, selector:* = undefined) : void;
+	function getExtensions (scope:String) : ScopeExtensions;
 	
 	
 }
