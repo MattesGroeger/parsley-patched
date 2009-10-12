@@ -55,12 +55,16 @@ public class DefaultScopeExtensionRegistry implements ScopeExtensionRegistry {
 	
 	public function getExtensions (scope:String) : ScopeExtensions {
 		var parentExt:ScopeExtensions = (_parent != null) ? _parent.getExtensions(scope) : null;
-		var registry:Registry;
-		if (scopes[scope] == undefined) {
-			registry = new Registry();
-			scopes[scope] = registry;
-		}
 		var ext:DefaultScopeExtensions = new DefaultScopeExtensions(parentExt);
+		if (scopes[scope] != undefined) {
+			var registry:Registry = scopes[scope] as Registry;
+			addExtensions(registry, ext);
+		}
+		addExtensions(allScopes, ext);
+		return ext;
+	}
+	
+	private function addExtensions (registry:Registry, ext:DefaultScopeExtensions) : void {
 		for each (var factory:ScopeExtensionFactory in registry.withoutId) {
 			ext.addExtension(factory.create());
 		}
@@ -68,7 +72,6 @@ public class DefaultScopeExtensionRegistry implements ScopeExtensionRegistry {
 			var factory:ScopeExtensionFactory = ScopeExtensionFactory(registry.byId[id]);
 			ext.addExtension(factory.create(), id);
 		}
-		return ext;
 	}
 	
 }
