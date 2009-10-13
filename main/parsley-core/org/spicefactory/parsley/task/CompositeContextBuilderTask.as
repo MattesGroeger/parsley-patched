@@ -30,7 +30,7 @@ import flash.system.ApplicationDomain;
 /**
  * Wraps a CompositeContextBuilder to adapt it to the Task Framework.
  * Instances of this class can be used in Spicelib TaskGroups in case the initialization process of your application
- * involve more asynchronous operations than just Parsley Context initialization.
+ * involves more asynchronous operations than just Parsley Context initialization.
  * 
  * @author Jens Halm
  */
