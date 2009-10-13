@@ -246,7 +246,7 @@ class FlexModuleFactoryProxy implements IFlexModuleFactory {
 	}
 	
 	// added in SDK 4.0
-	public function callInContext (fn:Function, thisArg:Boolean, argArray:*, returns:* = true) : * {
+	public function callInContext (fn:Function, thisArg:*, argArray:*, returns:Boolean = true) : * {
 		return factory.callInContext(fn, thisArg, argArray, returns);
 	}
 	
