@@ -3,7 +3,7 @@
 	
 	<property file="build.properties" />
 	
-	<property name="version" value="2.1.0"/>
+	<property name="version" value="2.1.0-SNAPSHOT-091014"/>
 	<property name="pimento.version" value="1.1.0"/>
 	<property name="project.dir" value="${basedir}/.."/>
 	<property name="lib.dir" value="${project.dir}/lib"/>
@@ -38,10 +38,10 @@
 		</exec>
 	</target>
 	
-	<target name="compile_parsley_complete_flex">
+	<target name="compile_parsley_complete_flex3">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageErrorHandler,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
-			<arg line="-o ${release.target.dir}/release/parsley-complete-flex-${version}.swc" />
+			<arg line="-o ${release.target.dir}/release/parsley-complete-flex3-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/pimento ${project.dir}/manifest/parsley-pimento-manifest.xml" />
@@ -59,6 +59,33 @@
 			<arg line="-debug=true"/>
 			<arg line="-verbose-stacktraces"/>
 		</exec>
+	</target>
+	
+	<target name="compile_parsley_complete_flex4">
+		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
+					token="extends Flex3ModuleInfoBase" value="extends Flex4ModuleInfoBase"/>
+		<exec executable="${flex4.sdk}/bin/compc.exe" dir="${basedir}">
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageErrorHandler,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-o ${release.target.dir}/release/parsley-complete-flex4-${version}.swc" />
+			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
+			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
+			<arg line="-namespace http://www.spicefactory.org/parsley/pimento ${project.dir}/manifest/parsley-pimento-manifest.xml" />
+			<arg line="-namespace http://www.spicefactory.org/parsley/cinnamon ${project.dir}/manifest/parsley-cinnamon-manifest.xml" />
+			<arg line="-el ${flex4.sdk}/frameworks/libs/player/10/playerglobal.swc" />
+			<arg line="-el ${flex4.sdk}/frameworks/libs/flex.swc" />
+			<arg line="-el ${flex4.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-el ${release.target.dir}/release/spicelib-complete-flex-${version}.swc" />
+			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
+			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
+			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-flex ${project.dir}/parsley-pimento ${project.dir}/parsley-xml"/>
+			<arg line="-include-namespaces=http://www.spicefactory.org/parsley,http://www.spicefactory.org/parsley/flex,http://www.spicefactory.org/parsley/pimento,http://www.spicefactory.org/parsley/cinnamon" />
+			<arg line="-is ${project.dir}/parsley-xml" />
+			<arg line="-include-classes CoreFrameworkClasses FlexSupportClasses org.spicefactory.parsley.cinnamon.CinnamonXmlSupport org.spicefactory.parsley.pimento.PimentoXmlSupport" />
+			<arg line="-debug=true"/>
+			<arg line="-verbose-stacktraces"/>
+		</exec>
+		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
+					token="extends Flex4ModuleInfoBase" value="extends Flex3ModuleInfoBase"/>
 	</target>
 	
 	<target name="compile_spicelib_complete_flex">
@@ -174,9 +201,9 @@
 		</exec>
 	</target>
 	
-	<target name="compile_parsley_flex">
+	<target name="compile_parsley_flex3">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-o ${release.target.dir}/release/modules/parsley-flex-${version}.swc" />
+			<arg line="-o ${release.target.dir}/release/modules/parsley-flex3-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
@@ -192,6 +219,30 @@
 			<arg line="-include-namespaces http://www.spicefactory.org/parsley/flex" />
 			<arg line="-include-classes FlexSupportClasses" />
 		</exec>
+	</target>
+	
+	<target name="compile_parsley_flex4">
+		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
+					token="extends Flex3ModuleInfoBase" value="extends Flex4ModuleInfoBase"/>
+		<exec executable="${flex4.sdk}/bin/compc.exe" dir="${basedir}">
+			<arg line="-o ${release.target.dir}/release/modules/parsley-flex4-${version}.swc" />
+			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
+			<arg line="-el ${flex4.sdk}/frameworks/libs/player/10/playerglobal.swc" />
+			<arg line="-el ${flex4.sdk}/frameworks/libs/flex.swc" />
+			<arg line="-el ${flex4.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-el ${flex4.sdk}/frameworks/libs/rpc.swc" />
+			<arg line="-el ${flex4.sdk}/frameworks/libs/utilities.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/parsley-xml-${version}.swc" />
+			<arg line="-sp ${project.dir}/parsley-flex" />
+			<arg line="-include-namespaces http://www.spicefactory.org/parsley/flex" />
+			<arg line="-include-classes FlexSupportClasses" />
+		</exec>
+		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
+					token="extends Flex4ModuleInfoBase" value="extends Flex3ModuleInfoBase"/>
 	</target>
 			
 	<target name="compile_parsley_xml">
@@ -255,10 +306,12 @@
 	
 	<target name="compile_parsley_all">
 		<antcall target="compile_parsley_complete_flash"/>
-		<antcall target="compile_parsley_complete_flex"/>
+		<antcall target="compile_parsley_complete_flex3"/>
+		<antcall target="compile_parsley_complete_flex4"/>
 		<antcall target="compile_parsley_core"/>
 		<antcall target="compile_parsley_xml"/>
-		<antcall target="compile_parsley_flex"/>
+		<antcall target="compile_parsley_flex3"/>
+		<antcall target="compile_parsley_flex4"/>
 		<antcall target="compile_parsley_flash"/>
 		<antcall target="compile_parsley_pimento"/>
 	</target>
