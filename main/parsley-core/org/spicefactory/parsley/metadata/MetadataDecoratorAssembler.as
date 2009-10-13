@@ -47,9 +47,9 @@ import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
- * Static Utility method that can be used by all object definiton builders that wish to process
+ * DecoratorAssembler implementation that can be used by all object definition builders that wish to process
  * metadata tags on classes. All builtin configuration mechanisms (MXML, XML and ActionScript)
- * use this method.
+ * use this class per default. DecoratorAssemblers can be specified on an ObjectDefinitionRegistryFactory.
  * 
  * @author Jens Halm
  */
@@ -63,8 +63,8 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 	
 	/**
 	 * Initializes the metadata tag registrations for all builtin metadata tags.
-	 * Will be called by all the builtin ContextBuilder entry point methods
-	 * and usually does not need to be called by an application.
+	 * Will usually be called by the framework
+	 * and does not need to be called by an application.
 	 * 
 	 * @param domain the ApplicationDomain to use for reflection
 	 */
