@@ -38,6 +38,7 @@ public class FlexModuleSupport {
 }
 }
 
+import org.spicefactory.lib.errors.AbstractMethodError;
 import flash.utils.Dictionary;
 
 import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
@@ -73,7 +74,36 @@ class ModuleManagerDecorator {
 	
 }
 
-class ModuleInfoProxy implements IModuleInfo {
+class ModuleInfoBase {
+	protected function getDomain (applicationDomain:ApplicationDomain) : ApplicationDomain {
+		throw new AbstractMethodError();
+	}
+	protected function getModule () : Object {
+		throw new AbstractMethodError();
+	}
+}
+
+class Flex3ModuleInfoBase extends ModuleInfoBase {
+	
+	public function load (applicationDomain:ApplicationDomain = null, 
+			securityDomain:SecurityDomain = null, bytes:ByteArray = null) : void {
+		var domain:ApplicationDomain = getDomain(applicationDomain);
+		getModule().load(domain, securityDomain, bytes);
+	}
+	
+}
+
+class Flex4ModuleInfoBase extends ModuleInfoBase {
+	
+	public function load (applicationDomain:ApplicationDomain = null, 
+			securityDomain:SecurityDomain = null, bytes:ByteArray = null, moduleFactory:IFlexModuleFactory = null) : void {
+		var domain:ApplicationDomain = getDomain(applicationDomain);
+		getModule().load(domain, securityDomain, bytes, moduleFactory);
+	}
+	
+}
+
+class ModuleInfoProxy extends Flex3ModuleInfoBase implements IModuleInfo {
 	
 	
 	private var module:IModuleInfo;
@@ -91,14 +121,17 @@ class ModuleInfoProxy implements IModuleInfo {
 		factoryProxy = null;
 	}
 
-	public function load (applicationDomain:ApplicationDomain = null, 
-			securityDomain:SecurityDomain = null, bytes:ByteArray = null) : void {
+	protected override function getDomain (applicationDomain:ApplicationDomain) : ApplicationDomain {
 		if (domain == null) {
 			domain = (applicationDomain != null) ? applicationDomain
 					: (FlexModuleSupport.defaultLoadingPolicy == ModuleLoadingPolicy.ROOT_DOMAIN) ?
 					ClassInfo.currentDomain : new ApplicationDomain(ClassInfo.currentDomain);
 		}
-		module.load(domain, securityDomain, bytes);
+		return domain;
+	}
+	
+	protected override function getModule () : Object {
+		return module;
 	}
 	
 	public function get factory () : IFlexModuleFactory {
@@ -172,14 +205,17 @@ class ModuleInfoProxy implements IModuleInfo {
 	
 }
 
+
 class FlexModuleFactoryProxy implements IFlexModuleFactory {
 
+	private var factory:Object; // typed as Object to hide differences between 3.3, 3.4, 4.0 SDKs
 	private var module:IModuleInfo;
 	private var domain:ApplicationDomain;
 	
 	function FlexModuleFactoryProxy (module:IModuleInfo, domain:ApplicationDomain) {
 		this.module = module;
 		this.domain = domain;
+		this.factory = module.factory;
 	}
 
 	public function create (...args:*) : Object {
@@ -194,16 +230,34 @@ class FlexModuleFactoryProxy implements IFlexModuleFactory {
 		return module.factory.info();
 	}
 	
+	// added in SDK 3.4
 	public function allowInsecureDomain (...args:*) : void {
-		module.factory.allowInsecureDomain.apply(module.factory, args);
+		factory.allowInsecureDomain.apply(module.factory, args);
 	}
 	
+	// added in SDK 3.4
 	public function allowDomain (...args:*) : void {
-		module.factory.allowDomain.apply(module.factory, args);
+		factory.allowDomain.apply(module.factory, args);
 	}
 	
+	// added in SDK 3.4
 	public function get preloadedRSLs () : Dictionary {
-		return module.factory.preloadedRSLs;
+		return factory.preloadedRSLs;
+	}
+	
+	// added in SDK 4.0
+	public function callInContext (fn:Function, thisArg:Boolean, argArray:*, returns:* = true) : * {
+		return factory.callInContext(fn, thisArg, argArray, returns);
+	}
+	
+	// added in SDK 4.0
+	public function getImplementation (interfaceName:String) : Object {
+		return factory.getImplementation(interfaceName);
+	}
+	
+	// added in SDK 4.0
+	public function registerImplementation (interfaceName:String, impl:Object) : void {
+		factory.registerImplementation(interfaceName, impl);
 	}
 	
 }
