@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.core.messaging.receiver.command {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.DynamicContext;
-import org.spicefactory.parsley.core.context.impl.DynamicObject;
+import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 

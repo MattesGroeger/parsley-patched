@@ -61,9 +61,9 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 	/**
 	 * @inheritDoc
 	 */
-	public function addDefinition (definition:ObjectDefinition) : DynamicObject {
+	public function addDefinition (definition:ObjectDefinition) : DefaultDynamicObject {
 		checkState();
-		var object:DynamicObject = new DynamicObject(this, definition);
+		var object:DefaultDynamicObject = new DefaultDynamicObject(this, definition);
 		if (object.instance != null) {
 			addDynamicObject(object);		
 		}
@@ -73,14 +73,14 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 	/**
 	 * @inheritDoc
 	 */
-	public function addObject (instance:Object, definition:ObjectDefinition = null) : DynamicObject {
+	public function addObject (instance:Object, definition:ObjectDefinition = null) : DefaultDynamicObject {
 		checkState();
 		if (definition == null) {
 			var ci:ClassInfo = ClassInfo.forInstance(instance, registry.domain);
 			var defFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
 			definition = defFactory.createNestedDefinition(registry);
 		}
-		var object:DynamicObject = new DynamicObject(this, definition, instance);
+		var object:DefaultDynamicObject = new DefaultDynamicObject(this, definition, instance);
 		addDynamicObject(object);
 		return object;
 	}
@@ -88,14 +88,14 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 	/**
 	 * @private
 	 */
-	internal function addDynamicObject (object:DynamicObject) : void {
+	internal function addDynamicObject (object:DefaultDynamicObject) : void {
 		objects[object.instance] = object;	
 	}
 	
 	/**
 	 * @private
 	 */
-	internal function removeDynamicObject (object:DynamicObject) : void {
+	internal function removeDynamicObject (object:DefaultDynamicObject) : void {
 		if (objects != null) delete objects[object.instance];	
 	}
 	
@@ -104,7 +104,7 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 	 */
 	public function removeObject (instance:Object) : void {
 		if (destroyed) return;
-		var object:DynamicObject = DynamicObject(objects[instance]);
+		var object:DefaultDynamicObject = DefaultDynamicObject(objects[instance]);
 		if (object != null) {
 			object.remove();
 		}

@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.context {
-import org.spicefactory.parsley.core.context.impl.DynamicObject;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 
 /**

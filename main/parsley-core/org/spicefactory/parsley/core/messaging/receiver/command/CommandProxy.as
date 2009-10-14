@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.core.messaging.receiver.command {
 import org.spicefactory.parsley.core.context.DynamicContext;
-import org.spicefactory.parsley.core.context.impl.DynamicObject;
+import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.AbstractMessageReceiver;
 
@@ -45,7 +45,7 @@ public class CommandProxy extends AbstractMessageReceiver implements MessageTarg
 	
 	public function handleMessage (message:Object) : void {
 		
-		var targetInstance:DynamicObject = provider.newInstance(context); // TODO - (DynObj should be interface)
+		var targetInstance:DynamicObject = provider.newInstance(context);
 		
 		try {
 			target.handleMessage(message);
