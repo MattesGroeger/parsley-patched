@@ -17,27 +17,37 @@
 package org.spicefactory.parsley.core.scope.impl {
 import org.spicefactory.lib.util.ArrayUtil;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
-import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.scope.ObjectLifecycleScope;
 
 import flash.utils.Dictionary;
 
 /**
+ * Default implementation of the ObjectLifecycleScope interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 
 
 	private var listeners:Dictionary = new Dictionary();
-	private var router:MessageRouter;
+	private var receiverRegistry:MessageReceiverRegistry;
 	
 	
-	function DefaultObjectLifecycleScope (router:MessageRouter) {
-		this.router = router;
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param receiverRegistry the registry for the object lifecycle listeners
+	 */
+	function DefaultObjectLifecycleScope (receiverRegistry:MessageReceiverRegistry) {
+		this.receiverRegistry = receiverRegistry;
 	}
 
 
+	/**
+	 * @inheritDoc
+	 */
 	public function addListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void {
 		var selector:String = (id == null) ? event.key : event.key + ":" + id;
 		var target:MessageTarget = new ObjectLifecycleListener(type, selector, listener);
@@ -47,9 +57,12 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 			listeners[listener] = targets;
 		}
 		targets.push(target);
-		router.receivers.addTarget(target);
+		receiverRegistry.addTarget(target);
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function removeListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void {
 		var selector:String = (id == null) ? event.key : event.key + ":" + id;
 		var targets:Array = listeners[listener];
@@ -59,7 +72,7 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 		for each (var target:MessageTarget in targets) {
 			if (target.messageType == type && target.selector == selector) {
 				ArrayUtil.remove(targets, target);
-				router.receivers.removeTarget(target);
+				receiverRegistry.removeTarget(target);
 				if (targets.length == 0) {
 					delete listeners[listener];
 				}
@@ -67,6 +80,8 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 			}
 		}
 	}
+	
+	
 }
 }
 

@@ -17,12 +17,34 @@
 package org.spicefactory.parsley.core.scope {
 
 /**
+ * Registry for custom extensions added to a scope.
+ * This is primarily useful for custom configuration tags that may want to interact with a
+ * manager-type instance. Often this manager wants to operate scope-wide like some of the
+ * builtin services (e.g. MessageRouter).
+ * 
+ * <p>Extensions can be registered globally or for a single Context only with
+ * <code>FactoryRegistry.scopeExtensions</code>.</p>
+ * 
  * @author Jens Halm
  */
 public interface ScopeExtensions {
 	
+	/**
+	 * Obtains the extension of the specified type.
+	 * When using this method the scope must contain exactly one instance of a matching type, 
+	 * otherwise an Error will be thrown.
+	 * 
+	 * @param type the type of extenstion to obtain
+	 * @return the extension with a matching type
+	 */
 	function byType (type:Class) : Object;
 
+	/**
+	 * Obtains the extension registered with the specified id.
+	 * 
+	 * @param id the id of the extension to obtain
+	 * @return the extension with the specified id
+	 */
 	function byId (id:String) : Object;
 	
 }

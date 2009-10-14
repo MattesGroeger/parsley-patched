@@ -15,13 +15,15 @@
  */
 
 package org.spicefactory.parsley.core.scope.impl {
-	import flash.utils.getQualifiedClassName;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.scope.ScopeExtensions;
 
 import flash.utils.Dictionary;
+import flash.utils.getQualifiedClassName;
 
 /**
+ * Default implementation of the ScopeExtensions interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultScopeExtensions implements ScopeExtensions {
@@ -32,11 +34,22 @@ public class DefaultScopeExtensions implements ScopeExtensions {
 	private var allExt:Array = new Array();
 
 
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param parent the parent instance to obtain additional extensions from
+	 */
 	function DefaultScopeExtensions (parent:ScopeExtensions) {
 		this.parent = parent;
 	}
 
 	
+	/**
+	 * Adds an extension for this scope.
+	 * 
+	 * @param ext the extension instance to add
+	 * @param id the optional id the extension should be registered with
+	 */
 	public function addExtension (ext:Object, id:String = null) : void {
 		if (id != null) {
 			extById[id] = ext;
@@ -44,7 +57,9 @@ public class DefaultScopeExtensions implements ScopeExtensions {
 		allExt.push(ext);
 	}
 
-
+	/**
+	 * @inheritDoc
+	 */
 	public function byType (type:Class) : Object {
 		var result:Object = null;
 		for each (var ext:Object in allExt) {
@@ -68,6 +83,9 @@ public class DefaultScopeExtensions implements ScopeExtensions {
 		return result;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function byId (id:String) : Object {
 		if (extById[id] != undefined) {
 			return extById[id];

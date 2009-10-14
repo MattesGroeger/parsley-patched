@@ -18,21 +18,44 @@ package org.spicefactory.parsley.core.scope {
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 
 /**
+ * Represents a single scope.
+ * 
  * @author Jens Halm
  */
 public interface Scope {
 	
 	
+	/**
+	 * The name of the scope.
+	 */
 	function get name () : String;
 	
+	/**
+	 * Indicates whether this scope will be inherited by child Contexts.
+	 */
 	function get inherited () : Boolean;
 	
+	/**
+	 * The registry for receivers of application messages dispatched through this scope.
+	 */
 	function get messageReceivers () : MessageReceiverRegistry;
 	
+	/**
+	 * The registry for listeners that listen to lifecycle events of objects within this scope.
+	 */
 	function get objectLifecycle () : ObjectLifecycleScope;
 	
+	/**
+	 * Custom extensions registered for this scope.
+	 */
 	function get extensions () : ScopeExtensions;
 	
+	/**
+	 * Dispatches a message through this scope.
+
+ * 	 * @param message the message to dispatch
+	 * @param selector the selector to use if it cannot be determined from the message instance itself
+	 */
 	function dispatchMessage (message:Object, selector:* = undefined) : void;
 	
 	

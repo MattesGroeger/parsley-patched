@@ -17,17 +17,52 @@
 package org.spicefactory.parsley.core.scope {
 
 /**
+ * Responsible for managing the scopes associated with a single Context.
+ * Each Context has a unique set of scopes associated with it. It may be any
+ * combination of scopes inherited from parent Contexts or explicitly created for a Context.
+ * When no custom scopes are created the default setup is that each Context is associated with
+ * two scopes: One global scope, shared throughout the entire Context hierarchy, and a local
+ * scope that just spans a single Context.
+ * 
+ * <p>Scopes allow to create segments in your application where application messages or lifecycle
+ * listeners are only effective for a particular scope, which in turn may span multiple Contexts.</p>
+ * 
  * @author Jens Halm
  */
 public interface ScopeManager {
 	
-	
+	/**
+	 * Indicates whether this manager contains a scope with the specified name.
+	 * 
+	 * @param name the name of the scope to look for
+	 * @return true if this manager contains a scope with the specified name
+	 */
 	function hasScope (name:String) : Boolean;
 	
+	/**
+	 * Returns the scope instance for the specified scope name.
+	 * 
+	 * @param name the name of the scope to look for
+	 * @return the Scope instance for the specified name
+	 */
 	function getScope (name:String) : Scope;
 	
+	/**
+	 * Returns all scope instances managed by this instance.
+	 * 
+	 * @return all scope instances managed by this instance
+	 */
 	function getAllScopes () : Array;
 	
+	/**
+	 * Dispatches a message through all scopes managed by this instance.
+	 * This is just a convenient short cut to avoid looping through all scopes individually.
+	 * In many cases you'll want to dispatch application messages through all scopes so that
+	 * the receiving side can decide which scope it wants to listen for.
+	 * 
+	 * @param message the message to dispatch
+	 * @param selector the selector to use if it cannot be determined from the message instance itself
+	 */
 	function dispatchMessage (message:Object, selector:* = undefined) : void;
 	
 	

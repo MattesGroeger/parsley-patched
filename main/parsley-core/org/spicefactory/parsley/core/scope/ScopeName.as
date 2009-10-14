@@ -17,13 +17,28 @@
 package org.spicefactory.parsley.core.scope {
 
 /**
+ * Enumeration for the two builtin scope types.
+ * 
  * @author Jens Halm
  */
 public class ScopeName {
 	
 	
+	/**
+	 * Constant for the name of the global scope.
+	 * 
+	 * <p>A global scope spans the entire Context hierarchy and is inherited by each
+	 * child Context added to the hierarchy. It is not necessarily global application-wide,
+	 * since you can build disconnected Context hierachies, although this is a rather rare use case.</p>
+	 */
 	public static const GLOBAL:String = "global";
 
+	/**
+	 * Constant for the name of the local scope.
+	 * 
+	 * <p>A local scope only spans a single Context. Such a scope is automatically created for each
+	 * Context created in an application.</p>
+	 */
 	public static const LOCAL:String = "local";
 	
 	

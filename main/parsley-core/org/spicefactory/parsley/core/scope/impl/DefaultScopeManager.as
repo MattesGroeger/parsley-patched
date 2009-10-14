@@ -24,6 +24,8 @@ import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
+ * Default implementation of the ScopeManager interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultScopeManager implements ScopeManager {
@@ -46,6 +48,9 @@ public class DefaultScopeManager implements ScopeManager {
 	}
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function hasScope (name:String) : Boolean {
 		return (scopes[name] != undefined);
 	}

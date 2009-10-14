@@ -18,13 +18,34 @@ package org.spicefactory.parsley.core.scope {
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 
 /**
+ * A registry for listeners that listen to lifecycle events of objects within a single scope.
+ * 
  * @author Jens Halm
  */
 public interface ObjectLifecycleScope {
 	
 	
+	/**
+	 * Adds a listener to object lifecycle events in this scope.
+	 * The listener function must contain a single parameter typed to the object specified with the first parameter
+	 * (or a supertype). The id parameter may be omitted, in this case the listener listens for all objects with
+	 * a matching type.
+	 * 
+	 * @param type the type of the objects the listener is interested in
+	 * @param event the lifecycle event to listen for
+	 * @param listener the listener function
+	 * @param id the id of the object to listen for
+	 */
 	function addListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void;
 
+	/**
+	 * Removes a listener to object lifecycle events from this scope.
+	 * 
+	 * @param type the type of the objects the listener is interested in
+	 * @param event the lifecycle event to listen for
+	 * @param listener the listener function
+	 * @param id the id of the object to listen for
+	 */
 	function removeListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void;
 	
 	//function addProvider (provider:ObjectProvider, methodName:String, event:ObjectLifecycle, id:String = null) : void;

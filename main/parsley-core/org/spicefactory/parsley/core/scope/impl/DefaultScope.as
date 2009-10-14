@@ -25,6 +25,8 @@ import org.spicefactory.parsley.core.scope.ScopeExtensions;
 import flash.system.ApplicationDomain;
 
 /**
+ * Default implementation of the Scope interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultScope implements Scope {
@@ -38,11 +40,18 @@ public class DefaultScope implements Scope {
 	private var _objectLifecycle:ObjectLifecycleScope;
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param context the Context this scope instance is associated with
+	 * @param scopeDef the shared definition for this scope
+	 * @param domain the ApplicationDomain to use for reflection
+	 */
 	function DefaultScope (context:Context, scopeDef:ScopeDefinition, domain:ApplicationDomain) {
 		this.context = context;
 		this.scopeDef = scopeDef;
 		this.domain = domain;
-		this._objectLifecycle = new DefaultObjectLifecycleScope(scopeDef.lifecycleEventRouter);
+		this._objectLifecycle = new DefaultObjectLifecycleScope(scopeDef.lifecycleEventRouter.receivers);
 		
 		if (context.configured) {
 			activated = true;
