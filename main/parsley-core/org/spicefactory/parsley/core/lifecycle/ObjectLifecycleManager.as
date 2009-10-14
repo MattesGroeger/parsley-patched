@@ -39,7 +39,7 @@ public interface ObjectLifecycleManager {
 
 	/**
 	 * Processes the configuration for the specified instance and performs dependency injection, message handler registration
-	 * or invocation of methods marked with Init and similar tasks.
+	 * or invocation of methods marked with <code>[Init]</code> and similar tasks.
 	 * 
 	 * @param instance the instance to configure
 	 * @param definition the definition of the specified instance
@@ -49,7 +49,7 @@ public interface ObjectLifecycleManager {
 
 	/**
 	 * Processes lifecycle listeners for the object before it will be removed from the Context.
-	 * This includes invoking methods marked with PreDestroy.
+	 * This includes invoking methods marked with <code>[Destroy]</code>.
 	 * 
 	 * @param instance the instance to process
 	 * @param definition the definition of the specified instance
@@ -59,7 +59,7 @@ public interface ObjectLifecycleManager {
 	
 	/**
 	 * Processes lifecycle listeners for all objects created by this factory. This means that
-	 * implementation have to keep track of all instance they create.
+	 * implementations have to keep track of all instances they create.
 	 * 
 	 * @param context The associated Context
 	 */

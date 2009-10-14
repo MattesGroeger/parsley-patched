@@ -17,34 +17,62 @@
 package org.spicefactory.parsley.core.lifecycle {
 
 /**
+ * Enumeration for all phases of an object lifecycle.
+ * 
  * @author Jens Halm
  */
 public class ObjectLifecycle {
 	
 	
+	/**
+	 * Lifecycle phase immediately after an object has been instantiated, but before any dependency injection
+	 * or other configuration has been performed on the object.
+	 */
 	public static const PRE_CONFIGURE:ObjectLifecycle = new ObjectLifecycle("preConfigure");
 
+	/**
+	 * Lifecycle phase after all injections and other configuration tasks have been performed
+	 * for an object, but immediately before the init method of that object (if existent) is invoked.
+	 */
 	public static const PRE_INIT:ObjectLifecycle = new ObjectLifecycle("preInit");
 
+	/**
+	 * Lifecycle phase after the init method of an object has been invoked.
+	 */
 	public static const POST_INIT:ObjectLifecycle = new ObjectLifecycle("postInit");
 
+	/**
+	 * Lifecycle phase when an object is about to be removed from the Context, but before
+	 * the destroy method of that object (if existent) is invoked.
+	 */
 	public static const PRE_DESTROY:ObjectLifecycle = new ObjectLifecycle("preDestroy");
 
+	/**
+	 * Lifecycle phase after the destoy method of an object (if existent) has been invoked.
+	 * This is the final phase before an object actually gets removed from a Context.
+	 */
 	public static const POST_DESTROY:ObjectLifecycle = new ObjectLifecycle("postDestroy");
 	
 	
 	private var _key:String;
 	
-	
+	/**
+	 * @private
+	 */
 	function ObjectLifecycle (key:String) {
 		_key = key;
 	}
 	
-	
+	/**
+	 * The unique key representing this lifecycle phase.
+	 */
 	public function get key () : String {
 		return _key;
 	}
 	
+	/**
+	 * @private
+	 */
 	public function toSting () : String {
 		return _key;
 	}

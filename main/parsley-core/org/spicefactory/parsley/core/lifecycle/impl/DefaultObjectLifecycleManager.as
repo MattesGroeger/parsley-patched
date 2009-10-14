@@ -33,7 +33,7 @@ import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
- * Default implementation of the ObjectFactory interface.
+ * Default implementation of the ObjectLifecycleManager interface.
  * 
  * @author Jens Halm
  */
