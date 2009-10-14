@@ -17,6 +17,9 @@
 package org.spicefactory.parsley.core.messaging.receiver.command {
 
 /**
+ * @private 
+ * Prepared for inclusion in version 2.2.0.
+ * 
  * @author Jens Halm
  */
 public class CommandManager {

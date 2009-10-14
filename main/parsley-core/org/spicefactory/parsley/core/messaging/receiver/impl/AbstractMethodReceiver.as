@@ -20,6 +20,9 @@ import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.errors.ContextError;
 
 /**
+ * Abstract base class for all message handlers where the message is handled
+ * by a method invocation on the target instance.
+ * 
  * @author Jens Halm
  */
 public class AbstractMethodReceiver extends AbstractTargetInstanceReceiver {
@@ -27,7 +30,14 @@ public class AbstractMethodReceiver extends AbstractTargetInstanceReceiver {
 	
 	private var _targetMethod:Method;
 	
-	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param provider the provider for the actual instance handling the message
+	 * @param methodName the name of the method to invoke for matching messages
+	 * @param messageType the type of the message this receiver is interested in
+	 * @param selector an additional selector value to be used to determine matching messages
+	 */
 	function AbstractMethodReceiver (provider:ObjectProvider, methodName:String, 
 			messageType:Class = null, selector:* = undefined) {
 		super(provider, messageType, selector);
@@ -38,7 +48,9 @@ public class AbstractMethodReceiver extends AbstractTargetInstanceReceiver {
 		}
 	}
 
-	
+	/**
+	 * The method to invoke for matching messages.
+	 */
 	protected function get targetMethod () : Method {
 		return _targetMethod;
 	}

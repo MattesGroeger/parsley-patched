@@ -17,26 +17,43 @@
 package org.spicefactory.parsley.core.messaging {
 
 /**
+ * Enumeration for the policy to apply for unhandled errors.
+ * 
  * @author Jens Halm
  */
 public class ErrorPolicy {
 	
 	
+	/**
+	 * Constant for the policy that causes errors thrown by message receivers to be rethrown.
+	 */
 	public static const RETHROW:ErrorPolicy = new ErrorPolicy("rethrow");
 
+	/**
+	 * Constant for the policy that causes message processing to abort 
+	 * after an error has been thrown by a message receiver.
+	 */
 	public static const ABORT:ErrorPolicy = new ErrorPolicy("abort");
 
+	/**
+	 * Constant for the policy that causes message processing to continue 
+	 * after an error has been thrown by a message receiver.
+	 */
 	public static const IGNORE:ErrorPolicy = new ErrorPolicy("ignore");
 
 	
 	private var _key:String;
 	
-	
+	/**
+	 * @private
+	 */
 	function ErrorPolicy (key:String) {
 		_key = key;
 	}
 
-	
+	/**
+	 * @private
+	 */
 	public function toSting () : String {
 		return _key;
 	}

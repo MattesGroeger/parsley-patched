@@ -18,6 +18,8 @@ package org.spicefactory.parsley.core.messaging.receiver.impl {
 import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 
 /**
+ * Abstract base class for all types of message receivers.
+ * 
  * @author Jens Halm
  */
 public class AbstractMessageReceiver implements MessageReceiver {
@@ -27,16 +29,28 @@ public class AbstractMessageReceiver implements MessageReceiver {
 	private var _selector:*;
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param messageType the type of the message this receiver is interested in
+	 * @param selector an additional selector value to be used to determine matching messages
+	 */
 	function AbstractMessageReceiver (messageType:Class = null, selector:* = undefined) {
 		_messageType = (messageType != null) ? messageType : Object;
 		_selector = selector;
 	}
 
 
+	/**
+	 * @inheritDoc
+	 */
 	public function get messageType () : Class {
 		return _messageType;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get selector () : * {
 		return _selector;
 	}

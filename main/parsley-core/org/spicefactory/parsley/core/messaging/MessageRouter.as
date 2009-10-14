@@ -25,7 +25,9 @@ import flash.system.ApplicationDomain;
  */
 public interface MessageRouter {
 	
-	
+	/**
+	 * The registry for all receivers of messages dispatched through this router.
+	 */
 	function get receivers () : MessageReceiverRegistry;
 	
 	/**

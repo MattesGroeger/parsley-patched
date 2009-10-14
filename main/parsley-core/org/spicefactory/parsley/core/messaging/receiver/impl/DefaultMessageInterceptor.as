@@ -22,19 +22,21 @@ import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
 
 /**
+ * Default implementation of the MessageInterceptor interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultMessageInterceptor extends AbstractMethodReceiver implements MessageInterceptor {
 
 
-	/*
+	/**
 	 * Creates a new instance.
 	 * The target method must have a single parameter of type <code>org.spicefactory.parsley.messaging.MessageProcessor</code>.
 	 * 
-	 * @param targetInstance the instance that contains the interceptor method
-	 * @param methodName the name of the interceptor method that should be invoked
-	 * @param messageType the type of the message to intercept
-	 * @param selector an optional selector value to be used for selecting matching message targets
+	 * @param provider the provider for the actual instance intercepting the message
+	 * @param methodName the name of the interceptor method
+	 * @param messageType the type of the message this interceptor is interested in
+	 * @param selector an additional selector value to be used to determine matching messages
 	 */	
 	function DefaultMessageInterceptor (provider:ObjectProvider, methodName:String, messageType:Class,
 			selector:* = undefined) {
@@ -46,7 +48,9 @@ public class DefaultMessageInterceptor extends AbstractMethodReceiver implements
 		}
 	}
 	
-	
+	/**
+	 * @inheritDoc
+	 */
 	public function intercept (processor:MessageProcessor) : void {
 		targetMethod.invoke(targetInstance, [processor]);
 	}

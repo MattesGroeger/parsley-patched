@@ -19,12 +19,11 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
-import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 import flash.events.Event;
 
 /**
- * A cached selection of targets for a particular message type.
+ * A cached selection of receivers for a particular message type.
  * Will be used by the default MessageRouter implementation as a performance optimization.
  * 
  * @author Jens Halm
@@ -44,6 +43,9 @@ public class MessageReceiverSelection {
 	 * Creates a new instance.
 	 * 
 	 * @param type the type of the message
+	 * @param interceptors the interceptors for this selection
+	 * @param targets the regular targets for this selection
+	 * @param errorHandlers the error handlers for this selection
 	 */
 	function MessageReceiverSelection (type:ClassInfo, interceptors:Array, targets:Array, errorHandlers:Array) {
 		_messageType = type;
@@ -92,7 +94,7 @@ public class MessageReceiverSelection {
 	}
 	
 	/**
-	 * Returns all regular targets (handlers and bindings) that match for the specified selector value.
+	 * Returns all regular targets (like handlers or bindings) that match for the specified selector value.
 	 * 
 	 * @param selectorValue the value of the selector property
 	 * @return all regular targets that match for the specified selector value
@@ -137,15 +139,6 @@ class MessageReceiverCollection {
 	private var selectorMap:Dictionary = new Dictionary();
 	
 	
-	function MessageReceiverCollection () {
-		
-	}
-	
-	/**
-	 * Adds a message receiver to this selection.
-	 * 
-	 * @param receiver the receiver to add
-	 */
 	public function addReceiver (receiver:MessageReceiver) : void {
 		if (receiver.selector == undefined) {
 			receiversWithoutSelector.push(receiver);

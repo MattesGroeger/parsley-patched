@@ -15,20 +15,22 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
-	import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Parameter;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 /**
+ * A regular message handler where the message is simply passed to a method on the target instance.
+ * 
  * @author Jens Halm
  */
 public class MessageHandler extends AbstractMethodReceiver implements MessageTarget {
 	
 	
-	/*
+	/**
 	 * Creates a new instance.
 	 * 
 	 * @param provider the provider for the instance that contains the target method
@@ -71,6 +73,9 @@ public class MessageHandler extends AbstractMethodReceiver implements MessageTar
 	}
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function handleMessage (message:Object) : void {
 		var params:Array = (targetMethod.parameters.length == 1) ? [message] : [];
 		targetMethod.invoke(targetInstance, params);

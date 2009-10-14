@@ -20,22 +20,58 @@ import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 /**
+ * Registry for receivers of messages dispatched through a MessageRouter.
+ * 
+ * <p>There are three types of receivers: First the regular targets like MessageHandlers and
+ * MessageBindings, second interceptors which have some additional power and may cancel or suspend
+ * the processing of a message and finally error handlers which are only invoked in case a regular
+ * target or an interceptor threw an error.</p>
+ * 
  * @author Jens Halm
  */
 public interface MessageReceiverRegistry {
 	
-	
+	/**
+	 * Adds a regular target (like a MessageHandler or MessageBinding) to this registry.
+	 * 
+	 * @param target the target to add to this registry
+	 */
 	function addTarget (target:MessageTarget) : void;
 
+	/**
+	 * Removes a regular target (like a MessageHandler or MessageBinding) from this registry.
+	 * 
+	 * @param target the target to remove from this registry
+	 */
 	function removeTarget (target:MessageTarget) : void;
 	
-	function addInterceptor (target:MessageInterceptor) : void;
+	/**
+	 * Adds an interceptor to this registry.
+	 * 
+	 * @param interceptor the interceptor to add to this registry
+	 */
+	function addInterceptor (interceptor:MessageInterceptor) : void;
 
-	function removeInterceptor (target:MessageInterceptor) : void;
+	/**
+	 * Removes an interceptor from this registry.
+	 * 
+	 * @param interceptor the interceptor to remove from this registry
+	 */
+	function removeInterceptor (interceptor:MessageInterceptor) : void;
 	
-	function addErrorHandler (target:MessageErrorHandler) : void;
+	/**
+	 * Adds an error handler to this registry.
+	 * 
+	 * @param handler the error handler to add to this registry
+	 */
+	function addErrorHandler (handler:MessageErrorHandler) : void;
 
-	function removeErrorHandler (target:MessageErrorHandler) : void;
+	/**
+	 * Removes an error handler from this registry.
+	 * 
+	 * @param handler the error handler to remove from this registry
+	 */
+	function removeErrorHandler (handler:MessageErrorHandler) : void;
 	
 	
 }

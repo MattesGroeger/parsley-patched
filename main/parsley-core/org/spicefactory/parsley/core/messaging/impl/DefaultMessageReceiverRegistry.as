@@ -25,7 +25,7 @@ import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import flash.utils.Dictionary;
 
 /**
- * Default implementation of the MessageRouter interface.
+ * Default implementation of the MessageReceiverRegistry interface.
  * 
  * @author Jens Halm
  */
@@ -40,10 +40,12 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 	private var selectionCache:Dictionary = new Dictionary();
 	
 	
-	function DefaultMessageReceiverRegistry () {
-	}
-
-
+	/**
+	 * Returns the selection of receivers that match the specified message type.
+	 * 
+	 * @param messageType the message type to match against
+	 * @return the selection of receivers that match the specified message type
+	 */
 	public function getSelection (messageType:ClassInfo) : MessageReceiverSelection {
 		var receiverSelection:MessageReceiverSelection =
 				selectionCache[messageType.getClass()] as MessageReceiverSelection;

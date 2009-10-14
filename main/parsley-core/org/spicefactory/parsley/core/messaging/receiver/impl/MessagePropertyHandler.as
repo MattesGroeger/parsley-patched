@@ -15,14 +15,16 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
-	import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 /**
+ * A regular message handler where individual properties of a matching message are passed to a method on the target instance.
+ * 
  * @author Jens Halm
  */
 public class MessagePropertyHandler extends AbstractMethodReceiver implements MessageTarget {
@@ -31,12 +33,12 @@ public class MessagePropertyHandler extends AbstractMethodReceiver implements Me
 	private var messageProperties:Array;
 	
 	
-	/*
+	/**
 	 * Creates a new instance.
 	 * 
 	 * @param provider the provider for the instance that contains the target method
 	 * @param methodName the name of the target method that should be invoked
-	 * @param messageType the type of the message or null if it should be autodetected by the parameter of the target method
+	 * @param messageType the type of the message
 	 * @param messageProperties the list of names of properties of the message that should be used as method parameters
 	 * @param selector an optional selector value to be used for selecting matching message targets
 	 */
@@ -77,6 +79,9 @@ public class MessagePropertyHandler extends AbstractMethodReceiver implements Me
 	}
 
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function handleMessage (message:Object) : void {
 		var params:Array = new Array();
 		for each (var messageProperty:Property in messageProperties) {

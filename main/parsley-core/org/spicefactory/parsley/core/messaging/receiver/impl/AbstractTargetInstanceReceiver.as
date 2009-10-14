@@ -15,10 +15,16 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
-	import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 
 /**
+ * Abstract base class for all types of message receivers that use an ObjectProvider for determining
+ * the target instance handling the message.
+ * An object provider is a convenient way to register lazy intializing message receivers where
+ * the instantiation of the actual instance handling the message may be deferred until the first
+ * matching message is dispatched. 
+ * 
  * @author Jens Halm
  */
 public class AbstractTargetInstanceReceiver extends AbstractMessageReceiver {
@@ -27,16 +33,30 @@ public class AbstractTargetInstanceReceiver extends AbstractMessageReceiver {
 	private var provider:ObjectProvider;
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param provider the provider for the actual instance handling the message
+	 * @param messageType the type of the message this receiver is interested in
+	 * @param selector an additional selector value to be used to determine matching messages
+	 */
 	function AbstractTargetInstanceReceiver (provider:ObjectProvider, messageType:Class = null, selector:* = undefined) {
 		super(messageType, selector);
 		this.provider = provider;
 	}
 
-	
+	/**
+	 * The target instance that handles the messages.
+	 * Accessing this property may lead to initialization of the target instance in case
+	 * it is lazy-intializing.
+	 */
 	protected function get targetInstance () : Object {
 		return provider.instance;
 	}
 	
+	/**
+	 * The type of the instance handling the messages.
+	 */
 	protected function get targetType () : ClassInfo {
 		return provider.type;
 	}

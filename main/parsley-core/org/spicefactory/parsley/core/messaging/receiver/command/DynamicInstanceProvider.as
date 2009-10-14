@@ -22,6 +22,9 @@ import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 
 /**
+ * @private 
+ * Prepared for inclusion in version 2.2.0.
+ * 
  * @author Jens Halm
  */
 public class DynamicInstanceProvider implements ObjectProvider {

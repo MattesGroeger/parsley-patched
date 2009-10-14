@@ -20,8 +20,8 @@ package org.spicefactory.parsley.core.messaging.receiver {
 /**
  * Represent a regular target for a message. This interface should be implemented
  * by all general-purpose message receivers which are not interceptors or error handlers. 
- * Builtin implementations are MessageHandler, MessagePropertyHandler, MessageBinding, 
- * CommandProxy and AsyncCommandProxy.
+ * Builtin implementations are MessageHandler, MessagePropertyHandler, MessageBinding and 
+ * CommandProxy.
  * 
  * @author Jens Halm
  */

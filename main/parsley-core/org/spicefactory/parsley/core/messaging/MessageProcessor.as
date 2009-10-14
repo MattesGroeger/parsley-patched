@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.core.messaging {
 
 /**
- * Responsible for processing a single message. Will be passed to registered message interceptors
+ * Responsible for processing a single message. Will be passed to registered message interceptors and error handlers
  * which may chose to cancel or suspend and later resume the message processing.
  * 
  * @author Jens Halm
@@ -36,7 +36,9 @@ public interface MessageProcessor {
 	
 	/**
 	 * Rewinds the processor so it will start with the first interceptor or handler again 
-	 * the next time the proceed method gets invoked.
+	 * the next time the proceed method gets invoked. Calling this method also causes
+	 * all receivers to be refetched from the registry and thus takes into account
+	 * any new receivers registered after processing this message started.
 	 */
 	function rewind () : void;
 	

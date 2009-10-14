@@ -15,14 +15,15 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
-	import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 /**
- * 
+ * A message target where a property value of matching messages is bound to a property of the target instance. 
+ *  
  * @author Jens Halm
  */
 public class MessageBinding extends AbstractTargetInstanceReceiver implements MessageTarget {
@@ -32,7 +33,7 @@ public class MessageBinding extends AbstractTargetInstanceReceiver implements Me
 	private var messageProperty:Property;
 	
 	
-	/*
+	/**
 	 * Creates a new instance. 
 	 * 
 	 * @param provider the provider for the instance that contains the target property
@@ -63,6 +64,9 @@ public class MessageBinding extends AbstractTargetInstanceReceiver implements Me
 	}
 	
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function handleMessage (message:Object) : void {
 		//trace("BBBB " + messageProperty);
 		var value:* = messageProperty.getValue(message);

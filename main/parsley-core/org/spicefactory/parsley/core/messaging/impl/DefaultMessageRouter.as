@@ -39,7 +39,8 @@ public class DefaultMessageRouter implements MessageRouter {
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param context the associated context instance
+	 * @param errorHandlers error handlers to be added to the receiver registry
+	 * @param unhandledError the policy to apply for unhandled errors
 	 */
 	function DefaultMessageRouter (errorHandlers:Array, unhandledError:ErrorPolicy) {
 		_receivers = new DefaultMessageReceiverRegistry();

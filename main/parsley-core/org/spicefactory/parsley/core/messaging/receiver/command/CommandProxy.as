@@ -21,6 +21,9 @@ import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.AbstractMessageReceiver;
 
 /**
+ * @private 
+ * Prepared for inclusion in version 2.2.0.
+ * 
  * @author Jens Halm
  */
 public class CommandProxy extends AbstractMessageReceiver implements MessageTarget {

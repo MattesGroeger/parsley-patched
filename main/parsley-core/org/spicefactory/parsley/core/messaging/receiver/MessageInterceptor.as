@@ -15,10 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver {
+import org.spicefactory.parsley.core.messaging.MessageProcessor;
 
-	import org.spicefactory.parsley.core.messaging.MessageProcessor;
 /**
- * Represent a target (receiver) for a message.
+ * Represent a message interceptor that may be used to optionally cancel or suspend message processing.
  * 
  * @author Jens Halm
  */
