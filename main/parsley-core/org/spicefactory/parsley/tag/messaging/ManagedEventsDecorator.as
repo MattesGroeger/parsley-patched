@@ -35,9 +35,6 @@ import flash.events.IEventDispatcher;
  * May only be place on classes that implement <code>IEventDispatcher</code>. The class definition
  * should contain additional regular <code>[Event]</code> tags for all events it dispatches.
  * 
- * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
- * thus both interfaces are implemented.</p>
- *
  * @author Jens Halm
  */
 public class ManagedEventsDecorator implements ObjectDefinitionDecorator, NestedTag {

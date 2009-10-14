@@ -37,6 +37,11 @@ import flash.utils.Dictionary;
  * (type, selector, scope), it is recommended to extend AbstractStandardReceiverDecorator
  * instead since that class already contains these three properties.
  * 
+ * <p>It is recommended that subclasses simply override the (pseudo-)abstract methods
+ * <code>createReceiver</code> and <code>removeReceiver</code> instead of implementing
+ * the <code>decorate</code> method itself, since this base class already does some
+ * of the heavier lifting.</p>
+ * 
  * @author Jens Halm
  */
 public class AbstractMessageReceiverDecorator implements NestedTag {
@@ -111,10 +116,28 @@ public class AbstractMessageReceiverDecorator implements NestedTag {
 	}
 
 
+	/**
+	 * Creates a message receiver for the specified provider and scopeManager and registers it
+	 * in the designated scope.
+	 * 
+	 * <p>This is an abstract method. When it gets invoked for implementations in subclasses
+	 * some of the heavier lifting has already been performed. The specified provider for example
+	 * may either be a simple wrapper around an existing target instance or a proxy where the actual
+	 * target instance is not created until a matching message is dispatched. Implementations do not have
+	 * to take care of these details.</p>
+	 * 
+	 * @param provider the provider for the actual target instance handling the message
+	 * @param scopeManager the manager for all scopes associated with the Context the target instance belongs to
+	 */
 	protected function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
 		throw new AbstractMethodError();
 	}
 	
+	/**
+	 * Removes the registration of the specified receiver from the corresponding scope.
+	 * 
+	 * <p>This is an abstract method to be implemented by subclasses.</p>
+	 */
 	protected function removeReceiver (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
 		throw new AbstractMethodError();
 	}

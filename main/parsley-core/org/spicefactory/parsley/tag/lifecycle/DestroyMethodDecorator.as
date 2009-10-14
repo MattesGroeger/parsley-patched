@@ -22,8 +22,8 @@ import org.spicefactory.parsley.tag.core.NestedTag;
 
 [Metadata(name="Destroy", types="method")]
 /**
- * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked before the Context
- * that the object belongs to gets destroyed.
+ * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked when the Context
+ * that the object belongs to gets destroyed or when the object is removed from the Context.
  *
  * @author Jens Halm
  */

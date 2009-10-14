@@ -32,9 +32,6 @@ import flash.utils.getQualifiedClassName;
  * Represents a Metadata, MXML or XML tag that can be used to bind a property value to a resource, updating
  * automatically when the ResourceManager updates.
  * 
- * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
- * thus both interfaces are implemented.
- * 
  * @author Jens Halm
  */
 public class ResourceBindingDecorator implements ObjectDefinitionDecorator, NestedTag {
@@ -102,18 +99,12 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator, Nest
 		return definition;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public function postInit (instance:Object, context:Context) : void {
+	private function postInit (instance:Object, context:Context) : void {
 		_property.setValue(instance, adapter.getResource(bundle, key));
 		managedObjects[instance] = true;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public function preDestroy (instance:Object, context:Context) : void {
+	private function preDestroy (instance:Object, context:Context) : void {
 		delete managedObjects[instance];
 	}
 

@@ -21,6 +21,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.tag.core.NestedTag;
 
+[ExcludeClass]
 [Metadata(name="PreDestroy", types="method")]
 /**
  * @private
@@ -34,13 +35,13 @@ public class PreDestroyMethodDecorator implements ObjectDefinitionDecorator, Nes
 	
 	[Target]
 	/**
-	 * The name of the method.
+	 * @private
 	 */
 	public var method:String;
 	
 	
 	/**
-	 * @inheritDoc
+	 * @private
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		LogContext.getLogger(PreDestroyMethodDecorator).warn("The PreDestroy tag is deprecated. It has been renamed to Destroy");

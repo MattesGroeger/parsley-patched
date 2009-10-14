@@ -27,9 +27,6 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
  * Represents a Metadata, MXML or XML tag that can be used on methods that want to intercept messages of a particular type
  * dispatched through Parsleys central message router.
  * 
- * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
- * thus both interfaces are implemented.</p>
- *
  * @author Jens Halm
  */
 public class MessageInterceptorDecorator extends AbstractStandardReceiverDecorator implements ObjectDefinitionDecorator {
@@ -41,13 +38,18 @@ public class MessageInterceptorDecorator extends AbstractStandardReceiverDecorat
 	 */
 	public var method:String;
 	
-	
+	/**
+	 * @private
+	 */
 	protected override function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
 		var ic:MessageInterceptor = new DefaultMessageInterceptor(provider, method, type, selector);
 		scopeManager.getScope(scope).messageReceivers.addInterceptor(ic);
 		return ic;
 	}
 	
+	/**
+	 * @private
+	 */
 	protected override function removeReceiver (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
 		scopeManager.getScope(scope).messageReceivers.removeInterceptor(MessageInterceptor(receiver));
 	}

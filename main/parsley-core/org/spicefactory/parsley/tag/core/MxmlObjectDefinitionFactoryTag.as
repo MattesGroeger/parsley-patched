@@ -24,6 +24,7 @@ import flash.errors.IllegalOperationError;
 
 /**
  * Extension of the default object definition tag that handles ids set in MXML.
+ * To be used for root MXML object defintions only.
  * 
  * @author Jens Halm
  */

@@ -26,11 +26,8 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
 [Metadata(name="MessageError", types="method", multiple="true")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on methods that want to handle errors that were thrown
- * by a message target or interceptor.
+ * by a regular message target or an interceptor.
  * 
- * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
- * thus both interfaces are implemented.</p>
- *
  * @author Jens Halm
  */
 public class MessageErrorHandlerDecorator extends AbstractStandardReceiverDecorator implements ObjectDefinitionDecorator {
@@ -48,7 +45,9 @@ public class MessageErrorHandlerDecorator extends AbstractStandardReceiverDecora
 	 */
 	public var errorType:Class = Error;
 	
-	
+	/**
+	 * @private
+	 */
 	protected override function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
 		var handler:MessageErrorHandler = 
 				new DefaultMessageErrorHandler(provider, method, type, selector, ClassInfo.forClass(errorType, domain));
@@ -56,6 +55,9 @@ public class MessageErrorHandlerDecorator extends AbstractStandardReceiverDecora
 		return handler;
 	}
 	
+	/**
+	 * @private
+	 */
 	protected override function removeReceiver (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
 		scopeManager.getScope(scope).messageReceivers.removeErrorHandler(MessageErrorHandler(receiver));
 	}

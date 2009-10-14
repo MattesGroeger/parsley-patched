@@ -29,9 +29,6 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
  * Represents a Metadata, MXML or XML tag that can be used on properties which wish to be bound to a property value
  * of a particular message type dispatched through Parsleys central message router.
  * 
- * <p>This <code>ObjectDefinitionDecorator</code> adds itself to the processed definiton as an <code>ObjectLifecycleListener</code>,
- * thus both interfaces are implemented.</p>
- *
  * @author Jens Halm
  */
 public class MessageBindingDecorator extends AbstractMessageReceiverDecorator implements ObjectDefinitionDecorator {
@@ -66,7 +63,9 @@ public class MessageBindingDecorator extends AbstractMessageReceiverDecorator im
 	 */
 	public var targetProperty:String;
 	
-	
+	/**
+	 * @private
+	 */
 	protected override function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
 		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
 		var target:MessageTarget = new MessageBinding(provider,	targetProperty, messageType, messageProperty, selector);
@@ -74,6 +73,9 @@ public class MessageBindingDecorator extends AbstractMessageReceiverDecorator im
 		return target;
 	}
 	
+	/**
+	 * @private
+	 */
 	protected override function removeReceiver (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
 		scopeManager.getScope(scope).messageReceivers.removeTarget(MessageTarget(receiver));
 	}

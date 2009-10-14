@@ -16,11 +16,10 @@
 
 package org.spicefactory.parsley.tag.core {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.reflect.types.Any;
 import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.impl.RegistryValueResolver;
 
 [DefaultProperty("value")]

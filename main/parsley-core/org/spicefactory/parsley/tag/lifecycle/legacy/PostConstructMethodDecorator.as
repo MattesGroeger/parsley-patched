@@ -21,6 +21,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.tag.core.NestedTag;
 
+[ExcludeClass]
 [Metadata(name="PostConstruct", types="method")]
 /**
  * @private
@@ -34,13 +35,13 @@ public class PostConstructMethodDecorator implements ObjectDefinitionDecorator, 
 
 	[Target]
 	/**
-	 * The name of the method.
+	 * @private
 	 */
 	public var method:String;
 	
 	
 	/**
-	 * @inheritDoc
+	 * @private
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		LogContext.getLogger(PostConstructMethodDecorator).warn("The PostConstruct tag is deprecated. It has been renamed to Init");
