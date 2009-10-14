@@ -22,11 +22,21 @@ import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
 
 /**
+ * Factory responsible for creating CompositeContextBuilder instances.
+ * 
  * @author Jens Halm
  */
 public interface ContextBuilderFactory {
 	
 	
+	/**
+	 * Creates a new CompositeContextBuilder instance.
+	 * 
+	 * @param viewRoot the initial view root to be passed to the ViewManager
+	 * @param parent the parent of the Context to be created
+	 * @param domain the domain to use for reflection
+	 * @return a new CompositeContextBuilder instance
+	 */
 	function create (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) : CompositeContextBuilder;
 	
 	

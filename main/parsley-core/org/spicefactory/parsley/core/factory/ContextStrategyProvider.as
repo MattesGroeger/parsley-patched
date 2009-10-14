@@ -25,23 +25,49 @@ import org.spicefactory.parsley.core.view.ViewManager;
 import flash.system.ApplicationDomain;
 
 /**
+ * Provider to be used by Context instances to obtain their collaborating services.
+ * 
  * @author Jens Halm
  */
 public interface ContextStrategyProvider {
 	
 	
+	/**
+	 * Initializes this provider.
+	 * 
+	 * @param context the Context for which collaborating services should be provided
+	 * @param providerFactory factory responsible for creating ObjectProviders
+	 */
 	function init (context:Context, providerFactory:ObjectProviderFactory) : void;
 	
+	/**
+	 * The ApplicationDomain to use for reflection.
+	 */
 	function get domain () : ApplicationDomain;
 	
+	/**
+	 * The ObjectDefinitionRegistry containing all definitions the Context should use.
+	 */
 	function get registry () : ObjectDefinitionRegistry;
 	
+	/**
+	 * The ObjectLifecycleManager to be used by the Context.
+	 */
 	function get lifecycleManager () : ObjectLifecycleManager;
 	
+	/**
+	 * The ScopeManager containing all scopes associated with the Context.
+	 */
 	function get scopeManager () : ScopeManager;
 	
+	/**
+	 * The ViewManager to associate with the Context.
+	 */
 	function get viewManager () : ViewManager;
 	
+	/**
+	 * Creates a strategy provider for a dynamic child Context of the Context associated with this provider.
+	 */
 	function createDynamicProvider () : ContextStrategyProvider;
 	
 	

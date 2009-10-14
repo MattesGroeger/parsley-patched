@@ -20,11 +20,20 @@ import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import flash.system.ApplicationDomain;
 
 /**
+ * Factory responsible for creating ObjectLifecycleManager instances.
+ * 
  * @author Jens Halm
  */
 public interface ObjectLifecycleManagerFactory {
 	
 	
+	/**
+	 * Creates a new ObjectLifecycleManager instance.
+	 * 
+	 * @param domain the domain to use for reflection
+	 * @param scopes the scopes to dispatch lifecycle events to
+	 * @return a new ObjectLifecycleManager instance
+	 */
 	function create (domain:ApplicationDomain, scopes:Array) : ObjectLifecycleManager;
 	
 	

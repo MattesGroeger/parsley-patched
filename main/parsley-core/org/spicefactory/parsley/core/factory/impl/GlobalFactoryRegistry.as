@@ -26,6 +26,12 @@ import org.spicefactory.parsley.core.factory.ScopeManagerFactory;
 import org.spicefactory.parsley.core.factory.ViewManagerFactory;
 
 /**
+ * Global registry for all factories responsible for creating the individual services of the Parsley IOC kernel.
+ * For each internal service Parsley contains a default implementation, so this registry only needs to be used
+ * if custom implementations of one or more services should replace the builtin ones.
+ * 
+ * <p>The global registry is a singleton accessible through <code>GlobalFactoryRegistry.instance</code>.</p>
+ * 
  * @author Jens Halm
  */
 public class GlobalFactoryRegistry implements FactoryRegistry {
@@ -43,6 +49,9 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 	
 	private static var _instance:FactoryRegistry;
 	
+	/**
+	 * The singleton instance of the global factory registry.
+	 */
 	public static function get instance () : FactoryRegistry {
 		if (_instance == null) {
 			_instance = new GlobalFactoryRegistry();
@@ -148,6 +157,9 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 		_messageRouter = value;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get scopeExtensions () : ScopeExtensionRegistry {
 		return _scopeExtensions;
 	}

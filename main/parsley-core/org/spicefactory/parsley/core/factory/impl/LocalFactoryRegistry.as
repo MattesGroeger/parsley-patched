@@ -26,6 +26,14 @@ import org.spicefactory.parsley.core.factory.ObjectLifecycleManagerFactory;
 import org.spicefactory.parsley.core.factory.ViewManagerFactory;
 
 /**
+ * Local registry for all factories responsible for creating the individual services of the Parsley IOC kernel.
+ * For each internal service Parsley contains a default implementation, so this registry only needs to be used
+ * if custom implementations of one or more services should replace the builtin ones.
+ * 
+ * <p>The local registry is usually accessible through <code>CompositeContextBuilder</code> and allows to register
+ * factories which are just responsible for the single Context under construction. For registering factories
+ * globally <code>GlobalFactoryRegistry</code> should be used.</p>
+ * 
  * @author Jens Halm
  */
 public class LocalFactoryRegistry implements FactoryRegistry {
@@ -43,11 +51,12 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 	private var parent:FactoryRegistry;
 	
 
-	function LocalFactoryRegistry () {
-		
-	}
-
-
+	/**
+	 * Activates this registry and passes the parent registry that should be used for all factories
+	 * not explicitly specified on this local registry.
+	 * 
+	 * @param parent the parent registry
+	 */
 	public function activate (parent:FactoryRegistry) : void {
 		this.parent = parent;
 		_scopeExtensions.parent = parent.scopeExtensions;
@@ -131,6 +140,9 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 		_messageRouter = value;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get scopeExtensions () : ScopeExtensionRegistry {
 		return _scopeExtensions;
 	}

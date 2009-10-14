@@ -22,11 +22,21 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
 import flash.system.ApplicationDomain;
 
 /**
+ * Factory responsible for creating ObjectDefinitionRegistry instances.
+ * 
  * @author Jens Halm
  */
 public interface ObjectDefinitionRegistryFactory {
 	
 	
+	/**
+	 * Creates a new ObjectDefinitionRegistry instance.
+	 * 
+	 * @param domain the domain to use for reflection
+	 * @param scopeManager the ScopeManager associated with this registry
+	 * @param providerFactory factory responsible for creating ObjectProvider instances
+	 * @return a new ObjectDefinitionRegistry instance
+	 */
 	function create (domain:ApplicationDomain, scopeManager:ScopeManager, 
 			providerFactory:ObjectProviderFactory) : ObjectDefinitionRegistry;
 	

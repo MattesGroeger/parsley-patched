@@ -18,11 +18,20 @@ package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.context.Context;
 
 /**
+ * Factory responsible for creating Context instances.
+ * 
  * @author Jens Halm
  */
 public interface ContextFactory {
 	
 	
+	/**
+	 * Creates a new Context instance.
+	 * 
+	 * @param provider the provider to pull collaborators from
+	 * @param parent the parent of the Context to be created
+	 * @return a new Context instance
+	 */
 	function create (provider:ContextStrategyProvider, parent:Context = null) : Context;
 	
 	

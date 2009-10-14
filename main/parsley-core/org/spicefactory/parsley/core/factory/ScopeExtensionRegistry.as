@@ -18,13 +18,31 @@ package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.scope.ScopeExtensions;
 
 /**
+ * A registry for scope-wide extensions.
+ * Usually used for registering manager-type objects that may be used by custom configuration tags.
+ * 
  * @author Jens Halm
  */
 public interface ScopeExtensionRegistry {
 	
 	
+	/**
+	 * Adds a factory for an extension to this registry.
+	 * If the scope parameter is omitted, a new extension instance will be created for each new scope that
+	 * this registry is responsible for.
+	 * 
+	 * @param factory the factory responsible for creating new extension instances
+	 * @param scope the scope the extension is responsible for
+	 * @param id an optional id the extension should be registered with
+	 */
 	function addExtension (factory:ScopeExtensionFactory, scope:String = null, id:String = null) : void;
 	
+	/**
+	 * Returns all extensions for the specified scope.
+	 * 
+	 * @param scope the scope to return all extensions for
+	 * @return all extensions for the specified scope
+	 */
 	function getExtensions (scope:String) : ScopeExtensions;
 	
 	

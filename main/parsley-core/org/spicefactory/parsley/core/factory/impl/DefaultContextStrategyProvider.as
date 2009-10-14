@@ -28,6 +28,8 @@ import org.spicefactory.parsley.core.view.ViewManager;
 import flash.system.ApplicationDomain;
 
 /**
+ * Default implementation of the ContextStrategyProvider interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultContextStrategyProvider implements ContextStrategyProvider {
@@ -45,6 +47,13 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	private var providerFactory:ObjectProviderFactory;
 	
 
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param factories the factories to pull collaborating services from
+	 * @param domain the ApplicationDomain to use for reflection
+	 * @param scopeDefs the scopes associated with the Context
+	 */
 	function DefaultContextStrategyProvider (factories:FactoryRegistry, domain:ApplicationDomain, scopeDefs:Array) {
 		this.factories = factories;
 		this._domain = domain;

@@ -20,17 +20,34 @@ import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 
 /**
+ * Factory responsible for creating MessageRouter instances.
+ * 
  * @author Jens Halm
  */
 public interface MessageRouterFactory {
 	
 	
+	/**
+	 * The policy to apply for unhandled errors. An unhandled error
+	 * is an error thrown by a message handler where no matching error handler
+	 * was registered for.
+	 */
 	function get unhandledError () : ErrorPolicy;
 
 	function set unhandledError (policy:ErrorPolicy) : void;
 	
+	/**
+	 * Adds a global error handler that will be applied to all routers created by this factory.
+	 * 
+	 * @param target the error handler to add to this factory
+	 */
 	function addErrorHandler (target:MessageErrorHandler) : void;
 	
+	/**
+	 * Creates a new MessageRouter instance.
+	 * 
+	 * @return a new MessageRouter instance
+	 */
 	function create () : MessageRouter;
 	
 	

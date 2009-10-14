@@ -21,6 +21,8 @@ import org.spicefactory.parsley.core.view.ViewManager;
 import flash.system.ApplicationDomain;
 
 /**
+ * Factory responsible for creating ViewManager instances.
+ * 
  * @author Jens Halm
  */
 public interface ViewManagerFactory {
@@ -54,6 +56,13 @@ public interface ViewManagerFactory {
 	
 	function set componentAddedEvent (value:String) : void;
 	
+	/**
+	 * Creates a new ViewManager instance.
+	 * 
+	 * @param context the Context the new ViewManager will belong to
+	 * @param domain the domain to use for reflection
+	 * @return a new ViewManager instance
+	 */
 	function create (context:Context, domain:ApplicationDomain) : ViewManager;
 
 	

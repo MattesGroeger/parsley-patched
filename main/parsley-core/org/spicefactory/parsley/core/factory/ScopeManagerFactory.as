@@ -21,11 +21,21 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
 import flash.system.ApplicationDomain;
 
 /**
+ * Factory responsible for creating ScopeManager instances.
+ * 
  * @author Jens Halm
  */
 public interface ScopeManagerFactory {
 	
 	
+	/**
+	 * Creates a new ScopeManager instance.
+	 * 
+	 * @param context the Context the new ScopeManager will belong to
+	 * @param scopeDefs the definitions for the scopes associated with the Context
+	 * @param domain the domain to use for reflection
+	 * @return a new ScopeManager instance
+	 */
 	function create (context:Context, scopeDefs:Array, domain:ApplicationDomain) : ScopeManager;
 	
 	

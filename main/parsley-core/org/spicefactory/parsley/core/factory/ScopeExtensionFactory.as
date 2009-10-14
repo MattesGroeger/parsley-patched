@@ -17,11 +17,18 @@
 package org.spicefactory.parsley.core.factory {
 
 /**
+ * Factory responsible for creating scope-wide extension instances.
+ * 
  * @author Jens Halm
  */
 public interface ScopeExtensionFactory {
 	
 	
+	/**
+	 * Creates a new instance of a scope-wide extension.
+	 * 
+	 * @return a new instance of a scope-wide extension
+	 */
 	function create () : Object;
 	
 	

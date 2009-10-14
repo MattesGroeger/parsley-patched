@@ -23,6 +23,8 @@ import org.spicefactory.parsley.core.scope.impl.DefaultScopeExtensions;
 import flash.utils.Dictionary;
 
 /**
+ * Default implementation of the ScopeExtensionRegistry interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultScopeExtensionRegistry implements ScopeExtensionRegistry {
@@ -33,11 +35,16 @@ public class DefaultScopeExtensionRegistry implements ScopeExtensionRegistry {
 	private var scopes:Dictionary = new Dictionary();
 	
 	
+	/**
+	 * The parent registry to be used to pull additional extensions from.
+	 */
 	public function set parent (value:ScopeExtensionRegistry) : void {
 		_parent = value;	
 	}
 	
-	
+	/**
+	 * @inheritDoc
+	 */
 	public function addExtension (factory:ScopeExtensionFactory, scope:String = null, id:String = null) : void {
 		var registry:Registry;
 		if (scope == null) {
@@ -53,6 +60,9 @@ public class DefaultScopeExtensionRegistry implements ScopeExtensionRegistry {
 		registry.addExtension(factory, id);
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getExtensions (scope:String) : ScopeExtensions {
 		var parentExt:ScopeExtensions = (_parent != null) ? _parent.getExtensions(scope) : null;
 		var ext:DefaultScopeExtensions = new DefaultScopeExtensions(parentExt);
