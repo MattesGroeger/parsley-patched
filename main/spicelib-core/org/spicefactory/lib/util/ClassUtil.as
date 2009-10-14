@@ -72,7 +72,7 @@ public class ClassUtil {
 	 * @param instance the instance to look for
 	 * @return true if the specified ApplicationDomain contains the definition for the given instance
 	 */
-	public static function containsDefintion (domain:ApplicationDomain, instance:Object) : Boolean {
+	public static function containsDefinition (domain:ApplicationDomain, instance:Object) : Boolean {
 		var className:String = getQualifiedClassName(instance);
 		if (domain.hasDefinition(className)) {
 			var clazz:Class = domain.getDefinition(className) as Class;
