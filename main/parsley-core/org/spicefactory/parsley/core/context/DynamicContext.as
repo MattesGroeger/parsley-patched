@@ -55,7 +55,7 @@ public interface DynamicContext extends Context {
 	/**
 	 * Removes the specified object from the Context. This method may be used
 	 * for objects added with <code>addObject</code> as well as for those added with
-	 * <code>addDefinition</code>.
+	 * <code>addDefinition</code>. This has the same effect as calling <code>DynamicObject.remove</code>.
 	 * 
 	 * @param instance the instance to remove from this dynamic context
 	 */

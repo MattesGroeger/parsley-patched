@@ -21,6 +21,7 @@ import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
+import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.impl.ChildContext;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
@@ -61,9 +62,9 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 	/**
 	 * @inheritDoc
 	 */
-	public function addDefinition (definition:ObjectDefinition) : DefaultDynamicObject {
+	public function addDefinition (definition:ObjectDefinition) : DynamicObject {
 		checkState();
-		var object:DefaultDynamicObject = new DefaultDynamicObject(this, definition);
+		var object:DynamicObject = new DefaultDynamicObject(this, definition);
 		if (object.instance != null) {
 			addDynamicObject(object);		
 		}
@@ -73,14 +74,14 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 	/**
 	 * @inheritDoc
 	 */
-	public function addObject (instance:Object, definition:ObjectDefinition = null) : DefaultDynamicObject {
+	public function addObject (instance:Object, definition:ObjectDefinition = null) : DynamicObject {
 		checkState();
 		if (definition == null) {
 			var ci:ClassInfo = ClassInfo.forInstance(instance, registry.domain);
 			var defFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
 			definition = defFactory.createNestedDefinition(registry);
 		}
-		var object:DefaultDynamicObject = new DefaultDynamicObject(this, definition, instance);
+		var object:DynamicObject = new DefaultDynamicObject(this, definition, instance);
 		addDynamicObject(object);
 		return object;
 	}
@@ -88,7 +89,7 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 	/**
 	 * @private
 	 */
-	internal function addDynamicObject (object:DefaultDynamicObject) : void {
+	internal function addDynamicObject (object:DynamicObject) : void {
 		objects[object.instance] = object;	
 	}
 	

@@ -19,11 +19,22 @@ package org.spicefactory.parsley.core.context.provider {
 import flash.system.ApplicationDomain;
 
 /**
+ * Static utility method to create an ObjectProvider for an existing instance.
+ * 
  * @author Jens Halm
  */
 public class Provider {
 	
 	
+	/**
+	 * Creates an ObjectProvider for an existing instance, simply wrapping it.
+	 * Useful if existing instances must be passed to a method that expects an ObjectProvider instance
+	 * as a parameter, like most of the methods for registering message receivers for example.
+	 * 
+	 * @param instance the instance to wrap
+	 * @param domain the ApplicationDomain to use for reflecting on the instance
+	 * @return a new ObjectProvider wrapping the specified instance 
+	 */
 	public static function forInstance (instance:Object, domain:ApplicationDomain = null) : ObjectProvider {
 		return new SimpleInstanceProvider(instance, domain);
 	}

@@ -23,7 +23,9 @@ import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import flash.utils.getQualifiedClassName;
 
 /**
- * @author Jens Halmnew ContextObjectProvider(ClassInfo.forClass(type, domain), id);
+ * ObjectProvider implementation that pulls instances from a Context.
+ * 
+ * @author Jens Halm
  */
 public class ContextObjectProvider implements ObjectProvider {
 	
@@ -32,12 +34,23 @@ public class ContextObjectProvider implements ObjectProvider {
 	private var context:Context;
 	private var initialized:Boolean = false;
 	
-	function ContextObjectProvider (context:Context, type:ClassInfo, id:String) {
+	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param context the Context to pull the object from
+	 * @param type the type of the object
+	 * @param id the id of the object in the Context 
+	 */
+	function ContextObjectProvider (context:Context, type:ClassInfo, id:String = null) {
 		this.context = context;
 		this._type = type;
 		this.id = id;
 	}
 
+	/**
+	 * Initializes and validates this provider.
+	 */
 	public function initialize () : void {
 		if (id != null) {
 			if (!context.containsObject(id)) {
@@ -59,10 +72,16 @@ public class ContextObjectProvider implements ObjectProvider {
 		initialized = true;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get instance () : Object {
 		return (initialized) ? context.getObject(id) : null;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get type () : ClassInfo {
 		return _type;
 	}

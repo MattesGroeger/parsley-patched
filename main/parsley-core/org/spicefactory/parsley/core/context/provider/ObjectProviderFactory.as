@@ -18,7 +18,7 @@ package org.spicefactory.parsley.core.context.provider {
 
 /**
  * Factory that creates lazy initializing ObjectProvider instances. Those may be used for 
- * message receivers or object lifecycle listeners or similar use cases.
+ * registering message receivers or object lifecycle listeners or similar use cases.
  * 
  * @author Jens Halm
  */

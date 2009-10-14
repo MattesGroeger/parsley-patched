@@ -40,7 +40,7 @@ import flash.events.IEventDispatcher;
  * in this Context have been instantiated and configured and their asynchronous
  * initializers (if any) have successfully completed.
  * 
- * <p>Some ContextBuilder implementations excute synchronously. In this case this
+ * <p>Some ContextBuilder implementations execute synchronously. In this case this
  * event will never fire. Thus before registering for this event you should check the
  * <code>initialized</code> property on the Context.</p>
  * 
@@ -65,7 +65,7 @@ import flash.events.IEventDispatcher;
 
 /**
  * Dispatched when the Context was destroyed.
- * At this point all methods marked with [PreDestroy] on objects managed by this context 
+ * At this point all methods marked with [Destroy] on objects managed by this context 
  * have been invoked and any child Context instances were destroyed, too.
  * 
  * @eventType org.spicefactory.parsley.core.events.ContextEvent.DESTROYED
@@ -77,7 +77,7 @@ import flash.events.IEventDispatcher;
  * 
  * <p>It is recommended that you avoid to work with the Context API directly in regular application development.
  * Parsley is designed in a way that helps you keep your objects decoupled from the framework (and decoupled from
- * each other. Thus you should probably prefer working with the Parsley Manual over using these Framework API Docs.</p>
+ * each other). Thus you should probably prefer working with the Parsley Manual over using these Framework API Docs.</p>
  * 
  * <p>But if you are extending or modifying the framework, building your own framework on top of Parsley or just
  * creating a bunch of custom configuration tags, it is likely that you need access to the Context.</p>
@@ -86,7 +86,7 @@ import flash.events.IEventDispatcher;
  * 
  * <ul>
  * <li>Through all the various ContextBuilder entry points. Calling <code>FlexContextBuilder.build()</code> or
- * <code>XmlContextBuilder.build()</code> always return a Context instance, although in most cases you'll simply
+ * <code>XmlContextBuilder.build()</code> always returns a Context instance, although in most cases you'll simply
  * ignore the returned instance.</li>
  * <li>Through dependency injection. All objects added to a Context can have properties or constructor and method
  * parameters of type Context annotated with the <code>[Inject]</code> metadata tag and will get the Context they
@@ -94,7 +94,7 @@ import flash.events.IEventDispatcher;
  * </ul>
  * 
  * <p>All builtin Context implementations like <code>DefaultContext</code>, <code>ChildContext</code> or
- * <code>FlexViewContext</code> use an <code>ObjectDefinitionRegistry</code> internally. Thus with all
+ * <code>DefaultDynamicContext</code> use an <code>ObjectDefinitionRegistry</code> internally. Thus with all
  * builtin Context implementations you'll be able to work with all MXML, XML or Metadata tags that map
  * to classes implementing <code>ObjectDefinitionDecorator</code>.</p>
  * 
@@ -139,7 +139,7 @@ public interface Context extends IEventDispatcher {
 	 * Checks whether this Contex contains an object with the specified id.
 	 * 
 	 * @param id the id to check
-	 * @return true if this Contex contains an object with the specified id  
+	 * @return true if this Context contains an object with the specified id  
 	 */
 	function containsObject (id:String) : Boolean;
 	
@@ -215,7 +215,7 @@ public interface Context extends IEventDispatcher {
 	
 	/**
 	 * Destroys this Context. This includes processing all lifecycle listeners for all objects that this
-	 * Context has instantiated and calling their methods marked with <code>[PreDestroy]</code>.
+	 * Context has instantiated and calling their methods marked with <code>[Destroy]</code>.
 	 * The Context may no longer be used after calling this method.
 	 */
 	function destroy () : void;
@@ -236,7 +236,7 @@ public interface Context extends IEventDispatcher {
 	 * Creates a new dynamic Context instance that is associated with this Context.
 	 * A dynamic Context allows to add and remove instances and object definitions
 	 * on-the-fly. You can create multiple dynamic instances from the same parent 
-	 * Context. They will share the MessageRouter and ViewManager of this instance,
+	 * Context. They will share the ScopeManager and ViewManager of this instance,
 	 * but create their own internal strategies like lifecycle managers, so that they
 	 * can be destroyed individually without affecting this Context instance or other
 	 * dynamic Context instances.
@@ -244,7 +244,7 @@ public interface Context extends IEventDispatcher {
 	 * <p>Internally Parsley uses such a Context type for dynamically wiring views
 	 * or managing other types of short-lives objects like Commands.</p>
 	 * 
-	 * @return a new instance of a dynamic Context
+	 * @return a new instance of a dynamic Context as a child of this Context
 	 */
 	function createDynamicContext () : DynamicContext;
 	

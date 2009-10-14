@@ -15,15 +15,18 @@
  */
 
 package org.spicefactory.parsley.core.context.impl {
+import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 
 import flash.events.Event;
 
 /**
+ * Default implementation of the DynamicObject interface.
+ * 
  * @author Jens Halm
  */
-public class DefaultDynamicObject {
+public class DefaultDynamicObject implements DynamicObject {
 	
 	
 	private var _context:DefaultDynamicContext;
@@ -31,6 +34,13 @@ public class DefaultDynamicObject {
 	private var _instance:Object;
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param context the dynamic Context this instance belongs to
+	 * @param definition the definition that was applied to the instance
+	 * @param instance the actual instance that was dynamically added to the Context
+	 */
 	function DefaultDynamicObject (context:DefaultDynamicContext, definition:ObjectDefinition, instance:Object = null) {
 		_context = context;
 		_definition = definition;
@@ -56,25 +66,30 @@ public class DefaultDynamicObject {
 		context.lifecycleManager.configureObject(instance, definition, context);
 	}
 	
-	
+	/**
+	 * @inheritDoc
+	 */
 	public function get definition () : ObjectDefinition {
 		return _definition;
 	}
 	
 	/**
-	 * The instance that was dynamically added to the Context.
-	 * If the <code>initialized</code> property of the associated Context is false then
-	 * this property is either null or holds an object which is not fully configured yet.
+	 * @inheritDoc
 	 */
 	public function get instance () : Object {
 		return _instance;
 	}
 	
+	/**
+	 * The dynamic Context this instance belongs to.
+	 */
 	public function get context () : DefaultDynamicContext {
 		return _context;
 	}
 	
-	
+	/**
+	 * @inheritDoc
+	 */
 	public function remove () : void {
 		if (context.parent.initialized) {
 			context.lifecycleManager.destroyObject(instance, definition, context);
@@ -84,7 +99,6 @@ public class DefaultDynamicObject {
 		}
 		context.removeDynamicObject(this);
 	}
-	
 	
 	
 }

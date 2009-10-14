@@ -18,15 +18,34 @@ package org.spicefactory.parsley.core.context {
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 
 /**
+ * Represents a single dynamic object that belongs to a DynamicContext instance.
+ * Such an object can be dynamically removed from the Context anytime before
+ * the Context gets destroyed.
+ * 
  * @author Jens Halm
  */
 public interface DynamicObject {
 	
-	
+	/**
+	 * The definition the object was created from or the definition that
+	 * was applied to an existing instance.
+	 */
 	function get definition () : ObjectDefinition;
 	
+	/**
+	 * The actual instance that was dynamically added to the Context.
+	 * If the <code>initialized</code> property of the associated Context is false then
+	 * this property is either null or holds an object which is not fully configured yet.
+	 */
 	function get instance () : Object;
 	
+	/**
+	 * Removes this object from the Context.
+	 * This will lead to the regular lifecycle events for objects that
+	 * are destroyed like calling the method marked with <code>[Destroy]</code>
+	 * on the removed instance. After removal the instance does no longer take
+	 * part in the messaging system of the Context.
+	 */
 	function remove () : void;
 	
 	

@@ -43,10 +43,10 @@ import flash.utils.Dictionary;
  * Default implementation of the <code>Context</code> interface. 
  * 
  * <p>This implementation is not capable of handling a parent <code>Context</code>.
- * A big part of the internal work is delegated to the collaborators passed to the constructor:
- * The <code>ObjectDefinitionRegistry</code>, <code>ObjectFactory</code> and <code>MessageRouter</code>
- * implementations. If they are omitted this implementation will use the default implementations of
- * these interfaces.</p> 
+ * A big part of the internal work is delegated to the collaborators fetched from the <code>ContextStrategyProvider</code> 
+ * passed to the constructor:
+ * The <code>ObjectDefinitionRegistry</code>, <code>ObjectLifecycleManager</code>, <code>ViewManager</code> and <code>ScopeManager</code>
+ * implementations.</p> 
  * 
  * @author Jens Halm
  */
@@ -143,7 +143,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	}
 	
 	/**
-	 * The factory that creates objects from ObjectDefinitions for this Context.
+	 * The manager that handles the lifecycle for all objects in this Context.
 	 */
 	public function get lifecycleManager () : ObjectLifecycleManager {
 		return _lifecycleManager;
