@@ -18,6 +18,12 @@ package org.spicefactory.parsley.flex.modules {
 import mx.modules.ModuleManagerGlobals;
 
 /**
+ * Provides support for seamless integration of Flex Modules into modular Parsley applications.
+ * The primary task for this support is to transparently provide the
+ * information which ApplicationDomain a module was loaded into to ContextBuilder instances
+ * within that module. For this purpose the Flex ModuleManager will be replaced by a special
+ * Parsley variant that wraps additional functionality around the builtin ModuleManager.
+ * 
  * @author Jens Halm
  */
 public class FlexModuleSupport {
@@ -25,16 +31,28 @@ public class FlexModuleSupport {
 	
 	private static var initialized:Boolean = false;
 	
-	
+	/**
+	 * The policy into which ApplicationDomain modules should be loaded per default.
+	 * Allows to conveniently switch from the Flex SDK default (always loading into child domains)
+	 * to a mode where modules are always loaded into the root domain. This way the domain does
+	 * not have to be specified for each individual ModuleLoader in case all modules should be loaded
+	 * into the root domain.
+	 */	
 	public static var defaultLoadingPolicy:ModuleLoadingPolicy = ModuleLoadingPolicy.CHILD_DOMAIN;
 
-	
+	/**
+	 * Intializes the Flex Module Support. Usually there is no need for application code to call this
+	 * method directly. It will be invoked by all static entry points in the <code>FlexContextBuilder</code>
+	 * class for example. In rare cases where you only use some other configuration mechanism like XML
+	 * for your Flex application it may be necessary to invoke this method manually.
+	 */
 	public static function initialize () : void {
 		if (initialized) return;
 		initialized = true;
 		var originalManager:Object = ModuleManagerGlobals.managerSingleton;
 		ModuleManagerGlobals.managerSingleton = new ModuleManagerDecorator(originalManager);
 	}
+	
 }
 }
 

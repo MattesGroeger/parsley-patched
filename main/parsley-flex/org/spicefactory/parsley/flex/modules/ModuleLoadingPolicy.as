@@ -17,26 +17,41 @@
 package org.spicefactory.parsley.flex.modules {
 
 /**
+ * Enumeration for the policy into which ApplicationDomain modules should be loaded per default.
+ * 
  * @author Jens Halm
  */
 public class ModuleLoadingPolicy {
 	
 	
+	/**
+	 * Constant for the policy where modules are always loaded into a child domain of the current domain.
+	 * This is also the default behaviour in the Flex SDK.
+	 */
 	public static const CHILD_DOMAIN:ModuleLoadingPolicy = new ModuleLoadingPolicy("childDomain");
 
+	/**
+	 * Constant for the policy where modules are always loaded into the root domain.
+	 */
 	public static const ROOT_DOMAIN:ModuleLoadingPolicy = new ModuleLoadingPolicy("rootDomain");
 
 	
 	private var _key:String;
 	
-	
+	/**
+	 * @private
+	 */
 	function ModuleLoadingPolicy (key:String) {
 		_key = key;
 	}
 	
+	/**
+	 * @private
+	 */
 	public function toSting () : String {
 		return _key;
 	}
+	
 	
 }
 }

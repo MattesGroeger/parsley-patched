@@ -25,15 +25,28 @@ import flash.events.Event;
 
 /**
  * MXML Tag that can be used for views that wish to be wired to the IOC Container.
- * Should be placed as an immediate child of the Flex Component that should be wired.
+ * With the target property of this tag the object to be wired to the Context can be explicitly specified
+ * and does not have to be a DisplayObject. If the target property is not used the document object this tag is placed
+ * upon will be wired. That object must always be a DisplayObject since it is used to 
+ * dispatch a bubbling event.
  * 
  * @author Jens Halm
  */
 public class Configure implements IMXMLObject {
 	
 	
+	/**
+	 * The target object to be wired to the Context.
+	 * If this property is not set explicitly then the document object this tag
+	 * was placed upon will be wired.
+	 */
 	public var target:Object;
 	
+	/**
+	 * Indicates whether the wiring should happen repeatedly whenever the 
+	 * object is added to the stage. When set to false it is only wired once.
+	 * The default is true.
+	 */
 	public var repeat:Boolean = true;
 	
 	
@@ -50,14 +63,16 @@ public class Configure implements IMXMLObject {
 	}
 	
 	
+	/**
+	 * @private
+	 */
 	public function initialized (document:Object, id:String) : void {
 		if (!(document is DisplayObject)) {
 			throw new IllegalArgumentError("The Configure tag is supposed to be used within MXML components that extend DisplayObject");
 		}
 		var comp:DisplayObject = DisplayObject(document);
 		if (comp.stage != null) {
-			// TODO - check if this is ever going to happen 
-			// - at this point the binding for the target property has very likely not been executed
+			// TODO - At this point the binding for the target property has very likely not been executed (does this ever happen?)
 			dispatchConfigureEvent(comp);
 		}
 		if (comp.stage == null || repeat) {		
