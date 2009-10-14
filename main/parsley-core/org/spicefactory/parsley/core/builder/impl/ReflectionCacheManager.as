@@ -25,11 +25,9 @@ import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
- * Manages the inherited scopes for all currently active Context instances.
- * This is an internal class that usually should only be used by custom
- * CompositeContextBuilder implementations. It is necessary since some
- * internal objects like the 2 shared MessageRouter instances that each
- * Scope manages are not accessible through the public Scope API.
+ * Manages the ApplicationDomain instances associated with all currently active Context instances.
+ * If an ApplicationDomain is no longer in use after the last Context associated with it gets destroyed,
+ * the reflection cache for that domain can be purged.
  * 
  * @author Jens Halm
  */
@@ -42,7 +40,12 @@ public class ReflectionCacheManager {
 	private static const domainCounter:Dictionary = new Dictionary();
 	private static const contextMap:Dictionary = new Dictionary();
 	
-	
+	/**
+	 * Adds the domain to the cache until the specified Context instance gets destroyed.
+	 * 
+	 * @param context the Context instance that uses the specified domain
+	 * @param domain the domain to add to the cache
+	 */
 	public static function addDomain (context:Context, domain:ApplicationDomain) : void {
 		if (domainCounter[domain] != undefined) {
 			domainCounter[domain]++;

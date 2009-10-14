@@ -36,6 +36,13 @@ public class InheritedScopeRegistry {
 	private static const scopeMap:Dictionary = new Dictionary();
 	
 	
+	/**
+	 * Adds the specified scopes and associates them with the given Context instance.
+	 * Only inherited scopes should be passed to this method.
+	 * 
+	 * @param context the Context instance the specified scopes are associated with
+	 * @param scopes the scopes to add
+	 */
 	public static function addScopes (context:Context, scopes:Array) : void {
 		if (scopeMap[context] != undefined) {
 			throw new IllegalArgumentError("Scopes already registered for the specified Context instance");
@@ -50,6 +57,12 @@ public class InheritedScopeRegistry {
 		delete scopeMap[context];
 	}
 	
+	/**
+	 * Returns the inherited scopes associated with the specified Context instance.
+	 * 
+	 * @param context the Context to return the associated scopes for
+	 * @return the inherited scopes associated with the specified Context instance
+	 */
 	public static function getScopes (context:Context) : Array {
 		if (scopeMap[context] == undefined) {
 			throw new IllegalArgumentError("No Scopes registered for the specified Context instance");

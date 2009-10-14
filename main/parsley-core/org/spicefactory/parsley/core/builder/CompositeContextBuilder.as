@@ -19,6 +19,20 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 
 /**
+ * Responsible for building Context instances using one or more ObjectDefinitionBuilder instances.
+ * 
+ * <p>A composite builder may be used when combining multiple configuration mechanisms like MXML or XML
+ * into a single Context. It is also used by all short cut entry points that only use a single
+ * configuration mechanism under the hood. So under the hood an implementation of this interface
+ * is always responsible for starting a Context initialization process.</p>
+ * 
+ * <p>Example usage:</p>
+ * 
+ * <pre><code>var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
+ * FlexContextBuilder.merge(BookStoreConfig, builder);
+ * XmlContextBuilder.merge("logging.xml", builder);
+ * builder.build();</code></pre>	 
+ * 
  * @author Jens Halm
  */
 public interface CompositeContextBuilder {

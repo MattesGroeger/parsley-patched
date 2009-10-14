@@ -41,18 +41,7 @@ import flash.events.Event;
 import flash.system.ApplicationDomain;
 
 /**
- * Responsible for building Context instances using one or more ObjectDefinitionBuilder.
- * 
- * <p>This builder may be used when combining multiple configuration mechanisms like MXML or XML
- * into a single Context. It is also used by all short cut entry points that only use a single
- * configuration mechanism under the hood.</p>
- * 
- * <p>Example usage:</p>
- * 
- * <pre><code>var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
- * FlexContextBuilder.merge(BookStoreConfig, builder);
- * XmlContextBuilder.merge("logging.xml", builder);
- * builder.build();</code></pre>	 
+ * Default implementation of the CompositeContextBuilder interface.
  * 
  * @author Jens Halm
  */
@@ -154,7 +143,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		}
 	}
 	
-	protected function createContextStrategyProvider (domain:ApplicationDomain, scopeDefs:Array) : ContextStrategyProvider {
+	private function createContextStrategyProvider (domain:ApplicationDomain, scopeDefs:Array) : ContextStrategyProvider {
 		return new DefaultContextStrategyProvider(factories, domain, scopeDefs);
 	}
 
