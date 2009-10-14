@@ -39,7 +39,7 @@ public interface DynamicContext extends Context {
 	 * Creates an object from the specified definition and dynamically adds it to the Context.
 	 * 
 	 * @param definition the definition to create an object from
-	 * @return an instance representing the dynamically created object and its defintion
+	 * @return an instance representing the dynamically created object and its definition
 	 */
 	function addDefinition (definition:ObjectDefinition) : DynamicObject;
 
@@ -48,7 +48,7 @@ public interface DynamicContext extends Context {
 	 * 
 	 * @param instance the object to add to the Context
 	 * @param definition optional definition to apply to the existing instance
-	 * @return an instance representing the dynamically created object and its defintion
+	 * @return an instance representing the dynamically created object and its definition
 	 */
 	function addObject (instance:Object, definition:ObjectDefinition = null) : DynamicObject;
 	
