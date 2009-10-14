@@ -67,11 +67,16 @@ public interface ObjectDefinition {
 	 */
 	function get objectLifecycle () : LifecycleListenerRegistry;
 
-
+	/**
+	 * The method to invoke on the configured object after it has been fully initialized.
+	 */
 	function get initMethod () : String;
 
 	function set initMethod (name:String) : void;
 
+	/**
+	 * The method to invoke on the configured object before it gets destroyed and removed from the Context.
+	 */
 	function get destroyMethod () : String;
 
 	function set destroyMethod (name:String) : void;
@@ -86,13 +91,13 @@ public interface ObjectDefinition {
 	
 
 	/**
-	 * Freezes this object definition. After calling this method any attempt to modify this defintion will
+	 * Freezes this object definition. After calling this method any attempt to modify this definition will
 	 * lead to an Error.
 	 */
 	function freeze () : void;
 	
 	/**
-	 * Indicates whether this definition has been frozen. When true any attempt to modify this defintion will
+	 * Indicates whether this definition has been frozen. When true any attempt to modify this definition will
 	 * lead to an Error.
 	 */	
 	function get frozen () : Boolean;

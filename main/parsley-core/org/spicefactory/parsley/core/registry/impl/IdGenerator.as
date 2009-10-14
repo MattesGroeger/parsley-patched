@@ -28,7 +28,7 @@ public class IdGenerator {
 	
 
 	/**	
-	 * The next available obejct id.
+	 * The next available object id.
 	 */
 	public static function get nextObjectId () : String {
 		return "[[Object " + _nextId++ + "]]";

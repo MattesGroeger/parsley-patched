@@ -78,7 +78,6 @@ public class RegistryValueResolver {
 	 * 
 	 * @param values the Array to resolve
 	 * @param registry the associated registry
-	 * @return the resolved configuration value
 	 */	
 	public function resolveValues (values:Array, registry:ObjectDefinitionRegistry) : void {
 		for (var i:int = 0; i < values.length; i++) {

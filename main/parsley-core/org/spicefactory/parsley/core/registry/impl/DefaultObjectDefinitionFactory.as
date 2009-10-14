@@ -60,7 +60,7 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	public var singleton:Boolean = true;
 	
 	/**
-	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#singleton
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#order
 	 */
 	public var order:int = int.MAX_VALUE;
 
@@ -119,11 +119,12 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	
 	
 	/**
-	 * Processes the decorators for this factory. This implementation processes decorators added
-	 * as metadata to the class definitions along with decorators added to the <code>decorators</code>
+	 * Processes the decorators for this factory. This implementation processes all decorators obtained
+	 * through the <code>decoratorAssemblers</code> property in the specified registry (usually one assembler processing metadata tags)
+	 * along with decorators added to the <code>decorators</code>
 	 * property explicitly, possibly through some additional configuration mechanism like MXML or XML.
 	 * 
-	 * @param registry the registry the defintion belongs to
+	 * @param registry the registry the definition belongs to
 	 * @param definition the definition to process
 	 * @return the resulting definition (possibly the same instance that was passed to this method)
 	 */

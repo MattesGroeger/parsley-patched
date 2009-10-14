@@ -61,7 +61,6 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 	/**
 	 * @inheritDoc
 	 */
-		
 	public function get lazy () : Boolean {
 		return _lazy;
 	}
@@ -69,7 +68,6 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 	/**
 	 * @inheritDoc
 	 */
-	
 	public function get singleton () : Boolean {
 		return _singleton;
 	}
@@ -77,7 +75,6 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 	/**
 	 * @inheritDoc
 	 */
-	
 	public function get order () : int {
 		return _order;
 	}

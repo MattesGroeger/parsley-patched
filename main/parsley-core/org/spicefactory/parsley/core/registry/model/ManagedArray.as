@@ -18,7 +18,7 @@ package org.spicefactory.parsley.core.registry.model {
 
 /**
  * Represents an Array that might contain special configuration values like object references or
- * inline object definitons alongside simple values.
+ * inline object definitions alongside simple values.
  * 
  * @author Jens Halm
  */

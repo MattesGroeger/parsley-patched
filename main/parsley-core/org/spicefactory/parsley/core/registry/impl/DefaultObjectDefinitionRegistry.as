@@ -52,6 +52,9 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	 * Creates a new instance.
 	 * 
 	 * @param domain the ApplicationDomain to use for reflecting on types added to this registry
+	 * @param scopeManager the ScopeManager associated with this registry
+	 * @param objectProviderFactory the factory to create ObjectProvider instances with
+	 * @param decoratorAssemblers the objects responsible for collecting decorators for definitions in this registry
 	 */
 	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain, scopeManager:ScopeManager, 
 			objectProviderFactory:ObjectProviderFactory, decoratorAssemblers:Array) {

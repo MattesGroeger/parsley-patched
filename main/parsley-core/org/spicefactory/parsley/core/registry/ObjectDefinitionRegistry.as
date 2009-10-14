@@ -46,7 +46,7 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	function get domain () : ApplicationDomain;
 
 	/**
-	 * Assemblers used to gather additonal ObjectDefinitionDecorators for definitions managed by this class.
+	 * Assemblers used to gather additonal ObjectDefinitionDecorators for definitions managed by this instance.
 	 * The Array is read-only and contains instances of <code>DecoratorAssembler</code>.
 	 */
 	function get decoratorAssemblers () : Array;
@@ -88,21 +88,20 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	
 
 	/**
-	 * Returns the defintion for the specified type. If the <code>required</code> parameter is set to true
-	 * this method will throw an Error if no defintion with a matching type exists in this registry.
-	 * In either case it will throw an Error if it finds more than one match.
+	 * Returns the definition for the specified type.
+	 * This method will throw an Error if it finds more than one match.
 	 * 
-	 * @param type the type for which the defintion should be returned
+	 * @param type the type for which the definition should be returned
 	 * @return the definition for the specified type
 	 */
 	function getDefinitionByType (type:Class) : RootObjectDefinition;
 
 	/**
-	 * Returns all defintions that match the specified type. This includes subclasses or objects implementing
+	 * Returns all definitions that match the specified type. This includes subclasses or objects implementing
 	 * the interface in case the type parmeter is an interface. When no match is found an empty Array will be returned.
 	 * 
-	 * @param type the type for which all defintions should be returned
-	 * @return all defintions that match the specified type
+	 * @param type the type for which all definitions should be returned
+	 * @return all definitions that match the specified type
 	 */
 	function getAllDefinitionsByType (type:Class) : Array;
 
@@ -137,7 +136,8 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	/**
 	 * The ScopeManager associated with this registry.
 	 * Primarily intended to be used for registering message receivers and
-	 * lifecycle listeners. Any messages dispatched before the registry
+	 * lifecycle listeners or accessing scope-wide extensions. 
+	 * Any messages dispatched before the registry
 	 * is frozen will be deferred, so messaging cannot be used to 
 	 * communicate between configuration tags.
 	 */

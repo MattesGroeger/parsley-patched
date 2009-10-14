@@ -26,6 +26,8 @@ import org.spicefactory.parsley.core.registry.definition.PropertyRegistry;
 import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
 
 /**
+ * A simple wrapper around an existing root object definition.
+ * 
  * @author Jens Halm
  */
 public class ObjectDefinitionWrapper implements RootObjectDefinition {
@@ -35,7 +37,7 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 	private var _lazy:Boolean;
 	private var _singleton:Boolean;
 	private var _order:int;
-	private var wrappedDefintion:ObjectDefinition;
+	private var wrappedDefinition:ObjectDefinition;
 
 
 	/**
@@ -45,10 +47,11 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 	 * @param id the id the object should be registered with
 	 * @param lazy whether the object is lazy initializing
 	 * @param singleton whether the object should be treated as a singleton
+	 * @param order the initialization order for non-lazy singletons
 	 */
 	function ObjectDefinitionWrapper (wrappedDefinition:ObjectDefinition, id:String = null, 
 			lazy:Boolean = false, singleton:Boolean = true, order:int = int.MAX_VALUE):void {
-		this.wrappedDefintion = wrappedDefinition;
+		this.wrappedDefinition = wrappedDefinition;
 		_id = (id != null) ? id : IdGenerator.nextObjectId;
 		_lazy = lazy;
 		_singleton = singleton;
@@ -56,92 +59,137 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 	}
 
 
+	/**
+	 * @inheritDoc
+	 */
 	public function get id () : String {
 		return _id;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get lazy () : Boolean {
 		return _lazy;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get singleton () : Boolean {
 		return _singleton;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get order () : int {
 		return _order;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function freeze () : void {
-		wrappedDefintion.freeze();
+		wrappedDefinition.freeze();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function get type () : ClassInfo {
-		return wrappedDefintion.type;
+		return wrappedDefinition.type;
 	}
-
+	
+	/**
+	 * @inheritDoc
+	 */
 	public function get instantiator () : ObjectInstantiator {
-		return wrappedDefintion.instantiator;
+		return wrappedDefinition.instantiator;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get constructorArgs () : ConstructorArgRegistry {
-		return wrappedDefintion.constructorArgs;
+		return wrappedDefinition.constructorArgs;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get properties () : PropertyRegistry {
-		return wrappedDefintion.properties;
-	}
-
-	public function get injectorMethods () : MethodRegistry {
-		return wrappedDefintion.injectorMethods;
-	}
-
-	public function get objectLifecycle () : LifecycleListenerRegistry {
-		return wrappedDefintion.objectLifecycle;
+		return wrappedDefinition.properties;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function get injectorMethods () : MethodRegistry {
+		return wrappedDefinition.injectorMethods;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get objectLifecycle () : LifecycleListenerRegistry {
+		return wrappedDefinition.objectLifecycle;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
 	public function get asyncInitConfig () : AsyncInitConfig {
-		return wrappedDefintion.asyncInitConfig;
+		return wrappedDefinition.asyncInitConfig;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function get frozen () : Boolean {
-		return wrappedDefintion.frozen;
+		return wrappedDefinition.frozen;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function set instantiator (value:ObjectInstantiator) : void {
-		wrappedDefintion.instantiator = value;
+		wrappedDefinition.instantiator = value;
 	}
-
+	
+	/**
+	 * @inheritDoc
+	 */
 	public function set asyncInitConfig (config:AsyncInitConfig) : void {
-		wrappedDefintion.asyncInitConfig = config;
+		wrappedDefinition.asyncInitConfig = config;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function get initMethod () : String {
-		return wrappedDefintion.initMethod;
+		return wrappedDefinition.initMethod;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function set initMethod (name:String) : void {
-		wrappedDefintion.initMethod = name;
+		wrappedDefinition.initMethod = name;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function get destroyMethod () : String {
-		return wrappedDefintion.destroyMethod;
+		return wrappedDefinition.destroyMethod;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function set destroyMethod (name:String) : void {
-		wrappedDefintion.destroyMethod = name;
+		wrappedDefinition.destroyMethod = name;
 	}
 	
 	

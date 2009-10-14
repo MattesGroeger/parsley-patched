@@ -32,7 +32,7 @@ import org.spicefactory.parsley.core.registry.definition.impl.DefaultMethodRegis
 import org.spicefactory.parsley.core.registry.definition.impl.DefaultLifecycleListenerRegistry;
 
 /** 
- * Default implementation of the ObjectDefintion interface.
+ * Default implementation of the ObjectDefinition interface.
  * 
  * @author Jens Halm
  */
@@ -81,6 +81,9 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 		_methods = definition.injectorMethods;
 		_listeners = definition.objectLifecycle;
 		_asyncInitConfig = definition.asyncInitConfig;
+		
+		_initMethod = definition.initMethod;
+		_destroyMethod = definition.destroyMethod;
 	}
 
 	
