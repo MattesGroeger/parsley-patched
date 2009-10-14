@@ -32,6 +32,8 @@ import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
 
 /**
+ * Default implementation of the ViewManager interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultViewManager implements ViewManager {
@@ -54,6 +56,12 @@ public class DefaultViewManager implements ViewManager {
 	private static const globalViewRootRegistry:Dictionary = new Dictionary();
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param context the Context view components should be dynamically wired to
+	 * @param domain the ApplicationDomain to use for reflection
+	 */
 	function DefaultViewManager (context:Context, domain:ApplicationDomain) {
 		this.parent = context;
 		this.domain = domain;
