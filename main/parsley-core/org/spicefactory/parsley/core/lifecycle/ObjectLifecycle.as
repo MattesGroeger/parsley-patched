@@ -48,7 +48,7 @@ public class ObjectLifecycle {
 	public static const PRE_DESTROY:ObjectLifecycle = new ObjectLifecycle("preDestroy");
 
 	/**
-	 * Lifecycle phase after the destoy method of an object (if existent) has been invoked.
+	 * Lifecycle phase after the destroy method of an object (if existent) has been invoked.
 	 * This is the final phase before an object actually gets removed from a Context.
 	 */
 	public static const POST_DESTROY:ObjectLifecycle = new ObjectLifecycle("postDestroy");

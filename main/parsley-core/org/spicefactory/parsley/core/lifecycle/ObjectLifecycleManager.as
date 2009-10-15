@@ -58,7 +58,7 @@ public interface ObjectLifecycleManager {
 	function destroyObject (instance:Object, definition:ObjectDefinition, context:Context) : void;	
 	
 	/**
-	 * Processes lifecycle listeners for all objects created by this factory. This means that
+	 * Processes lifecycle listeners for all objects created by this manager. This means that
 	 * implementations have to keep track of all instances they create.
 	 * 
 	 * @param context The associated Context
