@@ -22,12 +22,7 @@ public class DynamicContextTest extends ContextTestBase {
 		var obj:AnnotatedDynamicTestObject = new AnnotatedDynamicTestObject();
 		var dynContext:DynamicContext = context.createDynamicContext();
 		var dynObject:DynamicObject = dynContext.addObject(obj);
-		
-		assertNotNull("Unresolved dependency", obj.dependency);
-		context.scopeManager.dispatchMessage(new Object());
-		dynObject.remove();
-		context.scopeManager.dispatchMessage(new Object());
-		assertEquals("Unexpected number of received messsages", 1, obj.getMessageCount());	
+		validateDynamicObject(dynObject, context);
 	}
 	
 	public function testAddObjectAndDefinition () : void {
@@ -37,12 +32,7 @@ public class DynamicContextTest extends ContextTestBase {
 		var dynContext:DynamicContext = context.createDynamicContext();
 		var definition:ObjectDefinition = createDefinition(dynContext);
 		var dynObject:DynamicObject = dynContext.addObject(obj, definition);
-		
-		assertNotNull("Unresolved dependency", obj.dependency);
-		context.scopeManager.dispatchMessage(new Object());
-		dynObject.remove();
-		context.scopeManager.dispatchMessage(new Object());
-		assertEquals("Unexpected number of received messsages", 1, obj.getMessageCount());		
+		validateDynamicObject(dynObject, context);		
 	}	
 	
 	public function testAddDefinition () : void {
@@ -51,12 +41,15 @@ public class DynamicContextTest extends ContextTestBase {
 		var dynContext:DynamicContext = context.createDynamicContext();
 		var definition:ObjectDefinition = createDefinition(dynContext);
 		var dynObject:DynamicObject = dynContext.addDefinition(definition);
-		
+		validateDynamicObject(dynObject, context);
+	}
+	
+	private function validateDynamicObject (dynObject:DynamicObject, context:Context) : void {
 		assertNotNull("Unresolved dependency", dynObject.instance.dependency);
 		context.scopeManager.dispatchMessage(new Object());
 		dynObject.remove();
 		context.scopeManager.dispatchMessage(new Object());
-		assertEquals("Unexpected number of received messsages", 1, dynObject.instance.getMessageCount());		
+		assertEquals("Unexpected number of received messsages", 1, dynObject.instance.getMessageCount());			
 	}
 	
 	private function createDefinition (context:DynamicContext) : ObjectDefinition {
