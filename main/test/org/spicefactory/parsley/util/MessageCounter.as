@@ -17,7 +17,7 @@ public class MessageCounter {
 		var type:Class = ClassInfo.forInstance(message).getClass();
 		allMessages.push(message);
 		var byType:MessagesByType = messages[type];
-		if (byType == undefined) {
+		if (byType == null) {
 			byType = new MessagesByType();
 			messages[type] = byType;
 		}
@@ -52,7 +52,7 @@ class MessagesByType {
 		allMessages.push(message);
 		if (selector != undefined) {
 			var bySelector:Array = messages[type];
-			if (bySelector == undefined) {
+			if (bySelector == null) {
 				bySelector = new Array();
 				messages[type] = bySelector;
 			}
