@@ -104,11 +104,11 @@ public class Method	extends FunctionBase {
 	private function checkInstanceParameter (instance:Object) : void {
 		if (_static) {
 			if (instance != null) {
-				throw new MethodInvocationError("Instance parameter must be null for static properties");
+				throw new MethodInvocationError("Instance parameter must be null for static methods");
 			}
 		} else {
 			if (instance == null) {
-				throw new MethodInvocationError("Instance parameter must not be null for static properties");
+				throw new MethodInvocationError("Instance parameter must not be null for non-static methods");
 			} else if (!(instance is owner.getClass())) {
 				throw new MethodInvocationError("Instances must be of type " + getQualifiedClassName(owner));
 			}
