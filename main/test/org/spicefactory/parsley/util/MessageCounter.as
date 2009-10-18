@@ -21,7 +21,7 @@ public class MessageCounter {
 			byType = new MessagesByType();
 			messages[type] = byType;
 		}
-		byType.addMessage(message, selector);
+		byType.addMessage(message, type, selector);
 	}
 	
 	
