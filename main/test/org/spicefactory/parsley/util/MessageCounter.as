@@ -21,7 +21,7 @@ public class MessageCounter {
 			byType = new MessagesByType();
 			messages[type] = byType;
 		}
-		byType.addMessage(message, type, selector);
+		byType.addMessage(message, selector);
 	}
 	
 	
@@ -48,13 +48,13 @@ class MessagesByType {
 	private var messages:Dictionary = new Dictionary();
 	private var allMessages:Array = new Array();	
 	
-	public function addMessage (message:Object, type:Class, selector:* = undefined) : void {
+	public function addMessage (message:Object, selector:* = undefined) : void {
 		allMessages.push(message);
 		if (selector != undefined) {
-			var bySelector:Array = messages[type];
+			var bySelector:Array = messages[selector];
 			if (bySelector == null) {
 				bySelector = new Array();
-				messages[type] = bySelector;
+				messages[selector] = bySelector;
 			}
 			bySelector.push(message);
 		}
