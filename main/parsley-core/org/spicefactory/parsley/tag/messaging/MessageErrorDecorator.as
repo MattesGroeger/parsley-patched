@@ -30,7 +30,7 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
  * 
  * @author Jens Halm
  */
-public class MessageErrorHandlerDecorator extends AbstractStandardReceiverDecorator implements ObjectDefinitionDecorator {
+public class MessageErrorDecorator extends AbstractStandardReceiverDecorator implements ObjectDefinitionDecorator {
 
 	
 	[Target]
