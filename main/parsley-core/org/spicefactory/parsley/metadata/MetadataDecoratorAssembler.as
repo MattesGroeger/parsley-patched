@@ -39,6 +39,7 @@ import org.spicefactory.parsley.tag.lifecycle.legacy.PreDestroyMethodDecorator;
 import org.spicefactory.parsley.tag.messaging.ManagedEventsDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageBindingDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageDispatcherDecorator;
+import org.spicefactory.parsley.tag.messaging.MessageErrorDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageInterceptorDecorator;
 import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
@@ -85,6 +86,7 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 		Metadata.registerMetadataClass(MessageHandlerDecorator, domain);
 		Metadata.registerMetadataClass(MessageBindingDecorator, domain);
 		Metadata.registerMetadataClass(MessageInterceptorDecorator, domain);
+		Metadata.registerMetadataClass(MessageErrorDecorator, domain);
 		
 		Metadata.registerMetadataClass(ResourceBindingDecorator, domain);
 		
