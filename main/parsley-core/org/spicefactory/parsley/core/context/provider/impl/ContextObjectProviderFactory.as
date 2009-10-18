@@ -34,6 +34,7 @@ public class ContextObjectProviderFactory implements ObjectProviderFactory {
 	private var context:Context;
 	private var domain:ApplicationDomain;
 	private var providers:Array = new Array();
+	private var initialized:Boolean = false;
 
 	/**
 	 * @private
@@ -47,6 +48,7 @@ public class ContextObjectProviderFactory implements ObjectProviderFactory {
 	 * @inheritDoc
 	 */
 	public function initialize () : void {
+		initialized = true;
 		for each (var provider:ContextObjectProvider in providers) {
 			provider.initialize();
 		}
@@ -58,6 +60,7 @@ public class ContextObjectProviderFactory implements ObjectProviderFactory {
 	public function createProvider (type:Class, id:String = null) : ObjectProvider {
 		var provider:ContextObjectProvider = new ContextObjectProvider(context, ClassInfo.forClass(type, domain), id);
 		providers.push(provider);
+		if (initialized) provider.initialize();
 		return provider;
 	}
 	
