@@ -18,7 +18,7 @@
     <component id="MessageHandler" class="org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator"/>
     <component id="MessageBinding" class="org.spicefactory.parsley.tag.messaging.MessageBindingDecorator"/>
     <component id="MessageInterceptor" class="org.spicefactory.parsley.tag.messaging.MessageInterceptorDecorator"/>
-    <component id="MessageErrorHandler" class="org.spicefactory.parsley.tag.messaging.MessageErrorHandlerDecorator"/>
+    <component id="MessageError" class="org.spicefactory.parsley.tag.messaging.MessageErrorDecorator"/>
 
     <component id="ResourceBinding" class="org.spicefactory.parsley.tag.resources.ResourceBindingDecorator"/>
     
