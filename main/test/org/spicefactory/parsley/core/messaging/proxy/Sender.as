@@ -15,9 +15,7 @@ public class Sender extends EventDispatcher {
 		if (Receiver.instanceCount > 0) {
 			throw new Error("No Receiver should have been created at this point");
 		}
-		trace("before dispatch");
 		dispatchEvent(new Event("test"));
-		trace("after dispatch");
 	}
 	
 	
