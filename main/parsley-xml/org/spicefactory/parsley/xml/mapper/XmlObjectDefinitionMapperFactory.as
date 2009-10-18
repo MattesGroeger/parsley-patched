@@ -40,6 +40,7 @@ import org.spicefactory.parsley.tag.lifecycle.legacy.PostConstructMethodDecorato
 import org.spicefactory.parsley.tag.lifecycle.legacy.PreDestroyMethodDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageBindingDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageDispatcherDecorator;
+import org.spicefactory.parsley.tag.messaging.MessageErrorDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageInterceptorDecorator;
 import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
@@ -179,6 +180,7 @@ public class XmlObjectDefinitionMapperFactory {
 		addDecoratorAttributeMapperWithArrayAdapter(MessageHandlerDecoratorTag, "message-handler", "messageProperties");
 		addDecoratorAttributeMapper(MessageInterceptorDecorator, "message-interceptor");
 		addDecoratorAttributeMapper(MessageBindingDecorator, "message-binding");
+		addDecoratorAttributeMapper(MessageErrorDecorator, "message-error");
 		addDecoratorAttributeMapper(MessageDispatcherDecorator, "message-dispatcher");
 		addDecoratorAttributeMapperWithArrayAdapter(ManagedEventsDecoratorTag, "managed-events", "names");
 
