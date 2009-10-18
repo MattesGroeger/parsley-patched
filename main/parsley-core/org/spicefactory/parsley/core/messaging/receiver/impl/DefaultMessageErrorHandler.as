@@ -64,18 +64,18 @@ public class DefaultMessageErrorHandler extends AbstractMethodReceiver implement
 					+ ": Second parameter must be of type Error or a subtype");
 			}
 			if (errorType == null) {
-				_errorType = paramType.getClass();
+				errorType = paramType;
 			}
 			else if (!errorType.isType(paramType.getClass())) {
 				throw new ContextError("Target " + targetMethod
 					+ ": Method parameter of type " + paramType.name
 					+ " is not applicable to error type " + errorType.name);
 			}
+			_errorType = errorType.getClass();
 		}
 		else if (errorType == null) {
 			_errorType = Error;
 		}			
-		_errorType = errorType.getClass();
 	}
 
 
