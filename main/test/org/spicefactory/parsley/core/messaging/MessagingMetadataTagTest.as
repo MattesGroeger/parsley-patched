@@ -13,7 +13,7 @@ public class MessagingMetadataTagTest extends MessagingTestBase {
 	}
 		
 	public override function get messagingContext () : Context {
-		return ActionScriptContextBuilder.build(MessagingTestContainer);
+		return ActionScriptContextBuilder.build(MessagingTestConfig);
 	}
 	
 	

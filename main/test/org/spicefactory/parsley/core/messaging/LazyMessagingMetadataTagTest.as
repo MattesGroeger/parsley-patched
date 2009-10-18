@@ -14,7 +14,7 @@ public class LazyMessagingMetadataTagTest extends MessagingTestBase {
 	
 	
 	public override function get messagingContext () : Context {
-		return ActionScriptContextBuilder.build(LazyMessagingTestContainer);
+		return ActionScriptContextBuilder.build(LazyMessagingTestConfig);
 	}
 	
 	

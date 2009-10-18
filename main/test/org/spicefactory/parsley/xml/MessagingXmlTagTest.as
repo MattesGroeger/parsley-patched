@@ -39,7 +39,21 @@ public class MessagingXmlTagTest extends MessagingTestBase {
 			<message-handler method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
 			<message-handler method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
 			<message-handler method="mappedProperties" message-properties="stringProp,intProp" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
-		</object> 
+		</object>
+		
+		<object id="faultyHandlers" type="org.spicefactory.parsley.core.messaging.model.FaultyMessageHandlers" lazy="true">
+			<message-handler method="allTestEvents" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
+			<message-handler method="allEvents" type="flash.events.Event"/>
+			<message-handler method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
+			<message-handler method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
+		</object>
+		
+		<object id="errorHandlers" type="org.spicefactory.parsley.core.messaging.model.ErrorHandlers">
+			<message-error method="allTestEvents" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
+			<message-error method="allEvents" type="flash.events.Event"/>
+			<message-error method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
+			<message-error method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
+		</object>
 	
 		<object id="messageBindings" type="org.spicefactory.parsley.core.messaging.model.MessageBindingsBlank" lazy="true">
 			<message-binding target-property="stringProp" message-property="stringProp" type="org.spicefactory.parsley.core.messaging.TestEvent"/>

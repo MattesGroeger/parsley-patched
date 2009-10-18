@@ -2,7 +2,9 @@ package org.spicefactory.parsley.core.messaging {
 import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.parsley.core.ContextTestBase;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.messaging.model.ErrorHandlers;
 import org.spicefactory.parsley.core.messaging.model.EventSource;
+import org.spicefactory.parsley.core.messaging.model.FaultyMessageHandlers;
 import org.spicefactory.parsley.core.messaging.model.MessageBindings;
 import org.spicefactory.parsley.core.messaging.model.MessageHandlers;
 import org.spicefactory.parsley.core.messaging.model.MessageInterceptors;
@@ -82,7 +84,6 @@ public class MessagingTestBase extends ContextTestBase {
 		
 		assertEquals("Unexpected count for event test1", 2, interceptors.test1Count);
 		assertEquals("Unexpected count for event test2", 1, interceptors.test2Count);
-		//assertEquals("Unexpected count for generic event handler", 2, interceptors.genericEventCount);
 		
 		interceptors.proceedEvent2();
 		
@@ -94,7 +95,24 @@ public class MessagingTestBase extends ContextTestBase {
 		
 		assertEquals("Unexpected count for event test1", 2, interceptors.test1Count);
 		assertEquals("Unexpected count for event test2", 2, interceptors.test2Count);
-		//assertEquals("Unexpected count for generic event handler", 3, interceptors.genericEventCount);		
+	}
+	
+	public function testErrorHandlers () : void {
+		var context:Context = messagingContext;
+		checkState(context);
+		checkObjectIds(context, ["eventSource"], EventSource);	
+		checkObjectIds(context, ["faultyHandlers"], FaultyMessageHandlers);	
+		checkObjectIds(context, ["errorHandlers"], ErrorHandlers);	
+		var source:EventSource = context.getObject("eventSource") as EventSource;
+		context.getObjectByType(FaultyMessageHandlers); // must fetch explicitly - it's lazy
+		var handlers:ErrorHandlers = context.getObjectByType(ErrorHandlers) as ErrorHandlers;
+		source.dispatchEvent(new TestEvent(TestEvent.TEST1, "foo1", 7));
+		source.dispatchEvent(new TestEvent(TestEvent.TEST2, "foo2", 9));
+		source.dispatchEvent(new Event("foo"));
+		assertEquals("Unexpected count for all events", 15, handlers.getCount());
+		assertEquals("Unexpected count for TestEvents", 14, handlers.getCount(TestEvent));
+		assertEquals("Unexpected count for selector test1", 1, handlers.getCount(TestEvent, TestEvent.TEST1));
+		assertEquals("Unexpected count for selector test2", 1, handlers.getCount(TestEvent, TestEvent.TEST2));
 	}
 	
 	public function testMessageDispatcher () : void {
