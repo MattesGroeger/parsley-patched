@@ -95,6 +95,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 							handlers.push(errorHandler);
 						}
 					}
+					log.info("Select " + handlers.length + " out of " + errorHandlers.length + " error handlers");
 					if (handlers.length > 0) {
 						currentError = e;
 						remainingProcessors.unshift(currentProcessor);
