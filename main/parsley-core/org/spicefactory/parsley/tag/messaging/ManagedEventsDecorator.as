@@ -72,13 +72,13 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Nested
 			throw new ContextError("ManagedEvents on class " + definition.type.name 
 					+ ": No event names specified in ManagedEvents tag and no Event tag on class");	
 		}
-		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, postInit);
-		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy);
+		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_INIT, preInit);
+		definition.objectLifecycle.addListener(ObjectLifecycle.POST_DESTROY, postDestroy);
 		return definition;
 	}
 	
 	
-	private function postInit (instance:Object, context:Context) : void {
+	private function preInit (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
 		if (delegate.scopeManager == null) delegate.scopeManager = context.scopeManager;
 		for each (var name:String in names) {		
@@ -86,7 +86,7 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator, Nested
 		}
 	}
 
-	private function preDestroy (instance:Object, context:Context) : void {
+	private function postDestroy (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
 		for each (var name:String in names) {		
 			eventDispatcher.removeEventListener(name, delegate.dispatchMessage);

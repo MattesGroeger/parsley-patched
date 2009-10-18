@@ -82,16 +82,16 @@ public class AbstractMessageReceiverDecorator implements NestedTag {
 			 * For all other use cases we wait until the object is instantiated before
 			 * registering it as a message receiver.
 			 */
-			definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, postInit);
+			definition.objectLifecycle.addListener(ObjectLifecycle.PRE_INIT, preInit);
 		}
-		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy);
+		definition.objectLifecycle.addListener(ObjectLifecycle.POST_DESTROY, postDestroy);
 		return definition;
 	}
 
 	/*
 	 * Executed only for objects which are not non-lazy singletons.
 	 */
-	private function postInit (instance:Object, context:Context) : void {
+	private function preInit (instance:Object, context:Context) : void {
 		var receiver:MessageReceiver = createReceiver(Provider.forInstance(instance, domain), context.scopeManager);
 		if (receivers[instance] != undefined) {
 			throw new IllegalArgumentError("Attempt to add more than one receiver for the same instance: " + instance);
@@ -102,7 +102,7 @@ public class AbstractMessageReceiverDecorator implements NestedTag {
 	/*
 	 * Executed for all objects.
 	 */
-	private function preDestroy (instance:Object, context:Context) : void {
+	private function postDestroy (instance:Object, context:Context) : void {
 		if (singletonReceiver != null) {
 			removeReceiver(singletonReceiver, context.scopeManager);
 		}
