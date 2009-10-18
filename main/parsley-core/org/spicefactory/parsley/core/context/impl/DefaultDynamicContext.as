@@ -23,10 +23,12 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.impl.ChildContext;
+import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 
 import flash.events.Event;
@@ -64,6 +66,7 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 	 */
 	public function addDefinition (definition:ObjectDefinition) : DynamicObject {
 		checkState();
+		checkDefinition(definition);
 		var object:DynamicObject = new DefaultDynamicObject(this, definition);
 		if (object.instance != null) {
 			addDynamicObject(object);		
@@ -81,9 +84,18 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 			var defFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
 			definition = defFactory.createNestedDefinition(registry);
 		}
+		else {
+			checkDefinition(definition);
+		}
 		var object:DynamicObject = new DefaultDynamicObject(this, definition, instance);
 		addDynamicObject(object);
 		return object;
+	}
+	
+	private function checkDefinition (definition:ObjectDefinition) : void {
+		if (definition is RootObjectDefinition) {
+			throw new ContextError("RootObjectDefinitions cannot be added to a DynamicContext");
+		}
 	}
 	
 	/**
