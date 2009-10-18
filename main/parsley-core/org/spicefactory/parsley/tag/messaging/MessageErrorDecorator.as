@@ -43,14 +43,15 @@ public class MessageErrorDecorator extends AbstractStandardReceiverDecorator imp
 	 * The type of the error that this handler is interested in.
 	 * The default is the top level Error class.
 	 */
-	public var errorType:Class = Error;
+	public var errorType:Class;
 	
 	/**
 	 * @private
 	 */
 	protected override function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
+		var errorTypeInfo:ClassInfo = (errorType != null) ? ClassInfo.forClass(errorType, domain) : null;
 		var handler:MessageErrorHandler = 
-				new DefaultMessageErrorHandler(provider, method, type, selector, ClassInfo.forClass(errorType, domain));
+				new DefaultMessageErrorHandler(provider, method, type, selector, errorTypeInfo);
 		scopeManager.getScope(scope).messageReceivers.addErrorHandler(handler);
 		return handler;
 	}
