@@ -79,14 +79,12 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		this.viewRoot = viewRoot;
 		var event:ContextBuilderEvent = null;
 		if ((parent == null || domain == null) && viewRoot != null) {
-			if (viewRoot.stage != null) {
-				log.warn("Cannot look for parent Context and ApplicationDomain in the view hierarchy " +
+			if (viewRoot.stage == null) {
+				log.warn("Probably unable to look for parent Context and ApplicationDomain in the view hierarchy " +
 						" - specified view root has not been added to the stage yet");
 			}
-			else {
-				event = new ContextBuilderEvent();
-				viewRoot.dispatchEvent(event);
-			}
+			event = new ContextBuilderEvent();
+			viewRoot.dispatchEvent(event);
 		}
 		this.parent = (parent != null) ? parent : (event != null) ? event.parent : null;
 		this.domain = (domain != null) ? domain : (event != null && event.domain != null) ? event.domain : ClassInfo.currentDomain;
