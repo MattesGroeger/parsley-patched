@@ -51,7 +51,7 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 	public function addListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void {
 		var selector:String = (id == null) ? event.key : event.key + ":" + id;
 		var target:MessageTarget = new ObjectLifecycleListener(type, selector, listener);
-		var targets:Array = targets[listener];
+		var targets:Array = listeners[listener];
 		if (targets == null) {
 			targets = new Array();
 			listeners[listener] = targets;
