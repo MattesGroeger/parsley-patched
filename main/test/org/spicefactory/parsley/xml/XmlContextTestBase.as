@@ -12,11 +12,14 @@ import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionBuilder;
 public class XmlContextTestBase extends ContextTestBase {
 	
 	
-	public static function getContext (xml:XML, parent:Context = null) : Context {
+	public static function getContext (xml:XML, parent:Context = null, customScope:String = null, inherited:Boolean = true) : Context {
 		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder(null, parent);
 		var xmlBuilder:XmlObjectDefinitionBuilder = new XmlObjectDefinitionBuilder([], new DefaultExpressionContext());
 		xmlBuilder.addXml(xml);
 		builder.addBuilder(xmlBuilder);
+		if (customScope) {
+			builder.addScope(customScope, inherited);
+		}
 		return builder.build();
 	}
 	
