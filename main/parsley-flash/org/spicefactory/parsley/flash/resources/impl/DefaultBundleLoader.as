@@ -83,13 +83,13 @@ public class DefaultBundleLoader extends Task {
 	
 	private function onComplete (event:TaskEvent) : void {
 		var xml:XML = _xmlLoader.xml;
-		if (!checkName(xml, "message-bundle")) {
+		if (!checkName(xml, "resource-bundle")) {
 			return;
 		}
 		var nodes:XMLList = xml.children();
 		var messages:Object = new Object();
 		for each (var node:XML in nodes) {
-			if (!checkName(node, "message")) {
+			if (!checkName(node, "resource")) {
 				return;
 			}
 			var msgKey:String = node.@key;
