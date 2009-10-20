@@ -247,9 +247,9 @@ public class ClassInfo extends MetadataAware {
 							methods.put(m.name, m);
 						}
 					} else if (childName == "extendsClass") {
-						superClasses.push(_applicationDomain.getDefinition(instanceChild.@type));
+						superClasses.push(getDefinition(instanceChild.@type));
 					} else if (childName == "implementsInterface") {
-						interfaces.push(_applicationDomain.getDefinition(instanceChild.@type));
+						interfaces.push(getDefinition(instanceChild.@type));
 					}
 				}
 			}
@@ -259,6 +259,16 @@ public class ClassInfo extends MetadataAware {
 			_constructor = new Constructor([], new MetadataCollection([]), this);
 		}
 		initialized = true;
+	}
+	
+	private function getDefinition (name:String) : Class {
+		try {
+			return _applicationDomain.getDefinition(name) as Class;
+		}
+		catch (e:ReferenceError) {
+			/* fall through */
+		}
+		return Private;
 	}
 	
 	/**

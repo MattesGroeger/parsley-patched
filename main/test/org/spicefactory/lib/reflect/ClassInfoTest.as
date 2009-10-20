@@ -2,6 +2,7 @@ package org.spicefactory.lib.reflect {
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.model.ClassB;
 import org.spicefactory.lib.reflect.model.InterfaceA;
+import org.spicefactory.lib.reflect.model.InternalSubclass;
 import org.spicefactory.lib.reflect.model.TestProxy;
 import org.spicefactory.lib.reflect.types.Any;
 import org.spicefactory.lib.reflect.types.Private;
@@ -51,6 +52,13 @@ public class ClassInfoTest extends ReflectionTestBase {
 	public function testInterface () : void {
 		var ci:ClassInfo = ClassInfo.forClass(InterfaceA);
 		assertTrue("Expected Interface", ci.isInterface());
+	}
+	
+	public function testInternalSuperclass () : void {
+		var ci:ClassInfo = ClassInfo.forClass(InternalSubclass);
+		var type:Class = ci.getSuperClass();
+		assertEquals("Expected private superclass", Private, type);
+		assertEquals("Expected Object base class", Object, ci.getSuperClasses()[1]);
 	}
 	
 	
