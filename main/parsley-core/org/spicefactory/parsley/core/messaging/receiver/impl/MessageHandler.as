@@ -47,7 +47,7 @@ public class MessageHandler extends AbstractMethodReceiver implements MessageTar
 			messageType:ClassInfo = null) : Class {
 		var targetMethod:Method = provider.type.getMethod(methodName);
 		if (targetMethod == null) {
-			throw new ContextError("Target instance of type " + provider.type..name 
+			throw new ContextError("Target instance of type " + provider.type.name 
 					+ " does not contain a method with name " + targetMethod);
 		}
 		var params:Array = targetMethod.parameters;
