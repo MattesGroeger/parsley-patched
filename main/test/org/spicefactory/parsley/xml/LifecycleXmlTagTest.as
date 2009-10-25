@@ -10,7 +10,7 @@ public class LifecycleXmlTagTest extends LifecycleTestBase {
 	
 	
 	public override function get lifecycleContext () : Context {
-		return XmlContextTestBase.getContext(config);
+		return XmlContextTestBase.getXmlContext(config);
 	}
 	
 	public static const config:XML = <objects 

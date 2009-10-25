@@ -9,6 +9,7 @@ import org.spicefactory.parsley.core.decorator.injection.MissingConstructorInjec
 import org.spicefactory.parsley.core.decorator.injection.OptionalConstructorInjection;
 import org.spicefactory.parsley.core.decorator.injection.RequiredConstructorInjection;
 import org.spicefactory.parsley.core.decorator.lifecycle.LifecycleMetadataTagTest;
+import org.spicefactory.parsley.core.decorator.lifecycle.ObserveMetadataTagTest;
 import org.spicefactory.parsley.core.dynamiccontext.DynamicContextTest;
 import org.spicefactory.parsley.core.messaging.LazyMessagingMetadataTagTest;
 import org.spicefactory.parsley.core.messaging.MessagingMetadataTagTest;
@@ -22,6 +23,7 @@ import org.spicefactory.parsley.flex.mxmlconfig.core.CoreMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.factory.FactoryMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.lifecycle.LifecycleMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.messaging.MessagingMxmlTagTest;
+import org.spicefactory.parsley.flex.mxmlconfig.observer.ObserveMxmlTagTest;
 import org.spicefactory.parsley.pimento.PimentoMxmlTagTest;
 import org.spicefactory.parsley.pimento.PimentoXmlTagTest;
 import org.spicefactory.parsley.xml.AsyncInitXmlTagTest;
@@ -30,6 +32,7 @@ import org.spicefactory.parsley.xml.ExternalXmlConfigTest;
 import org.spicefactory.parsley.xml.FactoryXmlTagTest;
 import org.spicefactory.parsley.xml.LifecycleXmlTagTest;
 import org.spicefactory.parsley.xml.MessagingXmlTagTest;
+import org.spicefactory.parsley.xml.ObserveXmlTagTest;
 
 public class ParsleyTestSuite {
 	
@@ -57,6 +60,10 @@ public class ParsleyTestSuite {
 		suite.addTestSuite(LifecycleMetadataTagTest);
 		suite.addTestSuite(LifecycleMxmlTagTest);
 		suite.addTestSuite(LifecycleXmlTagTest);
+		
+		suite.addTestSuite(ObserveMetadataTagTest);
+		suite.addTestSuite(ObserveMxmlTagTest);
+		suite.addTestSuite(ObserveXmlTagTest);
 
 		suite.addTestSuite(MessagingMetadataTagTest);
 		suite.addTestSuite(LazyMessagingMetadataTagTest);

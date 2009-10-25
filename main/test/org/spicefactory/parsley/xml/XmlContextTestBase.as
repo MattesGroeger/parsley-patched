@@ -12,7 +12,7 @@ import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionBuilder;
 public class XmlContextTestBase extends ContextTestBase {
 	
 	
-	public static function getContext (xml:XML, parent:Context = null, customScope:String = null, inherited:Boolean = true) : Context {
+	public static function getXmlContext (xml:XML, parent:Context = null, customScope:String = null, inherited:Boolean = true) : Context {
 		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder(null, parent);
 		var xmlBuilder:XmlObjectDefinitionBuilder = new XmlObjectDefinitionBuilder([], new DefaultExpressionContext());
 		xmlBuilder.addXml(xml);

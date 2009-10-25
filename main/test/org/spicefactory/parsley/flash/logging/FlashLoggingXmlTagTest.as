@@ -32,7 +32,7 @@ public class FlashLoggingXmlTagTest extends XmlContextTestBase {
 	
 	public function testLogFactoryConfig () : void {
 		FlashLoggingXmlSupport.initialize();
-		var context:Context = getContext(config);
+		var context:Context = getXmlContext(config);
 		checkState(context);
 		checkObjectIds(context, ["appender"], LogCounterAppender);	
 		checkObjectIds(context, ["logFactory"], FlashLogFactory);	

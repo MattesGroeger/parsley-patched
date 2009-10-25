@@ -38,9 +38,9 @@ public class ScopeTest extends XmlContextTestBase {
   			<object id="senderC" type="org.spicefactory.parsley.core.scope.PassiveSender"/>
   			<object id="receiver" type="org.spicefactory.parsley.core.scope.CustomScopeReceiver"/>
   		</objects>;
-  		var contextA:Context = getContext(configA);
-  		var contextB:Context = getContext(configB, contextA, "custom");
-  		var contextC:Context = getContext(configC, contextB);
+  		var contextA:Context = getXmlContext(configA);
+  		var contextB:Context = getXmlContext(configB, contextA, "custom");
+  		var contextC:Context = getXmlContext(configC, contextB);
   		var senderA:EventDispatcher = contextC.getObject("senderA") as EventDispatcher;
   		var senderB:EventDispatcher = contextC.getObject("senderB") as EventDispatcher;
   		var senderC:EventDispatcher = contextC.getObject("senderC") as EventDispatcher;
@@ -72,9 +72,9 @@ public class ScopeTest extends XmlContextTestBase {
   			<object type="mx.containers.VBox" lazy="true"/>
   			<object type="mx.containers.Box" lazy="true"/>
   		</objects>;
-  		var contextA:Context = getContext(configA);
-  		var contextB:Context = getContext(configB, contextA, "custom");
-  		var contextC:Context = getContext(configC, contextB);
+  		var contextA:Context = getXmlContext(configA);
+  		var contextB:Context = getXmlContext(configB, contextA, "custom");
+  		var contextC:Context = getXmlContext(configC, contextB);
   		var counter:LifecycleEventCounter = new LifecycleEventCounter();
   		addListener(contextC, ScopeName.GLOBAL, counter.globalListener);
   		addListener(contextC, ScopeName.LOCAL, counter.localListener);
@@ -112,7 +112,6 @@ public class ScopeTest extends XmlContextTestBase {
 }
 }
 
-import flash.utils.getQualifiedClassName;
 import org.spicefactory.parsley.core.factory.ScopeExtensionFactory;
 import org.spicefactory.parsley.core.scope.ScopeTestExtension;
 import org.spicefactory.parsley.util.MessageCounter;

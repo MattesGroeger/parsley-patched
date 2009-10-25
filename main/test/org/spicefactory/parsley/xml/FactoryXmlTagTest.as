@@ -19,7 +19,7 @@ public class FactoryXmlTagTest extends FactoryDecoratorTestBase {
 	</objects>; 
 
 	public override function get context () : Context {
-		return XmlContextTestBase.getContext(config);
+		return XmlContextTestBase.getXmlContext(config);
 	}
 	
 	

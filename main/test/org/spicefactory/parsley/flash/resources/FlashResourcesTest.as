@@ -31,7 +31,7 @@ public class FlashResourcesTest extends XmlContextTestBase {
 	}
 	
 	private function prepareContext (xml:XML, callback:Function, parent:Context = null) : void {
-		var context:Context = getContext(xml, parent);
+		var context:Context = getXmlContext(xml, parent);
     	checkState(context, true, false);
     	var f:Function = addAsync(callback, 3000);		
 		context.addEventListener(ContextEvent.INITIALIZED, f);

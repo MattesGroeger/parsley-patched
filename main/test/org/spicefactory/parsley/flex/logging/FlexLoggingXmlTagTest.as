@@ -41,7 +41,7 @@ public class FlexLoggingXmlTagTest extends XmlContextTestBase {
 	public function testLogTargetConfig () : void {
 		LogCounterTarget.reset();
 		LogContext.factory = new FlexLogFactory(); // not necessary in application code, but this test runs together with Flash Logging Tests
-		var context:Context = getContext(config);
+		var context:Context = getXmlContext(config);
 		checkState(context);
 		checkObjectIds(context, ["debugTarget", "infoTarget", "warnTarget", "errorTarget", "fatalTarget"], ILoggingTarget);	
 		logAllLevels();

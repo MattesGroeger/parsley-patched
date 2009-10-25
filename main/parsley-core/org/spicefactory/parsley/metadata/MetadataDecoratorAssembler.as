@@ -15,7 +15,9 @@
  */
 
 package org.spicefactory.parsley.metadata {
+	import org.spicefactory.lib.reflect.converter.EnumerationConverter;
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.reflect.Converters;
 import org.spicefactory.lib.reflect.Member;
 import org.spicefactory.lib.reflect.Metadata;
 import org.spicefactory.lib.reflect.MetadataAware;
@@ -24,6 +26,7 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.asconfig.metadata.InternalProperty;
 import org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.messaging.impl.Selector;
 import org.spicefactory.parsley.core.registry.DecoratorAssembler;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
@@ -34,6 +37,7 @@ import org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator;
 import org.spicefactory.parsley.tag.lifecycle.DestroyMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.FactoryMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.InitMethodDecorator;
+import org.spicefactory.parsley.tag.lifecycle.ObserveMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.legacy.PostConstructMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.legacy.PreDestroyMethodDecorator;
 import org.spicefactory.parsley.tag.messaging.ManagedEventsDecorator;
@@ -79,6 +83,7 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 		Metadata.registerMetadataClass(FactoryMethodDecorator, domain);
 		Metadata.registerMetadataClass(InitMethodDecorator, domain);
 		Metadata.registerMetadataClass(DestroyMethodDecorator, domain);
+		Metadata.registerMetadataClass(ObserveMethodDecorator, domain);
 		Metadata.registerMetadataClass(AsyncInitDecorator, domain);
 		
 		Metadata.registerMetadataClass(ManagedEventsDecorator, domain);
@@ -99,6 +104,8 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 		
 		Metadata.registerMetadataClass(InternalProperty, domain); // TODO - move to ActionScriptContextBuilder
 		Metadata.registerMetadataClass(ObjectDefinitionMetadata, domain);
+		
+		Converters.addConverter(ObjectLifecycle, new EnumerationConverter(ClassInfo.forClass(ObjectLifecycle, domain)));
 	}
 	
 	/**

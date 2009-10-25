@@ -20,7 +20,7 @@
 	
 	<target name="compile_parsley_complete_flash">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/parsley-complete-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
@@ -40,7 +40,7 @@
 	
 	<target name="compile_parsley_complete_flex3">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageErrorHandler,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageErrorHandler,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/parsley-complete-flex3-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
@@ -65,7 +65,7 @@
 		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
 					token="extends Flex3ModuleInfoBase" value="extends Flex4ModuleInfoBase"/>
 		<exec executable="${flex4.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageErrorHandler,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageErrorHandler,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/parsley-complete-flex4-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
@@ -90,7 +90,7 @@
 	
 	<target name="compile_spicelib_complete_flex">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo,PostConstruct" />
+			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo,PostConstruct,Init" />
 			<arg line="-o ${release.target.dir}/release/spicelib-complete-flex-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
@@ -108,7 +108,7 @@
 	
 	<target name="compile_spicelib_complete_flash">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo,PostConstruct" />
+			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo,PostConstruct,Init" />
 			<arg line="-o ${release.target.dir}/release/spicelib-complete-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
@@ -184,7 +184,7 @@
 	
 	<target name="compile_parsley_core">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageInterceptor,MessageErrorHandler,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageInterceptor,MessageErrorHandler,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />

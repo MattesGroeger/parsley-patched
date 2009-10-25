@@ -12,6 +12,7 @@
     <component id="PreDestroy" class="org.spicefactory.parsley.tag.lifecycle.legacy.PreDestroyMethodDecorator"/>
     <component id="Init" class="org.spicefactory.parsley.tag.lifecycle.InitMethodDecorator"/>
     <component id="Destroy" class="org.spicefactory.parsley.tag.lifecycle.DestroyMethodDecorator"/>
+    <component id="Observe" class="org.spicefactory.parsley.tag.lifecycle.MxmlObserveMethodDecorator"/>
     
     <component id="ManagedEvents" class="org.spicefactory.parsley.tag.messaging.ManagedEventsDecorator"/>
     <component id="MessageDispatcher" class="org.spicefactory.parsley.tag.messaging.MessageDispatcherDecorator"/>

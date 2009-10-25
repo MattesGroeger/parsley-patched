@@ -13,7 +13,7 @@ public class MessagingXmlTagTest extends MessagingTestBase {
 	}
 	
 	public override function get messagingContext () : Context {
-		return XmlContextTestBase.getContext(config);
+		return XmlContextTestBase.getXmlContext(config);
 	}
 	
 	public static const config:XML = <objects 

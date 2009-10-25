@@ -1,12 +1,26 @@
 package org.spicefactory.parsley.core {
 import flexunit.framework.TestCase;
 
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 
 /**
  * @author Jens Halm
  */
 public class ContextTestBase extends TestCase {
+	
+	
+	protected function getContext (builder:ObjectDefinitionBuilder, parent:Context = null, 
+			customScope:String = null, inherited:Boolean = true) : Context {
+		var contextBuilder:CompositeContextBuilder = new DefaultCompositeContextBuilder(null, parent);
+		contextBuilder.addBuilder(builder);
+		if (customScope) {
+			contextBuilder.addScope(customScope, inherited);
+		}
+		return contextBuilder.build();
+	}
 	
 	
 	protected function checkState (context:Context, configured:Boolean = true, initialized:Boolean = true, destroyed:Boolean = false) : void {

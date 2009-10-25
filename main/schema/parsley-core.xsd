@@ -35,6 +35,7 @@
 	        <xs:element name="post-construct" type="methodType" minOccurs="0"/>
 	        <xs:element name="destroy" type="methodType" minOccurs="0"/>
 	        <xs:element name="init" type="methodType" minOccurs="0"/>
+	        <xs:element name="observe" type="observeType" minOccurs="0"/>
 	        <xs:element name="factory" type="methodType" minOccurs="0"/>
             
             <xs:element name="managed-events" type="managedEventsType" minOccurs="0" maxOccurs="unbounded"/>
@@ -80,6 +81,13 @@
     
     <xs:complexType name="methodType">
         <xs:attribute name="method" type="xs:token" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="observeType">
+        <xs:attribute name="method" type="xs:token" use="required"/>
+        <xs:attribute name="phase" type="phaseType" use="optional"/>
+        <xs:attribute name="scope" type="xs:token" use="optional"/>
+        <xs:attribute name="id" type="xs:token" use="optional"/>
     </xs:complexType>
     
     <xs:complexType name="asyncInitType">
@@ -200,5 +208,15 @@
         <xs:attribute name="type-ref" type="xs:token" use="optional"/>
         <xs:attribute name="required" type="xs:token" use="optional"/>
     </xs:complexType>
+    
+    <xs:simpleType name="phaseType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="preConfigure"/>
+            <xs:enumeration value="preInit"/>
+            <xs:enumeration value="postInit"/>
+            <xs:enumeration value="preDestroy"/>
+            <xs:enumeration value="postDestroy"/>
+        </xs:restriction>
+    </xs:simpleType>
     
 </xs:schema>

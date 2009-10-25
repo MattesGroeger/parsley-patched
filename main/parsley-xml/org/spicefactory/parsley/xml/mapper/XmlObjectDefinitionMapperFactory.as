@@ -36,6 +36,7 @@ import org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator;
 import org.spicefactory.parsley.tag.lifecycle.DestroyMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.FactoryMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.InitMethodDecorator;
+import org.spicefactory.parsley.tag.lifecycle.ObserveMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.legacy.PostConstructMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.legacy.PreDestroyMethodDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageBindingDecorator;
@@ -172,8 +173,9 @@ public class XmlObjectDefinitionMapperFactory {
 		addDecoratorAttributeMapper(FactoryMethodDecorator, "factory");
 		addDecoratorAttributeMapper(InitMethodDecorator, "init");
 		addDecoratorAttributeMapper(DestroyMethodDecorator, "destroy");
+		addDecoratorAttributeMapper(ObserveMethodDecorator, "observe");
 		
-		// TODO - remove in 2.2
+		// 2 deprecated tags
 		addDecoratorAttributeMapper(PostConstructMethodDecorator, "post-construct");
 		addDecoratorAttributeMapper(PreDestroyMethodDecorator, "pre-destroy");
 		

@@ -28,11 +28,11 @@ public class AsyncInitXmlTagTest extends AsyncInitTestBase {
 	</objects>;
 
 	protected override function get defaultContext () : Context {
-		return XmlContextTestBase.getContext(config);
+		return XmlContextTestBase.getXmlContext(config);
 	}
 	
 	protected override function get orderedContext () : Context {
-		return XmlContextTestBase.getContext(orderedConfig);
+		return XmlContextTestBase.getXmlContext(orderedConfig);
 	}
 	
 	

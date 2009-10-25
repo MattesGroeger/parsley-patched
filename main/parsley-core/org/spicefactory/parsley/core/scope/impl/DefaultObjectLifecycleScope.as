@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.scope.impl {
 import org.spicefactory.lib.util.ArrayUtil;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
@@ -32,6 +33,7 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 
 
 	private var listeners:Dictionary = new Dictionary();
+	private var providers:Dictionary = new Dictionary();
 	private var receiverRegistry:MessageReceiverRegistry;
 	
 	
@@ -49,7 +51,7 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 	 * @inheritDoc
 	 */
 	public function addListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void {
-		var selector:String = (id == null) ? event.key : event.key + ":" + id;
+		var selector:String = getSelector(event, id);
 		var target:MessageTarget = new ObjectLifecycleListener(type, selector, listener);
 		var targets:Array = listeners[listener];
 		if (targets == null) {
@@ -64,11 +66,11 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 	 * @inheritDoc
 	 */
 	public function removeListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void {
-		var selector:String = (id == null) ? event.key : event.key + ":" + id;
 		var targets:Array = listeners[listener];
 		if (targets == null) {
 			return;
 		}
+		var selector:String = getSelector(event, id);
 		for each (var target:MessageTarget in targets) {
 			if (target.messageType == type && target.selector == selector) {
 				ArrayUtil.remove(targets, target);
@@ -81,12 +83,53 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 		}
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function addProvider (provider:ObjectProvider, methodName:String, event:ObjectLifecycle, id:String = null) : void {
+		var selector:String = getSelector(event, id);
+		var target:MessageTarget = new ObjectLifecycleHandler(provider, methodName, selector);
+		var targets:Array = providers[provider];
+		if (targets == null) {
+			targets = new Array();
+			providers[provider] = targets;
+		}
+		targets.push(target);
+		receiverRegistry.addTarget(target);
+	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function removeProvider (provider:ObjectProvider, methodName:String, event:ObjectLifecycle, id:String = null) : void {
+		var targets:Array = providers[provider];
+		if (targets == null) {
+			return;
+		}
+		var selector:String = getSelector(event, id);
+		for each (var target:ObjectLifecycleHandler in targets) {
+			if (target.methodName == methodName && target.selector == selector) {
+				ArrayUtil.remove(targets, target);
+				receiverRegistry.removeTarget(target);
+				if (targets.length == 0) {
+					delete providers[provider];
+				}
+				break;
+			}
+		}
+	}
+	
+	
+	private function getSelector (event:ObjectLifecycle, id:String = null) : String {
+		return (id == null) ? event.key : event.key + ":" + id;
+	}
 }
 }
 
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.AbstractMessageReceiver;
+import org.spicefactory.parsley.core.messaging.receiver.impl.MessageHandler;
 
 class ObjectLifecycleListener extends AbstractMessageReceiver implements MessageTarget {
 	
@@ -99,6 +142,20 @@ class ObjectLifecycleListener extends AbstractMessageReceiver implements Message
 	
 	public function handleMessage (message:Object) : void {
 		listener(message);
+	}
+	
+}
+
+class ObjectLifecycleHandler extends MessageHandler {
+	
+	private var listener:Function;
+	
+	function ObjectLifecycleHandler (provider:ObjectProvider, methodName:String, selector:String) {
+		super(provider, methodName, selector);
+	}
+	
+	public function get methodName () : String {
+		return targetMethod.name;
 	}
 	
 }

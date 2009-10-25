@@ -11,11 +11,11 @@ public class PimentoXmlTagTest extends PimentoTestBase {
 	
 	
 	public override function get pimentoContext () : Context {
-		return XmlContextTestBase.getContext(pimentoXml);
+		return XmlContextTestBase.getXmlContext(pimentoXml);
 	}
 	
 	public override function get cinnamonContext () : Context {
-		return XmlContextTestBase.getContext(cinnamonXml);
+		return XmlContextTestBase.getXmlContext(cinnamonXml);
 	}
 	
 	public var cinnamonXml:XML = <objects 
