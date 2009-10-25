@@ -32,7 +32,7 @@ import flash.utils.Dictionary;
 
 [Metadata(name="Observe", types="method", multiple="true")]
 /**
- * Represents a Metadata or XML tag that can be used on methods that should be invoked for
+ * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked for
  * lifecycle events of other objects.
  * 
  * @author Jens Halm
