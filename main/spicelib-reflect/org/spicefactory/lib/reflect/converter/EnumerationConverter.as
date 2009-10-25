@@ -55,11 +55,29 @@ public class EnumerationConverter implements Converter {
 		if (str.length == 0) {
 			throw new ConversionError("Cannot convert empty string to Enumeration"); 
 		}
+		str = convertCamelCase(str);
 		var result:* = type.getClass()[str];
 		if (!(result is type.getClass())) {
 			throw new ConversionError(str + " is not a valid value for Enumeration class " + type.name);
 		}
 		return result;		
+	}
+	
+	private function convertCamelCase (orig:String) : String {
+		var result:String = "";
+		for (var i:int = 0; i < orig.length; i++) {
+			var c:String = orig.charAt(i);
+			if (c >= "a" && c <= "z") {
+				result += c.toUpperCase();
+			}
+			else if (i == 0) {
+				return orig;
+			}
+			else {
+				result += "_" + c;
+			}
+		}
+		return result;
 	}
 	
 
