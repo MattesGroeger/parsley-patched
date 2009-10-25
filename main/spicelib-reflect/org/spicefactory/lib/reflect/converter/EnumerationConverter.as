@@ -56,7 +56,7 @@ public class EnumerationConverter implements Converter {
 			throw new ConversionError("Cannot convert empty string to Enumeration"); 
 		}
 		var result:* = type.getClass()[str];
-		if (!result is type.getClass()) {
+		if (!(result is type.getClass())) {
 			throw new ConversionError(str + " is not a valid value for Enumeration class " + type.name);
 		}
 		return result;		
