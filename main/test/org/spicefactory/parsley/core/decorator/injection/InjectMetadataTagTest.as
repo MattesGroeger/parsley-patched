@@ -125,7 +125,8 @@ public class InjectMetadataTagTest extends ContextTestBase {
 		checkObjectIds(context, ["optionalPropertyIdInjection"], OptionalPropertyIdInjection);	
 		var obj:OptionalPropertyIdInjection 
 				= getAndCheckObject(context, "optionalPropertyIdInjection", OptionalPropertyIdInjection) as OptionalPropertyIdInjection;
-		assertNull("Expected optional dependency to be missing", obj.dependency);			
+		assertNull("Expected optional dependency to be missing", obj.dependency);	
+		assertEquals("Expected default value", "foo", obj.valueWithDefault);		
 	}	
 	
 	public function testMethodInjection () : void {

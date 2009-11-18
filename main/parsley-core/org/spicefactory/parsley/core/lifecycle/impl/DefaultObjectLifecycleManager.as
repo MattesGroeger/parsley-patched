@@ -123,8 +123,10 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	protected function processProperties (instance:Object, definition:ObjectDefinition, context:Context) : void {
 	 	var props:Array = definition.properties.getAll();
 	 	for each (var prop:PropertyValue in props) {
-	 		var value:* = resolveValue(prop.value, context);
-	 		prop.property.setValue(instance, value);
+	 		var value:* = resolveValue(prop.value, context, true);
+	 		if (!(value is UnsatisfiedDependency)) {
+	 			prop.property.setValue(instance, value);
+	 		}
 		}		
 	}
 
@@ -171,9 +173,10 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	 * 
 	 * @param value the value to resolve
 	 * @param context the associated Context
+	 * @param designateUnsatisfiedDependencies if true returns an instance of UnsatisfiedDependency instead of null
 	 * @return the resolved value
 	 */
-	protected function resolveValue (value:*, context:Context) : * {
+	protected function resolveValue (value:*, context:Context, designateUnsatisfiedDependencies:Boolean = false) : * {
 		if (value is ObjectIdReference) {
 			var idRef:ObjectIdReference = ObjectIdReference(value);
 			if (!context.containsObject(idRef.id)) {
@@ -181,7 +184,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 					throw new ContextError("Required object with id " + idRef.id + " does not exist");
 				}
 				else {
-					return null;
+					return (designateUnsatisfiedDependencies) ? UnsatisfiedDependency.INSTANCE : null;
 				}
 			} else {
 				return context.getObject(idRef.id);
@@ -203,7 +206,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 						+ typeRef.type.name);
 				}
 				else {
-					return null;
+					return (designateUnsatisfiedDependencies) ? UnsatisfiedDependency.INSTANCE : null;
 				}				
 			}
 			else {
