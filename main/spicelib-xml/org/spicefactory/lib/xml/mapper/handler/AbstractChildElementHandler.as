@@ -54,9 +54,7 @@ public class AbstractChildElementHandler extends AbstractPropertyHandler {
 				var array:Array = new Array();
 				for each (var node:XML in nodes) {
 					var element:Object = mapToObject(node, context);
-					if (element != null) {
-						array.push(element); 
-					}
+					array.push(element); 
 				}
 				property.setValue(parentInstance, array);
 			}
