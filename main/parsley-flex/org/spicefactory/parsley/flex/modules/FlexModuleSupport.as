@@ -56,6 +56,7 @@ public class FlexModuleSupport {
 }
 }
 
+import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.errors.AbstractMethodError;
 import flash.utils.Dictionary;
 
@@ -124,6 +125,8 @@ class Flex4ModuleInfoBase extends ModuleInfoBase {
 class ModuleInfoProxy extends Flex3ModuleInfoBase implements IModuleInfo {
 	
 	
+	private static const domainMap:Dictionary = new Dictionary();
+	
 	private var module:IModuleInfo;
 	private var factoryProxy:IFlexModuleFactory;
 	private var domain:ApplicationDomain;
@@ -136,14 +139,24 @@ class ModuleInfoProxy extends Flex3ModuleInfoBase implements IModuleInfo {
 	
 	private function moduleUnloaded (event:Event) : void {
 		domain = null;
+		delete domainMap[url];
 		factoryProxy = null;
 	}
 
 	protected override function getDomain (applicationDomain:ApplicationDomain) : ApplicationDomain {
-		if (domain == null) {
+		if (loaded) {
+			applicationDomain = domainMap[url] as ApplicationDomain;
+			if (applicationDomain == null) {
+				throw new IllegalStateError("Module with url " + url 
+						+ " has already been loaded, but ApplicationDomain cannot be determined"); 
+			}
+			domain = applicationDomain;
+		}
+		else {
 			domain = (applicationDomain != null) ? applicationDomain
 					: (FlexModuleSupport.defaultLoadingPolicy == ModuleLoadingPolicy.ROOT_DOMAIN) ?
 					ClassInfo.currentDomain : new ApplicationDomain(ClassInfo.currentDomain);
+			domainMap[url] = domain;
 		}
 		return domain;
 	}
