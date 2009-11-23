@@ -110,7 +110,12 @@ public class ClassInfo extends MetadataAware {
 		} else if (name.indexOf(".as$") != -1) {
 			return Private;
 		} else {
-			return domain.getDefinition(name) as Class;
+			var type:Class = domain.getDefinition(name) as Class;
+			if (type == null) {
+				throw new IllegalStateError("Unable to get definition for class " + name
+						+ " - maybe the ApplicationDomain is uninitialized");
+			}
+			return type;
 		}
 	}
 	
@@ -204,6 +209,7 @@ public class ClassInfo extends MetadataAware {
 		initCollections();
 		var xml:XML = describeType(type);
 		var staticChildren:XMLList = xml.children();
+		var complete:Boolean = false;
 		for each (var staticChild:XML in staticChildren) {
 			var name:String = staticChild.localName() as String;
 			if (name == "accessor") {
@@ -219,6 +225,7 @@ public class ClassInfo extends MetadataAware {
 				var sm:Method = Method.fromXML(staticChild, true, this);
 				staticMethods.put(sm.name, sm);
 			} else if (name == "factory") {
+				complete = true;
 				setMetadata(metadataFromXml(staticChild, Types.CLASS));
 				_interface = (staticChild.elements("extendsClass").length() == 0 && type != Object);
 				var instanceChildren:XMLList = staticChild.children();
@@ -254,6 +261,9 @@ public class ClassInfo extends MetadataAware {
 				}
 			}
 		}
+		if (!complete) {
+			throw new IllegalStateError("No factory element in XML for " + this);
+		}
 		if (!_interface && _constructor == null) {
 			// empty default constructor
 			_constructor = new Constructor([], new MetadataCollection([]), this);
@@ -263,7 +273,7 @@ public class ClassInfo extends MetadataAware {
 	
 	private function getDefinition (name:String) : Class {
 		try {
-			return _applicationDomain.getDefinition(name) as Class;
+			return getClassDefinitionByName(name, _applicationDomain);
 		}
 		catch (e:ReferenceError) {
 			/* fall through */
