@@ -104,6 +104,8 @@ public class InitializerSequence {
 		while (!async) {
 			if (complete) {
 				context.finishInitialization();
+			}
+			if (queuedInits.length == 0) {
 				return;
 			}
 			activeDefinition = queuedInits.shift() as RootObjectDefinition;
