@@ -339,7 +339,7 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	/**
 	 * @inheritDoc
 	 */
-	[PreDestroy]
+	[Destroy]
 	public function destroy () : void {
 		for each (var bundle:ResourceBundleSpi in _bundles) {
 			bundle.destroy();
