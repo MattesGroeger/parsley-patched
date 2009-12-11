@@ -69,7 +69,15 @@ public class TaskEvent extends Event {
 	 */
 	public function TaskEvent (type:String) {
 		super(type);
-	}		
+	}	
+	
+	
+	/**
+	 * @private
+	 */
+	public override function clone () : Event {
+		return new TaskEvent(type);
+	}	
 		
 }
 	

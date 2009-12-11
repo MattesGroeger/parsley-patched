@@ -77,6 +77,17 @@ public class ContextBuilderEvent extends Event {
 			throw new IllegalStateError("Parent Context has already been set for this event");
 		}
 		_parent = parent;
+	}	
+	
+	
+	/**
+	 * @private
+	 */
+	public override function clone () : Event {
+		var cbe:ContextBuilderEvent = new ContextBuilderEvent();
+		cbe.domain = domain;
+		cbe.parent = parent;
+		return cbe;
 	}		
 	
 	

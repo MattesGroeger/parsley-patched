@@ -48,6 +48,14 @@ public class ViewConfigurationEvent extends Event {
 	public function get configurationTarget () : Object {
 		return (explicitTarget == null) ? target : explicitTarget;
 	}
+	
+	
+	/**
+	 * @private
+	 */
+	public override function clone () : Event {
+		return new ViewConfigurationEvent(explicitTarget);
+	}	
 		
 		
 }

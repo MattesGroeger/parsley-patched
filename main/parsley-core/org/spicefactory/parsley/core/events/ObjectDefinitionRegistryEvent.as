@@ -42,6 +42,14 @@ public class ObjectDefinitionRegistryEvent extends Event {
 	 */
 	public function ObjectDefinitionRegistryEvent (type:String) {
 		super(type);
+	}	
+	
+	
+	/**
+	 * @private
+	 */
+	public override function clone () : Event {
+		return new ObjectDefinitionRegistryEvent(type);
 	}		
 		
 }

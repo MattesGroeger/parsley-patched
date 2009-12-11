@@ -65,7 +65,15 @@ public class ContextEvent extends Event {
 	 */
 	public function ContextEvent (type:String) {
 		super(type);
-	}		
+	}
+	
+	
+	/**
+	 * @private
+	 */
+	public override function clone () : Event {
+		return new ContextEvent(type);
+	}			
 		
 }
 	

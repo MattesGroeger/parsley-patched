@@ -60,6 +60,14 @@ public class LocaleSwitchEvent extends Event {
 		return _newLocale;
 	}
 	
+	
+	/**
+	 * @private
+	 */
+	public override function clone () : Event {
+		return new LocaleSwitchEvent(type, newLocale);
+	}	
+	
 }
 
 }

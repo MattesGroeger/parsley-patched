@@ -41,6 +41,14 @@ public class ResourceBindingEvent extends Event {
 	public function ResourceBindingEvent (type:String) {
 		super(type);
 	}		
+	
+	
+	/**
+	 * @private
+	 */
+	public override function clone () : Event {
+		return new ResourceBindingEvent(type);
+	}	
 		
 }
 	

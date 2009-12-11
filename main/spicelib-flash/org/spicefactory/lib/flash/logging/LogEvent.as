@@ -64,6 +64,13 @@ public class LogEvent extends Event {
 	public function get message () : String {
 		return _message;
 	}
+	
+	/**
+	 * @private
+	 */
+	public override function clone () : Event {
+		return new LogEvent(level, message);
+	}
 		
 
 }

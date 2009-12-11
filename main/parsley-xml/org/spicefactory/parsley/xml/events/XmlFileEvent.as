@@ -60,6 +60,14 @@ public class XmlFileEvent extends Event {
 	 */
 	public function get filename () : String {
 		return _filename;
+	}	
+	
+	
+	/**
+	 * @private
+	 */
+	public override function clone () : Event {
+		return new XmlFileEvent(type, filename);
 	}		
 		
 		
