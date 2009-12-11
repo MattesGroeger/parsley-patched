@@ -20,7 +20,7 @@
 	
 	<target name="compile_parsley_complete_flash">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/parsley-complete-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
@@ -140,7 +140,7 @@
 	
 	<target name="compile_spicelib_flash">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=PostConstruct" />
+			<arg line="-keep-as3-metadata+=PostConstruct,Init" />
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
@@ -184,7 +184,7 @@
 	
 	<target name="compile_parsley_core">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageInterceptor,MessageError,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
