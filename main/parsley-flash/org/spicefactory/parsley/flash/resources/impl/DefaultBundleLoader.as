@@ -83,13 +83,15 @@ public class DefaultBundleLoader extends Task {
 	
 	private function onComplete (event:TaskEvent) : void {
 		var xml:XML = _xmlLoader.xml;
-		if (!checkName(xml, "resource-bundle")) {
+		if (!checkName(xml, "resource-bundle") && !checkName(xml, "message-bundle")) {
+			// message-bundle just for backwards-compatibility
 			return;
 		}
 		var nodes:XMLList = xml.children();
 		var messages:Object = new Object();
 		for each (var node:XML in nodes) {
-			if (!checkName(node, "resource")) {
+			if (!checkName(node, "resource") && !checkName(node, "message")) {
+				// message just for backwards-compatibility
 				return;
 			}
 			var msgKey:String = node.@key;
