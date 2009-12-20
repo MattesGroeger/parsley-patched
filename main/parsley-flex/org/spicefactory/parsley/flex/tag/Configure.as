@@ -48,7 +48,7 @@ public class Configure extends ConfigurationTagBase {
 	public var repeat:Boolean = true;
 	
 	
-	protected override function executeAction (view:DisplayObject) : void  { 
+	protected override function executeAction (view:DisplayObject) : void { 
 		view.dispatchEvent(new ViewConfigurationEvent(target));
 		if (repeat) {
 			view.addEventListener(Event.ADDED_TO_STAGE, repeatAction);

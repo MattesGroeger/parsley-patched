@@ -44,7 +44,7 @@ public class ConfigurationTagBase implements IMXMLObject {
 	 * 
 	 * @param view the fully initialized view
 	 */
-	protected function executeAction (view:DisplayObject) : void  {
+	protected function executeAction (view:DisplayObject) : void {
 		throw new AbstractMethodError(); 
 	}
 	
