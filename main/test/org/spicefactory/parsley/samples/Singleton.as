@@ -26,7 +26,7 @@ public class Singleton implements ObjectDefinitionDecorator {
 					+ definition);
 		}
 		if (property != null) {
-			var p:Property = definition.type.getProperty(property);
+			var p:Property = definition.type.getStaticProperty(property);
 			if (p == null) {
 				throw new ContextError("Class " + definition.type.name 
 						+ " does not contain a property with name " + property);
@@ -38,7 +38,7 @@ public class Singleton implements ObjectDefinitionDecorator {
 		}
 		else {
 			if (method == null) method = "getInstance";
-			var m:Method = definition.type.getMethod(method);
+			var m:Method = definition.type.getStaticMethod(method);
 			if (m == null) {
 				throw new ContextError("Class " + definition.type.name 
 						+ " does not contain a method with name " + method);
