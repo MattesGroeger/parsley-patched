@@ -15,10 +15,8 @@
  */
 
 package org.spicefactory.parsley.flex.tag {
-import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 
-import mx.core.IMXMLObject;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
@@ -32,7 +30,7 @@ import flash.events.Event;
  * 
  * @author Jens Halm
  */
-public class Configure implements IMXMLObject {
+public class Configure extends ConfigurationTagBase {
 	
 	
 	/**
@@ -50,34 +48,15 @@ public class Configure implements IMXMLObject {
 	public var repeat:Boolean = true;
 	
 	
-	private function addedToStage (event:Event) : void  {
-		var comp:DisplayObject = DisplayObject(event.target);
-		dispatchConfigureEvent(comp);
-		if (!repeat) {
-			comp.removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
+	protected override function executeAction (view:DisplayObject) : void  { 
+		view.dispatchEvent(new ViewConfigurationEvent(target));
+		if (repeat) {
+			view.addEventListener(Event.ADDED_TO_STAGE, repeatAction);
 		}
 	}
-		
-	private function dispatchConfigureEvent (comp:DisplayObject) : void  { 
-		comp.dispatchEvent(new ViewConfigurationEvent(target));
-	}
 	
-	
-	/**
-	 * @private
-	 */
-	public function initialized (document:Object, id:String) : void {
-		if (!(document is DisplayObject)) {
-			throw new IllegalArgumentError("The Configure tag is supposed to be used within MXML components that extend DisplayObject");
-		}
-		var comp:DisplayObject = DisplayObject(document);
-		if (comp.stage != null) {
-			// TODO - At this point the binding for the target property has very likely not been executed (does this ever happen?)
-			dispatchConfigureEvent(comp);
-		}
-		if (comp.stage == null || repeat) {		
-			comp.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
-		}
+	private function repeatAction (event:Event) : void {
+		DisplayObject(event.target).dispatchEvent(new ViewConfigurationEvent(target));
 	}
 	
 	
