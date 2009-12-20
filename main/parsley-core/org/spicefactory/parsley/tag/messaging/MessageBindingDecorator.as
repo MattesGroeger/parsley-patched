@@ -43,7 +43,7 @@ public class MessageBindingDecorator extends AbstractMessageReceiverDecorator im
 	/**
 	 * @copy org.spicefactory.parsley.tag.messaging.AbstractStandardReceiverDecorator#selector
 	 */
-	public var selector:String;
+	public var selector:*;
 	
 	/**
 	 * The scope this binding wants to be applied to.

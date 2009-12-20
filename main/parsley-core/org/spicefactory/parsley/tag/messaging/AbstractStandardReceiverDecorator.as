@@ -39,7 +39,7 @@ public class AbstractStandardReceiverDecorator extends AbstractMessageReceiverDe
 	 * Will be checked against the value of the property in the message marked with <code>[Selector]</code>
 	 * or against the event type if the message is an event and does not have a selector property specified explicitly.
 	 */
-	public var selector:String;
+	public var selector:*;
 	
 	/**
 	 * The scope this receiver wants to be applied to.
