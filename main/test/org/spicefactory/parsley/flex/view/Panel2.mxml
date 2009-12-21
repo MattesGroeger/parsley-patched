@@ -9,14 +9,36 @@
 	
 	<mx:Script>
 		<![CDATA[
-			import flash.events.Event;
-			import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
+			 import flash.events.Event;
+			 import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
+	         import org.spicefactory.parsley.flex.FlexContextBuilder;
+	         import org.spicefactory.parsley.core.context.Context;
+	         import mx.containers.Panel;
+	         import mx.managers.PopUpManager;
+	         import mx.containers.TitleWindow;
 			
-			[Inject]
-			[Bindable]
-			public var model:CoreModel;	
-		]]>
-	</mx:Script>
+			 [Inject]
+			 [Bindable]
+			 public var model:CoreModel;	
+         
+         	 [Inject]
+         	 public var context:Context;
+         	
+         	 private var window:TitleWindow;
+         
+         
+	         private function showPopup () : void {
+	         	if (window == null) window = new SomeWindow();
+	         	context.viewManager.addViewRoot(window);
+	         	PopUpManager.addPopUp(window, this);
+	         }
+	         
+	         private function hidePopup () : void {
+	         	PopUpManager.removePopUp(window);
+	         }
+      ]]>
+   </mx:Script>
+   
 	
 	<parsley:Configure/>
 	
@@ -24,5 +46,10 @@
 	<mx:Text text="Bound value: |{model.stringProp}|"/>
 	<mx:Text text="BB2"/>
 	
+
+	<mx:Button label="Show Popup" click="showPopup();"/>
+
+	<mx:Button label="Hide Popup" click="hidePopup();"/>
+
 	
 </mx:Panel> 
