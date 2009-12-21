@@ -18,6 +18,10 @@
 		<msg:ManagedEventsDecorator names="['test1','test2','foo']"/>
 	</flextag:MxmlObjectDefinitionFactoryTag> 
 	
+	<flextag:MxmlObjectDefinitionFactoryTag id="eventSource2" type="{EventSource}" singleton="false">
+		<msg:ManagedEventsDecorator names="['test1','test2','foo']"/>
+	</flextag:MxmlObjectDefinitionFactoryTag>
+	
 	<flextag:MxmlObjectDefinitionFactoryTag id="testDispatcher" type="{TestMessageDispatcher}" lazy="true">
 		<msg:MessageDispatcherDecorator property="dispatcher"/>
 	</flextag:MxmlObjectDefinitionFactoryTag> 

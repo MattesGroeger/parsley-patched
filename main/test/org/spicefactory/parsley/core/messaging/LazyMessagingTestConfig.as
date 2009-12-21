@@ -18,6 +18,11 @@ public class LazyMessagingTestConfig {
 		return new EventSourceMetadata();
 	}
 	
+	[ObjectDefinition(singleton="false")]
+	public function get eventSource2 () : EventSourceMetadata {
+		return new EventSourceMetadata();
+	}
+	
 	public function get testDispatcher () : TestMessageDispatcherMetadata {
 		return new TestMessageDispatcherMetadata();
 	}

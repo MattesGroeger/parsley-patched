@@ -23,6 +23,10 @@ public class MessagingXmlTagTest extends MessagingTestBase {
 			<managed-events names="test1, test2, foo"/>
 		</object> 
 		
+		<object id="eventSource2" type="org.spicefactory.parsley.core.messaging.model.EventSource" singleton="false">
+			<managed-events names="test1, test2, foo"/>
+		</object> 
+		
 		<object id="testDispatcher" type="org.spicefactory.parsley.core.messaging.model.TestMessageDispatcher" lazy="true">
 			<message-dispatcher property="dispatcher"/>
 		</object> 

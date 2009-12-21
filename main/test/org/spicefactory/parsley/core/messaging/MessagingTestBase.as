@@ -30,7 +30,7 @@ public class MessagingTestBase extends ContextTestBase {
 	public function testMessageHandlers () : void {
 		var context:Context = messagingContext;
 		checkState(context);
-		checkObjectIds(context, ["eventSource"], EventSource);	
+		checkObjectIds(context, ["eventSource", "eventSource2"], EventSource);	
 		checkObjectIds(context, ["messageHandlers"], MessageHandlers);	
 		var source:EventSource = context.getObject("eventSource") as EventSource;
 		var handlers:MessageHandlers;
@@ -49,7 +49,7 @@ public class MessagingTestBase extends ContextTestBase {
 	public function testMessageBindings () : void {
 		var context:Context = messagingContext;
 		checkState(context);
-		checkObjectIds(context, ["eventSource"], EventSource);	
+		checkObjectIds(context, ["eventSource", "eventSource2"], EventSource);	
 		checkObjectIds(context, ["messageBindings"], MessageBindings);	
 		var source:EventSource = context.getObject("eventSource") as EventSource;
 		var bindings:MessageBindings;
@@ -65,7 +65,7 @@ public class MessagingTestBase extends ContextTestBase {
 	public function testMessageInterceptors () : void {
 		var context:Context = messagingContext;
 		checkState(context);
-		checkObjectIds(context, ["eventSource"], EventSource);	
+		checkObjectIds(context, ["eventSource", "eventSource2"], EventSource);	
 		checkObjectIds(context, ["messageHandlers"], MessageHandlers);	
 		checkObjectIds(context, ["messageInterceptors"], MessageInterceptors);	
 		var source:EventSource = context.getObject("eventSource") as EventSource;
@@ -100,7 +100,7 @@ public class MessagingTestBase extends ContextTestBase {
 	public function testErrorHandlers () : void {
 		var context:Context = messagingContext;
 		checkState(context);
-		checkObjectIds(context, ["eventSource"], EventSource);	
+		checkObjectIds(context, ["eventSource", "eventSource2"], EventSource);	
 		checkObjectIds(context, ["faultyHandlers"], FaultyMessageHandlers);	
 		checkObjectIds(context, ["errorHandlers"], ErrorHandlers);	
 		var source:EventSource = context.getObject("eventSource") as EventSource;
@@ -135,6 +135,30 @@ public class MessagingTestBase extends ContextTestBase {
 		assertEquals("Unexpected count for event test1", 2, handlers.test1Count);
 		assertEquals("Unexpected count for event test2", 2, handlers.test2Count);
 		assertEquals("Unexpected sum value", 16, handlers.sum);
+	}
+	
+	public function testUnregisterManagedEvents () : void {
+		var context:Context = messagingContext;
+		checkState(context);
+		checkObjectIds(context, ["eventSource", "eventSource2"], EventSource);	
+		checkObjectIds(context, ["messageHandlers"], MessageHandlers);	
+		var source1:EventSource = context.getObject("eventSource2") as EventSource;
+		var source2:EventSource = context.getObject("eventSource2") as EventSource;
+		var handlers:MessageHandlers;
+		if (lazy) handlers = context.getObject("messageHandlers") as MessageHandlers;
+		source1.dispatchEvent(new TestEvent(TestEvent.TEST1, "foo1", 7));
+		source1.dispatchEvent(new TestEvent(TestEvent.TEST2, "foo2", 9));
+		source2.dispatchEvent(new Event("foo"));
+		if (!lazy) handlers = context.getObject("messageHandlers") as MessageHandlers;
+		context.destroy();
+		source2.dispatchEvent(new TestEvent(TestEvent.TEST1, "foo1", 7));
+		source1.dispatchEvent(new TestEvent(TestEvent.TEST2, "foo2", 9));
+		source1.dispatchEvent(new Event("foo"));
+		assertEquals("Unexpected count for event test1", 2, handlers.test1Count);
+		assertEquals("Unexpected count for event test2", 2, handlers.test2Count);
+		assertEquals("Unexpected count for generic event handler", 3, handlers.genericEventCount);
+		assertEquals("Unexpected string property", "foo2", handlers.stringProp);
+		assertEquals("Unexpected int property", 9, handlers.intProp);
 	}
 	
 	public function get messagingContext () : Context {
