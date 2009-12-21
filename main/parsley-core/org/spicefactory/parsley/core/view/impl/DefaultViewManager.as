@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.view.impl {
+	import flash.utils.getDefinitionByName;
+	import mx.core.UIComponent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.context.Context;
@@ -50,11 +52,26 @@ public class DefaultViewManager implements ViewManager {
 	private var parent:Context;
 	private var domain:ApplicationDomain;
 	private var viewRoots:Array = new Array();
+	private var configuredViews:Dictionary = new Dictionary();
 	private var viewContext:DynamicContext;
 	
 	
+	private static var uiComponentClass:Class;
+	private static var uiComponentClassSet:Boolean;
 	private static const globalViewRootRegistry:Dictionary = new Dictionary();
 	
+	
+	private static function setUiComponentClass () : void {
+		if (uiComponentClassSet) return;
+		uiComponentClassSet = true;
+		try {
+			uiComponentClass = getDefinitionByName("mx.core.UIComponent") as Class;
+		}
+		catch (e:Error) {
+			/* ignore - we are presumably in a Flash application */
+		}
+	}
+
 	
 	/**
 	 * Creates a new instance.
@@ -69,6 +86,7 @@ public class DefaultViewManager implements ViewManager {
 
 
 	private function initialize () : void {
+		setUiComponentClass();
 		viewContext = parent.createDynamicContext();
 		viewContext.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
@@ -85,6 +103,7 @@ public class DefaultViewManager implements ViewManager {
 	 * @inheritDoc
 	 */
 	public function addViewRoot (view:DisplayObject) : void {
+		if (viewRoots.indexOf(view) >= 0) return;
 		log.info("Add view root: {0}/{1}", view.name, getQualifiedClassName(view));
 		if (viewContext == null) initialize();
 		if (globalViewRootRegistry[view] != undefined) {
@@ -99,7 +118,10 @@ public class DefaultViewManager implements ViewManager {
 	}
 
 	private function viewRootRemoved (event:Event) : void {
-		removeViewRoot(DisplayObject(event.target));
+		var view:DisplayObject = DisplayObject(event.target);
+		if (isRemovable(view)) {
+			removeViewRoot(view);
+		}
 	}
 	
 	/**
@@ -149,18 +171,43 @@ public class DefaultViewManager implements ViewManager {
 		event.stopImmediatePropagation();
 		var target:Object = (event is ViewConfigurationEvent) 
 				? ViewConfigurationEvent(event).configurationTarget : event.target;
+		if (configuredViews[target] != undefined) return;
 		log.debug("Add object '{0}' to view Context", target);
 		if (target is IEventDispatcher) {
 			IEventDispatcher(target).addEventListener(componentRemovedEvent, componentRemoved);
 		}
+		configuredViews[target] = true;
 		viewContext.addObject(target);
 	}
 	
 	private function componentRemoved (event:Event) : void {
 		var view:IEventDispatcher = IEventDispatcher(event.target);
+		if (!isRemovable(view)) {
+			return;
+		}
 		log.debug("Remove object '{0}' from view Context", view);
 		view.removeEventListener(componentRemovedEvent, componentRemoved);
+		delete configuredViews[view];
 		viewContext.removeObject(view);
+	}
+	
+	
+	/**
+	 * Checks whether the specified view object can be removed.
+	 * Will be invoked for view roots and components.
+	 * The method should check if the removal should be performed
+	 * based on the state of the specified view instance.
+	 * For Flex components for example it should check whether 
+	 * they have been fully intialized yet. In case the component
+	 * dispatches a premature removedFromStage, which often happens
+	 * if it is placed within popups or scroll panes, this method
+	 * should return false.
+	 * 
+	 * @param view the view for which to check whether it can be removed
+	 * @return true if the specified view can be removed
+	 */
+	protected function isRemovable (view:Object) : Boolean {
+		return (uiComponentClass == null || !(view is uiComponentClass) || view.initialized);
 	}
 	
 	
