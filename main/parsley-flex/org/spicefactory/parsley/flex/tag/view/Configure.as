@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.flex.tag {
+package org.spicefactory.parsley.flex.tag.view {
+	import org.spicefactory.parsley.flex.tag.ConfigurationTagBase;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 
 

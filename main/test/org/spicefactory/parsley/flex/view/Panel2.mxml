@@ -1,6 +1,6 @@
 <mx:Panel 
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:parsley="org.spicefactory.parsley.flex.tag.*"
+	xmlns:parsley="org.spicefactory.parsley.flex.tag.view.*"
 	width="100%"
 	height="100%"
 	title="Panel2"

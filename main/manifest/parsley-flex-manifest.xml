@@ -1,4 +1,4 @@
 <?xml version="1.0"?>
 <componentPackage>
-	<component id="Configure" class="org.spicefactory.parsley.flex.tag.Configure"/>
+	<component id="Configure" class="org.spicefactory.parsley.flex.tag.view.Configure"/>
 </componentPackage>
