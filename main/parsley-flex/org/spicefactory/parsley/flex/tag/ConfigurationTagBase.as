@@ -35,6 +35,19 @@ import flash.events.Event;
 public class ConfigurationTagBase implements IMXMLObject {
 	
 	
+	private var listenerPriority:int = 0;
+	
+	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param listenerPriority the priority to use when adding listeners to the document object this tag is associated with
+	 */
+	function ConfigurationTagBase (listenerPriority:int = 0) {
+		this.listenerPriority = listenerPriority;
+	}
+
+	
 	/**
 	 * Invoked when the specified view has been added to the stage
 	 * and is fully initialized (in case it is a Flex component).
@@ -62,10 +75,9 @@ public class ConfigurationTagBase implements IMXMLObject {
 			executeAction(view);
 		}
 		else if (!isOnStage(view)) {
-			view.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
-		}
-		else {
-			view.addEventListener(FlexEvent.INITIALIZE, viewInitialized);
+			view.addEventListener(Event.ADDED_TO_STAGE, addedToStage, false, listenerPriority);
+		} else {
+			view.addEventListener(FlexEvent.INITIALIZE, viewInitialized, false, listenerPriority);
 		}
 	}
 	
@@ -76,7 +88,7 @@ public class ConfigurationTagBase implements IMXMLObject {
 			executeAction(view);
 		}
 		else {
-			view.addEventListener(FlexEvent.INITIALIZE, viewInitialized);
+			view.addEventListener(FlexEvent.INITIALIZE, viewInitialized, false, listenerPriority);
 		}
 	}
 	
@@ -87,7 +99,7 @@ public class ConfigurationTagBase implements IMXMLObject {
 			executeAction(view);
 		}
 		else {
-			view.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
+			view.addEventListener(Event.ADDED_TO_STAGE, addedToStage, false, listenerPriority);
 		}
 	}
 	

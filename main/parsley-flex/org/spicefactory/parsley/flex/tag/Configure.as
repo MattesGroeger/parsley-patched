@@ -34,6 +34,18 @@ public class Configure extends ConfigurationTagBase {
 	
 	
 	/**
+	 * @private
+	 */
+	function Configure () {
+		/*
+		 * Using a lower priority here to make sure to execute after ContextBuilders listening for the 
+		 * same event types of the document instance.
+		 */
+		super(-1);
+	}
+	
+	
+	/**
 	 * The target object to be wired to the Context.
 	 * If this property is not set explicitly then the document object this tag
 	 * was placed upon will be wired.
