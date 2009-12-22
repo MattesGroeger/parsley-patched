@@ -24,6 +24,7 @@ import mx.events.FlexEvent;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
+import flash.events.EventDispatcher;
 
 /**
  * Base class for MXML configuration tags that require both, the associated document component being added to the stage
@@ -32,7 +33,7 @@ import flash.events.Event;
  * 
  * @author Jens Halm
  */
-public class ConfigurationTagBase implements IMXMLObject {
+public class ConfigurationTagBase extends EventDispatcher implements IMXMLObject {
 	
 	
 	private var listenerPriority:int = 0;
