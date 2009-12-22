@@ -15,8 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.view.impl {
-	import flash.utils.getDefinitionByName;
-	import mx.core.UIComponent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.context.Context;
@@ -31,6 +29,7 @@ import flash.events.Event;
 import flash.events.IEventDispatcher;
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
+import flash.utils.getDefinitionByName;
 import flash.utils.getQualifiedClassName;
 
 /**
