@@ -1,5 +1,6 @@
 package org.spicefactory.parsley.pimento {
-import org.spicefactory.parsley.cinnamon.CinnamonXmlSupport;
+	import org.spicefactory.parsley.rpc.pimento.config.PimentoXmlSupport;
+import org.spicefactory.parsley.rpc.cinnamon.config.CinnamonXmlSupport;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.xml.XmlContextTestBase;
 

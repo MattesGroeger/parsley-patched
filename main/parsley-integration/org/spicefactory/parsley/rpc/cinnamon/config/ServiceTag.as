@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.cinnamon {
+package org.spicefactory.parsley.rpc.cinnamon.config {
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
@@ -85,7 +85,7 @@ public class ServiceTag implements ObjectDefinitionFactory {
 
 import org.spicefactory.cinnamon.service.ServiceChannel;
 import org.spicefactory.cinnamon.service.ServiceProxy;
-import org.spicefactory.parsley.cinnamon.ServiceTag;
+import org.spicefactory.parsley.rpc.cinnamon.config.ServiceTag;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 

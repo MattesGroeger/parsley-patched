@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.pimento {
+package org.spicefactory.parsley.rpc.pimento.config {
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
@@ -86,7 +86,7 @@ public class ServiceTag implements ObjectDefinitionFactory {
 import org.spicefactory.cinnamon.service.ServiceProxy;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.pimento.ServiceTag;
+import org.spicefactory.parsley.rpc.pimento.config.ServiceTag;
 import org.spicefactory.pimento.config.PimentoConfig;
 
 class ServiceLifecycleListener {

@@ -3,7 +3,7 @@
 	
 	<property file="build.properties" />
 	
-	<property name="version" value="2.1.1"/>
+	<property name="version" value="2.2.0-SNAPSHOT"/>
 	<property name="pimento.version" value="1.1.0"/>
 	<property name="project.dir" value="${basedir}/.."/>
 	<property name="lib.dir" value="${project.dir}/lib"/>
@@ -28,11 +28,12 @@
 			<arg line="-el ${release.target.dir}/release/spicelib-complete-flash-${version}.swc" />
 			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
 			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
-			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-flash ${project.dir}/parsley-pimento ${project.dir}/parsley-xml"/>
+			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-config ${project.dir}/parsley-flash ${project.dir}/parsley-integration ${project.dir}/parsley-xml"/>
 			<arg line="-is ${project.dir}/parsley-core" />
+			<arg line="-is ${project.dir}/parsley-config" />
 			<arg line="-is ${project.dir}/parsley-flash" />
 			<arg line="-is ${project.dir}/parsley-xml" />
-			<arg line="-is ${project.dir}/parsley-pimento" />
+			<arg line="-is ${project.dir}/parsley-integration" />
 			<arg line="-debug=true"/>
 			<arg line="-verbose-stacktraces"/>
 		</exec>
@@ -52,10 +53,10 @@
 			<arg line="-el ${release.target.dir}/release/spicelib-complete-flex-${version}.swc" />
 			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
 			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
-			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-flex ${project.dir}/parsley-pimento ${project.dir}/parsley-xml"/>
+			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-config ${project.dir}/parsley-flex ${project.dir}/parsley-integration ${project.dir}/parsley-xml"/>
 			<arg line="-include-namespaces=http://www.spicefactory.org/parsley,http://www.spicefactory.org/parsley/flex,http://www.spicefactory.org/parsley/pimento,http://www.spicefactory.org/parsley/cinnamon" />
 			<arg line="-is ${project.dir}/parsley-xml" />
-			<arg line="-include-classes CoreFrameworkClasses FlexSupportClasses org.spicefactory.parsley.cinnamon.CinnamonXmlSupport org.spicefactory.parsley.pimento.PimentoXmlSupport" />
+			<arg line="-include-classes CoreFrameworkClasses FlexSupportClasses org.spicefactory.parsley.rpc.cinnamon.config.CinnamonXmlSupport org.spicefactory.parsley.rpc.pimento.config.PimentoXmlSupport" />
 			<arg line="-debug=true"/>
 			<arg line="-verbose-stacktraces"/>
 		</exec>
@@ -77,10 +78,10 @@
 			<arg line="-el ${release.target.dir}/release/spicelib-complete-flex-${version}.swc" />
 			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
 			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
-			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-flex ${project.dir}/parsley-pimento ${project.dir}/parsley-xml"/>
+			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-config ${project.dir}/parsley-flex ${project.dir}/parsley-integration ${project.dir}/parsley-xml"/>
 			<arg line="-include-namespaces=http://www.spicefactory.org/parsley,http://www.spicefactory.org/parsley/flex,http://www.spicefactory.org/parsley/pimento,http://www.spicefactory.org/parsley/cinnamon" />
 			<arg line="-is ${project.dir}/parsley-xml" />
-			<arg line="-include-classes CoreFrameworkClasses FlexSupportClasses org.spicefactory.parsley.cinnamon.CinnamonXmlSupport org.spicefactory.parsley.pimento.PimentoXmlSupport" />
+			<arg line="-include-classes CoreFrameworkClasses FlexSupportClasses org.spicefactory.parsley.rpc.cinnamon.config.CinnamonXmlSupport org.spicefactory.parsley.rpc.pimento.config.PimentoXmlSupport" />
 			<arg line="-debug=true"/>
 			<arg line="-verbose-stacktraces"/>
 		</exec>
@@ -195,7 +196,7 @@
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-task-${version}.swc" />
-			<arg line="-sp ${project.dir}/parsley-core" />
+			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-config"/>
 			<arg line="-include-namespaces http://www.spicefactory.org/parsley" />
 			<arg line="-include-classes CoreFrameworkClasses" />
 		</exec>
@@ -274,9 +275,9 @@
 		</exec>
 	</target>
 	
-	<target name="compile_parsley_pimento">
+	<target name="compile_parsley_integration">
 		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
-			<arg line="-o ${release.target.dir}/release/modules/parsley-pimento-${version}.swc" />
+			<arg line="-o ${release.target.dir}/release/modules/parsley-integration-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/pimento ${project.dir}/manifest/parsley-pimento-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/cinnamon ${project.dir}/manifest/parsley-cinnamon-manifest.xml" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
@@ -288,9 +289,9 @@
 			<arg line="-el ${release.target.dir}/release/modules/parsley-xml-${version}.swc" />
 			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
 			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
-			<arg line="-sp ${project.dir}/parsley-pimento" />
+			<arg line="-sp ${project.dir}/parsley-integration" />
 			<arg line="-include-namespaces=http://www.spicefactory.org/parsley/pimento,http://www.spicefactory.org/parsley/cinnamon" />
-			<arg line="-include-classes org.spicefactory.parsley.cinnamon.CinnamonXmlSupport org.spicefactory.parsley.pimento.PimentoXmlSupport" />
+			<arg line="-include-classes org.spicefactory.parsley.rpc.cinnamon.config.CinnamonXmlSupport org.spicefactory.parsley.rpc.pimento.config.PimentoXmlSupport" />
 		</exec>
 	</target>
 	
@@ -313,7 +314,7 @@
 		<antcall target="compile_parsley_flex3"/>
 		<antcall target="compile_parsley_flex4"/>
 		<antcall target="compile_parsley_flash"/>
-		<antcall target="compile_parsley_pimento"/>
+		<antcall target="compile_parsley_integration"/>
 	</target>
 	
 	<target name="compile_all" description="Compile all Parsley and Spicelib SWCs">
@@ -329,8 +330,8 @@
 		<delete dir="${project.dir}/release/api/parsley-spicelib-flex"/>
 		<mkdir dir="${project.dir}/release/api/parsley-spicelib-flex"/>
 		<exec executable="${flex.sdk}/bin/asdoc.exe" dir="${project.dir}" spawn="no">
-			<arg line="-source-path spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml parsley-core parsley-flex parsley-xml parsley-pimento"/>
-			<arg line="-doc-sources spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml parsley-core parsley-flex parsley-xml parsley-pimento"/>
+			<arg line="-source-path spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml parsley-core parsley-config parsley-flex parsley-xml parsley-integration"/>
+			<arg line="-doc-sources spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml parsley-core parsley-config parsley-flex parsley-xml parsley-integration"/>
 			<arg line="-library-path ${project.dir}/lib/cinnamon-${pimento.version}.swc"/>
 			<arg line="-library-path ${project.dir}/lib/pimento-${pimento.version}.swc"/>
 			<arg line="-library-path ${flex.sdk}/frameworks/libs/framework.swc" />
@@ -507,8 +508,8 @@
 		<delete dir="${project.dir}/release/api/parsley-spicelib-flash"/>
 		<mkdir dir="${project.dir}/release/api/parsley-spicelib-flash"/>
 		<exec executable="${flex.sdk}/bin/asdoc.exe" dir="${project.dir}" spawn="no">
-			<arg line="-source-path spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml spicelib-flash parsley-core parsley-flash parsley-xml parsley-pimento"/>
-			<arg line="-doc-sources spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml spicelib-flash parsley-core parsley-flash parsley-xml parsley-pimento"/>
+			<arg line="-source-path spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml spicelib-flash parsley-core parsley-config parsley-flash parsley-xml parsley-integration"/>
+			<arg line="-doc-sources spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml spicelib-flash parsley-core parsley-config parsley-flash parsley-xml parsley-integration"/>
 			<arg line="-library-path ${project.dir}/lib/cinnamon-${pimento.version}.swc"/>
 			<arg line="-library-path ${project.dir}/lib/pimento-${pimento.version}.swc"/>
 			<arg line="-library-path ${flex.sdk}/frameworks/libs/framework.swc" />
@@ -791,10 +792,11 @@
 				 <include name="spicelib-flash/**/*"/>
 				 <include name="spicelib-xml/**/*"/>
 				 <include name="parsley-core/**/*"/>
+				 <include name="parsley-config/**/*"/>
 				 <include name="parsley-flex/**/*"/>
 				 <include name="parsley-xml/**/*"/>
 				 <include name="parsley-flash/**/*"/>
-				 <include name="parsley-pimento/**/*"/>
+				 <include name="parsley-integration/**/*"/>
 				 <include name="test/**/*"/>
 			</fileset>
 		</copy>

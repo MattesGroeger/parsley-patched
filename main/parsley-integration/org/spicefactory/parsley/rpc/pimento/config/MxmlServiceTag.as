@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.pimento {
+package org.spicefactory.parsley.rpc.pimento.config {
 import mx.core.IMXMLObject;
 
 /**

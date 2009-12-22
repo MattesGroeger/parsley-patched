@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.pimento {
+package org.spicefactory.parsley.rpc.cinnamon.config {
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 
 /**
- * Provides a static method to initalize the Pimento XML tag extension.
+ * Provides a static method to initalize the Cinnamon XML tag extension.
  * 
  * @author Jens Halm
  */
-public class PimentoXmlSupport {
+public class CinnamonXmlSupport {
 	
 	
 	/**
-	 * The XML Namespace of the Pimento tag extension.
+	 * The XML Namespace of the Cinnamon tag extension.
 	 */
-	public static const NAMESPACE_URI:String = "http://www.spicefactory.org/parsley/pimento";
+	public static const NAMESPACE_URI:String = "http://www.spicefactory.org/parsley/cinnamon";
 	
 	
 	/**
-	 * Initializes the Pimento XML tag extension.
+	 * Initializes the Cinnamon XML tag extension.
 	 * Must be invoked before the <code>XmlContextBuilder</code> is used for the first time.
 	 */
 	public static function initialize () : void {
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(NAMESPACE_URI);
+		ns.addDefaultObjectMapper(ChannelTag, "channel");
 		ns.addDefaultObjectMapper(ServiceTag, "service");
-		ns.addDefaultDefinitionFactoryMapper(ConfigTag, "config");
 	}
 	
 	

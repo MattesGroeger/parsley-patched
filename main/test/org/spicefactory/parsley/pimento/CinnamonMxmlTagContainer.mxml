@@ -1,7 +1,7 @@
 <mx:Object 
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:flextag="org.spicefactory.parsley.flex.tag.*"
-	xmlns:cinnamon="org.spicefactory.parsley.cinnamon.*">
+	xmlns:cinnamon="org.spicefactory.parsley.rpc.cinnamon.config.*">
 	
 	<mx:Script>
 		<![CDATA[

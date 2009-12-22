@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.cinnamon {
+package org.spicefactory.parsley.rpc.cinnamon.config {
 import mx.core.IMXMLObject;
 
 /**

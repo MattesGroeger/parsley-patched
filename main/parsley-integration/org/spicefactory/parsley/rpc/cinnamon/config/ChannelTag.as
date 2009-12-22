@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.cinnamon {
+package org.spicefactory.parsley.rpc.cinnamon.config {
 import org.spicefactory.cinnamon.service.NetConnectionServiceChannel;
 import org.spicefactory.cinnamon.service.ServiceChannel;
 import org.spicefactory.parsley.core.errors.ContextError;

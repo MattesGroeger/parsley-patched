@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <componentPackage>
-    <component id="Channel" class="org.spicefactory.parsley.cinnamon.MxmlChannelTag"/>
-    <component id="Service" class="org.spicefactory.parsley.cinnamon.MxmlServiceTag"/>
+    <component id="Channel" class="org.spicefactory.parsley.rpc.cinnamon.config.MxmlChannelTag"/>
+    <component id="Service" class="org.spicefactory.parsley.rpc.cinnamon.config.MxmlServiceTag"/>
 </componentPackage>

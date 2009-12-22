@@ -1,6 +1,6 @@
 <mx:Object 
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:pimento="org.spicefactory.parsley.pimento.*">
+	xmlns:pimento="org.spicefactory.parsley.rpc.pimento.config.*">
 	
 	<pimento:MxmlConfigTag 
 	    url="http://localhost/test/service/"
