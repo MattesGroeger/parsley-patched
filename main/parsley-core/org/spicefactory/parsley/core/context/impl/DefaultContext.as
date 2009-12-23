@@ -333,10 +333,10 @@ public class DefaultContext extends EventDispatcher implements Context {
 	}
 	
 	private function checkState () : void {
-		if (_destroyed) {
+		if (destroyed) {
 			throw new IllegalStateError("Attempt to access Context after it was destroyed");
 		}
-		if (!_configured) {
+		if (!configured) {
 			throw new IllegalStateError("Attempt to access Context before it was fully configured");
 		}
 	}
