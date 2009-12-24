@@ -37,15 +37,25 @@ public class ConfigurationTagBase extends EventDispatcher implements IMXMLObject
 	
 	
 	private var listenerPriority:int = 0;
+	private var stageBound:Boolean;
+	private var supportsBindings:Boolean;
 	
 	
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param listenerPriority the priority to use when adding listeners to the document object this tag is associated with
+	 * @param listenerPriority the priority to use when adding listeners to 
+	 * the document object this tag is associated with
+	 * @param stageBound true if the tag should wait until the associated 
+	 * document object is added to the stage before performing its work
+	 * @param supportsBindings true if this tag supports binding and thus
+	 * has to wait until the associated document object is initialized before performing its work 
 	 */
-	function ConfigurationTagBase (listenerPriority:int = 0) {
+	function ConfigurationTagBase (listenerPriority:int = 0, 
+			stageBound:Boolean = true, supportsBindings:Boolean = true) {
 		this.listenerPriority = listenerPriority;
+		this.stageBound = stageBound;
+		this.supportsBindings = supportsBindings;
 	}
 
 	
@@ -72,10 +82,10 @@ public class ConfigurationTagBase extends EventDispatcher implements IMXMLObject
 		}
 		var view:DisplayObject = DisplayObject(document);
 		
-		if (isOnStage(view) && isInitialized(view)) {
+		if (!waitForStage(view) && !waitForBindings(view)) {
 			executeAction(view);
 		}
-		else if (!isOnStage(view)) {
+		else if (waitForStage(view)) {
 			view.addEventListener(Event.ADDED_TO_STAGE, addedToStage, false, listenerPriority);
 		} else {
 			view.addEventListener(FlexEvent.INITIALIZE, viewInitialized, false, listenerPriority);
@@ -85,7 +95,7 @@ public class ConfigurationTagBase extends EventDispatcher implements IMXMLObject
 	private function addedToStage (event:Event) : void  {
 		var view:DisplayObject = DisplayObject(event.target);
 		view.removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
-		if (isInitialized(view)) {
+		if (!waitForBindings(view)) {
 			executeAction(view);
 		}
 		else {
@@ -96,7 +106,7 @@ public class ConfigurationTagBase extends EventDispatcher implements IMXMLObject
 	private function viewInitialized (event:Event) : void  {
 		var view:DisplayObject = DisplayObject(event.target);
 		view.removeEventListener(FlexEvent.INITIALIZE, viewInitialized);
-		if (isOnStage(view)) {
+		if (!waitForStage(view)) {
 			executeAction(view);
 		}
 		else {
@@ -104,12 +114,12 @@ public class ConfigurationTagBase extends EventDispatcher implements IMXMLObject
 		}
 	}
 	
-	private function isInitialized (view:DisplayObject) : Boolean {
-		return (view is UIComponent) ? UIComponent(view).initialized : true;
+	private function waitForBindings (view:DisplayObject) : Boolean {
+		return (!supportsBindings || !(view is UIComponent) || UIComponent(view).initialized);
 	}
 	
-	private function isOnStage (view:DisplayObject) : Boolean {
-		return (view.stage != null);
+	private function waitForStage (view:DisplayObject) : Boolean {
+		return (!stageBound || view.stage != null);
 	}
 	
 	
