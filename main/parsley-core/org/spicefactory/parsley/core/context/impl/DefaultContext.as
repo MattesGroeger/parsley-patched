@@ -95,6 +95,16 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private function registryFrozen (event:Event) : void {
 		_registry.removeEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
 		_configured = true;
+		initialize();
+	}
+	
+	
+	/**
+	 * Instantiates all non-lazy singletons. In case the Context contains objects with
+	 * an AsyncInit configuration this operation may execute asynchronously. After
+	 * all singletons have been instantiated the <code>initialized</code> Event will be fired.
+	 */
+	protected function initialize () : void {
 		
 		objectProviderFactory.initialize();
 		

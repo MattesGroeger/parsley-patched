@@ -42,6 +42,26 @@ public class ChildContext extends DefaultContext {
 		addEventListener(ContextEvent.DESTROYED, childDestroyed, false);
 	}
 	
+	
+	/**
+	 * @private
+	 */
+	protected override function initialize () : void {
+		if (parent.initialized) { 
+			super.initialize();
+		}
+		else {
+			/* Here we want to wait until all singletons in the parent have been initialized in the
+			 * order that was configured for the parent, without interfering through instantiating
+			 * objects in this Context which might need dependencies from the parent. */
+			parent.addEventListener(ContextEvent.INITIALIZED, parentInitialized);
+		}
+	}
+	
+	private function parentInitialized (event:ContextEvent) : void {
+		parent.removeEventListener(ContextEvent.INITIALIZED, parentInitialized);
+		super.initialize();
+	}
 
 	/**
 	 * The parent Context of this Context.
