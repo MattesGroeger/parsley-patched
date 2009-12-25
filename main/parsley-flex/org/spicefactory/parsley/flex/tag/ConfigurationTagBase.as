@@ -115,11 +115,11 @@ public class ConfigurationTagBase extends EventDispatcher implements IMXMLObject
 	}
 	
 	private function waitForBindings (view:DisplayObject) : Boolean {
-		return (!supportsBindings || !(view is UIComponent) || UIComponent(view).initialized);
+		return (supportsBindings && (view is UIComponent) && !UIComponent(view).initialized);
 	}
 	
 	private function waitForStage (view:DisplayObject) : Boolean {
-		return (!stageBound || view.stage != null);
+		return (stageBound && view.stage == null);
 	}
 	
 	
