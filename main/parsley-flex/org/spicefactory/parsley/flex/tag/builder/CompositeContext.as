@@ -36,6 +36,7 @@ import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
 public class CompositeContext extends ContextBuilderTagBase {
 	
 	
+	[ArrayElementType("org.spicefactory.parsley.flex.tag.builder.CompositeContextPart")]
 	/**
 	 * The individual configuration artifacts for this Context.
 	 */

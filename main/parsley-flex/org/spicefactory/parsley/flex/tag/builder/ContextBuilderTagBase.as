@@ -75,11 +75,13 @@ public class ContextBuilderTagBase extends ConfigurationTagBase {
 	 */
 	public var viewRoot:DisplayObject;
 	
+	[ArrayElementType("org.spicefactory.parsley.flex.tag.builder.Extension")]
 	/**
 	 * Extensions that should be initialized before the Context gets built.
 	 */
 	public var extensions:Array;
 	
+	[ArrayElementType("org.spicefactory.parsley.flex.tag.builder.ScopeTag")]
 	/**
 	 * Custom scopes that should be added to the Context.
 	 */
