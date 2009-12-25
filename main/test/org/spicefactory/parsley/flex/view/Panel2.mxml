@@ -40,7 +40,7 @@
    </mx:Script>
    
 	
-	<parsley:Configure/>
+	<parsley:ConfigureTag/>
 	
 	<mx:Text text="AA2"/>
 	<mx:Text text="Bound value: |{model.stringProp}|"/>

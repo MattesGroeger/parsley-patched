@@ -3,28 +3,45 @@
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:view="org.spicefactory.parsley.flex.view.*"
 	xmlns:pm="org.spicefactory.parsley.flex.modules.*"
+	xmlns:parsley="org.spicefactory.parsley.flex.tag.builder.*"
 	layout="absolute"
-    addedToStage="createContext()"
+    addedToStage="test('addedToStage');"
+    preinitialize="test('preinitialize');"
+    initialize="test('initialize');"
+    creationComplete="test('creationComplete');"
 >    
     <mx:Script>
         <![CDATA[
         	import org.spicefactory.parsley.flex.view.ViewContainer;
-        	import org.spicefactory.parsley.flex.FlexContextBuilder;
-        	import org.spicefactory.parsley.core.context.Context;
         	import mx.containers.TitleWindow;
         	import mx.modules.Module;
         	import mx.managers.PopUpManager;
+        	import mx.modules.ModuleManagerGlobals;
         	
-        	private var context:Context;
-                        
-            private function createContext () : void {
+            private function compiler () : void {
             	TitleWindow; PopUpManager; Module;
-            	trace("BUILD CONTEXT");
-                context = FlexContextBuilder.build(ViewContainer, this);
+            }
+            
+            private function test (event:String) : void {
+            	trace(event + "-" + ModuleManagerGlobals.managerSingleton);
+            }
+            
+            private function checkContext () : void {
+            	trace("SCOPE? " + builder.context.scopeManager.hasScope("window"));
+            	trace("SCOPE? " + builder.context.scopeManager.hasScope("foo"));
+            	trace("XML? " + builder.context.containsObject("fromXml"));
+            	trace("XML? " + builder.context.containsObject("fromXml2"));
             }
  
         ]]>
     </mx:Script>    
+    
+    
+    <parsley:ContextBuilderTag id="builder" complete="checkContext();">
+    	<parsley:FlexConfigTag type="{ViewContainer}"/>
+    	<parsley:XmlConfigTag file="viewTestConfig.xml"/>
+   		<parsley:ScopeTag name="window" inherited="true"/>
+    </parsley:ContextBuilderTag>
     
     <mx:TraceTarget id="logTarget" 
         includeTime="true" 
@@ -43,6 +60,7 @@
     <mx:ApplicationControlBar dock="true">
 		<mx:Button label="Unload module" click="{module.unloadModule();}"/>   
 		<mx:Button label="Load module" click="{module.loadModule();}"/>   
+		<mx:Button label="{builder.context}"/>   
     </mx:ApplicationControlBar>
     
     

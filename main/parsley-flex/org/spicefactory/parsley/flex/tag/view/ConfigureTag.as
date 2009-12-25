@@ -31,13 +31,13 @@ import flash.events.Event;
  * 
  * @author Jens Halm
  */
-public class Configure extends ConfigurationTagBase {
+public class ConfigureTag extends ConfigurationTagBase {
 	
 	
 	/**
 	 * @private
 	 */
-	function Configure () {
+	function ConfigureTag () {
 		/*
 		 * Using a lower priority here to make sure to execute after ContextBuilders listening for the 
 		 * same event types of the document instance.

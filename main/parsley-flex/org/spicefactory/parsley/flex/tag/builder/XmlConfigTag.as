@@ -15,22 +15,22 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
-import org.spicefactory.lib.logging.LogContext;
-import org.spicefactory.lib.logging.flex.FlexLogFactory;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
-import org.spicefactory.parsley.xml.XmlContextBuilder;
+import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionBuilder;
 
 /**
- * MXML tag for creating a Context from a single XML configuration file.
+ * MXML tag for adding an XML configuration file to a ContextBuilder.
  * 
  * <p>Example:</p>
  * 
- * <pre><code>&lt;parsley:XmlContext config="bookStoreConfig.xml"/&gt;</code></pre> 
+ * <pre><code>&lt;parsley:ContextBuilder&gt;
+ *     &lt;parsley:FlexConfig type="{BookStoreConfig}"/&gt;
+ *     &lt;parsley:XmlConfig file="logging.xml"/&gt;
+ * &lt;/parsley:ContextBuilder&gt;</code></pre> 
  * 
  * @author Jens Halm
  */
-public class XmlContext extends ContextBuilderTagBase {
+public class XmlConfigTag implements ContextBuilderProcessor {
 	
 	
 	/**
@@ -42,10 +42,8 @@ public class XmlContext extends ContextBuilderTagBase {
 	/**
 	 * @private
 	 */
-	protected override function addBuilders (builder:CompositeContextBuilder) : void {
-		if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
-		FlexModuleSupport.initialize();
-		XmlContextBuilder.merge(file, builder);
+	public function process (builder:CompositeContextBuilder) : void {
+		builder.addBuilder(new XmlObjectDefinitionBuilder([file]));
 	}
 	
 	

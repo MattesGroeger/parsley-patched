@@ -27,7 +27,7 @@
       ]]>
    </mx:Script>
 	
-	<parsley:Configure />
+	<parsley:ConfigureTag />
 	
 	<mx:Text text="Bound value: |{model.stringProp}|"/>
    

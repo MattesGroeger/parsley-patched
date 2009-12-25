@@ -15,23 +15,21 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 
 /**
  * MXML tag for declaring a custom scope that should be added to the Context. 
- * The tag can be used for the <code>scopes</code> Array property of any 
- * MXML ContextBuilder tag:</p>
+ * The tag can be used as a child tag of the ContextBuilder tag:</p>
  * 
- * <pre><code>&lt;parsley:CompositeContext&gt;
- *     &lt;parsley:scopes&gt;
- *         &lt;parsley:Scope name="window" inherited="true"/&gt;
- *     &lt;/parsley:scopes&gt;
- *     &lt;parsley:FlexContextPart config="{BookStoreConfig}"/&gt;
- *     &lt;parsley:XmlContextPart config="logging.xml"/&gt;
+ * <pre><code>&lt;parsley:ContextBuilder&gt;
+ *     &lt;parsley:Scope name="window" inherited="true"/&gt;
+ *     &lt;parsley:FlexConfig type="{BookStoreConfig}"/&gt;
+ *     &lt;parsley:XmlConfig file="logging.xml"/&gt;
  * &lt;/parsley:CompositeContext&gt;</code></pre> 
  * 
  * @author Jens Halm
  */
-public class ScopeTag {
+public class ScopeTag implements ContextBuilderProcessor {
 	
 	/**
 	 * The name of the scope.
@@ -42,6 +40,13 @@ public class ScopeTag {
 	 * Indicates whether child Contexts should inherit this scope.
 	 */
 	public var inherited:Boolean;
+	
+	/**
+	 * @private
+	 */
+	public function process (builder:CompositeContextBuilder) : void {
+		builder.addScope(name, inherited);
+	}
 	
 }
 }

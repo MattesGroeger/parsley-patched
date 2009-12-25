@@ -15,35 +15,35 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
+import org.spicefactory.parsley.asconfig.builder.ActionScriptObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.xml.XmlContextBuilder;
 
 /**
- * MXML tag for adding an XML configuration file to a CompositeContext.
+ * MXML tag for adding a MXML configuration class to a CompositeContext.
  * 
  * <p>Example:</p>
  * 
- * <pre><code>&lt;parsley:CompositeContext&gt;
- *     &lt;parsley:FlexContextPart config="{BookStoreConfig}"/&gt;
- *     &lt;parsley:XmlContextPart config="logging.xml"/&gt;
- * &lt;/parsley:CompositeContext&gt;</code></pre> 
+ * <pre><code>&lt;parsley:ContextBuilder&gt;
+ *     &lt;parsley:FlexConfig type="{BookStoreConfig}"/&gt;
+ *     &lt;parsley:XmlConfig file="logging.xml"/&gt;
+ * &lt;/parsley:ContextBuilder&gt;</code></pre> 
  * 
  * @author Jens Halm
  */
-public class XmlContextPart implements CompositeContextPart {
+public class FlexConfigTag implements ContextBuilderProcessor {
 	
 	
 	/**
-	 * The name of the file that contains the XML configuration.
+	 * The class that contains the MXML configuration.
 	 */
-	public var file:String;
+	public var type:Class;
 	
 	
 	/**
 	 * @private
 	 */
-	public function addBuilders (builder:CompositeContextBuilder) : void {
-		XmlContextBuilder.merge(file, builder);
+	public function process (builder:CompositeContextBuilder) : void {
+		builder.addBuilder(new ActionScriptObjectDefinitionBuilder([type]));
 	}
 	
 	

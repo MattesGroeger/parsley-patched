@@ -15,8 +15,10 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
-import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.lib.events.NestedErrorEvent;
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.flex.FlexLogFactory;
+import org.spicefactory.parsley.asconfig.builder.ActionScriptObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
@@ -25,7 +27,10 @@ import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
+import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
+import org.spicefactory.parsley.flex.resources.FlexResourceBindingAdapter;
 import org.spicefactory.parsley.flex.tag.ConfigurationTagBase;
+import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
 
 import flash.display.DisplayObject;
 import flash.events.ErrorEvent;
@@ -45,13 +50,31 @@ import flash.system.ApplicationDomain;
  * @eventType flash.events.ErrorEvent.ERROR
  */
 [Event(name="error", type="flash.events.ErrorEvent")]
+
+[DefaultProperty("processors")]
 /**
- * Base class for all MXML tags for declaratively creating a Parsley Context.
+ * MXML tag for creating a Parsley Context. In the most simple use case where
+ * only a single MXML configuration class is used, it can be specified with the config 
+ * attribute:
+ * <pre><code>&lt;parsley:ContextBuilder config="{BookStoreConfig}"/&gt;</code></pre>
+ *  
+ * <p>When combining multiple configuration mechanism or when a custom scope or extension
+ * must be specified, the corresponding child tags can be used:</p>
+ * 
+ * <pre><code>&lt;parsley:ContextBuilder&gt;
+ *     &lt;parsley:FlexConfig type="{BookStoreConfig}"/&gt;
+ *     &lt;parsley:XmlConfig file="logging.xml"/&gt;
+ *     &lt;parsley:Scope name="window" inherited="true"/&gt;
+ *     &lt;parsley:FlexLoggingXmlSupport/&gt;
+ * &lt;/parsley:CompositeContext&gt;</code></pre> 
  * 
  * @author Jens Halm
  */
-public class ContextBuilderTagBase extends ConfigurationTagBase {
+public class ContextBuilderTag extends ConfigurationTagBase {
 
+
+	ResourceBindingDecorator.adapterClass = FlexResourceBindingAdapter;
+	
 
 	/**
 	 * The parent to use for the Context to build.
@@ -75,18 +98,18 @@ public class ContextBuilderTagBase extends ConfigurationTagBase {
 	 */
 	public var viewRoot:DisplayObject;
 	
-	[ArrayElementType("org.spicefactory.parsley.flex.tag.builder.Extension")]
 	/**
-	 * Extensions that should be initialized before the Context gets built.
+	 * A class that contains MXML configuration for this Context.
+	 * This parameter is optional, configuration artifacts can also be added with child tags
+	 * like <code>&lt;FlexConfig&gt;</code> or <code>&lt;XmlConfig&gt;</code>.
 	 */
-	public var extensions:Array;
+	public var config:Class;
 	
-	[ArrayElementType("org.spicefactory.parsley.flex.tag.builder.ScopeTag")]
+	[ArrayElementType("org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor")]
 	/**
-	 * Custom scopes that should be added to the Context.
+	 * The individual configuration artifacts for this ContextBuilder.
 	 */
-	public var scopes:Array;
-	
+	public var processors:Array;
 	
 	
 	private var cachedViewConfigEvents:Array = new Array();
@@ -181,19 +204,18 @@ public class ContextBuilderTagBase extends ConfigurationTagBase {
 	
 	private function createContext () : void {
 		try {
+			if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
+			FlexModuleSupport.initialize();
 			var factory:ContextBuilderFactory = GlobalFactoryRegistry.instance.contextBuilder;
 			var builder:CompositeContextBuilder = factory.create(viewRoot, parent, domain);
-			if (extensions != null) {
-				for each (var extension:Extension in extensions) {
-					extension.initialize(builder);
+			if (config != null) {
+				builder.addBuilder(new ActionScriptObjectDefinitionBuilder([config]));
+			}
+			if (processors != null) {
+				for each (var processor:ContextBuilderProcessor in processors) {
+					processor.process(builder);
 				}
 			}
-			if (scopes != null) {
-				for each (var scopeTag:ScopeTag in scopes) {
-					builder.addScope(scopeTag.name, scopeTag.inherited);
-				}
-			}
-			addBuilders(builder);
 			_context = builder.build();
 			dispatchEvent(new Event("contextCreated"));
 			if (_context.initialized) {
@@ -224,18 +246,6 @@ public class ContextBuilderTagBase extends ConfigurationTagBase {
 	private function removeContextListeners () : void {
 		_context.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		_context.removeEventListener(ErrorEvent.ERROR, contextError);
-	}
-	
-	
-	/**
-	 * Adds the builders to use to the specified (empty) builder instance.
-	 * The implementation of this base class throws an Error, subclasses are
-	 * expected to override this method.
-	 * 
-	 * @param builder the builder that will be used to create the Context 
-	 */
-	protected function addBuilders (builder:CompositeContextBuilder) : void {
-		throw new AbstractMethodError();
 	}
 	
 	

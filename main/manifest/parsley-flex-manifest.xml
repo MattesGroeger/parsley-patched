@@ -1,10 +1,8 @@
 <?xml version="1.0"?>
 <componentPackage>
-	<component id="Configure" class="org.spicefactory.parsley.flex.tag.view.Configure"/>
-	<component id="CompositeContext" class="org.spicefactory.parsley.flex.tag.builder.CompositeContext"/>
-	<component id="FlexContext" class="org.spicefactory.parsley.flex.tag.builder.FlexContext"/>
-	<component id="FlexContextPart" class="org.spicefactory.parsley.flex.tag.builder.FlexContextPart"/>
-	<component id="XmlContext" class="org.spicefactory.parsley.flex.tag.builder.XmlContext"/>
-	<component id="XmlContextPart" class="org.spicefactory.parsley.flex.tag.builder.XmlContextPart"/>
+	<component id="Configure" class="org.spicefactory.parsley.flex.tag.view.ConfigureTag"/>
+	<component id="ContextBuilder" class="org.spicefactory.parsley.flex.tag.builder.ContextBuilderTag"/>
+	<component id="FlexConfig" class="org.spicefactory.parsley.flex.tag.builder.FlexConfigTag"/>
+	<component id="XmlConfig" class="org.spicefactory.parsley.flex.tag.builder.XmlConfigTag"/>
 	<component id="Scope" class="org.spicefactory.parsley.flex.tag.builder.ScopeTag"/>
 </componentPackage>
