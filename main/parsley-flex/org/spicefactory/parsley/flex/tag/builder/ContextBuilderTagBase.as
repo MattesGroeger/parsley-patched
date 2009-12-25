@@ -92,7 +92,7 @@ public class ContextBuilderTagBase extends ConfigurationTagBase {
 	
 	private var _context:Context;
 	
-	[Bindable]
+	[Bindable("contextCreated")]
 	/**
 	 * The Context built by this tag. May be null before the tag performed its work.
 	 * The value may be used for bindings. 
@@ -193,6 +193,7 @@ public class ContextBuilderTagBase extends ConfigurationTagBase {
 			}
 			addBuilders(builder);
 			_context = builder.build();
+			dispatchEvent(new Event("contextCreated"));
 			if (_context.initialized) {
 				dispatchEvent(new FlexContextEvent(_context));
 			}
