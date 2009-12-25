@@ -15,9 +15,8 @@
  */
 
 package org.spicefactory.parsley.flex.tag.view {
-	import org.spicefactory.parsley.flex.tag.ConfigurationTagBase;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
-
+import org.spicefactory.parsley.flex.tag.ConfigurationTagBase;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
@@ -52,6 +51,17 @@ public class ConfigureTag extends ConfigurationTagBase {
 	 * was placed upon will be wired.
 	 */
 	public var target:Object;
+	
+	/**
+	 * The id to use to lookup a matching configuration in the container.
+	 * This parameter is optional, if omitted and the wired target instance
+	 * is a DisplayObject its name will be used for id lookup.
+	 * If there is no matching configuration for a particular id
+	 * then the container matches by type. If that fails too,
+	 * no container configuration will be used and only metadata on the target instance
+	 * will be processed.
+	 */
+	public var configId:String;
 	
 	/**
 	 * Indicates whether the wiring should happen repeatedly whenever the 

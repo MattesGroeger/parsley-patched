@@ -15,6 +15,7 @@
  */
  
 package org.spicefactory.parsley.core.events {
+import flash.display.DisplayObject;
 import flash.events.Event;
 
 /**
@@ -35,18 +36,35 @@ public class ViewConfigurationEvent extends Event {
 	
 	
 	private var explicitTarget:Object;
+	private var explicitConfigId:String;
 	
 	
 	/**
 	 * Creates a new event instance.
+	 * 
+	 * @param target the target that should be wired to the container
+	 * @param configId the id to use to lookup a matching configuration in the container
 	 */
-	public function ViewConfigurationEvent (target:Object = null) {
+	public function ViewConfigurationEvent (target:Object = null, configId:String = null) {
 		super(CONFIGURE_VIEW, true);
 		this.explicitTarget = target;
 	}		
 	
-	public function get configurationTarget () : Object {
+	/**
+	 * The target that should be wired to the container.
+	 */
+	public function get configTarget () : Object {
 		return (explicitTarget == null) ? target : explicitTarget;
+	}
+	
+	/**
+	 * The id to use to lookup a matching configuration in the container.
+	 * If the value is null, then no container configuration will be used 
+	 * and only metadata on the target instance will be processed.
+	 */
+	public function get configId () : String {
+		return (explicitConfigId != null) ? explicitConfigId : 
+			(configTarget is DisplayObject) ? DisplayObject(configTarget).name : null;
 	}
 	
 	
