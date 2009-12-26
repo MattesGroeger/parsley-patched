@@ -1,4 +1,5 @@
 package org.spicefactory.parsley.core.registry.impl {
+import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
@@ -19,6 +20,8 @@ public class DefaultViewDefinitionRegistry implements ViewDefinitionRegistry {
 	private var definitionsById:Dictionary = new Dictionary();
 	private var definitions:Array = new Array();
 	
+	private var _frozen:Boolean;
+	
 	
 	function DefaultViewDefinitionRegistry (parent:ViewDefinitionRegistry) {
 		this.parent = parent;
@@ -29,6 +32,7 @@ public class DefaultViewDefinitionRegistry implements ViewDefinitionRegistry {
 	 * @inheritDoc
 	 */
 	public function registerDefinition (viewDefinition:ObjectDefinition, id:String = null) : void {
+		checkState();
 		if (id != null) {
 			if (definitionsById[id] != null) {
 				throw new ContextError("Duplicate id for view definition: " + id);
@@ -75,6 +79,29 @@ public class DefaultViewDefinitionRegistry implements ViewDefinitionRegistry {
 		}
 		else {
 			return match;
+		}
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function freeze () : void {
+		_frozen = true;
+		for each (var definition:ObjectDefinition in definitions) {
+			definition.freeze();
+		}
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get frozen () : Boolean {
+		return _frozen;
+	}
+	
+	private function checkState () : void {
+		if (_frozen) {
+			throw new IllegalStateError("Registry is frozen");
 		}
 	}
 	

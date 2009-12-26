@@ -204,6 +204,7 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 		for each (var definition:ObjectDefinition in definitions.values) {
 			definition.freeze();
 		}
+		viewDefinitions.freeze();
 		dispatchEvent(new ObjectDefinitionRegistryEvent(ObjectDefinitionRegistryEvent.FROZEN));
 	}
 	

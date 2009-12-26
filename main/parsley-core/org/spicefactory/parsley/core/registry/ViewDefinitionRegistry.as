@@ -41,6 +41,19 @@ public interface ViewDefinitionRegistry {
 	 * @return the matching view definition or null
 	 */
 	function getDefinitionByType (configTarget:Object) : ObjectDefinition;
+	
+	/**
+	 * Freezes this registry. After calling this method any attempt to modify this registry or any
+	 * of the definitions it contains will lead to an Error.
+	 */
+	function freeze () : void;
+	
+	/**
+	 * Indicates whether this registry has been frozen. When true any attempt to modify this registry or any
+	 * of the definitions it contains will lead to an Error.
+	 */	
+	function get frozen () : Boolean;
+	
 
 }
 }
