@@ -30,7 +30,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
-import org.spicefactory.parsley.core.view.registry.ViewDefinitionFactory;
+import org.spicefactory.parsley.core.registry.ViewDefinitionFactory;
 import org.spicefactory.parsley.tag.core.NestedTag;
 
 import flash.utils.getQualifiedClassName;

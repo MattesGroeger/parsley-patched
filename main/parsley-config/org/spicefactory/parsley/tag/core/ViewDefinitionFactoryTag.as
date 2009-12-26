@@ -2,7 +2,7 @@ package org.spicefactory.parsley.tag.core {
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
-import org.spicefactory.parsley.core.view.registry.ViewDefinitionFactory;
+import org.spicefactory.parsley.core.registry.ViewDefinitionFactory;
 
 [DefaultProperty("decorators")]
 
