@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <componentPackage>
-    <component id="Object" class="org.spicefactory.parsley.tag.core.MxmlObjectDefinitionFactoryTag"/>
-    <component id="View" class="org.spicefactory.parsley.tag.core.MxmlViewDefinitionFactoryTag"/>
-    <component id="NestedObject" class="org.spicefactory.parsley.tag.core.NestedObjectDefinitionFactoryTag"/>
+    <component id="Object" class="org.spicefactory.parsley.tag.core.MxmlObjectTag"/>
+    <component id="View" class="org.spicefactory.parsley.tag.core.MxmlViewTag"/>
+    <component id="NestedObject" class="org.spicefactory.parsley.tag.core.NestedObjectTag"/>
     
-    <component id="ConstructorArgs" class="org.spicefactory.parsley.tag.core.ConstructorDecoratorTag"/>
-    <component id="Property" class="org.spicefactory.parsley.tag.core.PropertyDecoratorTag"/>
+    <component id="ConstructorArgs" class="org.spicefactory.parsley.tag.core.ConstructorTag"/>
+    <component id="Property" class="org.spicefactory.parsley.tag.core.PropertyTag"/>
     
     <component id="AsyncInit" class="org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator"/>
     <component id="Factory" class="org.spicefactory.parsley.tag.lifecycle.FactoryMethodDecorator"/>
