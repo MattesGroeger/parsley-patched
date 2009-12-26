@@ -162,13 +162,13 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		throw new ContextBuilderError("Child Context created before parent is initialized");
 	}
 	
-	private function cacheViewConfigEvent (event:ViewConfigurationEvent) : void {
+	private function cacheViewConfigEvent (event:Event) : void {
 		event.stopImmediatePropagation();
 		cachedViewConfigEvents.push(event);
 	}
 	
 	private function handleCachedEvents () : void {
-		for each (var viewEvent:ViewConfigurationEvent in cachedViewConfigEvents) {
+		for each (var viewEvent:Event in cachedViewConfigEvents) {
 			viewEvent.target.dispatchEvent(viewEvent.clone());
 		}
 		cachedViewConfigEvents = new Array();
