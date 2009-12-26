@@ -27,8 +27,9 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 
 /**
- * Base class for MXML configuration tags that require both, the associated document component being added to the stage
- * and the bindings for the tag being executed, before performing its work. Subclasses only have to overwrite the
+ * Base class for MXML configuration tags that may require both, the associated document component being added to the stage
+ * and the bindings for the tag being executed, before performing its work. Both requirements are configurable so that the class
+ * can be used for tags that require only one of these conditions to be true. Subclasses only have to overwrite the
  * template method <code>executeAction</code> for doing the actual work.
  * 
  * @author Jens Halm
