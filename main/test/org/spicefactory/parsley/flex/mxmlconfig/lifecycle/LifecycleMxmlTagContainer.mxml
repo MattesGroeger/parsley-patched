@@ -10,13 +10,13 @@
 	</mx:Script>
 	
 	
-	<flextag:MxmlObjectDefinitionFactoryTag id="postConstructModel" type="{PostConstructModel}" lazy="true">
+	<flextag:MxmlObjectTag id="postConstructModel" type="{PostConstructModel}" lazy="true">
 		<dec:InitMethodDecorator method="init"/>
-	</flextag:MxmlObjectDefinitionFactoryTag> 
+	</flextag:MxmlObjectTag> 
 	
-	<flextag:MxmlObjectDefinitionFactoryTag id="preDestroyModel" type="{PreDestroyModel}" lazy="true">
+	<flextag:MxmlObjectTag id="preDestroyModel" type="{PreDestroyModel}" lazy="true">
 		<dec:DestroyMethodDecorator method="dispose"/>
-	</flextag:MxmlObjectDefinitionFactoryTag> 
+	</flextag:MxmlObjectTag> 
 	
 	
 </mx:Object> 

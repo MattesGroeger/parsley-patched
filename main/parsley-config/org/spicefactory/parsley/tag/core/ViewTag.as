@@ -11,7 +11,7 @@ import org.spicefactory.parsley.core.registry.ViewDefinitionFactory;
  * 
  * @author Jens Halm
  */
-public class ViewDefinitionFactoryTag implements ViewDefinitionFactory {
+public class ViewTag implements ViewDefinitionFactory {
 	
 	
 	/**

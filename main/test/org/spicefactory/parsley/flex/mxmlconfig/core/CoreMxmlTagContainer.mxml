@@ -15,23 +15,23 @@
 	<model:InjectedDependency id="dependency"/>
 	
 	
-	<tag:MxmlObjectDefinitionFactoryTag id="object" type="{CoreModel}">
-		<tag:ConstructorDecoratorTag>
+	<tag:MxmlObjectTag id="object" type="{CoreModel}">
+		<tag:ConstructorTag>
 			<mx:String>foo</mx:String>
 			<mx:int>7</mx:int>
-		</tag:ConstructorDecoratorTag>
-		<tag:PropertyDecoratorTag name="booleanProp" value="true"/>
-		<tag:PropertyDecoratorTag name="refProp" idRef="dependency"/>
-		<tag:PropertyDecoratorTag name="arrayProp">
+		</tag:ConstructorTag>
+		<tag:PropertyTag name="booleanProp" value="true"/>
+		<tag:PropertyTag name="refProp" idRef="dependency"/>
+		<tag:PropertyTag name="arrayProp">
 			<tag:ArrayTag>
 				<mx:String>AA</mx:String>
 				<mx:String>BB</mx:String>
 				<tag:ObjectReferenceTag idRef="dependency"/>
 				<tag:ObjectReferenceTag typeRef="{InjectedDependency}"/>
-				<tag:NestedObjectDefinitionFactoryTag type="{ArrayElement}"/>
+				<tag:NestedObjectTag type="{ArrayElement}"/>
 			</tag:ArrayTag>
-		</tag:PropertyDecoratorTag>
-	</tag:MxmlObjectDefinitionFactoryTag> 
+		</tag:PropertyTag>
+	</tag:MxmlObjectTag> 
 	
 	
 </mx:Object> 

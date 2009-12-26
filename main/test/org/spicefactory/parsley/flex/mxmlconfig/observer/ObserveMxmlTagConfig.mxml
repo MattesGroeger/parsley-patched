@@ -13,15 +13,15 @@
 	</mx:Script>
 	
 	
-	<flextag:MxmlObjectDefinitionFactoryTag type="{Box}" lazy="true"/>
+	<flextag:MxmlObjectTag type="{Box}" lazy="true"/>
 
-	<flextag:MxmlObjectDefinitionFactoryTag type="{HBox}" lazy="true"/>
+	<flextag:MxmlObjectTag type="{HBox}" lazy="true"/>
 
-	<flextag:MxmlObjectDefinitionFactoryTag type="{VBox}" lazy="true"/>
+	<flextag:MxmlObjectTag type="{VBox}" lazy="true"/>
 
-	<flextag:MxmlObjectDefinitionFactoryTag type="{Text}" lazy="true" id="text"/>
+	<flextag:MxmlObjectTag type="{Text}" lazy="true" id="text"/>
 
-	<flextag:MxmlObjectDefinitionFactoryTag type="{Text}" lazy="true" id="text2"/>
+	<flextag:MxmlObjectTag type="{Text}" lazy="true" id="text2"/>
 	
 	
 	

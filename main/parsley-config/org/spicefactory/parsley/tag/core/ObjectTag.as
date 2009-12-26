@@ -22,13 +22,13 @@ import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactor
  * 
  * @author Jens Halm
  */
-public class ObjectDefinitionFactoryTag extends DefaultObjectDefinitionFactory {
+public class ObjectTag extends DefaultObjectDefinitionFactory {
 	
 	
 	/**
 	 * Creates a new instance.
 	 */
-	function ObjectDefinitionFactoryTag () {
+	function ObjectTag () {
 		super(null); // type will be set via property
 	}
 	

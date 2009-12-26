@@ -22,7 +22,7 @@ import mx.core.IMXMLObject;
  * 
  * @author Jens Halm
  */
-public class MxmlViewDefinitionFactoryTag extends ViewDefinitionFactoryTag implements IMXMLObject {
+public class MxmlViewTag extends ViewTag implements IMXMLObject {
 
 	
 	/**

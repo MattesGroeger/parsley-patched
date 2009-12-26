@@ -27,7 +27,7 @@ import org.spicefactory.parsley.core.registry.model.ObjectIdReference;
  * 
  * @author Jens Halm
  */
-public class ConstructorDecoratorTag extends ArrayTag implements ObjectDefinitionDecorator {
+public class ConstructorTag extends ArrayTag implements ObjectDefinitionDecorator {
 
 
 	private static const valueResolver:RegistryValueResolver = new RegistryValueResolver(); 

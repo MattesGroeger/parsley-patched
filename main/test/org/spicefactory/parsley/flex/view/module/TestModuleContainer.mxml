@@ -14,32 +14,32 @@
 		]]>
 	</mx:Script>
 	
-	<tag:MxmlViewDefinitionFactoryTag type="{Panel3}">
-	    <tag:PropertyDecoratorTag name="model" idRef="child"/>
-	</tag:MxmlViewDefinitionFactoryTag>
+	<tag:MxmlViewTag type="{Panel3}">
+	    <tag:PropertyTag name="model" idRef="child"/>
+	</tag:MxmlViewTag>
 	
-	<tag:MxmlObjectDefinitionFactoryTag type="{ClassNotCompiledIntoRootApp}">
-		<tag:PropertyDecoratorTag name="dependency" idRef="mdep"/>
+	<tag:MxmlObjectTag type="{ClassNotCompiledIntoRootApp}">
+		<tag:PropertyTag name="dependency" idRef="mdep"/>
 		<msg:MessageHandlerDecorator method="onAnything" selector="anything" type="{Event}"/>
-	</tag:MxmlObjectDefinitionFactoryTag>
+	</tag:MxmlObjectTag>
 	
-	<tag:MxmlObjectDefinitionFactoryTag id="mdep" type="{ModuleDependency}"/>
+	<tag:MxmlObjectTag id="mdep" type="{ModuleDependency}"/>
 	
-	<tag:MxmlObjectDefinitionFactoryTag id="child" type="{CoreModel}">
-		<tag:ConstructorDecoratorTag>
+	<tag:MxmlObjectTag id="child" type="{CoreModel}">
+		<tag:ConstructorTag>
 			<mx:String>module</mx:String>
 			<mx:int>9</mx:int>
-		</tag:ConstructorDecoratorTag>
-		<tag:PropertyDecoratorTag name="booleanProp" value="true"/>
-		<tag:PropertyDecoratorTag name="refProp" idRef="dependency"/>
-		<tag:PropertyDecoratorTag name="arrayProp">
+		</tag:ConstructorTag>
+		<tag:PropertyTag name="booleanProp" value="true"/>
+		<tag:PropertyTag name="refProp" idRef="dependency"/>
+		<tag:PropertyTag name="arrayProp">
 			<tag:ArrayTag>
 				<mx:String>AA</mx:String>
 				<mx:String>BB</mx:String>
 				<tag:ObjectReferenceTag idRef="dependency"/>
 			</tag:ArrayTag>
-		</tag:PropertyDecoratorTag>
-	</tag:MxmlObjectDefinitionFactoryTag> 
+		</tag:PropertyTag>
+	</tag:MxmlObjectTag> 
 	
 	
 </mx:Object> 

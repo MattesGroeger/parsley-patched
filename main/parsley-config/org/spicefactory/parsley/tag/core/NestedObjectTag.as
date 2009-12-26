@@ -30,7 +30,7 @@ import flash.errors.IllegalOperationError;
  * 
  * @author Jens Halm
  */
-public class NestedObjectDefinitionFactoryTag implements ObjectDefinitionFactory, NestedTag {
+public class NestedObjectTag implements ObjectDefinitionFactory, NestedTag {
 
 	
 	/**

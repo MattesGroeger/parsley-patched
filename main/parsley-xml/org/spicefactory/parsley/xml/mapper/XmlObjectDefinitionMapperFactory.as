@@ -28,11 +28,11 @@ import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.Choice;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.tag.core.ArrayTag;
-import org.spicefactory.parsley.tag.core.ConstructorDecoratorTag;
-import org.spicefactory.parsley.tag.core.ObjectDefinitionFactoryTag;
+import org.spicefactory.parsley.tag.core.ConstructorTag;
+import org.spicefactory.parsley.tag.core.ObjectTag;
 import org.spicefactory.parsley.tag.core.ObjectReferenceTag;
-import org.spicefactory.parsley.tag.core.PropertyDecoratorTag;
-import org.spicefactory.parsley.tag.core.ViewDefinitionFactoryTag;
+import org.spicefactory.parsley.tag.core.PropertyTag;
+import org.spicefactory.parsley.tag.core.ViewTag;
 import org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator;
 import org.spicefactory.parsley.tag.lifecycle.DestroyMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.FactoryMethodDecorator;
@@ -129,14 +129,14 @@ public class XmlObjectDefinitionMapperFactory {
 
 	
 	private function getRootObjectMapper () : XmlObjectMapper {
-		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectDefinitionFactoryTag, "object"); 
+		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectTag, "object"); 
 		builder.mapToChildElementChoice("decorators", decoratorChoice);
 		builder.mapAllToAttributes();
 		return builder.build();
 	}
 	
 	private function getViewObjectMapper () : XmlObjectMapper {
-		var builder:PropertyMapperBuilder = getMapperBuilder(ViewDefinitionFactoryTag, "view"); 
+		var builder:PropertyMapperBuilder = getMapperBuilder(ViewTag, "view"); 
 		builder.mapToChildElementChoice("decorators", decoratorChoice);
 		builder.mapToAttribute("id");
 		builder.mapToAttribute("type");
@@ -144,7 +144,7 @@ public class XmlObjectDefinitionMapperFactory {
 	}
 	
 	private function getNestedObjectMapper () : XmlObjectMapper {
-		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectDefinitionFactoryTag, "object"); 
+		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectTag, "object"); 
 		builder.mapToChildElementChoice("decorators", decoratorChoice);
 		builder.mapToAttribute("type");
 		return builder.build();
@@ -169,11 +169,11 @@ public class XmlObjectDefinitionMapperFactory {
 	}
 	
 	private function buildDecoratorChoice () : void {
-		var childBuilder:PropertyMapperBuilder = getMapperBuilder(ConstructorDecoratorTag, "constructor-args");
+		var childBuilder:PropertyMapperBuilder = getMapperBuilder(ConstructorTag, "constructor-args");
 		childBuilder.mapToChildElementChoice("values", valueChoice);
 		decoratorChoice.addMapper(childBuilder.build());
 		
-		childBuilder = getMapperBuilder(PropertyDecoratorTag, "property");
+		childBuilder = getMapperBuilder(PropertyTag, "property");
 		childBuilder.mapToChildElementChoice("childValue", valueChoice);
 		childBuilder.mapAllToAttributes();
 		decoratorChoice.addMapper(childBuilder.build());

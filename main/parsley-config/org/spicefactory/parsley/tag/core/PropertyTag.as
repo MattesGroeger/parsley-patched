@@ -28,7 +28,7 @@ import org.spicefactory.parsley.core.registry.impl.RegistryValueResolver;
  * 
  * @author Jens Halm
  */
-public class PropertyDecoratorTag extends ObjectReferenceTag implements ObjectDefinitionDecorator {
+public class PropertyTag extends ObjectReferenceTag implements ObjectDefinitionDecorator {
 
 
 	private static const valueResolver:RegistryValueResolver = new RegistryValueResolver(); 

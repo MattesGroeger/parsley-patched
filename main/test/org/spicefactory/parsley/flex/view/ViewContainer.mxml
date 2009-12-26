@@ -17,45 +17,45 @@
 	
 	<test:AnnotatedResourceBinding/>
 	
-	<tag:MxmlViewDefinitionFactoryTag id="panel2" type="{Panel2}">
-	    <tag:PropertyDecoratorTag name="model">
-	    	<tag:NestedObjectDefinitionFactoryTag type="{CoreModel}">
-	    		<tag:ConstructorDecoratorTag>
+	<tag:MxmlViewTag id="panel2" type="{Panel2}">
+	    <tag:PropertyTag name="model">
+	    	<tag:NestedObjectTag type="{CoreModel}">
+	    		<tag:ConstructorTag>
 					<mx:String>foo2</mx:String>
 					<mx:int>7</mx:int>
-				</tag:ConstructorDecoratorTag>
-	    	</tag:NestedObjectDefinitionFactoryTag>
-	    </tag:PropertyDecoratorTag>
-	</tag:MxmlViewDefinitionFactoryTag>
+				</tag:ConstructorTag>
+	    	</tag:NestedObjectTag>
+	    </tag:PropertyTag>
+	</tag:MxmlViewTag>
 
-	<tag:MxmlViewDefinitionFactoryTag type="{Panel2}">
-	    <tag:PropertyDecoratorTag name="model" idRef="object"/>
-	</tag:MxmlViewDefinitionFactoryTag>
+	<tag:MxmlViewTag type="{Panel2}">
+	    <tag:PropertyTag name="model" idRef="object"/>
+	</tag:MxmlViewTag>
 	
-	<tag:MxmlViewDefinitionFactoryTag type="{Panel3}">
-	    <tag:PropertyDecoratorTag name="model" idRef="object"/>
-	</tag:MxmlViewDefinitionFactoryTag>
+	<tag:MxmlViewTag type="{Panel3}">
+	    <tag:PropertyTag name="model" idRef="object"/>
+	</tag:MxmlViewTag>
 	
 	<!--
-	<tag:MxmlViewDefinitionFactoryTag type="{Panel2}">
-	    <tag:PropertyDecoratorTag name="model" idRef="object"/>
-	</tag:MxmlViewDefinitionFactoryTag>-->
+	<tag:MxmlViewTag type="{Panel2}">
+	    <tag:PropertyTag name="model" idRef="object"/>
+	</tag:MxmlViewTag>-->
 	
-	<tag:MxmlObjectDefinitionFactoryTag id="object" type="{CoreModel}">
-		<tag:ConstructorDecoratorTag>
+	<tag:MxmlObjectTag id="object" type="{CoreModel}">
+		<tag:ConstructorTag>
 			<mx:String>foo</mx:String>
 			<mx:int>7</mx:int>
-		</tag:ConstructorDecoratorTag>
-		<tag:PropertyDecoratorTag name="booleanProp" value="true"/>
-		<tag:PropertyDecoratorTag name="refProp" idRef="dependency"/>
-		<tag:PropertyDecoratorTag name="arrayProp">
+		</tag:ConstructorTag>
+		<tag:PropertyTag name="booleanProp" value="true"/>
+		<tag:PropertyTag name="refProp" idRef="dependency"/>
+		<tag:PropertyTag name="arrayProp">
 			<tag:ArrayTag>
 				<mx:String>AA</mx:String>
 				<mx:String>BB</mx:String>
 				<tag:ObjectReferenceTag idRef="dependency"/>
 			</tag:ArrayTag>
-		</tag:PropertyDecoratorTag>
-	</tag:MxmlObjectDefinitionFactoryTag> 
+		</tag:PropertyTag>
+	</tag:MxmlObjectTag> 
 	
 	
 </mx:Object> 

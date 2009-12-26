@@ -15,9 +15,9 @@
 	</mx:Script>
 	
 	
-	<flextag:MxmlObjectDefinitionFactoryTag id="factoryWithDependency" type="{TestFactory}" lazy="true">
+	<flextag:MxmlObjectTag id="factoryWithDependency" type="{TestFactory}" lazy="true">
 		<dec:FactoryMethodDecorator method="createInstance"/>
-	</flextag:MxmlObjectDefinitionFactoryTag> 
+	</flextag:MxmlObjectTag> 
 	
 	
 </mx:Object> 

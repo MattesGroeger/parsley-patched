@@ -28,7 +28,7 @@ import flash.errors.IllegalOperationError;
  * 
  * @author Jens Halm
  */
-public class MxmlObjectDefinitionFactoryTag extends ObjectDefinitionFactoryTag implements IMXMLObject {
+public class MxmlObjectTag extends ObjectTag implements IMXMLObject {
 
 
 	/**
