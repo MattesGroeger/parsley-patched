@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <componentPackage>
     <component id="Object" class="org.spicefactory.parsley.tag.core.MxmlObjectDefinitionFactoryTag"/>
+    <component id="View" class="org.spicefactory.parsley.tag.core.MxmlViewDefinitionFactoryTag"/>
     <component id="NestedObject" class="org.spicefactory.parsley.tag.core.NestedObjectDefinitionFactoryTag"/>
     
     <component id="ConstructorArgs" class="org.spicefactory.parsley.tag.core.ConstructorDecoratorTag"/>

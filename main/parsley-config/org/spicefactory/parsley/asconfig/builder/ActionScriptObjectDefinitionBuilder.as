@@ -23,12 +23,14 @@ import org.spicefactory.parsley.asconfig.metadata.InternalProperty;
 import org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.core.view.registry.ViewDefinitionFactory;
 import org.spicefactory.parsley.tag.core.NestedTag;
 
 import flash.utils.getQualifiedClassName;
@@ -99,6 +101,12 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 	}
 	
 	private function buildTargetDefinition (configClassProperty:Property, configClass:Object, registry:ObjectDefinitionRegistry) : void {
+		if (configClassProperty.type.isType(ViewDefinitionFactory)) {
+			var viewFactory:ViewDefinitionFactory = configClassProperty.getValue(configClass);
+			var viewDefinition:ObjectDefinition = viewFactory.createDefinition(registry);
+			registry.viewDefinitions.registerDefinition(viewDefinition, viewFactory.configId);
+			return;
+		}
 		var factory:ObjectDefinitionFactory;
 		if (configClassProperty.type.isType(ObjectDefinitionFactory)) {
 			factory = configClassProperty.getValue(configClass);

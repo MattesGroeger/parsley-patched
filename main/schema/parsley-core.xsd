@@ -11,6 +11,7 @@
 	            <xs:element name="include" type="includeType" minOccurs="0" maxOccurs="unbounded"/>
 	            <xs:element name="variable" type="variableType" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="object" type="rootObjectType"/>    
+                <xs:element name="view" type="viewObjectType"/>    
             	<xs:any namespace="##other"/>
             </xs:choice>
         </xs:complexType>
@@ -58,6 +59,14 @@
         <xs:complexContent>
             <xs:extension base="objectType">
                 <xs:attributeGroup ref="rootObjectAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="viewObjectType">
+        <xs:complexContent>
+            <xs:extension base="objectType">
+                <xs:attribute name="id" type="xs:token" use="optional"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

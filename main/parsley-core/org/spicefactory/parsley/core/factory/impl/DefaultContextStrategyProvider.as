@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.factory.impl {
+	import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
@@ -43,6 +44,7 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	
 	private var factories:FactoryRegistry;
 	private var scopeDefs:Array;
+	private var parentViewDefinitions:ViewDefinitionRegistry;
 	private var context:Context;
 	private var providerFactory:ObjectProviderFactory;
 	
@@ -53,11 +55,14 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	 * @param factories the factories to pull collaborating services from
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @param scopeDefs the scopes associated with the Context
+	 * @param parentViewDefinitions the view configuration from the parent Context
 	 */
-	function DefaultContextStrategyProvider (factories:FactoryRegistry, domain:ApplicationDomain, scopeDefs:Array) {
+	function DefaultContextStrategyProvider (factories:FactoryRegistry, domain:ApplicationDomain, 
+			scopeDefs:Array, parentViewDefinitions:ViewDefinitionRegistry) {
 		this.factories = factories;
 		this._domain = domain;
 		this.scopeDefs = scopeDefs;
+		this.parentViewDefinitions = parentViewDefinitions;
 	}
 
 	
@@ -82,7 +87,7 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	public function get registry () : ObjectDefinitionRegistry {
 		checkState();
 		if (_registry == null) {
-			_registry =	factories.definitionRegistry.create(domain, scopeManager, providerFactory);
+			_registry =	factories.definitionRegistry.create(domain, scopeManager, providerFactory, parentViewDefinitions);
 		}
 		return _registry;
 	}
@@ -115,7 +120,7 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	public function get viewManager () : ViewManager {
 		checkState();
 		if (_viewManager == null) {
-			_viewManager =	factories.viewManager.create(context, domain);
+			_viewManager =	factories.viewManager.create(context, domain, registry.viewDefinitions);
 		}
 		return _viewManager;
 	}
@@ -125,7 +130,7 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	 */
 	public function createDynamicProvider () : ContextStrategyProvider {
 		checkState();
-		var provider:DefaultContextStrategyProvider = new DefaultContextStrategyProvider(factories, domain, scopeDefs);
+		var provider:DefaultContextStrategyProvider = new DefaultContextStrategyProvider(factories, domain, scopeDefs, parentViewDefinitions);
 		provider._scopeManager = scopeManager;
 		provider._viewManager = viewManager;
 		return provider;

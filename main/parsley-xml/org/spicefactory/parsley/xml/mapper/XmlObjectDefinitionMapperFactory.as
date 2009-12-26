@@ -32,6 +32,7 @@ import org.spicefactory.parsley.tag.core.ConstructorDecoratorTag;
 import org.spicefactory.parsley.tag.core.ObjectDefinitionFactoryTag;
 import org.spicefactory.parsley.tag.core.ObjectReferenceTag;
 import org.spicefactory.parsley.tag.core.PropertyDecoratorTag;
+import org.spicefactory.parsley.tag.core.ViewDefinitionFactoryTag;
 import org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator;
 import org.spicefactory.parsley.tag.lifecycle.DestroyMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.FactoryMethodDecorator;
@@ -99,6 +100,7 @@ public class XmlObjectDefinitionMapperFactory {
 		buildDecoratorChoice();
 		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectDefinitionFactoryContainer, "objects"); 
 		rootObjectChoice.addMapper(getRootObjectMapper());
+		rootObjectChoice.addMapper(getViewObjectMapper());
 		builder.mapToChildElementChoice("objects", rootObjectChoice);
 		return builder.build();
 	}
@@ -130,6 +132,14 @@ public class XmlObjectDefinitionMapperFactory {
 		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectDefinitionFactoryTag, "object"); 
 		builder.mapToChildElementChoice("decorators", decoratorChoice);
 		builder.mapAllToAttributes();
+		return builder.build();
+	}
+	
+	private function getViewObjectMapper () : XmlObjectMapper {
+		var builder:PropertyMapperBuilder = getMapperBuilder(ViewDefinitionFactoryTag, "view"); 
+		builder.mapToChildElementChoice("decorators", decoratorChoice);
+		builder.mapToAttribute("id");
+		builder.mapToAttribute("type");
 		return builder.build();
 	}
 	

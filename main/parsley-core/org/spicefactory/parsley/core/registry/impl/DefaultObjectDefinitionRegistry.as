@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry.impl {
+import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.util.collection.SimpleMap;
@@ -41,6 +42,7 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	private var _domain:ApplicationDomain;
 	private var _decoratorAssemblers:Array;
 	private var _scopeManager:ScopeManager;
+	private var _viewDefinitions:ViewDefinitionRegistry;
 	
 	private var _frozen:Boolean;
 	
@@ -55,13 +57,15 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	 * @param scopeManager the ScopeManager associated with this registry
 	 * @param objectProviderFactory the factory to create ObjectProvider instances with
 	 * @param decoratorAssemblers the objects responsible for collecting decorators for definitions in this registry
+	 * @param viewDefinitions the registry for view definitions
 	 */
 	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain, scopeManager:ScopeManager, 
-			objectProviderFactory:ObjectProviderFactory, decoratorAssemblers:Array) {
+			objectProviderFactory:ObjectProviderFactory, decoratorAssemblers:Array, viewDefinitions:ViewDefinitionRegistry) {
 		_domain = domain;
 		_scopeManager = scopeManager;
 		_decoratorAssemblers = decoratorAssemblers;
 		this.objectProviderFactory = objectProviderFactory;
+		_viewDefinitions = viewDefinitions;
 	}
 
 	
@@ -86,6 +90,13 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 		return _scopeManager;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function get viewDefinitions () : ViewDefinitionRegistry {
+		return _viewDefinitions;
+	}
+
 	/**
 	 * @inheritDoc
 	 */

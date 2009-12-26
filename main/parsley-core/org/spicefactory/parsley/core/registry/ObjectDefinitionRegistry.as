@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry {
+	import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 
@@ -142,6 +143,12 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 * communicate between configuration tags.
 	 */
 	function get scopeManager () : ScopeManager;
+	
+	/**
+	 * The registry for view definitions associated with this registry.
+	 * Contains the optional configurations to apply to dynamically wired views.
+	 */
+	function get viewDefinitions () : ViewDefinitionRegistry;
 	
 	/**
 	 * Creates a provider for the specified type and optional id.

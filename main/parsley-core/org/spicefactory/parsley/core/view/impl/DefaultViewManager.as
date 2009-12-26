@@ -17,11 +17,14 @@
 package org.spicefactory.parsley.core.view.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
 import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.display.DisplayObject;
@@ -50,6 +53,7 @@ public class DefaultViewManager implements ViewManager {
 
 	private var parent:Context;
 	private var domain:ApplicationDomain;
+	private var registry:ViewDefinitionRegistry;
 	private var viewRoots:Array = new Array();
 	private var configuredViews:Dictionary = new Dictionary();
 	private var viewContext:DynamicContext;
@@ -77,13 +81,15 @@ public class DefaultViewManager implements ViewManager {
 	 * 
 	 * @param context the Context view components should be dynamically wired to
 	 * @param domain the ApplicationDomain to use for reflection
+	 * @param registry the registry for view definitions
 	 */
-	function DefaultViewManager (context:Context, domain:ApplicationDomain) {
+	function DefaultViewManager (context:Context, domain:ApplicationDomain, registry:ViewDefinitionRegistry) {
 		this.parent = context;
 		this.domain = domain;
+		this.registry = registry;
 	}
 
-
+	
 	private function initialize () : void {
 		setUiComponentClass();
 		viewContext = parent.createDynamicContext();
@@ -168,17 +174,32 @@ public class DefaultViewManager implements ViewManager {
 	
 	private function componentAdded (event:Event) : void {
 		event.stopImmediatePropagation();
-		var target:Object = (event is ViewConfigurationEvent) 
-				? ViewConfigurationEvent(event).configurationTarget : event.target;
-		if (configuredViews[target] != undefined) return;
-		log.debug("Add object '{0}' to view Context", target);
-		if (target is IEventDispatcher) {
-			IEventDispatcher(target).addEventListener(componentRemovedEvent, componentRemoved);
+		var configTarget:Object = (event is ViewConfigurationEvent) 
+				? ViewConfigurationEvent(event).configTarget : event.target;
+		var configId:String = (event is ViewConfigurationEvent) 
+				? ViewConfigurationEvent(event).configId 
+				: (configTarget is DisplayObject) ? DisplayObject(configTarget).name : null;
+		if (configuredViews[configTarget] != undefined) return;
+		log.debug("Add object '{0}' to view Context", configTarget);
+		if (configTarget is IEventDispatcher) {
+			IEventDispatcher(configTarget).addEventListener(componentRemovedEvent, componentRemoved);
 		}
-		configuredViews[target] = true;
-		viewContext.addObject(target);
+		configuredViews[configTarget] = true;
+		var definition:ObjectDefinition = getDefinition(configTarget, configId);
+		viewContext.addObject(configTarget, definition);
 	}
 	
+	protected function getDefinition (configTarget:Object, configId:String) : ObjectDefinition {
+		var definition:ObjectDefinition;
+		if (configId != null) {
+			definition = registry.getDefinitionById(configId, configTarget);
+		}
+		if (definition == null) {
+			definition = registry.getDefinitionByType(configTarget);
+		}
+		return definition;
+	}
+
 	private function componentRemoved (event:Event) : void {
 		var view:IEventDispatcher = IEventDispatcher(event.target);
 		if (!isRemovable(view)) {

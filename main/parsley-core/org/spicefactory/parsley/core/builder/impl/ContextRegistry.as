@@ -18,37 +18,39 @@ package org.spicefactory.parsley.core.builder.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
 
 import flash.utils.Dictionary;
 
 /**
- * Manages the inherited scopes for all currently active Context instances.
+ * Manages the inherited scopes and the registry for view configuration for all currently active Context instances.
  * This is an internal class that usually should only be used by custom
- * CompositeContextBuilder implementations. It is necessary since some
- * internal objects like the 2 shared MessageRouter instances that each
- * Scope manages are not accessible through the public Scope API.
+ * CompositeContextBuilder implementations. It is necessary since these
+ * internal objects are not accessible through the public API but still need
+ * to be passed on to child Contexts.
  * 
  * @author Jens Halm
  */
-public class InheritedScopeRegistry {
+public class ContextRegistry {
 	
 	
 	private static const scopeMap:Dictionary = new Dictionary();
 	
 	
 	/**
-	 * Adds the specified scopes and associates them with the given Context instance.
+	 * Adds the specified scopes and registry and associates them with the given Context instance.
 	 * Only inherited scopes should be passed to this method.
 	 * 
 	 * @param context the Context instance the specified scopes are associated with
 	 * @param scopes the scopes to add
+	 * @param registry the view configuration for the specified Context
 	 */
-	public static function addScopes (context:Context, scopes:Array) : void {
+	public static function addContext (context:Context, scopes:Array, registry:ViewDefinitionRegistry) : void {
 		if (scopeMap[context] != undefined) {
 			throw new IllegalArgumentError("Scopes already registered for the specified Context instance");
 		}
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		scopeMap[context] = scopes;
+		scopeMap[context] = new ContextRegistration(context, scopes, registry);
 	}
 
 	private static function contextDestroyed (event:ContextEvent) : void {
@@ -67,9 +69,36 @@ public class InheritedScopeRegistry {
 		if (scopeMap[context] == undefined) {
 			throw new IllegalArgumentError("No Scopes registered for the specified Context instance");
 		}
-		return scopeMap[context].concat();
+		return ContextRegistration(scopeMap[context]).scopes.concat();
 	}
 	
-	
+	/**
+	 * Returns the view definitions associated with the specified Context instance.
+	 * 
+	 * @param context the Context to return the view definitions for
+	 * @return the view definitions associated with the specified Context instance
+	 */
+	public static function getViewDefinitions (context:Context) : ViewDefinitionRegistry {
+		if (scopeMap[context] == undefined) {
+			throw new IllegalArgumentError("No view definitions registered for the specified Context instance");
+		}
+		return ContextRegistration(scopeMap[context]).viewDefinitions;
+	}
 }
+}
+
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
+
+class ContextRegistration {
+	
+	public var context:Context;
+	public var scopes:Array;
+	public var viewDefinitions:ViewDefinitionRegistry;
+	
+	function ContextRegistration (context:Context, scopes:Array, viewDefinitions:ViewDefinitionRegistry) {
+		this.context = context;
+		this.scopes = scopes;
+		this.viewDefinitions = viewDefinitions;
+	}
 }

@@ -24,11 +24,13 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.core.view.registry.ViewDefinitionFactory;
 import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionLoader;
 import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
@@ -108,22 +110,10 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 				if (!context.hasErrors()) {
 					for each (var obj:Object in container.objects) {
 						try {
-							var factory:ObjectDefinitionFactory;
-							if (obj is ObjectDefinitionFactory) {
-								factory = obj as ObjectDefinitionFactory;
-							}
-							else {
-								var ci:ClassInfo = ClassInfo.forInstance(obj, registry.domain);
-								var prop:Property = ci.getProperty("id");
-								var id:String = (prop == null) ? null : prop.getValue(obj);
-								var inst:ObjectInstantiator = new ObjectWrapperInstantiator(obj);
-								factory	= new DefaultObjectDefinitionFactory(ci.getClass(), id, false, true, int.MAX_VALUE, inst);
-							}
-							var definition:RootObjectDefinition = factory.createRootDefinition(registry);
-							registry.registerDefinition(definition);
+							buildTargetDefinition(obj);
 						} 
 						catch (error:Error) {
-							var msg:String = "Error building object definition with " + factory;
+							var msg:String = "Error building object definition for " + obj;
 							log.error(msg + "{0}", error);
 							factoryErrors.push(msg + ": " + error.message);		
 						}
@@ -155,6 +145,30 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
 	}
+	
+	
+	private function buildTargetDefinition (obj:Object) : void {
+		if (obj is ViewDefinitionFactory) {
+			var viewFactory:ViewDefinitionFactory = obj as ViewDefinitionFactory;
+			var viewDefinition:ObjectDefinition = viewFactory.createDefinition(registry);
+			registry.viewDefinitions.registerDefinition(viewDefinition, viewFactory.configId);
+			return;
+		}
+		var factory:ObjectDefinitionFactory;
+		if (obj is ObjectDefinitionFactory) {
+			factory = obj as ObjectDefinitionFactory;
+		}
+		else {
+			var ci:ClassInfo = ClassInfo.forInstance(obj, registry.domain);
+			var prop:Property = ci.getProperty("id");
+			var id:String = (prop == null) ? null : prop.getValue(obj);
+			var inst:ObjectInstantiator = new ObjectWrapperInstantiator(obj);
+			factory	= new DefaultObjectDefinitionFactory(ci.getClass(), id, false, true, int.MAX_VALUE, inst);
+		}
+		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
+		registry.registerDefinition(definition);
+	}
+
 
 	private function loaderError (event:ErrorEvent) : void {
 		dispatchEvent(event.clone());

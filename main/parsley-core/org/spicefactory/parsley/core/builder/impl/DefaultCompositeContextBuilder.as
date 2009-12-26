@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.builder.impl {
+	import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -119,7 +120,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 			scopes.addScope(createScopeDefinition(ScopeName.GLOBAL, true));
 		}
 		else {
-			for each (var inheritedScope:ScopeDefinition in InheritedScopeRegistry.getScopes(parent)) {
+			for each (var inheritedScope:ScopeDefinition in ContextRegistry.getScopes(parent)) {
 				scopes.addScope(inheritedScope);
 			}
 		}
@@ -134,7 +135,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		var provider:ContextStrategyProvider = createContextStrategyProvider(domain, scopes.getAll());
 		context = _factories.context.create(provider, parent);
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		InheritedScopeRegistry.addScopes(context, scopes.getInherited());
+		ContextRegistry.addContext(context, scopes.getInherited(), provider.registry.viewDefinitions);
 		registry = provider.registry;
 		if (viewRoot != null) {
 			context.viewManager.addViewRoot(viewRoot);
@@ -142,7 +143,9 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	}
 	
 	private function createContextStrategyProvider (domain:ApplicationDomain, scopeDefs:Array) : ContextStrategyProvider {
-		return new DefaultContextStrategyProvider(factories, domain, scopeDefs);
+		var parentViewDefinitions:ViewDefinitionRegistry = (parent != null) 
+				? ContextRegistry.getViewDefinitions(parent) : null; 
+		return new DefaultContextStrategyProvider(factories, domain, scopeDefs, parentViewDefinitions);
 	}
 
 	/**

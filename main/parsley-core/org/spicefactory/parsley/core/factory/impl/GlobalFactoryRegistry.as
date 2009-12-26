@@ -15,13 +15,13 @@
  */
 
 package org.spicefactory.parsley.core.factory.impl {
-import org.spicefactory.parsley.core.factory.ScopeExtensionRegistry;
 import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
 import org.spicefactory.parsley.core.factory.ContextFactory;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.factory.MessageRouterFactory;
 import org.spicefactory.parsley.core.factory.ObjectDefinitionRegistryFactory;
 import org.spicefactory.parsley.core.factory.ObjectLifecycleManagerFactory;
+import org.spicefactory.parsley.core.factory.ScopeExtensionRegistry;
 import org.spicefactory.parsley.core.factory.ScopeManagerFactory;
 import org.spicefactory.parsley.core.factory.ViewManagerFactory;
 
@@ -163,7 +163,6 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 	public function get scopeExtensions () : ScopeExtensionRegistry {
 		return _scopeExtensions;
 	}
-	
 }
 }
 
@@ -194,6 +193,8 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.scope.impl.DefaultScopeManager;
 import org.spicefactory.parsley.core.view.ViewManager;
 import org.spicefactory.parsley.core.view.impl.DefaultViewManager;
+import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
+import org.spicefactory.parsley.core.view.registry.impl.DefaultViewDefinitionRegistry;
 import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 
 import flash.display.DisplayObject;
@@ -227,9 +228,12 @@ class DefaultLifecycleManagerFactory implements ObjectLifecycleManagerFactory {
 class DefaultDefinitionRegistryFactory implements ObjectDefinitionRegistryFactory {
 
 	public function create (domain:ApplicationDomain, scopeManager:ScopeManager, 
-			providerFactory:ObjectProviderFactory) : ObjectDefinitionRegistry {
-		return new DefaultObjectDefinitionRegistry(domain, scopeManager, 
-				providerFactory, [new MetadataDecoratorAssembler(domain)]);
+			providerFactory:ObjectProviderFactory, parentViewDefinitions:ViewDefinitionRegistry) : ObjectDefinitionRegistry {
+		return new DefaultObjectDefinitionRegistry(domain, 
+				scopeManager, 
+				providerFactory, 
+				[new MetadataDecoratorAssembler(domain)], 
+				new DefaultViewDefinitionRegistry(parentViewDefinitions));
 	}
 	
 }
@@ -240,8 +244,8 @@ class DefaultViewManagerFactory implements ViewManagerFactory {
 	private var _componentRemovedEvent:String = Event.REMOVED_FROM_STAGE;
 	private var _componentAddedEvent:String = ViewConfigurationEvent.CONFIGURE_VIEW;
 	
-	public function create (context:Context, domain:ApplicationDomain) : ViewManager {
-		var viewManager:DefaultViewManager = new DefaultViewManager(context, domain);
+	public function create (context:Context, domain:ApplicationDomain, registry:ViewDefinitionRegistry) : ViewManager {
+		var viewManager:DefaultViewManager = new DefaultViewManager(context, domain, registry);
 		viewManager.componentAddedEvent = componentAddedEvent;
 		viewManager.componentRemovedEvent = componentRemovedEvent;
 		viewManager.viewRootRemovedEvent = viewRootRemovedEvent;
