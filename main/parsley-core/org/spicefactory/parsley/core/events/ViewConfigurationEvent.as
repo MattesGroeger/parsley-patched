@@ -48,6 +48,7 @@ public class ViewConfigurationEvent extends Event {
 	public function ViewConfigurationEvent (target:Object = null, configId:String = null) {
 		super(CONFIGURE_VIEW, true);
 		this.explicitTarget = target;
+		this.explicitConfigId = configId;
 	}		
 	
 	/**
