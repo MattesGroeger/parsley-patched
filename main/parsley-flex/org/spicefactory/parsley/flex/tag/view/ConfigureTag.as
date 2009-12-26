@@ -72,14 +72,14 @@ public class ConfigureTag extends ConfigurationTagBase {
 	
 	
 	protected override function executeAction (view:DisplayObject) : void { 
-		view.dispatchEvent(new ViewConfigurationEvent(target));
+		view.dispatchEvent(new ViewConfigurationEvent(target, configId));
 		if (repeat) {
 			view.addEventListener(Event.ADDED_TO_STAGE, repeatAction);
 		}
 	}
 	
 	private function repeatAction (event:Event) : void {
-		DisplayObject(event.target).dispatchEvent(new ViewConfigurationEvent(target));
+		DisplayObject(event.target).dispatchEvent(new ViewConfigurationEvent(target, configId));
 	}
 	
 	
