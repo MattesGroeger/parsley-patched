@@ -35,6 +35,7 @@ public class DefaultViewDefinitionRegistry implements ViewDefinitionRegistry {
 			}
 			definitionsById[id] = viewDefinition;
 		}
+		definitions.push(viewDefinition);
 	}
 
 	/**
