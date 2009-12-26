@@ -16,7 +16,7 @@
 			import mx.managers.PopUpManager;
 			import mx.containers.TitleWindow;
 			
-			[Inject(id="child")]
+			//[Inject(id="child")]
 			[Bindable]
 			public var model:CoreModel;	
 			

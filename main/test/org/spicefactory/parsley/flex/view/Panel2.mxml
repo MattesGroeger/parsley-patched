@@ -17,11 +17,10 @@
 	         import mx.managers.PopUpManager;
 	         import mx.containers.TitleWindow;
 			
-			 [Inject]
 			 [Bindable]
 			 public var model:CoreModel;	
          
-         	 [Inject]
+         	 //[Inject]
          	 public var context:Context;
          	
          	 private var window:TitleWindow;
@@ -40,7 +39,8 @@
    </mx:Script>
    
 	
-	<parsley:ConfigureTag/>
+	<parsley:ConfigureTag configId="panel2"/>
+	<!--<parsley:ConfigureTag/>-->
 	
 	<mx:Text text="AA2"/>
 	<mx:Text text="Bound value: |{model.stringProp}|"/>

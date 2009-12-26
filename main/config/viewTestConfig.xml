@@ -3,4 +3,8 @@
 	
 	<object id="fromXml" type="Object"/>
 	
+	<!-- <view type="org.spicefactory.parsley.flex.view.Panel2">
+	    <property name="model" id-ref="object"/>
+	</view>-->
+	
 </objects>

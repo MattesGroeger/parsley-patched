@@ -7,6 +7,8 @@
 	<mx:Script>
 		<![CDATA[
 			import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;		
+			import org.spicefactory.parsley.flex.view.Panel2;		
+			import org.spicefactory.parsley.flex.view.Panel3;		
 		]]>
 	</mx:Script>
 	
@@ -15,6 +17,29 @@
 	
 	<test:AnnotatedResourceBinding/>
 	
+	<tag:MxmlViewDefinitionFactoryTag id="panel2" type="{Panel2}">
+	    <tag:PropertyDecoratorTag name="model">
+	    	<tag:NestedObjectDefinitionFactoryTag type="{CoreModel}">
+	    		<tag:ConstructorDecoratorTag>
+					<mx:String>foo2</mx:String>
+					<mx:int>7</mx:int>
+				</tag:ConstructorDecoratorTag>
+	    	</tag:NestedObjectDefinitionFactoryTag>
+	    </tag:PropertyDecoratorTag>
+	</tag:MxmlViewDefinitionFactoryTag>
+
+	<tag:MxmlViewDefinitionFactoryTag type="{Panel2}">
+	    <tag:PropertyDecoratorTag name="model" idRef="object"/>
+	</tag:MxmlViewDefinitionFactoryTag>
+	
+	<tag:MxmlViewDefinitionFactoryTag type="{Panel3}">
+	    <tag:PropertyDecoratorTag name="model" idRef="object"/>
+	</tag:MxmlViewDefinitionFactoryTag>
+	
+	<!--
+	<tag:MxmlViewDefinitionFactoryTag type="{Panel2}">
+	    <tag:PropertyDecoratorTag name="model" idRef="object"/>
+	</tag:MxmlViewDefinitionFactoryTag>-->
 	
 	<tag:MxmlObjectDefinitionFactoryTag id="object" type="{CoreModel}">
 		<tag:ConstructorDecoratorTag>
