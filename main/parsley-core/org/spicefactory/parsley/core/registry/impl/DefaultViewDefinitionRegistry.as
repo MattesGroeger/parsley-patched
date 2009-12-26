@@ -1,7 +1,7 @@
-package org.spicefactory.parsley.core.view.registry.impl {
+package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 
 import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;

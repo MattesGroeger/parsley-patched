@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry {
-	import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
+	
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 

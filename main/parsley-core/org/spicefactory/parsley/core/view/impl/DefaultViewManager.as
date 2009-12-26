@@ -24,7 +24,7 @@ import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.display.DisplayObject;

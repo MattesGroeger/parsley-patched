@@ -18,7 +18,7 @@ package org.spicefactory.parsley.core.builder.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 
 import flash.utils.Dictionary;
 
@@ -88,7 +88,7 @@ public class ContextRegistry {
 }
 
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 
 class ContextRegistration {
 	

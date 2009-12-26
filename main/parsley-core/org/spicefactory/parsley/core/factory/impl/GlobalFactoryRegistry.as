@@ -193,8 +193,8 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.scope.impl.DefaultScopeManager;
 import org.spicefactory.parsley.core.view.ViewManager;
 import org.spicefactory.parsley.core.view.impl.DefaultViewManager;
-import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
-import org.spicefactory.parsley.core.view.registry.impl.DefaultViewDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.impl.DefaultViewDefinitionRegistry;
 import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 
 import flash.display.DisplayObject;

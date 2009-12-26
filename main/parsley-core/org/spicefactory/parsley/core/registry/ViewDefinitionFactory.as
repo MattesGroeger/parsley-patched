@@ -1,6 +1,6 @@
-package org.spicefactory.parsley.core.view.registry {
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+package org.spicefactory.parsley.core.registry {
+
+
 
 /**
  * Interface that can be used by the various configuration mechanisms to create tags

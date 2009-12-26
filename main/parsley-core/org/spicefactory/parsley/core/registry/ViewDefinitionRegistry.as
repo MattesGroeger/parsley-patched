@@ -1,5 +1,5 @@
-package org.spicefactory.parsley.core.view.registry {
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
+package org.spicefactory.parsley.core.registry {
+
 
 /**
  * A registry for view definitions. These can then be applied to views

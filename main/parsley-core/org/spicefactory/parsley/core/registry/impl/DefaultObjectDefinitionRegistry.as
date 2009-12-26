@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry.impl {
-import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.util.collection.SimpleMap;

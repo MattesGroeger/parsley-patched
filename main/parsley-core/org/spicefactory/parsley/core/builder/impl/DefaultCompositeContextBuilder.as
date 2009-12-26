@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.builder.impl {
-	import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
+	import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;

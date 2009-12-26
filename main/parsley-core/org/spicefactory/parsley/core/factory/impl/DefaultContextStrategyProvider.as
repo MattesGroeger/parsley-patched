@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.factory.impl {
-	import org.spicefactory.parsley.core.view.registry.ViewDefinitionRegistry;
+	import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
