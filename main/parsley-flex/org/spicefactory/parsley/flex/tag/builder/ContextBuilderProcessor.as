@@ -19,6 +19,8 @@ import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 
 /**
  * Interface to be implemented by child tags of the ContextBuilder MXML tag.
+ * Child tags can be used for adding configuration artifacts, declaring custom scopes 
+ * or initializing extensions.
  * 
  * @author Jens Halm
  */
@@ -26,10 +28,11 @@ public interface ContextBuilderProcessor {
 	
 	
 	/**
-	 * Processes the specified builder, adding configuration artifacts, custom scopes or extensions.
-	 * To initialize a global extension like a custom configuration tag or a replacement for one of 
+	 * Processes the specified builder, adding configuration artifacts, declaring custom scopes 
+	 * or initializing extensions.
+	 * <p>To initialize a global extension like a custom configuration tag or a replacement for one of 
 	 * the IOC Kernel services, the corresponding hooks like the <code>GlobalFactoryRegistry</code> 
-	 * should be used and the builder parameter can simply be ignored.
+	 * should be used and the builder parameter can simply be ignored.</p>
 	 * 
 	 * @param builder the builder that will be used to create the Context
 	 */
