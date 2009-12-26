@@ -42,6 +42,9 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	private static const log:Logger = LogContext.getLogger(DefaultObjectDefinitionFactory);
 
 	
+	/**
+	 * The type of the object configured by this definition.
+	 */
 	public var type:Class = Object;
 	
 	/**
