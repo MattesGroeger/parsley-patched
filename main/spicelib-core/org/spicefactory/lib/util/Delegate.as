@@ -17,11 +17,11 @@
 package org.spicefactory.lib.util {
 
 /**
- * A Command wraps a method and its parameters for deferred execution.
+ * A Delegate wraps a method and its parameters for deferred execution.
  * 
  * @author Jens Halm
  */
-public class Command {
+public class Delegate {
 	
 	
 	private var method:Function;
@@ -29,22 +29,22 @@ public class Command {
 
 
 	/**
-	 * Creates a new Command for deferred execution.
+	 * Creates a new Delegate for deferred execution.
 	 * 
 	 * @param method the method to execute
 	 * @param params the parameters to pass to the method
 	 */
-	public function Command (method:Function, params:Array = null) {
+	public function Delegate (method:Function, params:Array = null) {
 		this.method = method;
 		this.params = (params == null) ? [] : params;
 	}
 	
 	/**
-	 * Executes the Command.
+	 * Invokes the Delegate.
 	 * 
 	 * @return the return value of the executed method
 	 */
-	public function execute () : * {
+	public function invoke () : * {
 		return method.apply(null, params);
 	}
 	

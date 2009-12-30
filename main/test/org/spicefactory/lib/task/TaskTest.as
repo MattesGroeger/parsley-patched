@@ -6,7 +6,7 @@ import flash.utils.Dictionary;
 import org.spicefactory.lib.task.enum.TaskState;
 import org.spicefactory.lib.task.events.TaskEvent;
 import org.spicefactory.lib.task.ResultTask;
-import org.spicefactory.lib.util.Command;
+import org.spicefactory.lib.util.Delegate;
 
 import flexunit.framework.TestCase;
 
@@ -354,9 +354,9 @@ public class TaskTest extends TestCase {
 	public function testAddTaskWhileDoStartExecutes () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var tg:TaskGroup = new ConcurrentTaskGroup();
-		var tAdded:Task = new NonRestartableCommandTask(new Command(childTask2));
-		var t:Task = new NonRestartableCommandTask(new Command(childTask1, [tg, tAdded]));
-		var t2:Task = new NonRestartableCommandTask(new Command(childTask2));
+		var tAdded:Task = new NonRestartableCommandTask(new Delegate(childTask2));
+		var t:Task = new NonRestartableCommandTask(new Delegate(childTask1, [tg, tAdded]));
+		var t2:Task = new NonRestartableCommandTask(new Delegate(childTask2));
 		startGroup(tg, [t, t2], TaskEvent.COMPLETE, TaskState.FINISHED);
 		assertEquals("Unexpected state of child Task", TaskState.FINISHED, t.state);		
 		assertEquals("Unexpected state of child Task", TaskState.FINISHED, t2.state);		
@@ -459,9 +459,9 @@ public class TaskTest extends TestCase {
 }
 }
 
-import org.spicefactory.lib.task.util.CommandTask;
+import org.spicefactory.lib.task.util.SynchronousDelegateTask;
 import org.spicefactory.lib.task.ResultTask;
-import org.spicefactory.lib.util.Command;
+import org.spicefactory.lib.util.Delegate;
 
 class Result {
 	
@@ -486,9 +486,9 @@ class Result {
 	
 }
 
-class NonRestartableCommandTask extends CommandTask {
+class NonRestartableCommandTask extends SynchronousDelegateTask {
 	
-	public function NonRestartableCommandTask (command:Command, name:String = "[CommandTask]") {
+	public function NonRestartableCommandTask (command:Delegate, name:String = "[CommandTask]") {
 		super(command, name);
 		setRestartable(false);
 	}

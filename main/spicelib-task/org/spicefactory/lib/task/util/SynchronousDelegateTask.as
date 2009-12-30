@@ -16,7 +16,7 @@
  
 package org.spicefactory.lib.task.util {
 import org.spicefactory.lib.task.Task;
-import org.spicefactory.lib.util.Command;
+import org.spicefactory.lib.util.Delegate;
 
 /**
  * Task implementation that wraps a synchronous Command. Useful if you need to add some kind
@@ -24,29 +24,29 @@ import org.spicefactory.lib.util.Command;
  * 
  * @author Jens Halm
  */	
-public class CommandTask extends Task {
+public class SynchronousDelegateTask extends Task {
 	
 		
-	private var command:Command;
+	private var delegate:Delegate;
 	
 	
 	/**
-	 * Creates a new Task that wraps the specified synchronous Command.
+	 * Creates a new Task that wraps the specified synchronous Delegate.
 	 * 
-	 * @param com the Command to execute when the Task is started
+	 * @param delegate the Delegate to execute when the Task is started
 	 * @param name an optional name for this CommandTask for log output
 	 */
-	public function CommandTask (command:Command, name:String = "[CommandTask]") {
+	public function SynchronousDelegateTask (delegate:Delegate, name:String = "[CommandTask]") {
 		super();
 		setName(name);
-		this.command = command;
+		this.delegate = delegate;
 	}
 	
 	/**
 	 * @private
 	 */
 	protected override function doStart () : void {
-		command.execute();
+		delegate.invoke();
 		complete();
 	}
 			
