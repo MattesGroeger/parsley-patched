@@ -19,7 +19,6 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.pimento.config.PimentoConfig;
 import org.spicefactory.pimento.service.EntityManager;
 
@@ -56,14 +55,18 @@ public class ConfigTag implements ObjectDefinitionFactory {
 	 */
 	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
 		
-		var configFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(PimentoConfig, id);
-		var configDef:RootObjectDefinition = configFactory.createRootDefinition(registry);
+		var configDef:RootObjectDefinition = registry.builders
+					.forRootDefinition(PimentoConfig)
+					.setId(id)
+					.build();
 		configDef.properties.addValue("serviceUrl", url);
 		if (timeout != 0) configDef.properties.addValue("defaultTimeout", timeout);
 		
-		var emFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(EntityManager, configDef.id + "_entityManager");
-		var emDef:RootObjectDefinition = emFactory.createRootDefinition(registry);
-		emDef.instantiator = new EntityManagerInstantiator(configDef.id);
+		var emDef:RootObjectDefinition = registry.builders
+					.forRootDefinition(EntityManager)
+					.setId(configDef.id + "_entityManager")
+					.setInstantiator(new EntityManagerInstantiator(configDef.id))
+					.build();
 		registry.registerDefinition(emDef);
 		
 		return configDef;

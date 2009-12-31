@@ -28,8 +28,6 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ViewDefinitionFactory;
 import org.spicefactory.parsley.tag.core.NestedTag;
 
@@ -114,17 +112,19 @@ public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuil
 		else {
 			var definitionMetaArray:Array = configClassProperty.getMetadata(ObjectDefinitionMetadata);
 			var definitionMeta:ObjectDefinitionMetadata = (definitionMetaArray.length > 0) ? 
-					ObjectDefinitionMetadata(definitionMetaArray[0]) : null;
-			var id:String = (definitionMeta != null && definitionMeta.id != null) 
+					ObjectDefinitionMetadata(definitionMetaArray[0]) : new ObjectDefinitionMetadata();
+			var id:String = (definitionMeta.id != null) 
 					? definitionMeta.id : configClassProperty.name;
-			var lazy:Boolean = (definitionMeta != null) 
-					? definitionMeta.lazy : false;
-			var singleton:Boolean = (definitionMeta != null) 
-					? definitionMeta.singleton : true;
-			var order:int = (definitionMeta != null) 
-					? definitionMeta.order : int.MAX_VALUE;
-			var inst:ObjectInstantiator = new ConfingClassPropertyInstantiator(configClass, configClassProperty);
-			factory = new DefaultObjectDefinitionFactory(configClassProperty.type.getClass(), id, lazy, singleton, order, inst);
+			var type:Class = configClassProperty.type.getClass();
+			var rootDef:RootObjectDefinition = registry.builders.forRootDefinition(type)
+					.setId(id)
+					.setLazy(definitionMeta.lazy)
+					.setSingleton(definitionMeta.singleton)
+					.setOrder(definitionMeta.order)
+					.setInstantiator(new ConfingClassPropertyInstantiator(configClass, configClassProperty))
+					.build();
+			registry.registerDefinition(rootDef);
+			return;
 		}
 		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
 		registry.registerDefinition(definition);

@@ -7,7 +7,6 @@ import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.impl.DefaultContext;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator;
 
 /**
@@ -53,12 +52,13 @@ public class DynamicContextTest extends ContextTestBase {
 	}
 	
 	private function createDefinition (context:DynamicContext) : ObjectDefinition {
-		var registry:ObjectDefinitionRegistry = DefaultContext(context).registry;
-		var factory:DefaultObjectDefinitionFactory = new DefaultObjectDefinitionFactory(DynamicTestObject);
 		var decorator:MessageHandlerDecorator = new MessageHandlerDecorator();
 		decorator.method = "handleMessage";
-		factory.decorators.push(decorator);
-		var definition:ObjectDefinition = factory.createNestedDefinition(registry);
+		var registry:ObjectDefinitionRegistry = DefaultContext(context).registry;
+		var definition:ObjectDefinition = registry.builders
+					.forNestedDefinition(DynamicTestObject)
+					.addDecorator(decorator)
+					.build();
 		definition.properties.addTypeReference("dependency");
 		return definition;
 	}

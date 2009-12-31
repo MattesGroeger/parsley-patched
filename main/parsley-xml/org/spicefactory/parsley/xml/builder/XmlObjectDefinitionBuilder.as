@@ -28,8 +28,6 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ViewDefinitionFactory;
 import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionLoader;
 import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
@@ -160,10 +158,13 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 		}
 		else {
 			var ci:ClassInfo = ClassInfo.forInstance(obj, registry.domain);
-			var prop:Property = ci.getProperty("id");
-			var id:String = (prop == null) ? null : prop.getValue(obj);
-			var inst:ObjectInstantiator = new ObjectWrapperInstantiator(obj);
-			factory	= new DefaultObjectDefinitionFactory(ci.getClass(), id, false, true, int.MAX_VALUE, inst);
+			var id:Property = ci.getProperty("id");
+			var rootDef:RootObjectDefinition = registry.builders.forRootDefinition(ci.getClass())
+					.setId((id == null) ? null : id.getValue(obj))
+					.setInstantiator(new ObjectWrapperInstantiator(obj))
+					.build();
+			registry.registerDefinition(rootDef);
+			return;
 		}
 		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
 		registry.registerDefinition(definition);

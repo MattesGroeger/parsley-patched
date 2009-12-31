@@ -23,7 +23,6 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.parsley.flash.resources.impl.DefaultBundleLoaderFactory;
 import org.spicefactory.parsley.flash.resources.impl.DefaultResourceBundle;
 import org.spicefactory.parsley.flash.resources.spi.BundleLoaderFactory;
@@ -130,9 +129,11 @@ public class ResourceBundleTag extends EventDispatcher implements ObjectDefiniti
 	}
 	
 	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
-		var factory:ObjectDefinitionFactory 
-				= new DefaultObjectDefinitionFactory(ResourceBundleTag, id, false, true, int.MIN_VALUE, new TagInstantiator(this));		
-		return factory.createRootDefinition(registry);
+		return registry.builders.forRootDefinition(ResourceBundleTag)
+					.setId(id)
+					.setOrder(int.MIN_VALUE)
+					.setInstantiator(new TagInstantiator(this))
+					.build();
 	}
 	
 	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
@@ -141,9 +142,9 @@ public class ResourceBundleTag extends EventDispatcher implements ObjectDefiniti
 }
 }
 
-import org.spicefactory.parsley.flash.resources.tag.ResourceBundleTag;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
+import org.spicefactory.parsley.flash.resources.tag.ResourceBundleTag;
 
 class TagInstantiator implements ObjectInstantiator {
 	private var tag:ResourceBundleTag;

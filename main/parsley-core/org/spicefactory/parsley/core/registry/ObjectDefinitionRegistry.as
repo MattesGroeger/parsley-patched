@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.registry {
-	
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
+import org.spicefactory.parsley.core.registry.builder.ObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 
 import flash.events.IEventDispatcher;
@@ -121,6 +121,10 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 */
 	function unregisterDefinition (definition:RootObjectDefinition) : void;
 	
+	/**
+	 * A factory for creating builders for ObjectDefinitions.
+	 */
+	function get builders () : ObjectDefinitionBuilderFactory;
 	
 	/**
 	 * Freezes this registry. After calling this method any attempt to modify this registry or any

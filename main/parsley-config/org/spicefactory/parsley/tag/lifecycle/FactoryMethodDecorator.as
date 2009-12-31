@@ -18,10 +18,8 @@ package org.spicefactory.parsley.tag.lifecycle {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.impl.ObjectDefinitionWrapper;
 import org.spicefactory.parsley.tag.core.NestedTag;
 import org.spicefactory.parsley.tag.util.DecoratorUtil;
@@ -55,16 +53,20 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator, Nested
 		// Must create a new definition for the target type
 		var method:Method = DecoratorUtil.getMethod(this.method, definition);
 		var targetType:Class = method.returnType.getClass();
-		var targetFactory:ObjectDefinitionFactory;
 		var targetDefinition:ObjectDefinition;
 		if (definition is RootObjectDefinition) {
 			var rootDefinition:RootObjectDefinition = RootObjectDefinition(definition);
-			targetFactory = new DefaultObjectDefinitionFactory(targetType, rootDefinition.id, rootDefinition.lazy, rootDefinition.singleton);
-			targetDefinition = targetFactory.createRootDefinition(registry);
+			targetDefinition = registry.builders
+					.forRootDefinition(targetType)
+					.setId(rootDefinition.id)
+					.setLazy(rootDefinition.lazy)
+					.setSingleton(rootDefinition.singleton)
+					.build();
 		}
 		else {
-			targetFactory = new DefaultObjectDefinitionFactory(targetType);
-			targetDefinition = targetFactory.createNestedDefinition(registry);
+			targetDefinition = registry.builders
+					.forNestedDefinition(targetType)
+					.build();
 		}
 		targetDefinition.instantiator = new FactoryMethodInstantiator(factoryDefinition, method);
 		return targetDefinition;		

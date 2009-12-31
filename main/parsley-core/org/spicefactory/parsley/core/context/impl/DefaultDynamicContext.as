@@ -27,9 +27,7 @@ import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 
 import flash.events.Event;
 import flash.utils.Dictionary;
@@ -81,8 +79,7 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 		checkState();
 		if (definition == null) {
 			var ci:ClassInfo = ClassInfo.forInstance(instance, registry.domain);
-			var defFactory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(ci.getClass());
-			definition = defFactory.createNestedDefinition(registry);
+			definition = registry.builders.forNestedDefinition(ci.getClass()).build();
 		}
 		else {
 			checkDefinition(definition);

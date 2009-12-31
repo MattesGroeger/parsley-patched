@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.registry.impl {
-import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.util.collection.SimpleMap;
@@ -25,6 +24,9 @@ import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.builder.ObjectDefinitionBuilderFactory;
+import org.spicefactory.parsley.core.registry.builder.impl.DefaultObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 
 import flash.events.EventDispatcher;
@@ -43,6 +45,8 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	private var _decoratorAssemblers:Array;
 	private var _scopeManager:ScopeManager;
 	private var _viewDefinitions:ViewDefinitionRegistry;
+	
+	private var _builders:ObjectDefinitionBuilderFactory;
 	
 	private var _frozen:Boolean;
 	
@@ -66,6 +70,7 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 		_decoratorAssemblers = decoratorAssemblers;
 		this.objectProviderFactory = objectProviderFactory;
 		_viewDefinitions = viewDefinitions;
+		_builders = new DefaultObjectDefinitionBuilderFactory(this);
 	}
 
 	
@@ -134,6 +139,13 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 			}
 			definitions.remove(definition.id);
 		}
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get builders () : ObjectDefinitionBuilderFactory {
+		return _builders;
 	}
 	
 	/**

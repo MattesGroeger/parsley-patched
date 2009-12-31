@@ -20,7 +20,6 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 
 import flash.errors.IllegalOperationError;
 
@@ -67,8 +66,10 @@ public class ServiceTag implements ObjectDefinitionFactory {
 	 */
 	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
 		if (id == null) id = name;
-		var factory:ObjectDefinitionFactory = new DefaultObjectDefinitionFactory(type, id);
-		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
+		var definition:RootObjectDefinition = registry.builders
+					.forRootDefinition(type)
+					.setId(id)
+					.build();
 		var listener:ServiceLifecycleListener = new ServiceLifecycleListener(this);
 		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, listener.postInit);
 		return definition;
