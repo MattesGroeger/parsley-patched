@@ -1,3 +1,19 @@
+/*
+ * Copyright 2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.spicefactory.parsley.core.registry.builder.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
@@ -12,6 +28,8 @@ import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import flash.utils.getQualifiedClassName;
 
 /**
+ * Abstract base class for ObjectDefinitionBuilders that handles processing of ObjectDefinitionDecorators.
+ * 
  * @author Jens Halm
  */
 public class AbstractObjectDefinitionBuilder {
@@ -25,19 +43,33 @@ public class AbstractObjectDefinitionBuilder {
 	private var _type:ClassInfo;
 	private var _registry:ObjectDefinitionRegistry;
 	
+	/**
+	 * The decorators added to this builder.
+	 */
 	protected var decorators:Array = new Array();
 	
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param type the type of object this definition represents
+	 * @param registry the registry associated with this definition
+	 */
 	function AbstractObjectDefinitionBuilder (type:ClassInfo, registry:ObjectDefinitionRegistry) {
 		_type = type;
 		_registry = registry;
 	}
 
-	
+	/**
+	 * The type to create a definition for.
+	 */
 	protected function get type () : ClassInfo {
 		return _type;
 	}
 	
+	/**
+	 * The registry this builder belongs to.
+	 */
 	protected function get registry () : ObjectDefinitionRegistry {
 		return _registry;
 	}
