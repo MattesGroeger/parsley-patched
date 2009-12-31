@@ -43,10 +43,11 @@ public class DefaultMessageErrorHandler extends AbstractMethodReceiver implement
 	 * @param messageType the type of the message this error handler is interested in
 	 * @param selector an additional selector value to be used to determine matching messages
 	 * @param errorType the type of Error this handler is interested in
+	 * @param order the execution order for this receiver
 	 */
 	function DefaultMessageErrorHandler (provider:ObjectProvider, methodName:String, messageType:Class,
-			selector:* = undefined, errorType:ClassInfo = null) {
-		super(provider, methodName, messageType, selector);
+			selector:* = undefined, errorType:ClassInfo = null, order:int = int.MAX_VALUE) {
+		super(provider, methodName, messageType, selector, order);
 		var params:Array = targetMethod.parameters;
 		if (params.length < 1 || params.length > 2) {
 			throw new ContextError("Target " + targetMethod 

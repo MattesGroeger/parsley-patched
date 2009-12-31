@@ -15,6 +15,9 @@
  */
 
 package org.spicefactory.parsley.core.registry.impl {
+	import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+	import org.spicefactory.parsley.core.registry.definition.impl.SingletonLifecycleListenerRegistry;
+	import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 
@@ -31,23 +34,28 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 	private var _singleton:Boolean;
 	private var _order:int;
 
+	private var _singletonListeners:LifecycleListenerRegistry;
 
 	/**
 	 * Creates a new instance.
 	 * 
 	 * @param type the type to create a definition for
 	 * @param id the id the object should be registered with
+	 * @param registry the registry this definition belongs to
 	 * @param lazy whether the object is lazy initializing
 	 * @param singleton whether the object should be treated as a singleton
 	 * @param order the initialization order for non-lazy singletons
 	 */
-	function DefaultRootObjectDefinition (type:ClassInfo, id:String, 
+	function DefaultRootObjectDefinition (type:ClassInfo, id:String, registry:ObjectDefinitionRegistry,
 			lazy:Boolean = false, singleton:Boolean = true, order:int = int.MAX_VALUE):void {
 		super(type);
 		_id = id;
 		_lazy = lazy;
 		_singleton = singleton;
 		_order = order;
+		if (singleton && !lazy) {
+			_singletonListeners = new SingletonLifecycleListenerRegistry(this, registry);
+		}
 	}
 	
 	
@@ -77,6 +85,13 @@ public class DefaultRootObjectDefinition extends DefaultObjectDefinition impleme
 	 */
 	public function get order () : int {
 		return _order;
+	}
+	
+	/**
+	 * @private
+	 */
+	public override function get objectLifecycle () : LifecycleListenerRegistry {
+		return (_singletonListeners != null) ? _singletonListeners : super.objectLifecycle;
 	}
 	
 	

@@ -27,6 +27,7 @@ public class AbstractMessageReceiver implements MessageReceiver {
 
 	private var _messageType:Class;
 	private var _selector:*;
+	private var _order:int;
 	
 	
 	/**
@@ -34,10 +35,12 @@ public class AbstractMessageReceiver implements MessageReceiver {
 	 * 
 	 * @param messageType the type of the message this receiver is interested in
 	 * @param selector an additional selector value to be used to determine matching messages
+	 * @param order the execution order for this receiver
 	 */
-	function AbstractMessageReceiver (messageType:Class = null, selector:* = undefined) {
+	function AbstractMessageReceiver (messageType:Class = null, selector:* = undefined, order:int = int.MAX_VALUE) {
 		_messageType = (messageType != null) ? messageType : Object;
 		_selector = selector;
+		_order = order;
 	}
 
 
@@ -53,6 +56,13 @@ public class AbstractMessageReceiver implements MessageReceiver {
 	 */
 	public function get selector () : * {
 		return _selector;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get order () : int {
+		return _order;
 	}
 	
 	

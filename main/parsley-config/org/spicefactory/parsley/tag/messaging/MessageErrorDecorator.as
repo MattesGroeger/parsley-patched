@@ -16,12 +16,10 @@
 
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.provider.ObjectProvider;
+import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
-import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultMessageErrorHandler;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.scope.ScopeManager;
 
 [Metadata(name="MessageError", types="method", multiple="true")]
 /**
@@ -30,7 +28,7 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
  * 
  * @author Jens Halm
  */
-public class MessageErrorDecorator extends AbstractStandardReceiverDecorator implements ObjectDefinitionDecorator {
+public class MessageErrorDecorator extends AbstractMessageReceiverDecorator implements ObjectDefinitionDecorator {
 
 	
 	[Target]
@@ -48,19 +46,16 @@ public class MessageErrorDecorator extends AbstractStandardReceiverDecorator imp
 	/**
 	 * @private
 	 */
-	protected override function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
+	protected override function handleProvider (provider:SynchronizedObjectProvider) : void {
 		var errorTypeInfo:ClassInfo = (errorType != null) ? ClassInfo.forClass(errorType, domain) : null;
 		var handler:MessageErrorHandler = 
-				new DefaultMessageErrorHandler(provider, method, type, selector, errorTypeInfo);
-		scopeManager.getScope(scope).messageReceivers.addErrorHandler(handler);
-		return handler;
+				new DefaultMessageErrorHandler(provider, method, type, selector, errorTypeInfo, order);
+		provider.addDestroyHandler(removeHandler, handler);
+		targetScope.messageReceivers.addErrorHandler(handler);
 	}
 	
-	/**
-	 * @private
-	 */
-	protected override function removeReceiver (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
-		scopeManager.getScope(scope).messageReceivers.removeErrorHandler(MessageErrorHandler(receiver));
+	private function removeHandler (handler:MessageErrorHandler) : void {
+		targetScope.messageReceivers.removeErrorHandler(handler);
 	}
 	
 	

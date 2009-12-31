@@ -18,9 +18,11 @@ package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 
 import flash.events.Event;
+import flash.utils.Dictionary;
 
 /**
  * A cached selection of receivers for a particular message type.
@@ -37,6 +39,8 @@ public class MessageReceiverSelection {
 	private var interceptors:MessageReceiverCollection;
 	private var targets:MessageReceiverCollection;
 	private var errorHandlers:MessageReceiverCollection;
+	private var commandObservers:Dictionary;
+	private var filteredObservers:Dictionary = new Dictionary();
 	
 	
 	/**
@@ -46,12 +50,14 @@ public class MessageReceiverSelection {
 	 * @param interceptors the interceptors for this selection
 	 * @param targets the regular targets for this selection
 	 * @param errorHandlers the error handlers for this selection
+	 * @param commandObservers the command observers for this selection
 	 */
-	function MessageReceiverSelection (type:ClassInfo, interceptors:Array, targets:Array, errorHandlers:Array) {
+	function MessageReceiverSelection (type:ClassInfo, interceptors:Array, targets:Array, errorHandlers:Array, commandObservers:Dictionary) {
 		_messageType = type;
 		this.interceptors = getReceivers(interceptors, type);
 		this.targets = getReceivers(targets, type);
 		this.errorHandlers = getReceivers(errorHandlers, type);
+		this.commandObservers = commandObservers;
 		for each (var p:Property in type.getProperties()) {
 			if (p.getMetadata(Selector).length > 0) {
 				if (selectorProperty == null) {
@@ -121,6 +127,27 @@ public class MessageReceiverSelection {
 	 */	
 	public function getErrorHandlers (selectorValue:*) : Array {
 		return errorHandlers.getReceicers(selectorValue);
+	}
+	
+	/**
+	 * Returns all command observers that match for the specified selector value.
+	 * 
+	 * @param selectorValue the value of the selector property
+	 * @param status the status for which to return the observers
+	 * @return all command observers that match for the specified selector value
+	 */	
+	public function getCommandObservers (selectorValue:*, status:CommandStatus) : Array {
+		return getObservers(status).getReceicers(selectorValue);
+	}
+	
+	private function getObservers (status:CommandStatus) : MessageReceiverCollection {
+		var key:String = status.key + "Observer";
+		var observers:MessageReceiverCollection = filteredObservers[key] as MessageReceiverCollection;
+		if (observers == null) {
+			observers = getReceivers(commandObservers[key], _messageType);
+			filteredObservers[key] = observers;
+		}
+		return observers;
 	}
 	
 

@@ -46,6 +46,21 @@ public class MessagingTestBase extends ContextTestBase {
 		assertEquals("Unexpected int property", 9, handlers.intProp);
 	}
 	
+	public function testMessageHandlerOrder () : void {
+		var context:Context = messagingContext;
+		checkState(context);
+		checkObjectIds(context, ["eventSource", "eventSource2"], EventSource);	
+		checkObjectIds(context, ["messageHandlers"], MessageHandlers);	
+		var source:EventSource = context.getObject("eventSource") as EventSource;
+		var handlers:MessageHandlers;
+		if (lazy) handlers = context.getObject("messageHandlers") as MessageHandlers;
+		source.dispatchEvent(new TestEvent(TestEvent.TEST1, "foo1", 7));
+		source.dispatchEvent(new TestEvent(TestEvent.TEST2, "foo2", 9));
+		source.dispatchEvent(new Event("foo"));
+		if (!lazy) handlers = context.getObject("messageHandlers") as MessageHandlers;
+		assertEquals("Unexpected value for order check", "1AT2ATA", handlers.order);
+	}
+
 	public function testMessageBindings () : void {
 		var context:Context = messagingContext;
 		checkState(context);

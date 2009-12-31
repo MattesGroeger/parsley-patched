@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.messaging {
+import org.spicefactory.parsley.core.messaging.command.CommandManager;
+
 import flash.system.ApplicationDomain;
 
 /**
@@ -29,6 +31,11 @@ public interface MessageRouter {
 	 * The registry for all receivers of messages dispatched through this router.
 	 */
 	function get receivers () : MessageReceiverRegistry;
+	
+	/**
+	 * The manager responsible for providing access to all active command executions.
+	 */
+	function get commandManager () : CommandManager;
 	
 	/**
 	 * Dispatches the specified message, processing all interceptors, handlers and bindings that have

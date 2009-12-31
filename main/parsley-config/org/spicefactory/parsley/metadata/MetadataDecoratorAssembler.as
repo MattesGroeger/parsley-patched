@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.metadata {
-	import org.spicefactory.lib.reflect.converter.EnumerationConverter;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Converters;
 import org.spicefactory.lib.reflect.Member;
@@ -23,6 +22,7 @@ import org.spicefactory.lib.reflect.Metadata;
 import org.spicefactory.lib.reflect.MetadataAware;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.lib.reflect.converter.EnumerationConverter;
 import org.spicefactory.parsley.asconfig.metadata.InternalProperty;
 import org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata;
 import org.spicefactory.parsley.core.errors.ContextError;
@@ -40,6 +40,10 @@ import org.spicefactory.parsley.tag.lifecycle.InitMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.ObserveMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.legacy.PostConstructMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.legacy.PreDestroyMethodDecorator;
+import org.spicefactory.parsley.tag.messaging.CommandDecorator;
+import org.spicefactory.parsley.tag.messaging.CommandErrorDecorator;
+import org.spicefactory.parsley.tag.messaging.CommandResultDecorator;
+import org.spicefactory.parsley.tag.messaging.CommandStatusDecorator;
 import org.spicefactory.parsley.tag.messaging.ManagedEventsDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageBindingDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageDispatcherDecorator;
@@ -65,6 +69,44 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 	
 	private static var initialized:Boolean = false;
 	
+	private static const metadataClasses:Array = [
+	
+		InjectConstructorDecorator,
+		InjectPropertyDecorator,
+		InjectMethodDecorator,
+		
+		FactoryMethodDecorator,
+		InitMethodDecorator,
+		DestroyMethodDecorator,
+		ObserveMethodDecorator,
+		AsyncInitDecorator,
+		
+		ManagedEventsDecorator,
+		MessageDispatcherDecorator,
+		MessageHandlerDecorator,
+		MessageBindingDecorator,
+		MessageInterceptorDecorator,
+		MessageErrorDecorator,
+
+		CommandDecorator,
+		CommandResultDecorator,
+		CommandErrorDecorator,
+		CommandStatusDecorator,
+		
+		ResourceBindingDecorator,
+		
+		// 2 deprecated tags:
+		PostConstructMethodDecorator,
+		PreDestroyMethodDecorator,
+
+		Selector,
+		Target,
+		
+		InternalProperty, // TODO - move to ActionScriptContextBuilder
+		ObjectDefinitionMetadata
+		
+	];
+	
 	
 	/**
 	 * Initializes the metadata tag registrations for all builtin metadata tags.
@@ -77,33 +119,9 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 		if (initialized) return;
 		initialized = true;
 		
-		Metadata.registerMetadataClass(InjectConstructorDecorator, domain);
-		Metadata.registerMetadataClass(InjectPropertyDecorator, domain);
-		Metadata.registerMetadataClass(InjectMethodDecorator, domain);
-		Metadata.registerMetadataClass(FactoryMethodDecorator, domain);
-		Metadata.registerMetadataClass(InitMethodDecorator, domain);
-		Metadata.registerMetadataClass(DestroyMethodDecorator, domain);
-		Metadata.registerMetadataClass(ObserveMethodDecorator, domain);
-		Metadata.registerMetadataClass(AsyncInitDecorator, domain);
-		
-		Metadata.registerMetadataClass(ManagedEventsDecorator, domain);
-		Metadata.registerMetadataClass(MessageDispatcherDecorator, domain);
-		Metadata.registerMetadataClass(MessageHandlerDecorator, domain);
-		Metadata.registerMetadataClass(MessageBindingDecorator, domain);
-		Metadata.registerMetadataClass(MessageInterceptorDecorator, domain);
-		Metadata.registerMetadataClass(MessageErrorDecorator, domain);
-		
-		Metadata.registerMetadataClass(ResourceBindingDecorator, domain);
-		
-		// 2 deprecated tags:
-		Metadata.registerMetadataClass(PostConstructMethodDecorator, domain);
-		Metadata.registerMetadataClass(PreDestroyMethodDecorator, domain);
-
-		Metadata.registerMetadataClass(Selector, domain);
-		Metadata.registerMetadataClass(Target, domain);
-		
-		Metadata.registerMetadataClass(InternalProperty, domain); // TODO - move to ActionScriptContextBuilder
-		Metadata.registerMetadataClass(ObjectDefinitionMetadata, domain);
+		for each (var metadataClass:Class in metadataClasses) {
+			Metadata.registerMetadataClass(metadataClass);
+		}
 		
 		Converters.addConverter(ObjectLifecycle, new EnumerationConverter(ClassInfo.forClass(ObjectLifecycle, domain)));
 	}

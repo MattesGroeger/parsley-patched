@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.xml.mapper {
+	import org.spicefactory.parsley.xml.tag.CommandDecoratorTag;
+	import org.spicefactory.parsley.tag.messaging.CommandDecorator;
 import org.spicefactory.lib.reflect.converter.BooleanConverter;
 import org.spicefactory.lib.reflect.converter.ClassConverter;
 import org.spicefactory.lib.reflect.converter.DateConverter;
@@ -29,8 +31,8 @@ import org.spicefactory.lib.xml.mapper.Choice;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.tag.core.ArrayTag;
 import org.spicefactory.parsley.tag.core.ConstructorTag;
-import org.spicefactory.parsley.tag.core.ObjectTag;
 import org.spicefactory.parsley.tag.core.ObjectReferenceTag;
+import org.spicefactory.parsley.tag.core.ObjectTag;
 import org.spicefactory.parsley.tag.core.PropertyTag;
 import org.spicefactory.parsley.tag.core.ViewTag;
 import org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator;
@@ -40,6 +42,9 @@ import org.spicefactory.parsley.tag.lifecycle.InitMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.ObserveMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.legacy.PostConstructMethodDecorator;
 import org.spicefactory.parsley.tag.lifecycle.legacy.PreDestroyMethodDecorator;
+import org.spicefactory.parsley.tag.messaging.CommandErrorDecorator;
+import org.spicefactory.parsley.tag.messaging.CommandResultDecorator;
+import org.spicefactory.parsley.tag.messaging.CommandStatusDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageBindingDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageDispatcherDecorator;
 import org.spicefactory.parsley.tag.messaging.MessageErrorDecorator;
@@ -190,10 +195,14 @@ public class XmlObjectDefinitionMapperFactory {
 		addDecoratorAttributeMapper(PreDestroyMethodDecorator, "pre-destroy");
 		
 		addDecoratorAttributeMapperWithArrayAdapter(MessageHandlerDecoratorTag, "message-handler", "messageProperties");
+		addDecoratorAttributeMapperWithArrayAdapter(CommandDecoratorTag, "command", "messageProperties");
 		addDecoratorAttributeMapper(MessageInterceptorDecorator, "message-interceptor");
 		addDecoratorAttributeMapper(MessageBindingDecorator, "message-binding");
 		addDecoratorAttributeMapper(MessageErrorDecorator, "message-error");
 		addDecoratorAttributeMapper(MessageDispatcherDecorator, "message-dispatcher");
+		addDecoratorAttributeMapper(CommandResultDecorator, "command-result");
+		addDecoratorAttributeMapper(CommandErrorDecorator, "command-error");
+		addDecoratorAttributeMapper(CommandStatusDecorator, "command-status");
 		addDecoratorAttributeMapperWithArrayAdapter(ManagedEventsDecoratorTag, "managed-events", "names");
 
 		addDecoratorAttributeMapper(ResourceBindingDecorator, "resource-binding");

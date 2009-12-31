@@ -16,10 +16,7 @@
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
-import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 /**
@@ -27,7 +24,7 @@ import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
  * 
  * @author Jens Halm
  */
-public class MessageHandler extends AbstractMethodReceiver implements MessageTarget {
+public class MessageHandler extends AbstractMessageHandler implements MessageTarget {
 	
 	
 	/**
@@ -37,48 +34,20 @@ public class MessageHandler extends AbstractMethodReceiver implements MessageTar
 	 * @param methodName the name of the target method that should be invoked
 	 * @param selector an optional selector value to be used for selecting matching message targets
 	 * @param messageType the type of the message or null if it should be autodetected by the parameter of the target method
+	 * @param messageProperties the list of names of properties of the message that should be used as method parameters
+	 * @param order the execution order for this receiver
 	 */
-	function MessageHandler (provider:ObjectProvider, methodName:String, selector:* = undefined, messageType:ClassInfo = null) {
-		super(provider, methodName, getMessageType(provider, methodName, messageType), selector);
+	function MessageHandler (provider:ObjectProvider, methodName:String, selector:* = undefined, 
+			messageType:ClassInfo = null, messageProperties:Array = null, order:int = int.MAX_VALUE) {
+		super(provider, methodName, selector, messageType, messageProperties, order);
 	}
-	
 
-	private function getMessageType (provider:ObjectProvider, methodName:String, 
-			messageType:ClassInfo = null) : Class {
-		var targetMethod:Method = provider.type.getMethod(methodName);
-		if (targetMethod == null) {
-			throw new ContextError("Target instance of type " + provider.type.name 
-					+ " does not contain a method with name " + targetMethod);
-		}
-		var params:Array = targetMethod.parameters;
-		if (params.length > 1) {
-			throw new ContextError("Target " + targetMethod  
-				+ ": At most one parameter allowed for a MessageHandler.");
-		}
-		if (params.length == 1) {
-			var paramType:ClassInfo = Parameter(params[0]).type;
-			if (messageType == null) {
-				return paramType.getClass();
-			}
-			else if (!messageType.isType(paramType.getClass())) {
-				throw new ContextError("Target " + targetMethod
-					+ ": Method parameter of type " + paramType.name
-					+ " is not applicable to message type " + messageType.name);
-			}
-		}
-		else if (messageType == null) {
-			return Object;
-		}			
-		return messageType.getClass();
-	}
-	
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function handleMessage (message:Object) : void {
-		var params:Array = (targetMethod.parameters.length == 1) ? [message] : [];
-		targetMethod.invoke(targetInstance, params);
+		invokeMethod(message);
 	}
 	
 	

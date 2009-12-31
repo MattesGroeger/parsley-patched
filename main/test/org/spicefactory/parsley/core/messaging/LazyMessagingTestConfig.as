@@ -1,4 +1,6 @@
 package org.spicefactory.parsley.core.messaging {
+import org.spicefactory.parsley.core.command.model.CommandExecutors;
+import org.spicefactory.parsley.core.command.model.CommandObservers;
 import org.spicefactory.parsley.core.messaging.model.ErrorHandlersMetadata;
 import org.spicefactory.parsley.core.messaging.model.EventSourceMetadata;
 import org.spicefactory.parsley.core.messaging.model.FaultyMessageHandlersMetadata;
@@ -41,6 +43,17 @@ public class LazyMessagingTestConfig {
 	public function get faultyHandlers () : FaultyMessageHandlersMetadata {
 		return new FaultyMessageHandlersMetadata();
 	}
+	
+	[ObjectDefinition(lazy="true")]
+	public function get commandExecutors () : CommandExecutors {
+		return new CommandExecutors();
+	}
+	
+	[ObjectDefinition(lazy="true")]
+	public function get commandObservers () : CommandObservers {
+		return new CommandObservers();
+	}
+	
 	
 	public function get errorHandlers () : ErrorHandlersMetadata {
 		return new ErrorHandlersMetadata();

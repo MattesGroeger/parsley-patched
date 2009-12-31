@@ -166,6 +166,7 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 }
 }
 
+import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
@@ -185,21 +186,25 @@ import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.lifecycle.impl.DefaultObjectLifecycleManager;
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.messaging.command.CommandFactory;
+import org.spicefactory.parsley.core.messaging.command.CommandFactoryRegistry;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageRouter;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.impl.DefaultViewDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.scope.impl.DefaultScopeManager;
 import org.spicefactory.parsley.core.view.ViewManager;
 import org.spicefactory.parsley.core.view.impl.DefaultViewManager;
-import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.impl.DefaultViewDefinitionRegistry;
 import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
 import flash.system.ApplicationDomain;
+import flash.utils.Dictionary;
+import flash.utils.getQualifiedClassName;
 
 class DefaultContextBuilderFactory implements ContextBuilderFactory {
 	
@@ -291,6 +296,7 @@ class DefaultMessageRouterFactory implements MessageRouterFactory {
 
 	private var _unhandledError:ErrorPolicy;
 	private var _errorHandlers:Array = new Array();
+	private var commandFactories:DefaultCommandFactoryRegistry = new DefaultCommandFactoryRegistry();
 	
 	public function get unhandledError () : ErrorPolicy {
 		return _unhandledError;
@@ -303,11 +309,37 @@ class DefaultMessageRouterFactory implements MessageRouterFactory {
 	public function addErrorHandler (handler:MessageErrorHandler) : void {
 		_errorHandlers.push(handler);
 	}
+	
+	public function addCommandFactory (type:Class, factory:CommandFactory) : void {
+		commandFactories.addCommandFactory(type, factory);
+	}
 
 	public function create () : MessageRouter {
-		return new DefaultMessageRouter(_errorHandlers, unhandledError);
+		return new DefaultMessageRouter(commandFactories, _errorHandlers, unhandledError);
 	}
 	
+	
+}
+
+class DefaultCommandFactoryRegistry implements CommandFactoryRegistry {
+
+	private var factoryMap:Dictionary = new Dictionary();
+
+	public function addCommandFactory (type:Class, factory:CommandFactory) : void {
+		if (factoryMap[type] != undefined) {
+			throw new IllegalArgumentError("Duplicate CommandFactory registration for return type " 
+					+ getQualifiedClassName(type));
+		}
+		factoryMap[type] = factory;
+	}
+
+	public function getCommandFactory (type:Class) : CommandFactory {
+		if (factoryMap[type] == undefined) {
+			throw new IllegalArgumentError("No CommandFactory registered for return type " 
+					+ getQualifiedClassName(type));
+		}
+		return factoryMap[type] as CommandFactory;
+	}
 	
 }
 

@@ -16,13 +16,13 @@
 
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
+import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
+import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.MessageBinding;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.context.provider.ObjectProvider;
-import org.spicefactory.parsley.core.scope.ScopeName;
-import org.spicefactory.parsley.core.scope.ScopeManager;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
 [Metadata(name="MessageBinding", types="property", multiple="true")]
 /**
@@ -36,23 +36,6 @@ public class MessageBindingDecorator extends AbstractMessageReceiverDecorator im
 
 	[Required]
 	/**
-	 * The type of the messages the property wants to bind to.
-	 */
-	public var type:Class;
-
-	/**
-	 * @copy org.spicefactory.parsley.tag.messaging.AbstractStandardReceiverDecorator#selector
-	 */
-	public var selector:*;
-	
-	/**
-	 * The scope this binding wants to be applied to.
-	 * The default is ScopeName.GLOBAL.
-	 */
-	public var scope:String = ScopeName.GLOBAL;
-	
-	[Required]
-	/**
 	 * The name of the property of the message type whose value should be bound to the target property.
 	 */
 	public var messageProperty:String;
@@ -63,21 +46,28 @@ public class MessageBindingDecorator extends AbstractMessageReceiverDecorator im
 	 */
 	public var targetProperty:String;
 	
+	
 	/**
 	 * @private
 	 */
-	protected override function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
-		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
-		var target:MessageTarget = new MessageBinding(provider,	targetProperty, messageType, messageProperty, selector);
-		scopeManager.getScope(scope).messageReceivers.addTarget(target);
-		return target;
+	protected override function validate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : void {
+		if (type == null) {
+			throw new ContextError("type attribute must be specified for MessageBindings");
+		}
 	}
 	
 	/**
 	 * @private
 	 */
-	protected override function removeReceiver (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
-		scopeManager.getScope(scope).messageReceivers.removeTarget(MessageTarget(receiver));
+	protected override function handleProvider (provider:SynchronizedObjectProvider) : void {
+		var messageType:ClassInfo = ClassInfo.forClass(type, domain);
+		var target:MessageTarget = new MessageBinding(provider,	targetProperty, messageType, messageProperty, selector, order);
+		provider.addDestroyHandler(removeTarget, target);
+		targetScope.messageReceivers.addTarget(target);		
+	}
+	
+	private function removeTarget (target:MessageTarget) : void {
+		targetScope.messageReceivers.removeTarget(target);
 	}
 
 	

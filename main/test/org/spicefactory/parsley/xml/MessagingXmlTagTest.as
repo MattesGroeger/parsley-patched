@@ -38,10 +38,10 @@ public class MessagingXmlTagTest extends MessagingTestBase {
 		</object> 
 		
 		<object id="messageHandlers" type="org.spicefactory.parsley.core.messaging.model.MessageHandlers" lazy="true">
-			<message-handler method="allTestEvents" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
-			<message-handler method="allEvents" type="flash.events.Event"/>
-			<message-handler method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
-			<message-handler method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
+			<message-handler method="allTestEvents" type="org.spicefactory.parsley.core.messaging.TestEvent" order="3"/>
+			<message-handler method="allEvents" type="flash.events.Event" order="2"/>
+			<message-handler method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestEvent" order="1"/>
+			<message-handler method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent" order="1"/>
 			<message-handler method="mappedProperties" message-properties="stringProp,intProp" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
 		</object>
 		

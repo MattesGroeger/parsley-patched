@@ -16,14 +16,12 @@
 
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.provider.ObjectProvider;
+import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.MessageHandler;
-import org.spicefactory.parsley.core.messaging.receiver.impl.MessagePropertyHandler;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.scope.ScopeManager;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
 [Metadata(name="MessageHandler", types="method", multiple="true")]
 /**
@@ -32,7 +30,7 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
  * 
  * @author Jens Halm
  */
-public class MessageHandlerDecorator extends AbstractStandardReceiverDecorator implements ObjectDefinitionDecorator {
+public class MessageHandlerDecorator extends AbstractMessageReceiverDecorator {
 
 
 	/**
@@ -50,27 +48,24 @@ public class MessageHandlerDecorator extends AbstractStandardReceiverDecorator i
 	/**
 	 * @private
 	 */
-	protected override function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
+	protected override function validate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : void {
 		if (messageProperties != null && type == null) {
 			throw new ContextError("Message type must be specified if messageProperties attribute is used");
 		}
-		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
-		var target:MessageTarget;
-		if (messageProperties != null) {
-			target = new MessagePropertyHandler(provider, method, messageType, messageProperties, selector);
-		}
-		else {
-			target = new MessageHandler(provider, method, selector, messageType);
-		}
-		scopeManager.getScope(scope).messageReceivers.addTarget(target);		
-		return target;
 	}
 	
 	/**
 	 * @private
 	 */
-	protected override function removeReceiver (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
-		scopeManager.getScope(scope).messageReceivers.removeTarget(MessageTarget(receiver));
+	protected override function handleProvider (provider:SynchronizedObjectProvider) : void {
+		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
+		var target:MessageTarget = new MessageHandler(provider, method, selector, messageType, messageProperties, order);
+		provider.addDestroyHandler(removeTarget, target);
+		targetScope.messageReceivers.addTarget(target);		
+	}
+	
+	private function removeTarget (target:MessageTarget) : void {
+		targetScope.messageReceivers.removeTarget(target);
 	}
 	
 	

@@ -2,6 +2,7 @@ package org.spicefactory.parsley.test {
 import flexunit.framework.TestSuite;
 
 import org.spicefactory.parsley.core.builder.ActionScriptObjectDefinitionBuilderTest;
+import org.spicefactory.parsley.core.command.CommandMetadataTagTest;
 import org.spicefactory.parsley.core.decorator.asyncinit.AsyncInitMetadataTagTest;
 import org.spicefactory.parsley.core.decorator.factory.FactoryMetadataTagTest;
 import org.spicefactory.parsley.core.decorator.injection.InjectMetadataTagTest;
@@ -19,6 +20,7 @@ import org.spicefactory.parsley.flash.logging.FlashLoggingXmlTagTest;
 import org.spicefactory.parsley.flash.resources.FlashResourcesTest;
 import org.spicefactory.parsley.flex.logging.FlexLoggingXmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.asyncinit.AsyncInitMxmlTagTest;
+import org.spicefactory.parsley.flex.mxmlconfig.command.CommandMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.core.CoreMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.factory.FactoryMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.lifecycle.LifecycleMxmlTagTest;
@@ -27,6 +29,7 @@ import org.spicefactory.parsley.flex.mxmlconfig.observer.ObserveMxmlTagTest;
 import org.spicefactory.parsley.pimento.PimentoMxmlTagTest;
 import org.spicefactory.parsley.pimento.PimentoXmlTagTest;
 import org.spicefactory.parsley.xml.AsyncInitXmlTagTest;
+import org.spicefactory.parsley.xml.CommandXmlTagTest;
 import org.spicefactory.parsley.xml.CoreXmlTagTest;
 import org.spicefactory.parsley.xml.ExternalXmlConfigTest;
 import org.spicefactory.parsley.xml.FactoryXmlTagTest;
@@ -70,6 +73,10 @@ public class ParsleyTestSuite {
 		suite.addTestSuite(MessagingMxmlTagTest);
 		suite.addTestSuite(MessagingXmlTagTest);
 		suite.addTestSuite(MessageProxyTest);
+
+		suite.addTestSuite(CommandMetadataTagTest);
+		suite.addTestSuite(CommandMxmlTagTest);
+		suite.addTestSuite(CommandXmlTagTest);
 
 		suite.addTestSuite(ScopeTest);
 

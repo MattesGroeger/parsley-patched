@@ -17,6 +17,8 @@ public class MessageHandlers {
 	private var _stringProp:String;
 	private var _intProp:int;
 	
+	public var order:String = "";
+	
 	
 	public function get test1Count () : int {
 		return _test1Count;
@@ -41,6 +43,7 @@ public class MessageHandlers {
 		
 	
 	public function allTestEvents (event:TestEvent) : void {
+		order += "T";
 		if (event.type == TestEvent.TEST1) {
 			_test1Count++;
 		}
@@ -53,10 +56,12 @@ public class MessageHandlers {
 	}
 	
 	public function allEvents (event:Event) : void {
+		order += "A";
 		_genericEventCount++;
 	}
 	
 	public function event1 (event:TestEvent) : void {
+		order += "1";
 		if (event.type == TestEvent.TEST1) {
 			_test1Count++;
 		}
@@ -66,6 +71,7 @@ public class MessageHandlers {
 	}
 	
 	public function event2 (event:TestEvent) : void {
+		order += "2";
 		if (event.type == TestEvent.TEST2) {
 			_test2Count++;
 		}

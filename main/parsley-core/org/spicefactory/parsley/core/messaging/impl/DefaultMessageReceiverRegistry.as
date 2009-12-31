@@ -18,6 +18,9 @@ package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.ArrayUtil;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
+import org.spicefactory.parsley.core.messaging.command.CommandStatus;
+import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
+import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
@@ -36,8 +39,10 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 	private var targets:Array = new Array();
 	private var interceptors:Array = new Array();
 	private var errorHandlers:Array = new Array();
+	private var commandObservers:Dictionary = new Dictionary();
 	
 	private var selectionCache:Dictionary = new Dictionary();
+	
 	
 	
 	/**
@@ -50,7 +55,7 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 		var receiverSelection:MessageReceiverSelection =
 				selectionCache[messageType.getClass()] as MessageReceiverSelection;
 		if (receiverSelection == null) {
-			receiverSelection = new MessageReceiverSelection(messageType, interceptors, targets, errorHandlers);
+			receiverSelection = new MessageReceiverSelection(messageType, interceptors, targets, errorHandlers, commandObservers);
 			selectionCache[messageType.getClass()] = receiverSelection;
 		}
 		return receiverSelection;
@@ -108,6 +113,50 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function addCommand (command:CommandTarget) : void {
+		clearCache();
+		targets.push(command);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function removeCommand (command:CommandTarget) : void {
+		if (ArrayUtil.remove(targets, command)) {
+			clearCache();
+		}
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function addCommandObserver (observer:CommandObserver) : void {
+		clearCache();
+		getObservers(observer.status).push(observer);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function removeCommandObserver (observer:CommandObserver) : void {
+		if (ArrayUtil.remove(getObservers(observer.status), observer)) {
+			clearCache();
+		}
+	}
+	
+	private function getObservers (status:CommandStatus) : Array {
+		var key:String = status.key + "Observer";
+		var observers:Array = commandObservers[key];
+		if (observers == null) {
+			observers = new Array();
+			commandObservers[key] = observers;
+		}
+		return observers;
+	}
+	
 	private function clearCache () : void {
 		selectionCache = new Dictionary();
 	}

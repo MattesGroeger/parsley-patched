@@ -41,10 +41,11 @@ public class MessageBinding extends AbstractTargetInstanceReceiver implements Me
 	 * @param messageType the type of the message
 	 * @param messagePropertyName the name of the property of the message that should be bound to the target property
 	 * @param selector an optional selector value to be used for selecting matching message targets
+	 * @param order the execution order for this receiver
 	 */
 	function MessageBinding (provider:ObjectProvider, targetPropertyName:String, 
-			messageType:ClassInfo, messagePropertyName:String, selector:* = undefined) {
-		super(provider, messageType.getClass(), selector);
+			messageType:ClassInfo, messagePropertyName:String, selector:* = undefined, order:int = int.MAX_VALUE) {
+		super(provider, messageType.getClass(), selector, order);
 		targetProperty = targetType.getProperty(targetPropertyName);
 		if (targetProperty == null) {
 			throw new ContextError("Target type " + targetType.name 

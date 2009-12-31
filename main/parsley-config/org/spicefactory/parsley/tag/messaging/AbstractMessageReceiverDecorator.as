@@ -15,132 +15,38 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.lib.errors.AbstractMethodError;
-import org.spicefactory.lib.errors.IllegalArgumentError;
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.provider.ObjectProvider;
-import org.spicefactory.parsley.core.context.provider.Provider;
-import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
-import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.scope.ScopeManager;
-import org.spicefactory.parsley.tag.core.NestedTag;
-
-import flash.system.ApplicationDomain;
-import flash.utils.Dictionary;
+import org.spicefactory.parsley.tag.lifecycle.AbstractSynchronizedProviderDecorator;
 
 /**
- * Abstract base class for decorators used for message receivers.
- * When creating tags that support all the standard receiver tag attributes 
- * (type, selector, scope), it is recommended to extend AbstractStandardReceiverDecorator
- * instead since that class already contains these three properties.
+ * Abstract base class for decorators used for message receivers that offer the attributes type, selector and order.
  * 
  * <p>It is recommended that subclasses simply override the (pseudo-)abstract methods
- * <code>createReceiver</code> and <code>removeReceiver</code> instead of implementing
+ * <code>handleProvider</code> and (optionally) <code>validate</code> instead of implementing
  * the <code>decorate</code> method itself, since this base class already does some
- * of the heavier lifting.</p>
+ * of the plumbing.</p>
  * 
  * @author Jens Halm
  */
-public class AbstractMessageReceiverDecorator implements NestedTag {
-	
-	
-	private var _domain:ApplicationDomain;	
-	
-	private var receivers:Dictionary = new Dictionary();
-	private var singletonReceiver:MessageReceiver;
+public class AbstractMessageReceiverDecorator extends AbstractSynchronizedProviderDecorator {
 	
 
 	/**
-	 * The ApplicationDomain associated with the registry this decorator belongs to.
+	 * The type of the messages the receiver wants to handle.
 	 */
-	protected function get domain () : ApplicationDomain {
-		return _domain;		
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		_domain = registry.domain;
-		if (definition is RootObjectDefinition) {
-			var rootDef:RootObjectDefinition = RootObjectDefinition(definition);
-			if (rootDef.singleton && !rootDef.lazy) {
-				/* 
-				 * For non-lazy singletons we must register a proxy so that a matching message
-				 * may trigger instance creation. Otherwise the receiver may miss a message
-				 * just because of the initialization order. 
-				 */
-				var provider:ObjectProvider = registry.createObjectProvider(rootDef.type.getClass(), rootDef.id);
-				singletonReceiver = createReceiver(provider, registry.scopeManager);
-			}
-		} 
-		if (singletonReceiver == null) {
-			/*
-			 * For all other use cases we wait until the object is instantiated before
-			 * registering it as a message receiver.
-			 */
-			definition.objectLifecycle.addListener(ObjectLifecycle.PRE_INIT, preInit);
-		}
-		definition.objectLifecycle.addListener(ObjectLifecycle.POST_DESTROY, postDestroy);
-		return definition;
-	}
-
-	/*
-	 * Executed only for objects which are not non-lazy singletons.
-	 */
-	private function preInit (instance:Object, context:Context) : void {
-		var receiver:MessageReceiver = createReceiver(Provider.forInstance(instance, domain), context.scopeManager);
-		if (receivers[instance] != undefined) {
-			throw new IllegalArgumentError("Attempt to add more than one receiver for the same instance: " + instance);
-		}
-		receivers[instance] = receiver;
-	}
-	
-	/*
-	 * Executed for all objects.
-	 */
-	private function postDestroy (instance:Object, context:Context) : void {
-		if (singletonReceiver != null) {
-			removeReceiver(singletonReceiver, context.scopeManager);
-		}
-		else {
-			if (receivers[instance] == undefined) {
-				throw new IllegalArgumentError("No MesssageTarget was added for the specified instance: " + instance);
-			}
-			removeReceiver(receivers[instance] as MessageReceiver, context.scopeManager);
-			delete receivers[instance];
-		}
-	}
-
+	public var type:Class;
 
 	/**
-	 * Creates a message receiver for the specified provider and scopeManager and registers it
-	 * in the designated scope.
-	 * 
-	 * <p>This is an abstract method. When it gets invoked for implementations in subclasses
-	 * some of the heavier lifting has already been performed. The specified provider for example
-	 * may either be a simple wrapper around an existing target instance or a proxy where the actual
-	 * target instance is not created until a matching message is dispatched. Implementations do not have
-	 * to take care of these details.</p>
-	 * 
-	 * @param provider the provider for the actual target instance handling the message
-	 * @param scopeManager the manager for all scopes associated with the Context the target instance belongs to
+	 * An optional selector value to be used in addition to selecting messages by type.
+	 * Will be checked against the value of the property in the message marked with <code>[Selector]</code>
+	 * or against the event type if the message is an event and does not have a selector property specified explicitly.
 	 */
-	protected function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
-		throw new AbstractMethodError();
-	}
+	public var selector:*;
 	
 	/**
-	 * Removes the registration of the specified receiver from the corresponding scope.
-	 * 
-	 * <p>This is an abstract method to be implemented by subclasses.</p>
+	 * The execution order for this receiver. Will be processed in ascending order. 
+	 * The default is <code>int.MAX_VALUE</code>.</p>
 	 */
-	protected function removeReceiver (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
-		throw new AbstractMethodError();
-	}
+	public var order:int = int.MAX_VALUE;
 	
 	
 }

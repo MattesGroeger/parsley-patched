@@ -18,7 +18,6 @@ package org.spicefactory.parsley.core.messaging.receiver {
 
 /**
  * Base interface for all types of message receivers a MessageRouter handles.
- * Subinterfaces are MessageTarget, MessageInterceptor and MessageErrorHandler.
  * 
  * @author Jens Halm
  */
@@ -34,6 +33,13 @@ public interface MessageReceiver {
 	 * An optional selector value to be used for selecting matching messages.
 	 */
 	function get selector () : *;
+	
+	/**
+	 * The execution order for this receiver.
+	 * 
+	 * <p>Will be processed in ascending order. The default is <code>int.MAX_VALUE</code>.</p>
+	 */
+	function get order () : int;
 	
 	
 }

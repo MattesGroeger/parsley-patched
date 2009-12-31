@@ -25,6 +25,19 @@ import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 public interface LifecycleListenerRegistry {
 	
 	/**
+	 * Adds a handler to be invoked when a new provider is available for an instance
+	 * created from the associated definition. The timing for this method is different than
+	 * for simple lifecycle listeners. It takes into account subtle synchronization issues
+	 * for singletons created upon container initialization. This method should be used
+	 * for all configuration tasks that require an ObjectProvider, like registering
+	 * message receivers or lifecycle observers. 
+	 * 
+	 * <p>The specified handler function must accept a single parameter of type
+	 * <code>SynchronizedObjectProvider</code>.</p>
+	 */
+	function synchronizeProvider (handler:Function) : LifecycleListenerRegistry;
+	
+	/**
 	 * Adds a lifecycle listener to this registry.
 	 * The function must have two parameters, the first for the instance itself and
 	 * the second the Context the instance belongs to.

@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.scope {
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
+import org.spicefactory.parsley.core.messaging.command.CommandManager;
 
 /**
  * Represents a single scope.
@@ -39,6 +40,11 @@ public interface Scope {
 	 * The registry for receivers of application messages dispatched through this scope.
 	 */
 	function get messageReceivers () : MessageReceiverRegistry;
+	
+	/**
+	 * The manager for active asynchronous commands in this scope.
+	 */
+	function get commandManager () : CommandManager;
 	
 	/**
 	 * The registry for listeners that listen to lifecycle events of objects within this scope.

@@ -9,22 +9,22 @@ import flash.events.Event;
 public class MessageHandlersMetadata extends MessageHandlers {
 	
 	
-	[MessageHandler]
+	[MessageHandler(order="3")]
 	public override function allTestEvents (event:TestEvent) : void {
 		super.allTestEvents(event);
 	}
 	
-	[MessageHandler]
+	[MessageHandler(order="2")]
 	public override function allEvents (event:Event) : void {
 		super.allEvents(event);
 	}
 	
-	[MessageHandler(selector="test1")]
+	[MessageHandler(selector="test1", order="1")]
 	public override function event1 (event:TestEvent) : void {
 		super.event1(event);
 	}
 	
-	[MessageHandler(selector="test2")]
+	[MessageHandler(selector="test2", order="1")]
 	public override function event2 (event:TestEvent) : void {
 		super.event2(event);
 	}

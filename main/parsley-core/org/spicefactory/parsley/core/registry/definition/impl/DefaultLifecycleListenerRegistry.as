@@ -15,7 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.registry.definition.impl {
-	import org.spicefactory.lib.util.ArrayUtil;
+import org.spicefactory.lib.util.ArrayUtil;
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
+import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
@@ -31,6 +34,8 @@ public class DefaultLifecycleListenerRegistry extends AbstractRegistry implement
 
 
 	private var listeners:Dictionary = new Dictionary();
+	private var providers:Dictionary = new Dictionary();
+	private var providerHandlers:Array = new Array();
 
 
 	/**
@@ -42,6 +47,75 @@ public class DefaultLifecycleListenerRegistry extends AbstractRegistry implement
 		super(def);
 	}
 
+
+	/**
+	 * @inheritDoc
+	 */
+	public function synchronizeProvider (handler:Function) : LifecycleListenerRegistry {
+		checkState();
+		if (providerHandlers.length == 0) {
+			addListener(ObjectLifecycle.PRE_INIT, createProvider);
+			addListener(ObjectLifecycle.POST_DESTROY, destroyProvider);
+		}
+		addProviderHandler(handler);
+		return this;
+	}
+	
+	private function createProvider (instance:Object, context:Context) : void {
+		if (providerHandlers.length == 0) return;
+		var provider:SynchronizedObjectProvider = wrapProvider(new Provider(instance, definition));
+		providers[instance] = provider;
+		invokeProviderHandlers(provider);
+	}
+
+	private function destroyProvider (instance:Object, context:Context) : void {
+		if (providers[instance] != undefined) {
+			var provider:SynchronizedProvider = SynchronizedProvider(providers[instance]);
+			invokeDestroyHandlers(provider);
+		}
+		delete providers[instance];
+	}
+	
+	/**
+	 * Adds a handler that wants to be invoked whenever a new ObjectProvider becomes available,
+	 * that represent an instance created from the definition this registry belongs to.
+	 * 
+	 * @param handler the handler to invoke for each new ObjectProvider
+	 */
+	protected function addProviderHandler (handler:Function) : void {
+		providerHandlers.push(handler);
+	}
+	
+	/**
+	 * Invokes all handlers that were added to this registry and passes the specified
+	 * provider to the handler.
+	 * 
+	 * @param provider the provider to pass to all handlers
+	 */
+	protected function invokeProviderHandlers (provider:SynchronizedObjectProvider) : void {
+		for each (var handler:Function in providerHandlers) {
+			handler(provider);
+		}
+	}
+	
+	/**
+	 * Invokes all destroy handlers for the specified provider.
+	 * 
+	 * @param provider the provider to invoke all destroy handlers for
+	 */
+	protected function invokeDestroyHandlers (provider:SynchronizedObjectProvider) : void {
+		SynchronizedProvider(provider).invokeDestroyHandlers();
+	}
+	
+	/**
+	 * Wraps the specified regular ObjectProvider in a synchronized provider.
+	 * 
+	 * @param provider the provider to wrap
+	 * @return a synchronized provider that wraps the specified regular one
+	 */
+	protected function wrapProvider (provider:ObjectProvider) : SynchronizedObjectProvider {
+		return new SynchronizedProvider(provider);
+	}
 
 	/**
 	 * @inheritDoc
@@ -81,4 +155,58 @@ public class DefaultLifecycleListenerRegistry extends AbstractRegistry implement
 
 }
 }
+
+import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.util.Delegate;
+import org.spicefactory.lib.util.DelegateChain;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
+import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
+
+class Provider implements ObjectProvider {
+
+	private var _instance:Object;
+	private var definition:ObjectDefinition;
+
+	function Provider (instance:Object, definition:ObjectDefinition) {
+		_instance = instance;
+		this.definition = definition;
+	}
+
+	public function get instance ():Object {
+		return _instance;
+	}
+	
+	public function get type ():ClassInfo {
+		return definition.type;
+	}
+	
+}
+
+class SynchronizedProvider implements SynchronizedObjectProvider {
+
+	private var delegate:ObjectProvider;
+	private var destroyHandlers:DelegateChain = new DelegateChain();
+
+	function SynchronizedProvider (delegate:ObjectProvider) {
+		this.delegate = delegate;
+	}
+
+	public function get instance ():Object {
+		return delegate.instance;
+	}
+	
+	public function get type ():ClassInfo {
+		return delegate.type;
+	}
+	
+	public function addDestroyHandler (handler:Function, ...params:*) : void {
+		destroyHandlers.addDelegate(new Delegate(handler, params));
+	}
+	
+	public function invokeDestroyHandlers () : void {
+		destroyHandlers.invoke();
+	}
+}
+
 

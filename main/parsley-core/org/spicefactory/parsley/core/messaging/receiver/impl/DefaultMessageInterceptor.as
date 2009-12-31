@@ -37,10 +37,11 @@ public class DefaultMessageInterceptor extends AbstractMethodReceiver implements
 	 * @param methodName the name of the interceptor method
 	 * @param messageType the type of the message this interceptor is interested in
 	 * @param selector an additional selector value to be used to determine matching messages
+	 * @param order the execution order for this receiver
 	 */	
 	function DefaultMessageInterceptor (provider:ObjectProvider, methodName:String, messageType:Class,
-			selector:* = undefined) {
-		super(provider, methodName, messageType, selector);
+			selector:* = undefined, order:int = int.MAX_VALUE) {
+		super(provider, methodName, messageType, selector, order);
 		var params:Array = targetMethod.parameters;
 		if (params.length != 1 || Parameter(params[0]).type.getClass() != MessageProcessor) {
 			throw new ContextError("Target " + targetMethod 

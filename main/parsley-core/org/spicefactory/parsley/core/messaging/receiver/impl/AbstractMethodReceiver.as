@@ -15,8 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
-	import org.spicefactory.parsley.core.context.provider.ObjectProvider;
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.lib.reflect.Parameter;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
 
 /**
@@ -37,10 +39,11 @@ public class AbstractMethodReceiver extends AbstractTargetInstanceReceiver {
 	 * @param methodName the name of the method to invoke for matching messages
 	 * @param messageType the type of the message this receiver is interested in
 	 * @param selector an additional selector value to be used to determine matching messages
+	 * @param order the execution order for this receiver
 	 */
-	function AbstractMethodReceiver (provider:ObjectProvider, methodName:String, 
-			messageType:Class = null, selector:* = undefined) {
-		super(provider, messageType, selector);
+	function AbstractMethodReceiver (provider:ObjectProvider, methodName:String,  
+			messageType:Class = null, selector:* = undefined, order:int = int.MAX_VALUE) {
+		super(provider, messageType, selector, order);
 		_targetMethod = targetType.getMethod(methodName);
 		if (_targetMethod == null) {
 			throw new ContextError("Target instance of type " + targetType.name 
@@ -53,6 +56,30 @@ public class AbstractMethodReceiver extends AbstractTargetInstanceReceiver {
 	 */
 	protected function get targetMethod () : Method {
 		return _targetMethod;
+	}
+	
+	/**
+	 * Returns the Class to use as the message type.
+	 * When the explicit type is set, this method will validate if it matches the target parameter of the method
+	 * (subtypes are allowed). If omitted the message type will be solely determined by the parameter type.
+	 * 
+	 * @param method the target method
+	 * @param paramIndex the index of the parameter that expects the dispatched message
+	 * @param explicitType the message type explicitly set for this receiver
+	 */
+	protected function getMessageTypeFromParameter (method:Method, paramIndex:uint, explicitType:ClassInfo = null) : Class {
+		var param:Parameter = method.parameters[paramIndex];
+		if (explicitType == null) {
+			return param.type.getClass();
+		}
+		else if (!explicitType.isType(param.type.getClass())) {
+			throw new ContextError("Target " + method
+				+ ": Method parameter of type " + param.type.name
+				+ " is not applicable to message type " + explicitType.name);
+		}
+		else {
+			return explicitType.getClass();
+		}
 	}
 	
 	

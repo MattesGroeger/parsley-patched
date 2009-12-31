@@ -15,12 +15,10 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.parsley.core.context.provider.ObjectProvider;
+import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
 import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
-import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultMessageInterceptor;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.scope.ScopeManager;
 
 [Metadata(name="MessageInterceptor", types="method", multiple="true")]
 /**
@@ -29,7 +27,7 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
  * 
  * @author Jens Halm
  */
-public class MessageInterceptorDecorator extends AbstractStandardReceiverDecorator implements ObjectDefinitionDecorator {
+public class MessageInterceptorDecorator extends AbstractMessageReceiverDecorator implements ObjectDefinitionDecorator {
 
 
 	[Target]
@@ -41,17 +39,14 @@ public class MessageInterceptorDecorator extends AbstractStandardReceiverDecorat
 	/**
 	 * @private
 	 */
-	protected override function createReceiver (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
-		var ic:MessageInterceptor = new DefaultMessageInterceptor(provider, method, type, selector);
-		scopeManager.getScope(scope).messageReceivers.addInterceptor(ic);
-		return ic;
+	protected override function handleProvider (provider:SynchronizedObjectProvider) : void {
+		var interceptor:MessageInterceptor = new DefaultMessageInterceptor(provider, method, type, selector, order);
+		provider.addDestroyHandler(removeInterceptor, interceptor);
+		targetScope.messageReceivers.addInterceptor(interceptor);
 	}
 	
-	/**
-	 * @private
-	 */
-	protected override function removeReceiver (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
-		scopeManager.getScope(scope).messageReceivers.removeInterceptor(MessageInterceptor(receiver));
+	private function removeInterceptor (interceptor:MessageInterceptor) : void {
+		targetScope.messageReceivers.removeInterceptor(interceptor);
 	}
 	
 	

@@ -15,20 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.lifecycle {
-import org.spicefactory.lib.errors.IllegalArgumentError;
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.provider.ObjectProvider;
-import org.spicefactory.parsley.core.context.provider.Provider;
+import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.scope.Scope;
-import org.spicefactory.parsley.core.scope.ScopeName;
-import org.spicefactory.parsley.tag.core.NestedTag;
-
-import flash.utils.Dictionary;
 
 [Metadata(name="Observe", types="method", multiple="true")]
 /**
@@ -37,7 +25,7 @@ import flash.utils.Dictionary;
  * 
  * @author Jens Halm
  */
-public class ObserveMethodDecorator implements ObjectDefinitionDecorator, NestedTag {
+public class ObserveMethodDecorator extends AbstractSynchronizedProviderDecorator {
 
 
 	[Target]
@@ -46,16 +34,10 @@ public class ObserveMethodDecorator implements ObjectDefinitionDecorator, Nested
 	 */
 	public var method:String;
 
-
 	/**
 	 * The object lifecycle phase to listen for. Default is postInit.
 	 */
 	public var phase:ObjectLifecycle = ObjectLifecycle.POST_INIT;
-	
-	/**
-	 * The scope in which to listen for lifecycle events.
-	 */
-	public var scope:String = ScopeName.GLOBAL;
 	
 	/**
 	 * The (optional) id of the object to observe.
@@ -63,66 +45,16 @@ public class ObserveMethodDecorator implements ObjectDefinitionDecorator, Nested
 	public var objectId:String;
 	
 
-	private var providers:Dictionary = new Dictionary();
-	private var singletonProvider:ObjectProvider;
-	
-	
 	/**
-	 * @inheritDoc
+	 * @private
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		var targetScope:Scope = registry.scopeManager.getScope(scope);
-		if (definition is RootObjectDefinition) {
-			var rootDef:RootObjectDefinition = RootObjectDefinition(definition);
-			if (rootDef.singleton && !rootDef.lazy) {
-				/* 
-				 * For non-lazy singletons we must register a proxy so that a matching message
-				 * may trigger instance creation. Otherwise the receiver may miss a message
-				 * just because of the initialization order. 
-				 */
-				singletonProvider = registry.createObjectProvider(rootDef.type.getClass(), rootDef.id);
-				targetScope.objectLifecycle.addProvider(singletonProvider, method, phase, objectId);
-			}
-		} 
-		if (!singletonProvider) {
-			/*
-			 * For all other use cases we wait until the object is instantiated before
-			 * registering it as a message receiver.
-			 */
-			definition.objectLifecycle.addListener(ObjectLifecycle.PRE_INIT, preInit);
-		}
-		definition.objectLifecycle.addListener(ObjectLifecycle.POST_DESTROY, postDestroy);
-		return definition;
+	protected override function handleProvider (provider:SynchronizedObjectProvider) : void {
+		provider.addDestroyHandler(removeObserver, provider);
+		targetScope.objectLifecycle.addProvider(provider, method, phase, objectId);
 	}
 	
-	/*
-	 * Executed only for objects which are not non-lazy singletons.
-	 */
-	private function preInit (instance:Object, context:Context) : void {
-		var provider:ObjectProvider = Provider.forInstance(instance);
-		if (providers[instance] != undefined) {
-			throw new IllegalArgumentError("Attempt to add more than one observer for the same instance: " + instance);
-		}
-		providers[instance] = provider;
-		var targetScope:Scope = context.scopeManager.getScope(scope);
-		targetScope.objectLifecycle.addProvider(singletonProvider, method, phase, objectId);
-	}
-	
-	/*
-	 * Executed for all objects.
-	 */
-	private function postDestroy (instance:Object, context:Context) : void {
-		var targetScope:Scope = context.scopeManager.getScope(scope);
-		if (singletonProvider != null) {
-			targetScope.objectLifecycle.removeProvider(singletonProvider, method, phase, objectId);
-		}
-		else {
-			if (providers[instance] == undefined) {
-				throw new IllegalArgumentError("No observer was added for the specified instance: " + instance);
-			}
-			targetScope.objectLifecycle.removeProvider(providers[instance] as ObjectProvider, method, phase, objectId);
-			delete providers[instance];
-		}
+	private function removeObserver (provider:SynchronizedObjectProvider) : void {
+		targetScope.objectLifecycle.removeProvider(provider, method, phase, objectId);
 	}
 	
 	

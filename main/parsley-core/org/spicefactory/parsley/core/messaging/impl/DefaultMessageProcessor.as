@@ -20,8 +20,13 @@ import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
+import org.spicefactory.parsley.core.messaging.command.Command;
+import org.spicefactory.parsley.core.messaging.command.CommandFactory;
+import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
+import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
+import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 /**
@@ -38,32 +43,36 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	private var _message:Object;
 	
 	private var messageType:ClassInfo;
-	private var selector:*;
-	private var receivers:DefaultMessageReceiverRegistry;
+	private var explicitSelector:*;
+	private var actualSelector:*;
 	
+	private var selection:MessageReceiverSelection;
 	private var remainingProcessors:Array;
 	private var currentProcessor:Processor;
 	private var errorHandlers:Array;
 	private var currentError:Error;
-	private var unhandledError:ErrorPolicy;
+
+	private var env:MessagingEnvironment;
 	
+	private var command:Command;
 	
+
 	/**
 	 * Creates a new instance.
 	 * 
 	 * @param message the message to process
 	 * @param messageType the type of the message
 	 * @param selector the selector to use (will be extracted from the message itself if it is undefined)
-	 * @param receivers the registry to obtain the matching receivers from
-	 * @param unhandledError policy for errors no error handler is registered for
+	 * @param env facade for the environment this processor operates in
+	 * @param command the command in case this processor handles command observers
 	 */
 	function DefaultMessageProcessor (message:Object, messageType:ClassInfo, selector:*, 
-			receivers:DefaultMessageReceiverRegistry, unhandledError:ErrorPolicy) {
+			env:MessagingEnvironment, command:Command = null) {
 		_message = message;
 		this.messageType = messageType;
-		this.selector = selector;
-		this.receivers = receivers;
-		this.unhandledError = unhandledError;
+		this.explicitSelector = selector;
+		this.env = env;
+		this.command = command;
 		rewind();
 	}
 	
@@ -75,7 +84,10 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		var async:Boolean;
 		do {
 			while (!currentProcessor.hasNext()) {
-				if (remainingProcessors.length == 0) return;
+				if (remainingProcessors.length == 0) {
+					currentProcessor = null;
+					return;
+				}
 				currentProcessor = remainingProcessors.shift() as Processor;
 			}
 			async = currentProcessor.async;
@@ -102,10 +114,10 @@ public class DefaultMessageProcessor implements MessageProcessor {
 						currentProcessor = new Processor(handlers, invokeErrorHandler, true, false);
 					}
 					else {
-						if (unhandledError == ErrorPolicy.RETHROW) {
+						if (env.unhandledError == ErrorPolicy.RETHROW) {
 							throw new MessageProcessorError("Error in message receiver", e);
 						}
-						else if (unhandledError == ErrorPolicy.ABORT) {
+						else if (env.unhandledError == ErrorPolicy.ABORT) {
 							log.info("Unhandled error - abort message processor");
 							return;
 						}
@@ -123,13 +135,40 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		interceptor.intercept(this);
 	}
 	
-	private function invokeTarget (target:MessageTarget) : void {
-		target.handleMessage(message);
+	private function invokeTarget (target:MessageReceiver) : void {
+		if (target is MessageTarget) {
+			MessageTarget(target).handleMessage(message);
+		}
+		else {
+			invokeCommand(CommandTarget(target));
+		}
 	}
 	
 	private function invokeErrorHandler (errorHandler:MessageErrorHandler) : void {
 		errorHandler.handleError(this, currentError);
 	}
+	
+	private function invokeObserver (observer:CommandObserver) : void {
+		observer.observeCommand(command);
+	}
+	
+	private function invokeCommand (target:CommandTarget) : void {
+		var factory:CommandFactory = env.getCommandFactory(target.returnType);
+		var processor:DefaultCommandProcessor = new DefaultCommandProcessor(message, actualSelector, factory);
+		target.executeCommand(processor);
+		var command:Command = processor.command;
+		if (command != null) {
+			env.addActiveCommand(command);
+			command.addStatusHandler(handleCommand, command);
+			handleCommand(command);
+		}			
+	}
+	
+	private function handleCommand (command:Command) : void {	
+		var processor:MessageProcessor = new DefaultMessageProcessor(message, messageType, explicitSelector, env, command);
+		processor.proceed();
+	}
+	
 	
 	/**
 	 * @inheritDoc
@@ -139,11 +178,17 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	}
 	
 	private function fetchReceivers () : void {	
-		var receiverSelection:MessageReceiverSelection = receivers.getSelection(messageType);
-		var selectorValue:* = (selector == undefined) ? receiverSelection.getSelectorValue(message) : selector;
-		errorHandlers = receiverSelection.getErrorHandlers(selectorValue);
-		currentProcessor = new Processor(receiverSelection.getInterceptors(selectorValue), invokeInterceptor);
-		remainingProcessors = [new Processor(receiverSelection.getTargets(selectorValue), invokeTarget, false)];
+		selection = env.getReceiverSelection(messageType);
+		actualSelector = (explicitSelector == undefined) ? selection.getSelectorValue(message) : explicitSelector;
+		errorHandlers = selection.getErrorHandlers(actualSelector);
+		if (command == null) {
+			currentProcessor = new Processor(selection.getInterceptors(actualSelector), invokeInterceptor);
+			remainingProcessors = [new Processor(selection.getTargets(actualSelector), invokeTarget, false)];
+		}
+		else {
+			currentProcessor = new Processor(selection.getCommandObservers(actualSelector, command.status), invokeObserver, false);
+			remainingProcessors = [];
+		}
 	}
 
 	/**
@@ -157,7 +202,12 @@ public class DefaultMessageProcessor implements MessageProcessor {
 }
 }
 
+import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.errors.NestedError;
+import org.spicefactory.parsley.core.messaging.command.Command;
+import org.spicefactory.parsley.core.messaging.command.CommandFactory;
+import org.spicefactory.parsley.core.messaging.command.CommandProcessor;
+import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 
 class Processor {
 	
@@ -172,6 +222,7 @@ class Processor {
 		this.handler = handler;
 		this.async = async;
 		this.handleErrors = handleErrors;
+		receivers.sortOn("order");
 	}
 	
 	internal function hasNext () : Boolean {
@@ -192,6 +243,39 @@ class MessageProcessorError extends NestedError {
 	
 	public function MessageProcessorError (message:String = "", cause:Error = null) {
 		super(message, cause);
+	}
+	
+}
+
+class DefaultCommandProcessor implements CommandProcessor {
+
+	private var _message:Object;
+	private var selector:*;
+	internal var command:Command;
+	private var factory:CommandFactory;
+
+	function DefaultCommandProcessor (message:Object, selector:*, factory:CommandFactory) {
+		_message = message;
+		this.selector = selector;
+		this.factory = factory;
+	}
+
+	public function get message () : Object {
+		return _message;
+	}
+
+	public function process (returnValue:*) : Command {
+		if (command != null) {
+			throw new IllegalStateError("process has already been called on this instance");
+		}
+		command = factory.createCommand(returnValue, message, selector);
+		if (command == null) {
+			throw new IllegalStateError("CommandFactory did not return a Command instance");
+		}
+		else if (command.status != CommandStatus.EXECUTE) {
+			throw new IllegalStateError("Initial status for Command must be EXECUTE: " + command);
+		}
+		return command;
 	}
 	
 }

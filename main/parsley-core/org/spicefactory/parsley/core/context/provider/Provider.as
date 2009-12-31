@@ -31,6 +31,10 @@ public class Provider {
 	 * Useful if existing instances must be passed to a method that expects an ObjectProvider instance
 	 * as a parameter, like most of the methods for registering message receivers for example.
 	 * 
+	 * <p>This utility method should only be used in cases where <code>ObjectDefinition.objectLifecycle.synchronizeProvider</code>
+	 * cannot be used, since it does not take care of any synchronization issues for singletons that get created upon
+	 * container initialization.</p>
+	 * 
 	 * @param instance the instance to wrap
 	 * @param domain the ApplicationDomain to use for reflecting on the instance
 	 * @return a new ObjectProvider wrapping the specified instance 

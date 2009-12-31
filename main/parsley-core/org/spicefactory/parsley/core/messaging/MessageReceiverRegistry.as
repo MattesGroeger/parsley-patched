@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.messaging {
+import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
+import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
@@ -72,7 +74,34 @@ public interface MessageReceiverRegistry {
 	 * @param handler the error handler to remove from this registry
 	 */
 	function removeErrorHandler (handler:MessageErrorHandler) : void;
+
+	/**
+	 * Adds a target that executes an asynchronous command to this registry.
+	 * 
+	 * @param command the command to add to this registry
+	 */
+	function addCommand (command:CommandTarget) : void;
+
+	/**
+	 * Removes a target that executes an asynchronous command from this registry.
+	 * 
+	 * @param command the command to remove from this registry
+	 */
+	function removeCommand (command:CommandTarget) : void;
 	
+	/**
+	 * Adds an observer for a matching command execution to this registry.
+	 * 
+	 * @param observer the observer to add to this registry
+	 */
+	function addCommandObserver (observer:CommandObserver) : void;
+
+	/**
+	 * Removes an observer for a matching command execution from this registry.
+	 * 
+	 * @param observer the observer to remove from this registry
+	 */
+	function removeCommandObserver (observer:CommandObserver) : void;	
 	
 }
 }

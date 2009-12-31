@@ -44,6 +44,11 @@
             <xs:element name="message-interceptor" type="messageInterceptorType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="message-binding" type="messageBindingType" minOccurs="0" maxOccurs="unbounded"/>
 
+            <xs:element name="command" type="commandType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="command-result" type="commandResultType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="command-error" type="commandErrorType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="command-status" type="commandStatusType" minOccurs="0" maxOccurs="unbounded"/>
+
             <xs:element name="resource-binding" type="resourceBindingType" minOccurs="0" maxOccurs="unbounded"/>
             
             <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
@@ -108,25 +113,49 @@
         <xs:attribute name="names" type="xs:token" use="required"/>
     </xs:complexType>
     
-    <xs:complexType name="messageHandlerType">
-        <xs:attribute name="method" type="xs:token" use="required"/>
+    <xs:attributeGroup name="messagingAttributes">
         <xs:attribute name="type" type="xs:token" use="optional"/>
         <xs:attribute name="selector" type="xs:token" use="optional"/>
+        <xs:attribute name="scope" type="xs:token" use="optional"/>
+        <xs:attribute name="order" type="intOrExpression" use="optional"/>
+    </xs:attributeGroup>
+    
+    <xs:complexType name="messageHandlerType">
+    	<xs:attributeGroup ref="messagingAttributes"/>
+        <xs:attribute name="method" type="xs:token" use="required"/>
         <xs:attribute name="message-properties" type="xs:token" use="optional"/>
-        <xs:attribute name="create-instance" type="xs:boolean" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="commandType">
+    	<xs:attributeGroup ref="messagingAttributes"/>
+        <xs:attribute name="method" type="xs:token" use="required"/>
+        <xs:attribute name="message-properties" type="xs:token" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="commandResultType">
+    	<xs:attributeGroup ref="messagingAttributes"/>
+        <xs:attribute name="method" type="xs:token" use="required"/>
+    </xs:complexType>
+    
+	<xs:complexType name="commandErrorType">
+    	<xs:attributeGroup ref="messagingAttributes"/>
+        <xs:attribute name="method" type="xs:token" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="commandStatusType">
+    	<xs:attributeGroup ref="messagingAttributes"/>
+        <xs:attribute name="property" type="xs:token" use="required"/>
     </xs:complexType>
     
     <xs:complexType name="messageInterceptorType">
+    	<xs:attributeGroup ref="messagingAttributes"/>
         <xs:attribute name="method" type="xs:token" use="required"/>
-        <xs:attribute name="type" type="xs:token" use="optional"/>
-        <xs:attribute name="selector" type="xs:token" use="optional"/>
     </xs:complexType>
     
     <xs:complexType name="messageBindingType">
+    	<xs:attributeGroup ref="messagingAttributes"/>
         <xs:attribute name="message-property" type="xs:token" use="required"/>
         <xs:attribute name="target-property" type="xs:token" use="required"/>
-        <xs:attribute name="type" type="xs:token" use="required"/>
-        <xs:attribute name="selector" type="xs:token" use="optional"/>
     </xs:complexType>
     
     <xs:complexType name="resourceBindingType">

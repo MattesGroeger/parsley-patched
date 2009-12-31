@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.scope.impl {
+import org.spicefactory.parsley.core.messaging.command.CommandManager;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
@@ -122,6 +123,13 @@ public class DefaultScope implements Scope {
 	/**
 	 * @inheritDoc
 	 */
+	public function get commandManager () : CommandManager {
+		return scopeDef.messageRouter.commandManager;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
 	public function get objectLifecycle () : ObjectLifecycleScope {
 		return _objectLifecycle;
 	}
@@ -132,6 +140,7 @@ public class DefaultScope implements Scope {
 	public function get extensions () : ScopeExtensions {
 		return scopeDef.extensions;
 	}
+	
 	
 }
 }

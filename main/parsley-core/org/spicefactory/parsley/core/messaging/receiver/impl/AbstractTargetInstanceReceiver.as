@@ -39,9 +39,11 @@ public class AbstractTargetInstanceReceiver extends AbstractMessageReceiver {
 	 * @param provider the provider for the actual instance handling the message
 	 * @param messageType the type of the message this receiver is interested in
 	 * @param selector an additional selector value to be used to determine matching messages
+	 * @param order the execution order for this receiver
 	 */
-	function AbstractTargetInstanceReceiver (provider:ObjectProvider, messageType:Class = null, selector:* = undefined) {
-		super(messageType, selector);
+	function AbstractTargetInstanceReceiver (provider:ObjectProvider, 
+			messageType:Class = null, selector:* = undefined, order:int = int.MAX_VALUE) {
+		super(messageType, selector, order);
 		this.provider = provider;
 	}
 

@@ -104,7 +104,7 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
 		var ci:ClassInfo = ClassInfo.forClass(type, registry.domain);
-		var def:RootObjectDefinition = new DefaultRootObjectDefinition(ci, id, lazy, singleton, order);
+		var def:RootObjectDefinition = new DefaultRootObjectDefinition(ci, id, registry, lazy, singleton, order);
 		def.instantiator = instantiator;
 		def = processDecorators(registry, def) as RootObjectDefinition;
 		return def;

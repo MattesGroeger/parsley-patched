@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.messaging.command.CommandFactory;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 
 /**
@@ -42,6 +43,15 @@ public interface MessageRouterFactory {
 	 * @param target the error handler to add to this factory
 	 */
 	function addErrorHandler (target:MessageErrorHandler) : void;
+
+	/**
+	 * Adds a factory that creates Command instances for all command methods
+	 * that have the specified return type.
+	 * 
+	 * @param type the return type of the command methods the specified factory is responsible for
+	 * @param factory the factory to add
+	 */
+	function addCommandFactory (type:Class, factory:CommandFactory) : void;
 	
 	/**
 	 * Creates a new MessageRouter instance.
