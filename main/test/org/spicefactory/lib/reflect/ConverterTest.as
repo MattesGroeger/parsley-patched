@@ -1,5 +1,4 @@
 package org.spicefactory.lib.reflect {
-
 import org.spicefactory.lib.reflect.converter.BooleanConverter;
 import org.spicefactory.lib.reflect.converter.ClassConverter;
 import org.spicefactory.lib.reflect.converter.ClassInfoConverter;
@@ -9,9 +8,17 @@ import org.spicefactory.lib.reflect.converter.NumberConverter;
 import org.spicefactory.lib.reflect.converter.StringConverter;
 import org.spicefactory.lib.reflect.converter.UintConverter;
 import org.spicefactory.lib.reflect.errors.ConversionError;
-	
-	
+
+import flash.system.ApplicationDomain;
+
 public class ConverterTest extends ReflectionTestBase {
+	
+	
+	public override function setUp () : void {
+		super.setUp();
+		new ClassInfo("String", String, ApplicationDomain.currentDomain); // circumwent Flash Player describeType bug
+		ClassInfo.purgeCache();
+	}
 	
 
 	public function testInt () : void {
@@ -153,7 +160,8 @@ public class ConverterTest extends ReflectionTestBase {
 	
 	public function testClassInfoWithRequiredType () : void {
 		var requiredType:ClassInfo = ClassInfo.forClass(Property);
-		var ci:ClassInfo = new ClassInfoConverter(requiredType).convert("org.spicefactory.lib.reflect.Property");
+		var conv:Converter = new ClassInfoConverter(requiredType);
+		var ci:ClassInfo = conv.convert("org.spicefactory.lib.reflect.Property");
 		assertEquals("Unexcpected result", Property, ci.getClass());
 	}
 	
