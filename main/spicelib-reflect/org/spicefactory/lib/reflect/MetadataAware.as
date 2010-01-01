@@ -56,6 +56,20 @@ public class MetadataAware {
 	}
 	
 	/**
+	 * Indicates whether this element has at least one metadata tag of the specified type.
+	 * 
+	 * <p>In case you registered a custom metadata class for the specified name,
+	 * you must use a parameter of type <code>Class</code> specifying the mapped metadata class. 
+	 * Otherwise you use the name of the metadata tag as a String for the type parameter.</p>
+	 * 
+	 * @param type for mapped metadata the mapped class otherwise the name of the metadata tag as a String.
+	 * @return true if this element has at least one metadata tag of the specified type
+	 */
+	public function hasMetadata (type:Object) : Boolean {
+		return (_metadata.getMetadata(type, false).length > 0);
+	}
+	
+	/**
 	 * Returns all metadata tags for the specified type for this element.
 	 * If no tag for the specified type exists an empty Array will be returned.
 	 * 

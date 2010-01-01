@@ -133,6 +133,12 @@ public class MetadataTest extends TestCase {
 		assertEquals("Unexpected value for metadata property", 2, mapped.intProp);		
 	}
 	
+	public function testHasMetadataMethod () : void {
+		var method:Method = classCInfo.getMethod("methodWithMappedMetadata");
+		var check:Boolean = method.hasMetadata(TestMetadata1);
+		assertTrue("Unexpected result for hasMetadata check", check);
+	}
+	
 	public function testMetadataWithRestrictedMetadata () : void {
 		// Metadata only mapped for properties and methods
 		var method:Method = classCInfo.getMethod("methodWithRestrictedMetadata");
