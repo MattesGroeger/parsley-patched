@@ -87,7 +87,7 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	public function get registry () : ObjectDefinitionRegistry {
 		checkState();
 		if (_registry == null) {
-			_registry =	factories.definitionRegistry.create(domain, scopeManager, providerFactory, parentViewDefinitions);
+			_registry =	factories.definitionRegistry.create(domain, context, providerFactory, parentViewDefinitions);
 		}
 		return _registry;
 	}

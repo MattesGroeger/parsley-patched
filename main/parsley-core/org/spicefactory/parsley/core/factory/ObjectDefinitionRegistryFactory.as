@@ -15,10 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.factory {
-	import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.scope.ScopeManager;
+import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 
 import flash.system.ApplicationDomain;
 
@@ -34,12 +34,12 @@ public interface ObjectDefinitionRegistryFactory {
 	 * Creates a new ObjectDefinitionRegistry instance.
 	 * 
 	 * @param domain the domain to use for reflection
-	 * @param scopeManager the ScopeManager associated with this registry
+	 * @param context the Context associated with this registry
 	 * @param providerFactory factory responsible for creating ObjectProvider instances
 	 * @param parentViewDefinitions the view definitions associated with the parent Context of the registry
 	 * @return a new ObjectDefinitionRegistry instance
 	 */
-	function create (domain:ApplicationDomain, scopeManager:ScopeManager, 
+	function create (domain:ApplicationDomain, context:Context, 
 			providerFactory:ObjectProviderFactory, parentViewDefinitions:ViewDefinitionRegistry) : ObjectDefinitionRegistry;
 	
 	

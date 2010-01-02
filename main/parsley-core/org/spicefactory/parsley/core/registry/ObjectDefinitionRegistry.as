@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry {
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.registry.builder.ObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.scope.ScopeManager;
@@ -139,14 +140,21 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	function get frozen () : Boolean;
 	
 	/**
-	 * The ScopeManager associated with this registry.
-	 * Primarily intended to be used for registering message receivers and
-	 * lifecycle listeners or accessing scope-wide extensions. 
-	 * Any messages dispatched before the registry
-	 * is frozen will be deferred, so messaging cannot be used to 
-	 * communicate between configuration tags.
+	 * @private
+	 * 
+	 * Deprecated. The ScopeManager can now be accessed through
+	 * the Context which is now exposed in this interface.
 	 */
 	function get scopeManager () : ScopeManager;
+	
+	/**
+	 * The Context associated with this registry.
+	 * During processing of ObjectDefinitions the <code>configured</code> property of the Context
+	 * is still false and any attempt to fetch objects from the Context will lead
+	 * to an Error. It is primarily exposed in case an extension wants to keep
+	 * a reference to the Context for later use.
+	 */
+	function get context () : Context;
 	
 	/**
 	 * The registry for view definitions associated with this registry.

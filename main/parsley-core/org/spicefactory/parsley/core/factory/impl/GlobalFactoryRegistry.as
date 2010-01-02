@@ -232,10 +232,10 @@ class DefaultLifecycleManagerFactory implements ObjectLifecycleManagerFactory {
 
 class DefaultDefinitionRegistryFactory implements ObjectDefinitionRegistryFactory {
 
-	public function create (domain:ApplicationDomain, scopeManager:ScopeManager, 
+	public function create (domain:ApplicationDomain, context:Context, 
 			providerFactory:ObjectProviderFactory, parentViewDefinitions:ViewDefinitionRegistry) : ObjectDefinitionRegistry {
 		return new DefaultObjectDefinitionRegistry(domain, 
-				scopeManager, 
+				context, 
 				providerFactory, 
 				[new MetadataDecoratorAssembler(domain)], 
 				new DefaultViewDefinitionRegistry(parentViewDefinitions));

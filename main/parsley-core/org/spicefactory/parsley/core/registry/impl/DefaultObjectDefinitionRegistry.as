@@ -18,6 +18,7 @@ package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.util.collection.SimpleMap;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
 import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
@@ -43,7 +44,7 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	
 	private var _domain:ApplicationDomain;
 	private var _decoratorAssemblers:Array;
-	private var _scopeManager:ScopeManager;
+	private var _context:Context;
 	private var _viewDefinitions:ViewDefinitionRegistry;
 	
 	private var _builders:ObjectDefinitionBuilderFactory;
@@ -58,15 +59,15 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	 * Creates a new instance.
 	 * 
 	 * @param domain the ApplicationDomain to use for reflecting on types added to this registry
-	 * @param scopeManager the ScopeManager associated with this registry
+	 * @param context the Context associated with this registry
 	 * @param objectProviderFactory the factory to create ObjectProvider instances with
 	 * @param decoratorAssemblers the objects responsible for collecting decorators for definitions in this registry
 	 * @param viewDefinitions the registry for view definitions
 	 */
-	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain, scopeManager:ScopeManager, 
+	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain, context:Context, 
 			objectProviderFactory:ObjectProviderFactory, decoratorAssemblers:Array, viewDefinitions:ViewDefinitionRegistry) {
 		_domain = domain;
-		_scopeManager = scopeManager;
+		_context = context;
 		_decoratorAssemblers = decoratorAssemblers;
 		this.objectProviderFactory = objectProviderFactory;
 		_viewDefinitions = viewDefinitions;
@@ -92,7 +93,14 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	 * @inheritDoc
 	 */
 	public function get scopeManager () : ScopeManager {
-		return _scopeManager;
+		return _context.scopeManager;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get context () : Context {
+		return _context;
 	}
 	
 	/**
