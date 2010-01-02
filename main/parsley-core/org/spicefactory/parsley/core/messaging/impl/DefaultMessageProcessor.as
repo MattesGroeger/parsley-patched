@@ -159,7 +159,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		var command:Command = processor.command;
 		if (command != null) {
 			env.addActiveCommand(command);
-			command.addStatusHandler(handleCommand, command);
+			command.addStatusHandler(handleCommand);
 			handleCommand(command);
 		}			
 	}
@@ -186,7 +186,9 @@ public class DefaultMessageProcessor implements MessageProcessor {
 			remainingProcessors = [new Processor(selection.getTargets(actualSelector), invokeTarget, false)];
 		}
 		else {
-			currentProcessor = new Processor(selection.getCommandObservers(actualSelector, command.status), invokeObserver, false);
+			var observers:Array = command.observers.concat(selection
+										.getCommandObservers(actualSelector, command.status));
+			currentProcessor = new Processor(observers, invokeObserver, false);
 			remainingProcessors = [];
 		}
 	}

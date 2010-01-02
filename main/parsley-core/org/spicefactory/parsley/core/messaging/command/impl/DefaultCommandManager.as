@@ -37,7 +37,7 @@ public class DefaultCommandManager implements CommandManager {
 	 */
 	public function addActiveCommand (command:Command) : void {
 		commands.push(command);
-		command.addStatusHandler(commandCompleted, command);
+		command.addStatusHandler(commandCompleted);
 	}
 	
 	private function commandCompleted (command:Command) : void {

@@ -31,8 +31,8 @@ import org.spicefactory.parsley.tag.core.ArrayTag;
 import org.spicefactory.parsley.tag.core.ConstructorTag;
 import org.spicefactory.parsley.tag.core.NestedObjectTag;
 import org.spicefactory.parsley.tag.core.ObjectReferenceTag;
-import org.spicefactory.parsley.tag.core.RootObjectTag;
 import org.spicefactory.parsley.tag.core.PropertyTag;
+import org.spicefactory.parsley.tag.core.RootObjectTag;
 import org.spicefactory.parsley.tag.core.ViewTag;
 import org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator;
 import org.spicefactory.parsley.tag.lifecycle.DestroyMethodDecorator;
@@ -52,6 +52,7 @@ import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 import org.spicefactory.parsley.xml.tag.CommandDecoratorTag;
+import org.spicefactory.parsley.xml.tag.DynamicCommandXmlTag;
 import org.spicefactory.parsley.xml.tag.Include;
 import org.spicefactory.parsley.xml.tag.ManagedEventsDecoratorTag;
 import org.spicefactory.parsley.xml.tag.MessageHandlerDecoratorTag;
@@ -106,6 +107,7 @@ public class XmlObjectDefinitionMapperFactory {
 		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectsTag, "objects"); 
 		rootObjectChoice.addMapper(getRootObjectMapper());
 		rootObjectChoice.addMapper(getViewObjectMapper());
+		rootObjectChoice.addMapper(getDynamicCommandMapper());
 		builder.mapToChildElementChoice("objects", rootObjectChoice);
 		return builder.build();
 	}
@@ -152,6 +154,15 @@ public class XmlObjectDefinitionMapperFactory {
 		var builder:PropertyMapperBuilder = getMapperBuilder(NestedObjectTag, "object"); 
 		builder.mapToChildElementChoice("decorators", decoratorChoice);
 		builder.mapToAttribute("type");
+		return builder.build();
+	}
+	
+	private function getDynamicCommandMapper () : XmlObjectMapper {
+		var builder:PropertyMapperBuilder = getMapperBuilder(DynamicCommandXmlTag, "dynamic-command"); 
+		builder.mapToChildElementChoice("decorators", decoratorChoice);
+		builder.mapToAttribute("messagePropertiesAsString", new QName("", namingStrategy.toXmlName("messageProperties")));
+		builder.ignoreProperty("messageProperties");
+		builder.mapAllToAttributes();
 		return builder.build();
 	}
 

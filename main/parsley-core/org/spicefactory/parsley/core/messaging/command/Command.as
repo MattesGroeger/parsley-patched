@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.messaging.command {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
 
 /**
  * Represents a single Command execution.
@@ -64,11 +65,31 @@ public interface Command {
 	/**
 	 * Adds a handler function to invoke when the Command changes its status. 
 	 * This may either be a successful completion, or due to cancellation or an error. 
+	 * Should only be used for internal extension logic, any callback that calls
+	 * back into application code should use the <code>addObserver</code> method.
 	 * 
 	 * @param handler the handler to invoke upon command completion
 	 * @param params any additional parameters that should be passed to the handler in addition to the Command itself
 	 */
 	function addStatusHandler (handler:Function, ...params) : void;
+	
+	/**
+	 * Adds an observer to be invoked when this Command changes its status.
+	 * In contrast to the simple status handler functions, an observer will be executed
+	 * within the regular <code>MessageRouter</code> processing together with any matching observers
+	 * registered directly for the scope. This means that they will also adhere
+	 * to all error handling rules configured for that scope. Therefor an observer
+	 * should always be preferred over a simple status handler for any functionality 
+	 * that calls back into application code.
+	 * 
+	 * @param observer the observer to be invoked upon command completion
+	 */
+	function addObserver (observer:CommandObserver) : void;
+	
+	/**
+	 * The observers directly added to this command, matching the current status.
+	 */
+	function get observers () : Array;
 	
 	
 }

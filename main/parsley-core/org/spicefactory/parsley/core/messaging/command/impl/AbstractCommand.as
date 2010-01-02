@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.command.impl {
+import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.Delegate;
@@ -40,6 +41,7 @@ public class AbstractCommand implements Command {
 	private var _status:CommandStatus;
 	
 	private var statusHandlers:DelegateChain = new DelegateChain();
+	private var _observers:Array = new Array();
 
 
 	/**
@@ -178,6 +180,7 @@ public class AbstractCommand implements Command {
 	 * @inheritDoc
 	 */
 	public function addStatusHandler (handler:Function, ...params) : void {
+		params.unshift(this);
 		statusHandlers.addDelegate(new Delegate(handler, params));
 	}
 	
@@ -185,6 +188,25 @@ public class AbstractCommand implements Command {
 		statusHandlers.invoke();
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function addObserver (observer:CommandObserver) : void {
+		_observers.push(observer);
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function get observers () : Array {
+		var result:Array = new Array();
+		for each (var observer:CommandObserver in _observers) {
+			if (observer.status == status) {
+				result.push(observer);
+			}
+		}
+		return result;
+	}
+	
 }
 }

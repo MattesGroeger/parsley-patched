@@ -23,10 +23,12 @@ public class CommandTestBase extends ContextTestBase {
 	
 	
 	
-	private static var factory:MockCommandFactory;
+	internal static var factory:MockCommandFactory;
+	
+	private var context:Context;
 	
 	
-	private static function init () : void {
+	internal static function init () : void {
 		if (factory == null) {
 			factory = new MockCommandFactory();
 			GlobalFactoryRegistry.instance.messageRouter.addCommandFactory(MockResult, factory);
@@ -34,11 +36,15 @@ public class CommandTestBase extends ContextTestBase {
 	}
 	
 	
-	public function testCommandResult () : void {
+	public override function setUp () : void {
 		init();
 		factory.reset();
-		var context:Context = commandContext;
+		context = commandContext;
 		checkState(context);
+	}
+	
+	
+	public function testCommandResult () : void {
 		checkObjectIds(context, ["commandExecutors"], CommandExecutors);	
 		checkObjectIds(context, ["commandObservers"], CommandObservers);	
 		context.getObjectByType(CommandExecutors) as EventSource;
@@ -64,10 +70,6 @@ public class CommandTestBase extends ContextTestBase {
 	}
 	
 	public function testCommandStatus () : void {
-		init();
-		factory.reset();
-		var context:Context = commandContext;
-		checkState(context);
 		checkObjectIds(context, ["commandExecutors"], CommandExecutors);	
 		checkObjectIds(context, ["commandStatusFlags"], CommandStatusFlags);	
 		context.getObjectByType(CommandExecutors) as EventSource;
@@ -105,10 +107,6 @@ public class CommandTestBase extends ContextTestBase {
 	}
 	
 	public function testStatusFlagInitValue () : void {
-		init();
-		factory.reset();
-		var context:Context = commandContext;
-		checkState(context);
 		context.getObjectByType(CommandExecutors) as EventSource;
 		var sm:ScopeManager = context.scopeManager;
 		var cm:CommandManager = sm.getScope(ScopeName.GLOBAL).commandManager;

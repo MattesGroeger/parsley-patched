@@ -12,6 +12,7 @@
 	            <xs:element name="variable" type="variableType" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="object" type="rootObjectType"/>    
                 <xs:element name="view" type="viewObjectType"/>    
+                <xs:element name="dynamic-command" type="dynamicCommandType"/>    
             	<xs:any namespace="##other"/>
             </xs:choice>
         </xs:complexType>
@@ -76,6 +77,22 @@
         </xs:complexContent>
     </xs:complexType>
     
+	<xs:complexType name="dynamicCommandType">
+        <xs:complexContent>
+            <xs:extension base="objectType">
+		        <xs:attribute name="stateful" type="xs:boolean" use="optional"/>
+                <xs:attribute name="message-type" type="xs:token" use="optional"/>
+                <xs:attribute name="message-properties" type="xs:token" use="optional"/>
+                <xs:attribute name="selector" type="xs:token" use="optional"/>
+		        <xs:attribute name="scope" type="xs:token" use="optional"/>
+		        <xs:attribute name="order" type="intOrExpression" use="optional"/>
+		        <xs:attribute name="execute" type="xs:token" use="optional"/>
+		        <xs:attribute name="result" type="xs:token" use="optional"/>
+		        <xs:attribute name="error" type="xs:token" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:attributeGroup name="rootObjectAttributes">
         <xs:attribute name="id" type="xs:token" use="required"/>
         <xs:attribute name="lazy" type="xs:boolean" use="optional"/>  

@@ -3,6 +3,7 @@
     <component id="Object" class="org.spicefactory.parsley.tag.core.MxmlRootObjectTag"/>
     <component id="View" class="org.spicefactory.parsley.tag.core.MxmlViewTag"/>
     <component id="NestedObject" class="org.spicefactory.parsley.tag.core.NestedObjectTag"/>
+    <component id="DynamicCommand" class="org.spicefactory.parsley.tag.messaging.DynamicCommandTag"/>
     
     <component id="ConstructorArgs" class="org.spicefactory.parsley.tag.core.ConstructorTag"/>
     <component id="Property" class="org.spicefactory.parsley.tag.core.PropertyTag"/>
