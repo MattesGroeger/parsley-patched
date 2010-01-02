@@ -11,7 +11,7 @@
 	</mx:Script>
 	
 	
-	<flextag:MxmlObjectTag type="{LifecycleEventCounter}">
+	<flextag:MxmlRootObjectTag type="{LifecycleEventCounter}">
 		<dec:ObserveMethodDecorator method="globalListener"/>
 		<dec:ObserveMethodDecorator method="globalVListener"/>
 		<dec:ObserveMethodDecorator method="globalHListener"/>
@@ -23,7 +23,7 @@
 		<dec:ObserveMethodDecorator method="customHListener" scope="custom"/>
 		<dec:ObserveMethodDecorator method="globalIdListener" objectId="text"/>
 		<dec:ObserveMethodDecorator method="globalDestroyListener" phase="{ObjectLifecycle.PRE_DESTROY}"/>
-	</flextag:MxmlObjectTag>
+	</flextag:MxmlRootObjectTag>
 
 	
 	

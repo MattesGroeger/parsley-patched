@@ -46,7 +46,7 @@ public class AbstractObjectDefinitionBuilder {
 	/**
 	 * The decorators added to this builder.
 	 */
-	protected var decorators:Array = new Array();
+	protected var decoratorList:Array = new Array();
 	
 	
 	/**
@@ -90,7 +90,7 @@ public class AbstractObjectDefinitionBuilder {
 		for each (var assembler:DecoratorAssembler in registry.decoratorAssemblers) {
 			decorators = decorators.concat(assembler.assemble(definition.type));
 		}
-		decorators = decorators.concat(this.decorators);
+		decorators = decorators.concat(this.decoratorList);
 		var errors:Array = new Array();
 		var finalDefinition:ObjectDefinition = definition;
 		for each (var decorator:ObjectDefinitionDecorator in decorators) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,23 +17,31 @@
 package org.spicefactory.parsley.core.builder {
 import flash.events.IEventDispatcher;
 
+/**
+ * Dispatched when the processor successfully finished.
+ * 
+ * @eventType flash.events.Event.COMPLETE
+ */
 [Event(name="complete", type="flash.events.Event")]
 
+/**
+ * Dispatched when processing the configuration failed. 
+ * 
+ * @eventType flash.events.ErrorEvent.ERROR
+ */
 [Event(name="error", type="flash.events.ErrorEvent")]
 
-[ExcludeClass]
-
 /**
- * @private
- * 
- * Deprecated. Use the new interface AsyncConfigurationProcessor instead.
- * The name ObjectDefinitonBuilder had to much semantic overlap with interfaces in the core.registry package
- * (like the new interface ObjectDefinitionBuilderFactory which performs a completely different task).
+ * Interface to be implemented by ConfigurationProcessors that operate asynchronously.
  * 
  * @author Jens Halm
  */
-public interface AsyncObjectDefinitionBuilder extends ObjectDefinitionBuilder, IEventDispatcher {
+public interface AsyncConfigurationProcessor extends ConfigurationProcessor, IEventDispatcher {
 	
+	/**	
+	 * Invoked when the configuration process gets cancelled, usually due to an associated Context
+	 * having been destroyed.
+	 */
 	function cancel () : void;
 	
 }

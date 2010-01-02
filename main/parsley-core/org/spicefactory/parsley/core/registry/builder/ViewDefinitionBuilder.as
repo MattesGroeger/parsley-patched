@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.registry.builder {
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.registry.ViewDefinition;
 
 /**
  * Builder for creating view object definitions.
@@ -31,37 +31,47 @@ public interface ViewDefinitionBuilder {
 	 * a dynamically wired view instance. Usually the name of the component
 	 * will be used to match against this id.
 	 * 
-	 * @param id the id that should be used for matching dynamically wired views
+	 * @param value the id that should be used for matching dynamically wired views
 	 * @return this builder instance for method chaining
 	 */
-	function setId (id:String) : ViewDefinitionBuilder;
+	function id (value:String) : ViewDefinitionBuilder;
 
 	/**
 	 * Adds a decorator to be processed when creating the definition.
 	 * This decorator will be processed in addition to any decorators assembled by the
 	 * DecoratorAssemblers registered with the ObjectDefinitionRegistry.
 	 * 
-	 * @param decorator the decorator to add to this builder
+	 * @param value the decorator to add to this builder
 	 * @return this builder instance for method chaining
 	 */
-	function addDecorator (decorator:ObjectDefinitionDecorator) : ViewDefinitionBuilder;
+	function decorator (value:ObjectDefinitionDecorator) : ViewDefinitionBuilder;
 
 	/**
 	 * Adds decorators to be processed when creating the definition.
-	 * Thess decorators will be processed in addition to any decorators assembled by the
+	 * These decorators will be processed in addition to any decorators assembled by the
 	 * DecoratorAssemblers registered with the ObjectDefinitionRegistry.
 	 * 
-	 * @param decorators the decorators to add to this builder
+	 * @param value the decorators to add to this builder
 	 * @return this builder instance for method chaining
 	 */
-	function addAllDecorators (decorators:Array) : ViewDefinitionBuilder;
+	function decorators (value:Array) : ViewDefinitionBuilder;
 	
 	/**
 	 * Builds a new definition using all parameters set through other methods.
+	 * With this method the returned definition will not be registered
+	 * with the registry associated with this builder.
 	 * 
 	 * @return a new view object definition
 	 */
-	function build () : ObjectDefinition;
+	function build () : ViewDefinition;
+	
+	/**
+	 * Builds a new definition using all parameters set through the other methods of this builder
+	 * and registers it with the registry associated with this builder.
+	 * 
+	 * @return a new view object definition
+	 */
+	function buildAndRegister () : ViewDefinition;
 	
 	
 }

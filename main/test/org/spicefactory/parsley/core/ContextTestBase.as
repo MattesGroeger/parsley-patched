@@ -2,7 +2,7 @@ package org.spicefactory.parsley.core {
 import flexunit.framework.TestCase;
 
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 
@@ -12,10 +12,10 @@ import org.spicefactory.parsley.core.context.Context;
 public class ContextTestBase extends TestCase {
 	
 	
-	protected function getContext (builder:ObjectDefinitionBuilder, parent:Context = null, 
+	protected function getContext (processor:ConfigurationProcessor, parent:Context = null, 
 			customScope:String = null, inherited:Boolean = true) : Context {
 		var contextBuilder:CompositeContextBuilder = new DefaultCompositeContextBuilder(null, parent);
-		contextBuilder.addBuilder(builder);
+		contextBuilder.addProcessor(processor);
 		if (customScope) {
 			contextBuilder.addScope(customScope, inherited);
 		}

@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.flex.tag.builder {
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionBuilder;
+import org.spicefactory.parsley.xml.processor.XmlConfigurationProcessor;
 
 /**
  * MXML tag for adding an XML configuration file to a ContextBuilder.
@@ -43,7 +43,7 @@ public class XmlConfigTag implements ContextBuilderProcessor {
 	 * @private
 	 */
 	public function process (builder:CompositeContextBuilder) : void {
-		builder.addBuilder(new XmlObjectDefinitionBuilder([file]));
+		builder.addProcessor(new XmlConfigurationProcessor([file]));
 	}
 	
 	

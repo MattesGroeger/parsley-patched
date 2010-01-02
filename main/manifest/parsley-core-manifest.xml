@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <componentPackage>
-    <component id="Object" class="org.spicefactory.parsley.tag.core.MxmlObjectTag"/>
+    <component id="Object" class="org.spicefactory.parsley.tag.core.MxmlRootObjectTag"/>
     <component id="View" class="org.spicefactory.parsley.tag.core.MxmlViewTag"/>
     <component id="NestedObject" class="org.spicefactory.parsley.tag.core.NestedObjectTag"/>
     
@@ -21,6 +21,11 @@
     <component id="MessageBinding" class="org.spicefactory.parsley.tag.messaging.MessageBindingDecorator"/>
     <component id="MessageInterceptor" class="org.spicefactory.parsley.tag.messaging.MessageInterceptorDecorator"/>
     <component id="MessageError" class="org.spicefactory.parsley.tag.messaging.MessageErrorDecorator"/>
+
+    <component id="Command" class="org.spicefactory.parsley.tag.messaging.CommandDecorator"/>
+    <component id="CommandResult" class="org.spicefactory.parsley.tag.messaging.CommandResultDecorator"/>
+    <component id="CommandError" class="org.spicefactory.parsley.tag.messaging.CommandErrorDecorator"/>
+    <component id="CommandStatus" class="org.spicefactory.parsley.tag.messaging.CommandStatusDecorator"/>
 
     <component id="ResourceBinding" class="org.spicefactory.parsley.tag.resources.ResourceBindingDecorator"/>
     

@@ -64,27 +64,29 @@ public class DefaultObjectDefinitionBuilderFactory implements ObjectDefinitionBu
 }
 
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.NestedObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.ViewDefinition;
 import org.spicefactory.parsley.core.registry.builder.NestedObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.builder.RootObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.builder.ViewDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.builder.impl.AbstractObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinition;
+import org.spicefactory.parsley.core.registry.impl.DefaultNestedObjectDefinition;
 import org.spicefactory.parsley.core.registry.impl.DefaultRootObjectDefinition;
+import org.spicefactory.parsley.core.registry.impl.DefaultViewDefinition;
 import org.spicefactory.parsley.core.registry.impl.IdGenerator;
 
 class DefaultRootObjectDefinitionBuilder extends AbstractObjectDefinitionBuilder implements RootObjectDefinitionBuilder {
 
 
-	private var id:String;
-	private var lazy:Boolean = false;
-	private var singleton:Boolean = true;
-	private var order:int = int.MAX_VALUE;
-	private var instantiator:ObjectInstantiator;
+	private var _id:String;
+	private var _lazy:Boolean = false;
+	private var _singleton:Boolean = true;
+	private var _order:int = int.MAX_VALUE;
+	private var _instantiator:ObjectInstantiator;
 
 	
 	function DefaultRootObjectDefinitionBuilder (type:ClassInfo, registry:ObjectDefinitionRegistry) {
@@ -92,49 +94,54 @@ class DefaultRootObjectDefinitionBuilder extends AbstractObjectDefinitionBuilder
 	}
 	
 	
-	public function setId (id:String) : RootObjectDefinitionBuilder {
-		this.id = id;
+	public function id (value:String) : RootObjectDefinitionBuilder {
+		_id = value;
 		return this;
 	}
 	
-	public function setLazy (lazy:Boolean) : RootObjectDefinitionBuilder {
-		this.lazy = lazy;
+	public function lazy (value:Boolean) : RootObjectDefinitionBuilder {
+		_lazy = value;
 		return this;
 	}
 	
-	public function setSingleton (singleton:Boolean) : RootObjectDefinitionBuilder {
-		this.singleton = singleton;
+	public function singleton (value:Boolean) : RootObjectDefinitionBuilder {
+		_singleton = value;
 		return this;
 	}
 	
-	public function setOrder (order:int) : RootObjectDefinitionBuilder {
-		this.order = order;		
+	public function order (value:int) : RootObjectDefinitionBuilder {
+		_order = value;		
 		return this;
 	}
 	
-	public function setInstantiator (instantiator:ObjectInstantiator) : RootObjectDefinitionBuilder {
-		this.instantiator = instantiator;
+	public function instantiator (value:ObjectInstantiator) : RootObjectDefinitionBuilder {
+		_instantiator = value;
 		return this;
 	}
 
-	public function addDecorator (decorator:ObjectDefinitionDecorator) : RootObjectDefinitionBuilder {
-		decorators.push(decorator);		
+	public function decorator (value:ObjectDefinitionDecorator) : RootObjectDefinitionBuilder {
+		decoratorList.push(value);		
 		return this;
 	}
 	
-	public function addAllDecorators (decorators:Array) : RootObjectDefinitionBuilder {
-		this.decorators = this.decorators.concat(decorators);		
+	public function decorators (value:Array) : RootObjectDefinitionBuilder {
+		this.decoratorList = this.decoratorList.concat(value);		
 		return this;
 	}
 	
 	public function build () : RootObjectDefinition {
-		if (id == null) id = IdGenerator.nextObjectId;
-		var def:RootObjectDefinition = new DefaultRootObjectDefinition(type, id, registry, lazy, singleton, order);
-		def.instantiator = instantiator;
+		if (_id == null) _id = IdGenerator.nextObjectId;
+		var def:RootObjectDefinition = new DefaultRootObjectDefinition(type, _id, registry, _lazy, _singleton, _order);
+		def.instantiator = _instantiator;
 		def = processDecorators(registry, def) as RootObjectDefinition;
 		return def;
 	}
 	
+	public function buildAndRegister () : RootObjectDefinition {
+		var def:RootObjectDefinition = build();
+		registry.registerDefinition(def);
+		return def;
+	}
 	
 }
 
@@ -142,7 +149,7 @@ class DefaultRootObjectDefinitionBuilder extends AbstractObjectDefinitionBuilder
 class DefaultViewDefinitionBuilder extends AbstractObjectDefinitionBuilder implements ViewDefinitionBuilder {
 
 
-	private var id:String;
+	private var _id:String;
 
 	
 	function DefaultViewDefinitionBuilder (type:ClassInfo, registry:ObjectDefinitionRegistry) {
@@ -150,32 +157,39 @@ class DefaultViewDefinitionBuilder extends AbstractObjectDefinitionBuilder imple
 	}
 	
 	
-	public function setId (id:String) : ViewDefinitionBuilder {
-		this.id = id;
+	public function id (value:String) : ViewDefinitionBuilder {
+		_id = value;
 		return this;
 	}
 
-	public function addDecorator (decorator:ObjectDefinitionDecorator) : ViewDefinitionBuilder {
-		decorators.push(decorator);		
+	public function decorator (value:ObjectDefinitionDecorator) : ViewDefinitionBuilder {
+		decoratorList.push(value);		
 		return this;
 	}
 	
-	public function addAllDecorators (decorators:Array) : ViewDefinitionBuilder {
-		this.decorators = this.decorators.concat(decorators);		
+	public function decorators (value:Array) : ViewDefinitionBuilder {
+		this.decoratorList = this.decoratorList.concat(value);		
 		return this;
 	}
 	
-	public function build () : ObjectDefinition {
-		if (id == null) id = IdGenerator.nextObjectId;
-		var def:ObjectDefinition = new DefaultObjectDefinition(type);
-		def = processDecorators(registry, def) as ObjectDefinition;
+	public function build () : ViewDefinition {
+		var def:ViewDefinition = new DefaultViewDefinition(type, _id);
+		def = processDecorators(registry, def) as ViewDefinition;
+		return def;
+	}
+	
+	public function buildAndRegister () : ViewDefinition {
+		var def:ViewDefinition = build();
+		registry.viewDefinitions.registerDefinition(def);
 		return def;
 	}
 	
 }
 
-
 class DefaultNestedObjectDefinitionBuilder extends AbstractObjectDefinitionBuilder implements NestedObjectDefinitionBuilder {
+
+	
+	private var _instantiator:ObjectInstantiator;
 
 
 	function DefaultNestedObjectDefinitionBuilder (type:ClassInfo, registry:ObjectDefinitionRegistry) {
@@ -183,19 +197,24 @@ class DefaultNestedObjectDefinitionBuilder extends AbstractObjectDefinitionBuild
 	}
 	
 	
-	public function addDecorator (decorator:ObjectDefinitionDecorator) : NestedObjectDefinitionBuilder {
-		decorators.push(decorator);		
+	public function decorator (decorator:ObjectDefinitionDecorator) : NestedObjectDefinitionBuilder {
+		decoratorList.push(decorator);		
 		return this;
 	}
 	
-	public function addAllDecorators (decorators:Array) : NestedObjectDefinitionBuilder {
-		this.decorators = this.decorators.concat(decorators);		
+	public function decorators (decorators:Array) : NestedObjectDefinitionBuilder {
+		this.decoratorList = this.decoratorList.concat(decorators);		
 		return this;
 	}
 	
-	public function build () : ObjectDefinition {
-		var def:ObjectDefinition = new DefaultObjectDefinition(type);
-		def = processDecorators(registry, def) as ObjectDefinition;
+	public function instantiator (value:ObjectInstantiator) : NestedObjectDefinitionBuilder {
+		_instantiator = value;
+		return this;
+	}
+	
+	public function build () : NestedObjectDefinition {
+		var def:NestedObjectDefinition = new DefaultNestedObjectDefinition(type);
+		def = processDecorators(registry, def) as NestedObjectDefinition;
 		return def;
 	}
 	

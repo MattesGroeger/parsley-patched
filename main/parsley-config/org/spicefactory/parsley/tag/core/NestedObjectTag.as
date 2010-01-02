@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.core {
+	import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
@@ -30,7 +30,7 @@ import flash.errors.IllegalOperationError;
  * 
  * @author Jens Halm
  */
-public class NestedObjectTag implements ObjectDefinitionFactory, NestedTag {
+public class NestedObjectTag implements ResolvableConfigurationValue {
 
 	
 	/**
@@ -57,6 +57,13 @@ public class NestedObjectTag implements ObjectDefinitionFactory, NestedTag {
 		var factory:DefaultObjectDefinitionFactory = new DefaultObjectDefinitionFactory(type);
 		factory.decorators = decorators;
 		return factory.createNestedDefinition(registry);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function resolve (registry:ObjectDefinitionRegistry) : * {
+		return createNestedDefinition(registry);
 	}
 	
 	

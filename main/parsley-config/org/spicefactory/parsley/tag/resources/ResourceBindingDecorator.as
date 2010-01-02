@@ -22,7 +22,6 @@ import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.core.NestedTag;
 
 import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
@@ -34,7 +33,7 @@ import flash.utils.getQualifiedClassName;
  * 
  * @author Jens Halm
  */
-public class ResourceBindingDecorator implements ObjectDefinitionDecorator, NestedTag {
+public class ResourceBindingDecorator implements ObjectDefinitionDecorator {
 
 
 	/**

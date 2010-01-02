@@ -38,11 +38,18 @@ import org.spicefactory.parsley.core.factory.FactoryRegistry;
 public interface CompositeContextBuilder {
 	
 	/**
-	 * Adds an ObjectDefinitionBuilder.
+	 * @private
 	 * 
-	 * @param builder the builder to add
+	 * Deprecated. Use addProcessor instead.
 	 */
 	function addBuilder (builder:ObjectDefinitionBuilder) : void;
+	
+	/**
+	 * Adds a configuration processor.
+	 * 
+	 * @param processor the processor to add
+	 */
+	function addProcessor (processor:ConfigurationProcessor) : void;
 	
 	/**
 	 * Adds a new scope for the Context created by this builder.

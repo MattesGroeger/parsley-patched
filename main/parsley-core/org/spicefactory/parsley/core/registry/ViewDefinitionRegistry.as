@@ -32,9 +32,8 @@ public interface ViewDefinitionRegistry {
 	 * dynamically wired views by type.
 	 * 
 	 * @param viewDefinition the view definition to add
-	 * @param id the id to use to match the definition to dynamically wired views
 	 */
-	function registerDefinition (viewDefinition:ObjectDefinition, id:String = null) : void;
+	function registerDefinition (viewDefinition:ViewDefinition) : void;
 
 	/**
 	 * Returns the definition matching the specified id and type of the configuration target.
@@ -45,7 +44,7 @@ public interface ViewDefinitionRegistry {
 	 * @param configTarget the target the definition should be applied to
 	 * @return the matching view definition or null
 	 */
-	function getDefinitionById (id:String, configTarget:Object) : ObjectDefinition;
+	function getDefinitionById (id:String, configTarget:Object) : ViewDefinition;
 
 	/**
 	 * Returns the definition matching the type of the specified target instance.
@@ -56,7 +55,7 @@ public interface ViewDefinitionRegistry {
 	 * @param configTarget the target the definition should be applied to
 	 * @return the matching view definition or null
 	 */
-	function getDefinitionByType (configTarget:Object) : ObjectDefinition;
+	function getDefinitionByType (configTarget:Object) : ViewDefinition;
 	
 	/**
 	 * Freezes this registry. After calling this method any attempt to modify this registry or any

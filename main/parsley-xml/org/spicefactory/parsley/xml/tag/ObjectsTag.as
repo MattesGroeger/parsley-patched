@@ -14,28 +14,21 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.registry {
+package org.spicefactory.parsley.xml.tag {
 
 /**
- * Interface that can be used by the various configuration mechanisms to create tags
- * that produce view definitions.
+ * Represents the root objects tag of an XML configuration file.
  * 
  * @author Jens Halm
  */
-public interface ViewDefinitionFactory {
+public class ObjectsTag {
+	
 	
 	/**
-	 * The optional id the view definition produced by this factory should be registered with.
+	 * The objects defined in the XML configuration file.
 	 */
-	function get configId () : String;
+	public var objects:Array;
 	
-	/**
-	 * Creates a view definition that can be applied to dynamically wired views.
-	 * 
-	 * @param registry the registry that the new definition will belong to
-	 * @return a new view definition
-	 */
-	function createDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition;
-
+	
 }
 }

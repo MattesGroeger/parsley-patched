@@ -10,13 +10,13 @@
 	</mx:Script>
 	
 	
-	<flextag:MxmlObjectTag id="asyncInitModel1" type="{AsyncInitModel}" order="1">
+	<flextag:MxmlRootObjectTag id="asyncInitModel1" type="{AsyncInitModel}" order="1">
 		<dec:AsyncInitDecorator/>
-	</flextag:MxmlObjectTag> 
+	</flextag:MxmlRootObjectTag> 
 	
-	<flextag:MxmlObjectTag id="asyncInitModel2" type="{AsyncInitModel}" order="2">
+	<flextag:MxmlRootObjectTag id="asyncInitModel2" type="{AsyncInitModel}" order="2">
 		<dec:AsyncInitDecorator completeEvent="customComplete" errorEvent="customError"/>
-	</flextag:MxmlObjectTag> 
+	</flextag:MxmlRootObjectTag> 
 	
 	
 </mx:Object> 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,11 @@ import org.spicefactory.parsley.core.registry.definition.impl.DefaultPropertyReg
 import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
 
 /** 
- * Default implementation of the ObjectDefinition interface.
+ * Abstract base class for all ObjectDefinition implementations.
  * 
  * @author Jens Halm
  */
-public class DefaultObjectDefinition implements ObjectDefinition {
+public class AbstractObjectDefinition implements ObjectDefinition {
 
 	
 	private var _type:ClassInfo;
@@ -59,7 +59,7 @@ public class DefaultObjectDefinition implements ObjectDefinition {
 	 * 
 	 * @param type the type to create a definition for
 	 */
-	function DefaultObjectDefinition (type:ClassInfo) {
+	function AbstractObjectDefinition (type:ClassInfo) {
 		_type = type;
 		_constructorArgs = new DefaultConstructorArgRegistry(this);
 		_properties = new DefaultPropertyRegistry(this);

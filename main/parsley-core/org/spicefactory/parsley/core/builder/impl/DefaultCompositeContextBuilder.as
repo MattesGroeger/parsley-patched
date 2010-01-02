@@ -15,12 +15,13 @@
  */
 
 package org.spicefactory.parsley.core.builder.impl {
-	import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.builder.AsyncConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
@@ -32,6 +33,7 @@ import org.spicefactory.parsley.core.factory.impl.DefaultContextStrategyProvider
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.ScopeExtensions;
 import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.core.scope.impl.ScopeDefinition;
@@ -61,8 +63,8 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	private var registry:ObjectDefinitionRegistry;
 	
 	private var scopes:ScopeCollection = new ScopeCollection();
-	private var builders:Array = new Array();
-	private var currentBuilder:AsyncObjectDefinitionBuilder;
+	private var processors:Array = new Array();
+	private var currentProcessor:Object;
 	
 	private var errors:Array = new Array();
 	private var async:Boolean = false;
@@ -93,16 +95,25 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	
 	
 	/**
-	 * @inheritDoc
+	 * @private
+	 * 
+	 * Deprecated. Use addProcessor instead.
 	 */
 	public function addBuilder (builder:ObjectDefinitionBuilder) : void {
-		builders.push(builder);
+		processors.push(builder);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function addScope (name:String, inherited:Boolean):void {
+	public function addProcessor (processor:ConfigurationProcessor) : void {
+		processors.push(processor);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function addScope (name:String, inherited:Boolean) : void {
 		scopes.addScope(createScopeDefinition(name, inherited));
 	}
 
@@ -159,15 +170,15 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		_factories.activate(GlobalFactoryRegistry.instance);
 		assembleScopeDefinitions();
 		createContext();
-		invokeNextBuilder();
-		if (builders.length > 0) {
+		invokeNextProcessor();
+		if (processors.length > 0) {
 			async = true;
 		}
 		return context;	
 	}
 	
-	private function invokeNextBuilder () : void {
-		if (builders.length == 0) {
+	private function invokeNextProcessor () : void {
+		if (processors.length == 0) {
 			context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 			if (errors.length > 0) {
 				handleErrors();
@@ -182,25 +193,50 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 			}
 		}
 		else {
-			var builder:ObjectDefinitionBuilder = builders.shift();
 			try {
-				if (builder is AsyncObjectDefinitionBuilder) {
-					currentBuilder = AsyncObjectDefinitionBuilder(builder);
-					currentBuilder.addEventListener(Event.COMPLETE, builderComplete);				
-					currentBuilder.addEventListener(ErrorEvent.ERROR, builderError);		
-					currentBuilder.build(registry);
+				var processor:Object = processors.shift();
+				if (processor is ConfigurationProcessor) {
+					handleProcessor(ConfigurationProcessor(processor));
 				}
 				else {
-					builder.build(registry);
-					invokeNextBuilder();
+					handleLegacyBuilder(ObjectDefinitionBuilder(processor));
 				}
 			} catch (e:Error) {
-				removeCurrentBuilder();
-				var msg:String = "Error processing " + builder;
+				removeCurrentProcessor();
+				var msg:String = "Error processing " + processor;
 				log.error(msg + "{0}", e);
 				errors.push(msg + ": " + e.message);
-				invokeNextBuilder();
+				invokeNextProcessor();
 			}
+		}
+	}
+	
+	private function handleProcessor (processor:ConfigurationProcessor) : void {
+		if (processor is AsyncConfigurationProcessor) {
+			currentProcessor = processor;
+			var asyncProcessor:AsyncConfigurationProcessor = AsyncConfigurationProcessor(processor);
+			asyncProcessor.addEventListener(Event.COMPLETE, processorComplete);				
+			asyncProcessor.addEventListener(ErrorEvent.ERROR, processorError);		
+			asyncProcessor.process(registry);
+		}
+		else {
+			ConfigurationProcessor(processor).process(registry);
+			invokeNextProcessor();
+		}
+	}
+	
+	private function handleLegacyBuilder (builder:ObjectDefinitionBuilder) : void {
+		/* TODO - deprecated - remove in later versions */
+		if (builder is AsyncObjectDefinitionBuilder) {
+			currentProcessor = builder;
+			var asyncBuilder:AsyncObjectDefinitionBuilder = AsyncObjectDefinitionBuilder(builder);
+			asyncBuilder.addEventListener(Event.COMPLETE, processorComplete);				
+			asyncBuilder.addEventListener(ErrorEvent.ERROR, processorError);		
+			asyncBuilder.build(registry);
+		}
+		else {
+			builder.build(registry);
+			invokeNextProcessor();
 		}
 	}
 	
@@ -214,24 +250,24 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		}		
 	}
 	
-	private function builderComplete (event:Event) : void {
-		removeCurrentBuilder();
-		invokeNextBuilder();
+	private function processorComplete (event:Event) : void {
+		removeCurrentProcessor();
+		invokeNextProcessor();
 	}
 	
-	private function builderError (event:ErrorEvent) : void {
-		removeCurrentBuilder();
+	private function processorError (event:ErrorEvent) : void {
+		removeCurrentProcessor();
 		var msg:String = "Error processing " + event.target + ": " + event.text;
 		log.error(msg);
 		errors.push(msg);
-		invokeNextBuilder();
+		invokeNextProcessor();
 	}
 	
-	private function removeCurrentBuilder () : void {
-		if (currentBuilder == null) return;
-		currentBuilder.removeEventListener(Event.COMPLETE, builderComplete);				
-		currentBuilder.removeEventListener(ErrorEvent.ERROR, builderError);
-		currentBuilder = null;			
+	private function removeCurrentProcessor () : void {
+		if (currentProcessor == null) return;
+		currentProcessor.removeEventListener(Event.COMPLETE, processorComplete);				
+		currentProcessor.removeEventListener(ErrorEvent.ERROR, processorError);
+		currentProcessor = null;			
 	}
 	
 	private function contextError (event:ErrorEvent) : void {
@@ -242,8 +278,8 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	
 	private function contextDestroyed (event:Event) : void {
 		context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		if (currentBuilder != null) {
-			currentBuilder.cancel();
+		if (currentProcessor != null) {
+			currentProcessor.cancel();
 		}
 	}
 	

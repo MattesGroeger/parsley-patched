@@ -19,7 +19,6 @@ import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionRef
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.core.NestedTag;
 
 [Metadata(name="MessageDispatcher", types="property")]
 /**
@@ -31,7 +30,7 @@ import org.spicefactory.parsley.tag.core.NestedTag;
  * 
  * @author Jens Halm
  */
-public class MessageDispatcherDecorator implements ObjectDefinitionDecorator, NestedTag {
+public class MessageDispatcherDecorator implements ObjectDefinitionDecorator {
 
 
 	[Target]

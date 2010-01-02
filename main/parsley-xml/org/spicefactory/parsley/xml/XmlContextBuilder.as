@@ -19,7 +19,7 @@ import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
-import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionBuilder;
+import org.spicefactory.parsley.xml.processor.XmlConfigurationProcessor;
 
 import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
@@ -93,7 +93,7 @@ public class XmlContextBuilder {
 	 */
 	public static function mergeAll (filenames:Array, builder:CompositeContextBuilder, 
 			expressionContext:ExpressionContext = null) : void {
-		builder.addBuilder(new XmlObjectDefinitionBuilder(filenames, expressionContext));
+		builder.addProcessor(new XmlConfigurationProcessor(filenames, expressionContext));
 	}
 	
 	

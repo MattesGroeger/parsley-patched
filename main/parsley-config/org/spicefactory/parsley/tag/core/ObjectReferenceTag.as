@@ -15,6 +15,12 @@
  */
 
 package org.spicefactory.parsley.tag.core {
+import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.model.ObjectIdReference;
+import org.spicefactory.parsley.core.registry.model.ObjectTypeReference;
+import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
 
 /**
  * Represents a reference to another object in the container (either by id or by type) in MXML or XML configuration.
@@ -22,7 +28,7 @@ package org.spicefactory.parsley.tag.core {
  * 
  * @author Jens Halm
  */
-public class ObjectReferenceTag implements NestedTag {
+public class ObjectReferenceTag implements ResolvableConfigurationValue {
 	
 	
 	/**
@@ -39,6 +45,22 @@ public class ObjectReferenceTag implements NestedTag {
 	 * Indicates whether this instance represents a required dependency.
 	 */
 	public var required:Boolean = true;
+	
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function resolve (registry:ObjectDefinitionRegistry) : * {
+		if ((idRef != null && typeRef != null) || (idRef == null && typeRef == null)) {
+			throw new ObjectDefinitionBuilderError("Exactly one attribute of either id-ref or type-ref must be specified");
+		}
+		if (idRef != null) {
+			return new ObjectIdReference(idRef, required);
+		}
+		else {
+			return new ObjectTypeReference(ClassInfo.forClass(typeRef, registry.domain), required);
+		}
+	}
 	
 	
 }

@@ -15,30 +15,30 @@
 	</mx:Script>
 	
 	
-	<flextag:MxmlObjectTag id="commandObservers" type="{CommandObservers}" lazy="true">
+	<flextag:MxmlRootObjectTag id="commandObservers" type="{CommandObservers}" lazy="true">
 		<msg:CommandResultDecorator method="noParam" type="{TestEvent}" selector="test1"/>
 		<msg:CommandResultDecorator method="oneParam" type="{TestEvent}" selector="test1"/>
 		<msg:CommandResultDecorator method="twoParams" selector="test1"/>
 		<msg:CommandErrorDecorator method="error" type="{TestEvent}" selector="test1"/>
-	</flextag:MxmlObjectTag> 
+	</flextag:MxmlRootObjectTag> 
 	
-	<flextag:MxmlObjectTag id="commandExecutors" type="{CommandExecutors}" lazy="true">
+	<flextag:MxmlRootObjectTag id="commandExecutors" type="{CommandExecutors}" lazy="true">
 		<msg:CommandDecorator method="event1" selector="test1"/>
 		<msg:CommandDecorator method="event2" selector="test2"/>
 		<msg:CommandDecorator method="faultyCommand" selector="test1"/>
-	</flextag:MxmlObjectTag> 
+	</flextag:MxmlRootObjectTag> 
 	
-	<flextag:MxmlObjectTag id="commandStatusFlags" type="{CommandStatusFlags}" lazy="true">
+	<flextag:MxmlRootObjectTag id="commandStatusFlags" type="{CommandStatusFlags}" lazy="true">
 		<msg:CommandStatusDecorator property="flag1and2" type="{TestEvent}"/>
 		<msg:CommandStatusDecorator property="flag1" type="{TestEvent}" selector="test1"/>
 		<msg:CommandStatusDecorator property="flag2" type="{TestEvent}" selector="test2"/>
-	</flextag:MxmlObjectTag> 
+	</flextag:MxmlRootObjectTag> 
 	
-	<flextag:MxmlObjectTag id="errorHandlers" type="{ErrorHandlers}">
+	<flextag:MxmlRootObjectTag id="errorHandlers" type="{ErrorHandlers}">
 		<msg:MessageErrorDecorator method="allTestEvents" type="{TestEvent}"/>
 		<msg:MessageErrorDecorator method="allEvents" type="{Event}"/>
 		<msg:MessageErrorDecorator method="event1" selector="test1" type="{TestEvent}" errorType="{ContextError}"/>
 		<msg:MessageErrorDecorator method="event2" selector="test2" type="{TestEvent}" errorType="{ContextError}"/>
-	</flextag:MxmlObjectTag> 
+	</flextag:MxmlRootObjectTag> 
 	
 </mx:Object>

@@ -15,15 +15,9 @@
  */
 
 package org.spicefactory.parsley.core.registry.impl {
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
-import org.spicefactory.parsley.core.registry.model.ObjectTypeReference;
-import org.spicefactory.parsley.core.registry.model.ManagedArray;
-import org.spicefactory.parsley.core.registry.model.ObjectIdReference;
-import org.spicefactory.parsley.tag.core.ObjectReferenceTag;
-import org.spicefactory.parsley.tag.core.ArrayTag;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
 
 /**
  * Responsible for resolving some special tags that can be used in MXML or XML configuration
@@ -44,27 +38,11 @@ public class RegistryValueResolver {
 	 */
 	public function resolveValue (value:*, registry:ObjectDefinitionRegistry) : * {
 		if (value is ObjectDefinitionFactory) {
+			/* TODO - deprecated - remove in later versions */
 			return ObjectDefinitionFactory(value).createNestedDefinition(registry);
 		}
-		else if (value is ObjectReferenceTag) {
-			var objRef:ObjectReferenceTag = value as ObjectReferenceTag;
-			if ((objRef.idRef != null && objRef.typeRef != null) || (objRef.idRef == null && objRef.typeRef == null)) {
-				throw new ObjectDefinitionBuilderError("Exactly one attribute of either id-ref or type-ref must be specified");
-			}
-			if (objRef.idRef != null) {
-				return new ObjectIdReference(objRef.idRef, objRef.required);
-			}
-			else {
-				return new ObjectTypeReference(ClassInfo.forClass(objRef.typeRef, registry.domain), objRef.required);
-			}
-		}
-		else if (value is ArrayTag) {
-			var arrayTag:ArrayTag = value as ArrayTag;
-			var managedArray:Array = new ManagedArray();
-			for (var i:int = 0; i < arrayTag.values.length; i++) {
-				managedArray.push(resolveValue(arrayTag.values[i], registry));
-			}
-			return managedArray;
+		else if (value is ResolvableConfigurationValue) {
+			return ResolvableConfigurationValue(value).resolve(registry);
 		}
 		else {
 			return value;

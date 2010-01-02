@@ -22,7 +22,6 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.Scope;
 import org.spicefactory.parsley.core.scope.ScopeName;
-import org.spicefactory.parsley.tag.core.NestedTag;
 
 import flash.system.ApplicationDomain;
 
@@ -37,7 +36,7 @@ import flash.system.ApplicationDomain;
  * 
  * @author Jens Halm
  */
-public class AbstractSynchronizedProviderDecorator implements ObjectDefinitionDecorator, NestedTag {
+public class AbstractSynchronizedProviderDecorator implements ObjectDefinitionDecorator {
 	
 	
 	/**

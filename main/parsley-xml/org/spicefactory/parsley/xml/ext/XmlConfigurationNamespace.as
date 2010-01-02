@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.xml.ext {
-	import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.NamingStrategy;
@@ -24,6 +23,8 @@ import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.tag.RootConfigurationTag;
+import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
@@ -240,9 +241,9 @@ public class XmlConfigurationNamespace {
 		if (factories[tagName] != null) {
 			throw new IllegalArgumentError("Duplicate registration for object tag name " + tagName + " in namespace " + uri);
 		}
-		if (mustBeFactory && !type.isType(ObjectDefinitionFactory)) {
+		if (mustBeFactory && !type.isType(ObjectDefinitionFactory) && !type.isType(RootConfigurationTag)) {
 			throw new IllegalArgumentError("The specified factory class " + type.name 
-					+ " does not implement the ObjectDefinitionFactory interface");
+					+ " does not implement the ConfigurationProcessor interface");
 		}
 	}
 	

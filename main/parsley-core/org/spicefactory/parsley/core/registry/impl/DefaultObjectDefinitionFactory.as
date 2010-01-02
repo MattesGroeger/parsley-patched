@@ -44,8 +44,13 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	public var decorators:Array = new Array();
 	private var instantiator:ObjectInstantiator;
 	
-	function DefaultObjectDefinitionFactory (type:Class, id:String = null, 
-			lazy:Boolean = false, singleton:Boolean = true, order:int = int.MAX_VALUE, instantiator:ObjectInstantiator = null) {
+	function DefaultObjectDefinitionFactory (
+			type:Class, 
+			id:String = null, 
+			lazy:Boolean = false, 
+			singleton:Boolean = true, 
+			order:int = int.MAX_VALUE, 
+			instantiator:ObjectInstantiator = null) {
 		this.type = type;
 		this.id = id;
 		this.lazy = lazy;
@@ -58,19 +63,19 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 		if (id == null) id = IdGenerator.nextObjectId;
 		return registry.builders
 					.forRootDefinition(type)
-					.setId(id)
-					.setLazy(lazy)
-					.setSingleton(singleton)
-					.setOrder(order)
-					.setInstantiator(instantiator)
-					.addAllDecorators(decorators)
+					.id(id)
+					.lazy(lazy)
+					.singleton(singleton)
+					.order(order)
+					.instantiator(instantiator)
+					.decorators(decorators)
 					.build();
 	}
 	
 	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		return registry.builders
 					.forNestedDefinition(type)
-					.addAllDecorators(decorators)
+					.decorators(decorators)
 					.build();
 	}
 	

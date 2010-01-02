@@ -18,14 +18,14 @@
 	    <tag:PropertyTag name="model" idRef="child"/>
 	</tag:MxmlViewTag>
 	
-	<tag:MxmlObjectTag type="{ClassNotCompiledIntoRootApp}">
+	<tag:MxmlRootObjectTag type="{ClassNotCompiledIntoRootApp}">
 		<tag:PropertyTag name="dependency" idRef="mdep"/>
 		<msg:MessageHandlerDecorator method="onAnything" selector="anything" type="{Event}"/>
-	</tag:MxmlObjectTag>
+	</tag:MxmlRootObjectTag>
 	
-	<tag:MxmlObjectTag id="mdep" type="{ModuleDependency}"/>
+	<tag:MxmlRootObjectTag id="mdep" type="{ModuleDependency}"/>
 	
-	<tag:MxmlObjectTag id="child" type="{CoreModel}">
+	<tag:MxmlRootObjectTag id="child" type="{CoreModel}">
 		<tag:ConstructorTag>
 			<mx:String>module</mx:String>
 			<mx:int>9</mx:int>
@@ -39,7 +39,7 @@
 				<tag:ObjectReferenceTag idRef="dependency"/>
 			</tag:ArrayTag>
 		</tag:PropertyTag>
-	</tag:MxmlObjectTag> 
+	</tag:MxmlRootObjectTag> 
 	
 	
 </mx:Object> 

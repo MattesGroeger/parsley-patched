@@ -57,7 +57,7 @@ public class DynamicContextTest extends ContextTestBase {
 		var registry:ObjectDefinitionRegistry = DefaultContext(context).registry;
 		var definition:ObjectDefinition = registry.builders
 					.forNestedDefinition(DynamicTestObject)
-					.addDecorator(decorator)
+					.decorator(decorator)
 					.build();
 		definition.properties.addTypeReference("dependency");
 		return definition;

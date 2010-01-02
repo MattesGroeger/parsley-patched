@@ -15,8 +15,6 @@
  */
 
 package org.spicefactory.parsley.xml.mapper {
-	import org.spicefactory.parsley.xml.tag.CommandDecoratorTag;
-	import org.spicefactory.parsley.tag.messaging.CommandDecorator;
 import org.spicefactory.lib.reflect.converter.BooleanConverter;
 import org.spicefactory.lib.reflect.converter.ClassConverter;
 import org.spicefactory.lib.reflect.converter.DateConverter;
@@ -31,8 +29,9 @@ import org.spicefactory.lib.xml.mapper.Choice;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.tag.core.ArrayTag;
 import org.spicefactory.parsley.tag.core.ConstructorTag;
+import org.spicefactory.parsley.tag.core.NestedObjectTag;
 import org.spicefactory.parsley.tag.core.ObjectReferenceTag;
-import org.spicefactory.parsley.tag.core.ObjectTag;
+import org.spicefactory.parsley.tag.core.RootObjectTag;
 import org.spicefactory.parsley.tag.core.PropertyTag;
 import org.spicefactory.parsley.tag.core.ViewTag;
 import org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator;
@@ -52,10 +51,11 @@ import org.spicefactory.parsley.tag.messaging.MessageInterceptorDecorator;
 import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
+import org.spicefactory.parsley.xml.tag.CommandDecoratorTag;
 import org.spicefactory.parsley.xml.tag.Include;
 import org.spicefactory.parsley.xml.tag.ManagedEventsDecoratorTag;
 import org.spicefactory.parsley.xml.tag.MessageHandlerDecoratorTag;
-import org.spicefactory.parsley.xml.tag.ObjectDefinitionFactoryContainer;
+import org.spicefactory.parsley.xml.tag.ObjectsTag;
 import org.spicefactory.parsley.xml.tag.Variable;
 
 /**
@@ -103,7 +103,7 @@ public class XmlObjectDefinitionMapperFactory {
 		addCustomConfigurationNamespaces();
 		buildValueChoice();
 		buildDecoratorChoice();
-		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectDefinitionFactoryContainer, "objects"); 
+		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectsTag, "objects"); 
 		rootObjectChoice.addMapper(getRootObjectMapper());
 		rootObjectChoice.addMapper(getViewObjectMapper());
 		builder.mapToChildElementChoice("objects", rootObjectChoice);
@@ -134,7 +134,7 @@ public class XmlObjectDefinitionMapperFactory {
 
 	
 	private function getRootObjectMapper () : XmlObjectMapper {
-		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectTag, "object"); 
+		var builder:PropertyMapperBuilder = getMapperBuilder(RootObjectTag, "object"); 
 		builder.mapToChildElementChoice("decorators", decoratorChoice);
 		builder.mapAllToAttributes();
 		return builder.build();
@@ -149,7 +149,7 @@ public class XmlObjectDefinitionMapperFactory {
 	}
 	
 	private function getNestedObjectMapper () : XmlObjectMapper {
-		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectTag, "object"); 
+		var builder:PropertyMapperBuilder = getMapperBuilder(NestedObjectTag, "object"); 
 		builder.mapToChildElementChoice("decorators", decoratorChoice);
 		builder.mapToAttribute("type");
 		return builder.build();

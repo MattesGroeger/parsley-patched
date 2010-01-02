@@ -18,7 +18,7 @@ package org.spicefactory.parsley.flex.tag.builder {
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.flex.FlexLogFactory;
-import org.spicefactory.parsley.asconfig.builder.ActionScriptObjectDefinitionBuilder;
+import org.spicefactory.parsley.asconfig.processor.ActionScriptConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
@@ -209,7 +209,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 			var factory:ContextBuilderFactory = GlobalFactoryRegistry.instance.contextBuilder;
 			var builder:CompositeContextBuilder = factory.create(viewRoot, parent, domain);
 			if (config != null) {
-				builder.addBuilder(new ActionScriptObjectDefinitionBuilder([config]));
+				builder.addProcessor(new ActionScriptConfigurationProcessor([config]));
 			}
 			if (processors != null) {
 				for each (var processor:ContextBuilderProcessor in processors) {

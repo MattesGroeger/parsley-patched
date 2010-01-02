@@ -23,7 +23,6 @@ import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionRef
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.core.NestedTag;
 
 import flash.events.IEventDispatcher;
 
@@ -37,7 +36,7 @@ import flash.events.IEventDispatcher;
  * 
  * @author Jens Halm
  */
-public class ManagedEventsDecorator implements ObjectDefinitionDecorator, NestedTag {
+public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
 
 
 	[DefaultProperty]

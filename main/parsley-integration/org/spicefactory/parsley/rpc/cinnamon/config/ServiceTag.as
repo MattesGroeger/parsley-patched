@@ -16,19 +16,16 @@
 
 package org.spicefactory.parsley.rpc.cinnamon.config {
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-
-import flash.errors.IllegalOperationError;
+import org.spicefactory.parsley.tag.RootConfigurationTag;
 
 /**
  * Represents the Service MXML or XML tag, defining the configuration for a Cinnamon service.
  * 
  * @author Jens Halm
  */
-public class ServiceTag implements ObjectDefinitionFactory {
+public class ServiceTag implements RootConfigurationTag {
 	
     
     /**
@@ -64,22 +61,14 @@ public class ServiceTag implements ObjectDefinitionFactory {
 	/**
 	 * @inheritDoc
 	 */
-	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
+	public function process (registry:ObjectDefinitionRegistry) : void {
 		if (id == null) id = name;
 		var definition:RootObjectDefinition = registry.builders
-					.forRootDefinition(type)
-					.setId(id)
-					.build();
+				.forRootDefinition(type)
+				.id(id)
+				.buildAndRegister();
 		var listener:ServiceLifecycleListener = new ServiceLifecycleListener(this);
 		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, listener.postInit);
-		return definition;
-	}
-
-	/**
-	 * @private
-	 */
-	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		throw new IllegalOperationError("Services must be defined as root objects");
 	}
 }
 }

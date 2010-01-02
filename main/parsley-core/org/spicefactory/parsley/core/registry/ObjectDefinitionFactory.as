@@ -16,32 +16,24 @@
 
 package org.spicefactory.parsley.core.registry {
 
+[ExcludeClass]
+
 /**
- * A factory that produces object definitions.
+ * @private
+ * 
+ * Deprecated. Kept in the code base for backwards-compatibility.
+ * The builders accessible through registry.builders should now be used.
+ * This class only delegates to the new mechanism now.
+ * For root object tags the new interface RootConfigurationTag can now be used.
+ * For nested object tags use ResolvableRegistryValue
  * 
  * @author Jens Halm
  */
 public interface ObjectDefinitionFactory {
 	
-	
-	/**
-	 * Creates a root object definition that can be accessed directly by id.
-	 * The method must not register the new definition with the registry, that step will be performed
-	 * by the container. The specified registry may be used to look up or register additional collaborators/dependencies.
-	 * 
-	 * @param registry the registry the new definition will be added to
-	 * @return a new root object definition
-	 */
 	function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition;	
 
-	/**
-	 * Creates a nested (inline) object definition that cannot be accessed directly.
-	 * 
-	 * @param registry the registry that the new definition will belong to
-	 * @return a new object definition
-	 */
 	function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition;	
-
 	
 }
 }

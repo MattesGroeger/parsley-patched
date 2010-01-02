@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.xml.builder {
+package org.spicefactory.parsley.xml.processor {
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.expr.impl.DefaultExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
@@ -23,12 +23,11 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
-import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.builder.AsyncConfigurationProcessor;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
-import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionLoader;
 import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import org.spicefactory.parsley.xml.tag.ObjectsTag;
 
@@ -36,22 +35,20 @@ import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
 
-[ExcludeClass]
 /**
- * @private
- * 
- * Deprecated. Use XmlConfigurationProcessor instead.
+ * ObjectDefinitionBuilder implementation that processes XML configuration files.
+ * This builder operates asynchronously.
  * 
  * @author Jens Halm
  */
-public class XmlObjectDefinitionBuilder extends EventDispatcher implements AsyncObjectDefinitionBuilder {
+public class XmlConfigurationProcessor extends EventDispatcher implements AsyncConfigurationProcessor {
 
 	
-	private static const log:Logger = LogContext.getLogger(XmlObjectDefinitionBuilder);
+	private static const log:Logger = LogContext.getLogger(XmlConfigurationProcessor);
 	
 	
 	private var mapper:XmlObjectMapper;
-	private var _loader:XmlObjectDefinitionLoader;
+	private var _loader:XmlConfigurationLoader;
 	private var loadedFiles:Array = new Array();
 	private var expressionContext:ExpressionContext;
 	private var registry:ObjectDefinitionRegistry;
@@ -62,10 +59,10 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	 * 
 	 * @param files the names of the XML configuration files
 	 */
-	function XmlObjectDefinitionBuilder (files:Array, expressionContext:ExpressionContext = null, loader:XmlObjectDefinitionLoader = null) {
+	function XmlConfigurationProcessor (files:Array, expressionContext:ExpressionContext = null, loader:XmlConfigurationLoader = null) {
 		if (expressionContext == null) expressionContext = new DefaultExpressionContext();
 		this.expressionContext = expressionContext;
-		this._loader = (loader == null) ? new XmlObjectDefinitionLoader(files, expressionContext) : loader;
+		this._loader = (loader == null) ? new XmlConfigurationLoader(files, expressionContext) : loader;
 		var mapperFactory:XmlObjectDefinitionMapperFactory = new XmlObjectDefinitionMapperFactory();
 		mapper = mapperFactory.createObjectDefinitionMapper();
 	}
@@ -74,7 +71,7 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	/**
 	 * The loader that loads the XML configuration files.
 	 */	
-	public function get loader () : XmlObjectDefinitionLoader {
+	public function get loader () : XmlConfigurationLoader {
 		return _loader;
 	}
 	
@@ -90,7 +87,7 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	/**
 	 * @inheritDoc
 	 */
-	public function build (registry:ObjectDefinitionRegistry) : void {
+	public function process (registry:ObjectDefinitionRegistry) : void {
 		this.registry = registry;
 		_loader.addEventListener(Event.COMPLETE, loaderComplete);
 		_loader.addEventListener(ErrorEvent.ERROR, loaderError);
@@ -99,34 +96,14 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 
 	private function loaderComplete (event:Event) : void {
 		loadedFiles = loadedFiles.concat(_loader.loadedFiles);
+		processAllFiles(loadedFiles);
+	}
+	
+	private function processAllFiles (files:Array) : void {
 		var containerErrors:Array = new Array();
-		for each (var file:XmlFile in loadedFiles) {
+		for each (var file:XmlFile in files) {
 			try {
-				var context:XmlProcessorContext = new XmlProcessorContext(expressionContext, registry.domain);
-				var factoryErrors:Array = new Array();
-				var container:ObjectsTag 
-						= mapper.mapToObject(file.rootElement, context) as ObjectsTag;
-				if (!context.hasErrors()) {
-					for each (var obj:Object in container.objects) {
-						try {
-							buildTargetDefinition(obj);
-						} 
-						catch (error:Error) {
-							var msg:String = "Error building object definition for " + obj;
-							log.error(msg + "{0}", error);
-							factoryErrors.push(msg + ": " + error.message);		
-						}
-					}
-				}	
-				else {
-					for each (var xmlError:Error in context.errors) {
-						factoryErrors.push(xmlError.message);
-					}
-				}
-				if (factoryErrors.length > 0) {
-					containerErrors.push("One or more errors processing file " + file 
-								+ ":\n " + factoryErrors.join("\n "));
-				}
+				processFile(file, containerErrors);
 			}
 			catch (e:Error) {
 				var message:String = "Error processing file " + file;
@@ -145,8 +122,35 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 		}
 	}
 	
+	private function processFile (file:XmlFile, containerErrors:Array) : void {
+		var context:XmlProcessorContext = new XmlProcessorContext(expressionContext, registry.domain);
+		var factoryErrors:Array = new Array();
+		var container:ObjectsTag 
+				= mapper.mapToObject(file.rootElement, context) as ObjectsTag;
+		if (!context.hasErrors()) {
+			for each (var obj:Object in container.objects) {
+				try {
+					processObject(obj);
+				} 
+				catch (error:Error) {
+					var msg:String = "Error building object definition for " + obj;
+					log.error(msg + "{0}", error);
+					factoryErrors.push(msg + ": " + error.message);		
+				}
+			}
+		}	
+		else {
+			for each (var xmlError:Error in context.errors) {
+				factoryErrors.push(xmlError.message);
+			}
+		}
+		if (factoryErrors.length > 0) {
+			containerErrors.push("One or more errors processing file " + file 
+						+ ":\n " + factoryErrors.join("\n "));
+		}		
+	}
 	
-	private function buildTargetDefinition (obj:Object) : void {
+	private function processObject (obj:Object) : void {
 		if (obj is ObjectDefinitionFactory) {
 			/* TODO - ObjectDefinitionFactory is deprecated - remove in later versions */
 			var definition:RootObjectDefinition = ObjectDefinitionFactory(obj).createRootDefinition(registry);

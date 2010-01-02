@@ -41,7 +41,7 @@
 	    <tag:PropertyTag name="model" idRef="object"/>
 	</tag:MxmlViewTag>-->
 	
-	<tag:MxmlObjectTag id="object" type="{CoreModel}">
+	<tag:MxmlRootObjectTag id="object" type="{CoreModel}">
 		<tag:ConstructorTag>
 			<mx:String>foo</mx:String>
 			<mx:int>7</mx:int>
@@ -55,7 +55,7 @@
 				<tag:ObjectReferenceTag idRef="dependency"/>
 			</tag:ArrayTag>
 		</tag:PropertyTag>
-	</tag:MxmlObjectTag> 
+	</tag:MxmlRootObjectTag> 
 	
 	
 </mx:Object> 

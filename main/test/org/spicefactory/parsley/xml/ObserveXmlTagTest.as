@@ -1,15 +1,9 @@
 package org.spicefactory.parsley.xml {
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.decorator.lifecycle.ObserveTestBase;
 import org.spicefactory.parsley.core.decorator.lifecycle.model.LifecycleEventCounter;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinition;
 
 import mx.containers.Box;
-import mx.containers.HBox;
-import mx.containers.VBox;
-import mx.controls.Text;
 
 /**
  * @author Jens Halm

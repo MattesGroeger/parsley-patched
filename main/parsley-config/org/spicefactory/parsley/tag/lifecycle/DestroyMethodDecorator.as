@@ -18,7 +18,6 @@ package org.spicefactory.parsley.tag.lifecycle {
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.core.NestedTag;
 
 [Metadata(name="Destroy", types="method")]
 /**
@@ -27,7 +26,7 @@ import org.spicefactory.parsley.tag.core.NestedTag;
  *
  * @author Jens Halm
  */
-public class DestroyMethodDecorator implements ObjectDefinitionDecorator, NestedTag {
+public class DestroyMethodDecorator implements ObjectDefinitionDecorator {
 
 	
 	[Target]

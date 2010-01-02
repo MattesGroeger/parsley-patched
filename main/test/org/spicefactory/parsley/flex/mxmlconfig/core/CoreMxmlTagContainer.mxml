@@ -15,7 +15,7 @@
 	<model:InjectedDependency id="dependency"/>
 	
 	
-	<tag:MxmlObjectTag id="object" type="{CoreModel}">
+	<tag:MxmlRootObjectTag id="object" type="{CoreModel}">
 		<tag:ConstructorTag>
 			<mx:String>foo</mx:String>
 			<mx:int>7</mx:int>
@@ -31,7 +31,7 @@
 				<tag:NestedObjectTag type="{ArrayElement}"/>
 			</tag:ArrayTag>
 		</tag:PropertyTag>
-	</tag:MxmlObjectTag> 
+	</tag:MxmlRootObjectTag> 
 	
 	
 </mx:Object> 

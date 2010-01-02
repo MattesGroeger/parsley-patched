@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.asconfig {
-import org.spicefactory.parsley.asconfig.builder.ActionScriptObjectDefinitionBuilder;
+import org.spicefactory.parsley.asconfig.processor.ActionScriptConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
@@ -88,7 +88,7 @@ public class ActionScriptContextBuilder {
 	 * 
 	 */
 	public static function mergeAll (configClasses:Array, builder:CompositeContextBuilder) : void {
-		builder.addBuilder(new ActionScriptObjectDefinitionBuilder(configClasses));
+		builder.addProcessor(new ActionScriptConfigurationProcessor(configClasses));
 	}
 	
 	

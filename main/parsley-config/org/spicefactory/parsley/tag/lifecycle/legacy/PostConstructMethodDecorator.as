@@ -19,7 +19,6 @@ import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.core.NestedTag;
 
 [ExcludeClass]
 [Metadata(name="PostConstruct", types="method")]
@@ -30,7 +29,7 @@ import org.spicefactory.parsley.tag.core.NestedTag;
  * 
  * @author Jens Halm
  */
-public class PostConstructMethodDecorator implements ObjectDefinitionDecorator, NestedTag {
+public class PostConstructMethodDecorator implements ObjectDefinitionDecorator {
 
 
 	[Target]

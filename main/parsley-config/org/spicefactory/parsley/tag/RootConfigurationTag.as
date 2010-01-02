@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.xml.tag {
+package org.spicefactory.parsley.tag {
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
 /**
- * Represents the root objects tag of an XML configuration file.
+ * Represent a root configuration tag in MXML or XML configuration files.
  * 
  * @author Jens Halm
  */
-public class ObjectDefinitionFactoryContainer {
-	
+public interface RootConfigurationTag {
 	
 	/**
-	 * The objects defined in the XML configuration file.
+	 * Processes this configuration tag, possilbly adding object definitions to the specified registry.
+	 * 
+	 * @param registry the registry to process
 	 */
-	public var objects:Array;
-	
+	function process (registry:ObjectDefinitionRegistry) : void;
 	
 }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.tag.core {
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
+package org.spicefactory.parsley.core.registry {
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 
 /**
- * Represents the root object tag for an object definition in MXML or XML configuration.
+ * Represents the configuration for an object that is configured inline within another object configuration.
  * 
  * @author Jens Halm
  */
-public class ObjectTag extends DefaultObjectDefinitionFactory {
-	
-	
-	/**
-	 * Creates a new instance.
-	 */
-	function ObjectTag () {
-		super(null); // type will be set via property
-	}
+public interface NestedObjectDefinition extends ObjectDefinition {
 	
 	
 }

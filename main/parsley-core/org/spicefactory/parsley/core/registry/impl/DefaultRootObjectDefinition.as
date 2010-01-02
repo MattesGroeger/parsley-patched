@@ -15,18 +15,18 @@
  */
 
 package org.spicefactory.parsley.core.registry.impl {
-	import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-	import org.spicefactory.parsley.core.registry.definition.impl.SingletonLifecycleListenerRegistry;
-	import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
+import org.spicefactory.parsley.core.registry.definition.impl.SingletonLifecycleListenerRegistry;
 
 /**
  * Default implementation of the RootObjectDefinition interface.
  * 
  * @author Jens Halm
  */
-public class DefaultRootObjectDefinition extends DefaultObjectDefinition implements RootObjectDefinition {
+public class DefaultRootObjectDefinition extends AbstractObjectDefinition implements RootObjectDefinition {
 
 
 	private var _id:String;

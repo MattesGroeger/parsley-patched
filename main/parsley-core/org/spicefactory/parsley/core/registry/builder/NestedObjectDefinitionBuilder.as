@@ -15,8 +15,9 @@
  */
 
 package org.spicefactory.parsley.core.registry.builder {
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.NestedObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 
 /**
  * Builder for creating nested object definitions.
@@ -31,27 +32,36 @@ public interface NestedObjectDefinitionBuilder {
 	 * This decorator will be processed in addition to any decorators assembled by the
 	 * DecoratorAssemblers registered with the ObjectDefinitionRegistry.
 	 * 
-	 * @param decorator the decorator to add to this builder
+	 * @param value the decorator to add to this builder
 	 * @return this builder instance for method chaining
 	 */
-	function addDecorator (decorator:ObjectDefinitionDecorator) : NestedObjectDefinitionBuilder;
+	function decorator (value:ObjectDefinitionDecorator) : NestedObjectDefinitionBuilder;
 
 	/**
 	 * Adds decorators to be processed when creating the definition.
-	 * Thess decorators will be processed in addition to any decorators assembled by the
+	 * These decorators will be processed in addition to any decorators assembled by the
 	 * DecoratorAssemblers registered with the ObjectDefinitionRegistry.
 	 * 
-	 * @param decorators the decorators to add to this builder
+	 * @param value the decorators to add to this builder
 	 * @return this builder instance for method chaining
 	 */
-	function addAllDecorators (decorators:Array) : NestedObjectDefinitionBuilder;
+	function decorators (value:Array) : NestedObjectDefinitionBuilder;
 	
 	/**
-	 * Builds a new definition using all parameters set through other methods.
+	 * Sets the object responsible for creating instances from this definition.
+	 * If this property is not null the <code>constructorArgs</code> will be ignored.
+	 * 
+	 * @param value the object responsible for creating instances from this definition
+	 * @return this builder instance for method chaining
+	 */
+	function instantiator (value:ObjectInstantiator) : NestedObjectDefinitionBuilder;
+	
+	/**
+	 * Builds a new definition using all parameters set through the other methods of this builder.
 	 * 
 	 * @return a new nested object definition
 	 */
-	function build () : ObjectDefinition;
+	function build () : NestedObjectDefinition;
 	
 	
 }

@@ -19,17 +19,14 @@ import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.task.SequentialTaskGroup;
 import org.spicefactory.lib.task.TaskGroup;
 import org.spicefactory.lib.task.events.TaskEvent;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.flash.resources.impl.DefaultBundleLoaderFactory;
 import org.spicefactory.parsley.flash.resources.impl.DefaultResourceBundle;
 import org.spicefactory.parsley.flash.resources.spi.BundleLoaderFactory;
 import org.spicefactory.parsley.flash.resources.spi.ResourceBundleSpi;
 import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
+import org.spicefactory.parsley.tag.RootConfigurationTag;
 
-import flash.errors.IllegalOperationError;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -41,7 +38,7 @@ import flash.utils.getQualifiedClassName;
  * @author Jens Halm
  */
 [AsyncInit]
-public class ResourceBundleTag extends EventDispatcher implements ObjectDefinitionFactory {
+public class ResourceBundleTag extends EventDispatcher implements RootConfigurationTag {
 	
 	
 	[Required]
@@ -128,16 +125,13 @@ public class ResourceBundleTag extends EventDispatcher implements ObjectDefiniti
 		dispatchEvent(event.clone());
 	}
 	
-	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
-		return registry.builders.forRootDefinition(ResourceBundleTag)
-					.setId(id)
-					.setOrder(int.MIN_VALUE)
-					.setInstantiator(new TagInstantiator(this))
-					.build();
-	}
-	
-	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		throw new IllegalOperationError("This tag can only be used as a root definition");
+	public function process (registry:ObjectDefinitionRegistry) : void {
+		registry.builders
+				.forRootDefinition(ResourceBundleTag)
+				.id(id)
+				.order(int.MIN_VALUE)
+				.instantiator(new TagInstantiator(this))
+				.buildAndRegister();
 	}
 }
 }

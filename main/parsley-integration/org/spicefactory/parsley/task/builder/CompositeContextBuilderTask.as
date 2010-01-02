@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.task.builder {
 import org.spicefactory.lib.task.Task;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
@@ -62,12 +63,21 @@ public class CompositeContextBuilderTask extends Task {
 	}
 	
 	/**
-	 * Adds an ObjectDefinitionBuilder that should participate in creating the internal ObjectDefinitionRegistry.
+	 * @private
 	 * 
-	 * @param builder the builder to add
+	 * Deprecated. Use addProcessor instead.
 	 */
 	public function addBuilder (builder:ObjectDefinitionBuilder) : void {
 		_builder.addBuilder(builder);
+	}
+	
+	/**
+	 * Adds a configuration processor that should participate in creating the internal ObjectDefinitionRegistry.
+	 * 
+	 * @param builder the builder to add
+	 */
+	public function addProcessor (processor:ConfigurationProcessor) : void {
+		_builder.addProcessor(processor);
 	}
 	
 	/**

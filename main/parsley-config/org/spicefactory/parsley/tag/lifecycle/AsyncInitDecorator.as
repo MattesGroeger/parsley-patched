@@ -19,7 +19,6 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
-import org.spicefactory.parsley.tag.core.NestedTag;
 
 [Metadata(name="AsyncInit", types="class")]
 /**
@@ -27,7 +26,7 @@ import org.spicefactory.parsley.tag.core.NestedTag;
  * 
  * @author Jens Halm
  */
-public class AsyncInitDecorator extends AsyncInitConfig implements ObjectDefinitionDecorator, NestedTag {
+public class AsyncInitDecorator extends AsyncInitConfig implements ObjectDefinitionDecorator {
 
 
 	/**

@@ -10,9 +10,9 @@
 	</mx:Script>
 	
 	
-	<flextag:MxmlObjectTag id="asyncInitModel" type="{AsyncInitModel}">
+	<flextag:MxmlRootObjectTag id="asyncInitModel" type="{AsyncInitModel}">
 		<dec:AsyncInitDecorator/>
-	</flextag:MxmlObjectTag> 
+	</flextag:MxmlRootObjectTag> 
 	
 	
 </mx:Object> 

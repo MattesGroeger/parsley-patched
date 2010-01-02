@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.xml.builder {
+package org.spicefactory.parsley.xml.processor {
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
@@ -38,18 +38,15 @@ import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
 
-[ExcludeClass]
 /**
- * @private
- * 
- * Deprecated. Use XmlConfigurationLoader instead.
+ * Responsible for loading Parsley XML configuration files.
  * 
  * @author Jens Halm
  */
-public class XmlObjectDefinitionLoader extends EventDispatcher {
+public class XmlConfigurationLoader extends EventDispatcher {
 	
 	
-	private static var log:Logger = LogContext.getLogger(XmlObjectDefinitionLoader);
+	private static var log:Logger = LogContext.getLogger(XmlConfigurationLoader);
 	
 	
 	private var files:Array;
@@ -72,7 +69,7 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 	 * @param files the names of the files to load
 	 * @param expressionContext the expression context to use for preprocessing the loaded files
 	 */
-	function XmlObjectDefinitionLoader (files:Array, expressionContext:ExpressionContext) {
+	function XmlConfigurationLoader (files:Array, expressionContext:ExpressionContext) {
 		this.files = files;
 		this.expressionContext = expressionContext;
 		var mapperFactory:XmlObjectDefinitionMapperFactory = new XmlObjectDefinitionMapperFactory();

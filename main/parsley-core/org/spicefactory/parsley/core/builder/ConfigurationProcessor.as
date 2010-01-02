@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,20 @@
 package org.spicefactory.parsley.core.builder {
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
-[ExcludeClass]
-
 /**
- * @private
- * 
- * Deprecated. Use the new interface ConfigurationProcessor instead.
- * The name ObjectDefinitonBuilder had to much semantic overlap with interfaces in the core.registry package
- * (like the new interface ObjectDefinitionBuilderFactory which performs a completely different task).
+ * Responsible for processing configuration and adding object definitions to a registry.
+ * Parsley contains implementations of this interface that process MXML, XML or ActionScript configuration respectively.
  * 
  * @author Jens Halm
  */
-public interface ObjectDefinitionBuilder {
+public interface ConfigurationProcessor {
 	
-	function build (registry:ObjectDefinitionRegistry) : void;
+	/**
+	 * Processes all configuration artifacts and adds object definitions to the specified registry.
+	 * 
+	 * @param registry the registry to process
+	 */
+	function process (registry:ObjectDefinitionRegistry) : void;
 	
 }
 }

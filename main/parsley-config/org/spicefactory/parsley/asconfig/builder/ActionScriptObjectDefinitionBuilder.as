@@ -15,140 +15,31 @@
  */
 
 package org.spicefactory.parsley.asconfig.builder {
-import org.spicefactory.lib.logging.LogContext;
-import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.asconfig.metadata.InternalProperty;
-import org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata;
+import org.spicefactory.parsley.asconfig.processor.ActionScriptConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
-import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.registry.ViewDefinitionFactory;
-import org.spicefactory.parsley.tag.core.NestedTag;
 
-import flash.utils.getQualifiedClassName;
+[ExcludeClass]
 
 /**
- * ObjectDefinitionBuilder implementation that processes ActionScript configuration classes.
+ * @private
+ * 
+ * Deprecated. Use the new ActionScriptConfigurationProcessor class instead.
+ * The old class is kept in the code base for a while for backwards-compatibility
+ * and now just extends the new class.
  * 
  * @author Jens Halm
  */
-public class ActionScriptObjectDefinitionBuilder implements ObjectDefinitionBuilder {
+public class ActionScriptObjectDefinitionBuilder extends ActionScriptConfigurationProcessor implements ObjectDefinitionBuilder {
 
-	
-	private static const log:Logger = LogContext.getLogger(ActionScriptObjectDefinitionBuilder);
-
-	
-	private var configClasses:Array;
-	
-	
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param configClasses the classes that contain the ActionScript configuration
-	 */
 	function ActionScriptObjectDefinitionBuilder (configClasses:Array) {
-		this.configClasses = configClasses;
+		super(configClasses);
 	}
 	
-	
-	/**
-	 * @inheritDoc
-	 */
 	public function build (registry:ObjectDefinitionRegistry) : void {
-		var containerErrors:Array = new Array();
-		for each (var configClass:Class in configClasses) {
-			try {
-				var ci:ClassInfo = ClassInfo.forClass(configClass, registry.domain);
-				var configInstance:Object = new configClass();
-				var factoryErrors:Array = new Array();
-				for each (var property:Property in ci.getProperties()) {
-					try {
-						var internalMeta:Array = property.getMetadata(InternalProperty);
-						if (internalMeta.length == 0 && property.readable 
-								&& !property.type.isType(NestedTag) && !property.type.isType(ObjectDefinitionDecorator)) {
-							buildTargetDefinition(property, configInstance, registry);
-						} 
-					}
-					catch (e:Error) {
-						var msg:String = "Error building object definition for " + property;
-						log.error(msg + "{0}", e);
-						factoryErrors.push(msg + ": " + e.message);						
-					}
-				}
-				if (factoryErrors.length > 0) {
-					containerErrors.push("One or more errors processing " + getQualifiedClassName(configInstance) 
-							+ ":\n " + factoryErrors.join("\n "));
-				}
-			}
-			catch (e:Error) {
-				var message:String = "Error processing " + getQualifiedClassName(configInstance);
-				log.error(message + "{0}", e);
-				containerErrors.push(message + ":\n " + e.message);
-			}
-		}
-		if (containerErrors.length > 0) {
-			throw new ContextError("One or more errors in ActionScriptObjectDefinitionBuilder:\n " 
-					+ containerErrors.join("\n "));	
-		}
-	}
-	
-	private function buildTargetDefinition (configClassProperty:Property, configClass:Object, registry:ObjectDefinitionRegistry) : void {
-		if (configClassProperty.type.isType(ViewDefinitionFactory)) {
-			var viewFactory:ViewDefinitionFactory = configClassProperty.getValue(configClass);
-			var viewDefinition:ObjectDefinition = viewFactory.createDefinition(registry);
-			registry.viewDefinitions.registerDefinition(viewDefinition, viewFactory.configId);
-			return;
-		}
-		var factory:ObjectDefinitionFactory;
-		if (configClassProperty.type.isType(ObjectDefinitionFactory)) {
-			factory = configClassProperty.getValue(configClass);
-		}
-		else {
-			var definitionMetaArray:Array = configClassProperty.getMetadata(ObjectDefinitionMetadata);
-			var definitionMeta:ObjectDefinitionMetadata = (definitionMetaArray.length > 0) ? 
-					ObjectDefinitionMetadata(definitionMetaArray[0]) : new ObjectDefinitionMetadata();
-			var id:String = (definitionMeta.id != null) 
-					? definitionMeta.id : configClassProperty.name;
-			var type:Class = configClassProperty.type.getClass();
-			var rootDef:RootObjectDefinition = registry.builders.forRootDefinition(type)
-					.setId(id)
-					.setLazy(definitionMeta.lazy)
-					.setSingleton(definitionMeta.singleton)
-					.setOrder(definitionMeta.order)
-					.setInstantiator(new ConfingClassPropertyInstantiator(configClass, configClassProperty))
-					.build();
-			registry.registerDefinition(rootDef);
-			return;
-		}
-		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
-		registry.registerDefinition(definition);
-	}
+		process(registry);
+	}	
+
 }
-}
-
-import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.registry.definition.ContainerObjectInstantiator;
-
-class ConfingClassPropertyInstantiator implements ContainerObjectInstantiator {
-
-	private var configClass:Object;
-	private var property:Property;
-
-	function ConfingClassPropertyInstantiator (configClass:Object, property:Property) {
-		this.configClass = configClass;
-		this.property = property;
-	}
-	
-	public function instantiate (context:Context) : Object {
-		return property.getValue(configClass);
-	}
-	
 }
 

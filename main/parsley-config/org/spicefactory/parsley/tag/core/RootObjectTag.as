@@ -21,36 +21,52 @@ import org.spicefactory.parsley.tag.RootConfigurationTag;
 [DefaultProperty("decorators")]
 
 /**
- * Represents the root view tag for an object definition in MXML or XML configuration.
+ * Represents the root object tag for an object definition in MXML or XML configuration.
  * 
  * @author Jens Halm
  */
-public class ViewTag implements RootConfigurationTag {
+public class RootObjectTag implements RootConfigurationTag {
 	
 	
 	/**
-	 * The optional id the view definition produced by this factory should be registered with.
+	 * The type of the object configured by this definition.
+	 */
+	public var type:Class = Object;
+	
+	/**
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#id
 	 */
 	public var id:String;
 	
 	/**
-	 * The type of dynamically wired views the definition produced by this factory should be applied to.
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#lazy
 	 */
-	public var type:Class = Object;
+	public var lazy:Boolean = false;
 	
+	/**
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#singleton
+	 */
+	public var singleton:Boolean = true;
+	
+	/**
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#order
+	 */
+	public var order:int = int.MAX_VALUE;
+
+	[ArrayElementType("org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator")]
 	/**
 	 * The ObjectDefinitionDecorator instances added to this definition.
 	 */
 	public var decorators:Array = new Array();
 	
-
-	/**
-	 * @inheritDoc
-	 */
+	
 	public function process (registry:ObjectDefinitionRegistry) : void {
 		registry.builders
-				.forViewDefinition(type)
+				.forRootDefinition(type)
 				.id(id)
+				.lazy(lazy)
+				.singleton(singleton)
+				.order(order)
 				.decorators(decorators)
 				.buildAndRegister();
 	}

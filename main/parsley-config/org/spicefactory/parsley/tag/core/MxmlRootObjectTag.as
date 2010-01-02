@@ -15,15 +15,24 @@
  */
 
 package org.spicefactory.parsley.tag.core {
+import mx.core.IMXMLObject;
 
 /**
- * Marker interface for configuration tags that are not intended for use as root object tags 
- * in MXML or XML configuration. The distinction is necessary as the mxmlc compiler creates
- * public properties for all nested tags with bindings so that they are indistinguishable from
- * the real root object tags, causing unintended side effects.
+ * Extension of the default object definition tag that handles ids set in MXML.
+ * To be used for root MXML object defintions only.
  * 
  * @author Jens Halm
  */
-public interface NestedTag {
+public class MxmlRootObjectTag extends RootObjectTag implements IMXMLObject {
+
+
+	/**
+	 * @private
+	 */
+	public function initialized (document:Object, id:String) : void {
+		this.id = id;
+	}
+	
+	
 }
 }

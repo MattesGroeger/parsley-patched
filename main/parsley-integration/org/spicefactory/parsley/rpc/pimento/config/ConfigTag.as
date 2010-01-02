@@ -15,21 +15,18 @@
  */
 
 package org.spicefactory.parsley.rpc.pimento.config {
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.tag.RootConfigurationTag;
 import org.spicefactory.pimento.config.PimentoConfig;
 import org.spicefactory.pimento.service.EntityManager;
-
-import flash.errors.IllegalOperationError;
 
 /**
  * Represents the Config MXML or XML tag, defining the configuration for a Pimento EntityManager.
  * 
  * @author Jens Halm
  */
-public class ConfigTag implements ObjectDefinitionFactory {
+public class ConfigTag implements RootConfigurationTag {
 
 	
 	/**
@@ -53,30 +50,20 @@ public class ConfigTag implements ObjectDefinitionFactory {
 	/**
 	 * @inheritDoc
 	 */
-	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
+	public function process (registry:ObjectDefinitionRegistry) : void {
 		
 		var configDef:RootObjectDefinition = registry.builders
-					.forRootDefinition(PimentoConfig)
-					.setId(id)
-					.build();
+				.forRootDefinition(PimentoConfig)
+				.id(id)
+				.buildAndRegister();
 		configDef.properties.addValue("serviceUrl", url);
 		if (timeout != 0) configDef.properties.addValue("defaultTimeout", timeout);
 		
-		var emDef:RootObjectDefinition = registry.builders
-					.forRootDefinition(EntityManager)
-					.setId(configDef.id + "_entityManager")
-					.setInstantiator(new EntityManagerInstantiator(configDef.id))
-					.build();
-		registry.registerDefinition(emDef);
-		
-		return configDef;
-	}
-
-	/**
-	 * @private
-	 */
-	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		throw new IllegalOperationError("Pimento config tag must be used for a root object definition");
+		registry.builders
+				.forRootDefinition(EntityManager)
+				.id(configDef.id + "_entityManager")
+				.instantiator(new EntityManagerInstantiator(configDef.id))
+				.buildAndRegister();
 	}
 }
 }

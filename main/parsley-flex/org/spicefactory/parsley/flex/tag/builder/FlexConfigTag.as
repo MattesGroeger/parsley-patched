@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
-import org.spicefactory.parsley.asconfig.builder.ActionScriptObjectDefinitionBuilder;
+import org.spicefactory.parsley.asconfig.processor.ActionScriptConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 
 /**
@@ -43,7 +43,7 @@ public class FlexConfigTag implements ContextBuilderProcessor {
 	 * @private
 	 */
 	public function process (builder:CompositeContextBuilder) : void {
-		builder.addBuilder(new ActionScriptObjectDefinitionBuilder([type]));
+		builder.addProcessor(new ActionScriptConfigurationProcessor([type]));
 	}
 	
 	

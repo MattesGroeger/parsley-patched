@@ -20,8 +20,8 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.impl.ObjectDefinitionWrapper;
-import org.spicefactory.parsley.tag.core.NestedTag;
 import org.spicefactory.parsley.tag.util.DecoratorUtil;
 
 [Metadata(name="Factory", types="method")]
@@ -30,7 +30,7 @@ import org.spicefactory.parsley.tag.util.DecoratorUtil;
  * 
  * @author Jens Halm
  */
-public class FactoryMethodDecorator implements ObjectDefinitionDecorator, NestedTag {
+public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 
 	
 	[Target]
@@ -53,23 +53,25 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator, Nested
 		// Must create a new definition for the target type
 		var method:Method = DecoratorUtil.getMethod(this.method, definition);
 		var targetType:Class = method.returnType.getClass();
-		var targetDefinition:ObjectDefinition;
+		var instantiator:ObjectInstantiator 
+				= new FactoryMethodInstantiator(factoryDefinition, method);
+				
 		if (definition is RootObjectDefinition) {
 			var rootDefinition:RootObjectDefinition = RootObjectDefinition(definition);
-			targetDefinition = registry.builders
+			return registry.builders
 					.forRootDefinition(targetType)
-					.setId(rootDefinition.id)
-					.setLazy(rootDefinition.lazy)
-					.setSingleton(rootDefinition.singleton)
+					.id(rootDefinition.id)
+					.lazy(rootDefinition.lazy)
+					.singleton(rootDefinition.singleton)
+					.instantiator(instantiator)
 					.build();
 		}
 		else {
-			targetDefinition = registry.builders
+			return registry.builders
 					.forNestedDefinition(targetType)
+					.instantiator(instantiator)
 					.build();
 		}
-		targetDefinition.instantiator = new FactoryMethodInstantiator(factoryDefinition, method);
-		return targetDefinition;		
 	}
 }
 }

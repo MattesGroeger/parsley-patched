@@ -5,7 +5,7 @@ import org.spicefactory.parsley.core.ContextTestBase;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.decorator.lifecycle.model.LifecycleEventCounter;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinition;
+import org.spicefactory.parsley.core.registry.impl.DefaultNestedObjectDefinition;
 
 import mx.containers.Box;
 import mx.containers.HBox;
@@ -37,7 +37,7 @@ public class ObserveTestBase extends ContextTestBase {
 
   		
   		assertEquals("Unexpected count of destroy listeners", 0, counter.getCount(Text, "globalDestroy"));  		var dynContext:DynamicContext = context.createDynamicContext();
-  		dynContext.addDefinition(new DefaultObjectDefinition(ClassInfo.forClass(Text)));
+  		dynContext.addDefinition(new DefaultNestedObjectDefinition(ClassInfo.forClass(Text)));
   		dynContext.destroy();
   		assertEquals("Unexpected count of destroy listeners", 1, counter.getCount(Text, "globalDestroy"));
 	}

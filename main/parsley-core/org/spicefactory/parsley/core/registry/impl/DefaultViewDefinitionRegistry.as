@@ -18,6 +18,7 @@ package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ViewDefinition;
 import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 
 import flash.utils.Dictionary;
@@ -47,13 +48,13 @@ public class DefaultViewDefinitionRegistry implements ViewDefinitionRegistry {
 	/**
 	 * @inheritDoc
 	 */
-	public function registerDefinition (viewDefinition:ObjectDefinition, id:String = null) : void {
+	public function registerDefinition (viewDefinition:ViewDefinition) : void {
 		checkState();
-		if (id != null) {
-			if (definitionsById[id] != null) {
-				throw new ContextError("Duplicate id for view definition: " + id);
+		if (viewDefinition.id != null) {
+			if (definitionsById[viewDefinition.id] != null) {
+				throw new ContextError("Duplicate id for view definition: " + viewDefinition.id);
 			}
-			definitionsById[id] = viewDefinition;
+			definitionsById[viewDefinition.id] = viewDefinition;
 		}
 		definitions.push(viewDefinition);
 	}
@@ -61,8 +62,8 @@ public class DefaultViewDefinitionRegistry implements ViewDefinitionRegistry {
 	/**
 	 * @inheritDoc
 	 */
-	public function getDefinitionById (id:String, configTarget:Object) : ObjectDefinition {
-		var definition:ObjectDefinition = definitionsById[id] as ObjectDefinition;
+	public function getDefinitionById (id:String, configTarget:Object) : ViewDefinition {
+		var definition:ViewDefinition = definitionsById[id] as ViewDefinition;
 		if (definition != null && configTarget is definition.type.getClass()) {
 			return definition;
 		}
@@ -77,9 +78,9 @@ public class DefaultViewDefinitionRegistry implements ViewDefinitionRegistry {
 	/**
 	 * @inheritDoc
 	 */
-	public function getDefinitionByType (configTarget:Object) : ObjectDefinition {
-		var match:ObjectDefinition = null;
-		for each (var definition:ObjectDefinition in definitions) {
+	public function getDefinitionByType (configTarget:Object) : ViewDefinition {
+		var match:ViewDefinition = null;
+		for each (var definition:ViewDefinition in definitions) {
 			if (configTarget is definition.type.getClass()) {
 				if (match != null) {
 					throw new ContextError("More than one view definition for type " 
