@@ -32,7 +32,7 @@ import flash.system.ApplicationDomain;
  * Static entry point methods for building a Context from MXML configuration classes.
  * 
  * <p>For details see 
- * <a href="http://www.spicefactory.org/parsley/docs/2.0/manual?page=config&section=mxml>3.2 MXML Configuration</a>
+ * <a href="http://www.spicefactory.org/parsley/docs/2.2/manual?page=config&section=mxml>3.2 MXML Configuration</a>
  * in the Parsley Manual.</p>
  * 
  * @author Jens Halm

@@ -25,7 +25,7 @@ package org.spicefactory.parsley.core.registry {
  * can be used as Metadata, MXML and XML tag.</p>
  * 
  * <p>For details see 
- * <a href="http://www.spicefactory.org/parsley/docs/2.0/manual?page=extensions&section=decorators>11.2 Creating Custom Configuration Tags</a>
+ * <a href="http://www.spicefactory.org/parsley/docs/2.2/manual?page=extensions&section=decorators>11.2 Creating Custom Configuration Tags</a>
  * in the Parsley Manual.</p>
  * 
  * @author Jens Halm

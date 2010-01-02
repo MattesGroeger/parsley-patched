@@ -28,7 +28,7 @@ import flash.system.ApplicationDomain;
  * Static entry point methods for building a Context from XML configuration files.
  * 
  * <p>For details see 
- * <a href="http://www.spicefactory.org/parsley/docs/2.0/manual?page=config&section=xml>3.3 XML Configuration</a>
+ * <a href="http://www.spicefactory.org/parsley/docs/2.2/manual?page=config&section=xml>3.3 XML Configuration</a>
  * in the Parsley Manual.</p>
  * 
  * @author Jens Halm
