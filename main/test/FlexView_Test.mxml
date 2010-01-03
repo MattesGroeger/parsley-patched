@@ -4,6 +4,8 @@
 	xmlns:view="org.spicefactory.parsley.flex.view.*"
 	xmlns:pm="org.spicefactory.parsley.flex.modules.*"
 	xmlns:parsley="org.spicefactory.parsley.flex.tag.builder.*"
+	xmlns:core="org.spicefactory.parsley.tag.core.*"
+	xmlns:builder="org.spicefactory.parsley.core.builder.*"
 	layout="absolute"
     addedToStage="test('addedToStage');"
     preinitialize="test('preinitialize');"
@@ -13,10 +15,13 @@
     <mx:Script>
         <![CDATA[
         	import org.spicefactory.parsley.flex.view.ViewContainer;
+        	import org.spicefactory.parsley.core.builder.SimpleClass;
         	import mx.containers.TitleWindow;
         	import mx.modules.Module;
         	import mx.managers.PopUpManager;
         	import mx.modules.ModuleManagerGlobals;
+        	
+        	private const simpleInstance:SimpleClass = new SimpleClass();
         	
             private function compiler () : void {
             	TitleWindow; PopUpManager; Module;
@@ -31,6 +36,11 @@
             	trace("SCOPE? " + builder.context.scopeManager.hasScope("foo"));
             	trace("XML? " + builder.context.containsObject("fromXml"));
             	trace("XML? " + builder.context.containsObject("fromXml2"));
+            	trace("RUNTIME 1 ? " + builder.context.containsObject("testId1"));
+            	trace("RUNTIME 2 ? " + builder.context.containsObject("testId2"));
+            	trace("RUNTIME 3 ? " + builder.context.containsObject("testId3"));
+            	trace("RUNTIME 4 ? " + builder.context.containsObject("testId4"));
+            	trace("RUNTIME CNT ? " + builder.context.getObjectCount(SimpleClass));
             }
  
         ]]>
@@ -41,6 +51,11 @@
     	<parsley:FlexConfigTag type="{ViewContainer}"/>
     	<parsley:XmlConfigTag file="viewTestConfig.xml"/>
    		<parsley:ScopeTag name="window" inherited="true"/>
+   		<parsley:RuntimeConfigTag>
+			<parsley:InstanceTag instance="{simpleInstance}" id="testId1"/>  		
+			<core:MxmlRootObjectTag type="{SimpleClass}" id="testId2"/>
+			<builder:SimpleClass id="testId3"/>
+   		</parsley:RuntimeConfigTag>
     </parsley:ContextBuilderTag>
     
     <mx:TraceTarget id="logTarget" 
