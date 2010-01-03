@@ -22,6 +22,7 @@
     <component id="MessageBinding" class="org.spicefactory.parsley.tag.messaging.MessageBindingDecorator"/>
     <component id="MessageInterceptor" class="org.spicefactory.parsley.tag.messaging.MessageInterceptorDecorator"/>
     <component id="MessageError" class="org.spicefactory.parsley.tag.messaging.MessageErrorDecorator"/>
+    <component id="MessageConfirmation" class="org.spicefactory.parsley.tag.messaging.MessageConfirmationTag"/>
 
     <component id="Command" class="org.spicefactory.parsley.tag.messaging.CommandDecorator"/>
     <component id="CommandResult" class="org.spicefactory.parsley.tag.messaging.CommandResultDecorator"/>
