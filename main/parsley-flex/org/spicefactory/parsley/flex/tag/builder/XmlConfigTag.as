@@ -42,7 +42,7 @@ public class XmlConfigTag implements ContextBuilderProcessor {
 	/**
 	 * @private
 	 */
-	public function process (builder:CompositeContextBuilder) : void {
+	public function processBuilder (builder:CompositeContextBuilder) : void {
 		builder.addProcessor(new XmlConfigurationProcessor([file]));
 	}
 	

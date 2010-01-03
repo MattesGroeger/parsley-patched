@@ -87,7 +87,7 @@ public class XmlConfigurationProcessor extends EventDispatcher implements AsyncC
 	/**
 	 * @inheritDoc
 	 */
-	public function process (registry:ObjectDefinitionRegistry) : void {
+	public function processConfiguration (registry:ObjectDefinitionRegistry) : void {
 		this.registry = registry;
 		_loader.addEventListener(Event.COMPLETE, loaderComplete);
 		_loader.addEventListener(ErrorEvent.ERROR, loaderError);

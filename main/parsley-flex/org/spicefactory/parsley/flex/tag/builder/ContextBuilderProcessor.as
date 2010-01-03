@@ -36,7 +36,7 @@ public interface ContextBuilderProcessor {
 	 * 
 	 * @param builder the builder that will be used to create the Context
 	 */
-	function process (builder:CompositeContextBuilder) : void;
+	function processBuilder (builder:CompositeContextBuilder) : void;
 	
 	
 }

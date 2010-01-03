@@ -15,7 +15,6 @@ public class SimpleClass {
 	
 	[Init]
 	public function init () : void {
-		trace("INIT!!!");
 		initCalled = true;
 	}
 	

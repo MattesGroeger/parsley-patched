@@ -74,7 +74,7 @@ public class RuntimeConfigurationProcessor implements ConfigurationProcessor {
 	/**
 	 * @inheritDoc
 	 */
-	public function process (registry:ObjectDefinitionRegistry) : void {
+	public function processConfiguration (registry:ObjectDefinitionRegistry) : void {
 		processInstances(registry);
 		processClasses(registry);
 	}

@@ -15,7 +15,15 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
+import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.runtime.processor.RuntimeConfigurationProcessor;
+import org.spicefactory.parsley.tag.RootConfigurationTag;
 
 [DefaultProperty("instances")]
 
@@ -41,44 +49,25 @@ import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
  * 
  * @author Jens Halm
  */
-public class RuntimeConfigTag implements ContextBuilderProcessor {
+public class RuntimeConfigTag implements ContextBuilderProcessor, ConfigurationProcessor {
 	
 	/**
 	 * The configuration artifacts to add to the Context.
 	 */
 	public var instances:Array;
+
 	
+	private var runtimeProcessor:RuntimeConfigurationProcessor = new RuntimeConfigurationProcessor();
+
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function process (builder:CompositeContextBuilder) : void {
-		builder.addProcessor(new RuntimeTagProcessor(instances));
-	}
-	
-}
-}
-
-import org.spicefactory.parsley.runtime.processor.RuntimeConfigurationProcessor;
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.tag.RootConfigurationTag;
-import org.spicefactory.parsley.flex.tag.builder.InstanceTag;
-
-class RuntimeTagProcessor implements ConfigurationProcessor {
-
-	public var instances:Array;
-	private var runtimeProcessor:RuntimeConfigurationProcessor = new RuntimeConfigurationProcessor();
-
-	function RuntimeTagProcessor (instances:Array) {
-		this.instances = instances;
+	public function processBuilder (builder:CompositeContextBuilder) : void {
+		builder.addProcessor(this);
 	}
 
-	public function process (registry:ObjectDefinitionRegistry) : void {
+	public function processConfiguration (registry:ObjectDefinitionRegistry) : void {
 		for each (var instance:Object in instances) {
 			if (instance is InstanceTag) {
 				var tag:InstanceTag = InstanceTag(instance);
@@ -100,7 +89,8 @@ class RuntimeTagProcessor implements ConfigurationProcessor {
 				runtimeProcessor.addInstance(instance, id);
 			}
 		}
-		runtimeProcessor.process(registry);
+		runtimeProcessor.processConfiguration(registry);
 	}
 	
+}
 }

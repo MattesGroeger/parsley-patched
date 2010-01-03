@@ -44,7 +44,7 @@ public class ScopeTag implements ContextBuilderProcessor {
 	/**
 	 * @private
 	 */
-	public function process (builder:CompositeContextBuilder) : void {
+	public function processBuilder (builder:CompositeContextBuilder) : void {
 		builder.addScope(name, inherited);
 	}
 	

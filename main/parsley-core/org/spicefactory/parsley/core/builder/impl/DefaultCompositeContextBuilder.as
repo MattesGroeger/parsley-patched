@@ -217,10 +217,10 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 			var asyncProcessor:AsyncConfigurationProcessor = AsyncConfigurationProcessor(processor);
 			asyncProcessor.addEventListener(Event.COMPLETE, processorComplete);				
 			asyncProcessor.addEventListener(ErrorEvent.ERROR, processorError);		
-			asyncProcessor.process(registry);
+			asyncProcessor.processConfiguration(registry);
 		}
 		else {
-			ConfigurationProcessor(processor).process(registry);
+			ConfigurationProcessor(processor).processConfiguration(registry);
 			invokeNextProcessor();
 		}
 	}

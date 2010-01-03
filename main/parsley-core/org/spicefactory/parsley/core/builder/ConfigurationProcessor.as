@@ -30,7 +30,7 @@ public interface ConfigurationProcessor {
 	 * 
 	 * @param registry the registry to process
 	 */
-	function process (registry:ObjectDefinitionRegistry) : void;
+	function processConfiguration (registry:ObjectDefinitionRegistry) : void;
 	
 }
 }

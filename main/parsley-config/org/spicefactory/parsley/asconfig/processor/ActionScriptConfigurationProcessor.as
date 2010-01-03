@@ -60,7 +60,7 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 	/**
 	 * @inheritDoc
 	 */
-	public function process (registry:ObjectDefinitionRegistry) : void {
+	public function processConfiguration (registry:ObjectDefinitionRegistry) : void {
 		var errors:Array = new Array();
 		for each (var configClass:Class in configClasses) {
 			try {

@@ -213,7 +213,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 			}
 			if (processors != null) {
 				for each (var processor:ContextBuilderProcessor in processors) {
-					processor.process(builder);
+					processor.processBuilder(builder);
 				}
 			}
 			_context = builder.build();

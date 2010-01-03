@@ -37,7 +37,7 @@ public class ActionScriptObjectDefinitionBuilder extends ActionScriptConfigurati
 	}
 	
 	public function build (registry:ObjectDefinitionRegistry) : void {
-		process(registry);
+		processConfiguration(registry);
 	}	
 
 }
