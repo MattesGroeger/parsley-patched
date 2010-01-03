@@ -17,6 +17,8 @@
 package org.spicefactory.parsley.flex.tag.builder {
 import mx.core.IMXMLObject;
 
+[DefaultProperty("instance")]
+
 /**
  * Tag to be nested within RuntimeConfig tag that allows to add an existing instance and
  * specify an id.

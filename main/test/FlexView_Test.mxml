@@ -32,15 +32,15 @@
             }
             
             private function checkContext () : void {
-            	trace("SCOPE? " + builder.context.scopeManager.hasScope("window"));
-            	trace("SCOPE? " + builder.context.scopeManager.hasScope("foo"));
-            	trace("XML? " + builder.context.containsObject("fromXml"));
-            	trace("XML? " + builder.context.containsObject("fromXml2"));
-            	trace("RUNTIME 1 ? " + builder.context.containsObject("testId1"));
-            	trace("RUNTIME 2 ? " + builder.context.containsObject("testId2"));
-            	trace("RUNTIME 3 ? " + builder.context.containsObject("testId3"));
-            	trace("RUNTIME 4 ? " + builder.context.containsObject("testId4"));
-            	trace("RUNTIME CNT ? " + builder.context.getObjectCount(SimpleClass));
+            	trace("Scope window " + builder.context.scopeManager.hasScope("window"));
+            	trace("Scope foo " + builder.context.scopeManager.hasScope("foo"));
+            	trace("XML1 " + builder.context.containsObject("fromXml"));
+            	trace("XML2 " + builder.context.containsObject("fromXml2"));
+            	trace("Runtime1 " + builder.context.containsObject("testId1"));
+            	trace("Runtime2 " + builder.context.containsObject("testId2"));
+            	trace("Runtime3 " + builder.context.containsObject("testId3"));
+            	trace("Runtime4 " + builder.context.containsObject("testId4"));
+            	trace("SimpleClass count " + builder.context.getObjectCount(SimpleClass));
             }
  
         ]]>
@@ -55,6 +55,9 @@
 			<parsley:InstanceTag instance="{simpleInstance}" id="testId1"/>  		
 			<core:MxmlRootObjectTag type="{SimpleClass}" id="testId2"/>
 			<builder:SimpleClass id="testId3"/>
+			<parsley:InstanceTag id="testId4">
+				<builder:SimpleClass/>
+			</parsley:InstanceTag>
    		</parsley:RuntimeConfigTag>
     </parsley:ContextBuilderTag>
     
