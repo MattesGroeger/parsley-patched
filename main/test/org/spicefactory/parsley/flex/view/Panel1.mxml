@@ -12,6 +12,7 @@
 			import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
 			import org.spicefactory.parsley.testmodel.AnnotatedResourceBinding;
 			import mx.resources.ResourceManager;
+			import org.spicefactory.parsley.core.messaging.TestEvent;	
 			
 			[Inject]
 			[Bindable]
@@ -20,6 +21,14 @@
 			[Inject]
 			[Bindable]
 			public var resourceBinding:AnnotatedResourceBinding;
+			
+			[Bindable]
+			public var lastEventType:String = "none";
+			
+			[MessageHandler]
+			public function handleTestEvent (event:TestEvent) : void {
+				lastEventType = event.type;
+			}
 		]]>
 	</mx:Script>
 	
@@ -31,6 +40,8 @@
 	<mx:Text text="{ResourceManager.getInstance().getString('test','msg1')}"/>
 	<mx:Text id="display" text="Bound value: |{model.stringProp}|"/>
 	<mx:Text id="info" text="{resourceBinding.boundValue}"/>
+	
+	<mx:Text text="{lastEventType}"/>
 	
 
 	<mx:Button label="Deutsch" click="ResourceManager.getInstance().localeChain = ['de_DE'];"/>

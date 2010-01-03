@@ -2,6 +2,7 @@
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:tag="org.spicefactory.parsley.tag.core.*"
 	xmlns:test="org.spicefactory.parsley.testmodel.*"
+	xmlns:msg="org.spicefactory.parsley.tag.messaging.*"
 	xmlns:model="org.spicefactory.parsley.core.decorator.injection.*">
 	
 	<mx:Script>
@@ -9,6 +10,8 @@
 			import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;		
 			import org.spicefactory.parsley.flex.view.Panel2;		
 			import org.spicefactory.parsley.flex.view.Panel3;		
+			import org.spicefactory.parsley.flex.view.Panel3;		
+			import org.spicefactory.parsley.core.messaging.TestEvent;		
 		]]>
 	</mx:Script>
 	
@@ -27,6 +30,11 @@
 	    	</tag:NestedObjectTag>
 	    </tag:PropertyTag>
 	</tag:MxmlViewTag>
+	
+	<msg:MessageConfirmationTag
+		title="Some title"
+		text="Some text"
+		type="{TestEvent}"/>
 
 	<tag:MxmlViewTag type="{Panel2}">
 	    <tag:PropertyTag name="model" idRef="object"/>

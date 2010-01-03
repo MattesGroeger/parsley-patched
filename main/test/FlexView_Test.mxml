@@ -20,6 +20,7 @@
         	import mx.modules.Module;
         	import mx.managers.PopUpManager;
         	import mx.modules.ModuleManagerGlobals;
+        	import org.spicefactory.parsley.core.messaging.TestEvent;	
         	
         	private const simpleInstance:SimpleClass = new SimpleClass();
         	
@@ -79,6 +80,7 @@
 		<mx:Button label="Unload module" click="{module.unloadModule();}"/>   
 		<mx:Button label="Load module" click="{module.loadModule();}"/>   
 		<mx:Button label="{builder.context}"/>   
+		<mx:Button label="Show Alert" click="{builder.context.scopeManager.dispatchMessage(new TestEvent('foo', 'bar', 5));}"/>   
     </mx:ApplicationControlBar>
     
     
