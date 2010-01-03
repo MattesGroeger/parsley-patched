@@ -15,15 +15,18 @@
  */
 
 package org.spicefactory.parsley.rpc.cinnamon.config {
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 
 /**
  * Provides a static method to initalize the Cinnamon XML tag extension.
+ * Can be used as a child tag of a <ContextBuilder> tag in MXML alternatively.
  * 
  * @author Jens Halm
  */
-public class CinnamonXmlSupport {
+public class CinnamonXmlSupport implements ContextBuilderProcessor {
 	
 	
 	/**
@@ -31,15 +34,26 @@ public class CinnamonXmlSupport {
 	 */
 	public static const NAMESPACE_URI:String = "http://www.spicefactory.org/parsley/cinnamon";
 	
+	private static var initialized:Boolean = false;
+	
 	
 	/**
 	 * Initializes the Cinnamon XML tag extension.
 	 * Must be invoked before the <code>XmlContextBuilder</code> is used for the first time.
 	 */
 	public static function initialize () : void {
+		if (initialized) return;
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(NAMESPACE_URI);
 		ns.addDefaultObjectMapper(ChannelTag, "channel");
 		ns.addDefaultObjectMapper(ServiceTag, "service");
+		initialized = true;
+	}
+	
+	/**
+	 * @private
+	 */
+	public function processBuilder (builder:CompositeContextBuilder) : void {
+		initialize();
 	}
 	
 	

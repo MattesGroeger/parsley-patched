@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <componentPackage>
 	<component id="Configure" class="org.spicefactory.parsley.flex.tag.view.ConfigureTag"/>
+
+	<component id="LoggingXmlSupport" class="org.spicefactory.parsley.flex.logging.FlexLoggingXmlSupport"/>
+	
 	<component id="ContextBuilder" class="org.spicefactory.parsley.flex.tag.builder.ContextBuilderTag"/>
 	<component id="FlexConfig" class="org.spicefactory.parsley.flex.tag.builder.FlexConfigTag"/>
 	<component id="XmlConfig" class="org.spicefactory.parsley.flex.tag.builder.XmlConfigTag"/>

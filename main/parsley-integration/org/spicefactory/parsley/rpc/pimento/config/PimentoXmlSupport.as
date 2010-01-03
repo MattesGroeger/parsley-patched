@@ -15,15 +15,18 @@
  */
 
 package org.spicefactory.parsley.rpc.pimento.config {
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 
 /**
  * Provides a static method to initalize the Pimento XML tag extension.
+ * Can be used as a child tag of a <ContextBuilder> tag in MXML alternatively.
  * 
  * @author Jens Halm
  */
-public class PimentoXmlSupport {
+public class PimentoXmlSupport implements ContextBuilderProcessor {
 	
 	
 	/**
@@ -31,15 +34,26 @@ public class PimentoXmlSupport {
 	 */
 	public static const NAMESPACE_URI:String = "http://www.spicefactory.org/parsley/pimento";
 	
+	private static var initialized:Boolean = false;
+	
 	
 	/**
 	 * Initializes the Pimento XML tag extension.
 	 * Must be invoked before the <code>XmlContextBuilder</code> is used for the first time.
 	 */
 	public static function initialize () : void {
+		if (initialized) return;
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(NAMESPACE_URI);
 		ns.addDefaultObjectMapper(ServiceTag, "service");
 		ns.addDefaultDefinitionFactoryMapper(ConfigTag, "config");
+		initialized = true;
+	}
+	
+	/**
+	 * @private
+	 */
+	public function processBuilder (builder:CompositeContextBuilder) : void {
+		initialize();
 	}
 	
 	

@@ -17,21 +17,26 @@
 package org.spicefactory.parsley.flex.logging {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
 import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 
 /**
  * Provides a static method to initalize the Flex Logging XML tag extension.
+ * Can be used as a child tag of a <ContextBuilder> tag in MXML alternatively.
  * 
  * @author Jens Halm
  */
-public class FlexLoggingXmlSupport {
+public class FlexLoggingXmlSupport implements ContextBuilderProcessor {
 	
 	
 	/**
 	 * The XML Namespace of the Flex Logging tag extension.
 	 */
 	public static const NAMESPACE_URI:String = "http://www.spicefactory.org/parsley/flex/logging";
+	
+	private static var initialized:Boolean = false;
 
 
 	/**
@@ -39,13 +44,24 @@ public class FlexLoggingXmlSupport {
 	 * Must be invoked before the <code>XmlContextBuilder</code> is used for the first time.
 	 */
 	public static function initialize () : void {
+		if (initialized) return;
 		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(NAMESPACE_URI);
 		var builder:PropertyMapperBuilder = ns.createObjectMapperBuilder(LogTargetTag, "target");
 		builder.mapToChildTextNode("filters", new QName(NAMESPACE_URI, "filter"));
 		builder.addPropertyHandler(new LogEventLevelAttributeHandler(
 				ClassInfo.forClass(LogTargetTag).getProperty("level"), new QName("", "level")));
 		builder.mapAllToAttributes();
+		initialized = true;
 	}
+
+	/**
+	 * @private
+	 */
+	public function processBuilder (builder:CompositeContextBuilder) : void {
+		initialize();
+	}
+	
+	
 }
 }
 
