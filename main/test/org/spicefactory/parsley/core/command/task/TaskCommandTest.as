@@ -1,10 +1,10 @@
 package org.spicefactory.parsley.core.command.task {
-	import org.spicefactory.parsley.task.commands.TaskCommandSupport;
 import flexunit.framework.TestCase;
 
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.messaging.TestEvent;
 import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
+import org.spicefactory.parsley.task.command.TaskCommandSupport;
 
 /**
  * @author Jens Halm
