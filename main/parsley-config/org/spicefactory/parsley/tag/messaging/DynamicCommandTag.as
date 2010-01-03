@@ -34,11 +34,18 @@ import org.spicefactory.parsley.tag.RootConfigurationTag;
 
 /**
  * Represents the root DynamicCommand tag for an object definition in MXML or XML configuration.
- * A dynamic command is a special type of object that only gets created when a matching
- * message was dispatched. It can contain "private" result and error handlers that will
- * only be called for the command executed by the same instance. If the <code>stateful</code> 
- * property is false (the default) a new instance will be created for each matching message. 
- * This tag supports all child tags that the regular Object tag supports.
+ * 
+ * <p>A dynamic command is a special type of object that only gets created when a matching
+ * message was dispatched. It contains only a single command execution method and optionally 
+ * "private" result and error handlers that will only be called for the command executed 
+ * by the same instance. In addition other object can listen for the result or error
+ * values with the regular <code>[CommandResult]</code> or <code>[CommandError]</code> tags.</p>
+ * 
+ * <p>If the <code>stateful</code> property is false (the default) a new instance will 
+ * be created for each matching message and the command object will be disposed 
+ * and removed from the Context as soon as the asynchronous command completed.</p>
+ *  
+ * <p>This tag supports all child tags that the regular Object tag supports.</p>
  * 
  * @author Jens Halm
  */
