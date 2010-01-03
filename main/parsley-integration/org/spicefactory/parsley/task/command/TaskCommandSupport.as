@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.task.commands {
+package org.spicefactory.parsley.task.command {
 import org.spicefactory.lib.task.Task;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
