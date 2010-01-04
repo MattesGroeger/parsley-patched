@@ -55,6 +55,5 @@ public class CinnamonCommandSupport implements ContextBuilderProcessor {
 		initialize();
 	}
 	
-	
 }
 }

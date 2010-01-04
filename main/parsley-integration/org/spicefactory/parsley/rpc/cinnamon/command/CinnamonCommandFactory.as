@@ -71,5 +71,4 @@ class CinnamonCommand extends AbstractCommand {
 			: result;
 	}
 	
-	
 }
