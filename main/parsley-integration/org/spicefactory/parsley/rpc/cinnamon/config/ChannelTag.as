@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.rpc.cinnamon.config {
+	import org.spicefactory.parsley.rpc.cinnamon.command.CinnamonCommandSupport;
 import org.spicefactory.cinnamon.service.NetConnectionServiceChannel;
 import org.spicefactory.cinnamon.service.ServiceChannel;
 import org.spicefactory.parsley.core.errors.ContextError;
@@ -58,6 +59,7 @@ public class ChannelTag {
 	 * @return a new ServiceChannel instance, fully configured
 	 */
 	public function createChannel () : ServiceChannel {
+		CinnamonCommandSupport.initialize();
 		var channelObj:Object = new type();
 		if (!(channelObj is ServiceChannel)) {
 			throw new ContextError("Object of type " + getQualifiedClassName(channelObj) 

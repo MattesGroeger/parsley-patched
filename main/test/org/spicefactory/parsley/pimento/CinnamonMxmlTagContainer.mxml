@@ -10,11 +10,11 @@
 	
 	<cinnamon:MxmlChannelTag 
 	    id="mainChannel"
-	    url="http://localhost/test/service/"
+	    url="http://localhost:8080/Pimento_Server/cinnamon/"
 	    timeout="3000"
 	/>
 	<cinnamon:MxmlServiceTag
-	    name="echoService"
+	    name="echo"
 	    type="{EchoServiceImpl}"
 	/>
 	

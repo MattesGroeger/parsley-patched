@@ -27,7 +27,7 @@ public class PimentoXmlTagTest extends PimentoTestBase {
 		>
 		<cinnamon:channel 
 		    id="mainChannel"
-		    url="http://localhost/test/service/"
+		    url="http://localhost:8080/Pimento_Server/cinnamon/"
 		    timeout="3000"
 		/>
 		<cinnamon:service
@@ -43,7 +43,7 @@ public class PimentoXmlTagTest extends PimentoTestBase {
 		xsi:schemaLocation="http://www.spicefactory.org/parsley http://www.spicefactory.org/parsley/schema/2.0/parsley-core.xsd http://www.spicefactory.org/parsley/pimento http://www.spicefactory.org/parsley/schema/2.0/parsley-pimento.xsd"
 		>
 		<pimento:config 
-		    url="http://localhost/test/service/"
+		    url="http://localhost:8080/Pimento_Server/cinnamon/"
 		    timeout="3000"
 		/>
 		<pimento:service

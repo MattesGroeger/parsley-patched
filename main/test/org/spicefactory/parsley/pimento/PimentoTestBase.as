@@ -8,6 +8,9 @@ import org.spicefactory.pimento.service.EntityManager;
 
 public class PimentoTestBase extends XmlContextTestBase {
 
+
+	private static const URL:String = "http://localhost:8080/Pimento_Server/cinnamon/";
+
 	
 	public function testCinnamonServiceConfig () : void {
 		var c:Class = EchoServiceImpl;
@@ -16,7 +19,7 @@ public class PimentoTestBase extends XmlContextTestBase {
 		var service:EchoService = context.getObjectByType(EchoService) as EchoService;
 		var proxy:ServiceProxy = ServiceProxy.forService(service);
 		assertNotNull("Expected proxy instance", proxy);
-		assertEquals("Unexpected service URL", "http://localhost/test/service/", proxy.channel.serviceUrl);
+		assertEquals("Unexpected service URL", URL, proxy.channel.serviceUrl);
 	}
 	
 	public function testPimentoServiceConfig () : void {
@@ -27,10 +30,10 @@ public class PimentoTestBase extends XmlContextTestBase {
 		var service:EchoService = context.getObjectByType(EchoService) as EchoService;
 		var proxy:ServiceProxy = ServiceProxy.forService(service);
 		assertNotNull("Expected proxy instance", proxy);
-		assertEquals("Unexpected service URL", "http://localhost/test/service/", proxy.channel.serviceUrl);
+		assertEquals("Unexpected service URL", URL, proxy.channel.serviceUrl);
 		
 		var config:PimentoConfig = context.getObjectByType(PimentoConfig) as PimentoConfig;
-		assertEquals("Unexpected config URL", "http://localhost/test/service/", config.serviceUrl);
+		assertEquals("Unexpected config URL", URL, config.serviceUrl);
 		assertEquals("Unexpected timeout", 3000, config.defaultTimeout);
 		
 		var entityManager:EntityManager = context.getObjectByType(EntityManager) as EntityManager;

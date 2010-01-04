@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.rpc.pimento.config {
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.rpc.cinnamon.command.CinnamonCommandSupport;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
 import org.spicefactory.pimento.config.PimentoConfig;
 import org.spicefactory.pimento.service.EntityManager;
@@ -51,6 +52,7 @@ public class ConfigTag implements RootConfigurationTag {
 	 * @inheritDoc
 	 */
 	public function process (registry:ObjectDefinitionRegistry) : void {
+		CinnamonCommandSupport.initialize();
 		
 		var configDef:RootObjectDefinition = registry.builders
 				.forRootDefinition(PimentoConfig)

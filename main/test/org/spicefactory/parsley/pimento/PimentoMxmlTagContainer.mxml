@@ -3,7 +3,7 @@
 	xmlns:pimento="org.spicefactory.parsley.rpc.pimento.config.*">
 	
 	<pimento:MxmlConfigTag 
-	    url="http://localhost/test/service/"
+	    url="http://localhost:8080/Pimento_Server/cinnamon/"
 	    timeout="3000"
 	/>
 	<pimento:MxmlServiceTag
