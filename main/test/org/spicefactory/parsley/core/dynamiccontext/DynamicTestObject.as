@@ -1,5 +1,4 @@
 package org.spicefactory.parsley.core.dynamiccontext {
-import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 import org.spicefactory.parsley.util.MessageReceiverBase;
 
 /**
@@ -7,7 +6,7 @@ import org.spicefactory.parsley.util.MessageReceiverBase;
  */
 public class DynamicTestObject extends MessageReceiverBase {
 	
-	public var dependency:InjectedDependency;
+	public var dependency:DynamicTestDependency;
 	
 	public function handleMessage (message:Object) : void {
 		addMessage(message);

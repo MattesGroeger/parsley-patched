@@ -7,6 +7,7 @@ import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.impl.DefaultContext;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
 import org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator;
 
 /**
@@ -43,6 +44,18 @@ public class DynamicContextTest extends ContextTestBase {
 		validateDynamicObject(dynObject, context);
 	}
 	
+	public function testNestedDefinitionLifecycle () : void {
+		var context:Context = RuntimeContextBuilder.build([]);
+		checkState(context);
+		var dynContext:DynamicContext = context.createDynamicContext();
+		var definition:ObjectDefinition = createDefinition(dynContext, false);
+		var dynObject:DynamicObject = dynContext.addDefinition(definition);
+		var instance:DynamicTestObject = dynObject.instance as DynamicTestObject;
+		assertFalse("Unexpected destroy method invocation", instance.dependency.destroyMethodCalled);
+		validateDynamicObject(dynObject, context);
+		assertTrue("Expected destroy method invocation", instance.dependency.destroyMethodCalled);
+	}
+
 	private function validateDynamicObject (dynObject:DynamicObject, context:Context) : void {
 		assertNotNull("Unresolved dependency", dynObject.instance.dependency);
 		context.scopeManager.dispatchMessage(new Object());
@@ -51,7 +64,7 @@ public class DynamicContextTest extends ContextTestBase {
 		assertEquals("Unexpected number of received messsages", 1, dynObject.instance.getMessageCount());			
 	}
 	
-	private function createDefinition (context:DynamicContext) : ObjectDefinition {
+	private function createDefinition (context:DynamicContext, dependencyAsRef:Boolean = true) : ObjectDefinition {
 		var decorator:MessageHandlerDecorator = new MessageHandlerDecorator();
 		decorator.method = "handleMessage";
 		var registry:ObjectDefinitionRegistry = DefaultContext(context).registry;
@@ -59,7 +72,15 @@ public class DynamicContextTest extends ContextTestBase {
 					.forNestedDefinition(DynamicTestObject)
 					.decorator(decorator)
 					.build();
-		definition.properties.addTypeReference("dependency");
+		if (dependencyAsRef) {
+			definition.properties.addTypeReference("dependency");
+		}
+		else {
+			var childDef:ObjectDefinition = registry.builders
+					.forNestedDefinition(DynamicTestDependency)
+					.build();
+			definition.properties.addValue("dependency", childDef);
+		}
 		return definition;
 	}
 

@@ -1,5 +1,4 @@
 package org.spicefactory.parsley.core.dynamiccontext {
-import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 
 /**
  * @author Jens Halm
@@ -7,8 +6,8 @@ import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 public class DynamicConfig {
 	
 	
-	public function get dependency () : InjectedDependency {
-		return new InjectedDependency();
+	public function get dependency () : DynamicTestDependency {
+		return new DynamicTestDependency();
 	}
 	
 	

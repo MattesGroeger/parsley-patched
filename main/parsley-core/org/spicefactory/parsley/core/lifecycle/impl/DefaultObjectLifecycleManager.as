@@ -15,13 +15,15 @@
  */
 
 package org.spicefactory.parsley.core.lifecycle.impl {
-	import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.MethodParameterRegistry;
 import org.spicefactory.parsley.core.registry.model.ManagedArray;
 import org.spicefactory.parsley.core.registry.model.ObjectIdReference;
@@ -40,7 +42,12 @@ import flash.utils.Dictionary;
 public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	
 	
-	private var processedInstances:Dictionary = new Dictionary();
+	// maps instance -> definition
+	private var rootInstances:Dictionary = new Dictionary();
+	// maps instance -> definition
+	private var dependentInstances:Dictionary = new Dictionary();
+	// maps parent definition -> child instance
+	private var parentChildMap:Dictionary = new Dictionary();
 
 	private var domain:ApplicationDomain;
 	private var scopes:Array;
@@ -66,7 +73,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 			return definition.instantiator.instantiate(context);
 		}
 		else {
-			var args:Array = resolveArray(definition.constructorArgs.getAll(), context);
+			var args:Array = resolveArray(definition.constructorArgs.getAll(), context, definition);
 			return definition.type.newInstance(args);
 		}
 	}
@@ -75,6 +82,12 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	 * @inheritDoc
 	 */
 	public function configureObject (instance:Object, definition:ObjectDefinition, context:Context) : void {
+		doConfigure(instance, definition, context);
+		rootInstances[instance] = definition;
+	}
+
+	private function doConfigure (instance:Object, definition:ObjectDefinition, context:Context, 
+			parentDefinition:ObjectDefinition = null) : void {
 		processLifecycle(instance, definition, context, ObjectLifecycle.PRE_CONFIGURE);
 		processProperties(instance, definition, context);
 	 	processMethods(instance, definition, context);
@@ -83,26 +96,58 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 			definition.type.getMethod(definition.initMethod).invoke(instance, []);
 		}
 		processLifecycle(instance, definition, context, ObjectLifecycle.POST_INIT);
-		processedInstances[instance] = definition;
+	}
+	
+	private function addChildDefinition (parentDefinition:ObjectDefinition, childDefinition:ObjectDefinition, 
+			childInstance:Object) : void {
+		dependentInstances[childInstance] = childDefinition;
+		var children:Array = parentChildMap[parentDefinition];
+		if (children == null) {
+			children = new Array();
+			parentChildMap[parentDefinition] = children;
+		}
+		children.push(childInstance);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function destroyObject (instance:Object, definition:ObjectDefinition, context:Context) : void {
+		if (dependentInstances[instance] != undefined) {
+			throw new IllegalArgumentError("Instance that depends on the lifecycle of a parent object cannot be removed: "
+					+ instance);
+		}
 		doDestroy(instance, definition, context);
-		delete processedInstances[instance];
+		delete rootInstances[instance];
+		var children:Array = parentChildMap[definition];
+		if (children != null) {
+			for each (var child:Object in children) {
+				var childDefinition:ObjectDefinition = dependentInstances[child] as ObjectDefinition;
+				if (childDefinition == null) {
+					throw new IllegalStateError("No definition cached for instance: " + child);
+				}
+				doDestroy(child, childDefinition, context);
+				delete dependentInstances[child];
+			}
+			delete parentChildMap[definition];
+		}
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function destroyAll (context:Context) : void {
-		for (var instance:Object in processedInstances) {
-			var definition:ObjectDefinition = ObjectDefinition(processedInstances[instance]);
+		for (var instance:Object in rootInstances) {
+			var definition:ObjectDefinition = ObjectDefinition(rootInstances[instance]);
 			doDestroy(instance, definition, context);
 		}
-		processedInstances = new Dictionary();
+		for (var child:Object in dependentInstances) {
+			var childDefinition:ObjectDefinition = ObjectDefinition(dependentInstances[child]);
+			doDestroy(child, childDefinition, context);
+		}
+		rootInstances = new Dictionary();
+		dependentInstances = new Dictionary();
+		parentChildMap = new Dictionary();
 	}
 	
 	private function doDestroy (instance:Object, definition:ObjectDefinition, context:Context) : void {
@@ -123,7 +168,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	protected function processProperties (instance:Object, definition:ObjectDefinition, context:Context) : void {
 	 	var props:Array = definition.properties.getAll();
 	 	for each (var prop:PropertyValue in props) {
-	 		var value:* = resolveValue(prop.value, context, true);
+	 		var value:* = resolveValue(prop.value, context, definition, true);
 	 		if (!(value is UnsatisfiedDependency)) {
 	 			prop.property.setValue(instance, value);
 	 		}
@@ -140,7 +185,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	protected function processMethods (instance:Object, definition:ObjectDefinition, context:Context) : void {
 	 	var methods:Array = definition.injectorMethods.getAll();
 	 	for each (var mpr:MethodParameterRegistry in methods) {
-			var params:Array = resolveArray(mpr.getAll(), context);
+			var params:Array = resolveArray(mpr.getAll(), context, definition);
 	 		mpr.method.invoke(instance, params);
 		}		
 	}
@@ -173,10 +218,12 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	 * 
 	 * @param value the value to resolve
 	 * @param context the associated Context
+	 * @param parentDefinition the definition the value belongs to
 	 * @param designateUnsatisfiedDependencies if true returns an instance of UnsatisfiedDependency instead of null
 	 * @return the resolved value
 	 */
-	protected function resolveValue (value:*, context:Context, designateUnsatisfiedDependencies:Boolean = false) : * {
+	protected function resolveValue (value:*, context:Context, 
+			parentDefinition:ObjectDefinition, designateUnsatisfiedDependencies:Boolean = false) : * {
 		if (value is ObjectIdReference) {
 			var idRef:ObjectIdReference = ObjectIdReference(value);
 			if (!context.containsObject(idRef.id)) {
@@ -216,7 +263,8 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 		else if (value is ObjectDefinition) {
 			var definition:ObjectDefinition = ObjectDefinition(value);
 			var instance:Object = createObject(definition, context);
-			configureObject(instance, definition, context);
+			doConfigure(instance, definition, context, parentDefinition);
+			addChildDefinition(parentDefinition, definition, instance);
 			return instance;
 		}
 		else if (value is MessageDispatcherFunctionReference) {
@@ -230,7 +278,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 			var source:Array = value as Array;
 			var result:Array = new Array();
 			for each (var element:* in source) {
-				result.push(resolveValue(element, context));			
+				result.push(resolveValue(element, context, parentDefinition));			
 			}
 			return result;
 		} 
@@ -245,11 +293,12 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	 * 
 	 * @param array the Array to resolve
 	 * @param context the associated Context
+	 * @param parentDefinition the definition the value belongs to
 	 * @return the resolved Array
 	 */
-	protected function resolveArray (array:Array, context:Context) : Array {
+	protected function resolveArray (array:Array, context:Context, parentDefinition:ObjectDefinition) : Array {
 		for (var i:uint = 0; i < array.length; i++) {
-			array[i] = resolveValue(array[i], context);
+			array[i] = resolveValue(array[i], context, parentDefinition);
 		}
 		return array;
 	}

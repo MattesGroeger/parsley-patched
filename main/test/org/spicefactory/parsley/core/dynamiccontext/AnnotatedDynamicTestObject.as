@@ -1,5 +1,4 @@
 package org.spicefactory.parsley.core.dynamiccontext {
-import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 import org.spicefactory.parsley.util.MessageReceiverBase;
 
 /**
@@ -8,14 +7,14 @@ import org.spicefactory.parsley.util.MessageReceiverBase;
 public class AnnotatedDynamicTestObject extends MessageReceiverBase {
 	
 	
-	private var _dependency:InjectedDependency;
+	private var _dependency:DynamicTestDependency;
 	
-	public function get dependency () : InjectedDependency {
+	public function get dependency () : DynamicTestDependency {
 		return _dependency;
 	}
 	
 	[Inject]
-	public function set dependency (dependency:InjectedDependency) : void {
+	public function set dependency (dependency:DynamicTestDependency) : void {
 		_dependency = dependency;
 	}
 	
