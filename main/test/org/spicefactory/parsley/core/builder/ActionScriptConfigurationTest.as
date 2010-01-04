@@ -10,7 +10,7 @@ import org.spicefactory.parsley.testmodel.LazyTestClass;
 /**
  * @author Jens Halm
  */
-public class ActionScriptObjectDefinitionBuilderTest extends ContextTestBase {
+public class ActionScriptConfigurationTest extends ContextTestBase {
 
 	
 	

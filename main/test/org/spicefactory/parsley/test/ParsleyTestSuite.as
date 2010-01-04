@@ -2,7 +2,7 @@ package org.spicefactory.parsley.test {
 	import org.spicefactory.parsley.core.command.task.TaskCommandTest;
 import flexunit.framework.TestSuite;
 
-import org.spicefactory.parsley.core.builder.ActionScriptObjectDefinitionBuilderTest;
+import org.spicefactory.parsley.core.builder.ActionScriptConfigurationTest;
 import org.spicefactory.parsley.core.builder.RuntimeConfigurationTest;
 import org.spicefactory.parsley.core.command.CommandMetadataTagTest;
 import org.spicefactory.parsley.core.decorator.asyncinit.AsyncInitMetadataTagTest;
@@ -53,7 +53,7 @@ public class ParsleyTestSuite {
 		
 		var suite:TestSuite = new TestSuite();
 		
-		suite.addTestSuite(ActionScriptObjectDefinitionBuilderTest);
+		suite.addTestSuite(ActionScriptConfigurationTest);
 		suite.addTestSuite(RuntimeConfigurationTest);
 
 		suite.addTestSuite(InjectMetadataTagTest);
