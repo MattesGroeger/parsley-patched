@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex {
+	import org.spicefactory.parsley.rpc.flex.command.AsyncTokenCommandSupport;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.flex.FlexLogFactory;
 import org.spicefactory.parsley.asconfig.processor.ActionScriptConfigurationProcessor;
@@ -99,6 +100,7 @@ public class FlexContextBuilder {
 	public static function mergeAll (configClasses:Array, builder:CompositeContextBuilder) : void {
 		if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
 		FlexModuleSupport.initialize();
+		AsyncTokenCommandSupport.initialize();
 		builder.addProcessor(new ActionScriptConfigurationProcessor(configClasses));
 	}
 

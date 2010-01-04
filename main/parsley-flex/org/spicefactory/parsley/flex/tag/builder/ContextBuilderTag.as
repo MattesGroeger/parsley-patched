@@ -30,6 +30,7 @@ import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
 import org.spicefactory.parsley.flex.resources.FlexResourceBindingAdapter;
 import org.spicefactory.parsley.flex.tag.ConfigurationTagBase;
+import org.spicefactory.parsley.rpc.flex.command.AsyncTokenCommandSupport;
 import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
 
 import flash.display.DisplayObject;
@@ -206,6 +207,8 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		try {
 			if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
 			FlexModuleSupport.initialize();
+			AsyncTokenCommandSupport.initialize();
+			
 			var factory:ContextBuilderFactory = GlobalFactoryRegistry.instance.contextBuilder;
 			var builder:CompositeContextBuilder = factory.create(viewRoot, parent, domain);
 			if (config != null) {
