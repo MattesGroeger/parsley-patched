@@ -168,7 +168,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	protected function processProperties (instance:Object, definition:ObjectDefinition, context:Context) : void {
 	 	var props:Array = definition.properties.getAll();
 	 	for each (var prop:PropertyValue in props) {
-	 		var value:* = resolveValue(prop.value, context, definition, true);
+	 		var value:* = resolveValue(prop.value, context, definition, true, prop.property.type.isType(Array));
 	 		if (!(value is UnsatisfiedDependency)) {
 	 			prop.property.setValue(instance, value);
 	 		}
@@ -220,10 +220,11 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	 * @param context the associated Context
 	 * @param parentDefinition the definition the value belongs to
 	 * @param designateUnsatisfiedDependencies if true returns an instance of UnsatisfiedDependency instead of null
+	 * @param arrayTargetType whether to resolve type reference for an Array target type
 	 * @return the resolved value
 	 */
-	protected function resolveValue (value:*, context:Context, 
-			parentDefinition:ObjectDefinition, designateUnsatisfiedDependencies:Boolean = false) : * {
+	protected function resolveValue (value:*, context:Context, parentDefinition:ObjectDefinition, 
+			designateUnsatisfiedDependencies:Boolean = false, arrayTargetType:Boolean = false) : * {
 		if (value is ObjectIdReference) {
 			var idRef:ObjectIdReference = ObjectIdReference(value);
 			if (!context.containsObject(idRef.id)) {
@@ -241,6 +242,9 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 			var typeRef:ObjectTypeReference = ObjectTypeReference(value);
 			if (typeRef.type.isType(Context)) {
 				return context;
+			}
+			if (arrayTargetType) {
+				return context.getAllObjectsByType(typeRef.type.getClass());
 			}
 			var ids:Array = context.getObjectIds(typeRef.type.getClass());
 			if (ids.length > 1) {

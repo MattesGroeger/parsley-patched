@@ -164,6 +164,20 @@ public class InjectMetadataTagTest extends ContextTestBase {
 		assertNull("Expected optional dependency to be missing", obj.dependency);		
 	}	
 	
+	public function testArrayInjection () : void {
+		var context:Context = ActionScriptContextBuilder.build(InjectTestContainer);
+		checkState(context);
+		checkObjectIds(context, ["arrayPropertyInjection"], ArrayPropertyInjection);	
+		checkObjectIds(context, ["date1", "date2", "date3"], Date);	
+		var obj:ArrayPropertyInjection 
+				= getAndCheckObject(context, "arrayPropertyInjection", ArrayPropertyInjection) as ArrayPropertyInjection;
+		var deps:Array = obj.dependencies;
+		assertEquals("Unexpected number of injected dependencies", 3, deps.length);
+		for each (var dep:Object in deps) {
+			assertTrue("Unexpected type of dependency", (dep is Date));
+		}
+	}
+
 	
 	private function checkDependency (context:Context, dep:InjectedDependency) : void {
 		assertNotNull("Missing dependency", dep);

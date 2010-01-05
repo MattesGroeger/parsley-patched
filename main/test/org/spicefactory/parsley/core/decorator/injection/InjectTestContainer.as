@@ -71,6 +71,11 @@ public class InjectTestContainer {
 		return new OptionalPropertyInjection();
 	}
 	
+	[ObjectDefinition(lazy="true")]
+	public function get arrayPropertyInjection () : ArrayPropertyInjection {
+		return new ArrayPropertyInjection();
+	}
+	
 	
 	
 	[ObjectDefinition(lazy="true")]
@@ -86,6 +91,19 @@ public class InjectTestContainer {
 	[ObjectDefinition(lazy="true")]
 	public function get optionalPropertyIdInjection () : OptionalPropertyIdInjection {
 		return new OptionalPropertyIdInjection();
+	}
+	
+	
+	public function get date1 () : Date {
+		return new Date();
+	}
+	
+	public function get date2 () : Date {
+		return new Date();
+	}
+	
+	public function get date3 () : Date {
+		return new Date();
 	}
 	
 	
