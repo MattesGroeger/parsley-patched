@@ -1,4 +1,5 @@
 package org.spicefactory.parsley.core.builder {
+	import org.spicefactory.parsley.core.dynamiccontext.DynamicTestDependency;
 import org.spicefactory.parsley.core.ContextTestBase;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
@@ -16,12 +17,12 @@ public class RuntimeConfigurationTest extends ContextTestBase {
 	
 	
 	public function test2objectsWithoutIds () : void {
-		var dep:InjectedDependency = new InjectedDependency();
+		var dep:DynamicTestDependency = new DynamicTestDependency();
 		var obj:AnnotatedDynamicTestObject = new AnnotatedDynamicTestObject();
 		var context:Context = RuntimeContextBuilder.build([dep, obj]);
 		checkState(context);
 		assertEquals("Unexpected total object count", 2, context.getObjectCount());
-		assertEquals("Unexpected object count for InjectedDependency", 1, context.getObjectCount(InjectedDependency));
+		assertEquals("Unexpected object count for InjectedDependency", 1, context.getObjectCount(DynamicTestDependency));
 		assertEquals("Unexpected object count for AnnotatedDynamicTestObject", 1, context.getObjectCount(AnnotatedDynamicTestObject));
 		var obj2:AnnotatedDynamicTestObject = AnnotatedDynamicTestObject(context.getObjectByType(AnnotatedDynamicTestObject));
 		assertEquals("Expected to retrieve existing instance", obj, obj2);
