@@ -193,6 +193,13 @@ public class XmlObjectDefinitionMapperFactory {
 		childBuilder.mapToChildElementChoice("childValue", valueChoice);
 		childBuilder.mapAllToAttributes();
 		decoratorChoice.addMapper(childBuilder.build());
+		
+		/*
+		childBuilder = getMapperBuilder(DynamicPropertyTag, "dynamic-property");
+		childBuilder.mapToChildElementChoice("childValue", valueChoice);
+		childBuilder.mapAllToAttributes();
+		decoratorChoice.addMapper(childBuilder.build());
+		 */
 
 		addDecoratorAttributeMapper(AsyncInitDecorator, "async-init");
 
