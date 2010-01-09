@@ -18,6 +18,23 @@ public class CoreMxmlTagTest extends ContextTestBase {
 		checkObjectIds(context, ["object"], CoreModel);	
 		var obj:CoreModel 
 				= getAndCheckObject(context, "object", CoreModel) as CoreModel;
+		validateObject(obj);
+	}
+	
+	/* postponed for 2.3
+	public function testCoreTagsWithDynamicProperties () : void {
+		ArrayElement.instanceCount = 0;
+		var context:Context = FlexContextBuilder.build(DynamicPropertyConfig);
+		checkState(context);
+		checkObjectIds(context, ["dependency"], InjectedDependency);	
+		checkObjectIds(context, ["object"], Dictionary);	
+		var obj:Dictionary 
+				= getAndCheckObject(context, "object", Dictionary) as Dictionary;
+		validateObject(obj);
+	}
+	 */
+	
+	private function validateObject (obj:Object) : void {
 		assertEquals("Unexpected string property", "foo", obj.stringProp);
 		assertEquals("Unexpected int property", 7, obj.intProp);
 		assertEquals("Unexpected boolean property", true, obj.booleanProp);
