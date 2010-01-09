@@ -31,7 +31,10 @@ import org.spicefactory.parsley.core.registry.impl.RegistryValueResolver;
 public class PropertyTag extends ObjectReferenceTag implements ObjectDefinitionDecorator {
 
 
-	private static const valueResolver:RegistryValueResolver = new RegistryValueResolver(); 
+	/**
+	 * The resolver for value declarations.
+	 */
+	protected static const valueResolver:RegistryValueResolver = new RegistryValueResolver(); 
 
 	/**
 	 * The value of the property mapped as a child element.
@@ -48,12 +51,11 @@ public class PropertyTag extends ObjectReferenceTag implements ObjectDefinitionD
 	 * The name of the property. 
 	 */
 	public var name:String;
-
-
+	
 	/**
-	 * @inheritDoc
+	 * Validates the properties of this tag instance.
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+	protected function validate () : void {
 		var valueCount:int = 0;
 		if (childValue !== undefined) valueCount++;
 		if (value !== undefined) valueCount++;
@@ -63,6 +65,14 @@ public class PropertyTag extends ObjectReferenceTag implements ObjectDefinitionD
 			throw new ObjectDefinitionBuilderError("Exactly one attribute of value, id-ref or type-ref or a child node without" +
 				" attributes must be specified");
 		}
+	}
+
+
+	/**
+	 * @inheritDoc
+	 */
+	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		validate();
 		if (idRef != null) {
 			definition.properties.addIdReference(name, idRef, required);
 		}
