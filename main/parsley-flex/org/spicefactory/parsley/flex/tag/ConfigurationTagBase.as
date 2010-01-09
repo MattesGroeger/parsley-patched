@@ -41,6 +41,8 @@ public class ConfigurationTagBase extends EventDispatcher implements IMXMLObject
 	private var stageBound:Boolean;
 	private var supportsBindings:Boolean;
 	
+	private var componentInitialized:Boolean = false;
+	
 	
 	/**
 	 * Creates a new instance.
@@ -85,10 +87,12 @@ public class ConfigurationTagBase extends EventDispatcher implements IMXMLObject
 		
 		if (!waitForStage(view) && !waitForBindings(view)) {
 			executeAction(view);
+			return;
 		}
-		else if (waitForStage(view)) {
+		if (waitForStage(view)) {
 			view.addEventListener(Event.ADDED_TO_STAGE, addedToStage, false, listenerPriority);
-		} else {
+		} 
+		if (waitForBindings(view)) {
 			view.addEventListener(FlexEvent.INITIALIZE, viewInitialized, false, listenerPriority);
 		}
 	}
@@ -99,24 +103,19 @@ public class ConfigurationTagBase extends EventDispatcher implements IMXMLObject
 		if (!waitForBindings(view)) {
 			executeAction(view);
 		}
-		else {
-			view.addEventListener(FlexEvent.INITIALIZE, viewInitialized, false, listenerPriority);
-		}
 	}
 	
 	private function viewInitialized (event:Event) : void  {
 		var view:DisplayObject = DisplayObject(event.target);
 		view.removeEventListener(FlexEvent.INITIALIZE, viewInitialized);
+		componentInitialized = true;
 		if (!waitForStage(view)) {
 			executeAction(view);
-		}
-		else {
-			view.addEventListener(Event.ADDED_TO_STAGE, addedToStage, false, listenerPriority);
 		}
 	}
 	
 	private function waitForBindings (view:DisplayObject) : Boolean {
-		return (supportsBindings && (view is UIComponent) && !UIComponent(view).initialized);
+		return (supportsBindings && (view is UIComponent) && !componentInitialized && !UIComponent(view).initialized);
 	}
 	
 	private function waitForStage (view:DisplayObject) : Boolean {
