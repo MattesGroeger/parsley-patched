@@ -3,7 +3,7 @@
 	
 	<property file="build.properties" />
 	
-	<property name="version" value="2.2.0-SNAPSHOT"/>
+	<property name="version" value="2.2.RC1"/>
 	<property name="pimento.version" value="1.1.0"/>
 	<property name="project.dir" value="${basedir}/.."/>
 	<property name="lib.dir" value="${project.dir}/lib"/>
@@ -19,7 +19,7 @@
 	</target>
 	
 	<target name="compile_parsley_complete_flash">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/parsley-complete-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
@@ -40,7 +40,7 @@
 	</target>
 	
 	<target name="compile_parsley_complete_flex3">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/parsley-complete-flex3-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
@@ -65,7 +65,7 @@
 	<target name="compile_parsley_complete_flex4">
 		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
 					token="extends Flex3ModuleInfoBase" value="extends Flex4ModuleInfoBase"/>
-		<exec executable="${flex4.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex4.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/parsley-complete-flex4-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
@@ -90,7 +90,7 @@
 	</target>
 	
 	<target name="compile_spicelib_complete_flex">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo,PostConstruct,Init" />
 			<arg line="-o ${release.target.dir}/release/spicelib-complete-flex-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
@@ -108,7 +108,7 @@
 	</target>
 	
 	<target name="compile_spicelib_complete_flash">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo,PostConstruct,Init" />
 			<arg line="-o ${release.target.dir}/release/spicelib-complete-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
@@ -127,7 +127,7 @@
 	</target>
 	
 	<target name="compile_spicelib_core">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
@@ -140,7 +140,7 @@
 	</target>
 	
 	<target name="compile_spicelib_flash">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=PostConstruct,Init" />
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
@@ -151,7 +151,7 @@
 	</target>
 	
 	<target name="compile_spicelib_reflect">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo" />
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
@@ -162,7 +162,7 @@
 	</target>
 	
 	<target name="compile_spicelib_task">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-task-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
@@ -172,7 +172,7 @@
 	</target>
 	
 	<target name="compile_spicelib_xml">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
@@ -184,7 +184,7 @@
 	</target>
 	
 	<target name="compile_parsley_core">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/modules/parsley-core-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
@@ -203,7 +203,7 @@
 	</target>
 	
 	<target name="compile_parsley_flex3">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/modules/parsley-flex3-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
@@ -225,7 +225,7 @@
 	<target name="compile_parsley_flex4">
 		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
 					token="extends Flex3ModuleInfoBase" value="extends Flex4ModuleInfoBase"/>
-		<exec executable="${flex4.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex4.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/modules/parsley-flex4-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
 			<arg line="-el ${flex4.sdk}/frameworks/libs/player/10/playerglobal.swc" />
@@ -247,7 +247,7 @@
 	</target>
 			
 	<target name="compile_parsley_xml">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/modules/parsley-xml-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
@@ -260,7 +260,7 @@
 	</target>
 	
 	<target name="compile_parsley_flash">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/modules/parsley-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
@@ -276,7 +276,7 @@
 	</target>
 	
 	<target name="compile_parsley_integration">
-		<exec executable="${flex.sdk}/bin/compc.exe" dir="${basedir}">
+		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-o ${release.target.dir}/release/modules/parsley-integration-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/pimento ${project.dir}/manifest/parsley-pimento-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/cinnamon ${project.dir}/manifest/parsley-cinnamon-manifest.xml" />
