@@ -19,6 +19,12 @@
 			
 			 [Bindable]
 			 public var model:CoreModel;	
+			 
+			[Bindable]
+			public var model2:CoreModel;
+			
+			[Bindable]
+			public var model3:CoreModel;
          
          	 //[Inject]
          	 public var context:Context;
@@ -40,12 +46,16 @@
    
 	
 	<parsley:ConfigureTag configId="panel2"/>
-	<!--<parsley:ConfigureTag/>-->
+	
+	<parsley:FastInjectTag objectId="object" property="model2"/>
+	<parsley:FastInjectTag type="{CoreModel}" property="model3"/>
 	
 	<mx:Text text="AA2"/>
 	<mx:Text text="Bound value: |{model.stringProp}|"/>
 	<mx:Text text="BB2"/>
 	
+	<mx:Text text="Fast Inject value (id): |{model2.stringProp}|"/>
+	<mx:Text text="Fast Inject value (type): |{model3.stringProp}|"/>
 
 	<mx:Button label="Show Popup" click="showPopup();"/>
 

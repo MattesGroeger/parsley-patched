@@ -17,11 +17,12 @@
 package org.spicefactory.parsley.core.view.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
+import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.events.FastInjectEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
@@ -150,6 +151,7 @@ public class DefaultViewManager implements ViewManager {
 		viewRoot.addEventListener(componentAddedEvent, componentAdded);
 		viewRoot.addEventListener(LEGACY_CONFIGURE_EVENT, componentAdded);
 		viewRoot.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
+		viewRoot.addEventListener(FastInjectEvent.FAST_INJECT, handleFastInject);
 	}
 	
 	private function handleRemovedViewRoot (viewRoot:DisplayObject) : void {
@@ -157,6 +159,7 @@ public class DefaultViewManager implements ViewManager {
 		viewRoot.removeEventListener(componentAddedEvent, componentAdded);
 		viewRoot.removeEventListener(LEGACY_CONFIGURE_EVENT, componentAdded);
 		viewRoot.removeEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
+		viewRoot.removeEventListener(FastInjectEvent.FAST_INJECT, handleFastInject);
 		delete globalViewRootRegistry[viewRoot];
 	}
 	
@@ -209,6 +212,17 @@ public class DefaultViewManager implements ViewManager {
 		view.removeEventListener(componentRemovedEvent, componentRemoved);
 		delete configuredViews[view];
 		viewContext.removeObject(view);
+	}
+	
+	private function handleFastInject (event:FastInjectEvent) : void {
+		var target:Object = event.target;
+		if ((!event.objectId && !event.objectType) || (event.objectId && event.objectType)) {
+			throw new ContextError("Exactly one attribute of type or objectId must be specified");
+		}
+		var object:Object = (event.objectId != null)
+				? viewContext.getObject(event.objectId)
+				: viewContext.getObjectByType(event.objectType);
+		target[event.property] = object;
 	}
 	
 	
