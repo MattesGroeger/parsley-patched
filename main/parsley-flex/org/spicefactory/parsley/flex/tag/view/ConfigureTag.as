@@ -70,7 +70,9 @@ public class ConfigureTag extends ConfigurationTagBase {
 	 */
 	public var repeat:Boolean = true;
 	
-	
+	/**
+	 * @private
+	 */
 	protected override function executeAction (view:DisplayObject) : void { 
 		view.dispatchEvent(new ViewConfigurationEvent(target, configId));
 		if (repeat) {
