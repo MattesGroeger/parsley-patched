@@ -34,6 +34,16 @@
     <component id="Array" class="org.spicefactory.parsley.tag.core.ArrayTag"/>
     <component id="ObjectRef" class="org.spicefactory.parsley.tag.core.ObjectReferenceTag"/>
 
+	<component id="Configure" class="org.spicefactory.parsley.flex.tag.view.ConfigureTag"/>
+
+	<component id="LoggingXmlSupport" class="org.spicefactory.parsley.flex.logging.FlexLoggingXmlSupport"/>
+	
+	<component id="ContextBuilder" class="org.spicefactory.parsley.flex.tag.builder.ContextBuilderTag"/>
+	<component id="FlexConfig" class="org.spicefactory.parsley.flex.tag.builder.FlexConfigTag"/>
+	<component id="XmlConfig" class="org.spicefactory.parsley.flex.tag.builder.XmlConfigTag"/>
+	<component id="RuntimeConfig" class="org.spicefactory.parsley.flex.tag.builder.RuntimeConfigTag"/>
+	<component id="Instance" class="org.spicefactory.parsley.flex.tag.builder.InstanceTag"/>
+	<component id="Scope" class="org.spicefactory.parsley.flex.tag.builder.ScopeTag"/>
 </componentPackage>
 
 
