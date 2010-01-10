@@ -35,6 +35,7 @@
     <component id="ObjectRef" class="org.spicefactory.parsley.tag.core.ObjectReferenceTag"/>
 
 	<component id="Configure" class="org.spicefactory.parsley.flex.tag.view.ConfigureTag"/>
+	<component id="FastInject" class="org.spicefactory.parsley.flex.tag.view.FastInjectTag"/>
 
 	<component id="LoggingXmlSupport" class="org.spicefactory.parsley.flex.logging.FlexLoggingXmlSupport"/>
 	
