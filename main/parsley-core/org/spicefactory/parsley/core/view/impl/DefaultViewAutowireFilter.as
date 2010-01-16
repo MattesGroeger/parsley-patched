@@ -23,7 +23,7 @@ import flash.utils.getQualifiedClassName;
 /**
  * Default implementation of the ViewAutowireFilter. The default behaviour is to exclude
  * components from packages within mx.*, spark.* and flash.* in the prefilter method and
- * then only wire components which have a corresponding <View> tag in the MXML or XML 
+ * then only wire components which have a corresponding <code>&lt;View&gt;</code> tag in the MXML or XML 
  * configuration for the Context.
  * 
  * @author Jens Halm
