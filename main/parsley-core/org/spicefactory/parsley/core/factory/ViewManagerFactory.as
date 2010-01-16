@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
+import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.system.ApplicationDomain;
@@ -28,7 +29,14 @@ import flash.system.ApplicationDomain;
  */
 public interface ViewManagerFactory {
 	
-
+	
+	/**
+	 * The filter responsible for selecting views that should be autowired to the Context.
+	 */
+	function get autowireFilter () : ViewAutowireFilter;
+	
+	function set autowireFilter (value:ViewAutowireFilter) : void;
+	
 	/**
 	 * The event type that view roots dispatch to signal that they should no longer be managed
 	 * by this instance. The default is <code>Event.REMOVED_FROM_STAGE</code>.

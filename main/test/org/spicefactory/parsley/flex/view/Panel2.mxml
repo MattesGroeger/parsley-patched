@@ -45,7 +45,7 @@
    </mx:Script>
    
 	
-	<parsley:ConfigureTag configId="panel2"/>
+	<!--<parsley:ConfigureTag configId="panel2"/>-->
 	
 	<parsley:FastInjectTag objectId="object" property="model2"/>
 	<parsley:FastInjectTag type="{CoreModel}" property="model3"/>

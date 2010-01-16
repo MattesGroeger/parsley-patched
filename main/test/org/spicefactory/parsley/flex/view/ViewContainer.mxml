@@ -36,18 +36,19 @@
 		text="Some text"
 		type="{TestEvent}"/>
 
-	<tag:MxmlViewTag type="{Panel2}">
+	<!--<tag:MxmlViewTag type="{Panel2}">
 	    <tag:PropertyTag name="model" idRef="object"/>
-	</tag:MxmlViewTag>
+	</tag:MxmlViewTag>-->
+	
+	<tag:MxmlViewTag type="{Panel1}"/>
 	
 	<tag:MxmlViewTag type="{Panel3}">
 	    <tag:PropertyTag name="model" idRef="object"/>
 	</tag:MxmlViewTag>
 	
-	<!--
 	<tag:MxmlViewTag type="{Panel2}">
 	    <tag:PropertyTag name="model" idRef="object"/>
-	</tag:MxmlViewTag>-->
+	</tag:MxmlViewTag>
 	
 	<tag:MxmlRootObjectTag id="object" type="{CoreModel}">
 		<tag:ConstructorTag>

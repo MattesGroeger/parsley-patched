@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
+	import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.flex.FlexLogFactory;
@@ -24,6 +25,7 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.events.ViewAutowireEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
@@ -114,7 +116,9 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	
 	
 	private var cachedViewConfigEvents:Array = new Array();
+	private var cachedAutowireViewEvents:Array = new Array();
 	private var synchronizedChildEvents:Array = new Array();
+	private var autowireViewEventType:String;
 	
 	private var _context:Context;
 	
@@ -134,6 +138,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	public override function initialized (document:Object, id:String) : void {
 		super.initialized(document, id);
 		if (_context == null) {
+			autowireViewEventType = GlobalFactoryRegistry.instance.viewManager.autowireFilter.eventType;
 			addViewRootListeners(DisplayObject(document));
 		}
 	}
@@ -141,12 +146,14 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	private function addViewRootListeners (view:DisplayObject) : void {
 		view.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, detectPrematureChildCreation);
 		view.addEventListener(ViewConfigurationEvent.CONFIGURE_VIEW, cacheViewConfigEvent);
+		view.addEventListener(autowireViewEventType, cacheAutowireViewEvent);
 		view.addEventListener(ContextBuilderSyncEvent.SYNC_BUILDER, syncChildContext);
 	}
 	
 	private function removeViewRootListeners (view:DisplayObject) : void {
 		view.removeEventListener(ContextBuilderEvent.BUILD_CONTEXT, detectPrematureChildCreation);
 		view.removeEventListener(ViewConfigurationEvent.CONFIGURE_VIEW, cacheViewConfigEvent);
+		view.removeEventListener(autowireViewEventType, cacheAutowireViewEvent);
 		view.removeEventListener(ContextBuilderSyncEvent.SYNC_BUILDER, syncChildContext);
 	}
 	
@@ -168,9 +175,20 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		cachedViewConfigEvents.push(event);
 	}
 	
+	private function cacheAutowireViewEvent (event:Event) : void {
+		cachedAutowireViewEvents.push(event);
+	}
+	
 	private function handleCachedEvents () : void {
 		for each (var viewEvent:Event in cachedViewConfigEvents) {
 			viewEvent.target.dispatchEvent(viewEvent.clone());
+		}
+		for each (var autowireEvent:Event in cachedAutowireViewEvents) {
+			var view:DisplayObject = DisplayObject(autowireEvent.target);
+			var autowireFilter:ViewAutowireFilter = GlobalFactoryRegistry.instance.viewManager.autowireFilter;
+			if (autowireFilter.prefilter(view)) {
+				view.dispatchEvent(new ViewAutowireEvent());
+			}
 		}
 		cachedViewConfigEvents = new Array();
 		for each (var syncEvent:ContextBuilderSyncEvent in synchronizedChildEvents) {

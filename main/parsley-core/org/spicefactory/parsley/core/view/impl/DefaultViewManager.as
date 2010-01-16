@@ -23,9 +23,12 @@ import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.FastInjectEvent;
+import org.spicefactory.parsley.core.events.ViewAutowireEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
+import org.spicefactory.parsley.core.view.ViewAutowireFilter;
+import org.spicefactory.parsley.core.view.ViewAutowireMode;
 import org.spicefactory.parsley.core.view.ViewManager;
 
 import flash.display.DisplayObject;
@@ -55,6 +58,7 @@ public class DefaultViewManager implements ViewManager {
 	private var parent:Context;
 	private var domain:ApplicationDomain;
 	private var registry:ViewDefinitionRegistry;
+	private var autowireFilter:ViewAutowireFilter;
 	private var viewRoots:Array = new Array();
 	private var configuredViews:Dictionary = new Dictionary();
 	private var viewContext:DynamicContext;
@@ -83,11 +87,14 @@ public class DefaultViewManager implements ViewManager {
 	 * @param context the Context view components should be dynamically wired to
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @param registry the registry for view definitions
+	 * @param autowireFilter the filter to select view object applicable for autowiring
 	 */
-	function DefaultViewManager (context:Context, domain:ApplicationDomain, registry:ViewDefinitionRegistry) {
+	function DefaultViewManager (context:Context, domain:ApplicationDomain, 
+			registry:ViewDefinitionRegistry, autowireFilter:ViewAutowireFilter) {
 		this.parent = context;
 		this.domain = domain;
 		this.registry = registry;
+		this.autowireFilter = autowireFilter;
 	}
 
 	
@@ -148,18 +155,26 @@ public class DefaultViewManager implements ViewManager {
 	
 	private function addListeners (viewRoot:DisplayObject) : void {
 		viewRoot.addEventListener(viewRootRemovedEvent, viewRootRemoved);
-		viewRoot.addEventListener(componentAddedEvent, componentAdded);
-		viewRoot.addEventListener(LEGACY_CONFIGURE_EVENT, componentAdded);
+		viewRoot.addEventListener(componentAddedEvent, handleConfigurationEvent);
+		viewRoot.addEventListener(LEGACY_CONFIGURE_EVENT, handleConfigurationEvent);
 		viewRoot.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
 		viewRoot.addEventListener(FastInjectEvent.FAST_INJECT, handleFastInject);
+		if (autowireFilter.enabled) {
+			viewRoot.addEventListener(autowireFilter.eventType, prefilterView, true);
+			viewRoot.addEventListener(ViewAutowireEvent.AUTOWIRE, handleAutowireEvent);
+		}
 	}
 	
 	private function handleRemovedViewRoot (viewRoot:DisplayObject) : void {
 	 	viewRoot.removeEventListener(viewRootRemovedEvent, viewRootRemoved);
-		viewRoot.removeEventListener(componentAddedEvent, componentAdded);
-		viewRoot.removeEventListener(LEGACY_CONFIGURE_EVENT, componentAdded);
+		viewRoot.removeEventListener(componentAddedEvent, handleConfigurationEvent);
+		viewRoot.removeEventListener(LEGACY_CONFIGURE_EVENT, handleConfigurationEvent);
 		viewRoot.removeEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
 		viewRoot.removeEventListener(FastInjectEvent.FAST_INJECT, handleFastInject);
+		if (autowireFilter.enabled) {
+			viewRoot.removeEventListener(autowireFilter.eventType, prefilterView, true);
+			viewRoot.removeEventListener(ViewAutowireEvent.AUTOWIRE, handleAutowireEvent);
+		}
 		delete globalViewRootRegistry[viewRoot];
 	}
 	
@@ -175,7 +190,30 @@ public class DefaultViewManager implements ViewManager {
 	}
 	
 	
-	private function componentAdded (event:Event) : void {
+	private function prefilterView (event:Event) : void {
+		var view:DisplayObject = event.target as DisplayObject;
+		if (autowireFilter.prefilter(view)) {
+			view.dispatchEvent(new ViewAutowireEvent());
+		}
+	}
+	
+	protected function handleAutowireEvent (event:Event) : void {
+		event.stopImmediatePropagation();
+		var view:DisplayObject = event.target as DisplayObject;
+		if (configuredViews[view] != undefined) return;
+		var mode:ViewAutowireMode = autowireFilter.filter(view);
+		if (mode == ViewAutowireMode.ALWAYS) {
+			configureView(view, getDefinition(view, view.name));
+		}
+		else if (mode == ViewAutowireMode.CONFIGURED) {
+			var definition:ObjectDefinition = getDefinition(view, view.name);
+			if (definition != null) {
+				configureView(view, definition);
+			}
+		}
+	}
+
+	protected function handleConfigurationEvent (event:Event) : void {
 		event.stopImmediatePropagation();
 		var configTarget:Object = (event is ViewConfigurationEvent) 
 				? ViewConfigurationEvent(event).configTarget : event.target;
@@ -183,13 +221,16 @@ public class DefaultViewManager implements ViewManager {
 				? ViewConfigurationEvent(event).configId 
 				: (configTarget is DisplayObject) ? DisplayObject(configTarget).name : null;
 		if (configuredViews[configTarget] != undefined) return;
-		log.debug("Add object '{0}' to view Context", configTarget);
-		if (configTarget is IEventDispatcher) {
-			IEventDispatcher(configTarget).addEventListener(componentRemovedEvent, componentRemoved);
+		configureView(configTarget, getDefinition(configTarget, configId));
+	}	
+	
+	protected function configureView (target:Object, definition:ObjectDefinition) : void {
+		log.debug("Add object '{0}' to view Context", target);
+		if (target is IEventDispatcher) {
+			IEventDispatcher(target).addEventListener(componentRemovedEvent, componentRemoved);
 		}
-		configuredViews[configTarget] = true;
-		var definition:ObjectDefinition = getDefinition(configTarget, configId);
-		viewContext.addObject(configTarget, definition);
+		configuredViews[target] = true;
+		viewContext.addObject(target, definition);
 	}
 	
 	protected function getDefinition (configTarget:Object, configId:String) : ObjectDefinition {

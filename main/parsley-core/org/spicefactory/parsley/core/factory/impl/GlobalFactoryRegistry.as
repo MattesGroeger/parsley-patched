@@ -166,6 +166,7 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 }
 }
 
+import org.spicefactory.parsley.core.view.impl.DefaultViewAutowireFilter;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
@@ -196,6 +197,7 @@ import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegist
 import org.spicefactory.parsley.core.registry.impl.DefaultViewDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.scope.impl.DefaultScopeManager;
+import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.ViewManager;
 import org.spicefactory.parsley.core.view.impl.DefaultViewManager;
 import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
@@ -248,9 +250,10 @@ class DefaultViewManagerFactory implements ViewManagerFactory {
 	private var _viewRootRemovedEvent:String = Event.REMOVED_FROM_STAGE;
 	private var _componentRemovedEvent:String = Event.REMOVED_FROM_STAGE;
 	private var _componentAddedEvent:String = ViewConfigurationEvent.CONFIGURE_VIEW;
+	private var _autowireFilter:ViewAutowireFilter = new DefaultViewAutowireFilter();
 	
 	public function create (context:Context, domain:ApplicationDomain, registry:ViewDefinitionRegistry) : ViewManager {
-		var viewManager:DefaultViewManager = new DefaultViewManager(context, domain, registry);
+		var viewManager:DefaultViewManager = new DefaultViewManager(context, domain, registry, autowireFilter);
 		viewManager.componentAddedEvent = componentAddedEvent;
 		viewManager.componentRemovedEvent = componentRemovedEvent;
 		viewManager.viewRootRemovedEvent = viewRootRemovedEvent;
@@ -280,6 +283,15 @@ class DefaultViewManagerFactory implements ViewManagerFactory {
 	public function set componentAddedEvent (componentAddedEvent:String) : void {
 		_componentAddedEvent = componentAddedEvent;
 	}
+	
+	public function get autowireFilter () : ViewAutowireFilter {
+		return _autowireFilter;
+	}
+	
+	public function set autowireFilter (value:ViewAutowireFilter) : void {
+		_autowireFilter = value;
+	}
+	
 	
 }
 
