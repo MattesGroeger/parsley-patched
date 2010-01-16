@@ -251,7 +251,11 @@ class DefaultViewManagerFactory implements ViewManagerFactory {
 	private var _componentRemovedEvent:String = Event.REMOVED_FROM_STAGE;
 	private var _componentAddedEvent:String = ViewConfigurationEvent.CONFIGURE_VIEW;
 	private var _autowireFilter:ViewAutowireFilter = new DefaultViewAutowireFilter();
-	
+
+	function DefaultViewManagerFactory () {
+		_autowireFilter.enabled = false;
+	}
+
 	public function create (context:Context, domain:ApplicationDomain, registry:ViewDefinitionRegistry) : ViewManager {
 		var viewManager:DefaultViewManager = new DefaultViewManager(context, domain, registry, autowireFilter);
 		viewManager.componentAddedEvent = componentAddedEvent;
