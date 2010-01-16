@@ -15,11 +15,9 @@
  */
 
 package org.spicefactory.parsley.core.view.impl {
-import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.ViewAutowireMode;
 
 import flash.display.DisplayObject;
-import flash.events.Event;
 import flash.utils.getQualifiedClassName;
 
 /**
@@ -30,13 +28,9 @@ import flash.utils.getQualifiedClassName;
  * 
  * @author Jens Halm
  */
-public class DefaultViewAutowireFilter implements ViewAutowireFilter {
+public class DefaultViewAutowireFilter extends AbstractViewAutowireFilter {
 	
-	
-	private var _enabled:Boolean = true;
-	private var _eventType:String = Event.ADDED_TO_STAGE;
 	private var excludedTypes:RegExp = /^mx\.|^spark\.|^flash\./;
-
 	
 	/**
 	 * Creates a new instance.
@@ -50,36 +44,14 @@ public class DefaultViewAutowireFilter implements ViewAutowireFilter {
 	/**
 	 * @inheritDoc
 	 */
-	public function get enabled () : Boolean {
-		return _enabled;
-	}
-	
-	public function set enabled (value:Boolean) : void {
-		_enabled = value;
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function get eventType () : String {
-		return _eventType;
-	}
-	
-	public function set eventType (value:String) : void {
-		_eventType = value;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function prefilter (object:DisplayObject) : Boolean {
+	public override function prefilter (object:DisplayObject) : Boolean {
 		return !excludedTypes.test(getQualifiedClassName(object));
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function filter (object:DisplayObject) : ViewAutowireMode {
+	public override function filter (object:DisplayObject) : ViewAutowireMode {
 		return ViewAutowireMode.CONFIGURED;
 	}
 	
