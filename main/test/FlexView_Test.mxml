@@ -8,13 +8,14 @@
 	xmlns:builder="org.spicefactory.parsley.core.builder.*"
 	layout="absolute"
     addedToStage="test('addedToStage');"
-    preinitialize="test('preinitialize');"
+    preinitialize="test('preinitialize'); GlobalFactoryRegistry.instance.viewManager.autowireFilter.enabled = true;"
     initialize="test('initialize');"
     creationComplete="test('creationComplete');"
 >    
     <mx:Script>
         <![CDATA[
-        	import org.spicefactory.parsley.flex.view.ViewContainer;
+        	import org.spicefactory.parsley.flex.view.RootConfig;
+        	import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
         	import org.spicefactory.parsley.core.builder.SimpleClass;
         	import mx.containers.TitleWindow;
         	import mx.modules.Module;
@@ -49,7 +50,7 @@
     
     
     <parsley:ContextBuilderTag id="builder" complete="checkContext();">
-    	<parsley:FlexConfigTag type="{ViewContainer}"/>
+    	<parsley:FlexConfigTag type="{RootConfig}"/>
     	<parsley:XmlConfigTag file="viewTestConfig.xml"/>
    		<parsley:ScopeTag name="window" inherited="true"/>
    		<parsley:RuntimeConfigTag>

@@ -3,7 +3,7 @@
 	width="100%"
 	height="100%"
 	title="Panel3b"
-	addedToStage="trace('ADD 3'); dispatchEvent(new Event('configureView', true));"
+	addedToStage="trace('ADD 3');"
 	>
 	
 	<mx:Script>

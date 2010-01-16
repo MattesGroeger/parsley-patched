@@ -117,6 +117,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	
 	private var cachedViewConfigEvents:Array = new Array();
 	private var cachedAutowireViewEvents:Array = new Array();
+	private var cachedAutowirePrefilterEvents:Array = new Array();
 	private var synchronizedChildEvents:Array = new Array();
 	private var autowireViewEventType:String;
 	
@@ -146,14 +147,16 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	private function addViewRootListeners (view:DisplayObject) : void {
 		view.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, detectPrematureChildCreation);
 		view.addEventListener(ViewConfigurationEvent.CONFIGURE_VIEW, cacheViewConfigEvent);
-		view.addEventListener(autowireViewEventType, cacheAutowireViewEvent);
+		view.addEventListener(autowireViewEventType, cacheAutowirePrefilterEvent);
+		view.addEventListener(ViewAutowireEvent.AUTOWIRE, cacheAutowireViewEvent);
 		view.addEventListener(ContextBuilderSyncEvent.SYNC_BUILDER, syncChildContext);
 	}
 	
 	private function removeViewRootListeners (view:DisplayObject) : void {
 		view.removeEventListener(ContextBuilderEvent.BUILD_CONTEXT, detectPrematureChildCreation);
 		view.removeEventListener(ViewConfigurationEvent.CONFIGURE_VIEW, cacheViewConfigEvent);
-		view.removeEventListener(autowireViewEventType, cacheAutowireViewEvent);
+		view.removeEventListener(autowireViewEventType, cacheAutowirePrefilterEvent);
+		view.removeEventListener(ViewAutowireEvent.AUTOWIRE, cacheAutowireViewEvent);
 		view.removeEventListener(ContextBuilderSyncEvent.SYNC_BUILDER, syncChildContext);
 	}
 	
@@ -175,6 +178,10 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		cachedViewConfigEvents.push(event);
 	}
 	
+	private function cacheAutowirePrefilterEvent (event:Event) : void {
+		cachedAutowirePrefilterEvents.push(event);
+	}
+	
 	private function cacheAutowireViewEvent (event:Event) : void {
 		cachedAutowireViewEvents.push(event);
 	}
@@ -184,7 +191,10 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 			viewEvent.target.dispatchEvent(viewEvent.clone());
 		}
 		for each (var autowireEvent:Event in cachedAutowireViewEvents) {
-			var view:DisplayObject = DisplayObject(autowireEvent.target);
+			autowireEvent.target.dispatchEvent(autowireEvent.clone());
+		}
+		for each (var prefilterEvent:Event in cachedAutowirePrefilterEvents) {
+			var view:DisplayObject = DisplayObject(prefilterEvent.target);
 			var autowireFilter:ViewAutowireFilter = GlobalFactoryRegistry.instance.viewManager.autowireFilter;
 			if (autowireFilter.prefilter(view)) {
 				view.dispatchEvent(new ViewAutowireEvent());
