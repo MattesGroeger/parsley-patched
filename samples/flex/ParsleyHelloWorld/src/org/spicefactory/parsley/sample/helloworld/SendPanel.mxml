@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:sf="http://www.spicefactory.org/parsley/flex"
+	layout="vertical"
+	title="Send Panel" 
+	>
+	
+	<mx:Script>
+		<![CDATA[
+			/** 
+			 * The [Inject] metadata tells Parsley to inject a dependency by 
+			 * searching the context for an object of matching type.
+			 */
+			[Inject]
+			[Bindable]
+			public var model:SendModel;
+		]]>
+	</mx:Script>
+	
+	<!-- 
+		The Configure tag tells Parsley to manage this view component. The view 
+		is added to the context, so it can participate in any of the features of
+		Parsley, such as dependency-injection and messaging. Only view 
+		components that are configured in this way can use Parsley metadata such
+		as [Inject], [MessageHandler], [Init], etc.
+	-->
+	<sf:Configure/>
+	
+	<!--
+		These checkboxes should be ticked to indicate that Parsley has
+		successfully resolved dependencies and called an initialization method.
+	-->
+	<mx:CheckBox
+		label="Model injected?"
+		labelPlacement="left"
+		enabled="false"
+		selected="{ model != null }"/>
+	<mx:CheckBox
+		label="Model initialized?"
+		labelPlacement="left"
+		enabled="false"
+		selected="{ model.initialized }"/>
+	
+	<!--
+		This button calls a method on the model that was injected by Parsley.
+		The module will use the messaging framework to send a message.
+	-->
+	<mx:Button 
+		label="Click to send a &quot;Hello World!&quot; message" 
+		click="model.sayHello()"/>
+	
+	<mx:Spacer height="100%"/>
+	
+	<!--
+		This shows that Parsley has resoved a nested dependency. The model 
+		property of the view has been injected, and so has the sharedModel 
+		property of the model.
+	-->
+	<mx:Label text="{ model.sharedModel.slogan }"/>
+
+</mx:Panel>

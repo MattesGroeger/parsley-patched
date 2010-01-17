@@ -1,0 +1,46 @@
+/* CSS file */
+global {
+	color: 	#a63f50;
+	theme-color: haloGreen;
+	font-size: 12;
+	disabled-color: #a63f50;
+	disabled-icon-color: #a63f50;
+}
+
+.h1 {
+	font-size: 24;
+}
+
+Application {
+	background-color: #f9ebe8;
+	horizontal-align: left;
+}
+
+Panel {
+	padding-left: 12;
+	padding-right: 12;
+	padding-top: 12;
+	padding-bottom: 12;
+	border-color: #e9d3d5;
+	border-alpha: 0.4;
+	background-alpha: 0.4;
+	background-color: #f9ebe8;
+}
+
+Button {
+	color: #116d40;
+	text-selected-color: #005d30;
+	text-roll-over-color: #005d30;
+	border-color: #116d40;
+	border-width: 1;
+	corner-radius: 0;
+	fill-colors: #cbdccb, #c2d3c2;
+}
+
+TextArea {
+	padding-left: 6;
+	padding-right: 6;
+	padding-top: 6;
+	padding-bottom: 6;
+}
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:sf="http://www.spicefactory.org/parsley/flex"
+	xmlns:hw="org.spicefactory.parsley.sample.helloworld.*"
+	layout="vertical" 
+	minWidth="1024" 
+	minHeight="768" 
+	viewSourceURL="srcview/index.html">
+	
+	<!--
+		This application is intended as a first introduction to Parsley. It 
+		demonstrates a small subset of the useful features provided by the
+		framework:
+	
+		1. Building a Parsley context from an MXML configuration file.
+		2. Configuring 2 view components: SendPanel and ReceivePanel.
+		3. Injecting dependencies into view components and models.
+		4. Using an object-lifecycle method.
+		5. Sending and receiving a message using the messaging framework.
+	-->
+	
+	<mx:Style source="styles.css"/>
+	
+	<!-- 
+		Parsley is initialized by building a "context" containing a number of 
+		objects. These objects are then managed by Parsley and can be injected
+		into different view components or used in other ways. 
+	
+		A context can be built using the <ContextBuilder> tag to reference an 
+		MXML configuration file. Look inside the HelloWorldConfig file to see
+		how the managed objects are declared.
+	-->
+	<sf:ContextBuilder config="HelloWorldConfig"/>
+	
+	<!--
+		The two panels below are both managed by Parsley. Look at their source
+		to see how they're configured.
+	-->
+	<mx:HBox width="100%" height="100%">
+		<hw:SendPanel width="50%" height="100%"/>
+		<hw:ReceivePanel width="50%" height="100%"/>
+	</mx:HBox>
+	
+</mx:Application>

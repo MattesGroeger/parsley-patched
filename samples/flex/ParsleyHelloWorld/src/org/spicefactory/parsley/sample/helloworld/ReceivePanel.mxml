@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:sf="http://www.spicefactory.org/parsley/flex"
+	layout="vertical"
+	title="Receive Panel" 
+	>
+	
+	<mx:Script>
+		<![CDATA[
+			/** 
+			 * The [Inject] metadata tells Parsley to inject a dependency by 
+			 * searching the context for an object of matching type.
+			 */
+			[Inject]
+			[Bindable]
+			public var model:ReceiveModel;
+		]]>
+	</mx:Script>
+	
+	<!-- 
+	The Configure tag tells Parsley to start managing the this view component. 
+	The view is added to the context so it can participate in any of the 
+	features of Parsley, such as dependency-injection and messaging.
+	-->
+	<sf:Configure/>
+	
+	<mx:Label text="Messages Received:"/>
+
+	<!--
+	Look inside the ReceiveModel to see model.messages property is being updated
+	each time a message is received.
+	-->
+	<mx:TextArea width="100%" height="100%" text="{ model.messages }"/>
+	
+	<mx:Label text="{ model.sharedModel.slogan }"/>
+	
+</mx:Panel>
