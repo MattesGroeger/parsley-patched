@@ -138,6 +138,7 @@ class ModuleInfoProxy extends Flex3ModuleInfoBase implements IModuleInfo {
 	}
 	
 	private function moduleUnloaded (event:Event) : void {
+		module.removeEventListener(ModuleEvent.UNLOAD, moduleUnloaded);
 		domain = null;
 		delete domainMap[url];
 		factoryProxy = null;
