@@ -29,6 +29,7 @@ public class TaskObserver {
 	}
 	
 	[CommandResult(selector="test1")]
+	[CommandResult(selector="test3")]
 	public function observeWithResultParam (result:String) : void {
 		resultString = result;
 	}

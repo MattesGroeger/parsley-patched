@@ -49,6 +49,7 @@ class CinnamonCommand extends AbstractCommand {
 	function CinnamonCommand (request:ServiceRequest, message:Object, selector:*) {
 		super(request, message, selector);
 		request.addResultHandler(complete).addErrorHandler(error);
+		start();
 	}
 	
 	protected override function complete (result:* = null) : void {

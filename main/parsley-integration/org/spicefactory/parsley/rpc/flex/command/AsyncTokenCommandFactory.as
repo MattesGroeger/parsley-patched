@@ -52,6 +52,7 @@ class AsyncTokenCommand extends AbstractCommand {
 	function AsyncTokenCommand (token:AsyncToken, message:Object, selector:*) {
 		super(token, message, selector);
 		token.addResponder(new Responder(complete, error));
+		start();
 	}
 	
 	protected override function selectResultValue (result:*, targetType:ClassInfo) : * {

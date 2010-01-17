@@ -275,7 +275,7 @@ class DefaultCommandProcessor implements CommandProcessor {
 			throw new IllegalStateError("CommandFactory did not return a Command instance");
 		}
 		else if (command.status != CommandStatus.EXECUTE) {
-			throw new IllegalStateError("Initial status for Command must be EXECUTE: " + command);
+			//throw new IllegalStateError("Initial status for Command must be EXECUTE: " + command);
 		}
 		return command;
 	}

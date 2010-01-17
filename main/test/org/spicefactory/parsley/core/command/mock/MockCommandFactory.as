@@ -52,6 +52,7 @@ class MockCommand extends AbstractCommand {
 	function MockCommand (message:Object, selector:*, result:MockResult) {
 		super(result, message, selector);
 		this.result = result;
+		start();
 	}
 	
 	

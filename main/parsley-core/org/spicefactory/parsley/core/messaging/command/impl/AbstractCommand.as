@@ -15,13 +15,17 @@
  */
 
 package org.spicefactory.parsley.core.messaging.command.impl {
-import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
+	import flash.events.Event;
+	import flash.events.TimerEvent;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.Delegate;
 import org.spicefactory.lib.util.DelegateChain;
 import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
+import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
+
+import flash.utils.Timer;
 
 /**
  * Abstract base class for Commands. In most cases custom Command implementations
@@ -39,6 +43,7 @@ public class AbstractCommand implements Command {
 	private var _result:*;
 
 	private var _status:CommandStatus;
+	private var synchronous:Boolean;
 	
 	private var statusHandlers:DelegateChain = new DelegateChain();
 	private var _observers:Array = new Array();
@@ -52,6 +57,7 @@ public class AbstractCommand implements Command {
 	 * @param selector the selector for the message
 	 */
 	function AbstractCommand (returnValue:*, message:Object, selector:*) {
+		synchronous = true;
 		_returnValue = returnValue;
 		_message = message;
 		_selector = selector;
@@ -86,6 +92,19 @@ public class AbstractCommand implements Command {
 		return _status;
 	}
 
+	/**
+	 * Signals that the command is now active.
+	 * Any invocation of the <code>complete</code>, <code>cancel</code>
+	 * or <code>error</code> method before this method was invoked will lead to a delayed execution
+	 * as they are treated as stemming from a command that synchronously finished
+	 * its execution.
+	 * 
+	 * <p>This method should usually be called at the very end of the constructor of the command.</p>
+	 */
+	protected function start () : void {
+		trace("start");
+		synchronous = false;
+	}
 	
 	/**
 	 * Signals that the Command has successfully completed and specifies the result
@@ -185,7 +204,21 @@ public class AbstractCommand implements Command {
 	}
 	
 	private function invokeStatusHandlers () : void {
-		statusHandlers.invoke();
+		if (synchronous) {
+			trace("status handlers delayed");
+			var timer:Timer = new Timer(1, 1);
+			timer.addEventListener(TimerEvent.TIMER, invokeStatusHandlersDelayed);
+			timer.start();
+		}
+		else {
+			trace("status handlers immediately");
+			statusHandlers.invoke();
+		}
+	}
+	
+	private function invokeStatusHandlersDelayed (event:Event) : void {
+		if (synchronous) throw IllegalStateError("Command was not started in Constructor");
+		invokeStatusHandlers();
 	}
 	
 	/**

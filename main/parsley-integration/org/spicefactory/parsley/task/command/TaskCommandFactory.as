@@ -61,6 +61,7 @@ class TaskCommand extends AbstractCommand {
 		if (task.state == TaskState.INACTIVE) {
 			task.start();
 		}
+		start();
 	}
 	
 	protected function taskCanceled (event:TaskEvent) : void {

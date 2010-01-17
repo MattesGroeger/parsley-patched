@@ -26,5 +26,12 @@ public class TaskExecutor {
 	}
 	
 	
+	[Command(selector="test3")]
+	public function synchronousTask (event:TestEvent) : Task {
+		lastTask = new MockResultTask(event.stringProp, true);
+		return lastTask;
+	}
+	
+	
 }
 }
