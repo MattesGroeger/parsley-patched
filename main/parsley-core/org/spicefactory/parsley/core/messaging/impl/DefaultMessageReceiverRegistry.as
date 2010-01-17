@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.ArrayUtil;
+import org.spicefactory.parsley.core.builder.impl.ReflectionCacheManager;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
@@ -25,6 +26,7 @@ import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
+import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
@@ -42,6 +44,7 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 	private var commandObservers:Dictionary = new Dictionary();
 	
 	private var selectionCache:Dictionary = new Dictionary();
+	private var domainCache:Dictionary = new Dictionary();
 	
 	
 	
@@ -57,8 +60,21 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 		if (receiverSelection == null) {
 			receiverSelection = new MessageReceiverSelection(messageType, interceptors, targets, errorHandlers, commandObservers);
 			selectionCache[messageType.getClass()] = receiverSelection;
+			checkDomain(messageType.applicationDomain);
 		}
 		return receiverSelection;
+	}
+	
+	private function checkDomain (domain:ApplicationDomain) : void {
+		if (domainCache[domain] == undefined) {
+			ReflectionCacheManager.addPurgeHandler(domain, clearDomainCache);
+			domainCache[domain] = true;
+		}
+	}
+	
+	private function clearDomainCache (domain:ApplicationDomain) : void {
+		selectionCache = new Dictionary();
+		delete domainCache[domain];
 	}
 	
 	

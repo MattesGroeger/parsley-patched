@@ -18,6 +18,8 @@ package org.spicefactory.parsley.core.builder.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.util.Delegate;
+import org.spicefactory.lib.util.DelegateChain;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
 
@@ -38,6 +40,7 @@ public class ReflectionCacheManager {
 	
 	
 	private static const domainCounter:Dictionary = new Dictionary();
+	private static const domainPurgeHandlers:Dictionary = new Dictionary();
 	private static const contextMap:Dictionary = new Dictionary();
 	
 	/**
@@ -52,6 +55,9 @@ public class ReflectionCacheManager {
 		}
 		else {
 			domainCounter[domain] = 1;
+		}
+		if (domainPurgeHandlers[domain] == undefined) {
+			domainPurgeHandlers[domain] = new DelegateChain();
 		}
 		contextMap[context] = domain;
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
@@ -77,7 +83,23 @@ public class ReflectionCacheManager {
 			log.info("Purging reflection cache for ApplicationDomain that is no longer used by any Context");
 			delete domainCounter[domain];
 			ClassInfo.purgeCache(domain);
+			var chain:DelegateChain = DelegateChain(domainPurgeHandlers[domain]);
+			if (chain) chain.invoke();
+			delete domainPurgeHandlers[domain];
 		}
+	}
+	
+	/**
+	 * Adds a handler to be invoked when an ApplicationDomain is no longer used by any Context.
+	 * 
+	 * @param domain the domain to watch
+	 * @param handler the function to invoke in case the domain is no longer in use
+	 * @param params any parameters that should be passed to the handler in addition to the domain itself
+	 */
+	public static function addPurgeHandler (domain:ApplicationDomain, handler:Function, ...params) : void {
+		params.unshift(domain);
+		var chain:DelegateChain = DelegateChain(domainPurgeHandlers[domain]);
+		if (chain) chain.addDelegate(new Delegate(handler, params));
 	}
 	
 	

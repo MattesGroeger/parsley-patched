@@ -147,6 +147,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		context = _factories.context.create(provider, parent);
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		ContextRegistry.addContext(context, scopes.getInherited(), provider.registry.viewDefinitions);
+		ReflectionCacheManager.addDomain(context, domain);
 		registry = provider.registry;
 		if (viewRoot != null) {
 			context.viewManager.addViewRoot(viewRoot);
