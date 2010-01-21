@@ -61,7 +61,7 @@ public class MappedProperty {
 			try {
 				var value:* = (targetProperty.type.isType(Array)) ? splitAndTrim(stringValue) : stringValue;
 				if (assignableTo != null) {
-					value = Converters.convert(value, targetProperty.type.getClass());
+					value = Converters.convert(value, targetProperty.type.getClass(), targetProperty.type.applicationDomain);
 					var validatable:ClassInfo = (value is Class) ? ClassInfo.forClass(value as Class) : value as ClassInfo;
 					if (!validatable.isType(assignableTo.getClass())) {
 						var message:String = "Expected a type assignable to " + assignableTo.name 

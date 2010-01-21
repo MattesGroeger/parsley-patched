@@ -15,10 +15,11 @@
  */
  
 package org.spicefactory.lib.reflect.converter {
-import flash.system.ApplicationDomain;
-
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Converter;
 import org.spicefactory.lib.reflect.errors.ConversionError;
+
+import flash.system.ApplicationDomain;
 
 /**
  * Converts Class values.
@@ -30,20 +31,19 @@ public class ClassConverter implements Converter {
 	
 	public static var INSTANCE:ClassConverter = new ClassConverter();
 	
-	private var domain:ApplicationDomain;
-	
 	
 	/**
 	 * Creates a new Converter instance.
 	 */
-	function ClassConverter (domain:ApplicationDomain = null) {
-		this.domain = (domain == null) ? ApplicationDomain.currentDomain : domain;
+	function ClassConverter () {
+		
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function convert (value:*) : * {
+	public function convert (value:*, domain:ApplicationDomain = null) : * {
+		if (domain == null) domain = ClassInfo.currentDomain;
 		if (value is Class) {
 			return value;
 		}

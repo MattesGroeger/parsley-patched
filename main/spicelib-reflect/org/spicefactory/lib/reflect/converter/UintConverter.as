@@ -18,6 +18,8 @@ package org.spicefactory.lib.reflect.converter {
 import org.spicefactory.lib.reflect.Converter;
 import org.spicefactory.lib.reflect.errors.ConversionError;
 
+import flash.system.ApplicationDomain;
+
 /**
  * Converts uint values.
  * 
@@ -39,7 +41,7 @@ public class UintConverter implements Converter {
 	/**
 	 * @inheritDoc
 	 */
-	public function convert (value:*) : * {
+	public function convert (value:*, domain:ApplicationDomain = null) : * {
 		if (value is uint) {
 			return value;
 		}

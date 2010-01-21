@@ -15,9 +15,9 @@
  */
  
 package org.spicefactory.lib.reflect.converter {
-	
 import org.spicefactory.lib.reflect.Converter;
-	
+
+import flash.system.ApplicationDomain;
 
 /**
  * Converts String values.
@@ -40,7 +40,7 @@ public class StringConverter implements Converter {
 	/**
 	 * @inheritDoc
 	 */
-	public function convert (value:*) : * {
+	public function convert (value:*, domain:ApplicationDomain = null) : * {
 		if (value == undefined) return "";
 		return value.toString();
 	}

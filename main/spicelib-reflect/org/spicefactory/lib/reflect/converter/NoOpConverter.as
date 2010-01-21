@@ -17,6 +17,8 @@
 package org.spicefactory.lib.reflect.converter {
 import org.spicefactory.lib.reflect.Converter;
 
+import flash.system.ApplicationDomain;
+
 /**
  * Converter that performs no action, useful for untyped method parameters or properties.
  * 
@@ -29,7 +31,7 @@ public class NoOpConverter implements Converter {
 	/**
 	 * @inheritDoc
 	 */
-	public function convert (value:*) : * {
+	public function convert (value:*, domain:ApplicationDomain = null) : * {
 		return value;
 	}
 	

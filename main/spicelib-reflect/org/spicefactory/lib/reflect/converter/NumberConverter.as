@@ -15,8 +15,10 @@
  */
  
 package org.spicefactory.lib.reflect.converter {
-	import org.spicefactory.lib.reflect.Converter;
-	import org.spicefactory.lib.reflect.errors.ConversionError;
+import org.spicefactory.lib.reflect.Converter;
+import org.spicefactory.lib.reflect.errors.ConversionError;
+
+import flash.system.ApplicationDomain;
 
 /**
  * Converts Number values.
@@ -39,7 +41,7 @@ public class NumberConverter implements Converter {
 	/**
 	 * @inheritDoc
 	 */
-	public function convert (value:*) : * {
+	public function convert (value:*, domain:ApplicationDomain = null) : * {
 		if (value is Number) {
 			return value;
 		}

@@ -38,6 +38,7 @@
 	<component id="FastInject" class="org.spicefactory.parsley.flex.tag.view.FastInjectTag"/>
 
 	<component id="LoggingXmlSupport" class="org.spicefactory.parsley.flex.logging.FlexLoggingXmlSupport"/>
+	<component id="TaskCommandSupport" class="org.spicefactory.parsley.task.command.TaskCommandSupport"/>
 	
 	<component id="ContextBuilder" class="org.spicefactory.parsley.flex.tag.builder.ContextBuilderTag"/>
 	<component id="FlexConfig" class="org.spicefactory.parsley.flex.tag.builder.FlexConfigTag"/>

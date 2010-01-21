@@ -19,6 +19,8 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Converter;
 import org.spicefactory.lib.reflect.errors.ConversionError;
 
+import flash.system.ApplicationDomain;
+
 /**
  * Converts to Enumeration instances. Since AS3 does not have builtin enum types
  * this corresponds to a "faked enum" pattern. The target class should only contain
@@ -44,7 +46,7 @@ public class EnumerationConverter implements Converter {
 	/**
 	 * @inheritDoc
 	 */
-	public function convert (value:*) : * {
+	public function convert (value:*, domain:ApplicationDomain = null) : * {
 		if (value is type.getClass()) {
 			return value;
 		}

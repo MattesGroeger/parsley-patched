@@ -30,24 +30,22 @@ public class ClassInfoConverter implements Converter {
 	
 	
 	private var requiredType:ClassInfo;
-	private var domain:ApplicationDomain;
 	
 	
 	/**
 	 * Creates a new Converter instance.
 	 * 
 	 * @param requiredType converted ClassInfo instances must represent this type or a subtype
-	 * @param domain the ApplicationDomain to load the class from
 	 */
-	function ClassInfoConverter (requiredType:ClassInfo = null, domain:ApplicationDomain = null) {
+	function ClassInfoConverter (requiredType:ClassInfo = null) {
 		this.requiredType = requiredType;
-		this.domain = domain;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function convert (value:*) : * {
+	public function convert (value:*, domain:ApplicationDomain = null) : * {
+		if (domain == null) domain = ClassInfo.currentDomain;
 		if (value is ClassInfo) {
 			return value;
 		}

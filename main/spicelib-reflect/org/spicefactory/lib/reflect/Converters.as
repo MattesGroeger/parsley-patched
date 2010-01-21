@@ -28,6 +28,7 @@ import org.spicefactory.lib.reflect.converter.UintConverter;
 import org.spicefactory.lib.reflect.errors.ConversionError;
 import org.spicefactory.lib.reflect.types.Any;
 
+import flash.system.ApplicationDomain;
 import flash.utils.getQualifiedClassName;
 
 /**
@@ -50,14 +51,14 @@ public class Converters {
 	 * @throws ConversionError if the conversion fails or if there is no Converter registered for the 
 	 * specified type.
 	 */
-	public static function convert (value:*, targetType:Class) : * {
+	public static function convert (value:*, targetType:Class, domain:ApplicationDomain = null) : * {
 		if (!(value is targetType) && value != null && targetType != null) {
 			var conv:Converter = getConverter(targetType);
 			if (conv == null) {
 				throw new ConversionError("No converter registered for class " 
 						+ getQualifiedClassName(targetType));
 			}
-			value = conv.convert(value);
+			value = conv.convert(value, domain);
 		}
 		return value;
 	}

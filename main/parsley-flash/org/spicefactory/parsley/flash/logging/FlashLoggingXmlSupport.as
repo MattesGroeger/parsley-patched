@@ -47,8 +47,6 @@ public class FlashLoggingXmlSupport {
 		builder.createChildElementMapperBuilder("loggers", LoggerTag, new QName(FLASH_LOGGING_NAMESPACE, "logger")).mapAllToAttributes();
 		builder.mapAllToAttributes();
 	}
-	
-	
 }
 }
 
@@ -56,9 +54,11 @@ import org.spicefactory.lib.flash.logging.LogLevel;
 import org.spicefactory.lib.reflect.Converter;
 import org.spicefactory.parsley.core.errors.ContextError;
 
+import flash.system.ApplicationDomain;
+
 class LogLevelConverter implements Converter {
 	
-	public function convert (value:*) : * {
+	public function convert (value:*, domain:ApplicationDomain = null) : * {
 		var level:LogLevel = LogLevel[value.toString().toUpperCase()];
 		if (level == null) {
 			throw new ContextError("Illegal value for log level: " + value);

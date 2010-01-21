@@ -18,6 +18,8 @@ package org.spicefactory.lib.reflect.converter {
 import org.spicefactory.lib.reflect.Converter;
 import org.spicefactory.lib.reflect.errors.ConversionError;
 
+import flash.system.ApplicationDomain;
+
 /**
  * Converts to Date instances. Valid source types are Number (using it as a time value
  * passed to the Date constructor) or Strings in the format <code>YYYY-MM-DD HH:MM:SS</code>
@@ -41,7 +43,7 @@ public class DateConverter implements Converter {
 	/**
 	 * @inheritDoc
 	 */
-	public function convert (value:*) : * {
+	public function convert (value:*, domain:ApplicationDomain = null) : * {
 		if (value is Date) {
 			return value;
 		}

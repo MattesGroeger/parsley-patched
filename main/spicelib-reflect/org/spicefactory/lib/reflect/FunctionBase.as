@@ -79,7 +79,7 @@ public class FunctionBase extends Member {
 		for (var i:uint = 0; i < numConversions; i++) {
 			var param:Parameter = parameters[i] as Parameter;
 			var value:* = params[i];
-			params[i] = Converters.convert(value, param.type.getClass());
+			params[i] = Converters.convert(value, param.type.getClass(), param.type.applicationDomain);
 		}
 	}
 	

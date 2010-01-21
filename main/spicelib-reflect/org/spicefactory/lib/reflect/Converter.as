@@ -15,6 +15,7 @@
  */
  
 package org.spicefactory.lib.reflect {
+import flash.system.ApplicationDomain;
 
 /**
  * Interface to be implemented by objects responsible for any necessary type conversion.
@@ -35,10 +36,11 @@ public interface Converter {
 	 * Implementations should return the value unchanged if it is already of the target type.
 	 * 
 	 * @param value the value to be converted
+	 * @param domain the domain to use for reflection (only used by some converter implementations)
 	 * @return the converted value
 	 * @throws org.spicefactory.lib.reflect.errors.ConversionError if conversion failed
 	 */
-	function convert (value:*) : * ;
+	function convert (value:*, domain:ApplicationDomain = null) : * ;
 	
 		
 }

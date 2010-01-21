@@ -151,7 +151,7 @@ public class Property extends Member {
 			throw new PropertyError("" + this + " is read-only");
 		}
 		checkInstanceParameter(instance);
-		value = Converters.convert(value, type.getClass());
+		value = Converters.convert(value, type.getClass(), type.applicationDomain);
 		if (_isStatic) {
 			owner.getClass()[name] = value;
 		} else {
