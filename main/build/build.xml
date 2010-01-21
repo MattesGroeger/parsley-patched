@@ -214,27 +214,22 @@
 	<!-- api docs -->
 		
 	<target name="api_parsley_spicelib_flex">
-		<delete dir="${project.dir}/release/api/parsley-spicelib-flex"/>
-		<mkdir dir="${project.dir}/release/api/parsley-spicelib-flex"/>
+		<delete dir="${project.dir}/release/api/parsley-flex"/>
+		<mkdir dir="${project.dir}/release/api/parsley-flex"/>
 		<exec executable="${flex.sdk}/bin/asdoc.exe" dir="${project.dir}" spawn="no">
 			<arg line="-source-path spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml parsley-core parsley-config parsley-flex parsley-xml parsley-integration"/>
 			<arg line="-doc-sources spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml parsley-core parsley-config parsley-flex parsley-xml parsley-integration"/>
 			<arg line="-library-path ${project.dir}/lib/cinnamon-${pimento.version}.swc"/>
 			<arg line="-library-path ${project.dir}/lib/pimento-${pimento.version}.swc"/>
 			<arg line="-library-path ${flex.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-library-path ${flex.sdk}/frameworks/libs/rpc.swc" />
 			<arg line="-left-frameset-width 250"/>
 			<arg line="-main-title"/>
 			<arg value="Parsley - Spicelib - Flex API"/>
 			<arg line="-window-title"/>
 			<arg value="Parsley - Spicelib - Flex API"/>
 			
-			<arg line="-package org.spicefactory.parsley.asconfig"/>
-			<arg value="IOC Container initialization based on ActionScript configuration"/>
-			<arg line="-package org.spicefactory.parsley.asconfig.builder"/>
-			<arg value="ObjectDefinitionBuilder for ActionScript configuration"/>
-			<arg line="-package org.spicefactory.parsley.asconfig.metadata"/>
-			<arg value="Metadata tags for use in ActionScript configuration"/>
-
+			<!-- Parsley IOC Kernel -->
 			<arg line="-package org.spicefactory.parsley.core.builder"/>
 			<arg value="API for IOC kernel services for Context initialization"/>
 			<arg line="-package org.spicefactory.parsley.core.builder.impl"/>
@@ -266,6 +261,10 @@
 			
 			<arg line="-package org.spicefactory.parsley.core.messaging"/>
 			<arg value="API for IOC kernel services for the messaging system"/>
+			<arg line="-package org.spicefactory.parsley.core.messaging.command"/>
+			<arg value="API for the asynchronous command support"/>
+			<arg line="-package org.spicefactory.parsley.core.messaging.command.impl"/>
+			<arg value="Implementation of the asynchronous command support"/>
 			<arg line="-package org.spicefactory.parsley.core.messaging.impl"/>
 			<arg value="Implementation for IOC kernel services for the messaging system"/>
 			<arg line="-package org.spicefactory.parsley.core.messaging.receiver"/>
@@ -275,6 +274,10 @@
 			
 			<arg line="-package org.spicefactory.parsley.core.registry"/>
 			<arg value="API for IOC kernel services for the object definition registry"/>
+			<arg line="-package org.spicefactory.parsley.core.registry.builder"/>
+			<arg value="API for the configuration DSL of the registry"/>
+			<arg line="-package org.spicefactory.parsley.core.registry.builder.impl"/>
+			<arg value="Implementation of the configuration DSL of the registry"/>
 			<arg line="-package org.spicefactory.parsley.core.registry.impl"/>
 			<arg value="Implementation for IOC kernel services for the object definition registry"/>
 			<arg line="-package org.spicefactory.parsley.core.registry.definition"/>
@@ -294,9 +297,24 @@
 			<arg line="-package org.spicefactory.parsley.core.view.impl"/>
 			<arg value="Implementation for IOC kernel services for dynamic view wiring"/>
 			
+			<!-- Parsley Configuration -->
+			<arg line="-package org.spicefactory.parsley.asconfig"/>
+			<arg value="IOC Container initialization based on ActionScript configuration"/>
+			<arg line="-package org.spicefactory.parsley.asconfig.metadata"/>
+			<arg value="Metadata tags for use in ActionScript configuration"/>
+			<arg line="-package org.spicefactory.parsley.asconfig.processor"/>
+			<arg value="ConfigurationProcessor implementation for ActionScript configuration"/>
+				
 			<arg line="-package org.spicefactory.parsley.metadata"/>
 			<arg value="Classes for Metadata processing"/>
 			
+			<arg line="-package org.spicefactory.parsley.runtime"/>
+			<arg value="IOC Container initialization based on runtime configuration"/>
+			<arg line="-package org.spicefactory.parsley.runtime.processor"/>
+			<arg value="ConfigurationProcessor implementation for runtime configuration"/>
+			
+			<arg line="-package org.spicefactory.parsley.tag"/>
+			<arg value="Base API for configuration tags"/>
 			<arg line="-package org.spicefactory.parsley.tag.core"/>
 			<arg value="Core Configuration tags for MXML and XML configuration"/>
 			<arg line="-package org.spicefactory.parsley.tag.inject"/>
@@ -310,9 +328,7 @@
 			<arg line="-package org.spicefactory.parsley.tag.util"/>
 			<arg value="Utilities for configuration tag implementations"/>
 			
-			<arg line="-package org.spicefactory.parsley.task"/>
-			<arg value="Integration with the Spicelib Task Framework"/>
-			
+			<!-- Parsley Flex Support -->
 			<arg line="-package org.spicefactory.parsley.flex"/>
 			<arg value="IOC Container initialization based on MXML configuration"/>
 			<arg line="-package org.spicefactory.parsley.flex.logging"/>
@@ -322,42 +338,43 @@
 			<arg line="-package org.spicefactory.parsley.flex.resources"/>
 			<arg value="Adapter for the Flex ResourceManager"/>
 			<arg line="-package org.spicefactory.parsley.flex.tag"/>
-			<arg value="Configuration tag for view wiring"/>
+			<arg value="Base class for synchronized MXML configuration tags"/>
+			<arg line="-package org.spicefactory.parsley.flex.tag.builder"/>
+			<arg value="Configuration tags for Context initialization"/>
+			<arg line="-package org.spicefactory.parsley.flex.tag.view"/>
+			<arg value="Configuration tag for explicit view wiring"/>
+			<arg line="-package org.spicefactory.parsley.flex.util"/>
+			<arg value="Flex Support Utilities"/>
 			
+			<!-- Parsley XML Support -->
 			<arg line="-package org.spicefactory.parsley.xml"/>
 			<arg value="IOC Container initialization based on XML configuration"/>
-			<arg line="-package org.spicefactory.parsley.xml.builder"/>
-			<arg value="ObjectDefinitionBuilder implementation based on XML configuration files"/>
 			<arg line="-package org.spicefactory.parsley.xml.events"/>
 			<arg value="Events for XML configuration file loading"/>
 			<arg line="-package org.spicefactory.parsley.xml.ext"/>
 			<arg value="Support for custom XML configuration namespaces"/>
 			<arg line="-package org.spicefactory.parsley.xml.mapper"/>
 			<arg value="Xml-Object Mapper for XML configuration files"/>
+			<arg line="-package org.spicefactory.parsley.xml.processor"/>
+			<arg value="ConfigurationProcesssor implementation based on XML configuration files"/>
 			<arg line="-package org.spicefactory.parsley.xml.tag"/>
 			<arg value="Core XML configuration tags"/>
 			
-			<arg line="-package org.spicefactory.parsley.cinnamon"/>
+			<!-- Parsley Integration -->
+			<arg line="-package org.spicefactory.parsley.rpc.cinnamon.command"/>
+			<arg value="Command Support for Cinnamon Remoting"/>
+			<arg line="-package org.spicefactory.parsley.rpc.cinnamon.config"/>
 			<arg value="MXML and XML configuration tags for Cinnamon Remoting"/>
-			<arg line="-package org.spicefactory.parsley.pimento"/>
+			<arg line="-package org.spicefactory.parsley.rpc.flex.command"/>
+			<arg value="Command Support for RPC based on AsyncToken"/>
+			<arg line="-package org.spicefactory.parsley.rpc.pimento.config"/>
 			<arg value="MXML and XML configuration tags for Pimento Data Services"/>
+			<arg line="-package org.spicefactory.parsley.task.builder"/>
+			<arg value="ContextBuilder Integration with the Spicelib Task Framework"/>
+			<arg line="-package org.spicefactory.parsley.task.command"/>
+			<arg value="Command Support for the Spicelib Task Framework"/>
 			
-			<arg line="-package org.spicefactory.lib.errors"/>
-			<arg value="Common Error Classes"/>
-			<arg line="-package org.spicefactory.lib.events"/>
-			<arg value="Common Event Classes"/>
-			<arg line="-package org.spicefactory.lib.logging"/>
-			<arg value="Logging Wrapper API"/>
-			<arg line="-package org.spicefactory.lib.logging.flex"/>
-			<arg value="Logging Wrapper Adapter for the Flex Logging API"/>
-			<arg line="-package org.spicefactory.lib.util"/>
-			<arg value="Miscellaneous Utitlities"/>
-				
-			<arg line="-package org.spicefactory.lib.expr"/>
-			<arg value="Expression Framework API"/>
-			<arg line="-package org.spicefactory.lib.expr.impl"/>
-			<arg value="Expression Framework Implementation"/>
-			
+			<!-- Spicelib Reflection API -->
 			<arg line="-package org.spicefactory.lib.reflect"/>
 			<arg value="Reflection API"/>
 			<arg line="-package org.spicefactory.lib.reflect.converter"/>
@@ -371,6 +388,19 @@
 			<arg line="-package org.spicefactory.lib.reflect.types"/>
 			<arg value="Classes representing * and void"/>
 			
+			<!-- Spicelib XML-Object-Mapper -->
+			<arg line="-package org.spicefactory.lib.xml"/>
+			<arg value="Core interfaces and classes of the XML-to-Object Mapper"/>
+			<arg line="-package org.spicefactory.lib.xml.mapper"/>
+			<arg value="Default XML-to-Object Mapper Implementation"/>
+			<arg line="-package org.spicefactory.lib.xml.mapper.handler"/>
+			<arg value="Handlers responsible for mapping a single property to XML"/>
+			<arg line="-package org.spicefactory.lib.expr"/>
+			<arg value="Expression Framework API"/>
+			<arg line="-package org.spicefactory.lib.expr.impl"/>
+			<arg value="Expression Framework Implementation"/>
+			
+			<!-- Spicelib Task Framework -->
 			<arg line="-package org.spicefactory.lib.task"/>
 			<arg value="The Task Framework - Abstractions for asynchronous operations"/>
 			<arg line="-package org.spicefactory.lib.task.enum"/>
@@ -379,40 +409,40 @@
 			<arg value="Events for the Task Framework"/>
 			<arg line="-package org.spicefactory.lib.task.util"/>
 			<arg value="Utility Task Implementations"/>
+
+			<!-- Spicelib Shared APIs -->
+			<arg line="-package org.spicefactory.lib.errors"/>
+			<arg value="Common Error Classes"/>
+			<arg line="-package org.spicefactory.lib.events"/>
+			<arg value="Common Event Classes"/>
+			<arg line="-package org.spicefactory.lib.logging"/>
+			<arg value="Logging Wrapper API"/>
+			<arg line="-package org.spicefactory.lib.logging.flex"/>
+			<arg value="Logging Wrapper Adapter for the Flex Logging API"/>
+			<arg line="-package org.spicefactory.lib.util"/>
+			<arg value="Miscellaneous Utitlities"/>
 			
-			<arg line="-package org.spicefactory.lib.xml"/>
-			<arg value="Core interfaces and classes of the XML-to-Object Mapper"/>
-			<arg line="-package org.spicefactory.lib.xml.mapper"/>
-			<arg value="Default XML-to-Object Mapper Implementation"/>
-			<arg line="-package org.spicefactory.lib.xml.mapper.handler"/>
-			<arg value="Handlers responsible for mapping a single property to XML"/>
-			
-			<arg line="-output release/api/parsley-spicelib-flex"/>
+			<arg line="-output release/api/parsley-flex"/>
 		</exec>
 	</target>
 	
 	<target name="api_parsley_spicelib_flash">
-		<delete dir="${project.dir}/release/api/parsley-spicelib-flash"/>
-		<mkdir dir="${project.dir}/release/api/parsley-spicelib-flash"/>
+		<delete dir="${project.dir}/release/api/parsley-flash"/>
+		<mkdir dir="${project.dir}/release/api/parsley-flash"/>
 		<exec executable="${flex.sdk}/bin/asdoc.exe" dir="${project.dir}" spawn="no">
-			<arg line="-source-path spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml spicelib-flash parsley-core parsley-config parsley-flash parsley-xml parsley-integration"/>
+			<arg line="-source-path spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml spicelib-flash parsley-core parsley-config parsley-flash parsley-flex parsley-xml parsley-integration"/>
 			<arg line="-doc-sources spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml spicelib-flash parsley-core parsley-config parsley-flash parsley-xml parsley-integration"/>
 			<arg line="-library-path ${project.dir}/lib/cinnamon-${pimento.version}.swc"/>
 			<arg line="-library-path ${project.dir}/lib/pimento-${pimento.version}.swc"/>
 			<arg line="-library-path ${flex.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-library-path ${flex.sdk}/frameworks/libs/rpc.swc" />
 			<arg line="-left-frameset-width 250"/>
 			<arg line="-main-title"/>
 			<arg value="Parsley - Spicelib - Flash API"/>
 			<arg line="-window-title"/>
 			<arg value="Parsley - Spicelib - Flash API"/>
 			
-			<arg line="-package org.spicefactory.parsley.asconfig"/>
-			<arg value="IOC Container initialization based on ActionScript configuration"/>
-			<arg line="-package org.spicefactory.parsley.asconfig.builder"/>
-			<arg value="ObjectDefinitionBuilder for ActionScript configuration"/>
-			<arg line="-package org.spicefactory.parsley.asconfig.metadata"/>
-			<arg value="Metadata tags for use in ActionScript configuration"/>
-
+			<!-- Parsley IOC Kernel -->
 			<arg line="-package org.spicefactory.parsley.core.builder"/>
 			<arg value="API for IOC kernel services for Context initialization"/>
 			<arg line="-package org.spicefactory.parsley.core.builder.impl"/>
@@ -444,6 +474,10 @@
 			
 			<arg line="-package org.spicefactory.parsley.core.messaging"/>
 			<arg value="API for IOC kernel services for the messaging system"/>
+			<arg line="-package org.spicefactory.parsley.core.messaging.command"/>
+			<arg value="API for the asynchronous command support"/>
+			<arg line="-package org.spicefactory.parsley.core.messaging.command.impl"/>
+			<arg value="Implementation of the asynchronous command support"/>
 			<arg line="-package org.spicefactory.parsley.core.messaging.impl"/>
 			<arg value="Implementation for IOC kernel services for the messaging system"/>
 			<arg line="-package org.spicefactory.parsley.core.messaging.receiver"/>
@@ -453,6 +487,10 @@
 			
 			<arg line="-package org.spicefactory.parsley.core.registry"/>
 			<arg value="API for IOC kernel services for the object definition registry"/>
+			<arg line="-package org.spicefactory.parsley.core.registry.builder"/>
+			<arg value="API for the configuration DSL of the registry"/>
+			<arg line="-package org.spicefactory.parsley.core.registry.builder.impl"/>
+			<arg value="Implementation of the configuration DSL of the registry"/>
 			<arg line="-package org.spicefactory.parsley.core.registry.impl"/>
 			<arg value="Implementation for IOC kernel services for the object definition registry"/>
 			<arg line="-package org.spicefactory.parsley.core.registry.definition"/>
@@ -472,9 +510,24 @@
 			<arg line="-package org.spicefactory.parsley.core.view.impl"/>
 			<arg value="Implementation for IOC kernel services for dynamic view wiring"/>
 			
+			<!-- Parsley Configuration -->
+			<arg line="-package org.spicefactory.parsley.asconfig"/>
+			<arg value="IOC Container initialization based on ActionScript configuration"/>
+			<arg line="-package org.spicefactory.parsley.asconfig.metadata"/>
+			<arg value="Metadata tags for use in ActionScript configuration"/>
+			<arg line="-package org.spicefactory.parsley.asconfig.processor"/>
+			<arg value="ConfigurationProcessor implementation for ActionScript configuration"/>
+				
 			<arg line="-package org.spicefactory.parsley.metadata"/>
 			<arg value="Classes for Metadata processing"/>
 			
+			<arg line="-package org.spicefactory.parsley.runtime"/>
+			<arg value="IOC Container initialization based on runtime configuration"/>
+			<arg line="-package org.spicefactory.parsley.runtime.processor"/>
+			<arg value="ConfigurationProcessor implementation for runtime configuration"/>
+			
+			<arg line="-package org.spicefactory.parsley.tag"/>
+			<arg value="Base API for configuration tags"/>
 			<arg line="-package org.spicefactory.parsley.tag.core"/>
 			<arg value="Core Configuration tags for MXML and XML configuration"/>
 			<arg line="-package org.spicefactory.parsley.tag.inject"/>
@@ -488,72 +541,35 @@
 			<arg line="-package org.spicefactory.parsley.tag.util"/>
 			<arg value="Utilities for configuration tag implementations"/>
 			
-			<arg line="-package org.spicefactory.parsley.task"/>
-			<arg value="Integration with the Spicelib Task Framework"/>
-			
+			<!-- Parsley XML Support -->
 			<arg line="-package org.spicefactory.parsley.xml"/>
 			<arg value="IOC Container initialization based on XML configuration"/>
-			<arg line="-package org.spicefactory.parsley.xml.builder"/>
-			<arg value="ObjectDefinitionBuilder implementation based on XML configuration files"/>
 			<arg line="-package org.spicefactory.parsley.xml.events"/>
 			<arg value="Events for XML configuration file loading"/>
 			<arg line="-package org.spicefactory.parsley.xml.ext"/>
 			<arg value="Support for custom XML configuration namespaces"/>
 			<arg line="-package org.spicefactory.parsley.xml.mapper"/>
 			<arg value="Xml-Object Mapper for XML configuration files"/>
+			<arg line="-package org.spicefactory.parsley.xml.processor"/>
+			<arg value="ConfigurationProcesssor implementation based on XML configuration files"/>
 			<arg line="-package org.spicefactory.parsley.xml.tag"/>
 			<arg value="Core XML configuration tags"/>
 			
-			<arg line="-package org.spicefactory.parsley.cinnamon"/>
+			<!-- Parsley Integration -->
+			<arg line="-package org.spicefactory.parsley.rpc.cinnamon.command"/>
+			<arg value="Command Support for Cinnamon Remoting"/>
+			<arg line="-package org.spicefactory.parsley.rpc.cinnamon.config"/>
 			<arg value="MXML and XML configuration tags for Cinnamon Remoting"/>
-			<arg line="-package org.spicefactory.parsley.pimento"/>
+			<arg line="-package org.spicefactory.parsley.rpc.flex.command"/>
+			<arg value="Command Support for RPC based on AsyncToken"/>
+			<arg line="-package org.spicefactory.parsley.rpc.pimento.config"/>
 			<arg value="MXML and XML configuration tags for Pimento Data Services"/>
-			
-			<arg line="-package org.spicefactory.lib.errors"/>
-			<arg value="Common Error Classes"/>
-			<arg line="-package org.spicefactory.lib.events"/>
-			<arg value="Common Event Classes"/>
-			<arg line="-package org.spicefactory.lib.logging"/>
-			<arg value="Logging Wrapper API"/>
-			<arg line="-package org.spicefactory.lib.logging.flex"/>
-			<arg value="Logging Wrapper Adapter for the Flex Logging API"/>
-			<arg line="-package org.spicefactory.lib.util"/>
-			<arg value="Miscellaneous Utitlities"/>
-				
-			<arg line="-package org.spicefactory.lib.expr"/>
-			<arg value="Expression Framework API"/>
-			<arg line="-package org.spicefactory.lib.expr.impl"/>
-			<arg value="Expression Framework Implementation"/>
-			
-			<arg line="-package org.spicefactory.lib.reflect"/>
-			<arg value="Reflection API"/>
-			<arg line="-package org.spicefactory.lib.reflect.converter"/>
-			<arg value="Several Converter implementations"/>
-			<arg line="-package org.spicefactory.lib.reflect.errors"/>
-			<arg value="Reflection Errors"/>
-			<arg line="-package org.spicefactory.lib.reflect.mapping"/>
-			<arg value="Support for Metadata Tags Mapped to Classes"/>
-			<arg line="-package org.spicefactory.lib.reflect.metadata"/>
-			<arg value="Classes mapped to metadata tags"/>
-			<arg line="-package org.spicefactory.lib.reflect.types"/>
-			<arg value="Classes representing * and void"/>
-			
-			<arg line="-package org.spicefactory.lib.task"/>
-			<arg value="The Task Framework - Abstractions for asynchronous operations"/>
-			<arg line="-package org.spicefactory.lib.task.enum"/>
-			<arg value="Enumerations for the Task Framework"/>
-			<arg line="-package org.spicefactory.lib.task.events"/>
-			<arg value="Events for the Task Framework"/>
-			<arg line="-package org.spicefactory.lib.task.util"/>
-			<arg value="Utility Task Implementations"/>
-			
-			<arg line="-package org.spicefactory.lib.xml"/>
-			<arg value="Core interfaces and classes of the XML-to-Object Mapper"/>
-			<arg line="-package org.spicefactory.lib.xml.mapper"/>
-			<arg value="Default XML-to-Object Mapper Implementation"/>
-			<arg line="-package org.spicefactory.lib.xml.mapper.handler"/>
-			<arg value="Handlers responsible for mapping a single property to XML"/>
-			
+			<arg line="-package org.spicefactory.parsley.task.builder"/>
+			<arg value="ContextBuilder Integration with the Spicelib Task Framework"/>
+			<arg line="-package org.spicefactory.parsley.task.command"/>
+			<arg value="Command Support for the Spicelib Task Framework"/>
+
+			<!-- Parsley Flash Support -->
 			<arg line="-package org.spicefactory.parsley.flash.logging"/>
 			<arg value="XML configuration tags for the Spicelib Flash Logging Framework"/>
 			<arg line="-package org.spicefactory.parsley.flash.resources"/>
@@ -569,12 +585,61 @@
 			<arg line="-package org.spicefactory.parsley.flash.resources.tag"/>
 			<arg value="XML configuration tags for the Flash Localization Framework"/>
 			
+			<!-- Spicelib Reflection API -->
+			<arg line="-package org.spicefactory.lib.reflect"/>
+			<arg value="Reflection API"/>
+			<arg line="-package org.spicefactory.lib.reflect.converter"/>
+			<arg value="Several Converter implementations"/>
+			<arg line="-package org.spicefactory.lib.reflect.errors"/>
+			<arg value="Reflection Errors"/>
+			<arg line="-package org.spicefactory.lib.reflect.mapping"/>
+			<arg value="Support for Metadata Tags Mapped to Classes"/>
+			<arg line="-package org.spicefactory.lib.reflect.metadata"/>
+			<arg value="Classes mapped to metadata tags"/>
+			<arg line="-package org.spicefactory.lib.reflect.types"/>
+			<arg value="Classes representing * and void"/>
+			
+			<!-- Spicelib XML-Object-Mapper -->
+			<arg line="-package org.spicefactory.lib.xml"/>
+			<arg value="Core interfaces and classes of the XML-to-Object Mapper"/>
+			<arg line="-package org.spicefactory.lib.xml.mapper"/>
+			<arg value="Default XML-to-Object Mapper Implementation"/>
+			<arg line="-package org.spicefactory.lib.xml.mapper.handler"/>
+			<arg value="Handlers responsible for mapping a single property to XML"/>
+			<arg line="-package org.spicefactory.lib.expr"/>
+			<arg value="Expression Framework API"/>
+			<arg line="-package org.spicefactory.lib.expr.impl"/>
+			<arg value="Expression Framework Implementation"/>
+			
+			<!-- Spicelib Task Framework -->
+			<arg line="-package org.spicefactory.lib.task"/>
+			<arg value="The Task Framework - Abstractions for asynchronous operations"/>
+			<arg line="-package org.spicefactory.lib.task.enum"/>
+			<arg value="Enumerations for the Task Framework"/>
+			<arg line="-package org.spicefactory.lib.task.events"/>
+			<arg value="Events for the Task Framework"/>
+			<arg line="-package org.spicefactory.lib.task.util"/>
+			<arg value="Utility Task Implementations"/>
+
+			<!-- Spicelib Logging for Flash -->
 			<arg line="-package org.spicefactory.lib.flash.logging"/>
 			<arg value="Logging Framework API for Flash"/>
 			<arg line="-package org.spicefactory.lib.flash.logging.impl"/>
 			<arg value="Logging Framework Implementation for Flash"/>
+
+			<!-- Spicelib Shared APIs -->
+			<arg line="-package org.spicefactory.lib.errors"/>
+			<arg value="Common Error Classes"/>
+			<arg line="-package org.spicefactory.lib.events"/>
+			<arg value="Common Event Classes"/>
+			<arg line="-package org.spicefactory.lib.logging"/>
+			<arg value="Logging Wrapper API"/>
+			<arg line="-package org.spicefactory.lib.logging.flex"/>
+			<arg value="Logging Wrapper Adapter for the Flex Logging API"/>
+			<arg line="-package org.spicefactory.lib.util"/>
+			<arg value="Miscellaneous Utitlities"/>			
 	
-			<arg line="-output release/api/parsley-spicelib-flash"/>
+			<arg line="-output release/api/parsley-flash"/>
 		</exec>
 	</target>
 	
@@ -590,27 +655,7 @@
 			<arg line="-window-title"/>
 			<arg value="Spicelib API"/>
 			
-			<arg line="-package org.spicefactory.lib.errors"/>
-			<arg value="Common Error Classes"/>
-			<arg line="-package org.spicefactory.lib.events"/>
-			<arg value="Common Event Classes"/>
-			<arg line="-package org.spicefactory.lib.logging"/>
-			<arg value="Logging Wrapper API"/>
-			<arg line="-package org.spicefactory.lib.logging.flex"/>
-			<arg value="Logging Wrapper Adapter for the Flex Logging API"/>
-			<arg line="-package org.spicefactory.lib.util"/>
-			<arg value="Miscellaneous Utitlities"/>
-				
-			<arg line="-package org.spicefactory.lib.expr"/>
-			<arg value="Expression Framework API"/>
-			<arg line="-package org.spicefactory.lib.expr.impl"/>
-			<arg value="Expression Framework Implementation"/>
-			
-			<arg line="-package org.spicefactory.lib.flash.logging"/>
-			<arg value="Logging Framework API for Flash"/>
-			<arg line="-package org.spicefactory.lib.flash.logging.impl"/>
-			<arg value="Logging Framework Implementation for Flash"/>
-			
+			<!-- Spicelib Reflection API -->
 			<arg line="-package org.spicefactory.lib.reflect"/>
 			<arg value="Reflection API"/>
 			<arg line="-package org.spicefactory.lib.reflect.converter"/>
@@ -624,6 +669,19 @@
 			<arg line="-package org.spicefactory.lib.reflect.types"/>
 			<arg value="Classes representing * and void"/>
 			
+			<!-- Spicelib XML-Object-Mapper -->
+			<arg line="-package org.spicefactory.lib.xml"/>
+			<arg value="Core interfaces and classes of the XML-to-Object Mapper"/>
+			<arg line="-package org.spicefactory.lib.xml.mapper"/>
+			<arg value="Default XML-to-Object Mapper Implementation"/>
+			<arg line="-package org.spicefactory.lib.xml.mapper.handler"/>
+			<arg value="Handlers responsible for mapping a single property to XML"/>
+			<arg line="-package org.spicefactory.lib.expr"/>
+			<arg value="Expression Framework API"/>
+			<arg line="-package org.spicefactory.lib.expr.impl"/>
+			<arg value="Expression Framework Implementation"/>
+			
+			<!-- Spicelib Task Framework -->
 			<arg line="-package org.spicefactory.lib.task"/>
 			<arg value="The Task Framework - Abstractions for asynchronous operations"/>
 			<arg line="-package org.spicefactory.lib.task.enum"/>
@@ -632,13 +690,18 @@
 			<arg value="Events for the Task Framework"/>
 			<arg line="-package org.spicefactory.lib.task.util"/>
 			<arg value="Utility Task Implementations"/>
-			
-			<arg line="-package org.spicefactory.lib.xml"/>
-			<arg value="Core interfaces and classes of the XML-to-Object Mapper"/>
-			<arg line="-package org.spicefactory.lib.xml.mapper"/>
-			<arg value="Default XML-to-Object Mapper Implementation"/>
-			<arg line="-package org.spicefactory.lib.xml.mapper.handler"/>
-			<arg value="Handlers responsible for mapping a single property to XML"/>
+
+			<!-- Spicelib Shared APIs -->
+			<arg line="-package org.spicefactory.lib.errors"/>
+			<arg value="Common Error Classes"/>
+			<arg line="-package org.spicefactory.lib.events"/>
+			<arg value="Common Event Classes"/>
+			<arg line="-package org.spicefactory.lib.logging"/>
+			<arg value="Logging Wrapper API"/>
+			<arg line="-package org.spicefactory.lib.logging.flex"/>
+			<arg value="Logging Wrapper Adapter for the Flex Logging API"/>
+			<arg line="-package org.spicefactory.lib.util"/>
+			<arg value="Miscellaneous Utitlities"/>
 			
 			<arg line="-output release/api/spicelib"/>
 		</exec>
