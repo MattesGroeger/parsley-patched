@@ -161,6 +161,7 @@ public class DefaultViewManager implements ViewManager {
 		viewRoot.addEventListener(FastInjectEvent.FAST_INJECT, handleFastInject);
 		if (autowireFilter.enabled) {
 			viewRoot.addEventListener(autowireFilter.eventType, prefilterView, true);
+			viewRoot.addEventListener(autowireFilter.eventType, prefilterView);
 			viewRoot.addEventListener(ViewAutowireEvent.AUTOWIRE, handleAutowireEvent);
 		}
 	}
@@ -173,6 +174,7 @@ public class DefaultViewManager implements ViewManager {
 		viewRoot.removeEventListener(FastInjectEvent.FAST_INJECT, handleFastInject);
 		if (autowireFilter.enabled) {
 			viewRoot.removeEventListener(autowireFilter.eventType, prefilterView, true);
+			viewRoot.removeEventListener(autowireFilter.eventType, prefilterView);
 			viewRoot.removeEventListener(ViewAutowireEvent.AUTOWIRE, handleAutowireEvent);
 		}
 		delete globalViewRootRegistry[viewRoot];
