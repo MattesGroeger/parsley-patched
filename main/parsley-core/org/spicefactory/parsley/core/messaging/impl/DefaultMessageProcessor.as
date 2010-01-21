@@ -224,7 +224,7 @@ class Processor {
 		this.handler = handler;
 		this.async = async;
 		this.handleErrors = handleErrors;
-		receivers.sortOn("order");
+		receivers.sortOn("order", Array.NUMERIC);
 	}
 	
 	internal function hasNext () : Boolean {
