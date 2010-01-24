@@ -53,9 +53,6 @@ public class DefaultCommandTarget extends AbstractMessageHandler implements Comm
 	private function setReturnType (type:ClassInfo, methodName:String) : void {
 		var targetMethod:Method = type.getMethod(methodName);
 		_returnType = targetMethod.returnType.getClass();
-		if (_returnType == Void) {
-			throw new ContextError("void return type is not permitted on a Command method");
-		}
 	}
 	
 	

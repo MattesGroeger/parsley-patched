@@ -166,8 +166,8 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 }
 }
 
-import org.spicefactory.parsley.core.view.impl.DefaultViewAutowireFilter;
 import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.lib.reflect.types.Void;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
@@ -189,6 +189,7 @@ import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.messaging.command.CommandFactory;
 import org.spicefactory.parsley.core.messaging.command.CommandFactoryRegistry;
+import org.spicefactory.parsley.core.messaging.command.impl.SynchronousCommandFactory;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageRouter;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
@@ -199,6 +200,7 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.scope.impl.DefaultScopeManager;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.ViewManager;
+import org.spicefactory.parsley.core.view.impl.DefaultViewAutowireFilter;
 import org.spicefactory.parsley.core.view.impl.DefaultViewManager;
 import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 
@@ -312,8 +314,13 @@ class DefaultMessageRouterFactory implements MessageRouterFactory {
 
 	private var _unhandledError:ErrorPolicy;
 	private var _errorHandlers:Array = new Array();
-	private var commandFactories:DefaultCommandFactoryRegistry = new DefaultCommandFactoryRegistry();
+	private var commandFactories:DefaultCommandFactoryRegistry;
 	
+	function DefaultMessageRouterFactory () {
+		commandFactories = new DefaultCommandFactoryRegistry();
+		commandFactories.addCommandFactory(Void, new SynchronousCommandFactory());
+	}
+
 	public function get unhandledError () : ErrorPolicy {
 		return _unhandledError;
 	}

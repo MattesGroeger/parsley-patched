@@ -22,6 +22,7 @@ import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandFactory;
+import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
 import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
@@ -55,6 +56,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	private var env:MessagingEnvironment;
 	
 	private var command:Command;
+	private var status:CommandStatus;
 	
 
 	/**
@@ -65,14 +67,16 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	 * @param selector the selector to use (will be extracted from the message itself if it is undefined)
 	 * @param env facade for the environment this processor operates in
 	 * @param command the command in case this processor handles command observers
+	 * @param status the status to handle the matching observers for
 	 */
 	function DefaultMessageProcessor (message:Object, messageType:ClassInfo, selector:*, 
-			env:MessagingEnvironment, command:Command = null) {
+			env:MessagingEnvironment, command:Command = null, status:CommandStatus = null) {
 		_message = message;
 		this.messageType = messageType;
 		this.explicitSelector = selector;
 		this.env = env;
 		this.command = command;
+		this.status = (status != null) ? status : (command != null) ? command.status : null;
 		rewind();
 	}
 	
@@ -160,12 +164,12 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		if (command != null) {
 			env.addActiveCommand(command);
 			command.addStatusHandler(handleCommand);
-			handleCommand(command);
+			handleCommand(command, CommandStatus.EXECUTE);
 		}			
 	}
 	
-	private function handleCommand (command:Command) : void {	
-		var processor:MessageProcessor = new DefaultMessageProcessor(message, messageType, explicitSelector, env, command);
+	private function handleCommand (command:Command, status:CommandStatus = null) : void {	
+		var processor:MessageProcessor = new DefaultMessageProcessor(message, messageType, explicitSelector, env, command, status);
 		processor.proceed();
 	}
 	
@@ -187,7 +191,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		}
 		else {
 			var observers:Array = command.observers.concat(selection
-										.getCommandObservers(actualSelector, command.status));
+										.getCommandObservers(actualSelector, status));
 			currentProcessor = new Processor(observers, invokeObserver, false);
 			remainingProcessors = [];
 		}

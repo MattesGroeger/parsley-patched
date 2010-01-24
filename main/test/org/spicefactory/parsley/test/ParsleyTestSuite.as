@@ -1,4 +1,5 @@
 package org.spicefactory.parsley.test {
+	import org.spicefactory.parsley.core.command.sync.SynchronousCommandTest;
 	import org.spicefactory.parsley.core.command.task.TaskCommandTest;
 import flexunit.framework.TestSuite;
 
@@ -85,6 +86,7 @@ public class ParsleyTestSuite {
 		suite.addTestSuite(CommandXmlTagTest);
 
 		suite.addTestSuite(TaskCommandTest);
+		suite.addTestSuite(SynchronousCommandTest);
 
 		suite.addTestSuite(DynamicCommandMxmlTagTest);
 		suite.addTestSuite(DynamicCommandXmlTagTest);
