@@ -42,6 +42,7 @@ public class DelayedDelegateChain extends DelegateChain {
 	}
 	
 	private function onTimer (event:TimerEvent) : void {
+		timer = null;
 		invoke();
 	}
 	
