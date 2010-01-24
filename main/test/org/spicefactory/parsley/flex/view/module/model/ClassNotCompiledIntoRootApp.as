@@ -13,7 +13,7 @@ public class ClassNotCompiledIntoRootApp {
 	
 	
 	function ClassNotCompiledIntoRootApp () {
-		trace("ClassNotCompiledIntoRootApp constr");
+		
 	}
 	
 	

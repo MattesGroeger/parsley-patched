@@ -211,7 +211,6 @@ public class DefaultViewManager implements ViewManager {
 	}
 	
 	private function purgePrefilterCache () : void {
-		trace("purgePrefilterCache");
 		prefilterCachePurger = null;
 		prefilteredEvents = new Dictionary();
 	}

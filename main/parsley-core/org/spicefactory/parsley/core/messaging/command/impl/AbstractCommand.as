@@ -102,7 +102,6 @@ public class AbstractCommand implements Command {
 	 * <p>This method should usually be called at the very end of the constructor of the command.</p>
 	 */
 	protected function start () : void {
-		trace("start");
 		synchronous = false;
 	}
 	
@@ -205,13 +204,11 @@ public class AbstractCommand implements Command {
 	
 	private function invokeStatusHandlers () : void {
 		if (synchronous) {
-			trace("status handlers delayed");
 			var timer:Timer = new Timer(1, 1);
 			timer.addEventListener(TimerEvent.TIMER, invokeStatusHandlersDelayed);
 			timer.start();
 		}
 		else {
-			trace("status handlers immediately");
 			statusHandlers.invoke();
 		}
 	}

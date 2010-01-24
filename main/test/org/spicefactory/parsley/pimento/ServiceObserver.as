@@ -18,7 +18,6 @@ public class ServiceObserver {
 
 	[CommandResult(selector="test1")]
 	public function observeWithResultParam (result:String) : void {
-		trace("R " + result);
 		resultString = result;
 	}
 	

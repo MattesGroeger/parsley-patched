@@ -69,7 +69,6 @@ public class MessageBinding extends AbstractTargetInstanceReceiver implements Me
 	 * @inheritDoc
 	 */
 	public function handleMessage (message:Object) : void {
-		//trace("BBBB " + messageProperty);
 		var value:* = messageProperty.getValue(message);
 		targetProperty.setValue(targetInstance, value);
 	}
