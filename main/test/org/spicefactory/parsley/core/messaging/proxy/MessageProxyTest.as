@@ -10,10 +10,17 @@ import org.spicefactory.parsley.core.context.Context;
 public class MessageProxyTest extends TestCase {
 	
 	
-	public function testReceiverProxy () : void {
-		Receiver.instanceCount = 0;
+	public function testMessageHandlerProxy () : void {
+		MessageHandlerReceiver.instanceCount = 0;
 		var context:Context = ActionScriptContextBuilder.build(MessageProxyConfig);
-		var receiver:Receiver = context.getObjectByType(Receiver) as Receiver;
+		var receiver:MessageHandlerReceiver = context.getObjectByType(MessageHandlerReceiver) as MessageHandlerReceiver;
+		assertEquals("Unexpected number of messages", 1, receiver.getCount());
+	}
+	
+	public function testCommandProxy () : void {
+		MessageHandlerReceiver.instanceCount = 0;
+		var context:Context = ActionScriptContextBuilder.build(MessageProxyConfig);
+		var receiver:CommandReceiver = context.getObjectByType(CommandReceiver) as CommandReceiver;
 		assertEquals("Unexpected number of messages", 1, receiver.getCount());
 	}
 	

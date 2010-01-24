@@ -12,8 +12,13 @@ public class MessageProxyConfig {
 	}
 	
 	[ObjectDefinition(order="2")]
-	public function get receiver () : Receiver {
-		return new Receiver();
+	public function get receiver () : MessageHandlerReceiver {
+		return new MessageHandlerReceiver();
+	}
+	
+	[ObjectDefinition(order="2")]
+	public function get commandReceiver () : CommandReceiver {
+		return new CommandReceiver();
 	}
 	
 	

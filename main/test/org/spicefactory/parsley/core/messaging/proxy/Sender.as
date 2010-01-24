@@ -12,7 +12,7 @@ public class Sender extends EventDispatcher {
 	
 	[Init]
 	public function init () : void {
-		if (Receiver.instanceCount > 0) {
+		if (MessageHandlerReceiver.instanceCount > 0) {
 			throw new Error("No Receiver should have been created at this point");
 		}
 		dispatchEvent(new Event("test"));

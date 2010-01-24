@@ -4,16 +4,16 @@ import org.spicefactory.parsley.util.MessageCounter;
 /**
  * @author Jens Halm
  */
-public class Receiver extends MessageCounter {
+public class CommandReceiver extends MessageCounter {
 	
 	
 	public static var instanceCount:int = 0;
 	
-	function Receiver () {
+	function CommandReceiver () {
 		instanceCount++;
 	}
 	
-	[MessageHandler]
+	[Command]
 	public function handleMessage (message:Object) : void {
 		addMessage(message);
 	}
