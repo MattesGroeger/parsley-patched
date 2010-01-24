@@ -17,6 +17,9 @@
 package org.spicefactory.parsley.core.view.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.lib.util.DelayedDelegateChain;
+import org.spicefactory.lib.util.Delegate;
+import org.spicefactory.lib.util.DelegateChain;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.errors.ContextError;
@@ -63,6 +66,8 @@ public class DefaultViewManager implements ViewManager {
 	private var configuredViews:Dictionary = new Dictionary();
 	private var viewContext:DynamicContext;
 	
+	private static var prefilteredEvents:Dictionary = new Dictionary();
+	private static var prefilterCachePurger:DelegateChain;
 	
 	private static var uiComponentClass:Class;
 	private static var uiComponentClassSet:Boolean;
@@ -193,12 +198,24 @@ public class DefaultViewManager implements ViewManager {
 	
 	
 	private function prefilterView (event:Event) : void {
+		if (prefilteredEvents[event]) return;
+		prefilteredEvents[event] = true;
+		if (prefilterCachePurger == null) {
+			prefilterCachePurger = new DelayedDelegateChain(1);
+			prefilterCachePurger.addDelegate(new Delegate(purgePrefilterCache));
+		}
 		var view:DisplayObject = event.target as DisplayObject;
 		if (autowireFilter.prefilter(view)) {
 			view.dispatchEvent(new ViewAutowireEvent());
 		}
 	}
 	
+	private function purgePrefilterCache () : void {
+		trace("purgePrefilterCache");
+		prefilterCachePurger = null;
+		prefilteredEvents = new Dictionary();
+	}
+
 	protected function handleAutowireEvent (event:Event) : void {
 		event.stopImmediatePropagation();
 		var view:DisplayObject = event.target as DisplayObject;
