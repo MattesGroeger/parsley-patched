@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application 
 	xmlns:mx="http://www.adobe.com/2006/mxml" 
-	xmlns:sf="http://www.spicefactory.org/parsley/flex"
+	xmlns:sf="http://www.spicefactory.org/parsley"
 	xmlns:hw="org.spicefactory.parsley.sample.helloworld.*"
 	layout="vertical" 
 	minWidth="1024" 
