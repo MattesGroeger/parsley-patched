@@ -754,6 +754,15 @@
 			<fileset dir="${project.dir}/lib" includes="*.swc"/>
 		</copy>
 		
+		<!-- copy sample applications -->
+		<mkdir dir="${release.target.dir}/samples/helloworld"/>
+		<copy todir="${release.target.dir}/samples/helloworld">
+			<fileset dir="${samples.base.dir}/ParsleyHelloWorld">
+				<exclude name="bin-debug/"/>
+				<exclude name="bin-release/"/>
+			</fileset>
+		</copy>
+		
 		<!-- create zip -->
 		<zip basedir="${release.target.dir}" zipfile="${release.target.dir}/../parsley-${version}.zip"/>
 	</target>
