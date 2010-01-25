@@ -8,6 +8,7 @@ import org.spicefactory.lib.reflect.converter.NumberConverter;
 import org.spicefactory.lib.reflect.converter.StringConverter;
 import org.spicefactory.lib.reflect.converter.UintConverter;
 import org.spicefactory.lib.reflect.errors.ConversionError;
+import org.spicefactory.lib.reflect.model.ClassC;
 
 import flash.system.ApplicationDomain;
 
@@ -159,10 +160,10 @@ public class ConverterTest extends ReflectionTestBase {
 	}
 	
 	public function testClassInfoWithRequiredType () : void {
-		var requiredType:ClassInfo = ClassInfo.forClass(Property);
+		var requiredType:ClassInfo = ClassInfo.forClass(ClassC);
 		var conv:Converter = new ClassInfoConverter(requiredType);
-		var ci:ClassInfo = conv.convert("org.spicefactory.lib.reflect.Property");
-		assertEquals("Unexcpected result", Property, ci.getClass());
+		var ci:ClassInfo = conv.convert("org.spicefactory.lib.reflect.model.ClassC");
+		assertEquals("Unexcpected result", ClassC, ci.getClass());
 	}
 	
 	public function testClassInfoNotOfRequiredType () : void {
