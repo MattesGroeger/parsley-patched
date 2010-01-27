@@ -16,7 +16,7 @@
 	</mx:Script>
 	
 	
-	<msg:DynamicCommandTag type="{DynamicCommand}" messageType="{TestEvent}" selector="command1"/>
+	<msg:DynamicCommandTag type="{DynamicCommand}" selector="command1"/>
 
 	<msg:DynamicCommandTag type="{DynamicCommand}" messageType="{TestEvent}" selector="command2" stateful="true" error="errorHandler"/>
 		

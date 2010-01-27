@@ -134,13 +134,14 @@ public class DynamicCommandTag implements RootConfigurationTag {
 				.decorators(decorators)
 				.build();
 		
-		var messageInfo:ClassInfo = ClassInfo.forClass(messageType, registry.domain);
+		var messageInfo:ClassInfo = (messageType == null) ? null : ClassInfo.forClass(messageType, registry.domain);
 		
 		/* message receivers will be created on demand - we create mocks here just for using
 		   the validation logic of these receiver implementations early */
 		var provider:ObjectProvider = new MockObjectProvider(targetDef.type);
 		var invoker:CommandTarget 
 				= new DefaultCommandTarget(provider, execute, selector, messageInfo, messageProperties, order);
+		messageInfo = ClassInfo.forClass(invoker.messageType, registry.domain);
 		
 		if (result != null || targetDef.type.getMethod("result") != null) {
 			if (result == null) {
