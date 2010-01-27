@@ -59,6 +59,8 @@ import org.spicefactory.parsley.xml.tag.MessageHandlerDecoratorTag;
 import org.spicefactory.parsley.xml.tag.ObjectsTag;
 import org.spicefactory.parsley.xml.tag.Variable;
 
+import flash.system.ApplicationDomain;
+
 /**
  * Factory that builds the XML-to-Object mappers for the Parsley XML configuration format.
  * Built upon the Spicelib XML-to-Object Mapping Framework.
@@ -83,6 +85,18 @@ public class XmlObjectDefinitionMapperFactory {
 	private var valueChoice:Choice = new Choice();
 	
 	private static var decoratorChoiceDelegate:ChoiceDelegate;
+	
+	private var domain:ApplicationDomain;
+	
+	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param domain the ApplicationDomain to use for reflection.
+	 */
+	function XmlObjectDefinitionMapperFactory (domain:ApplicationDomain = null) {
+		this.domain = domain;
+	}
 	
 	
 	/**
@@ -272,7 +286,7 @@ public class XmlObjectDefinitionMapperFactory {
 	
 	private function getMapperBuilder (type:Class, tagName:String) : PropertyMapperBuilder {
 		return new PropertyMapperBuilder(type, 
-				new QName(PARSLEY_NAMESPACE_URI, tagName));
+				new QName(PARSLEY_NAMESPACE_URI, tagName), null, domain);
 	}
 }
 }

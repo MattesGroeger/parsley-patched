@@ -66,8 +66,6 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 		if (expressionContext == null) expressionContext = new DefaultExpressionContext();
 		this.expressionContext = expressionContext;
 		this._loader = (loader == null) ? new XmlObjectDefinitionLoader(files, expressionContext) : loader;
-		var mapperFactory:XmlObjectDefinitionMapperFactory = new XmlObjectDefinitionMapperFactory();
-		mapper = mapperFactory.createObjectDefinitionMapper();
 	}
 
 	
@@ -92,6 +90,8 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	 */
 	public function build (registry:ObjectDefinitionRegistry) : void {
 		this.registry = registry;
+		var mapperFactory:XmlObjectDefinitionMapperFactory = new XmlObjectDefinitionMapperFactory(registry.domain);
+		mapper = mapperFactory.createObjectDefinitionMapper();
 		_loader.addEventListener(Event.COMPLETE, loaderComplete);
 		_loader.addEventListener(ErrorEvent.ERROR, loaderError);
 		_loader.load(registry.domain);
