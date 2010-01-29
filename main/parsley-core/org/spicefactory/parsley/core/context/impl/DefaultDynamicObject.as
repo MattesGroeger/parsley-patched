@@ -32,6 +32,7 @@ public class DefaultDynamicObject implements DynamicObject {
 	private var _context:DefaultDynamicContext;
 	private var _definition:ObjectDefinition;
 	private var _instance:Object;
+	private var processed:Boolean;
 	
 	
 	/**
@@ -59,6 +60,8 @@ public class DefaultDynamicObject implements DynamicObject {
 	}
 	
 	private function processInstance () : void {
+		if (processed) return;
+		processed = true;
 		if (_instance == null) {
 			_instance = context.lifecycleManager.createObject(definition, context);
 			_context.addDynamicObject(this);
@@ -77,6 +80,9 @@ public class DefaultDynamicObject implements DynamicObject {
 	 * @inheritDoc
 	 */
 	public function get instance () : Object {
+		if (_instance == null && _context.parent.configured) {
+			processInstance();
+		}
 		return _instance;
 	}
 	
