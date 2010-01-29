@@ -64,8 +64,8 @@
 	<flextag:MxmlRootObjectTag id="messageInterceptors" type="{MessageInterceptors}" lazy="true">
 		<msg:MessageInterceptorDecorator method="interceptAllMessages" type="{TestEvent}"/>
 		<msg:MessageInterceptorDecorator method="allEvents"/>
-		<msg:MessageInterceptorDecorator method="event1" selector="test1" type="{TestEvent}"/>
-		<msg:MessageInterceptorDecorator method="event2" selector="test2" type="{TestEvent}"/>
+		<msg:MessageInterceptorDecorator method="event1" selector="test1" type="{TestEvent}" order="1"/>
+		<msg:MessageInterceptorDecorator method="event2" selector="test2" type="{TestEvent}" order="1"/>
 	</flextag:MxmlRootObjectTag> 
 	
 	

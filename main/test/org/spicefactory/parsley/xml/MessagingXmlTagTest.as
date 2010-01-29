@@ -68,8 +68,8 @@ public class MessagingXmlTagTest extends MessagingTestBase {
 		<object id="messageInterceptors" type="org.spicefactory.parsley.core.messaging.model.MessageInterceptors" lazy="true">
 			<message-interceptor method="interceptAllMessages" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
 			<message-interceptor method="allEvents"/>
-			<message-interceptor method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
-			<message-interceptor method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
+			<message-interceptor method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestEvent" order="1"/>
+			<message-interceptor method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent" order="1"/>
 		</object> 	
 	</objects>;
 

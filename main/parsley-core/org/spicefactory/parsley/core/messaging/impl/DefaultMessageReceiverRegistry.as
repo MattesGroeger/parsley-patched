@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,13 @@
 
 package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.util.ArrayUtil;
 import org.spicefactory.parsley.core.builder.impl.ReflectionCacheManager;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
-import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
 import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
+import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 import flash.system.ApplicationDomain;
@@ -38,14 +37,9 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 	
 	
 	
-	private var targets:Array = new Array();
-	private var interceptors:Array = new Array();
-	private var errorHandlers:Array = new Array();
-	private var commandObservers:Dictionary = new Dictionary();
+	private var receivers:Dictionary = new Dictionary();
 	
 	private var selectionCache:Dictionary = new Dictionary();
-	private var domainCache:Dictionary = new Dictionary();
-	
 	
 	
 	/**
@@ -54,27 +48,48 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 	 * @param messageType the message type to match against
 	 * @return the selection of receivers that match the specified message type
 	 */
-	public function getSelection (messageType:ClassInfo) : MessageReceiverSelection {
-		var receiverSelection:MessageReceiverSelection =
-				selectionCache[messageType.getClass()] as MessageReceiverSelection;
+	public function getSelectionCache (messageType:ClassInfo) : MessageReceiverSelectionCache {
+		var receiverSelection:MessageReceiverSelectionCache =
+				selectionCache[messageType.getClass()] as MessageReceiverSelectionCache;
 		if (receiverSelection == null) {
-			receiverSelection = new MessageReceiverSelection(messageType, interceptors, targets, errorHandlers, commandObservers);
+			var collections:Array = new Array();
+			for each (var collection:MessageReceiverCollection in receivers) {
+				if (messageType.isType(collection.messageType)) {
+					collections.push(collection);
+				}
+			}
+			receiverSelection = new MessageReceiverSelectionCache(messageType, collections);
 			selectionCache[messageType.getClass()] = receiverSelection;
-			checkDomain(messageType.applicationDomain);
+			ReflectionCacheManager.addPurgeHandler(messageType.applicationDomain, clearDomainCache, messageType.getClass());
 		}
 		return receiverSelection;
 	}
 	
-	private function checkDomain (domain:ApplicationDomain) : void {
-		if (domainCache[domain] == undefined) {
-			ReflectionCacheManager.addPurgeHandler(domain, clearDomainCache);
-			domainCache[domain] = true;
-		}
+	private function clearDomainCache (domain:ApplicationDomain, type:Class) : void {
+		var receiverSelection:MessageReceiverSelectionCache = selectionCache[type] as MessageReceiverSelectionCache;
+		receiverSelection.release();
+		delete selectionCache[type];
 	}
 	
-	private function clearDomainCache (domain:ApplicationDomain) : void {
-		selectionCache = new Dictionary();
-		delete domainCache[domain];
+	
+	private function addReceiver (kind:MessageReceiverKind, receiver:MessageReceiver) : void {
+		var collection:MessageReceiverCollection = receivers[receiver.messageType] as MessageReceiverCollection;
+		if (collection == null) {
+			collection = new MessageReceiverCollection(receiver.messageType);
+			receivers[receiver.messageType] = collection; 
+			for each (var cache:MessageReceiverSelectionCache in selectionCache) {
+				cache.checkNewCollection(collection);
+			}
+		}
+		collection.addReceiver(kind, receiver);
+	}
+	
+	private function removeReceiver (kind:MessageReceiverKind, receiver:MessageReceiver) : void {
+		var collection:MessageReceiverCollection = receivers[receiver.messageType] as MessageReceiverCollection;
+		if (collection == null) {
+			return;
+		}
+		collection.removeReceiver(kind, receiver);
 	}
 	
 	
@@ -82,99 +97,70 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 	 * @inheritDoc
 	 */
 	public function addTarget (target:MessageTarget) : void {
-		clearCache();
-		targets.push(target);
+		addReceiver(MessageReceiverKind.TARGET, target);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function removeTarget (target:MessageTarget) : void {
-		if (ArrayUtil.remove(targets, target)) {
-			clearCache();
-		}
+		removeReceiver(MessageReceiverKind.TARGET, target);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function addInterceptor (interceptor:MessageInterceptor) : void {
-		clearCache();
-		interceptors.push(interceptor);
+		addReceiver(MessageReceiverKind.INTERCEPTOR, interceptor);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function removeInterceptor (target:MessageInterceptor) : void {
-		if (ArrayUtil.remove(interceptors, target)) {
-			clearCache();
-		}
+	public function removeInterceptor (interceptor:MessageInterceptor) : void {
+		removeReceiver(MessageReceiverKind.INTERCEPTOR, interceptor);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function addErrorHandler (interceptor:MessageErrorHandler) : void {
-		clearCache();
-		errorHandlers.push(interceptor);
+	public function addErrorHandler (errorHandler:MessageErrorHandler) : void {
+		addReceiver(MessageReceiverKind.ERROR_HANDLER, errorHandler);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function removeErrorHandler (target:MessageErrorHandler) : void {
-		if (ArrayUtil.remove(errorHandlers, target)) {
-			clearCache();
-		}
+	public function removeErrorHandler (errorHandler:MessageErrorHandler) : void {
+		removeReceiver(MessageReceiverKind.ERROR_HANDLER, errorHandler);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function addCommand (command:CommandTarget) : void {
-		clearCache();
-		targets.push(command);
+		addReceiver(MessageReceiverKind.TARGET, command);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function removeCommand (command:CommandTarget) : void {
-		if (ArrayUtil.remove(targets, command)) {
-			clearCache();
-		}
+		removeReceiver(MessageReceiverKind.TARGET, command);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function addCommandObserver (observer:CommandObserver) : void {
-		clearCache();
-		getObservers(observer.status).push(observer);
+		addReceiver(MessageReceiverKind.forCommandStatus(observer.status), observer);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function removeCommandObserver (observer:CommandObserver) : void {
-		if (ArrayUtil.remove(getObservers(observer.status), observer)) {
-			clearCache();
-		}
-	}
-	
-	private function getObservers (status:CommandStatus) : Array {
-		var key:String = status.key + "Observer";
-		var observers:Array = commandObservers[key];
-		if (observers == null) {
-			observers = new Array();
-			commandObservers[key] = observers;
-		}
-		return observers;
-	}
-	
-	private function clearCache () : void {
-		selectionCache = new Dictionary();
+		removeReceiver(MessageReceiverKind.forCommandStatus(observer.status), observer);
 	}
 	
 	

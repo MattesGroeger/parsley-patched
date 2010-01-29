@@ -44,11 +44,6 @@ public interface MessagingEnvironment {
 	 */
 	function addActiveCommand (command:Command) : void;
 	
-	/**
-	 * @copy org.spicefactory.parsley.core.messaging.impl.DefaultMessageReceiverRegistry#getSelection()
-	 */
-	function getReceiverSelection (messageType:ClassInfo) : MessageReceiverSelection;
-	
 	
 }
 }

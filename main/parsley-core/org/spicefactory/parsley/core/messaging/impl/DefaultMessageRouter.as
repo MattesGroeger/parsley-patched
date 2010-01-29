@@ -51,7 +51,7 @@ public class DefaultMessageRouter implements MessageRouter {
 	function DefaultMessageRouter (commandFactories:CommandFactoryRegistry, errorHandlers:Array, unhandledError:ErrorPolicy) {
 		_receivers = new DefaultMessageReceiverRegistry();
 		_commandManager = new DefaultCommandManager();
-		env = new DefaultMessagingEnvironment(_receivers, _commandManager, commandFactories, unhandledError);
+		env = new DefaultMessagingEnvironment(_commandManager, commandFactories, unhandledError);
 		for each (var handler:MessageErrorHandler in errorHandlers) {
 			_receivers.addErrorHandler(handler);
 		}
@@ -64,8 +64,13 @@ public class DefaultMessageRouter implements MessageRouter {
 	public function dispatchMessage (message:Object, domain:ApplicationDomain, selector:* = undefined) : void {
 		if (domain == null) domain = ClassInfo.currentDomain;
 		var messageType:ClassInfo = ClassInfo.forInstance(message, domain);
+		var cache:MessageReceiverSelectionCache = _receivers.getSelectionCache(messageType);
+		var actualSelector:* = (selector == undefined) ? cache.getSelectorValue(message) : selector;
+		if (!cache.hasFirstLevelTargets(actualSelector)) {
+			return;
+		}
 		var processor:MessageProcessor 
-				= new DefaultMessageProcessor(message, messageType, selector, env);
+				= new DefaultMessageProcessor(message, messageType, cache, actualSelector, env);
 		processor.proceed();
 	}	
 	
@@ -87,11 +92,8 @@ public class DefaultMessageRouter implements MessageRouter {
 }
 }
 
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.messaging.impl.MessagingEnvironment;
-import org.spicefactory.parsley.core.messaging.impl.DefaultMessageReceiverRegistry;
-import org.spicefactory.parsley.core.messaging.impl.MessageReceiverSelection;
 import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandFactory;
 import org.spicefactory.parsley.core.messaging.command.CommandFactoryRegistry;
@@ -103,12 +105,10 @@ class DefaultMessagingEnvironment implements MessagingEnvironment {
 	private var _unhandledError:ErrorPolicy;
 	private var commandManager:DefaultCommandManager;
 	private var commandFactories:CommandFactoryRegistry;
-	private var receivers:DefaultMessageReceiverRegistry;
 	
 	
-	function DefaultMessagingEnvironment (receivers:DefaultMessageReceiverRegistry, 
-			commandManager:DefaultCommandManager, commandFactories:CommandFactoryRegistry, unhandledError:ErrorPolicy) {
-		this.receivers = receivers;
+	function DefaultMessagingEnvironment (commandManager:DefaultCommandManager, 
+			commandFactories:CommandFactoryRegistry, unhandledError:ErrorPolicy) {
 		this.commandManager = commandManager;
 		this.commandFactories = commandFactories;
 		_unhandledError = unhandledError;
@@ -123,10 +123,6 @@ class DefaultMessagingEnvironment implements MessagingEnvironment {
 		commandManager.addActiveCommand(command);
 	}
 
-	public function getReceiverSelection (messageType:ClassInfo) : MessageReceiverSelection {
-		return receivers.getSelection(messageType);
-	}
-	
 	public function get unhandledError () : ErrorPolicy {
 		return _unhandledError;
 	}
