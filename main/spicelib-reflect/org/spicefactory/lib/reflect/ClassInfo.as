@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.lib.reflect {
+import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.metadata.Types;
 import org.spicefactory.lib.reflect.types.Any;
@@ -62,6 +63,7 @@ public class ClassInfo extends MetadataAware {
 	 * @throws ReferenceError if the class with the specified name does not exist
 	 */
 	public static function forName (name:String, domain:ApplicationDomain = null) : ClassInfo {
+		if (name == null) throw new IllegalArgumentError("Name must not be null");
 		domain = getDomain(domain);
 		var C:Class = getClassDefinitionByName(name, domain);
 		return getClassInfo(C, domain, name);
@@ -77,6 +79,7 @@ public class ClassInfo extends MetadataAware {
 	 * @return an instance representing the specified class or interface
 	 */	
 	public static function forClass (clazz:Class, domain:ApplicationDomain = null) : ClassInfo {
+		if (clazz == null) throw new IllegalArgumentError("Class must not be null");
 		return getClassInfo(clazz, getDomain(domain));
 	}
 
@@ -89,6 +92,7 @@ public class ClassInfo extends MetadataAware {
 	 * @return an instance representing the class of the specified instance
 	 */		
 	public static function forInstance (instance:Object, domain:ApplicationDomain = null) : ClassInfo {
+		if (instance == null) throw new IllegalArgumentError("Instance must not be null");
 		if (instance is Proxy || instance is Number) {
 			// Cannot rely on Proxy subclasses to support the constructor property
 			// For Number instance constructor property always returns Number (never int)
