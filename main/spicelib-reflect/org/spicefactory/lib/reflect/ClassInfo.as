@@ -102,7 +102,17 @@ public class ClassInfo extends MetadataAware {
 		return (domain == null) ? currentDomain : domain;
 	}
 	
-	private static function getClassDefinitionByName (name:String, domain:ApplicationDomain) : Class {
+	internal static function resolve (name:String, domain:ApplicationDomain) : ClassInfo {
+		try {
+			return forName(name, domain);
+		}
+		catch (e:ReferenceError) {
+			/* fall through */
+		}
+		return ClassInfo.forClass(Private);
+	}
+	
+	private static function getClassDefinitionByName (name:String, domain:ApplicationDomain, refType:Class = null) : Class {
 		if (name == "*") {
 			return Any;
 		} else if (name == "void") {
@@ -110,18 +120,25 @@ public class ClassInfo extends MetadataAware {
 		} else if (name.indexOf(".as$") != -1) {
 			return Private;
 		} else {
-			var type:Class = domain.getDefinition(name) as Class;
-			if (type == null) {
-				throw new IllegalStateError("Unable to get definition for class " + name
-						+ " - maybe the ApplicationDomain is uninitialized");
+			var type:Class;
+			try {
+				type = domain.getDefinition(name) as Class;
+			}
+			catch (e:ReferenceError) {
+				/* fall through */
+			}
+			if (type == null || (refType != null && refType !== type)) {
+				throw new ReferenceError("Specified ApplicationDomain does not contain the class " + name);
 			}
 			return type;
 		}
 	}
 	
+	
 	private static function getClassInfo (clazz:Class, domain:ApplicationDomain, name:String = null) : ClassInfo {
 		if (name == null) {
 			name = getQualifiedClassName(clazz);
+			getClassDefinitionByName(name, domain, clazz); // just for eager validation of the domain
 		}
 		var cacheEntry:ClassInfo = getFromCache(clazz, domain);
 		if (cacheEntry != null) {
