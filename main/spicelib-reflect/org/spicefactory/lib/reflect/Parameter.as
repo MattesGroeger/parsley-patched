@@ -41,7 +41,7 @@ public class Parameter {
 	 */
 	internal static function fromXML (xml:XML, domain:ApplicationDomain) : Parameter {
 		var required:Boolean = (xml.@optional == "false");
-		return new Parameter(ClassInfo.forName(xml.@type, domain), required);
+		return new Parameter(ClassInfo.resolve(xml.@type, domain), required);
 	}
 	
 	/**

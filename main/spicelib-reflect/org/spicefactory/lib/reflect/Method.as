@@ -48,7 +48,7 @@ public class Method	extends FunctionBase {
 	internal static function fromXML (xml:XML, isStatic:Boolean, owner:ClassInfo) : Method {
 		var params:Array = parametersFromXml(xml, owner);
 		var metadata:MetadataCollection = metadataFromXml(xml, Types.METHOD);
-		var type:ClassInfo = ClassInfo.forName(xml.@returnType, owner.applicationDomain);
+		var type:ClassInfo = ClassInfo.resolve(xml.@returnType, owner.applicationDomain);
 		return new Method(xml.@name, type, params, isStatic, metadata, owner);
 	}
 	

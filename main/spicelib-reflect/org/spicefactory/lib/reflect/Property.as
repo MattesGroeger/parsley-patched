@@ -72,7 +72,7 @@ public class Property extends Member {
 	
 	private static function fromXML 
 			(x:XML, readable:Boolean, writable:Boolean, isStatic:Boolean, owner:ClassInfo) : Property {
-		var type:ClassInfo = ClassInfo.forName(x.@type, owner.applicationDomain);
+		var type:ClassInfo = ClassInfo.resolve(x.@type, owner.applicationDomain);
 		var metadata:MetadataCollection = MetadataAware.metadataFromXml(x, Types.PROPERTY);
 		return new Property(x.@name, type, readable, writable, isStatic, metadata, owner); 		
 	}
