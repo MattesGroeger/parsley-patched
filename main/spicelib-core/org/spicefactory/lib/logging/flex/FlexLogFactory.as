@@ -41,6 +41,7 @@ public class FlexLogFactory implements LogFactory {
 }
 }
 
+import org.spicefactory.lib.logging.LogUtil;
 import org.spicefactory.lib.logging.Logger;
 
 import mx.logging.ILogger;
@@ -111,8 +112,9 @@ class FlexDelegateLogger implements Logger {
 	}
 	
 	private function invokeDelegate (f:Function, message:String, params:Array) : void {
-		params.unshift(message);
-		f.apply(delegate, params);
+		//params.unshift(message);
+		//f.apply(delegate, params);
+		f.apply(delegate, [LogUtil.buildLogMessage(message, params)]);
 	}
 
 	
