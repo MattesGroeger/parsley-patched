@@ -46,13 +46,37 @@ import mx.rpc.Responder;
 import mx.rpc.events.FaultEvent;
 import mx.rpc.events.ResultEvent;
 
+import flash.events.Event;
+
 class AsyncTokenCommand extends AbstractCommand {
 
+	private var token:AsyncToken;
 
 	function AsyncTokenCommand (token:AsyncToken, message:Object, selector:*) {
 		super(token, message, selector);
+		this.token = token;
 		token.addResponder(new Responder(complete, error));
+		token.addEventListener(Event.CANCEL, operationCanceled);
 		start();
+	}
+	
+	protected function operationCanceled (event:Event) : void {
+		removeListener();
+		cancel();
+	}
+	
+	protected override function complete (result:* = null) : void {
+		removeListener();
+		super.complete(result);
+	}
+	
+	protected override function error (result:* = null) : void {
+		removeListener();
+		super.complete(result);
+	}
+	
+	private function removeListener () : void {
+		token.removeEventListener(Event.CANCEL, operationCanceled);
 	}
 	
 	protected override function selectResultValue (result:*, targetType:ClassInfo) : * {
