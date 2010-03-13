@@ -100,7 +100,11 @@ class FactoryMethodInstantiator implements ObjectInstantiator {
 		if (factory == null) {
 			throw new ContextError("Unable to obtain factory of type " + definition.type.name);
 		}
-		return method.invoke(factory, []);
+		var instance:Object = method.invoke(factory, []);
+		if (instance == null) {
+			throw new ContextError("Factory " + method + " returned null");
+		}
+		return instance; 
 	}
 	
 	
