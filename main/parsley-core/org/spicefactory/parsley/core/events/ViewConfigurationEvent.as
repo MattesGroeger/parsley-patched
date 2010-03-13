@@ -38,6 +38,8 @@ public class ViewConfigurationEvent extends Event {
 	private var explicitTarget:Object;
 	private var explicitConfigId:String;
 	
+	private var _processed:Boolean;
+	
 	
 	/**
 	 * Creates a new event instance.
@@ -66,6 +68,20 @@ public class ViewConfigurationEvent extends Event {
 	public function get configId () : String {
 		return (explicitConfigId != null) ? explicitConfigId : 
 			(configTarget is DisplayObject) ? DisplayObject(configTarget).name : null;
+	}
+	
+	/**
+	 * Indicates whether this event instance has already been processed by a Context.
+	 */
+	public function get processed () : Boolean {
+		return _processed;
+	}
+	
+	/**
+	 * Marks this event instance as processed by a corresponding Context.
+	 */
+	public function markAsProcessed () : void {
+		_processed = true;
 	}
 	
 	

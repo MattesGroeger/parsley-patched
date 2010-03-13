@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.flex.tag.view {
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.flex.tag.ConfigurationTagBase;
 
@@ -32,6 +34,9 @@ import flash.events.Event;
  */
 public class ConfigureTag extends ConfigurationTagBase {
 	
+	
+	private static const log:Logger = LogContext.getLogger(ConfigureTag);
+
 	
 	/**
 	 * @private
@@ -74,14 +79,23 @@ public class ConfigureTag extends ConfigurationTagBase {
 	 * @private
 	 */
 	protected override function executeAction (view:DisplayObject) : void { 
-		view.dispatchEvent(new ViewConfigurationEvent(target, configId));
+		dispatchConfigurationEvent(view);
 		if (repeat) {
 			view.addEventListener(Event.ADDED_TO_STAGE, repeatAction);
 		}
 	}
 	
 	private function repeatAction (event:Event) : void {
-		DisplayObject(event.target).dispatchEvent(new ViewConfigurationEvent(target, configId));
+		dispatchConfigurationEvent(DisplayObject(event.target));
+	}
+	
+	private function dispatchConfigurationEvent (view:DisplayObject) : void {
+		var event:ViewConfigurationEvent = new ViewConfigurationEvent(target, configId);
+		view.dispatchEvent(event);
+		if (!event.processed) {
+			log.warn("Configure tag could not be processed for target " + target
+					+ ": no Context found in view hierarchy");
+		}
 	}
 	
 	

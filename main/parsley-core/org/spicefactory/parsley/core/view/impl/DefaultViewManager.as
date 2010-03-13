@@ -240,6 +240,9 @@ public class DefaultViewManager implements ViewManager {
 				: (configTarget is DisplayObject) ? DisplayObject(configTarget).name : null;
 		if (configuredViews[configTarget] != undefined) return;
 		configureView(configTarget, getDefinition(configTarget, configId));
+		if (event is ViewConfigurationEvent) {
+			ViewConfigurationEvent(event).markAsProcessed();
+		}
 	}	
 	
 	protected function configureView (target:Object, definition:ObjectDefinition) : void {
