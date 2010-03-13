@@ -105,35 +105,41 @@ public class DefaultMessageProcessor implements MessageProcessor {
 					// avoid the risk of endless loops
 					throw e;
 				}
-				else {
-					var handlers:Array = new Array();
-					var errorHandlers:Array = cache.getReceivers(MessageReceiverKind.ERROR_HANDLER, selector);
-					for each (var errorHandler:MessageErrorHandler in errorHandlers) {
-						if (e is errorHandler.errorType) {
-							handlers.push(errorHandler);
-						}
-					}
-					log.info("Select " + handlers.length + " out of " + errorHandlers.length + " error handlers");
-					if (handlers.length > 0) {
-						currentError = e;
-						remainingProcessors.unshift(currentProcessor);
-						currentProcessor = new Processor(handlers, invokeErrorHandler, true, false);
-					}
-					else {
-						if (env.unhandledError == ErrorPolicy.RETHROW) {
-							throw new MessageProcessorError("Error in message receiver", e);
-						}
-						else if (env.unhandledError == ErrorPolicy.ABORT) {
-							log.info("Unhandled error - abort message processor");
-							return;
-						}
-						else {
-							log.info("Unhandled error - continue message processing");
-						}
-					}
-				}
+				handleError(e);
 			}
 		} while (!async);
+	}
+	
+	private function handleError (e:Error) : void {
+		var handlers:Array = new Array();
+		var errorHandlers:Array = cache.getReceivers(MessageReceiverKind.ERROR_HANDLER, selector);
+		for each (var errorHandler:MessageErrorHandler in errorHandlers) {
+			if (e is errorHandler.errorType) {
+				handlers.push(errorHandler);
+			}
+		}
+		log.info("Select " + handlers.length + " out of " + errorHandlers.length + " error handlers");
+		if (handlers.length > 0) {
+			currentError = e;
+			remainingProcessors.unshift(currentProcessor);
+			currentProcessor = new Processor(handlers, invokeErrorHandler, true, false);
+		}
+		else {
+			unhandledError(e);
+		}
+	}
+	
+	private function unhandledError (e:Error) : void {
+		if (env.unhandledError == ErrorPolicy.RETHROW) {
+			throw new MessageProcessorError("Error in message receiver", e);
+		}
+		else if (env.unhandledError == ErrorPolicy.ABORT) {
+			log.info("Unhandled error - abort message processor");
+			return;
+		}
+		else {
+			log.info("Unhandled error - continue message processing");
+		}
 	}
 	
 	
