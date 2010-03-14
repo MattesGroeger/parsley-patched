@@ -17,6 +17,8 @@
 package org.spicefactory.lib.reflect {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
+import org.spicefactory.lib.reflect.cache.DefaultReflectionCache;
+import org.spicefactory.lib.reflect.cache.ReflectionCache;
 import org.spicefactory.lib.reflect.metadata.Types;
 import org.spicefactory.lib.reflect.types.Any;
 import org.spicefactory.lib.reflect.types.Private;
@@ -24,7 +26,6 @@ import org.spicefactory.lib.reflect.types.Void;
 import org.spicefactory.lib.util.collection.SimpleMap;
 
 import flash.system.ApplicationDomain;
-import flash.utils.Dictionary;
 import flash.utils.Proxy;
 import flash.utils.describeType;
 import flash.utils.getQualifiedClassName;
@@ -40,7 +41,8 @@ import flash.utils.getQualifiedClassName;
 public class ClassInfo extends MetadataAware {
 
 
-	private static var cache:Dictionary = new Dictionary();
+	private static var _cache:ReflectionCache = new DefaultReflectionCache();
+	
 	
 	/**
 	 * The ApplicationDomain to be used when no domain was explicitly specified.
@@ -50,6 +52,19 @@ public class ClassInfo extends MetadataAware {
 	 * in Dictionaries otherwise.
 	 */
 	public static const currentDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+	
+	
+	/**
+	 * The reflection cache which keeps references to all ClassInfo instances created by the
+	 * three static methods of this class.
+	 */
+	public static function get cache () : ReflectionCache {
+		return _cache; 
+	}
+	
+	public static function set cache (value:ReflectionCache) : void {
+		_cache = value;
+	}
 	
 	
 	/**
@@ -144,51 +159,33 @@ public class ClassInfo extends MetadataAware {
 			name = getQualifiedClassName(clazz);
 			getClassDefinitionByName(name, domain, clazz); // just for eager validation of the domain
 		}
-		var cacheEntry:ClassInfo = getFromCache(clazz, domain);
+		var cacheEntry:ClassInfo = cache.getClass(clazz, domain);
 		if (cacheEntry != null) {
 			return cacheEntry;
 		}
 		var ci:ClassInfo = new ClassInfo(name, clazz, domain);
-		putIntoCache(ci, domain);
+		cache.addClass(ci, domain);
 		return ci;		
 	}
 	
-	private static function getFromCache (type:Class, domain:ApplicationDomain) : ClassInfo {
-		var domainCache:Dictionary = cache[domain];
-		return (domainCache == null) ? null : domainCache[type] as ClassInfo;
-	}
-	
-	private static function putIntoCache (info:ClassInfo, domain:ApplicationDomain) : void {
-		var domainCache:Dictionary = cache[domain];
-		if (domainCache == null) {
-			domainCache = new Dictionary();
-			cache[domain] = domainCache;
-		}
-		domainCache[info.getClass()] = info;
-	}
 	
 	/**
 	 * Purges all cached ClassInfo instance from the specified domain.
 	 * If the ApplicationDomain parameter is omitted the cache will be cleared for all ApplicationDomains.
 	 * 
+	 * <p>This method is deprecated. Use the corresponding purge methods on <code>ClassInfo.cache</code>.</p>
+	 * 
 	 * @param domain the ApplicationDomain to purge all cached ClassInfo instances from
 	 */
 	public static function purgeCache (domain:ApplicationDomain = null) : void {
-		if (domain != null) {
-			delete cache[domain];
+		if (domain == null) {
+			cache.purgeAll();
 		}
 		else {
-			clearCache();			
+			cache.purgeDomain(domain);
 		}
 	} 
 	
-	/**
-	 * @private
-	 */
-	internal static function clearCache () : void {
-		cache = new Dictionary();
-	}
-
 	
 	private var _name:String;
 	private var _simpleName:String;
