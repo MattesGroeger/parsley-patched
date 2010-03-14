@@ -56,7 +56,7 @@ public class NestedError extends Error {
 	public override function getStackTrace () : String {
 		var st:String = super.getStackTrace();
 		if (_cause != null) {
-			st += "\nCaused by: " + _cause.getStackTrace();
+			st += "\n Caused by: " + _cause.getStackTrace();
 		}
 		return st;
 	}
