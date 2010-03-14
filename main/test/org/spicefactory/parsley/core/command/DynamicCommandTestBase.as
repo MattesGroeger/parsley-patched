@@ -95,6 +95,10 @@ public class DynamicCommandTestBase extends ContextTestBase {
 		assertEquals("Unexpected number of command instances", 1, DynamicCommand.instances.length);
 		validateCommand(DynamicCommand.instances[0] as DynamicCommand, 1, 1, "foo1", "none", 9, 1);
 	}
+	
+	public function testDestroy () : void {
+		context.destroy();
+	}
 
 
 	private function validateCommand (command:DynamicCommand, handlers:int, commands:int, 

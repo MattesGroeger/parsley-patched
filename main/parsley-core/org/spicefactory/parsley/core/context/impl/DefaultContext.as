@@ -297,6 +297,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 			dispatchEvent(new ContextEvent(ContextEvent.DESTROYED));
 		}
 		finally {
+			_scopeManager = null;
 			_destroyed = true;
 		}
 	}
@@ -318,7 +319,6 @@ public class DefaultContext extends EventDispatcher implements Context {
 		_initialized = false;
 		_registry = null;
 		_lifecycleManager = null;
-		_scopeManager = null;
 	}
 
 	/**
