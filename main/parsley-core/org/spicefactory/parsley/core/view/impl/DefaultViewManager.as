@@ -66,6 +66,8 @@ public class DefaultViewManager implements ViewManager {
 	private var configuredViews:Dictionary = new Dictionary();
 	private var viewContext:DynamicContext;
 	
+	private var stageEventFilter:StageEventFilter = new StageEventFilter();
+	
 	private static var prefilteredEvents:Dictionary = new Dictionary();
 	private static var prefilterCachePurger:DelegateChain;
 	
@@ -248,7 +250,12 @@ public class DefaultViewManager implements ViewManager {
 	protected function configureView (target:Object, definition:ObjectDefinition) : void {
 		log.debug("Add object '{0}' to view Context", target);
 		if (target is IEventDispatcher) {
-			IEventDispatcher(target).addEventListener(componentRemovedEvent, componentRemoved);
+			if (componentRemovedEvent == Event.REMOVED_FROM_STAGE && target is DisplayObject) {
+				stageEventFilter.addTarget(target as DisplayObject, filteredComponentRemoved, filteredComponentAdded);
+			}
+			else {
+				IEventDispatcher(target).addEventListener(componentRemovedEvent, componentRemoved);
+			}
 		}
 		configuredViews[target] = true;
 		viewContext.addObject(target, definition);
@@ -267,14 +274,28 @@ public class DefaultViewManager implements ViewManager {
 
 	private function componentRemoved (event:Event) : void {
 		var view:IEventDispatcher = IEventDispatcher(event.target);
+		filteredComponentRemoved(view);
+	}
+	
+	private function filteredComponentRemoved (view:IEventDispatcher) : void {
 		if (!isRemovable(view)) {
 			return;
 		}
 		log.debug("Remove object '{0}' from view Context", view);
-		view.removeEventListener(componentRemovedEvent, componentRemoved);
+		if (componentRemovedEvent == Event.REMOVED_FROM_STAGE && view is DisplayObject) {
+			stageEventFilter.removeTarget(view as DisplayObject);
+		}
+		else {
+			view.removeEventListener(componentRemovedEvent, componentRemoved);
+		}
 		delete configuredViews[view];
 		viewContext.removeObject(view);
 	}
+	
+	private function filteredComponentAdded (view:IEventDispatcher) : void {
+		/* do nothing */
+	}
+	
 	
 	private function handleFastInject (event:FastInjectEvent) : void {
 		var target:Object = event.target;

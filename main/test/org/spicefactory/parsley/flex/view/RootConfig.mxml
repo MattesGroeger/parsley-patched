@@ -50,6 +50,9 @@
 	    <tag:PropertyTag name="model" idRef="object"/>
 	</tag:MxmlViewTag>
 	
+	<tag:MxmlViewTag type="{NestedCanvas}"/>
+	<tag:MxmlViewTag type="{ViewInScrollPane}"/>
+	
 	<tag:MxmlRootObjectTag id="object" type="{CoreModel}">
 		<tag:ConstructorTag>
 			<mx:String>foo</mx:String>

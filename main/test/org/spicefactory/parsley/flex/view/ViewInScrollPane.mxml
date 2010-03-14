@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" backgroundColor="#99ffff"
+	addedToStage="trace('view in scroll pane added to stage');"
+	removedFromStage="trace('view in scroll pane removed from stage');"
+	>
+	<mx:Text text="inside scroll pane"/>
+</mx:Canvas>
