@@ -35,7 +35,7 @@ import flash.events.Event;
  * @author Jens Halm
  */
 
-public class Settings implements ContextBuilderProcessor {
+public class SettingsTag implements ContextBuilderProcessor {
 	
 	
 	private static const CUSTOM_REMOVED_EVENT:String = "removeView";
