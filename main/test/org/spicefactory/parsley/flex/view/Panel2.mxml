@@ -49,8 +49,20 @@
 	
 	<!--<parsley:ConfigureTag configId="panel2"/>-->
 	
+	<!--
 	<parsley:FastInjectTag objectId="object" property="model2"/>
 	<parsley:FastInjectTag type="{CoreModel}" property="model3"/>
+	-->
+	
+	<parsley:FastInjectTag
+		injectionComplete="trace('+++ injectionComplete');"
+		creationComplete="trace('+++ creationComplete');"
+		addedToStage="trace('+++ addedToStage');"
+		removedFromStage="trace('+++ removedFromStage');"
+		>
+		<parsley:InjectTag objectId="object" property="model2"/>
+		<parsley:InjectTag type="{CoreModel}" property="model3"/>
+	</parsley:FastInjectTag>
 	
 	<mx:Text text="AA2"/>
 	<mx:Text text="Bound value: |{model.stringProp}|"/>

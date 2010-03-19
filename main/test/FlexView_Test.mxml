@@ -49,7 +49,7 @@
     
     
     <parsley:ContextBuilderTag id="builder" complete="checkContext();">
-    	<parsley:Settings autowireViews="true"/>
+    	<parsley:SettingsTag autowireViews="true"/>
     	<parsley:FlexConfigTag type="{RootConfig}"/>
     	<parsley:XmlConfigTag file="viewTestConfig.xml"/>
    		<parsley:ScopeTag name="window" inherited="true"/>

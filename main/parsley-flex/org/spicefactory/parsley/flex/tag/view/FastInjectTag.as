@@ -15,10 +15,44 @@
  */
 
 package org.spicefactory.parsley.flex.tag.view {
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.events.FastInjectEvent;
+import org.spicefactory.parsley.core.view.impl.StageEventFilter;
+import org.spicefactory.parsley.core.view.impl.ViewInjection;
 import org.spicefactory.parsley.flex.tag.ConfigurationTagBase;
 
+import mx.core.UIComponent;
+import mx.events.FlexEvent;
+
 import flash.display.DisplayObject;
+import flash.events.Event;
+
+/**
+ * Dispatched immediately after injections have been performed.
+ */
+[Event(name="injectionComplete", type="flash.events.Event")]
+
+/**
+ * Dispatched after injections have been performed and the creationComplete event of the document
+ * this tag is placed upon has been fired.
+ */
+[Event(name="creationComplete", type="flash.events.Event")]
+
+/**
+ * Dispatched for the first time after injections have been performed and the creationComplete event of the document
+ * this tag is placed upon has been fired.
+ * Subsequent dispatching will ignore stage events caused by reparenting. 
+ */
+[Event(name="addedToStage", type="flash.events.Event")]
+
+/**
+ * Dispatched when the component is removed from the stage, but ignores interim events caused by reparenting.
+ */
+[Event(name="removedFromStage", type="flash.events.Event")]
+
+
+[DefaultProperty("injections")]
 
 /**
  * MXML Tag that can be used for views that wish to retrieve a particular object from the IOC Container
@@ -28,6 +62,14 @@ import flash.display.DisplayObject;
  * @author Jens Halm
  */
 public class FastInjectTag extends ConfigurationTagBase {
+	
+	
+	private static const log:Logger = LogContext.getLogger(FastInjectTag);
+	
+	private static const INJECTION_COMPLETE:String = "injectionComplete";
+
+	
+	private var stageEventFilter:StageEventFilter = new StageEventFilter();
 	
 	
 	/**
@@ -57,12 +99,70 @@ public class FastInjectTag extends ConfigurationTagBase {
 	 */
 	public var objectId:String;
 	
+	[ArrayElementType("org.spicefactory.parsley.flex.tag.view.InjectTag")]
+	/**
+	 * List of injections to perform.
+	 */
+	public var injections:Array = [];
+	
 	
 	/**
 	 * @private
 	 */
 	protected override function executeAction (view:DisplayObject) : void { 
-		view.dispatchEvent(new FastInjectEvent(property, type, objectId));
+		if (processInjections(view)) {
+			processEvents(view);
+		}
+	}
+	
+	private function processInjections (view:DisplayObject) : Boolean {
+		var viewInjections:Array = new Array();
+		if (property != null) {
+			viewInjections.push(new ViewInjection(property, type, objectId));
+		}
+		for each (var injectTag:InjectTag in injections) {
+			viewInjections.push(new ViewInjection(injectTag.property, injectTag.type, injectTag.objectId));
+		}
+		var event:FastInjectEvent = new FastInjectEvent(viewInjections);
+		view.dispatchEvent(event);
+		if (!event.processed) {
+			log.warn("Configure tag could not be processed for target " + view + " and property " + property
+					+ ": no Context found in view hierarchy");
+			return false;
+		}
+		return true;
+	}
+		
+	private function processEvents (view:DisplayObject) : void {
+		dispatchEvent(new Event(INJECTION_COMPLETE));
+		if (view.stage != null) {
+			dispatchEvent(new Event(Event.ADDED_TO_STAGE));
+		}
+		if (view is UIComponent) {
+			var comp:UIComponent = UIComponent(view);
+			if (comp.initialized) {
+				dispatchEvent(new Event(FlexEvent.CREATION_COMPLETE));
+			}
+			else {
+				comp.addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
+			}
+		}
+		if (hasEventListener(Event.ADDED_TO_STAGE) || hasEventListener(Event.REMOVED_FROM_STAGE)) {
+			stageEventFilter.addTarget(view, filteredComponentRemoved, filteredComponentAdded);
+		}
+	}
+	
+	private function creationCompleteHandler (event:Event) : void {
+		UIComponent(event.target).removeEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
+		dispatchEvent(new Event(FlexEvent.CREATION_COMPLETE));
+	}
+	
+	private function filteredComponentRemoved (view:DisplayObject) : void {
+		dispatchEvent(new Event(Event.REMOVED_FROM_STAGE));
+	}
+
+	private function filteredComponentAdded (view:DisplayObject) : void {
+		dispatchEvent(new Event(Event.ADDED_TO_STAGE));
 	}
 	
 	

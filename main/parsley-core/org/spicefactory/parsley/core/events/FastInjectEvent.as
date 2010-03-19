@@ -35,52 +35,47 @@ public class FastInjectEvent extends Event {
 	public static const FAST_INJECT : String = "fastInject";
 	
 	
-	private var _property:String;
-	private var _objectType:Class;
-	private var _objectId:String;
+	private var _injections:Array;
+	
+	private var _processed:Boolean;
 	
 	
 	/**
 	 * Creates a new event instance.
 	 * 
-	 * @param objectType the property to inject into
-	 * @param objectType the type of the object to inject
-	 * @param objectId te type of the object to inject
+	 * @param injections list of injections to perform
 	 */
-	public function FastInjectEvent (property:String, objectType:Class, objectId:String = null) {
+	public function FastInjectEvent (injections:Array) {
 		super(FAST_INJECT, true);
-		_property = property;
-		_objectType = objectType;
-		_objectId = objectId;
+		_injections = injections;
 	}		
 	
 	/**
-	 * The property to inject into.
+	 * List of injections to perform.
 	 */
-	public function get property () : String {
-		return _property; 
+	public function get injections () :Array {
+		return _injections; 
 	}
 	
 	/**
-	 * The type of the object to inject.
+	 * Indicates whether this event instance has already been processed by a Context.
 	 */
-	public function get objectType () : Class {
-		return _objectType;
+	public function get processed () : Boolean {
+		return _processed;
 	}
 	
 	/**
-	 * The id of the object to inject.
+	 * Marks this event instance as processed by a corresponding Context.
 	 */
-	public function get objectId () : String {
-		return _objectId;
+	public function markAsProcessed () : void {
+		_processed = true;
 	}
-	
 	
 	/**
 	 * @private
 	 */
 	public override function clone () : Event {
-		return new FastInjectEvent(property, objectType, objectId);
+		return new FastInjectEvent(injections);
 	}	
 		
 		

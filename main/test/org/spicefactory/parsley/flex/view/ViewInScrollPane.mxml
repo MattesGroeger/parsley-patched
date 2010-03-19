@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" backgroundColor="#99ffff"
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:parsley="org.spicefactory.parsley.flex.tag.view.*"
+	backgroundColor="#99ffff"
 	addedToStage="trace('view in scroll pane added to stage');"
 	removedFromStage="trace('view in scroll pane removed from stage');"
 	>
+	<mx:Script>
+		<![CDATA[
+			 import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
+			
+			 [Bindable]
+			 public var model:CoreModel;	
+      ]]>
+   </mx:Script>
+	<parsley:FastInjectTag
+		injectionComplete="trace('... injectionComplete');"
+		creationComplete="trace('... creationComplete');"
+		addedToStage="trace('... addedToStage');"
+		removedFromStage="trace('... removedFromStage');"
+		>
+		<parsley:InjectTag objectId="object" property="model"/>
+	</parsley:FastInjectTag>
 	<mx:Text text="inside scroll pane"/>
 </mx:Canvas>

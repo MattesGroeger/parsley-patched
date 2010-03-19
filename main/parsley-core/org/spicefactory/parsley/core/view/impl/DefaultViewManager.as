@@ -298,14 +298,18 @@ public class DefaultViewManager implements ViewManager {
 	
 	
 	private function handleFastInject (event:FastInjectEvent) : void {
-		var target:Object = event.target;
-		if ((!event.objectId && !event.objectType) || (event.objectId && event.objectType)) {
-			throw new ContextError("Exactly one attribute of type or objectId must be specified");
+		var injections:Array = event.injections;
+		for each (var injection:ViewInjection in injections) {
+			var target:Object = event.target;
+			if ((!injection.objectId && !injection.type) || (injection.objectId && injection.type)) {
+				throw new ContextError("Exactly one attribute of type or objectId must be specified");
+			}
+			var object:Object = (injection.objectId != null)
+					? viewContext.getObject(injection.objectId)
+					: viewContext.getObjectByType(injection.type);
+			target[injection.property] = object;
 		}
-		var object:Object = (event.objectId != null)
-				? viewContext.getObject(event.objectId)
-				: viewContext.getObjectByType(event.objectType);
-		target[event.property] = object;
+		event.markAsProcessed();
 	}
 	
 	
