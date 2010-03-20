@@ -8,11 +8,17 @@
 	<mx:Script>
 		<![CDATA[
 			 import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
+			 import flash.events.Event;
 			
 			 [Bindable]
 			 public var model:CoreModel;	
       ]]>
    </mx:Script>
+   
+   <mx:Metadata>
+   		[RemovedEvent("removeView")]
+   </mx:Metadata>
+   
 	<parsley:FastInjectTag
 		injectionComplete="trace('... injectionComplete');"
 		creationComplete="trace('... creationComplete');"
@@ -21,5 +27,7 @@
 		>
 		<parsley:InjectTag objectId="object" property="model"/>
 	</parsley:FastInjectTag>
+	
 	<mx:Text text="inside scroll pane"/>
+	<mx:Button label="Rm" click="dispatchEvent(new Event('removeView'))"/>
 </mx:Canvas>

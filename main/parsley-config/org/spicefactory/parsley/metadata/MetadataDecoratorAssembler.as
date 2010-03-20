@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.metadata {
+import org.spicefactory.parsley.core.view.metadata.RemovedEvent;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Converters;
 import org.spicefactory.lib.reflect.Member;
@@ -98,6 +99,8 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 		// 2 deprecated tags:
 		PostConstructMethodDecorator,
 		PreDestroyMethodDecorator,
+
+		RemovedEvent,
 
 		Selector,
 		Target,

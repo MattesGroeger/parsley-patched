@@ -20,7 +20,7 @@
 	
 	<target name="compile_parsley_flash">
 		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,RemovedEvent,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/parsley-flash-${version}.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/flex.swc" />
@@ -42,7 +42,7 @@
 	
 	<target name="compile_parsley_flex3">
 		<exec executable="${flex.sdk}/bin/${compc}" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,RemovedEvent,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/parsley-flex3-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
@@ -69,7 +69,7 @@
 		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
 					token="extends Flex3ModuleInfoBase" value="extends Flex4ModuleInfoBase"/>
 		<exec executable="${flex4.sdk}/bin/${compc}" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,Selector,Target,Internal,ObjectDefinition" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,RemovedEvent,Selector,Target,Internal,ObjectDefinition" />
 			<arg line="-o ${release.target.dir}/release/parsley-flex4-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />

@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.core.view.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.DelayedDelegateChain;
 import org.spicefactory.lib.util.Delegate;
 import org.spicefactory.lib.util.DelegateChain;
@@ -33,6 +34,7 @@ import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.ViewAutowireMode;
 import org.spicefactory.parsley.core.view.ViewManager;
+import org.spicefactory.parsley.core.view.metadata.RemovedEvent;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
@@ -250,11 +252,16 @@ public class DefaultViewManager implements ViewManager {
 	protected function configureView (target:Object, definition:ObjectDefinition) : void {
 		log.debug("Add object '{0}' to view Context", target);
 		if (target is IEventDispatcher) {
-			if (componentRemovedEvent == Event.REMOVED_FROM_STAGE && target is DisplayObject) {
+			var info:ClassInfo = ClassInfo.forInstance(target, domain);
+			var removedEvent:String = 
+					(info.hasMetadata(RemovedEvent)) 
+					? (info.getMetadata(RemovedEvent)[0] as RemovedEvent).name
+					: componentRemovedEvent; 
+			if (removedEvent == Event.REMOVED_FROM_STAGE && target is DisplayObject) {
 				stageEventFilter.addTarget(target as DisplayObject, filteredComponentRemoved, filteredComponentAdded);
 			}
 			else {
-				IEventDispatcher(target).addEventListener(componentRemovedEvent, componentRemoved);
+				IEventDispatcher(target).addEventListener(removedEvent, componentRemoved);
 			}
 		}
 		configuredViews[target] = true;
