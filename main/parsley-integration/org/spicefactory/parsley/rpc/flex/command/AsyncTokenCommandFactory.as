@@ -72,7 +72,7 @@ class AsyncTokenCommand extends AbstractCommand {
 	
 	protected override function error (result:* = null) : void {
 		removeListener();
-		super.complete(result);
+		super.error(result);
 	}
 	
 	private function removeListener () : void {
