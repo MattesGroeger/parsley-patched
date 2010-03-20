@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.command.impl {
+	import flash.events.IEventDispatcher;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 import org.spicefactory.lib.errors.IllegalStateError;
@@ -214,6 +215,7 @@ public class AbstractCommand implements Command {
 	}
 	
 	private function invokeStatusHandlersDelayed (event:Event) : void {
+		IEventDispatcher(event.target).removeEventListener(TimerEvent.TIMER, invokeStatusHandlersDelayed);
 		if (synchronous) throw IllegalStateError("Command was not started in Constructor");
 		invokeStatusHandlers();
 	}
