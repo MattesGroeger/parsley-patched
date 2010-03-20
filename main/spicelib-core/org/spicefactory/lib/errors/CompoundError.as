@@ -41,7 +41,7 @@ public class CompoundError extends Error {
 	}
 	
 	private function getMessage (message:String, causes:Array) : String {
-		if (causes.length == 0) {
+		if (causes == null || causes.length == 0) {
 			return message;
 		}
 		else {
