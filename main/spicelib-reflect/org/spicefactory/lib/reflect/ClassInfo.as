@@ -544,9 +544,17 @@ public class ClassInfo extends MetadataAware {
 	/**
 	 * @private
 	 */
+	public override function hasMetadata (type:Object) : Boolean {
+		init();
+		return super.hasMetadata(type);
+	}
+	
+	/**
+	 * @private
+	 */
 	public override function getMetadata (type:Object, validate:Boolean = true) : Array {
 		init();
-		return super.getMetadata(type);
+		return super.getMetadata(type, validate);
 	}
 	
 	/**
@@ -554,7 +562,7 @@ public class ClassInfo extends MetadataAware {
 	 */
 	public override function getAllMetadata (validate:Boolean = true) : Array {
 		init();
-		return super.getAllMetadata();
+		return super.getAllMetadata(validate);
 	}
 	
 	
