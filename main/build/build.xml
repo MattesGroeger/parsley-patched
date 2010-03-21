@@ -75,7 +75,7 @@
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/pimento ${project.dir}/manifest/parsley-pimento-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/cinnamon ${project.dir}/manifest/parsley-cinnamon-manifest.xml" />
-			<arg line="-el ${flex4.sdk}/frameworks/libs/player/10/playerglobal.swc" />
+			<arg line="-el ${flex4.sdk}/frameworks/libs/player/10.0/playerglobal.swc" />
 			<arg line="-el ${flex4.sdk}/frameworks/libs/flex.swc" />
 			<arg line="-el ${flex4.sdk}/frameworks/libs/framework.swc" />
 			<arg line="-el ${flex.sdk}/frameworks/libs/rpc.swc" />
