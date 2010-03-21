@@ -15,12 +15,10 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
-	import org.spicefactory.lib.logging.Logger;
-	import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.logging.flex.FlexLogFactory;
-import org.spicefactory.parsley.asconfig.processor.ActionScriptConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
@@ -30,7 +28,9 @@ import org.spicefactory.parsley.core.events.ViewAutowireEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
+import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
+import org.spicefactory.parsley.flex.processor.FlexConfigurationProcessor;
 import org.spicefactory.parsley.flex.resources.FlexResourceBindingAdapter;
 import org.spicefactory.parsley.flex.tag.ConfigurationTagBase;
 import org.spicefactory.parsley.rpc.flex.command.AsyncTokenCommandSupport;
@@ -244,7 +244,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 			var factory:ContextBuilderFactory = GlobalFactoryRegistry.instance.contextBuilder;
 			var builder:CompositeContextBuilder = factory.create(viewRoot, parent, domain);
 			if (config != null) {
-				builder.addProcessor(new ActionScriptConfigurationProcessor([config]));
+				builder.addProcessor(new FlexConfigurationProcessor([config]));
 			}
 			if (processors != null) {
 				for each (var processor:ContextBuilderProcessor in processors) {

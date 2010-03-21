@@ -73,6 +73,8 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private var _configured:Boolean;
 	private var _destroyed:Boolean;
 	
+	private var description:String;
+	
 	
 	/**
 	 * Creates a new instance.
@@ -87,6 +89,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 		_lifecycleManager = provider.lifecycleManager;
 		_scopeManager = provider.scopeManager;
 		_viewManager = provider.viewManager;
+		description = provider.description;
 		addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, 1);
 		_registry.addEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
 	}
@@ -349,6 +352,11 @@ public class DefaultContext extends EventDispatcher implements Context {
 		if (!configured) {
 			throw new IllegalStateError("Attempt to access Context before it was fully configured");
 		}
+	}
+	
+	
+	public override function toString () : String {
+		return "[Context(" + description + ")]";
 	}
 	
 	

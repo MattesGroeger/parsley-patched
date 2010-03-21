@@ -36,6 +36,7 @@ import flash.system.ApplicationDomain;
 public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 
 
+	private var _description:String;
 	private var _domain:ApplicationDomain;
 	private var _registry:ObjectDefinitionRegistry;
 	private var _lifecycleManager:ObjectLifecycleManager;
@@ -56,11 +57,13 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @param scopeDefs the scopes associated with the Context
 	 * @param parentViewDefinitions the view configuration from the parent Context
+	 * @param description a description to be passed to the Context for logging and monitoring purposes
 	 */
 	function DefaultContextStrategyProvider (factories:FactoryRegistry, domain:ApplicationDomain, 
-			scopeDefs:Array, parentViewDefinitions:ViewDefinitionRegistry) {
+			scopeDefs:Array, parentViewDefinitions:ViewDefinitionRegistry, description:String) {
 		this.factories = factories;
 		this._domain = domain;
+		this._description = description;
 		this.scopeDefs = scopeDefs;
 		this.parentViewDefinitions = parentViewDefinitions;
 	}
@@ -79,6 +82,13 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	 */
 	public function get domain () : ApplicationDomain {
 		return _domain;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get description () : String {
+		return _description;
 	}
 
 	/**
@@ -130,7 +140,8 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	 */
 	public function createDynamicProvider () : ContextStrategyProvider {
 		checkState();
-		var provider:DefaultContextStrategyProvider = new DefaultContextStrategyProvider(factories, domain, scopeDefs, parentViewDefinitions);
+		var provider:DefaultContextStrategyProvider 
+				= new DefaultContextStrategyProvider(factories, domain, scopeDefs, parentViewDefinitions, description);
 		provider._scopeManager = scopeManager;
 		provider._viewManager = viewManager;
 		return provider;

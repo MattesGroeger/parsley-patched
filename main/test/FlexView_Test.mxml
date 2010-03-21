@@ -42,6 +42,8 @@
             	trace("Runtime3 " + builder.context.containsObject("testId3"));
             	trace("Runtime4 " + builder.context.containsObject("testId4"));
             	trace("SimpleClass count " + builder.context.getObjectCount(SimpleClass));
+            	
+            	trace("Descr: " + builder.context);
             }
  
         ]]>

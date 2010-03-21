@@ -101,6 +101,14 @@ public class RuntimeConfigurationProcessor implements ConfigurationProcessor {
 		}
 	}
 	
+	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "RuntimeConfig{" + (instances.length + classes.length) + " instance(s)}";
+	}
+	
 }
 }
 

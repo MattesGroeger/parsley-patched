@@ -15,15 +15,15 @@
  */
 
 package org.spicefactory.parsley.flex {
-	import org.spicefactory.parsley.rpc.flex.command.AsyncTokenCommandSupport;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.flex.FlexLogFactory;
-import org.spicefactory.parsley.asconfig.processor.ActionScriptConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
+import org.spicefactory.parsley.flex.processor.FlexConfigurationProcessor;
 import org.spicefactory.parsley.flex.resources.FlexResourceBindingAdapter;
+import org.spicefactory.parsley.rpc.flex.command.AsyncTokenCommandSupport;
 import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
 
 import flash.display.DisplayObject;
@@ -101,7 +101,7 @@ public class FlexContextBuilder {
 		if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
 		FlexModuleSupport.initialize();
 		AsyncTokenCommandSupport.initialize();
-		builder.addProcessor(new ActionScriptConfigurationProcessor(configClasses));
+		builder.addProcessor(new FlexConfigurationProcessor(configClasses));
 	}
 
 

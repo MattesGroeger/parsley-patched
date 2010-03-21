@@ -49,6 +49,8 @@ public class XmlConfigurationProcessor extends EventDispatcher implements AsyncC
 	private static const log:Logger = LogContext.getLogger(XmlConfigurationProcessor);
 	
 	
+	private var description:String;
+	
 	private var mapper:XmlObjectMapper;
 	private var _loader:XmlConfigurationLoader;
 	private var loadedFiles:Array = new Array();
@@ -65,6 +67,7 @@ public class XmlConfigurationProcessor extends EventDispatcher implements AsyncC
 		if (expressionContext == null) expressionContext = new DefaultExpressionContext();
 		this.expressionContext = expressionContext;
 		this._loader = (loader == null) ? new XmlConfigurationLoader(files, expressionContext) : loader;
+		this.description = "XmlConfig{" + files.join(",") + "}";
 	}
 
 	
@@ -191,6 +194,16 @@ public class XmlConfigurationProcessor extends EventDispatcher implements AsyncC
 	public function cancel () : void {
 		_loader.cancel();
 	}
+	
+	
+	/**
+	 * @private
+	 */
+	public override function toString () : String {
+		return description;
+	}
+	
+	
 }
 }
 

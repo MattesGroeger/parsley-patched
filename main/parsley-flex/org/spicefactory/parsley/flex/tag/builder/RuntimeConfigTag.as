@@ -92,5 +92,14 @@ public class RuntimeConfigTag implements ContextBuilderProcessor, ConfigurationP
 		runtimeProcessor.processConfiguration(registry);
 	}
 	
+	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "RuntimeConfig{" + instances.length + " instance(s)}";
+	}
+	
+	
 }
 }

@@ -19,6 +19,7 @@ import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.lib.util.ClassUtil;
 import org.spicefactory.parsley.asconfig.metadata.InternalProperty;
 import org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata;
 import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
@@ -149,6 +150,20 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 				? ObjectDefinitionMetadata(definitionMetaArray[0]) 
 				: new ObjectDefinitionMetadata();
 	}
+	
+	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		var classNames:Array = new Array();
+		for each (var type:Class in configClasses) {
+			classNames.push(ClassUtil.getSimpleName(type));
+		}
+		return "ActionScriptConfig{" + classNames.join(",") + "}";
+	}
+	
+	
 }
 }
 

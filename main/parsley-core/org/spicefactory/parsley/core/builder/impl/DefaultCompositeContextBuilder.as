@@ -57,6 +57,8 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	
 	private var _factories:LocalFactoryRegistry;
 	
+	private var description:String;
+	
 	private var viewRoot:DisplayObject;
 	private var context:Context;
 	private var parent:Context;
@@ -77,8 +79,10 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 * @param viewRoot the initial view root to manage for the Context this instance creates
 	 * @param parent the (optional) parent of the Context to build
 	 * @param domain the ApplicationDomain to use for reflection
+	 * @param description a description to be passed to the Context for logging and monitoring purposes
 	 */
-	function DefaultCompositeContextBuilder (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) {
+	function DefaultCompositeContextBuilder (viewRoot:DisplayObject = null, parent:Context = null, 
+			domain:ApplicationDomain = null, description:String = null) {
 		_factories = new LocalFactoryRegistry();
 		this.viewRoot = viewRoot;
 		var event:ContextBuilderEvent = null;
@@ -92,8 +96,9 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		}
 		this.parent = (parent != null) ? parent : (event != null) ? event.parent : null;
 		this.domain = (domain != null) ? domain : (event != null && event.domain != null) ? event.domain : ClassInfo.currentDomain;
+		this.description = description;
 	}
-	
+
 	
 	/**
 	 * @private
@@ -158,7 +163,9 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	private function createContextStrategyProvider (domain:ApplicationDomain, scopeDefs:Array) : ContextStrategyProvider {
 		var parentViewDefinitions:ViewDefinitionRegistry = (parent != null) 
 				? ContextRegistry.getViewDefinitions(parent) : null; 
-		return new DefaultContextStrategyProvider(factories, domain, scopeDefs, parentViewDefinitions);
+		var descr:String = (description != null)
+				? description : processors.join(",");
+		return new DefaultContextStrategyProvider(factories, domain, scopeDefs, parentViewDefinitions, descr);
 	}
 
 	/**

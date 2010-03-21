@@ -46,6 +46,11 @@ public interface ContextStrategyProvider {
 	function get domain () : ApplicationDomain;
 	
 	/**
+	 * A description to be passed to the Context for logging and monitoring purposes only.
+	 */
+	function get description () : String;
+	
+	/**
 	 * The ObjectDefinitionRegistry containing all definitions the Context should use.
 	 */
 	function get registry () : ObjectDefinitionRegistry;

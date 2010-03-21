@@ -83,6 +83,17 @@ public class ClassUtil {
 		return false;
 	}
 	
+	/**
+	 * Returns the unqualified short name of the specified class.
+	 * 
+	 * @param type the class to return the unqualified short name for
+	 * @return the unqualified short name of the specified class
+	 */
+	public static function getSimpleName (type:Class) : String {
+		var name:String = getQualifiedClassName(type).replace("::", ".");
+		return name.substring(name.lastIndexOf(".") + 1);
+	}
+	
 }
 
 }

@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
-import org.spicefactory.parsley.asconfig.processor.ActionScriptConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.flex.processor.FlexConfigurationProcessor;
 
 /**
  * MXML tag for adding a MXML configuration class to a CompositeContext.
@@ -43,7 +43,7 @@ public class FlexConfigTag implements ContextBuilderProcessor {
 	 * @private
 	 */
 	public function processBuilder (builder:CompositeContextBuilder) : void {
-		builder.addProcessor(new ActionScriptConfigurationProcessor([type]));
+		builder.addProcessor(new FlexConfigurationProcessor([type]));
 	}
 	
 	
