@@ -50,7 +50,7 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 	private var messageProperties:Array;
 	private var _returnType:Class;
 	
-	private var statelessTarget:DynamicObject;
+	private var statefulTarget:DynamicObject;
 	
 	/**
 	 * Creates a new instance.
@@ -144,10 +144,10 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 			return context.addDefinition(definition);
 		}
 		else {
-			if (statelessTarget == null) {
-				statelessTarget = context.addDefinition(definition);			
+			if (statefulTarget == null) {
+				statefulTarget = context.addDefinition(definition);			
 			}
-			return statelessTarget;
+			return statefulTarget;
 		}
 	}
 	
