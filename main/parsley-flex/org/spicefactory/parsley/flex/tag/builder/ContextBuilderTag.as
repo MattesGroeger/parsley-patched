@@ -112,6 +112,11 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	 */
 	public var config:Class;
 	
+	/**
+	 * A description to be passed to the Context for logging or monitoring purposes.
+	 */
+	public var description:String;
+	
 	[ArrayElementType("org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor")]
 	/**
 	 * The individual configuration artifacts for this ContextBuilder.
@@ -242,7 +247,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 			AsyncTokenCommandSupport.initialize();
 			
 			var factory:ContextBuilderFactory = GlobalFactoryRegistry.instance.contextBuilder;
-			var builder:CompositeContextBuilder = factory.create(viewRoot, parent, domain);
+			var builder:CompositeContextBuilder = factory.create(viewRoot, parent, domain, description);
 			if (config != null) {
 				builder.addProcessor(new FlexConfigurationProcessor([config]));
 			}

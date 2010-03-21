@@ -35,9 +35,11 @@ public interface ContextBuilderFactory {
 	 * @param viewRoot the initial view root to be passed to the ViewManager
 	 * @param parent the parent of the Context to be created
 	 * @param domain the domain to use for reflection
+	 * @param description a description to be passed to the Context for logging or monitoring purposes
 	 * @return a new CompositeContextBuilder instance
 	 */
-	function create (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) : CompositeContextBuilder;
+	function create (viewRoot:DisplayObject = null, parent:Context = null, 
+			domain:ApplicationDomain = null, description:String = null) : CompositeContextBuilder;
 	
 	
 }

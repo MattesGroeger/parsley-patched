@@ -79,7 +79,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 * @param viewRoot the initial view root to manage for the Context this instance creates
 	 * @param parent the (optional) parent of the Context to build
 	 * @param domain the ApplicationDomain to use for reflection
-	 * @param description a description to be passed to the Context for logging and monitoring purposes
+	 * @param description a description to be passed to the Context for logging or monitoring purposes
 	 */
 	function DefaultCompositeContextBuilder (viewRoot:DisplayObject = null, parent:Context = null, 
 			domain:ApplicationDomain = null, description:String = null) {

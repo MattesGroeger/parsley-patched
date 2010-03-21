@@ -212,8 +212,9 @@ import flash.utils.getQualifiedClassName;
 
 class DefaultContextBuilderFactory implements ContextBuilderFactory {
 	
-	public function create (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) : CompositeContextBuilder {
-		return new DefaultCompositeContextBuilder(viewRoot, parent, domain);
+	public function create (viewRoot:DisplayObject = null, parent:Context = null, 
+			domain:ApplicationDomain = null, description:String = null) : CompositeContextBuilder {
+		return new DefaultCompositeContextBuilder(viewRoot, parent, domain, description);
 	}
 	
 }
