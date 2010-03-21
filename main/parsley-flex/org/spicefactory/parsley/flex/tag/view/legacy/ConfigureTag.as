@@ -21,10 +21,8 @@ import org.spicefactory.parsley.flex.tag.ConfigurationTagBase;
 import flash.display.DisplayObject;
 import flash.events.Event;
 
-[ExcludeClass]
+[Deprecated(replacement="org.spicefactory.parsley.flex.tag.view.ConfigureTag")]
 /**
- * @private
- * 
  * This tag has moved to the name MXML namespace.
  * 
  * @author Jens Halm
