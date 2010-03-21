@@ -16,17 +16,8 @@
 
 package org.spicefactory.parsley.core.registry {
 
-[ExcludeClass]
-
+[Deprecated(replacement="ObjectDefinitionRegistry.builders,RootConfigurationTag,ResolvableRegistryValue")]
 /**
- * @private
- * 
- * Deprecated. Kept in the code base for backwards-compatibility.
- * The builders accessible through registry.builders should now be used.
- * This class only delegates to the new mechanism now.
- * For root object tags the new interface RootConfigurationTag can now be used.
- * For nested object tags use ResolvableRegistryValue
- * 
  * @author Jens Halm
  */
 public interface ObjectDefinitionFactory {

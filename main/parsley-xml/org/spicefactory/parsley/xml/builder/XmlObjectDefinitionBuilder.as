@@ -36,12 +36,8 @@ import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
 
-[ExcludeClass]
+[Deprecated(replacement="XmlConfigurationProcessor")]
 /**
- * @private
- * 
- * Deprecated. Use XmlConfigurationProcessor instead.
- * 
  * @author Jens Halm
  */
 public class XmlObjectDefinitionBuilder extends EventDispatcher implements AsyncObjectDefinitionBuilder {

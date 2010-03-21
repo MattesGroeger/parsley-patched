@@ -139,12 +139,7 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 */	
 	function get frozen () : Boolean;
 	
-	/**
-	 * @private
-	 * 
-	 * Deprecated. The ScopeManager can now be accessed through
-	 * the Context which is now exposed in this interface.
-	 */
+	[Deprecated(replacement="context.scopeManager")]
 	function get scopeManager () : ScopeManager;
 	
 	/**

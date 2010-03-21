@@ -169,14 +169,7 @@ public class ClassInfo extends MetadataAware {
 	}
 	
 	
-	/**
-	 * Purges all cached ClassInfo instance from the specified domain.
-	 * If the ApplicationDomain parameter is omitted the cache will be cleared for all ApplicationDomains.
-	 * 
-	 * <p>This method is deprecated. Use the corresponding purge methods on <code>ClassInfo.cache</code>.</p>
-	 * 
-	 * @param domain the ApplicationDomain to purge all cached ClassInfo instances from
-	 */
+	[Deprecated(replacement="cache.purgeDomain")]
 	public static function purgeCache (domain:ApplicationDomain = null) : void {
 		if (domain == null) {
 			cache.purgeAll();

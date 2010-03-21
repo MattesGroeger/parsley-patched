@@ -38,12 +38,8 @@ import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
 
-[ExcludeClass]
+[Deprecated(replacement="XmlConfigurationLoader")]
 /**
- * @private
- * 
- * Deprecated. Use XmlConfigurationLoader instead.
- * 
  * @author Jens Halm
  */
 public class XmlObjectDefinitionLoader extends EventDispatcher {

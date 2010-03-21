@@ -17,15 +17,8 @@
 package org.spicefactory.parsley.core.builder {
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
-[ExcludeClass]
-
+[Deprecated(replacement="ConfigurationProcessor")]
 /**
- * @private
- * 
- * Deprecated. Use the new interface ConfigurationProcessor instead.
- * The name ObjectDefinitonBuilder had to much semantic overlap with interfaces in the core.registry package
- * (like the new interface ObjectDefinitionBuilderFactory which performs a completely different task).
- * 
  * @author Jens Halm
  */
 public interface ObjectDefinitionBuilder {

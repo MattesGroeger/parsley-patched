@@ -16,12 +16,8 @@
 
 package org.spicefactory.parsley.xml.builder {
 
-[ExcludeClass]
+[Deprecated(replacement="org.spicefactory.parsley.xml.processor.XmlFile")]
 /**
- * @private
- * 
- * Deprecated. Use the class with the same name in the processor package instead.
- * 
  * @author Jens Halm
  */
 public class XmlFile {

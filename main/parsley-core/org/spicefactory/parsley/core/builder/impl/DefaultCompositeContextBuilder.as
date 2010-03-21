@@ -100,11 +100,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	}
 
 	
-	/**
-	 * @private
-	 * 
-	 * Deprecated. Use addProcessor instead.
-	 */
+	[Deprecated(replacement="addProcessor")]
 	public function addBuilder (builder:ObjectDefinitionBuilder) : void {
 		processors.push(builder);
 	}

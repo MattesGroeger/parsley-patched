@@ -21,17 +21,11 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 
-[ExcludeClass]
 
 [DefaultProperty("decorators")]
 
+[Deprecated(replacement="ObjectDefinitionRegistry.builders")]
 /**
- * @private
- * 
- * Deprecated. Kept in the code base for backwards-compatibility.
- * The builders accessible through registry.builders should now be used.
- * This class only delegates to the new mechanism now.
- * 
  * @author Jens Halm
  */
 public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {

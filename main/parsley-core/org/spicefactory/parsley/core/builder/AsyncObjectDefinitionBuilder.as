@@ -21,15 +21,8 @@ import flash.events.IEventDispatcher;
 
 [Event(name="error", type="flash.events.ErrorEvent")]
 
-[ExcludeClass]
-
+[Deprecated(replacement="AsyncConfigurationProcessor")]
 /**
- * @private
- * 
- * Deprecated. Use the new interface AsyncConfigurationProcessor instead.
- * The name ObjectDefinitonBuilder had to much semantic overlap with interfaces in the core.registry package
- * (like the new interface ObjectDefinitionBuilderFactory which performs a completely different task).
- * 
  * @author Jens Halm
  */
 public interface AsyncObjectDefinitionBuilder extends ObjectDefinitionBuilder, IEventDispatcher {

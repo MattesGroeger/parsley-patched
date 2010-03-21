@@ -20,13 +20,9 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
-[ExcludeClass]
+[Deprecated(replacement="DestroyMethodDecorator")]
 [Metadata(name="PreDestroy", types="method")]
 /**
- * @private
- * 
- * This tag is deprecated, use [Destroy] instead.
- * 
  * @author Jens Halm
  */
 public class PreDestroyMethodDecorator implements ObjectDefinitionDecorator {

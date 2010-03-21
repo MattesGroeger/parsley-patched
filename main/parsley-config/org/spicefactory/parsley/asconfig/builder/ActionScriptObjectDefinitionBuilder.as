@@ -19,15 +19,8 @@ import org.spicefactory.parsley.asconfig.processor.ActionScriptConfigurationProc
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
-[ExcludeClass]
-
+[Deprecated(replacement="ActionScriptConfigurationProcessor")]
 /**
- * @private
- * 
- * Deprecated. Use the new ActionScriptConfigurationProcessor class instead.
- * The old class is kept in the code base for a while for backwards-compatibility
- * and now just extends the new class.
- * 
  * @author Jens Halm
  */
 public class ActionScriptObjectDefinitionBuilder extends ActionScriptConfigurationProcessor implements ObjectDefinitionBuilder {

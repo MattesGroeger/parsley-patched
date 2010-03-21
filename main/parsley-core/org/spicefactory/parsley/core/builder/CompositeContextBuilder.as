@@ -37,11 +37,8 @@ import org.spicefactory.parsley.core.factory.FactoryRegistry;
  */
 public interface CompositeContextBuilder {
 	
-	/**
-	 * @private
-	 * 
-	 * Deprecated. Use addProcessor instead.
-	 */
+	
+	[Deprecated(replacement="addProcessor")]
 	function addBuilder (builder:ObjectDefinitionBuilder) : void;
 	
 	/**

@@ -62,11 +62,7 @@ public class CompositeContextBuilderTask extends Task {
 		return _context;
 	}
 	
-	/**
-	 * @private
-	 * 
-	 * Deprecated. Use addProcessor instead.
-	 */
+	[Deprecated(replacement="addProcessor")]
 	public function addBuilder (builder:ObjectDefinitionBuilder) : void {
 		_builder.addBuilder(builder);
 	}

@@ -20,13 +20,9 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
-[ExcludeClass]
+[Deprecated(replacement="InitMethodDecorator")]
 [Metadata(name="PostConstruct", types="method")]
 /**
- * @private
- * 
- * This tag is deprecated, use [Init] instead.
- * 
  * @author Jens Halm
  */
 public class PostConstructMethodDecorator implements ObjectDefinitionDecorator {

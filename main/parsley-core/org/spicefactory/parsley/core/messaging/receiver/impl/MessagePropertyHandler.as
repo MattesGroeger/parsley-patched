@@ -18,14 +18,8 @@ package org.spicefactory.parsley.core.messaging.receiver.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 
-[ExcludeClass]
-
+[Deprecated(replacement="MessageHandler")]
 /**
- * @private
- * 
- * Deprecated. Functionality has been merged into MessageHandler class.
- * Kept in the code base for backwards-compatibility.
- * 
  * @author Jens Halm
  */
 public class MessagePropertyHandler extends MessageHandler {
