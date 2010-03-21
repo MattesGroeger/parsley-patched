@@ -19,6 +19,7 @@ import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.errors.ObjectDefinitionError;
 import org.spicefactory.parsley.core.registry.DecoratorAssembler;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
@@ -102,13 +103,12 @@ public class AbstractObjectDefinitionBuilder {
 				}
 			}
 			catch (e:Error) {
-				var msg:String = "Error applying " + decorator;
-				log.error(msg + "{0}", e);
-				errors.push(msg + ": " + e.message);
+				log.error("Error applying {0}: {1}", decorator, e);
+				errors.push(e);
 			}
 		}
 		if (errors.length > 0) {
-			throw new ContextError("One or more errors processing " + definition + ":\n " + errors.join("\n "));
+			throw new ObjectDefinitionError(finalDefinition, errors);
 		} 
 		return finalDefinition;
 	}

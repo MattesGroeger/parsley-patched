@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
+	import org.spicefactory.lib.logging.Logger;
 	import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
@@ -74,6 +75,9 @@ import flash.system.ApplicationDomain;
  * @author Jens Halm
  */
 public class ContextBuilderTag extends ConfigurationTagBase {
+
+
+	private static const log:Logger = LogContext.getLogger(ContextBuilderTag);
 
 
 	ResourceBindingDecorator.adapterClass = FlexResourceBindingAdapter;
@@ -259,7 +263,8 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 			handleCachedEvents();
 		}
 		catch (e:Error) {
-			dispatchEvent(new NestedErrorEvent(ErrorEvent.ERROR, e));
+			log.error("Error building Context: {0}", e);
+			dispatchEvent(new NestedErrorEvent(ErrorEvent.ERROR, e, "Error building Context"));
 		}
 	}
 	
@@ -271,7 +276,8 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	private function contextError (event:ErrorEvent) : void {
 		removeContextListeners();
 		_context = null;
-		dispatchEvent(new NestedErrorEvent(ErrorEvent.ERROR, event));
+		log.error("Error building Context: {0}", event.text);
+		dispatchEvent(new NestedErrorEvent(ErrorEvent.ERROR, event, "Error building Context"));
 	}
 
 	private function removeContextListeners () : void {

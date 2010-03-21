@@ -64,7 +64,7 @@ public class NestedErrorEvent extends ErrorEvent {
 		if (_cause != null) {
 			txt += " - cause: ";
 			if (cause is Error) {
-				txt += Error(cause).message;
+				txt += (cause as Error).getStackTrace();
 			}
 			else if (cause is ErrorEvent) {
 				txt += ErrorEvent(cause).text;

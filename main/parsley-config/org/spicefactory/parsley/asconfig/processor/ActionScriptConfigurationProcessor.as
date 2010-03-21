@@ -22,15 +22,14 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.asconfig.metadata.InternalProperty;
 import org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata;
 import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
-import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.errors.ConfigurationProcessorError;
+import org.spicefactory.parsley.core.errors.ConfigurationUnitError;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
-
-import flash.utils.getQualifiedClassName;
 
 /**
  * ConfigurationProcessor implementation that processes ActionScript configuration classes.
@@ -65,24 +64,24 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 		for each (var configClass:Class in configClasses) {
 			try {
 				
-				processClass(configClass, registry, errors);
+				processClass(configClass, registry);
 				
 			}
 			catch (e:Error) {
-				var message:String = "Error processing " + getQualifiedClassName(configClass);
-				log.error(message + "{0}", e);
-				errors.push(message + ":\n " + e.message);
+				log.error("Error processing {0}: {1}", configClass, e);
+				errors.push(e);
 			}
 		}
 		if (errors.length > 0) {
-			throw new ContextError("One or more errors in ActionScriptObjectDefinitionBuilder:\n " 
-					+ errors.join("\n "));	
+			throw new ConfigurationProcessorError(this, errors);	
 		}
 	}
 	
-	private function processClass (configClass:Class, registry:ObjectDefinitionRegistry, errors:Array) : void {
+	private function processClass (configClass:Class, registry:ObjectDefinitionRegistry) : void {
 		var ci:ClassInfo = ClassInfo.forClass(configClass, registry.domain);
 		var configInstance:Object = new configClass();
+
+		var errors:Array = new Array();
 		for each (var property:Property in ci.getProperties()) {
 			try {
 				if (isValidRootConfig(property)) {
@@ -92,35 +91,49 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 				} 
 			}
 			catch (e:Error) {
-				var msg:String = "Error building object definition for " + property;
-				log.error(msg + "{0}", e);
-				errors.push(msg + ": " + e.message);						
+				errors.push(e);						
 			}
+		}
+		if (errors.length > 0) {
+			throw new ConfigurationUnitError(configClass, errors);
 		}
 	}
 	
 	private function processProperty (property:Property, configClass:Object, registry:ObjectDefinitionRegistry) : void {
-		if (property.type.isType(ObjectDefinitionFactory)) {
-			/* TODO - ObjectDefinitionFactory is deprecated - remove in later versions */
-			var factory:ObjectDefinitionFactory = property.getValue(configClass);
-			var definition:RootObjectDefinition = factory.createRootDefinition(registry);
-			registry.registerDefinition(definition);
+		try {
+			if (property.type.isType(ObjectDefinitionFactory)) {
+				handleLegacyFactory(property.getValue(configClass), registry);
+			}
+			else if (property.type.isType(RootConfigurationTag)) {
+				RootConfigurationTag(property.getValue(configClass)).process(registry);
+			}
+			else {
+				createDefinition(property, configClass, registry);
+			}
 		}
-		else if (property.type.isType(RootConfigurationTag)) {
-			RootConfigurationTag(property.getValue(configClass)).process(registry);
+		catch (e:Error) {
+			log.error("Error processing {0}: {1}", property, e);
+			throw new ConfigurationUnitError(property, [e]);
 		}
-		else {
-			var metadata:ObjectDefinitionMetadata = getMetadata(property);
-			var id:String = (metadata.id != null) ? metadata.id : property.name;
-			registry.builders
-					.forRootDefinition(property.type.getClass())
-					.id(id)
-					.lazy(metadata.lazy)
-					.singleton(metadata.singleton)
-					.order(metadata.order)
-					.instantiator(new ConfingClassPropertyInstantiator(configClass, property))
-					.buildAndRegister();
-		}
+	}
+	
+	private function createDefinition (property:Property, configClass:Object, registry:ObjectDefinitionRegistry) : void {
+		var metadata:ObjectDefinitionMetadata = getMetadata(property);
+		var id:String = (metadata.id != null) ? metadata.id : property.name;
+		registry.builders
+				.forRootDefinition(property.type.getClass())
+				.id(id)
+				.lazy(metadata.lazy)
+				.singleton(metadata.singleton)
+				.order(metadata.order)
+				.instantiator(new ConfingClassPropertyInstantiator(configClass, property))
+				.buildAndRegister();
+	}
+	
+	private function handleLegacyFactory (factory:ObjectDefinitionFactory, registry:ObjectDefinitionRegistry) : void {
+		/* TODO - ObjectDefinitionFactory is deprecated - remove in later versions */
+		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
+		registry.registerDefinition(definition);
 	}
 	
 	private function isValidRootConfig (property:Property) : Boolean {

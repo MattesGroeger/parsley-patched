@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.builder.impl {
+import org.spicefactory.lib.events.CompoundErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -194,39 +195,40 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 			}
 		}
 		else {
+			var async:Boolean = false;
 			try {
 				var processor:Object = processors.shift();
 				if (processor is ConfigurationProcessor) {
-					handleProcessor(ConfigurationProcessor(processor));
+					async = !handleProcessor(ConfigurationProcessor(processor));
 				}
 				else {
-					handleLegacyBuilder(ObjectDefinitionBuilder(processor));
+					async = !handleLegacyBuilder(ObjectDefinitionBuilder(processor));
 				}
 			} catch (e:Error) {
 				removeCurrentProcessor();
-				var msg:String = "Error processing " + processor;
-				log.error(msg + "{0}", e);
-				errors.push(msg + ": " + e.message);
-				invokeNextProcessor();
+				log.error("Error processing {0}: {1}", e);
+				errors.push(e);
 			}
+			if (!async)	invokeNextProcessor();
 		}
 	}
 	
-	private function handleProcessor (processor:ConfigurationProcessor) : void {
+	private function handleProcessor (processor:ConfigurationProcessor) : Boolean {
 		if (processor is AsyncConfigurationProcessor) {
 			currentProcessor = processor;
 			var asyncProcessor:AsyncConfigurationProcessor = AsyncConfigurationProcessor(processor);
 			asyncProcessor.addEventListener(Event.COMPLETE, processorComplete);				
 			asyncProcessor.addEventListener(ErrorEvent.ERROR, processorError);		
 			asyncProcessor.processConfiguration(registry);
+			return false;
 		}
 		else {
 			ConfigurationProcessor(processor).processConfiguration(registry);
-			invokeNextProcessor();
+			return true;
 		}
 	}
 	
-	private function handleLegacyBuilder (builder:ObjectDefinitionBuilder) : void {
+	private function handleLegacyBuilder (builder:ObjectDefinitionBuilder) : Boolean {
 		/* TODO - deprecated - remove in later versions */
 		if (builder is AsyncObjectDefinitionBuilder) {
 			currentProcessor = builder;
@@ -234,20 +236,21 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 			asyncBuilder.addEventListener(Event.COMPLETE, processorComplete);				
 			asyncBuilder.addEventListener(ErrorEvent.ERROR, processorError);		
 			asyncBuilder.build(registry);
+			return false;
 		}
 		else {
 			builder.build(registry);
-			invokeNextProcessor();
+			return true;
 		}
 	}
 	
 	private function handleErrors () : void {
-		var errorMsg:String = "One or more errors processing CompositeContextBuilder: \n " + errors.join("\n ");
+		var msg:String = "One or more errors in CompositeContextBuilder";
 		if (async) {
-			context.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, errorMsg));
+			context.dispatchEvent(new CompoundErrorEvent(ErrorEvent.ERROR, errors, msg));
 		}
 		else {
-			throw new ContextBuilderError(errorMsg);
+			throw new ContextBuilderError(msg, errors);
 		}		
 	}
 	
@@ -258,9 +261,8 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	
 	private function processorError (event:ErrorEvent) : void {
 		removeCurrentProcessor();
-		var msg:String = "Error processing " + event.target + ": " + event.text;
-		log.error(msg);
-		errors.push(msg);
+		log.error(event.text);
+		errors.push(event);
 		invokeNextProcessor();
 	}
 	
@@ -272,9 +274,8 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	}
 	
 	private function contextError (event:ErrorEvent) : void {
-		var msg:String = "Error initializing Context: " + event.text;
-		log.error(msg);
-		errors.push(msg);
+		log.error("Error initializing Context: " + event.text);
+		errors.push(event);
 	}
 	
 	private function contextDestroyed (event:Event) : void {

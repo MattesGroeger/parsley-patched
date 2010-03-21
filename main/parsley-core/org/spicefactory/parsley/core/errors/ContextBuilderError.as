@@ -15,24 +15,23 @@
  */
 
 package org.spicefactory.parsley.core.errors {
-import org.spicefactory.lib.errors.NestedError;
+import org.spicefactory.lib.errors.CompoundError;
 
 /**
  * Error thrown by ContextBuilder implementations.
  * 
  * @author Jens Halm
  */
-public class ContextBuilderError extends NestedError {
+public class ContextBuilderError extends CompoundError {
 
 	/**
 	 * Create a new instance.
 	 * 
 	 * @param message the error message
-	 * @param cause the cause of this Error
-	 * @param id an optional reference number
+	 * @param causes the causes of this Error
 	 */
-	public function ContextBuilderError (message:String = "", cause:Error = null, id:int = 0) {
-		super(message, cause, id);
+	public function ContextBuilderError (message:String = "", causes:Array = null) {
+		super(message, causes);
 	}
 	
 }

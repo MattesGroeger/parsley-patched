@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml.processor {
+import org.spicefactory.lib.events.CompoundErrorEvent;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.expr.impl.DefaultExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
@@ -24,6 +25,7 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.parsley.core.builder.AsyncConfigurationProcessor;
+import org.spicefactory.parsley.core.errors.ConfigurationUnitError;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
@@ -100,74 +102,82 @@ public class XmlConfigurationProcessor extends EventDispatcher implements AsyncC
 	}
 	
 	private function processAllFiles (files:Array) : void {
-		var containerErrors:Array = new Array();
+		var errors:Array = new Array();
 		for each (var file:XmlFile in files) {
 			try {
-				processFile(file, containerErrors);
+				processFile(file);
 			}
 			catch (e:Error) {
-				var message:String = "Error processing file " + file;
-				log.error(message + "{0}", e);
-				containerErrors.push(message + ":\n " + e.message);
+				log.error("Error processing {0}: {1}", file, e);
+				errors.push(e);
 			}
 		}
 
-		if (containerErrors.length > 0) {
-			var eventText:String = "One or more errors in XmlObjectDefinitionBuilder:\n " 
-					+ containerErrors.join("\n ");	
-			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, eventText));
+		if (errors.length > 0) {
+			var eventText:String = "One or more errors in XmlConfigurationProcessor";
+			dispatchEvent(new CompoundErrorEvent(ErrorEvent.ERROR, errors, eventText));
 		}
 		else {
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
 	}
 	
-	private function processFile (file:XmlFile, containerErrors:Array) : void {
+	private function processFile (file:XmlFile) : void {
 		var context:XmlProcessorContext = new XmlProcessorContext(expressionContext, registry.domain);
-		var factoryErrors:Array = new Array();
+		var errors:Array;
 		var container:ObjectsTag 
 				= mapper.mapToObject(file.rootElement, context) as ObjectsTag;
 		if (!context.hasErrors()) {
+			errors = new Array();
 			for each (var obj:Object in container.objects) {
 				try {
 					processObject(obj);
 				} 
-				catch (error:Error) {
-					var msg:String = "Error building object definition for " + obj;
-					log.error(msg + "{0}", error);
-					factoryErrors.push(msg + ": " + error.message);		
+				catch (e:Error) {
+					errors.push(e);		
 				}
 			}
 		}	
 		else {
-			for each (var xmlError:Error in context.errors) {
-				factoryErrors.push(xmlError.message);
-			}
+			errors = context.errors;
 		}
-		if (factoryErrors.length > 0) {
-			containerErrors.push("One or more errors processing file " + file 
-						+ ":\n " + factoryErrors.join("\n "));
+		if (errors.length > 0) {
+			throw new ConfigurationUnitError(file, errors);
 		}		
 	}
 	
 	private function processObject (obj:Object) : void {
-		if (obj is ObjectDefinitionFactory) {
-			/* TODO - ObjectDefinitionFactory is deprecated - remove in later versions */
-			var definition:RootObjectDefinition = ObjectDefinitionFactory(obj).createRootDefinition(registry);
-			registry.registerDefinition(definition);
+		try {
+			if (obj is ObjectDefinitionFactory) {
+				handleLegacyFactory(ObjectDefinitionFactory(obj), registry);
+			}
+			else if (obj is RootConfigurationTag) {
+				RootConfigurationTag(obj).process(registry);
+			}
+			else {
+				createDefinition(obj);
+			}
 		}
-		else if (obj is RootConfigurationTag) {
-			RootConfigurationTag(obj).process(registry);
+		catch (e:Error) {
+			log.error("Error processing {0}: {1}", obj, e);
+			throw new ConfigurationUnitError(obj, [e]);
 		}
-		else {
-			var ci:ClassInfo = ClassInfo.forInstance(obj, registry.domain);
-			var idProp:Property = ci.getProperty("id");
-			registry.builders
-					.forRootDefinition(ci.getClass())
-					.id((idProp == null) ? null : idProp.getValue(obj))
-					.instantiator(new ObjectWrapperInstantiator(obj))
-					.buildAndRegister();
-		}
+	}
+	
+	private function createDefinition (obj:Object) : void {
+		var ci:ClassInfo = ClassInfo.forInstance(obj, registry.domain);
+		var idProp:Property = ci.getProperty("id");
+		registry.builders
+				.forRootDefinition(ci.getClass())
+				.id((idProp == null) ? null : idProp.getValue(obj))
+				.instantiator(new ObjectWrapperInstantiator(obj))
+				.buildAndRegister();
+	}
+	
+	private function handleLegacyFactory (factory:ObjectDefinitionFactory, registry:ObjectDefinitionRegistry) : void {
+		/* TODO - ObjectDefinitionFactory is deprecated - remove in later versions */
+		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
+		registry.registerDefinition(definition);
 	}
 
 
