@@ -176,7 +176,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		assembleScopeDefinitions();
 		createContext();
 		invokeNextProcessor();
-		if (processors.length > 0) {
+		if (currentProcessor != null) {
 			async = true;
 		}
 		return context;	
