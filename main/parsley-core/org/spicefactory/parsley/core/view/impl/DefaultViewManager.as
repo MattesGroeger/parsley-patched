@@ -250,7 +250,7 @@ public class DefaultViewManager implements ViewManager {
 	}	
 	
 	protected function configureView (target:Object, definition:ObjectDefinition) : void {
-		log.debug("Add object '{0}' to view Context", target);
+		log.debug("Add object '{0}' to {1}", target, viewContext);
 		if (target is IEventDispatcher) {
 			var info:ClassInfo = ClassInfo.forInstance(target, domain);
 			var removedEvent:String = 
@@ -288,7 +288,7 @@ public class DefaultViewManager implements ViewManager {
 		if (!isRemovable(view)) {
 			return;
 		}
-		log.debug("Remove object '{0}' from view Context", view);
+		log.debug("Remove object '{0}' from {1}", view, viewContext);
 		if (componentRemovedEvent == Event.REMOVED_FROM_STAGE && view is DisplayObject) {
 			stageEventFilter.removeTarget(view as DisplayObject);
 		}
