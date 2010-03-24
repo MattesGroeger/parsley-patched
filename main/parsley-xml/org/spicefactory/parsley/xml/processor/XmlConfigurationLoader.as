@@ -156,14 +156,14 @@ public class XmlConfigurationLoader extends EventDispatcher {
 		try {
 			xml = new XML(fileContent);
 		} catch (e:Error) {
-			handleError("XML Parser error");
+			handleError("XML Parser error", e);
 			return;
 		}
 		try {
 			preprocess(xml);
 		} catch (e:Error) {
 			trace(e.getStackTrace());
-			handleError("Error preprocessing XML context definition");
+			handleError("Error preprocessing XML context definition", e);
 			return;
 		}
 		_loadedFiles.push(new XmlFile(_currentFile, xml));
