@@ -4,6 +4,7 @@
 	xmlns:view="org.spicefactory.parsley.flex.view.*"
 	xmlns:pm="org.spicefactory.parsley.flex.modules.*"
 	xmlns:parsley="org.spicefactory.parsley.flex.tag.builder.*"
+	xmlns:parsleyview="org.spicefactory.parsley.flex.tag.view.*"
 	xmlns:core="org.spicefactory.parsley.tag.core.*"
 	xmlns:builder="org.spicefactory.parsley.core.builder.*"
 	layout="absolute"
@@ -14,6 +15,7 @@
 >    
     <mx:Script>
         <![CDATA[
+        	import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
         	import org.spicefactory.parsley.flex.view.RootConfig;
         	import org.spicefactory.parsley.core.builder.SimpleClass;
         	import mx.containers.TitleWindow;
@@ -28,11 +30,14 @@
             	TitleWindow; PopUpManager; Module;
             }
             
+            public var model:Object;
+            
             private function test (event:String) : void {
             	trace(event + "-" + ModuleManagerGlobals.managerSingleton);
             }
             
             private function checkContext () : void {
+            	/*
             	trace("Scope window " + builder.context.scopeManager.hasScope("window"));
             	trace("Scope foo " + builder.context.scopeManager.hasScope("foo"));
             	trace("XML1 " + builder.context.containsObject("fromXml"));
@@ -44,6 +49,7 @@
             	trace("SimpleClass count " + builder.context.getObjectCount(SimpleClass));
             	
             	trace("Descr: " + builder.context);
+            	 */
             }
  
         ]]>
@@ -78,12 +84,12 @@
         <mx:level>0</mx:level>
     </mx:TraceTarget>
 
-    
+    <parsleyview:FastInjectTag type="{CoreModel}" property="model"/>
+	
     <mx:ApplicationControlBar dock="true">
 		<mx:Button label="Unload module" click="{module.unloadModule();}"/>   
-		<mx:Button label="Load module" click="{module.loadModule();}"/>   
-		<mx:Button label="{builder.context}"/>   
-		<mx:Button label="Show Alert" click="{builder.context.scopeManager.dispatchMessage(new TestEvent('foo', 'bar', 5));}"/>   
+		<mx:Button label="Load module" click="{module.loadModule();}"/> 
+		<mx:Button label="Show Alert" click="{builder.context.scopeManager.dispatchMessage(new TestEvent('foo', 'bar', 5));}"/>  
     </mx:ApplicationControlBar>
     
     

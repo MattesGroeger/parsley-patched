@@ -67,6 +67,8 @@ public class DefaultViewManager implements ViewManager {
 	private var viewRoots:Array = new Array();
 	private var configuredViews:Dictionary = new Dictionary();
 	private var viewContext:DynamicContext;
+
+	private var cachedFastInjectEvents:Array = new Array();
 	
 	private var stageEventFilter:StageEventFilter = new StageEventFilter();
 	
@@ -119,6 +121,10 @@ public class DefaultViewManager implements ViewManager {
 			handleRemovedViewRoot(view);	
 		}
 		viewRoots = new Array();
+		if (cachedFastInjectEvents.length > 0) {
+			viewContext.removeEventListener(ContextEvent.INITIALIZED, handleCachedFastInjectEvents);
+			cachedFastInjectEvents = new Array();
+		}
 	}
 	
 	/**
@@ -305,6 +311,27 @@ public class DefaultViewManager implements ViewManager {
 	
 	
 	private function handleFastInject (event:FastInjectEvent) : void {
+		event.stopImmediatePropagation();
+		if (viewContext.destroyed) return;
+		event.markAsProcessed();
+		if (!viewContext.initialized) {
+			if (cachedFastInjectEvents.length == 0) {
+				viewContext.addEventListener(ContextEvent.INITIALIZED, handleCachedFastInjectEvents);
+			}
+			cachedFastInjectEvents.push(event);
+			return;
+		}
+		processFastInject(event);
+	}
+	
+	private function handleCachedFastInjectEvents (event:ContextEvent) : void {
+		for each (var fastInject:FastInjectEvent in cachedFastInjectEvents) {
+			processFastInject(fastInject);
+		}
+		cachedFastInjectEvents = new Array();
+	}
+
+	private function processFastInject (event:FastInjectEvent) : void {
 		var injections:Array = event.injections;
 		for each (var injection:ViewInjection in injections) {
 			var target:Object = event.target;
@@ -316,7 +343,6 @@ public class DefaultViewManager implements ViewManager {
 					: viewContext.getObjectByType(injection.type);
 			target[injection.property] = object;
 		}
-		event.markAsProcessed();
 	}
 	
 	
