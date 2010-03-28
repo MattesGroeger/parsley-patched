@@ -59,7 +59,7 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		delegate = new MessageDispatcherFunctionReference(scope);
+		delegate = new MessageDispatcherFunctionReference(registry.context.scopeManager, scope);
 		if (names == null) {
 			names = new Array();
 			var events:Array = definition.type.getMetadata(EventInfo);
@@ -79,7 +79,6 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
 	
 	private function preInit (instance:Object, context:Context) : void {
 		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
-		if (delegate.scopeManager == null) delegate.scopeManager = context.scopeManager;
 		for each (var name:String in names) {		
 			eventDispatcher.addEventListener(name, delegate.dispatchMessage);
 		}

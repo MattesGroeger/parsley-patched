@@ -271,13 +271,6 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 			addChildDefinition(parentDefinition, definition, instance);
 			return instance;
 		}
-		else if (value is MessageDispatcherFunctionReference) {
-			// two lines to avoid compiler warning
-			var delegate:MessageDispatcherFunctionReference = MessageDispatcherFunctionReference(value);
-			delegate.scopeManager = context.scopeManager;
-			var r:* = delegate.dispatchMessage;
-			return r;
-		}
 		else if (value is ManagedArray) {
 			var source:Array = value as Array;
 			var result:Array = new Array();

@@ -24,21 +24,20 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
  */
 public class MessageDispatcherFunctionReference {
 	
-	/**
-	 * The ScopeManager to use for dispatching messages.
-	 */
-	public var scopeManager:ScopeManager;
 	
-	
+	private var scopeManager:ScopeManager;
 	private var scope:String;
+	private var enabled:Boolean = true;
 	
 	
 	/**
 	 * Creates a new instance.
 	 * 
+	 * @param scopeManager the scope manager the message should be dispatched through
 	 * @param scope the scope the message should be dispatched to
 	 */
-	function MessageDispatcherFunctionReference (scope:String = null) {
+	function MessageDispatcherFunctionReference (scopeManager:ScopeManager, scope:String = null) {
+		this.scopeManager = scopeManager;
 		this.scope = scope;
 	}
 	
@@ -50,12 +49,22 @@ public class MessageDispatcherFunctionReference {
 	 * @param selector the selector to use if it cannot be determined from the message instance itself
 	 */
 	public function dispatchMessage (message:Object, selector:* = undefined) : void {
+		if (!enabled) return;
 		if (scope == null) {
 			scopeManager.dispatchMessage(message, selector);
 		}
 		else {
 			scopeManager.getScope(scope).dispatchMessage(message, selector);
 		}
+	}
+	
+	/**
+	 * Disables this dispatcher so that calls to dispatchMessage get ignored.
+	 */
+	public function disable () : void {
+		enabled = false;
+		scope = null;
+		scopeManager = null;
 	}
 	
 	

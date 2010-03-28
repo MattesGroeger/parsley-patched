@@ -15,6 +15,10 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
+import org.spicefactory.lib.reflect.Property;
+import flash.utils.Dictionary;
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
@@ -47,13 +51,31 @@ public class MessageDispatcherDecorator implements ObjectDefinitionDecorator {
 	public var scope:String;
 	
 	
+	private var dispatcherMap:Dictionary = new Dictionary();
+	private var target:Property;
+	
+	
 	/**
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		definition.properties.addValue(property, new MessageDispatcherFunctionReference(scope));
+		target = definition.type.getProperty(property);
+		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_INIT, injectDispatcher);
+		definition.objectLifecycle.addListener(ObjectLifecycle.POST_DESTROY, disableDispatcher);
 		return definition;
 	}
+	
+	private function injectDispatcher (instance:Object, context:Context) : void {
+		var dispatcher:MessageDispatcherFunctionReference = new MessageDispatcherFunctionReference(context.scopeManager, scope);
+		dispatcherMap[instance] = dispatcher;
+		target.setValue(instance, dispatcher.dispatchMessage);
+	}
+
+	private function disableDispatcher (instance:Object, context:Context) : void {
+		var dispatcher:MessageDispatcherFunctionReference = dispatcherMap[instance] as MessageDispatcherFunctionReference;
+		if (dispatcher) dispatcher.disable();
+	}
+	
 	
 }
 
