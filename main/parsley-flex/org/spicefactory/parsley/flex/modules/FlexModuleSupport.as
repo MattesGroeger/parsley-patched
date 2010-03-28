@@ -146,12 +146,7 @@ class ModuleInfoProxy extends Flex3ModuleInfoBase implements IModuleInfo {
 
 	protected override function getDomain (applicationDomain:ApplicationDomain) : ApplicationDomain {
 		if (loaded) {
-			applicationDomain = domainMap[url] as ApplicationDomain;
-			if (applicationDomain == null) {
-				throw new IllegalStateError("Module with url " + url 
-						+ " has already been loaded, but ApplicationDomain cannot be determined"); 
-			}
-			domain = applicationDomain;
+			domain = domainMap[url] as ApplicationDomain;
 		}
 		else {
 			domain = (applicationDomain != null) ? applicationDomain
@@ -315,6 +310,10 @@ class ContextBuilderEventListener {
 	
 	private function buildContext (event:ContextBuilderEvent) : void {
 		if (event.domain == null) {
+			if (domain == null) {
+				throw new IllegalStateError("Unable to determine ApplicationDomain for Module with url " + module.url 
+						+ ". Loading has been triggered before Parsley's Flex Module support has been initialized"); 
+			}
 			event.domain = domain;
 		}
 	}
