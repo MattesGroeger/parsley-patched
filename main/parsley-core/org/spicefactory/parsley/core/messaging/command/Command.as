@@ -89,7 +89,7 @@ public interface Command {
 	/**
 	 * The observers directly added to this command, matching the current status.
 	 */
-	function get observers () : Array;
+	function getObservers (status:CommandStatus) : Array;
 	
 	
 }

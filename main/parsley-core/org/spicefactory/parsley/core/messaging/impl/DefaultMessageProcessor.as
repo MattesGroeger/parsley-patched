@@ -196,7 +196,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		}
 		else {
 			var observers:Array = cache.getReceivers(MessageReceiverKind.forCommandStatus(status), selector);
-			observers = command.observers.concat(observers);
+			observers = command.getObservers(status).concat(observers);
 			currentProcessor = new Processor(observers, invokeObserver, false);
 			remainingProcessors = [];
 		}

@@ -1,0 +1,21 @@
+<mx:Object 
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:msg="org.spicefactory.parsley.tag.messaging.*"
+	xmlns:lc="org.spicefactory.parsley.tag.lifecycle.*"
+	xmlns:flextag="org.spicefactory.parsley.tag.core.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import org.spicefactory.parsley.core.messaging.model.*;		
+			import org.spicefactory.parsley.core.command.model.*;		
+			import org.spicefactory.parsley.core.messaging.TestEvent;		
+			import org.spicefactory.parsley.core.messaging.TestMessage;		
+			import org.spicefactory.parsley.core.errors.ContextError;		
+			import flash.events.*;		
+		]]>
+	</mx:Script>
+	
+	
+	<msg:DynamicCommandTag type="{TaskCommand}" messageType="{TestEvent}" selector="test3"/>
+		
+</mx:Object>

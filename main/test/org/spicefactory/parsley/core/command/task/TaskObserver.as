@@ -16,6 +16,8 @@ public class TaskObserver {
 	public var resultString:String;
 	public var errorEvent:ErrorEvent;
 	
+	public var resultCounter:int = 0;
+	
 	
 	
 	[CommandResult(selector="test1")]
@@ -32,6 +34,7 @@ public class TaskObserver {
 	[CommandResult(selector="test3")]
 	public function observeWithResultParam (result:String) : void {
 		resultString = result;
+		resultCounter++;
 	}
 	
 	[CommandError(selector="test2")]

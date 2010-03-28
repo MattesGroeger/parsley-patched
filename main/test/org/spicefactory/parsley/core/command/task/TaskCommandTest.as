@@ -1,12 +1,14 @@
 package org.spicefactory.parsley.core.command.task {
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
 import flexunit.framework.TestCase;
 
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.messaging.TestEvent;
+import org.spicefactory.parsley.flex.FlexContextBuilder;
 import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
 import org.spicefactory.parsley.task.command.TaskCommandSupport;
+
+import flash.events.TimerEvent;
+import flash.utils.Timer;
 
 /**
  * @author Jens Halm
@@ -15,7 +17,7 @@ public class TaskCommandTest extends TestCase {
 	
 	
 	
-	public function xtestTaskWithResult () : void {
+	public function testTaskWithResult () : void {
 		TaskCommandSupport.initialize();
 		var executor:TaskExecutor = new TaskExecutor();
 		var observer:TaskObserver = new TaskObserver();
@@ -32,7 +34,7 @@ public class TaskCommandTest extends TestCase {
 		assertEquals("Unexpected result value", "The result", observer.resultString);
 	}
 	
-	public function xtestTaskWithError () : void {
+	public function testTaskWithError () : void {
 		TaskCommandSupport.initialize();
 		var executor:TaskExecutor = new TaskExecutor();
 		var observer:TaskObserver = new TaskObserver();
@@ -68,8 +70,30 @@ public class TaskCommandTest extends TestCase {
 	private function synchronousTaskResult (event:TimerEvent) : void {	
 		assertNotNull("Expected String result instance", observer.resultString);
 		assertEquals("Unexpected result value", "foo", observer.resultString);
+		assertEquals("Unexpected number of result invocations", 1, observer.resultCounter);
 	}
-
+	
+	
+	public function testSynchronousDynamicCommand () : void {
+		TaskCommandSupport.initialize();
+		var context:Context = FlexContextBuilder.build(DynamicTaskCommandConfig);
+		
+		context.scopeManager.dispatchMessage(new TestEvent("test3", "foo", 0));
+		assertNotNull("Expected ResultTask instance", TaskCommand.lastTask);
+		var timer:Timer = new Timer(10, 1);
+		var f:Function = addAsync(synchronousDynamicCommandResult, 100);
+		timer.addEventListener(TimerEvent.TIMER, f);
+		timer.start();		
+	}
+	
+	private function synchronousDynamicCommandResult (event:TimerEvent) : void {	
+		assertNotNull("Expected String result instance", TaskCommand.resultString);
+		assertEquals("Unexpected result value", "foo", TaskCommand.resultString);
+		assertEquals("Unexpected number of result invocations", 1, TaskCommand.resultCounter);
+	}
+	
+	
+	
 	
 }
 }

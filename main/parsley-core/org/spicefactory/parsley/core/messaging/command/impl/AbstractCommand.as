@@ -230,7 +230,7 @@ public class AbstractCommand implements Command {
 	/**
 	 * @inheritDoc
 	 */
-	public function get observers () : Array {
+	public function getObservers (status:CommandStatus) : Array {
 		var result:Array = new Array();
 		for each (var observer:CommandObserver in _observers) {
 			if (observer.status == status) {
