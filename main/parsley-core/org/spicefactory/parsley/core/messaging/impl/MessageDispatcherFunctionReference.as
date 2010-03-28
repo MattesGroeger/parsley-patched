@@ -47,13 +47,14 @@ public class MessageDispatcherFunctionReference {
 	 * Dispatches the specified message through the ScopeManager associated with this reference.
 	 * 
 	 * @param message the message to dispatch
+	 * @param selector the selector to use if it cannot be determined from the message instance itself
 	 */
-	public function dispatchMessage (message:Object) : void {
+	public function dispatchMessage (message:Object, selector:* = undefined) : void {
 		if (scope == null) {
-			scopeManager.dispatchMessage(message);
+			scopeManager.dispatchMessage(message, selector);
 		}
 		else {
-			scopeManager.getScope(scope).dispatchMessage(message);
+			scopeManager.getScope(scope).dispatchMessage(message, selector);
 		}
 	}
 	
