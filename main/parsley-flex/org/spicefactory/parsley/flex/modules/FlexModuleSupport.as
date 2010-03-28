@@ -147,6 +147,7 @@ class ModuleInfoProxy extends Flex3ModuleInfoBase implements IModuleInfo {
 	protected override function getDomain (applicationDomain:ApplicationDomain) : ApplicationDomain {
 		if (loaded) {
 			domain = domainMap[url] as ApplicationDomain;
+			if (domain == null) return applicationDomain;
 		}
 		else {
 			domain = (applicationDomain != null) ? applicationDomain
