@@ -296,6 +296,8 @@
 			<arg value="API for IOC kernel services for dynamic view wiring"/>
 			<arg line="-package org.spicefactory.parsley.core.view.impl"/>
 			<arg value="Implementation for IOC kernel services for dynamic view wiring"/>
+			<arg line="-package org.spicefactory.parsley.core.view.metadata"/>
+			<arg value="Metadata tags to be used for view wiring"/>
 			
 			<!-- Parsley Configuration -->
 			<arg line="-package org.spicefactory.parsley.asconfig"/>
@@ -335,6 +337,8 @@
 			<arg value="XML configuration tags for Flex LogTargets"/>
 			<arg line="-package org.spicefactory.parsley.flex.modules"/>
 			<arg value="Integration with Flex Modules"/>
+			<arg line="-package org.spicefactory.parsley.flex.processor"/>
+			<arg value="ConfigurationProcessor implementation for MXML configuration"/>
 			<arg line="-package org.spicefactory.parsley.flex.resources"/>
 			<arg value="Adapter for the Flex ResourceManager"/>
 			<arg line="-package org.spicefactory.parsley.flex.tag"/>
@@ -377,6 +381,8 @@
 			<!-- Spicelib Reflection API -->
 			<arg line="-package org.spicefactory.lib.reflect"/>
 			<arg value="Reflection API"/>
+			<arg line="-package org.spicefactory.lib.reflect.cache"/>
+			<arg value="Reflection Cache"/>
 			<arg line="-package org.spicefactory.lib.reflect.converter"/>
 			<arg value="Several Converter implementations"/>
 			<arg line="-package org.spicefactory.lib.reflect.errors"/>
@@ -509,6 +515,8 @@
 			<arg value="API for IOC kernel services for dynamic view wiring"/>
 			<arg line="-package org.spicefactory.parsley.core.view.impl"/>
 			<arg value="Implementation for IOC kernel services for dynamic view wiring"/>
+			<arg line="-package org.spicefactory.parsley.core.view.metadata"/>
+			<arg value="Metadata tags to be used for view wiring"/>
 			
 			<!-- Parsley Configuration -->
 			<arg line="-package org.spicefactory.parsley.asconfig"/>
@@ -588,6 +596,8 @@
 			<!-- Spicelib Reflection API -->
 			<arg line="-package org.spicefactory.lib.reflect"/>
 			<arg value="Reflection API"/>
+			<arg line="-package org.spicefactory.lib.reflect.cache"/>
+			<arg value="Reflection Cache"/>
 			<arg line="-package org.spicefactory.lib.reflect.converter"/>
 			<arg value="Several Converter implementations"/>
 			<arg line="-package org.spicefactory.lib.reflect.errors"/>
@@ -658,6 +668,8 @@
 			<!-- Spicelib Reflection API -->
 			<arg line="-package org.spicefactory.lib.reflect"/>
 			<arg value="Reflection API"/>
+			<arg line="-package org.spicefactory.lib.reflect.cache"/>
+			<arg value="Reflection Cache"/>
 			<arg line="-package org.spicefactory.lib.reflect.converter"/>
 			<arg value="Several Converter implementations"/>
 			<arg line="-package org.spicefactory.lib.reflect.errors"/>
