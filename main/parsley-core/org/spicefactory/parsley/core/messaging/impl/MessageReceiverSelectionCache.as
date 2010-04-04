@@ -141,7 +141,7 @@ public class MessageReceiverSelectionCache {
 	 * @return true if this cache has first level targets for the specified kind and selector
 	 */
 	public function hasFirstLevelTargets (selectorValue:*) : Boolean {
-		return (getReceivers(MessageReceiverKind.TARGET, selectorValue).length > 0
+		return (getReceivers(MessageReceiverKind.INTERCEPTOR, selectorValue).length > 0
 			|| getReceivers(MessageReceiverKind.TARGET, selectorValue).length > 0);
 	}
 	
