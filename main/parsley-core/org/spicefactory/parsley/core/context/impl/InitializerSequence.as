@@ -194,8 +194,8 @@ public class InitializerSequence {
 	}
 
 	private function removeListeners (asyncObj:IEventDispatcher, complete:Function, error:Function) : void {
-		asyncObj.addEventListener(Event.COMPLETE, complete);
-		asyncObj.addEventListener(ErrorEvent.ERROR, error);			
+		asyncObj.removeEventListener(Event.COMPLETE, complete);
+		asyncObj.removeEventListener(ErrorEvent.ERROR, error);			
 	}
 	
 	
