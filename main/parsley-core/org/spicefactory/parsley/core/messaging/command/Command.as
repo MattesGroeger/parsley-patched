@@ -87,7 +87,10 @@ public interface Command {
 	function addObserver (observer:CommandObserver) : void;
 	
 	/**
-	 * The observers directly added to this command, matching the current status.
+	 * Returns the observers directly added to this command, matching the specified status.
+	 * 
+	 * @param status the status to return the matching commands for
+	 * @return the observers directly added to this command, matching the specified status
 	 */
 	function getObservers (status:CommandStatus) : Array;
 	
