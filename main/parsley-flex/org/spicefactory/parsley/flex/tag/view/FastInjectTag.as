@@ -126,7 +126,7 @@ public class FastInjectTag extends ConfigurationTagBase {
 		var event:FastInjectEvent = new FastInjectEvent(viewInjections);
 		view.dispatchEvent(event);
 		if (!event.processed) {
-			log.warn("Configure tag could not be processed for target " + view + " and property " + property
+			log.warn("FastInject tag could not be processed for target " + view + " and property " + property
 					+ ": no Context found in view hierarchy");
 			return false;
 		}
