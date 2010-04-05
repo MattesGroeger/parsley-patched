@@ -15,6 +15,9 @@
  */
 
 package org.spicefactory.parsley.flex.modules {
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
+
 import mx.modules.ModuleManagerGlobals;
 
 /**
@@ -27,6 +30,9 @@ import mx.modules.ModuleManagerGlobals;
  * @author Jens Halm
  */
 public class FlexModuleSupport {
+	
+	
+	private static const log:Logger = LogContext.getLogger(FlexModuleSupport);
 	
 	
 	private static var initialized:Boolean = false;
@@ -48,22 +54,22 @@ public class FlexModuleSupport {
 	 */
 	public static function initialize () : void {
 		if (initialized) return;
+		log.info("Initialize Flex Module Support");
 		initialized = true;
 		var originalManager:Object = ModuleManagerGlobals.managerSingleton;
 		ModuleManagerGlobals.managerSingleton = new ModuleManagerDecorator(originalManager);
 	}
-	
 }
 }
 
-import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.errors.AbstractMethodError;
-import flash.utils.Dictionary;
-
-import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
-import org.spicefactory.parsley.flex.modules.ModuleLoadingPolicy;
+import org.spicefactory.lib.errors.IllegalStateError;
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
+import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
+import org.spicefactory.parsley.flex.modules.ModuleLoadingPolicy;
 
 import mx.core.IFlexModuleFactory;
 import mx.events.ModuleEvent;
@@ -74,10 +80,12 @@ import flash.events.Event;
 import flash.system.ApplicationDomain;
 import flash.system.SecurityDomain;
 import flash.utils.ByteArray;
+import flash.utils.Dictionary;
 
 class ModuleManagerDecorator {
 	
 	private var originalManager:Object;
+	private var domainMap:Dictionary = new Dictionary();
 	
 	function ModuleManagerDecorator (originalManager:Object) {
 		this.originalManager = originalManager;
@@ -88,8 +96,18 @@ class ModuleManagerDecorator {
 	}
 	
 	public function getModule (url:String) : IModuleInfo {
-		return new ModuleInfoProxy(originalManager.getModule(url));
+		var module:IModuleInfo = originalManager.getModule(url);
+		if (domainMap[url] == undefined) {
+			domainMap[url] = new DomainInfo();
+		}
+		return new ModuleInfoProxy(module, domainMap[url] as DomainInfo);
 	}
+	
+}
+
+class DomainInfo {
+	
+	public var current:ApplicationDomain;
 	
 }
 
@@ -100,6 +118,9 @@ class ModuleInfoBase {
 	protected function getModule () : Object {
 		throw new AbstractMethodError();
 	}
+	protected function setDomain (domain:ApplicationDomain) : void {
+		throw new AbstractMethodError();
+	}
 }
 
 class Flex3ModuleInfoBase extends ModuleInfoBase {
@@ -108,6 +129,7 @@ class Flex3ModuleInfoBase extends ModuleInfoBase {
 			securityDomain:SecurityDomain = null, bytes:ByteArray = null) : void {
 		var domain:ApplicationDomain = getDomain(applicationDomain);
 		getModule().load(domain, securityDomain, bytes);
+		setDomain(domain);
 	}
 	
 }
@@ -118,6 +140,7 @@ class Flex4ModuleInfoBase extends ModuleInfoBase {
 			securityDomain:SecurityDomain = null, bytes:ByteArray = null, moduleFactory:IFlexModuleFactory = null) : void {
 		var domain:ApplicationDomain = getDomain(applicationDomain);
 		getModule().load(domain, securityDomain, bytes, moduleFactory);
+		setDomain(domain);
 	}
 	
 }
@@ -125,37 +148,52 @@ class Flex4ModuleInfoBase extends ModuleInfoBase {
 class ModuleInfoProxy extends Flex3ModuleInfoBase implements IModuleInfo {
 	
 	
-	private static const domainMap:Dictionary = new Dictionary();
+	private static const log:Logger = LogContext.getLogger(FlexModuleSupport);
+	
 	
 	private var module:IModuleInfo;
+	private var domain:DomainInfo;
+	private var newDomain:Boolean;
 	private var factoryProxy:IFlexModuleFactory;
-	private var domain:ApplicationDomain;
 	
 	
-	function ModuleInfoProxy (module:IModuleInfo) {
+	function ModuleInfoProxy (module:IModuleInfo, domain:DomainInfo) {
 		this.module = module;
-		module.addEventListener(ModuleEvent.UNLOAD, moduleUnloaded);
+		this.domain = domain;
 	}
 	
 	private function moduleUnloaded (event:Event) : void {
+		var module:IModuleInfo = event.target as IModuleInfo;
 		module.removeEventListener(ModuleEvent.UNLOAD, moduleUnloaded);
-		domain = null;
-		delete domainMap[url];
-		factoryProxy = null;
+		log.info("Unload Module with URL " + module.url);
+		domain.current = null;
 	}
-
+	
 	protected override function getDomain (applicationDomain:ApplicationDomain) : ApplicationDomain {
 		if (loaded) {
-			domain = domainMap[url] as ApplicationDomain;
-			if (domain == null) return applicationDomain;
-		}
-		else {
-			domain = (applicationDomain != null) ? applicationDomain
+			if (domain.current != null) {
+				log.info("Managed Module with URL " + module.url + " already loaded");
+				return domain.current;
+			}
+			else {
+				log.info("Unmanaged Module with URL " + module.url + " already loaded");
+				return applicationDomain;
+			}
+		} else {
+			log.info("Loading Managed Module with URL " + module.url);
+			newDomain = true;
+			return (applicationDomain != null) ? applicationDomain
 					: (FlexModuleSupport.defaultLoadingPolicy == ModuleLoadingPolicy.ROOT_DOMAIN) ?
 					ClassInfo.currentDomain : new ApplicationDomain(ClassInfo.currentDomain);
-			domainMap[url] = domain;
 		}
-		return domain;
+	}
+	
+	protected override function setDomain (domain:ApplicationDomain) : void {
+		if (newDomain) {
+			newDomain = false;
+			this.domain.current = domain;		
+			module.addEventListener(ModuleEvent.UNLOAD, moduleUnloaded);
+		}
 	}
 	
 	protected override function getModule () : Object {
@@ -238,9 +276,9 @@ class FlexModuleFactoryProxy implements IFlexModuleFactory {
 
 	private var factory:Object; // typed as Object to hide differences between 3.3, 3.4, 4.0 SDKs
 	private var module:IModuleInfo;
-	private var domain:ApplicationDomain;
+	private var domain:DomainInfo;
 	
-	function FlexModuleFactoryProxy (module:IModuleInfo, domain:ApplicationDomain) {
+	function FlexModuleFactoryProxy (module:IModuleInfo, domain:DomainInfo) {
 		this.module = module;
 		this.domain = domain;
 		this.factory = module.factory;
@@ -291,12 +329,14 @@ class FlexModuleFactoryProxy implements IFlexModuleFactory {
 }
 
 class ContextBuilderEventListener {
+	
+	private static const log:Logger = LogContext.getLogger(FlexModuleSupport);
 
 	private var view:DisplayObject;
 	private var module:IModuleInfo;
-	private var domain:ApplicationDomain;
+	private var domain:DomainInfo;
 
-	function ContextBuilderEventListener (view:DisplayObject, module:IModuleInfo, domain:ApplicationDomain) {
+	function ContextBuilderEventListener (view:DisplayObject, module:IModuleInfo, domain:DomainInfo) {
 		this.view = view;
 		this.module = module;
 		this.domain = domain;
@@ -311,11 +351,14 @@ class ContextBuilderEventListener {
 	
 	private function buildContext (event:ContextBuilderEvent) : void {
 		if (event.domain == null) {
-			if (domain == null) {
-				throw new IllegalStateError("Unable to determine ApplicationDomain for Module with url " + module.url 
-						+ ". Loading has been triggered before Parsley's Flex Module support has been initialized"); 
+			if (domain.current == null) {
+				var msg:String = "Unable to determine ApplicationDomain for Module with url " + module.url 
+						+ ". Loading has been triggered before Parsley's Flex Module support has been initialized";
+				log.error(msg);
+				throw new IllegalStateError(msg); 
 			}
-			event.domain = domain;
+			log.info("Passing ApplicationDomain for module " + module.url + " to ContextBuilder Event");
+			event.domain = domain.current;
 		}
 	}
 	
