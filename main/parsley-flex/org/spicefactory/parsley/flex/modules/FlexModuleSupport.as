@@ -169,29 +169,32 @@ class ModuleInfoProxy extends Flex3ModuleInfoBase implements IModuleInfo {
 		domain.current = null;
 	}
 	
+	private function unloadBeforeLoad (event:Event) : void {
+		var module:IModuleInfo = event.target as IModuleInfo;
+		log.info("Unload before loading Module with URL " + module.url);
+		domain.current = null;
+		newDomain = true;
+	}
+	
 	protected override function getDomain (applicationDomain:ApplicationDomain) : ApplicationDomain {
 		if (loaded) {
-			if (domain.current != null) {
-				log.info("Managed Module with URL " + module.url + " already loaded");
-				return domain.current;
-			}
-			else {
-				log.info("Unmanaged Module with URL " + module.url + " already loaded");
-				return applicationDomain;
-			}
+			log.info("Module with URL " + module.url + " already loaded");
+			module.addEventListener(ModuleEvent.UNLOAD, unloadBeforeLoad);
+			return applicationDomain;
 		} else {
-			log.info("Loading Managed Module with URL " + module.url);
+			log.info("Loading Module with URL " + module.url);
 			newDomain = true;
 			return (applicationDomain != null) ? applicationDomain
 					: (FlexModuleSupport.defaultLoadingPolicy == ModuleLoadingPolicy.ROOT_DOMAIN) ?
-					ClassInfo.currentDomain : new ApplicationDomain(ClassInfo.currentDomain);
+					ClassInfo.currentDomain : new ApplicationDomain(ApplicationDomain.currentDomain);
 		}
 	}
 	
 	protected override function setDomain (domain:ApplicationDomain) : void {
+		module.removeEventListener(ModuleEvent.UNLOAD, unloadBeforeLoad);	
 		if (newDomain) {
 			newDomain = false;
-			this.domain.current = domain;		
+			this.domain.current = domain;	
 			module.addEventListener(ModuleEvent.UNLOAD, moduleUnloaded);
 		}
 	}
