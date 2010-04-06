@@ -148,6 +148,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	 * @private
 	 */
 	public override function initialized (document:Object, id:String) : void {
+		FlexModuleSupport.initialize();
 		super.initialized(document, id);
 		if (_context == null) {
 			autowireViewEventType = GlobalFactoryRegistry.instance.viewManager.autowireFilter.eventType;
@@ -232,7 +233,6 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		synchronizedChildEvents = new Array();
 	}
 	
-	
 	/**
 	 * @private
 	 */
@@ -259,7 +259,6 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	private function createContext () : void {
 		try {
 			if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
-			FlexModuleSupport.initialize();
 			AsyncTokenCommandSupport.initialize();
 			
 			var factory:ContextBuilderFactory = GlobalFactoryRegistry.instance.contextBuilder;
