@@ -243,6 +243,9 @@ public class DefaultViewManager implements ViewManager {
 
 	protected function handleConfigurationEvent (event:Event) : void {
 		event.stopImmediatePropagation();
+		if (event is ViewConfigurationEvent) {
+			ViewConfigurationEvent(event).markAsProcessed();
+		}
 		var configTarget:Object = (event is ViewConfigurationEvent) 
 				? ViewConfigurationEvent(event).configTarget : event.target;
 		var configId:String = (event is ViewConfigurationEvent) 
@@ -250,9 +253,6 @@ public class DefaultViewManager implements ViewManager {
 				: (configTarget is DisplayObject) ? DisplayObject(configTarget).name : null;
 		if (configuredViews[configTarget] != undefined) return;
 		configureView(configTarget, getDefinition(configTarget, configId));
-		if (event is ViewConfigurationEvent) {
-			ViewConfigurationEvent(event).markAsProcessed();
-		}
 	}	
 	
 	protected function configureView (target:Object, definition:ObjectDefinition) : void {
