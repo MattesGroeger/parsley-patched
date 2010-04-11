@@ -18,5 +18,11 @@
 		<dec:AsyncInitDecorator completeEvent="customComplete" errorEvent="customError"/>
 	</flextag:MxmlRootObjectTag> 
 	
+	<flextag:MxmlRootObjectTag id="asyncInitModel3" type="{AsyncInitModel}">
+		<dec:AsyncInitDecorator/>
+	</flextag:MxmlRootObjectTag> 
+	
+	<flextag:MxmlRootObjectTag id="syncModel" type="{SyncModel}"/>
+	
 	
 </mx:Object> 

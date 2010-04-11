@@ -25,6 +25,10 @@ public class AsyncInitXmlTagTest extends AsyncInitTestBase {
 		<object id="asyncInitModel2" type="org.spicefactory.parsley.core.decorator.asyncinit.model.AsyncInitModel" order="2">
 			<async-init complete-event="customComplete" error-event="customError"/>
 		</object> 
+		<object id="asyncInitModel3" type="org.spicefactory.parsley.core.decorator.asyncinit.model.AsyncInitModel">
+			<async-init/>
+		</object>
+		<object id="syncModel" type="org.spicefactory.parsley.core.decorator.asyncinit.model.SyncModel"/>
 	</objects>;
 
 	protected override function get defaultContext () : Context {

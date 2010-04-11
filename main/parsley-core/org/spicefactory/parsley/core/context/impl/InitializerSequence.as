@@ -70,7 +70,11 @@ public class InitializerSequence {
 	 */
 	public function start () : void {
 		var sortFunc:Function = function (def1:RootObjectDefinition, def2:RootObjectDefinition) : int {
-			return (def1.order > def2.order) ? 1 : (def1.order < def2.order) ? -1 : 0;
+			return (def1.order > def2.order) ? 1 
+			: (def1.order < def2.order) ? -1
+			: (def1.asyncInitConfig && !def2.asyncInitConfig) ? -1
+			: (def2.asyncInitConfig && !def1.asyncInitConfig) ? 1 
+			: 0;
 		};
 		queuedInits.sort(sortFunc);
 		createInstances();
