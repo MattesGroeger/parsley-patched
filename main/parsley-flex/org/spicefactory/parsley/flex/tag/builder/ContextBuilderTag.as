@@ -157,9 +157,11 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	}
 	
 	private function addViewRootListeners (view:DisplayObject) : void {
+		trace("add view root listeners");
 		view.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, detectPrematureChildCreation);
 		view.addEventListener(ViewConfigurationEvent.CONFIGURE_VIEW, cacheViewConfigEvent);
 		view.addEventListener(autowireViewEventType, cacheAutowirePrefilterEvent);
+		view.addEventListener(autowireViewEventType, cacheAutowirePrefilterEvent, true);
 		view.addEventListener(ViewAutowireEvent.AUTOWIRE, cacheAutowireViewEvent);
 		view.addEventListener(FastInjectEvent.FAST_INJECT, cacheFastInjectEvent);
 		view.addEventListener(ContextBuilderSyncEvent.SYNC_BUILDER, syncChildContext);
@@ -169,6 +171,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		view.removeEventListener(ContextBuilderEvent.BUILD_CONTEXT, detectPrematureChildCreation);
 		view.removeEventListener(ViewConfigurationEvent.CONFIGURE_VIEW, cacheViewConfigEvent);
 		view.removeEventListener(autowireViewEventType, cacheAutowirePrefilterEvent);
+		view.removeEventListener(autowireViewEventType, cacheAutowirePrefilterEvent, true);
 		view.removeEventListener(ViewAutowireEvent.AUTOWIRE, cacheAutowireViewEvent);
 		view.removeEventListener(FastInjectEvent.FAST_INJECT, cacheFastInjectEvent);
 		view.removeEventListener(ContextBuilderSyncEvent.SYNC_BUILDER, syncChildContext);
@@ -202,10 +205,12 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	}
 	
 	private function cacheAutowirePrefilterEvent (event:Event) : void {
+		event.stopImmediatePropagation();
 		cachedAutowirePrefilterEvents.push(event);
 	}
 	
 	private function cacheAutowireViewEvent (event:Event) : void {
+		event.stopImmediatePropagation();
 		cachedAutowireViewEvents.push(event);
 	}
 	
