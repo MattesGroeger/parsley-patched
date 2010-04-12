@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.modules {
+import mx.modules.ModuleManager;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 
@@ -56,6 +57,7 @@ public class FlexModuleSupport {
 		if (initialized) return;
 		log.info("Initialize Flex Module Support");
 		initialized = true;
+		ModuleManager.getModule("DoesNotExist.swf"); // trigger the creation of the ModuleManager singleton
 		var originalManager:Object = ModuleManagerGlobals.managerSingleton;
 		ModuleManagerGlobals.managerSingleton = new ModuleManagerDecorator(originalManager);
 	}
