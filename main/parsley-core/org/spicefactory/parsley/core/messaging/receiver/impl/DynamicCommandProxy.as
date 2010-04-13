@@ -112,7 +112,7 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 		var command:Command;
 		try {
 			var invoker:DynamicCommandTarget
-					= new DynamicCommandTarget(Provider.forInstance(object.instance), execute, 
+					= new DynamicCommandTarget(Provider.forInstance(object.instance, definition.type.applicationDomain), execute, 
 					selector, messageInfo, messageProperties, order);
 					
 			var returnValue:* = invoker.invoke(processor.message);
