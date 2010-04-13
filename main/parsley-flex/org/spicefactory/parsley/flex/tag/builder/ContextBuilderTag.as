@@ -19,6 +19,9 @@ import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.logging.flex.FlexLogFactory;
+import org.spicefactory.lib.util.DelayedDelegateChain;
+import org.spicefactory.lib.util.Delegate;
+import org.spicefactory.lib.util.DelegateChain;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
@@ -41,6 +44,7 @@ import flash.display.DisplayObject;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.system.ApplicationDomain;
+import flash.utils.Dictionary;
 
 /**
  * Dispatched when the Context built by this tag was fully initialized.
@@ -79,6 +83,9 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 
 
 	private static const log:Logger = LogContext.getLogger(ContextBuilderTag);
+	
+	private static var prefilteredEvents:Dictionary = new Dictionary();
+	private static var prefilterCachePurger:DelegateChain;
 
 
 	ResourceBindingDecorator.adapterClass = FlexResourceBindingAdapter;
@@ -128,7 +135,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	private var cachedViewConfigEvents:Array = new Array();
 	private var cachedFastInjectEvents:Array = new Array();
 	private var cachedAutowireViewEvents:Array = new Array();
-	private var cachedAutowirePrefilterEvents:Array = new Array();
+	private var cachedAutowirePrefilterTargets:Array = new Array();
 	private var synchronizedChildEvents:Array = new Array();
 	private var autowireViewEventType:String;
 	
@@ -149,6 +156,9 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	 */
 	public override function initialized (document:Object, id:String) : void {
 		FlexModuleSupport.initialize();
+		if (document is DisplayObject) {
+			cachedAutowirePrefilterTargets.push(document);
+		}
 		super.initialized(document, id);
 		if (_context == null) {
 			autowireViewEventType = GlobalFactoryRegistry.instance.viewManager.autowireFilter.eventType;
@@ -157,7 +167,6 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	}
 	
 	private function addViewRootListeners (view:DisplayObject) : void {
-		trace("add view root listeners");
 		view.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, detectPrematureChildCreation);
 		view.addEventListener(ViewConfigurationEvent.CONFIGURE_VIEW, cacheViewConfigEvent);
 		view.addEventListener(autowireViewEventType, cacheAutowirePrefilterEvent);
@@ -205,8 +214,18 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	}
 	
 	private function cacheAutowirePrefilterEvent (event:Event) : void {
-		event.stopImmediatePropagation();
-		cachedAutowirePrefilterEvents.push(event);
+		if (prefilteredEvents[event]) return;
+		prefilteredEvents[event] = true;
+		if (prefilterCachePurger == null) {
+			prefilterCachePurger = new DelayedDelegateChain(1);
+			prefilterCachePurger.addDelegate(new Delegate(purgePrefilterCache));
+		}
+		cachedAutowirePrefilterTargets.push(event.target);
+	}
+	
+	private function purgePrefilterCache () : void {
+		prefilterCachePurger = null;
+		prefilteredEvents = new Dictionary();
 	}
 	
 	private function cacheAutowireViewEvent (event:Event) : void {
@@ -224,8 +243,8 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		for each (var autowireEvent:Event in cachedAutowireViewEvents) {
 			autowireEvent.target.dispatchEvent(autowireEvent.clone());
 		}
-		for each (var prefilterEvent:Event in cachedAutowirePrefilterEvents) {
-			var view:DisplayObject = DisplayObject(prefilterEvent.target);
+		for each (var prefilterTarget:Object in cachedAutowirePrefilterTargets) {
+			var view:DisplayObject = DisplayObject(prefilterTarget);
 			var autowireFilter:ViewAutowireFilter = GlobalFactoryRegistry.instance.viewManager.autowireFilter;
 			if (autowireFilter.prefilter(view)) {
 				view.dispatchEvent(new ViewAutowireEvent());
