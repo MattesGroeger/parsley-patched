@@ -238,7 +238,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 			viewEvent.target.dispatchEvent(viewEvent.clone());
 		}
 		for each (var fastInject:Event in cachedFastInjectEvents) {
-			viewEvent.target.dispatchEvent(fastInject.clone());
+			fastInject.target.dispatchEvent(fastInject.clone());
 		}
 		for each (var autowireEvent:Event in cachedAutowireViewEvents) {
 			autowireEvent.target.dispatchEvent(autowireEvent.clone());
