@@ -93,12 +93,12 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator {
 			throw new ObjectDefinitionBuilderError("Class " + definition.type.name 
 					+ " does not contain a property with name " + _property);
 		}
-		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, postInit);
+		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_INIT, preInit);
 		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy);
 		return definition;
 	}
 
-	private function postInit (instance:Object, context:Context) : void {
+	private function preInit (instance:Object, context:Context) : void {
 		_property.setValue(instance, adapter.getResource(bundle, key));
 		managedObjects[instance] = true;
 	}
