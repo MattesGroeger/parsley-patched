@@ -61,7 +61,7 @@ public class AbstractSynchronizedProviderDecorator implements ObjectDefinitionDe
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		validate(definition, registry);
 		domain = registry.domain;
-		targetScope = registry.scopeManager.getScope(scope);
+		targetScope = registry.context.scopeManager.getScope(scope);
 		definition.objectLifecycle.synchronizeProvider(handleProvider);
 		return definition;
 	}

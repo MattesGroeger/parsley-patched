@@ -161,7 +161,7 @@ public class DynamicCommandTag implements RootConfigurationTag {
 		target = new DynamicCommandProxy(messageInfo, selector, order, context, targetDef, stateful,
 				invoker.returnType, execute, result, error, messageProperties);
 				
-		registry.scopeManager.getScope(scope).messageReceivers.addCommand(target);
+		registry.context.scopeManager.getScope(scope).messageReceivers.addCommand(target);
 		
 		registry.context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
