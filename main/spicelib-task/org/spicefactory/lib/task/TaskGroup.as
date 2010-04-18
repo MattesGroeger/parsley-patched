@@ -15,6 +15,7 @@
  */
  
 package org.spicefactory.lib.task {
+import flash.errors.IllegalOperationError;
 import flash.events.ErrorEvent;
 
 import org.spicefactory.lib.errors.IllegalStateError;
@@ -62,6 +63,9 @@ public class TaskGroup extends Task {
 	 */
 	public function TaskGroup () {
 		super();
+		if (Object(this).constructor == TaskGroup) {
+			throw new IllegalOperationError("TaskGroup is abstract");
+		}
 		if (logger == null) {
 			logger = LogContext.getLogger("org.spicefactory.lib.task.TaskGroup");
 		}
