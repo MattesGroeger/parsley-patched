@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry.definition.impl {
+import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
@@ -62,7 +63,8 @@ public class SingletonLifecycleListenerRegistry extends DefaultLifecycleListener
 			var id:String = RootObjectDefinition(definition).id;
 			var providerDelegate:ObjectProvider = registry.createObjectProvider(definition.type.getClass(), id);
 			provider = wrapProvider(providerDelegate);
-			addListener(ObjectLifecycle.POST_DESTROY, destroyProvider);
+			addListener(ObjectLifecycle.POST_INIT, postInit);
+			addListener(ObjectLifecycle.POST_DESTROY, postDestroy);
 			registry.addEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen, false, 1);
 		}
 		addProviderHandler(handler);
@@ -71,10 +73,24 @@ public class SingletonLifecycleListenerRegistry extends DefaultLifecycleListener
 	
 	private function registryFrozen (event:Event) : void {
 		registry.removeEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
+		registry.context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		invokeProviderHandlers(provider);
 	}
+	
+	private function contextDestroyed (event:Event) : void {
+		registry.context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		destroyProvider();
+	}
+	
+	private function postInit (instance:Object, context:Context) : void {
+		registry.context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
+	}
 
-	private function destroyProvider (instance:Object, context:Context) : void {
+	private function postDestroy (instance:Object, context:Context) : void {
+		destroyProvider();
+	}
+	
+	private function destroyProvider () : void {
 		invokeDestroyHandlers(provider);
 		provider = null;
 	}
