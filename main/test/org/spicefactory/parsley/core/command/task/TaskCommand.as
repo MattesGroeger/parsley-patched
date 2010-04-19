@@ -19,7 +19,6 @@ public class TaskCommand {
 	}
 	
 	public function result (result:String) : void {
-		trace("HOOOOOO");
 		resultString = result;
 		resultCounter++;
 	}
