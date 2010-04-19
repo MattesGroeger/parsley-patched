@@ -36,7 +36,6 @@ public class MessageProxyTest extends TestCase {
 		}
 		catch (e:Error) {
 			/* expected error */
-			MessageHandlerReceiver.instanceCount = 0;
 			var errorHandler:ErrorHandler = new ErrorHandler();
 			var context:Context = RuntimeContextBuilder.build([errorHandler], null, parent);
 			context.scopeManager.dispatchMessage(new Object());
