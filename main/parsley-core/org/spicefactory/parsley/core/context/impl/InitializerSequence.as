@@ -90,7 +90,7 @@ public class InitializerSequence {
 			activeDefinition = null;
 		}
 		for (var instance:Object in parallelInits) {
-			var def:ObjectDefinition = parallelInits[instance];
+			var def:RootObjectDefinition = parallelInits[instance];
 			removeListeners(instance as IEventDispatcher, def, parallelInstanceComplete, parallelInstanceError);
 		}
 		parallelInits = new Dictionary();
@@ -131,7 +131,7 @@ public class InitializerSequence {
 	 * @param def the definition of the specified instance
 	 * @param instance the instance to watch
 	 */
-	public function addInstance (def:ObjectDefinition, instance:Object) : void {
+	public function addInstance (def:RootObjectDefinition, instance:Object) : void {
 		var asyncObj:IEventDispatcher = IEventDispatcher(instance);
 		if (def == activeDefinition) {
 			asyncObj.addEventListener(def.asyncInitConfig.completeEvent, activeInstanceComplete);
@@ -173,19 +173,19 @@ public class InitializerSequence {
 	}
 	
 	private function parallelInstanceComplete (event:Event) : void {
-		var def:ObjectDefinition = removeParallelInit(event.target, false);
+		var def:RootObjectDefinition = removeParallelInit(event.target, false);
 		removeListeners(IEventDispatcher(event.target), def, parallelInstanceComplete, parallelInstanceError);
 		if (complete) context.finishInitialization();
 	}
 	
 	private function parallelInstanceError (event:ErrorEvent) : void {
-		var def:ObjectDefinition = removeParallelInit(event.target, true);
+		var def:RootObjectDefinition = removeParallelInit(event.target, true);
 		removeListeners(IEventDispatcher(event.target), def, parallelInstanceComplete, parallelInstanceError);
 		context.destroyWithError("Asynchronous initialization of " + def + " failed", event);
 	}
 	
-	private function removeParallelInit (instance:Object, error:Boolean) : ObjectDefinition {
-		var def:ObjectDefinition = parallelInits[instance];
+	private function removeParallelInit (instance:Object, error:Boolean) : RootObjectDefinition {
+		var def:RootObjectDefinition = parallelInits[instance];
 		if (def != null) {
 			delete parallelInits[instance];
 			parallelInitCount--;
@@ -198,7 +198,7 @@ public class InitializerSequence {
 		return def;
 	}
 
-	private function removeListeners (asyncObj:IEventDispatcher, def:ObjectDefinition, complete:Function, error:Function) : void {
+	private function removeListeners (asyncObj:IEventDispatcher, def:RootObjectDefinition, complete:Function, error:Function) : void {
 		if (def == null) return;
 		asyncObj.removeEventListener(def.asyncInitConfig.completeEvent, complete);
 		asyncObj.removeEventListener(def.asyncInitConfig.errorEvent, error);			

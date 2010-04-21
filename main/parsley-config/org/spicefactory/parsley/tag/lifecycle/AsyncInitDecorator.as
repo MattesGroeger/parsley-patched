@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.lifecycle {
+import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
@@ -33,7 +35,10 @@ public class AsyncInitDecorator extends AsyncInitConfig implements ObjectDefinit
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		definition.asyncInitConfig = this;
+		if (!(definition is RootObjectDefinition)) {
+			throw new IllegalArgumentError("AsyncInit can only be applied to root object definitions");
+		}
+		RootObjectDefinition(definition).asyncInitConfig = this;
 		return definition;
 	}
 	

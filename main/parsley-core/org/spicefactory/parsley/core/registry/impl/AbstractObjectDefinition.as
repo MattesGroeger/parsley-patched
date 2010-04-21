@@ -29,7 +29,6 @@ import org.spicefactory.parsley.core.registry.definition.impl.DefaultConstructor
 import org.spicefactory.parsley.core.registry.definition.impl.DefaultLifecycleListenerRegistry;
 import org.spicefactory.parsley.core.registry.definition.impl.DefaultMethodRegistry;
 import org.spicefactory.parsley.core.registry.definition.impl.DefaultPropertyRegistry;
-import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
 
 /** 
  * Abstract base class for all ObjectDefinition implementations.
@@ -46,7 +45,6 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	private var _properties:PropertyRegistry;
 	private var _methods:MethodRegistry;
 	private var _listeners:LifecycleListenerRegistry;
-	private var _asyncInitConfig:AsyncInitConfig;
 	
 	private var _initMethod:String;
 	private var _destroyMethod:String;
@@ -80,7 +78,6 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 		_properties = definition.properties;
 		_methods = definition.injectorMethods;
 		_listeners = definition.objectLifecycle;
-		_asyncInitConfig = definition.asyncInitConfig;
 		
 		_initMethod = definition.initMethod;
 		_destroyMethod = definition.destroyMethod;
@@ -122,20 +119,6 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 		return _listeners;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
-	public function get asyncInitConfig () : AsyncInitConfig {
-		return _asyncInitConfig;
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function set asyncInitConfig (config:AsyncInitConfig) : void {
-		_asyncInitConfig = config;
-	}
-
 	/**
 	 * @inheritDoc
 	 */

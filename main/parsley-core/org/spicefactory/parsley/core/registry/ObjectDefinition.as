@@ -81,15 +81,6 @@ public interface ObjectDefinition {
 
 	function set destroyMethod (name:String) : void;
 
-	
-	/**
-	 * The configuration for asynchronously initializing objects.
-	 */
-    function get asyncInitConfig () : AsyncInitConfig;
-    
-    function set asyncInitConfig (config:AsyncInitConfig) : void;
-	
-
 	/**
 	 * Freezes this object definition. After calling this method any attempt to modify this definition will
 	 * lead to an Error.

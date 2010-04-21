@@ -37,6 +37,7 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 	private var _lazy:Boolean;
 	private var _singleton:Boolean;
 	private var _order:int;
+	private var _asyncInit:AsyncInitConfig;
 	private var wrappedDefinition:ObjectDefinition;
 
 
@@ -48,14 +49,16 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 	 * @param lazy whether the object is lazy initializing
 	 * @param singleton whether the object should be treated as a singleton
 	 * @param order the initialization order for non-lazy singletons
+	 * @param asyncInit the configuration for an asynchronously initializing object
 	 */
 	function ObjectDefinitionWrapper (wrappedDefinition:ObjectDefinition, id:String = null, 
-			lazy:Boolean = false, singleton:Boolean = true, order:int = int.MAX_VALUE):void {
+			lazy:Boolean = false, singleton:Boolean = true, order:int = int.MAX_VALUE, asyncInit:AsyncInitConfig = null) : void {
 		this.wrappedDefinition = wrappedDefinition;
 		_id = (id != null) ? id : IdGenerator.nextObjectId;
 		_lazy = lazy;
 		_singleton = singleton;
 		_order = order;
+		_asyncInit = asyncInit;
 	}
 
 
@@ -140,7 +143,7 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 	 * @inheritDoc
 	 */
 	public function get asyncInitConfig () : AsyncInitConfig {
-		return wrappedDefinition.asyncInitConfig;
+		return _asyncInit;
 	}
 
 	/**
@@ -161,7 +164,7 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 	 * @inheritDoc
 	 */
 	public function set asyncInitConfig (config:AsyncInitConfig) : void {
-		wrappedDefinition.asyncInitConfig = config;
+		_asyncInit = config;
 	}
 	
 	/**

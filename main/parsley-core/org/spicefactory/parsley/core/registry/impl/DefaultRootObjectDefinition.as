@@ -20,6 +20,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
 import org.spicefactory.parsley.core.registry.definition.impl.SingletonLifecycleListenerRegistry;
+import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
 
 /**
  * Default implementation of the RootObjectDefinition interface.
@@ -33,6 +34,7 @@ public class DefaultRootObjectDefinition extends AbstractObjectDefinition implem
 	private var _lazy:Boolean;
 	private var _singleton:Boolean;
 	private var _order:int;
+	private var _asyncInitConfig:AsyncInitConfig;
 
 	private var _singletonListeners:LifecycleListenerRegistry;
 
@@ -85,6 +87,20 @@ public class DefaultRootObjectDefinition extends AbstractObjectDefinition implem
 	 */
 	public function get order () : int {
 		return _order;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get asyncInitConfig () : AsyncInitConfig {
+		return _asyncInitConfig;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function set asyncInitConfig (config:AsyncInitConfig) : void {
+		_asyncInitConfig = config;
 	}
 	
 	/**

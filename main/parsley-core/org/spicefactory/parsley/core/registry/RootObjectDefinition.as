@@ -15,6 +15,7 @@
  */
  
 package org.spicefactory.parsley.core.registry {
+import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
 
 /**
  * Represents the configuration for an object that can be accessed directly by id in a Parsley Context.
@@ -43,6 +44,14 @@ public interface RootObjectDefinition extends ObjectDefinition {
 	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#order
 	 */
 	function get order () : int;
+	
+	/**
+	 * The configuration for asynchronously initializing objects.
+	 */
+    function get asyncInitConfig () : AsyncInitConfig;
+    
+    function set asyncInitConfig (config:AsyncInitConfig) : void;
+	
 	
 }
 }
