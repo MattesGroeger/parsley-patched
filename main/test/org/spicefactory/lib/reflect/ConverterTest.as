@@ -18,7 +18,7 @@ public class ConverterTest extends ReflectionTestBase {
 	public override function setUp () : void {
 		super.setUp();
 		new ClassInfo("String", String, ApplicationDomain.currentDomain); // circumwent Flash Player describeType bug
-		ClassInfo.purgeCache();
+		ClassInfo.cache.purgeAll();
 	}
 	
 

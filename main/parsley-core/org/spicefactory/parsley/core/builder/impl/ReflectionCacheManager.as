@@ -82,7 +82,7 @@ public class ReflectionCacheManager {
 		else {
 			log.info("Purging reflection cache for ApplicationDomain that is no longer used by any Context");
 			delete domainCounter[domain];
-			ClassInfo.purgeCache(domain);
+			ClassInfo.cache.purgeDomain(domain);
 			var chain:DelegateChain = DelegateChain(domainPurgeHandlers[domain]);
 			if (chain) chain.invoke();
 			delete domainPurgeHandlers[domain];
