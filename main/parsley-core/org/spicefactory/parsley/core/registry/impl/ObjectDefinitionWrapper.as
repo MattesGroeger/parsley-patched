@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry.impl {
+import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
@@ -163,6 +164,27 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 	/**
 	 * @inheritDoc
 	 */
+	public function addProcessorFactory (factory:ObjectProcessorFactory) : void {
+		wrappedDefinition.addProcessorFactory(factory);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function addProcessorFactoryMethod (method:Function) : void {
+		wrappedDefinition.addProcessorFactoryMethod(method);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get processorFactories () : Array {
+		return wrappedDefinition.processorFactories;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function set asyncInitConfig (config:AsyncInitConfig) : void {
 		_asyncInit = config;
 	}
@@ -195,6 +217,6 @@ public class ObjectDefinitionWrapper implements RootObjectDefinition {
 		wrappedDefinition.destroyMethod = name;
 	}
 	
-	
+
 }
 }

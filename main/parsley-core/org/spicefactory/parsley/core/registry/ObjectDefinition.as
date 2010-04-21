@@ -15,12 +15,11 @@
  */
 
 package org.spicefactory.parsley.core.registry {
-	import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
-import org.spicefactory.parsley.core.registry.definition.MethodRegistry;
-import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
 import org.spicefactory.parsley.core.registry.definition.ConstructorArgRegistry;
+import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
+import org.spicefactory.parsley.core.registry.definition.MethodRegistry;
+import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.definition.PropertyRegistry;
 
 /**
@@ -66,6 +65,35 @@ public interface ObjectDefinition {
 	 * The lifecycle listeners to process for instances created from this definition.
 	 */
 	function get objectLifecycle () : LifecycleListenerRegistry;
+	
+	
+	/**
+	 * Adds the specified processor factory to this definition.
+	 * The factory will be invoked for each new instance created from this definition,
+	 * so that each processor instance created by that factory manages the configuration
+	 * and state of a single instance only.
+	 * 
+	 * @param factory the factory to add to this definition
+	 */
+	function addProcessorFactory (factory:ObjectProcessorFactory) : void;
+	
+	/**
+	 * Adds the specified factory method to this definition.
+	 * The signature of the method must be identical with <code>ObjectProcessorFactory.createInstance</code>.
+	 * Otherwise the behavior is the same as for <code>addProcessorFactory</code>.
+	 * 
+	 * @param method the factory method to add to this definition
+	 */
+	function addProcessorFactoryMethod (method:Function) : void;
+	
+	/**
+	 * Returns all processor factories added to this instance.
+	 * Modifications on the returned Array are not reflected within the definition.
+	 * The Array will contain instances of <code>ObjectProcessorFactory</code>, even for
+	 * those factories which have been added with <code>addProcessorFactoryMethod</code>
+	 * as they will be wrapped in an <code>ObjectProcessorFactory</code>.
+	 */
+	function get processorFactories () : Array;
 
 	/**
 	 * The method to invoke on the configured object after it has been fully initialized.

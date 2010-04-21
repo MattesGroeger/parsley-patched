@@ -19,6 +19,7 @@ import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 import org.spicefactory.parsley.core.registry.definition.ConstructorArgRegistry;
 import org.spicefactory.parsley.core.registry.definition.ContainerObjectInstantiator;
 import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
@@ -41,15 +42,19 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	private var _type:ClassInfo;
 	
 	private var _instantiator:ObjectInstantiator;
-	private var _constructorArgs:ConstructorArgRegistry;
-	private var _properties:PropertyRegistry;
-	private var _methods:MethodRegistry;
-	private var _listeners:LifecycleListenerRegistry;
+    private var _processorFactories:Array = new Array();	
 	
 	private var _initMethod:String;
 	private var _destroyMethod:String;
 
 	private var _frozen:Boolean;
+
+
+	/* deprecated */
+	private var _constructorArgs:ConstructorArgRegistry;
+	private var _properties:PropertyRegistry;
+	private var _methods:MethodRegistry;
+	private var _listeners:LifecycleListenerRegistry;
 
 	
 	/**
@@ -126,6 +131,27 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 		return _instantiator;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function addProcessorFactory (factory:ObjectProcessorFactory) : void {
+		_processorFactories.push(factory);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function addProcessorFactoryMethod (method:Function) : void {
+		_processorFactories.push(new ObjectProcessorFactoryMethod(method));
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get processorFactories () : Array {
+		return _processorFactories.concat();
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -206,5 +232,29 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	
 	
 }
-
 }
+
+import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.registry.ObjectProcessor;
+import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
+
+class ObjectProcessorFactoryMethod implements ObjectProcessorFactory {
+
+    private var _method:Function;
+
+	function ObjectProcessorFactoryMethod (method:Function) {
+		_method = method;
+	}
+
+	public function createInstance (target:Object) : ObjectProcessor {
+		var processor:Object = _method(target);
+		if (!(processor is ObjectProcessor)) {
+			throw new ContextError("Instance created by processor factory method does not implement ObjectProcessor: " 
+					+ processor);
+		}
+		return processor as ObjectProcessor;
+	}
+	
+}
+
+
