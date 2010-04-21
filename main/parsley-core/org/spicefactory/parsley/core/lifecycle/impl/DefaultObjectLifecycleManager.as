@@ -22,6 +22,8 @@ import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectProcessor;
+import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.MethodParameterRegistry;
 import org.spicefactory.parsley.core.registry.model.ManagedArray;
@@ -47,6 +49,8 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	private var dependentInstances:Dictionary = new Dictionary();
 	// maps parent definition -> child instance
 	private var parentChildMap:Dictionary = new Dictionary();
+	// maps instance -> processors
+	private var processorMap:Dictionary = new Dictionary();
 
 	private var domain:ApplicationDomain;
 	private var scopes:Array;
@@ -72,6 +76,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 			return definition.instantiator.instantiate(context);
 		}
 		else {
+			/* deprecated */
 			var args:Array = resolveArray(definition.constructorArgs.getAll(), context, definition);
 			return definition.type.newInstance(args);
 		}
@@ -87,9 +92,16 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 
 	private function doConfigure (instance:Object, definition:ObjectDefinition, context:Context, 
 			parentDefinition:ObjectDefinition = null) : void {
+	 	createProcessors(instance, definition, context);
+
 		processLifecycle(instance, definition, context, ObjectLifecycle.PRE_CONFIGURE);
+		
+		/* deprecated */
 		processProperties(instance, definition, context);
+		/* deprecated */
 	 	processMethods(instance, definition, context);
+	 	
+	 	invokePreInitMethods(instance);
 		processLifecycle(instance, definition, context, ObjectLifecycle.PRE_INIT);
 		if (definition.initMethod != null) {
 			definition.type.getMethod(definition.initMethod).invoke(instance, []);
@@ -154,7 +166,48 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 		if (definition.destroyMethod != null) {
 			definition.type.getMethod(definition.destroyMethod).invoke(instance, []);
 		}
+	 	invokePostDestroyMethods(instance);
 		processLifecycle(instance, definition, context, ObjectLifecycle.POST_DESTROY);
+	}
+	
+	/**
+	 * Invokes the preInit methods on all processor for the specified target instance.
+	 * 
+	 * @param instance the target instance to invoke the processors for
+	 */
+	protected function invokePreInitMethods (instance:Object) : void {
+		var processors:Array = processorMap[instance];
+		for each (var processor:ObjectProcessor in processors) {
+			processor.preInit();
+		}
+	}
+	
+	/**
+	 * Invokes the postDestroy methods on all processor for the specified target instance.
+	 * 
+	 * @param instance the target instance to invoke the processors for
+	 */
+	protected function invokePostDestroyMethods (instance:Object) : void {
+		var processors:Array = processorMap[instance];
+		for each (var processor:ObjectProcessor in processors) {
+			processor.postDestroy();
+		}
+	}
+	
+	/**
+	 * Processes all processor factories of the specified definition and creates new processors for 
+	 * the target instance.
+	 * 
+	 * @param instance the instance to process
+	 * @param definition the definition of the specified instance
+	 * @param context the Context the instance belongs to
+	 */
+	protected function createProcessors (instance:Object, definition:ObjectDefinition, context:Context) : void {
+		var processors:Array = new Array();
+		for each (var factory:ObjectProcessorFactory in definition.processorFactories) {
+			processors.push(factory.createInstance(instance)); // TODO - should be ManagedObject
+		}
+		processorMap[instance] = processors;
 	}
 	
 	/**
