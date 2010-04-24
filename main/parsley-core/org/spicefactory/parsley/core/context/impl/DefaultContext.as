@@ -27,6 +27,7 @@ import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
@@ -246,19 +247,19 @@ public class DefaultContext extends EventDispatcher implements Context {
 		underConstruction[id] = true;
 		
 		try {
-			var instance:Object = _lifecycleManager.createObject(def, this);
+			var object:ManagedObject = _lifecycleManager.createObject(def, this);
 			if (def.singleton) {
-				singletonCache.put(id, instance);
+				singletonCache.put(id, object.instance);
 				if (!initialized && def.asyncInitConfig != null && initSequence != null) {
-					initSequence.addInstance(def, instance);
+					initSequence.addInstance(object);
 				}
 			}
-			_lifecycleManager.configureObject(instance, def, this);
+			_lifecycleManager.configureObject(object);
 		}
 		finally {
 			delete underConstruction[id];
 		}
-		return instance;
+		return object.instance;
 	}
 	
 	private function getDefinition (id:String) : RootObjectDefinition {
@@ -316,7 +317,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 		_registry.removeEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
 		removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		if (_configured) {
-			_lifecycleManager.destroyAll(this);
+			_lifecycleManager.destroyAll();
 		}
 		_configured = false;
 		_initialized = false;

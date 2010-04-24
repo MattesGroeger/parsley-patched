@@ -15,8 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.context.impl {
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 
 import flash.events.Event;
@@ -32,6 +34,8 @@ public class DefaultDynamicObject implements DynamicObject {
 	private var _context:DefaultDynamicContext;
 	private var _definition:ObjectDefinition;
 	private var _instance:Object;
+	
+	private var managedObject:ManagedObject;
 	private var processed:Boolean;
 	
 	
@@ -55,7 +59,7 @@ public class DefaultDynamicObject implements DynamicObject {
 	}
 	
 	private function contextInitialized (event:Event) : void {
-		context.parent.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
+		_context.parent.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		processInstance();
 	}
 	
@@ -63,12 +67,16 @@ public class DefaultDynamicObject implements DynamicObject {
 		if (processed) return;
 		processed = true;
 		if (_instance == null) {
-			_instance = context.lifecycleManager.createObject(definition, context);
+			managedObject = _context.lifecycleManager.createObject(definition, context);
+			_instance = managedObject.instance;
 			_context.addDynamicObject(this);
 		}
-		context.lifecycleManager.configureObject(instance, definition, context);
+		else {
+			managedObject = this;
+		}
+		_context.lifecycleManager.configureObject(managedObject);
 	}
-	
+
 	/**
 	 * @inheritDoc
 	 */
@@ -89,7 +97,7 @@ public class DefaultDynamicObject implements DynamicObject {
 	/**
 	 * The dynamic Context this instance belongs to.
 	 */
-	public function get context () : DefaultDynamicContext {
+	public function get context () : Context {
 		return _context;
 	}
 	
@@ -97,13 +105,12 @@ public class DefaultDynamicObject implements DynamicObject {
 	 * @inheritDoc
 	 */
 	public function remove () : void {
-		if (context.parent.initialized) {
-			context.lifecycleManager.destroyObject(instance, definition, context);
+		if (_context.parent.initialized) {
+			_context.lifecycleManager.destroyObject(managedObject);
+		} else {
+			_context.parent.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		}
-		else {
-			context.parent.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
-		}
-		context.removeDynamicObject(this);
+		_context.removeDynamicObject(this);
 	}
 	
 	

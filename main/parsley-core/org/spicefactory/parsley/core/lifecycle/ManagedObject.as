@@ -14,24 +14,33 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.registry {
-import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+package org.spicefactory.parsley.core.lifecycle {
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 
 /**
- * Responsible for creating object processors for target objects.
+ * Represents a single managed object, the actual instance alongside with its definition
+ * and associated Context.
  * 
  * @author Jens Halm
  */
-public interface ObjectProcessorFactory {
-	
+public interface ManagedObject {
 	
 	/**
-	 * Creates a new object processor for the specified target instance.
-	 * 
-	 * @param target the target object to pass to the processor
-	 * @return a new object processor for the specified target instance
+	 * The definition the object was created from or the definition that
+	 * was applied to an existing instance.
 	 */
-	function createInstance (target:ManagedObject) : ObjectProcessor;
+	function get definition () : ObjectDefinition;
+	
+	/**
+	 * The actual managed instance.
+	 */
+	function get instance () : Object;
+	
+	/**
+	 * The Context that managed this object.
+	 */
+	function get context () : Context;
 	
 	
 }

@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.core.context.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 
@@ -128,11 +129,11 @@ public class InitializerSequence {
 	/**
 	 * Adds a new instance to be watched by this sequence for completion of its asynchronous initialization.
 	 * 
-	 * @param def the definition of the specified instance
-	 * @param instance the instance to watch
+	 * @param object the object to watch
 	 */
-	public function addInstance (def:RootObjectDefinition, instance:Object) : void {
-		var asyncObj:IEventDispatcher = IEventDispatcher(instance);
+	public function addInstance (object:ManagedObject) : void {
+		var asyncObj:IEventDispatcher = IEventDispatcher(object.instance);
+		var def:RootObjectDefinition = RootObjectDefinition(object.definition);
 		if (def == activeDefinition) {
 			asyncObj.addEventListener(def.asyncInitConfig.completeEvent, activeInstanceComplete);
 			asyncObj.addEventListener(def.asyncInitConfig.errorEvent, activeInstanceError);
@@ -149,7 +150,7 @@ public class InitializerSequence {
 			if (index != -1) {
 				log.warn("Unexpected parallel trigger of async initialization of " + def);
 				queuedInits.splice(index, 1);
-				parallelInits[instance] = def;
+				parallelInits[object.instance] = def;
 				parallelInitCount++;
 				asyncObj.addEventListener(def.asyncInitConfig.completeEvent, parallelInstanceComplete);
 				asyncObj.addEventListener(def.asyncInitConfig.errorEvent, parallelInstanceError);

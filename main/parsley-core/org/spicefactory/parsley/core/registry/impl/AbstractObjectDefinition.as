@@ -235,6 +235,7 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 }
 
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.registry.ObjectProcessor;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 
@@ -246,7 +247,7 @@ class ObjectProcessorFactoryMethod implements ObjectProcessorFactory {
 		_method = method;
 	}
 
-	public function createInstance (target:Object) : ObjectProcessor {
+	public function createInstance (target:ManagedObject) : ObjectProcessor {
 		var processor:Object = _method(target);
 		if (!(processor is ObjectProcessor)) {
 			throw new ContextError("Instance created by processor factory method does not implement ObjectProcessor: " 
