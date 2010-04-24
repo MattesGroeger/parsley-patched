@@ -15,10 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.registry.impl {
-import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
+import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ConstructorArgRegistry;
 import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
 import org.spicefactory.parsley.core.registry.definition.MethodRegistry;
@@ -31,7 +31,7 @@ import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
  * 
  * @author Jens Halm
  */
-public class ObjectDefinitionWrapper implements RootObjectDefinition {
+public class ObjectDefinitionWrapper implements SingletonObjectDefinition {
 
 
 	private var _id:String;

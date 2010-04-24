@@ -63,11 +63,13 @@ public class DefaultObjectDefinitionBuilderFactory implements ObjectDefinitionBu
 }
 }
 
+import org.spicefactory.parsley.core.registry.impl.DefaultDynamicObjectDefinition;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.NestedObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.ViewDefinition;
 import org.spicefactory.parsley.core.registry.builder.NestedObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.builder.RootObjectDefinitionBuilder;
@@ -75,7 +77,7 @@ import org.spicefactory.parsley.core.registry.builder.ViewDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.builder.impl.AbstractObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.impl.DefaultNestedObjectDefinition;
-import org.spicefactory.parsley.core.registry.impl.DefaultRootObjectDefinition;
+import org.spicefactory.parsley.core.registry.impl.DefaultSingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.impl.DefaultViewDefinition;
 import org.spicefactory.parsley.core.registry.impl.IdGenerator;
 
@@ -131,7 +133,13 @@ class DefaultRootObjectDefinitionBuilder extends AbstractObjectDefinitionBuilder
 	
 	public function build () : RootObjectDefinition {
 		if (_id == null) _id = IdGenerator.nextObjectId;
-		var def:RootObjectDefinition = new DefaultRootObjectDefinition(type, _id, registry, _lazy, _singleton, _order);
+		var def:RootObjectDefinition;
+		if (_singleton) {
+			def = new DefaultSingletonObjectDefinition(type, _id, registry, _lazy, _order);
+		}
+		else {
+			def = new DefaultDynamicObjectDefinition(type, _id);
+		}
 		def.instantiator = _instantiator;
 		def = processDecorators(registry, def) as RootObjectDefinition;
 		return def;

@@ -16,10 +16,12 @@
 
 package org.spicefactory.parsley.tag.lifecycle {
 import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.impl.ObjectDefinitionWrapper;
 import org.spicefactory.parsley.tag.util.DecoratorUtil;
@@ -47,7 +49,7 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 		
 		// Specified definition is for the factory, must be registered as a root factory, 
 		// even if the original definition is for a nested object
-		var factoryDefinition:RootObjectDefinition = new ObjectDefinitionWrapper(definition);
+		var factoryDefinition:SingletonObjectDefinition = new ObjectDefinitionWrapper(definition);
 		registry.registerDefinition(factoryDefinition);
 		
 		// Must create a new definition for the target type
@@ -56,15 +58,18 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 		var instantiator:ObjectInstantiator 
 				= new FactoryMethodInstantiator(factoryDefinition, method);
 				
-		if (definition is RootObjectDefinition) {
-			var rootDefinition:RootObjectDefinition = RootObjectDefinition(definition);
+		if (definition is SingletonObjectDefinition) {
+			var singletonDefinition:SingletonObjectDefinition = SingletonObjectDefinition(definition);
 			return registry.builders
 					.forRootDefinition(targetType)
-					.id(rootDefinition.id)
-					.lazy(rootDefinition.lazy)
-					.singleton(rootDefinition.singleton)
+					.id(singletonDefinition.id)
+					.lazy(singletonDefinition.lazy)
 					.instantiator(instantiator)
 					.build();
+		}
+		else if (definition is DynamicObjectDefinition) {
+			/* TODO - 2.3.M1 - build dynamic definition */
+			return null;
 		}
 		else {
 			return registry.builders

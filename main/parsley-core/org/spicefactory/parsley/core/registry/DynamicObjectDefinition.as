@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,13 @@
 package org.spicefactory.parsley.core.registry {
 
 /**
- * Represents the configuration for an object that can be accessed directly by id in a Parsley Context.
- * The sub-interfaces <code>SingletonObjectDefinition</code> and <code>DynamicObjectDefinition</code>
- * represent the concrete definition types used in an <code>ObjectDefinitionRegistry</code>.
+ * Represents the configuration for a dynamic object.
+ * Such an object can be created and removed from the Context dynamically.
  * 
  * @author Jens Halm
  */
-public interface RootObjectDefinition extends ObjectDefinition {
+public interface DynamicObjectDefinition extends RootObjectDefinition {
 	
-	/**
-	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#id
-	 */
-	function get id () : String;
 	
 }
 }

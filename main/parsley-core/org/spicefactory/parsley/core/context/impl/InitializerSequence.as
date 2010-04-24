@@ -19,7 +19,7 @@ import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 
 import flash.events.ErrorEvent;
 import flash.events.Event;
@@ -39,7 +39,7 @@ public class InitializerSequence {
 	
 
 	private var queuedInits:Array = new Array();
-	private var activeDefinition:RootObjectDefinition;
+	private var activeDefinition:SingletonObjectDefinition;
 	private var activeInstance:IEventDispatcher;
 	private var parallelInits:Dictionary = new Dictionary();
 	private var parallelInitCount:int = 0;
@@ -70,7 +70,7 @@ public class InitializerSequence {
 	 * Starts processing the definitons that were added to this sequence.
 	 */
 	public function start () : void {
-		var sortFunc:Function = function (def1:RootObjectDefinition, def2:RootObjectDefinition) : int {
+		var sortFunc:Function = function (def1:SingletonObjectDefinition, def2:SingletonObjectDefinition) : int {
 			return (def1.order > def2.order) ? 1 
 			: (def1.order < def2.order) ? -1
 			: (def1.asyncInitConfig && !def2.asyncInitConfig) ? -1
@@ -91,7 +91,7 @@ public class InitializerSequence {
 			activeDefinition = null;
 		}
 		for (var instance:Object in parallelInits) {
-			var def:RootObjectDefinition = parallelInits[instance];
+			var def:SingletonObjectDefinition = parallelInits[instance];
 			removeListeners(instance as IEventDispatcher, def, parallelInstanceComplete, parallelInstanceError);
 		}
 		parallelInits = new Dictionary();
@@ -114,7 +114,7 @@ public class InitializerSequence {
 			if (queuedInits.length == 0) {
 				return;
 			}
-			activeDefinition = queuedInits.shift() as RootObjectDefinition;
+			activeDefinition = queuedInits.shift() as SingletonObjectDefinition;
 			async = (activeDefinition.asyncInitConfig != null);
 			try {
 				context.getInstance(activeDefinition);
@@ -133,7 +133,7 @@ public class InitializerSequence {
 	 */
 	public function addInstance (object:ManagedObject) : void {
 		var asyncObj:IEventDispatcher = IEventDispatcher(object.instance);
-		var def:RootObjectDefinition = RootObjectDefinition(object.definition);
+		var def:SingletonObjectDefinition = SingletonObjectDefinition(object.definition);
 		if (def == activeDefinition) {
 			asyncObj.addEventListener(def.asyncInitConfig.completeEvent, activeInstanceComplete);
 			asyncObj.addEventListener(def.asyncInitConfig.errorEvent, activeInstanceError);
@@ -174,19 +174,19 @@ public class InitializerSequence {
 	}
 	
 	private function parallelInstanceComplete (event:Event) : void {
-		var def:RootObjectDefinition = removeParallelInit(event.target, false);
+		var def:SingletonObjectDefinition = removeParallelInit(event.target, false);
 		removeListeners(IEventDispatcher(event.target), def, parallelInstanceComplete, parallelInstanceError);
 		if (complete) context.finishInitialization();
 	}
 	
 	private function parallelInstanceError (event:ErrorEvent) : void {
-		var def:RootObjectDefinition = removeParallelInit(event.target, true);
+		var def:SingletonObjectDefinition = removeParallelInit(event.target, true);
 		removeListeners(IEventDispatcher(event.target), def, parallelInstanceComplete, parallelInstanceError);
 		context.destroyWithError("Asynchronous initialization of " + def + " failed", event);
 	}
 	
-	private function removeParallelInit (instance:Object, error:Boolean) : RootObjectDefinition {
-		var def:RootObjectDefinition = parallelInits[instance];
+	private function removeParallelInit (instance:Object, error:Boolean) : SingletonObjectDefinition {
+		var def:SingletonObjectDefinition = parallelInits[instance];
 		if (def != null) {
 			delete parallelInits[instance];
 			parallelInitCount--;
@@ -199,7 +199,7 @@ public class InitializerSequence {
 		return def;
 	}
 
-	private function removeListeners (asyncObj:IEventDispatcher, def:RootObjectDefinition, complete:Function, error:Function) : void {
+	private function removeListeners (asyncObj:IEventDispatcher, def:SingletonObjectDefinition, complete:Function, error:Function) : void {
 		if (def == null) return;
 		asyncObj.removeEventListener(def.asyncInitConfig.completeEvent, complete);
 		asyncObj.removeEventListener(def.asyncInitConfig.errorEvent, error);			

@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.context.impl {
+import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
@@ -118,7 +119,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 		// instantiate non-lazy singletons, with or without AsyncInit config
 		for each (var id:String in _registry.getDefinitionIds()) {
 			var definition:RootObjectDefinition = _registry.getDefinition(id);
-			if (definition.singleton && !definition.lazy) {
+			if (definition is SingletonObjectDefinition && !SingletonObjectDefinition(definition).lazy) {
 				initSequence.addDefinition(definition);
 			}
 		}
@@ -235,7 +236,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	internal function getInstance (def:RootObjectDefinition) : Object {
 		var id:String = def.id;
 		
-		if (def.singleton && singletonCache.containsKey(id)) {
+		if (def is SingletonObjectDefinition && singletonCache.containsKey(id)) {
 			return singletonCache.get(id);
 		}		
 		
@@ -248,9 +249,10 @@ public class DefaultContext extends EventDispatcher implements Context {
 		
 		try {
 			var object:ManagedObject = _lifecycleManager.createObject(def, this);
-			if (def.singleton) {
+			if (def is SingletonObjectDefinition) {
+				var singleton:SingletonObjectDefinition = SingletonObjectDefinition(def);
 				singletonCache.put(id, object.instance);
-				if (!initialized && def.asyncInitConfig != null && initSequence != null) {
+				if (!initialized && singleton.asyncInitConfig != null && initSequence != null) {
 					initSequence.addInstance(object);
 				}
 			}

@@ -80,6 +80,7 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 */
 	function containsDefinition (id:String) : Boolean;
 
+
 	/**
 	 * Returns the definition with the specified id. Throws an Error if no such definition exists.
 	 * 
@@ -88,7 +89,6 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 */
 	function getDefinition (id:String) : RootObjectDefinition;
 	
-
 	/**
 	 * Returns the definition for the specified type.
 	 * This method will throw an Error if it finds more than one match.
@@ -97,7 +97,7 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 * @return the definition for the specified type
 	 */
 	function getDefinitionByType (type:Class) : RootObjectDefinition;
-
+	
 	/**
 	 * Returns all definitions that match the specified type. This includes subclasses or objects implementing
 	 * the interface in case the type parmeter is an interface. When no match is found an empty Array will be returned.
@@ -121,6 +121,7 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
   	 * @param definition the definition to remove from this registry
 	 */
 	function unregisterDefinition (definition:RootObjectDefinition) : void;
+	
 	
 	/**
 	 * A factory for creating builders for ObjectDefinitions.

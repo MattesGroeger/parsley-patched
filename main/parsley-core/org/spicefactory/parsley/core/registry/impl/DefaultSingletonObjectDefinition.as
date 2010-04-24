@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,20 @@
 package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
 import org.spicefactory.parsley.core.registry.definition.impl.SingletonLifecycleListenerRegistry;
 import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
 
 /**
- * Default implementation of the RootObjectDefinition interface.
+ * Default implementation of the SingletonObjectDefinition interface.
  * 
  * @author Jens Halm
  */
-public class DefaultRootObjectDefinition extends AbstractObjectDefinition implements RootObjectDefinition {
+public class DefaultSingletonObjectDefinition extends AbstractRootObjectDefinition implements SingletonObjectDefinition {
 
 
-	private var _id:String;
 	private var _lazy:Boolean;
-	private var _singleton:Boolean;
 	private var _order:int;
 	private var _asyncInitConfig:AsyncInitConfig;
 
@@ -45,17 +43,15 @@ public class DefaultRootObjectDefinition extends AbstractObjectDefinition implem
 	 * @param id the id the object should be registered with
 	 * @param registry the registry this definition belongs to
 	 * @param lazy whether the object is lazy initializing
-	 * @param singleton whether the object should be treated as a singleton
 	 * @param order the initialization order for non-lazy singletons
 	 */
-	function DefaultRootObjectDefinition (type:ClassInfo, id:String, registry:ObjectDefinitionRegistry,
-			lazy:Boolean = false, singleton:Boolean = true, order:int = int.MAX_VALUE):void {
-		super(type);
-		_id = id;
+	function DefaultSingletonObjectDefinition (type:ClassInfo, id:String, registry:ObjectDefinitionRegistry,
+			lazy:Boolean = false, order:int = int.MAX_VALUE) {
+		super(type, id);
 		_lazy = lazy;
-		_singleton = singleton;
 		_order = order;
-		if (singleton && !lazy) {
+		if (!lazy) {
+			/* TODO - 2.3.M1 - proxies should be used for lazy singletons too, but messaging tests must be adapted then */
 			_singletonListeners = new SingletonLifecycleListenerRegistry(this, registry);
 		}
 	}
@@ -64,22 +60,8 @@ public class DefaultRootObjectDefinition extends AbstractObjectDefinition implem
 	/**
 	 * @inheritDoc
 	 */
-	public function get id () : String {
-		return _id;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	public function get lazy () : Boolean {
 		return _lazy;
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function get singleton () : Boolean {
-		return _singleton;
 	}
 	
 	/**
@@ -107,7 +89,7 @@ public class DefaultRootObjectDefinition extends AbstractObjectDefinition implem
 	 * @private
 	 */
 	public override function get objectLifecycle () : LifecycleListenerRegistry {
-		return (_singletonListeners != null) ? _singletonListeners : super.objectLifecycle;
+		return (_singletonListeners) ? _singletonListeners : super.objectLifecycle;
 	}
 	
 	
