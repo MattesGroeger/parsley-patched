@@ -14,7 +14,7 @@ import org.spicefactory.parsley.core.decorator.injection.OptionalConstructorInje
 import org.spicefactory.parsley.core.decorator.injection.RequiredConstructorInjection;
 import org.spicefactory.parsley.core.decorator.lifecycle.LifecycleMetadataTagTest;
 import org.spicefactory.parsley.core.decorator.lifecycle.ObserveMetadataTagTest;
-import org.spicefactory.parsley.core.dynamiccontext.DynamicContextTest;
+import org.spicefactory.parsley.core.dynamiccontext.DynamicObjectTest;
 import org.spicefactory.parsley.core.dynamiccontext.LegacyDynamicContextTest;
 import org.spicefactory.parsley.core.messaging.LazyMessagingMetadataTagTest;
 import org.spicefactory.parsley.core.messaging.MessagingMetadataTagTest;
@@ -27,6 +27,7 @@ import org.spicefactory.parsley.flex.mxmlconfig.asyncinit.AsyncInitMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.command.CommandMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.command.DynamicCommandMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.core.CoreMxmlTagTest;
+import org.spicefactory.parsley.flex.mxmlconfig.dynamicobject.DynamicObjectMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.factory.FactoryMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.lifecycle.LifecycleMxmlTagTest;
 import org.spicefactory.parsley.flex.mxmlconfig.messaging.MessagingMxmlTagTest;
@@ -37,6 +38,7 @@ import org.spicefactory.parsley.xml.AsyncInitXmlTagTest;
 import org.spicefactory.parsley.xml.CommandXmlTagTest;
 import org.spicefactory.parsley.xml.CoreXmlTagTest;
 import org.spicefactory.parsley.xml.DynamicCommandXmlTagTest;
+import org.spicefactory.parsley.xml.DynamicObjectXmlTagTest;
 import org.spicefactory.parsley.xml.ExternalXmlConfigTest;
 import org.spicefactory.parsley.xml.FactoryXmlTagTest;
 import org.spicefactory.parsley.xml.LifecycleXmlTagTest;
@@ -97,7 +99,9 @@ public class ParsleyTestSuite {
 		suite.addTestSuite(CoreMxmlTagTest);
 		suite.addTestSuite(CoreXmlTagTest);
 
-		suite.addTestSuite(DynamicContextTest);
+		suite.addTestSuite(DynamicObjectMxmlTagTest);
+		suite.addTestSuite(DynamicObjectXmlTagTest);
+		suite.addTestSuite(DynamicObjectTest);
 		suite.addTestSuite(LegacyDynamicContextTest);
 
 		suite.addTestSuite(ExternalXmlConfigTest);

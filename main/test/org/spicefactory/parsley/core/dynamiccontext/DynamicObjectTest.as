@@ -2,7 +2,6 @@ package org.spicefactory.parsley.core.dynamiccontext {
 import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
 import org.spicefactory.parsley.core.ContextTestBase;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.impl.DefaultContext;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
@@ -14,7 +13,7 @@ import org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator;
 /**
  * @author Jens Halm
  */
-public class DynamicContextTest extends ContextTestBase {
+public class DynamicObjectTest extends ContextTestBase {
 
 	
 	public function testAddObject () : void {

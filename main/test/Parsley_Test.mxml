@@ -16,6 +16,18 @@
  
         ]]>
     </mx:Script>    
+    <mx:TraceTarget id="logTarget" 
+        includeTime="true" 
+        includeCategory="true" 
+        includeLevel="true"
+    	>
+        <mx:filters>
+            <mx:Array>
+                <mx:String>org.spicefactory.*</mx:String>
+            </mx:Array>
+        </mx:filters>
+        <mx:level>0</mx:level>
+    </mx:TraceTarget>
     <flexunit:TestRunnerBase id="testRunner" width="100%" height="100%" />
 	
 </mx:Application>

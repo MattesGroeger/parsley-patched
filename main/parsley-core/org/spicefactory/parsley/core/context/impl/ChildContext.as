@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.context.impl {
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
@@ -125,6 +126,13 @@ public class ChildContext extends DefaultContext {
 	/**
 	 * @inheritDoc
 	 */
+	public override function isDynamic (id:String) : Boolean {
+		return super.containsObject(id) ? super.isDynamic(id) : _parent.isDynamic(id);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
 	public override function getAllObjectsByType (type:Class) : Array {
 		return super.getAllObjectsByType(type).concat(_parent.getAllObjectsByType(type));
 	}
@@ -150,6 +158,21 @@ public class ChildContext extends DefaultContext {
 	public override function getDefinitionByType (type:Class) : RootObjectDefinition {
 		var localCount:int = super.getObjectCount(type);
 		return (localCount == 0) ? _parent.getDefinitionByType(type) : super.getDefinitionByType(type); 
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public override function createDynamicObject (id:String) : DynamicObject {
+		return super.containsObject(id) ? super.createDynamicObject(id) : _parent.createDynamicObject(id);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public override function createDynamicObjectByType (type:Class) : DynamicObject {
+		var localCount:int = super.getObjectCount(type);
+		return (localCount == 0) ? _parent.createDynamicObjectByType(type) : super.createDynamicObjectByType(type); 
 	}
 	
 	private function childDestroyed (event:ContextEvent) : void {

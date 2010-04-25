@@ -209,6 +209,15 @@ public class DefaultContext extends EventDispatcher implements Context {
 		return def.type.getClass();
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function isDynamic (id:String) : Boolean {
+		checkState();
+		var def:RootObjectDefinition = getLocalDefinition(id);
+		return (def is DynamicObjectDefinition);
+	}
+	
 	
 	/**
 	 * @inheritDoc
@@ -246,6 +255,30 @@ public class DefaultContext extends EventDispatcher implements Context {
 	public function getDefinitionByType (type:Class) : RootObjectDefinition {
 		checkState();
 		return _registry.getDefinitionByType(type);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function createDynamicObject (id:String) : DynamicObject {
+		checkState();
+		var def:RootObjectDefinition = getLocalDefinition(id);
+		if (def is DynamicObjectDefinition) {
+			return addDynamicObject(null, def as DynamicObjectDefinition);
+		}
+		throw new ContextError("Object with id " + id + " is not a dynamic object");
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function createDynamicObjectByType (type:Class) : DynamicObject {
+		checkState();
+		var def:RootObjectDefinition = _registry.getDefinitionByType(type);
+		if (def is DynamicObjectDefinition) {
+			return addDynamicObject(null, def as DynamicObjectDefinition);
+		}
+		throw new ContextError("Object of type " + type + " is not a dynamic object");
 	}
 	
 	/**

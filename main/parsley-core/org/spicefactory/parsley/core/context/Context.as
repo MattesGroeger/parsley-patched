@@ -136,7 +136,6 @@ public interface Context extends IEventDispatcher {
 	 */
 	function getObjectIds (type:Class = null) : Array;
 	
-	
 	/**
 	 * Checks whether this Contex contains an object with the specified id.
 	 * 
@@ -154,7 +153,16 @@ public interface Context extends IEventDispatcher {
 	function getType (id:String) : Class;
 	
 	/**
-	 * Returns the object with the specified id. Throws an Error if no such object exists.
+	 * Indicates whether the object with specified id represents a dynamic object (true) or
+	 * a singleton object (false). Throws an Error if no object was registered for the specified id.
+	 * 
+	 * @param id the id to return the type for
+	 * @return true if the object with the specified id represents a dynamic object
+	 */
+	function isDynamic (id:String) : Boolean;
+	
+	/**
+	 * Returns the singleton object with the specified id. Throws an Error if no such object exists.
 	 * 
 	 * @param id the id of the object
 	 * @return the object with the specified id
@@ -162,7 +170,7 @@ public interface Context extends IEventDispatcher {
 	function getObject (id:String) : Object;
 	
 	/**
-	 * Returns an object of the specified type. 
+	 * Returns a singleton object of the specified type. 
 	 * This method will throw an Error if no object with a matching type exists in this Context
 	 * or if it finds more than one match.
 	 * 
@@ -199,13 +207,29 @@ public interface Context extends IEventDispatcher {
 	function getDefinitionByType (type:Class) : RootObjectDefinition;
 	
 	/**
-	 * Creates an object from the specified definition and dynamically adds it to the Context.
+	 * Returns a new dynamic object for the specified id. Throws an Error if no such object exists.
+	 * Dynamic objects can only be created from DynamicObjectDefinitions, such as those created
+	 * by the <code>&lt;DynamicObject&gt;</code> MXML tag or the <code>&lt;dynamic-object&gt;</code>
+	 * XML tag.
 	 * 
-	 * @param definition the definition to create an object from
-	 * @return an instance representing the dynamically created object and its definition
+	 * @param id the id of the object
+	 * @return a new dynamic object for the specified id
 	 */
-	function addDynamicDefinition (definition:DynamicObjectDefinition) : DynamicObject;
-
+	function createDynamicObject (id:String) : DynamicObject;
+	
+	/**
+	 * Returns a new dynamic object for the specified type. 
+	 * This method will throw an Error if no object with a matching type exists in this Context
+	 * or if it finds more than one match.
+	 * Dynamic objects can only be created from DynamicObjectDefinitions, such as those created
+	 * by the <code>&lt;DynamicObject&gt;</code> MXML tag or the <code>&lt;dynamic-object&gt;</code>
+	 * XML tag.
+	 * 
+	 * @param type the type of the object to return
+	 * @return a new dynamic object for the specified type
+	 */
+	function createDynamicObjectByType (type:Class) : DynamicObject;
+	
 	/**
 	 * Dynamically adds the specified instance to the Context.
 	 * 
@@ -214,6 +238,14 @@ public interface Context extends IEventDispatcher {
 	 * @return an instance representing the dynamically created object and its definition
 	 */
 	function addDynamicObject (instance:Object, definition:DynamicObjectDefinition = null) : DynamicObject;
+	
+	/**
+	 * Creates an object from the specified definition and dynamically adds it to the Context.
+	 * 
+	 * @param definition the definition to create an object from
+	 * @return an instance representing the dynamically created object and its definition
+	 */
+	function addDynamicDefinition (definition:DynamicObjectDefinition) : DynamicObject;
 	
 	/**
 	 * Indicates whether configuration for this Context has been fully processed.
