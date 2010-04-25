@@ -245,33 +245,13 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 */
 	public function addDynamicObject (instance:Object, definition:DynamicObjectDefinition = null) : DynamicObject {
 		checkState(false);
-		var targetDef:ObjectDefinition = definition;
-		if (targetDef == null) {
+		if (definition == null) {
 			var ci:ClassInfo = ClassInfo.forInstance(instance, registry.domain);
-			targetDef = registry.builders.forNestedDefinition(ci.getClass()).build();
+			definition = registry.builders.forDynamicDefinition(ci.getClass()).build();
 		}
-		return new DefaultDynamicObject(this, targetDef, instance);
+		return new DefaultDynamicObject(this, definition, instance);
 	}
 	
-	/**
-	 * @private
-	 */
-	/*
-	internal function addInstance (object:DynamicObject) : void {
-		objects[object.instance] = object;	
-	}
-	 */
-	
-	/**
-	 * @private
-	 */
-	/*
-	internal function removeInstance (object:DefaultDynamicObject) : void {
-		if (objects != null) delete objects[object.instance];	
-	}
-	 */
-	
-
 	/**
 	 * @private
 	 */
