@@ -49,7 +49,7 @@ public class ViewTag implements RootConfigurationTag {
 	 */
 	public function process (registry:ObjectDefinitionRegistry) : void {
 		registry.builders
-				.forViewDefinition(type)
+				.forDynamicDefinition(type)
 				.id(id)
 				.decorators(decorators)
 				.buildAndRegister();

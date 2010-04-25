@@ -153,12 +153,6 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	function get context () : Context;
 	
 	/**
-	 * The registry for view definitions associated with this registry.
-	 * Contains the optional configurations to apply to dynamically wired views.
-	 */
-	function get viewDefinitions () : ViewDefinitionRegistry;
-	
-	/**
 	 * Creates a provider for the specified type and optional id.
 	 * If the id is omitted the Context built for this registry must contain exactly
 	 * one instance with a matching type. The provider returned by this method

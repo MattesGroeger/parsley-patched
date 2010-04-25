@@ -193,9 +193,7 @@ import org.spicefactory.parsley.core.messaging.command.impl.SynchronousCommandFa
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageRouter;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.impl.DefaultViewDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.scope.impl.DefaultScopeManager;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
@@ -238,12 +236,11 @@ class DefaultLifecycleManagerFactory implements ObjectLifecycleManagerFactory {
 class DefaultDefinitionRegistryFactory implements ObjectDefinitionRegistryFactory {
 
 	public function create (domain:ApplicationDomain, context:Context, 
-			providerFactory:ObjectProviderFactory, parentViewDefinitions:ViewDefinitionRegistry) : ObjectDefinitionRegistry {
+			providerFactory:ObjectProviderFactory) : ObjectDefinitionRegistry {
 		return new DefaultObjectDefinitionRegistry(domain, 
 				context, 
 				providerFactory, 
-				[new MetadataDecoratorAssembler(domain)], 
-				new DefaultViewDefinitionRegistry(parentViewDefinitions));
+				[new MetadataDecoratorAssembler(domain)]);
 	}
 	
 }
@@ -259,8 +256,8 @@ class DefaultViewManagerFactory implements ViewManagerFactory {
 		_autowireFilter.enabled = false;
 	}
 
-	public function create (context:Context, domain:ApplicationDomain, registry:ViewDefinitionRegistry) : ViewManager {
-		var viewManager:DefaultViewManager = new DefaultViewManager(context, domain, registry, autowireFilter);
+	public function create (context:Context, domain:ApplicationDomain) : ViewManager {
+		var viewManager:DefaultViewManager = new DefaultViewManager(context, domain, autowireFilter);
 		viewManager.componentAddedEvent = componentAddedEvent;
 		viewManager.componentRemovedEvent = componentRemovedEvent;
 		viewManager.viewRootRemovedEvent = viewRootRemovedEvent;

@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.ViewManager;
 
@@ -70,10 +70,9 @@ public interface ViewManagerFactory {
 	 * 
 	 * @param context the Context the new ViewManager will belong to
 	 * @param domain the domain to use for reflection
-	 * @param registry the configuration for dynamically wired views
 	 * @return a new ViewManager instance
 	 */
-	function create (context:Context, domain:ApplicationDomain, registry:ViewDefinitionRegistry) : ViewManager;
+	function create (context:Context, domain:ApplicationDomain) : ViewManager;
 
 	
 }

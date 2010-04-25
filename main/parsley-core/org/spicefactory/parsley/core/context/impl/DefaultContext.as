@@ -70,7 +70,6 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private var _viewManager:ViewManager;
 	
 	private var singletonCache:SimpleMap = new SimpleMap();
-	private var dynamicCache:SimpleMap = new SimpleMap();
 	
 	private var initSequence:InitializerSequence;
 	private var underConstruction:Dictionary = new Dictionary();
@@ -198,7 +197,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 */
 	public function getObject (id:String) : Object {
 		checkState();
-		return getInstance(getDefinition(id));
+		return getInstance(getLocalDefinition(id));
 	}
 	
 	/**
@@ -206,7 +205,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 */
 	public function getType (id:String) : Class {
 		checkState();
-		var def:ObjectDefinition = getDefinition(id);
+		var def:ObjectDefinition = getLocalDefinition(id);
 		return def.type.getClass();
 	}
 	
@@ -230,7 +229,23 @@ public class DefaultContext extends EventDispatcher implements Context {
 	public function getObjectByType (type:Class) : Object {
 		checkState();
 		var def:RootObjectDefinition = _registry.getDefinitionByType(type);
-		return (def != null) ? getInstance(def) : null;
+		return getInstance(def);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function getDefinition (id:String) : RootObjectDefinition {
+		checkState();
+		return getLocalDefinition(id);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function getDefinitionByType (type:Class) : RootObjectDefinition {
+		checkState();
+		return _registry.getDefinitionByType(type);
 	}
 	
 	/**
@@ -286,7 +301,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 		return object.instance;
 	}
 	
-	private function getDefinition (id:String) : RootObjectDefinition {
+	private function getLocalDefinition (id:String) : RootObjectDefinition {
 		if (!containsObject(id)) {
 			throw new ContextError("Context does not contain an object with id "
 					+ id);

@@ -34,7 +34,6 @@ import org.spicefactory.parsley.core.factory.impl.DefaultContextStrategyProvider
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.ScopeExtensions;
 import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.core.scope.impl.ScopeDefinition;
@@ -148,7 +147,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		var provider:ContextStrategyProvider = createContextStrategyProvider(domain, scopes.getAll());
 		context = _factories.context.create(provider, parent);
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		ContextRegistry.addContext(context, scopes.getInherited(), provider.registry.viewDefinitions);
+		ContextRegistry.addContext(context, scopes.getInherited());
 		ReflectionCacheManager.addDomain(context, domain);
 		registry = provider.registry;
 		if (viewRoot != null) {
@@ -157,11 +156,9 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	}
 	
 	private function createContextStrategyProvider (domain:ApplicationDomain, scopeDefs:Array) : ContextStrategyProvider {
-		var parentViewDefinitions:ViewDefinitionRegistry = (parent != null) 
-				? ContextRegistry.getViewDefinitions(parent) : null; 
 		var descr:String = (description != null)
 				? description : processors.join(",");
-		return new DefaultContextStrategyProvider(factories, domain, scopeDefs, parentViewDefinitions, descr);
+		return new DefaultContextStrategyProvider(factories, domain, scopeDefs, descr);
 	}
 
 	/**

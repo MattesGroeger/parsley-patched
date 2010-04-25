@@ -29,8 +29,8 @@ import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.FastInjectEvent;
 import org.spicefactory.parsley.core.events.ViewAutowireEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
-import org.spicefactory.parsley.core.registry.ViewDefinition;
-import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
+import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.ViewAutowireMode;
 import org.spicefactory.parsley.core.view.ViewManager;
@@ -62,12 +62,13 @@ public class DefaultViewManager implements ViewManager {
 
 	private var context:Context;
 	private var domain:ApplicationDomain;
-	private var registry:ViewDefinitionRegistry;
 	private var autowireFilter:ViewAutowireFilter;
 	private var viewRoots:Array = new Array();
 	private var configuredViews:Dictionary = new Dictionary();
 
 	private var cachedFastInjectEvents:Array = new Array();
+	private var cachedAutowireEvents:Array = new Array();
+	private var cachedConfigurationEvents:Array = new Array();
 	
 	private var stageEventFilter:StageEventFilter = new StageEventFilter();
 	
@@ -96,14 +97,11 @@ public class DefaultViewManager implements ViewManager {
 	 * 
 	 * @param context the Context view components should be dynamically wired to
 	 * @param domain the ApplicationDomain to use for reflection
-	 * @param registry the registry for view definitions
 	 * @param autowireFilter the filter to select view object applicable for autowiring
 	 */
-	function DefaultViewManager (context:Context, domain:ApplicationDomain, 
-			registry:ViewDefinitionRegistry, autowireFilter:ViewAutowireFilter) {
+	function DefaultViewManager (context:Context, domain:ApplicationDomain, autowireFilter:ViewAutowireFilter) {
 		this.context = context;
 		this.domain = domain;
-		this.registry = registry;
 		this.autowireFilter = autowireFilter;
 	}
 
@@ -229,23 +227,54 @@ public class DefaultViewManager implements ViewManager {
 		event.stopImmediatePropagation();
 		var view:DisplayObject = event.target as DisplayObject;
 		if (configuredViews[view] != undefined) return;
+		if (!context.configured) {
+			if (cachedAutowireEvents.length == 0) {
+				context.addEventListener(ContextEvent.CONFIGURED, handleCachedAutowireEvents);
+			}
+			cachedAutowireEvents.push(event);
+			return;
+		}
+		processAutowireEvent(event);
+	}
+	
+	private function processAutowireEvent (event:Event) : void {
+		var view:DisplayObject = event.target as DisplayObject;
+		if (configuredViews[view] != undefined) return;
 		var mode:ViewAutowireMode = autowireFilter.filter(view);
 		if (mode == ViewAutowireMode.ALWAYS) {
 			configureView(view, getDefinition(view, view.name));
 		}
 		else if (mode == ViewAutowireMode.CONFIGURED) {
-			var definition:ViewDefinition = getDefinition(view, view.name);
+			var definition:DynamicObjectDefinition = getDefinition(view, view.name);
 			if (definition != null) {
 				configureView(view, definition);
 			}
 		}
 	}
+	
+	private function handleCachedAutowireEvents (event:ContextEvent) : void {
+		for each (var autowireEvent:Event in cachedAutowireEvents) {
+			processAutowireEvent(autowireEvent);
+		}
+		cachedAutowireEvents = new Array();
+	}	
 
 	protected function handleConfigurationEvent (event:Event) : void {
 		event.stopImmediatePropagation();
 		if (event is ViewConfigurationEvent) {
 			ViewConfigurationEvent(event).markAsProcessed();
 		}
+		if (!context.configured) {
+			if (cachedConfigurationEvents.length == 0) {
+				context.addEventListener(ContextEvent.CONFIGURED, handleCachedConfigurationEvents);
+			}
+			cachedConfigurationEvents.push(event);
+			return;
+		}
+		processConfigurationEvent(event);
+	}
+	
+	private function processConfigurationEvent (event:Event) : void {
 		var configTarget:Object = (event is ViewConfigurationEvent) 
 				? ViewConfigurationEvent(event).configTarget : event.target;
 		var configId:String = (event is ViewConfigurationEvent) 
@@ -253,9 +282,16 @@ public class DefaultViewManager implements ViewManager {
 				: (configTarget is DisplayObject) ? DisplayObject(configTarget).name : null;
 		if (configuredViews[configTarget] != undefined) return;
 		configureView(configTarget, getDefinition(configTarget, configId));
+	}
+	
+	private function handleCachedConfigurationEvents (event:ContextEvent) : void {
+		for each (var confEvent:Event in cachedConfigurationEvents) {
+			processConfigurationEvent(confEvent);
+		}
+		cachedConfigurationEvents = new Array();
 	}	
 	
-	protected function configureView (target:Object, definition:ViewDefinition) : void {
+	protected function configureView (target:Object, definition:DynamicObjectDefinition) : void {
 		log.debug("Add object '{0}' to {1}", target, context);
 		if (target is IEventDispatcher) {
 			var info:ClassInfo = ClassInfo.forInstance(target, domain);
@@ -274,15 +310,41 @@ public class DefaultViewManager implements ViewManager {
 		configuredViews[target] = dynObject;
 	}
 	
-	protected function getDefinition (configTarget:Object, configId:String) : ViewDefinition {
-		var definition:ViewDefinition;
+	protected function getDefinition (configTarget:Object, configId:String) : DynamicObjectDefinition {
+		var definition:DynamicObjectDefinition;
 		if (configId != null) {
-			definition = registry.getDefinitionById(configId, configTarget);
+			definition = getDefinitionById(configId, configTarget);
 		}
 		if (definition == null) {
-			definition = registry.getDefinitionByType(configTarget);
+			definition = getDefinitionByType(configTarget);
 		}
 		return definition;
+	}
+	
+	private function getDefinitionById (id:String, configTarget:Object) : DynamicObjectDefinition {
+		if (!context.containsObject(id)) return null;
+		var definition:RootObjectDefinition = context.getDefinition(id);
+		if (definition is DynamicObjectDefinition && configTarget is definition.type.getClass()) {
+			return definition as DynamicObjectDefinition;
+		} else {
+			return null;
+		}
+	}
+	
+	private function getDefinitionByType (configTarget:Object) : DynamicObjectDefinition {
+		var type:Class = ClassInfo.forInstance(configTarget, domain).getClass();
+		var count:int = context.getObjectCount(type);
+		if (count == 0) {
+			return null;
+		}
+		else if (count > 1) {
+			throw new ContextError("More than one view definition for type " 
+					+ getQualifiedClassName(configTarget) + " was registered");
+		}
+		else {
+			var def:RootObjectDefinition = context.getDefinitionByType(type);
+			return (def is DynamicObjectDefinition) ? def as DynamicObjectDefinition : null;
+		}
 	}
 
 	private function componentRemoved (event:Event) : void {

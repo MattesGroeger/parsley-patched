@@ -25,7 +25,6 @@ import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.builder.ObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.registry.builder.impl.DefaultObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.scope.ScopeManager;
@@ -45,7 +44,6 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	private var _domain:ApplicationDomain;
 	private var _decoratorAssemblers:Array;
 	private var _context:Context;
-	private var _viewDefinitions:ViewDefinitionRegistry;
 	
 	private var _builders:ObjectDefinitionBuilderFactory;
 	
@@ -65,12 +63,11 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	 * @param viewDefinitions the registry for view definitions
 	 */
 	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain, context:Context, 
-			objectProviderFactory:ObjectProviderFactory, decoratorAssemblers:Array, viewDefinitions:ViewDefinitionRegistry) {
+			objectProviderFactory:ObjectProviderFactory, decoratorAssemblers:Array) {
 		_domain = domain;
 		_context = context;
 		_decoratorAssemblers = decoratorAssemblers;
 		this.objectProviderFactory = objectProviderFactory;
-		_viewDefinitions = viewDefinitions;
 		_builders = new DefaultObjectDefinitionBuilderFactory(this);
 	}
 
@@ -103,13 +100,6 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 		return _context;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
-	public function get viewDefinitions () : ViewDefinitionRegistry {
-		return _viewDefinitions;
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -224,7 +214,6 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 		for each (var definition:ObjectDefinition in definitions.values) {
 			definition.freeze();
 		}
-		viewDefinitions.freeze();
 		dispatchEvent(new ObjectDefinitionRegistryEvent(ObjectDefinitionRegistryEvent.FROZEN));
 	}
 	

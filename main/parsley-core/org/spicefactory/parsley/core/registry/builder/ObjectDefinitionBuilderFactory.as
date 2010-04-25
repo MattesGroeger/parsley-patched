@@ -44,12 +44,6 @@ public interface ObjectDefinitionBuilderFactory {
 	 */
 	function forNestedDefinition (type:Class) : NestedObjectDefinitionBuilder;
 
-	/**
-	 * Returns a builder for a view definition for the specified type.
-	 * 
-	 * @param type the type to create a definition for
-	 */
-	function forViewDefinition (type:Class) : ViewDefinitionBuilder;
 	
 }
 }

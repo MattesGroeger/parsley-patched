@@ -18,6 +18,7 @@ package org.spicefactory.parsley.core.context.impl {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
+import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 
 /**
  * Implementation of the <code>Context</code> interface that is capable of handling a parent <code>Context</code>.
@@ -134,6 +135,21 @@ public class ChildContext extends DefaultContext {
 	public override function getObjectByType (type:Class) : Object {
 		var localCount:int = super.getObjectCount(type);
 		return (localCount == 0) ? _parent.getObjectByType(type) : super.getObjectByType(type); 
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public override function getDefinition (id:String) : RootObjectDefinition {
+		return super.containsObject(id) ? super.getDefinition(id) : _parent.getDefinition(id);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public override function getDefinitionByType (type:Class) : RootObjectDefinition {
+		var localCount:int = super.getObjectCount(type);
+		return (localCount == 0) ? _parent.getDefinitionByType(type) : super.getDefinitionByType(type); 
 	}
 	
 	private function childDestroyed (event:ContextEvent) : void {

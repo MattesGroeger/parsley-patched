@@ -18,7 +18,6 @@ package org.spicefactory.parsley.core.builder.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 
 import flash.utils.Dictionary;
 
@@ -43,14 +42,13 @@ public class ContextRegistry {
 	 * 
 	 * @param context the Context instance the specified scopes are associated with
 	 * @param scopes the scopes to add
-	 * @param registry the view configuration for the specified Context
 	 */
-	public static function addContext (context:Context, scopes:Array, registry:ViewDefinitionRegistry) : void {
+	public static function addContext (context:Context, scopes:Array) : void {
 		if (scopeMap[context] != undefined) {
 			throw new IllegalArgumentError("Scopes already registered for the specified Context instance");
 		}
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		scopeMap[context] = new ContextRegistration(context, scopes, registry);
+		scopeMap[context] = new ContextRegistration(context, scopes);
 	}
 
 	private static function contextDestroyed (event:ContextEvent) : void {
@@ -71,34 +69,18 @@ public class ContextRegistry {
 		}
 		return ContextRegistration(scopeMap[context]).scopes.concat();
 	}
-	
-	/**
-	 * Returns the view definitions associated with the specified Context instance.
-	 * 
-	 * @param context the Context to return the view definitions for
-	 * @return the view definitions associated with the specified Context instance
-	 */
-	public static function getViewDefinitions (context:Context) : ViewDefinitionRegistry {
-		if (scopeMap[context] == undefined) {
-			throw new IllegalArgumentError("No view definitions registered for the specified Context instance");
-		}
-		return ContextRegistration(scopeMap[context]).viewDefinitions;
-	}
 }
 }
 
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 
 class ContextRegistration {
 	
 	public var context:Context;
 	public var scopes:Array;
-	public var viewDefinitions:ViewDefinitionRegistry;
 	
-	function ContextRegistration (context:Context, scopes:Array, viewDefinitions:ViewDefinitionRegistry) {
+	function ContextRegistration (context:Context, scopes:Array) {
 		this.context = context;
 		this.scopes = scopes;
-		this.viewDefinitions = viewDefinitions;
 	}
 }

@@ -21,7 +21,6 @@ import org.spicefactory.parsley.core.registry.builder.DynamicObjectDefinitionBui
 import org.spicefactory.parsley.core.registry.builder.NestedObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.builder.ObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.registry.builder.SingletonObjectDefinitionBuilder;
-import org.spicefactory.parsley.core.registry.builder.ViewDefinitionBuilder;
 
 /**
  * Default implementation of the ObjectDefinitionBuilderFactory interface.
@@ -61,13 +60,6 @@ public class DefaultObjectDefinitionBuilderFactory implements ObjectDefinitionBu
 	public function forNestedDefinition (type:Class) : NestedObjectDefinitionBuilder {
 		return new DefaultNestedObjectDefinitionBuilder(ClassInfo.forClass(type, registry.domain), registry);
 	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function forViewDefinition (type:Class) : ViewDefinitionBuilder {
-		return new DefaultViewDefinitionBuilder(ClassInfo.forClass(type, registry.domain), registry);
-	}
 }
 }
 
@@ -77,17 +69,14 @@ import org.spicefactory.parsley.core.registry.NestedObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
-import org.spicefactory.parsley.core.registry.ViewDefinition;
 import org.spicefactory.parsley.core.registry.builder.DynamicObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.builder.NestedObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.builder.SingletonObjectDefinitionBuilder;
-import org.spicefactory.parsley.core.registry.builder.ViewDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.builder.impl.AbstractObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.impl.DefaultDynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.impl.DefaultNestedObjectDefinition;
 import org.spicefactory.parsley.core.registry.impl.DefaultSingletonObjectDefinition;
-import org.spicefactory.parsley.core.registry.impl.DefaultViewDefinition;
 import org.spicefactory.parsley.core.registry.impl.IdGenerator;
 
 class DefaultRootObjectDefinitionBuilder extends AbstractObjectDefinitionBuilder implements SingletonObjectDefinitionBuilder {
@@ -198,46 +187,6 @@ class DefaultDynamicObjectDefinitionBuilder extends AbstractObjectDefinitionBuil
 	
 }
 
-
-class DefaultViewDefinitionBuilder extends AbstractObjectDefinitionBuilder implements ViewDefinitionBuilder {
-
-
-	private var _id:String;
-
-	
-	function DefaultViewDefinitionBuilder (type:ClassInfo, registry:ObjectDefinitionRegistry) {
-		super(type, registry);
-	}
-	
-	
-	public function id (value:String) : ViewDefinitionBuilder {
-		_id = value;
-		return this;
-	}
-
-	public function decorator (value:ObjectDefinitionDecorator) : ViewDefinitionBuilder {
-		decoratorList.push(value);		
-		return this;
-	}
-	
-	public function decorators (value:Array) : ViewDefinitionBuilder {
-		this.decoratorList = this.decoratorList.concat(value);		
-		return this;
-	}
-	
-	public function build () : ViewDefinition {
-		var def:ViewDefinition = new DefaultViewDefinition(type, _id);
-		def = processDecorators(registry, def) as ViewDefinition;
-		return def;
-	}
-	
-	public function buildAndRegister () : ViewDefinition {
-		var def:ViewDefinition = build();
-		registry.viewDefinitions.registerDefinition(def);
-		return def;
-	}
-	
-}
 
 class DefaultNestedObjectDefinitionBuilder extends AbstractObjectDefinitionBuilder implements NestedObjectDefinitionBuilder {
 
