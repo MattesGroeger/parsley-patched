@@ -29,6 +29,7 @@ import org.spicefactory.lib.xml.mapper.Choice;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.tag.core.ArrayTag;
 import org.spicefactory.parsley.tag.core.ConstructorTag;
+import org.spicefactory.parsley.tag.core.DynamicObjectTag;
 import org.spicefactory.parsley.tag.core.NestedObjectTag;
 import org.spicefactory.parsley.tag.core.ObjectReferenceTag;
 import org.spicefactory.parsley.tag.core.PropertyTag;
@@ -121,6 +122,7 @@ public class XmlObjectDefinitionMapperFactory {
 		var builder:PropertyMapperBuilder = getMapperBuilder(ObjectsTag, "objects"); 
 		rootObjectChoice.addMapper(getRootObjectMapper());
 		rootObjectChoice.addMapper(getViewObjectMapper());
+		rootObjectChoice.addMapper(getDynamicObjectMapper());
 		rootObjectChoice.addMapper(getDynamicCommandMapper());
 		builder.mapToChildElementChoice("objects", rootObjectChoice);
 		return builder.build();
@@ -158,6 +160,14 @@ public class XmlObjectDefinitionMapperFactory {
 	
 	private function getViewObjectMapper () : XmlObjectMapper {
 		var builder:PropertyMapperBuilder = getMapperBuilder(ViewTag, "view"); 
+		builder.mapToChildElementChoice("decorators", decoratorChoice);
+		builder.mapToAttribute("id");
+		builder.mapToAttribute("type");
+		return builder.build();
+	}
+	
+	private function getDynamicObjectMapper () : XmlObjectMapper {
+		var builder:PropertyMapperBuilder = getMapperBuilder(DynamicObjectTag, "dynamic-object"); 
 		builder.mapToChildElementChoice("decorators", decoratorChoice);
 		builder.mapToAttribute("id");
 		builder.mapToAttribute("type");

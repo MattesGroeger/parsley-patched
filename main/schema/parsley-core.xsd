@@ -12,6 +12,7 @@
 	            <xs:element name="variable" type="variableType" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="object" type="rootObjectType"/>    
                 <xs:element name="view" type="viewObjectType"/>    
+                <xs:element name="dynamic-object" type="dynamicObjectType"/>    
                 <xs:element name="dynamic-command" type="dynamicCommandType"/>    
             	<xs:any namespace="##other"/>
             </xs:choice>
@@ -70,6 +71,14 @@
     </xs:complexType>
     
     <xs:complexType name="viewObjectType">
+        <xs:complexContent>
+            <xs:extension base="objectType">
+                <xs:attribute name="id" type="xs:token" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="dynamicObjectType">
         <xs:complexContent>
             <xs:extension base="objectType">
                 <xs:attribute name="id" type="xs:token" use="optional"/>
