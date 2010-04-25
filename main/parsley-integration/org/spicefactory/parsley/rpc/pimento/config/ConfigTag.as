@@ -55,14 +55,14 @@ public class ConfigTag implements RootConfigurationTag {
 		CinnamonCommandSupport.initialize();
 		
 		var configDef:RootObjectDefinition = registry.builders
-				.forRootDefinition(PimentoConfig)
+				.forSingletonDefinition(PimentoConfig)
 				.id(id)
 				.buildAndRegister();
 		configDef.properties.addValue("serviceUrl", url);
 		if (timeout != 0) configDef.properties.addValue("defaultTimeout", timeout);
 		
 		registry.builders
-				.forRootDefinition(EntityManager)
+				.forSingletonDefinition(EntityManager)
 				.id(configDef.id + "_entityManager")
 				.instantiator(new EntityManagerInstantiator(configDef.id))
 				.buildAndRegister();

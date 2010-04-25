@@ -67,7 +67,7 @@ public class MessageConfirmationTag implements RootConfigurationTag {
 		interceptor.scope = scope;
 		
 		var def:ObjectDefinition = registry.builders
-				.forRootDefinition(MessageConfirmation)
+				.forSingletonDefinition(MessageConfirmation)
 				.decorator(interceptor)
 				.buildAndRegister();
 		

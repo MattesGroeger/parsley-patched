@@ -1,11 +1,11 @@
 package org.spicefactory.parsley.test {
-	import org.spicefactory.parsley.core.command.sync.SynchronousCommandTest;
-	import org.spicefactory.parsley.core.command.task.TaskCommandTest;
 import flexunit.framework.TestSuite;
 
 import org.spicefactory.parsley.core.builder.ActionScriptConfigurationTest;
 import org.spicefactory.parsley.core.builder.RuntimeConfigurationTest;
 import org.spicefactory.parsley.core.command.CommandMetadataTagTest;
+import org.spicefactory.parsley.core.command.sync.SynchronousCommandTest;
+import org.spicefactory.parsley.core.command.task.TaskCommandTest;
 import org.spicefactory.parsley.core.decorator.asyncinit.AsyncInitMetadataTagTest;
 import org.spicefactory.parsley.core.decorator.factory.FactoryMetadataTagTest;
 import org.spicefactory.parsley.core.decorator.injection.InjectMetadataTagTest;
@@ -15,6 +15,7 @@ import org.spicefactory.parsley.core.decorator.injection.RequiredConstructorInje
 import org.spicefactory.parsley.core.decorator.lifecycle.LifecycleMetadataTagTest;
 import org.spicefactory.parsley.core.decorator.lifecycle.ObserveMetadataTagTest;
 import org.spicefactory.parsley.core.dynamiccontext.DynamicContextTest;
+import org.spicefactory.parsley.core.dynamiccontext.LegacyDynamicContextTest;
 import org.spicefactory.parsley.core.messaging.LazyMessagingMetadataTagTest;
 import org.spicefactory.parsley.core.messaging.MessagingMetadataTagTest;
 import org.spicefactory.parsley.core.messaging.proxy.MessageProxyTest;
@@ -97,6 +98,7 @@ public class ParsleyTestSuite {
 		suite.addTestSuite(CoreXmlTagTest);
 
 		suite.addTestSuite(DynamicContextTest);
+		suite.addTestSuite(LegacyDynamicContextTest);
 
 		suite.addTestSuite(ExternalXmlConfigTest);
 

@@ -3,9 +3,9 @@ import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.ContextTestBase;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.decorator.lifecycle.model.LifecycleEventCounter;
-import org.spicefactory.parsley.core.registry.impl.DefaultNestedObjectDefinition;
+import org.spicefactory.parsley.core.registry.impl.DefaultDynamicObjectDefinition;
+import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
 
 import mx.containers.Box;
 import mx.containers.HBox;
@@ -36,9 +36,10 @@ public class ObserveTestBase extends ContextTestBase {
   		assertEquals("Unexpected total count of listeners for Box-global", 3, counter.getCount(Box, "global"));
 
   		
-  		assertEquals("Unexpected count of destroy listeners", 0, counter.getCount(Text, "globalDestroy"));  		var dynContext:DynamicContext = context.createDynamicContext();
-  		dynContext.addDefinition(new DefaultNestedObjectDefinition(ClassInfo.forClass(Text)));
-  		dynContext.destroy();
+  		assertEquals("Unexpected count of destroy listeners", 0, counter.getCount(Text, "globalDestroy"));
+  		var child:Context = RuntimeContextBuilder.build([], null, context);
+  		child.addDynamicDefinition(new DefaultDynamicObjectDefinition(ClassInfo.forClass(Text), "foo"));
+  		child.destroy();
   		assertEquals("Unexpected count of destroy listeners", 1, counter.getCount(Text, "globalDestroy"));
 	}
 

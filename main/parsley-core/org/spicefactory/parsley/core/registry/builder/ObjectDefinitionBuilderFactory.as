@@ -24,11 +24,18 @@ package org.spicefactory.parsley.core.registry.builder {
 public interface ObjectDefinitionBuilderFactory {
 	
 	/**
-	 * Returns a builder for a root definition for the specified type.
+	 * Returns a builder for a singleton definition for the specified type.
 	 * 
 	 * @param type the type to create a definition for
 	 */
-	function forRootDefinition (type:Class) : RootObjectDefinitionBuilder;
+	function forSingletonDefinition (type:Class) : SingletonObjectDefinitionBuilder;
+	
+	/**
+	 * Returns a builder for a dynamic definition for the specified type.
+	 * 
+	 * @param type the type to create a definition for
+	 */
+	function forDynamicDefinition (type:Class) : DynamicObjectDefinitionBuilder;
 	
 	/**
 	 * Returns a builder for a nested definition for the specified type.

@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.context {
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.view.ViewManager;
 
@@ -180,6 +181,23 @@ public interface Context extends IEventDispatcher {
 	function getAllObjectsByType (type:Class) : Array;
 	
 	/**
+	 * Creates an object from the specified definition and dynamically adds it to the Context.
+	 * 
+	 * @param definition the definition to create an object from
+	 * @return an instance representing the dynamically created object and its definition
+	 */
+	function addDynamicDefinition (definition:DynamicObjectDefinition) : DynamicObject;
+
+	/**
+	 * Dynamically adds the specified instance to the Context.
+	 * 
+	 * @param instance the object to add to the Context
+	 * @param definition optional definition to apply to the existing instance
+	 * @return an instance representing the dynamically created object and its definition
+	 */
+	function addDynamicObject (instance:Object, definition:DynamicObjectDefinition = null) : DynamicObject;
+	
+	/**
 	 * Indicates whether configuration for this Context has been fully processed.
 	 * This includes loading configuration files, reflecting on classes, processing metadata tags
 	 * or validating the configuration. After this property is set the configuration of the Context
@@ -232,20 +250,7 @@ public interface Context extends IEventDispatcher {
 	 */
 	function get viewManager () : ViewManager;
 	
-	/**
-	 * Creates a new dynamic Context instance that is associated with this Context.
-	 * A dynamic Context allows to add and remove instances and object definitions
-	 * on-the-fly. You can create multiple dynamic instances from the same parent 
-	 * Context. They will share the ScopeManager and ViewManager of this instance,
-	 * but create their own internal strategies like lifecycle managers, so that they
-	 * can be destroyed individually without affecting this Context instance or other
-	 * dynamic Context instances.
-	 * 
-	 * <p>Internally Parsley uses such a Context type for dynamically wiring views
-	 * or managing other types of short-lives objects like Commands.</p>
-	 * 
-	 * @return a new instance of a dynamic Context as a child of this Context
-	 */
+	[Deprecated(replacement="new methods for dynamic objects on the core Context interface")]
 	function createDynamicContext () : DynamicContext;
 	
 }

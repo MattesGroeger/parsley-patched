@@ -127,7 +127,7 @@ public class ResourceBundleTag extends EventDispatcher implements RootConfigurat
 	
 	public function process (registry:ObjectDefinitionRegistry) : void {
 		registry.builders
-				.forRootDefinition(ResourceBundleTag)
+				.forSingletonDefinition(ResourceBundleTag)
 				.id(id)
 				.order(int.MIN_VALUE)
 				.instantiator(new TagInstantiator(this))

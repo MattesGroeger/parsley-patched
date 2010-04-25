@@ -121,14 +121,22 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 	private function createDefinition (property:Property, configClass:Object, registry:ObjectDefinitionRegistry) : void {
 		var metadata:ObjectDefinitionMetadata = getMetadata(property);
 		var id:String = (metadata.id != null) ? metadata.id : property.name;
-		registry.builders
-				.forRootDefinition(property.type.getClass())
-				.id(id)
-				.lazy(metadata.lazy)
-				.singleton(metadata.singleton)
-				.order(metadata.order)
-				.instantiator(new ConfingClassPropertyInstantiator(configClass, property))
-				.buildAndRegister();
+		if (metadata.singleton) {
+			registry.builders
+					.forSingletonDefinition(property.type.getClass())
+					.id(id)
+					.lazy(metadata.lazy)
+					.order(metadata.order)
+					.instantiator(new ConfingClassPropertyInstantiator(configClass, property))
+					.buildAndRegister();
+		}
+		else {
+			registry.builders
+					.forDynamicDefinition(property.type.getClass())
+					.id(id)
+					.instantiator(new ConfingClassPropertyInstantiator(configClass, property))
+					.buildAndRegister();
+		}
 	}
 	
 	private function handleLegacyFactory (factory:ObjectDefinitionFactory, registry:ObjectDefinitionRegistry) : void {

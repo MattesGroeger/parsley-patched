@@ -82,7 +82,7 @@ public class RuntimeConfigurationProcessor implements ConfigurationProcessor {
 	private function processInstances (registry:ObjectDefinitionRegistry) : void {
 		for each (var instanceDef:InstanceDefinition in instances) {
 			registry.builders
-					.forRootDefinition(ClassInfo.forInstance(instanceDef.instance, registry.domain).getClass())
+					.forSingletonDefinition(ClassInfo.forInstance(instanceDef.instance, registry.domain).getClass())
 					.id(instanceDef.id)
 					.instantiator(new ObjectWrapperInstantiator(instanceDef.instance))
 					.buildAndRegister();
@@ -91,13 +91,20 @@ public class RuntimeConfigurationProcessor implements ConfigurationProcessor {
 	
 	private function processClasses (registry:ObjectDefinitionRegistry) : void {
 		for each (var classDef:ClassDefinition in classes) {
-			registry.builders
-					.forRootDefinition(classDef.type)
-					.id(classDef.id)
-					.singleton(classDef.singleton)
-					.lazy(classDef.lazy)
-					.order(classDef.order)
-					.buildAndRegister();
+			if (classDef.singleton) {
+				registry.builders
+						.forSingletonDefinition(classDef.type)
+						.id(classDef.id)
+						.lazy(classDef.lazy)
+						.order(classDef.order)
+						.buildAndRegister();
+			}
+			else {
+				registry.builders
+						.forDynamicDefinition(classDef.type)
+						.id(classDef.id)
+						.buildAndRegister();
+			}
 		}
 	}
 	

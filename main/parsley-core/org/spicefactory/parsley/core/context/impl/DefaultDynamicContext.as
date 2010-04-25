@@ -96,20 +96,6 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 	}
 	
 	/**
-	 * @private
-	 */
-	internal function addDynamicObject (object:DynamicObject) : void {
-		objects[object.instance] = object;	
-	}
-	
-	/**
-	 * @private
-	 */
-	internal function removeDynamicObject (object:DefaultDynamicObject) : void {
-		if (objects != null) delete objects[object.instance];	
-	}
-	
-	/**
 	 * @inheritDoc
 	 */
 	public function removeObject (instance:Object) : void {

@@ -17,7 +17,6 @@
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
@@ -25,7 +24,7 @@ import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultCommandObserver;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultCommandTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DynamicCommandProxy;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
@@ -129,8 +128,8 @@ public class DynamicCommandTag implements RootConfigurationTag {
 	 */
 	public function process (registry:ObjectDefinitionRegistry) : void {
 		
-		var targetDef:ObjectDefinition = registry.builders
-				.forNestedDefinition(type)
+		var targetDef:DynamicObjectDefinition = registry.builders
+				.forDynamicDefinition(type)
 				.decorators(decorators)
 				.build();
 		
@@ -156,9 +155,7 @@ public class DynamicCommandTag implements RootConfigurationTag {
 			new DefaultCommandObserver(provider, error, CommandStatus.ERROR, selector, messageInfo);
 		}
 		
-		var context:DynamicContext = registry.context.createDynamicContext();
-		
-		target = new DynamicCommandProxy(messageInfo, selector, order, context, targetDef, stateful,
+		target = new DynamicCommandProxy(messageInfo, selector, order, registry.context, targetDef, stateful,
 				invoker.returnType, execute, result, error, messageProperties);
 				
 		registry.context.scopeManager.getScope(scope).messageReceivers.addCommand(target);

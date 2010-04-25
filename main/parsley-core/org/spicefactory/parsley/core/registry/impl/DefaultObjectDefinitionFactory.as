@@ -55,15 +55,24 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 
 	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
-		return registry.builders
-					.forRootDefinition(type)
-					.id(id)
-					.lazy(lazy)
-					.singleton(singleton)
-					.order(order)
-					.instantiator(instantiator)
-					.decorators(decorators)
-					.build();
+		if (singleton) {
+			return registry.builders
+						.forSingletonDefinition(type)
+						.id(id)
+						.lazy(lazy)
+						.order(order)
+						.instantiator(instantiator)
+						.decorators(decorators)
+						.build();
+		}
+		else {
+			return registry.builders
+						.forDynamicDefinition(type)
+						.id(id)
+						.instantiator(instantiator)
+						.decorators(decorators)
+						.build();
+		}
 	}
 	
 	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {

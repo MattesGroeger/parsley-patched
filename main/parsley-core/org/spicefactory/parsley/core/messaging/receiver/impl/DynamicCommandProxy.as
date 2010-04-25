@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.DynamicContext;
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.provider.Provider;
 import org.spicefactory.parsley.core.messaging.command.Command;
@@ -24,8 +24,7 @@ import org.spicefactory.parsley.core.messaging.command.CommandProcessor;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
 import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
-import org.spicefactory.parsley.core.messaging.receiver.impl.AbstractMessageReceiver;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 
 /**
  * A dynamic command is a special type of object that only gets created when a matching
@@ -38,8 +37,8 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
  */
 public class DynamicCommandProxy extends AbstractMessageReceiver implements CommandTarget {
 	
-	private var context:DynamicContext;
-	private var definition:ObjectDefinition;
+	private var context:Context;
+	private var definition:DynamicObjectDefinition;
 	private var stateful:Boolean;
 	
 	private var execute:String;
@@ -71,8 +70,8 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 			messageInfo:ClassInfo, 
 			selector:*, 
 			order:int, 
-			context:DynamicContext,
-			definition:ObjectDefinition,
+			context:Context,
+			definition:DynamicObjectDefinition,
 			stateful:Boolean,
 			returnType:Class,
 			execute:String,
@@ -141,11 +140,11 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 	
 	private function createObject () : DynamicObject {
 		if (!stateful) {
-			return context.addDefinition(definition);
+			return context.addDynamicDefinition(definition);
 		}
 		else {
 			if (statefulTarget == null) {
-				statefulTarget = context.addDefinition(definition);			
+				statefulTarget = context.addDynamicDefinition(definition);			
 			}
 			return statefulTarget;
 		}
@@ -171,8 +170,8 @@ import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.context.provider.Provider;
 import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
-import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultCommandTarget;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultCommandObserver;
+import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultCommandTarget;
 
 class DynamicCommandTarget extends DefaultCommandTarget {
 	

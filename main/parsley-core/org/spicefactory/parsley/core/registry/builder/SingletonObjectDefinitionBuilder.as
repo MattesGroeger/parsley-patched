@@ -24,7 +24,7 @@ import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
  * 
  * @author Jens Halm
  */
-public interface RootObjectDefinitionBuilder {
+public interface SingletonObjectDefinitionBuilder {
 	
 	
 	/**
@@ -33,7 +33,7 @@ public interface RootObjectDefinitionBuilder {
 	 * @param value the id the object should be registered with
 	 * @return this builder instance for method chaining
 	 */
-	function id (value:String) : RootObjectDefinitionBuilder;
+	function id (value:String) : SingletonObjectDefinitionBuilder;
 	
 	/**
 	 * Indicates whether this object should be lazily initialized.
@@ -42,17 +42,7 @@ public interface RootObjectDefinitionBuilder {
 	 * @param value indicates whether this object should be lazily initialized
 	 * @return this builder instance for method chaining
 	 */
-	function lazy (value:Boolean) : RootObjectDefinitionBuilder;
-
-	/**
-	 * Indicates whether the Context should cache instances of this object internally
-	 * and return the cached instance on subsequent requests. If set to false the
-	 * Context will create a new instance on each request. The default is true.
-	 * 
-	 * @param value indicates whether this definition represents a singleton
-	 * @return this builder instance for method chaining
-	 */
-	function singleton (value:Boolean) : RootObjectDefinitionBuilder;
+	function lazy (value:Boolean) : SingletonObjectDefinitionBuilder;
 
 	/**
 	 * Sets the processing order for this object upon Context creation.
@@ -61,7 +51,7 @@ public interface RootObjectDefinitionBuilder {
 	 * @param value the processing order for this object upon Context creation
 	 * @return this builder instance for method chaining
 	 */
-	function order (value:int) : RootObjectDefinitionBuilder;
+	function order (value:int) : SingletonObjectDefinitionBuilder;
 
 	/**
 	 * Sets the object responsible for creating instances from this definition.
@@ -70,7 +60,7 @@ public interface RootObjectDefinitionBuilder {
 	 * @param value the object responsible for creating instances from this definition
 	 * @return this builder instance for method chaining
 	 */
-	function instantiator (value:ObjectInstantiator) : RootObjectDefinitionBuilder;
+	function instantiator (value:ObjectInstantiator) : SingletonObjectDefinitionBuilder;
 	
 	/**
 	 * Adds a decorator to be processed when creating the definition.
@@ -80,7 +70,7 @@ public interface RootObjectDefinitionBuilder {
 	 * @param value the decorator to add to this builder
 	 * @return this builder instance for method chaining
 	 */
-	function decorator (value:ObjectDefinitionDecorator) : RootObjectDefinitionBuilder;
+	function decorator (value:ObjectDefinitionDecorator) : SingletonObjectDefinitionBuilder;
 
 	/**
 	 * Adds decorators to be processed when creating the definition.
@@ -90,7 +80,7 @@ public interface RootObjectDefinitionBuilder {
 	 * @param value the decorators to add to this builder
 	 * @return this builder instance for method chaining
 	 */
-	function decorators (value:Array) : RootObjectDefinitionBuilder;
+	function decorators (value:Array) : SingletonObjectDefinitionBuilder;
 	
 	/**
 	 * Builds a new definition using all parameters set through the other methods of this builder.

@@ -31,7 +31,7 @@ import flash.events.Event;
 public class DefaultDynamicObject implements DynamicObject {
 	
 	
-	private var _context:DefaultDynamicContext;
+	private var _context:DefaultContext;
 	private var _definition:ObjectDefinition;
 	private var _instance:Object;
 	
@@ -46,12 +46,12 @@ public class DefaultDynamicObject implements DynamicObject {
 	 * @param definition the definition that was applied to the instance
 	 * @param instance the actual instance that was dynamically added to the Context
 	 */
-	function DefaultDynamicObject (context:DefaultDynamicContext, definition:ObjectDefinition, instance:Object = null) {
+	function DefaultDynamicObject (context:DefaultContext, definition:ObjectDefinition, instance:Object = null) {
 		_context = context;
 		_definition = definition;
 		_instance = instance;
-		if (!context.parent.initialized) {
-			context.parent.addEventListener(ContextEvent.INITIALIZED, contextInitialized);
+		if (!context.initialized) {
+			context.addEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		}
 		else {
 			processInstance();
@@ -59,7 +59,7 @@ public class DefaultDynamicObject implements DynamicObject {
 	}
 	
 	private function contextInitialized (event:Event) : void {
-		_context.parent.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
+		_context.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		processInstance();
 	}
 	
@@ -88,7 +88,7 @@ public class DefaultDynamicObject implements DynamicObject {
 	 * @inheritDoc
 	 */
 	public function get instance () : Object {
-		if (_instance == null && _context.parent.configured) {
+		if (_instance == null && _context.configured) {
 			processInstance();
 		}
 		return _instance;
@@ -105,12 +105,12 @@ public class DefaultDynamicObject implements DynamicObject {
 	 * @inheritDoc
 	 */
 	public function remove () : void {
-		if (_context.parent.initialized) {
+		if (managedObject) {
 			_context.lifecycleManager.destroyObject(managedObject);
 		} else {
-			_context.parent.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
+			_context.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		}
-		_context.removeDynamicObject(this);
+		//_context.removeInstance(this);
 	}
 	
 	

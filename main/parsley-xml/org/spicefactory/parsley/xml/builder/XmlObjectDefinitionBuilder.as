@@ -155,7 +155,7 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 			var ci:ClassInfo = ClassInfo.forInstance(obj, registry.domain);
 			var idProp:Property = ci.getProperty("id");
 			registry.builders
-					.forRootDefinition(ci.getClass())
+					.forSingletonDefinition(ci.getClass())
 					.id((idProp == null) ? null : idProp.getValue(obj))
 					.instantiator(new ObjectWrapperInstantiator(obj))
 					.buildAndRegister();

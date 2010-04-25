@@ -5,7 +5,6 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.impl.DefaultContext;
-import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
@@ -14,14 +13,15 @@ import org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator;
 /**
  * @author Jens Halm
  */
-public class DynamicContextTest extends ContextTestBase {
+public class LegacyDynamicContextTest extends ContextTestBase {
 
 	
 	public function testAddObject () : void {
 		var context:Context = ActionScriptContextBuilder.build(DynamicConfig);
 		checkState(context);
 		var obj:AnnotatedDynamicTestObject = new AnnotatedDynamicTestObject();
-		var dynObject:DynamicObject = context.addDynamicObject(obj);
+		var dynContext:DynamicContext = context.createDynamicContext();
+		var dynObject:DynamicObject = dynContext.addObject(obj);
 		validateDynamicObject(dynObject, context);
 	}
 	
@@ -29,24 +29,27 @@ public class DynamicContextTest extends ContextTestBase {
 		var context:Context = ActionScriptContextBuilder.build(DynamicConfig);
 		checkState(context);
 		var obj:DynamicTestObject = new DynamicTestObject();
-		var definition:DynamicObjectDefinition = createDefinition(context);
-		var dynObject:DynamicObject = context.addDynamicObject(obj, definition);
+		var dynContext:DynamicContext = context.createDynamicContext();
+		var definition:ObjectDefinition = createDefinition(dynContext);
+		var dynObject:DynamicObject = dynContext.addObject(obj, definition);
 		validateDynamicObject(dynObject, context);		
 	}	
 	
 	public function testAddDefinition () : void {
 		var context:Context = ActionScriptContextBuilder.build(DynamicConfig);
 		checkState(context);
-		var definition:DynamicObjectDefinition = createDefinition(context);
-		var dynObject:DynamicObject = context.addDynamicDefinition(definition);
+		var dynContext:DynamicContext = context.createDynamicContext();
+		var definition:ObjectDefinition = createDefinition(dynContext);
+		var dynObject:DynamicObject = dynContext.addDefinition(definition);
 		validateDynamicObject(dynObject, context);
 	}
 	
 	public function testNestedDefinitionLifecycle () : void {
 		var context:Context = RuntimeContextBuilder.build([]);
 		checkState(context);
-		var definition:DynamicObjectDefinition = createDefinition(context, false);
-		var dynObject:DynamicObject = context.addDynamicDefinition(definition);
+		var dynContext:DynamicContext = context.createDynamicContext();
+		var definition:ObjectDefinition = createDefinition(dynContext, false);
+		var dynObject:DynamicObject = dynContext.addDefinition(definition);
 		var instance:DynamicTestObject = dynObject.instance as DynamicTestObject;
 		assertFalse("Unexpected destroy method invocation", instance.dependency.destroyMethodCalled);
 		validateDynamicObject(dynObject, context);
@@ -61,12 +64,12 @@ public class DynamicContextTest extends ContextTestBase {
 		assertEquals("Unexpected number of received messsages", 1, dynObject.instance.getMessageCount());			
 	}
 	
-	private function createDefinition (context:Context, dependencyAsRef:Boolean = true) : DynamicObjectDefinition {
+	private function createDefinition (context:DynamicContext, dependencyAsRef:Boolean = true) : ObjectDefinition {
 		var decorator:MessageHandlerDecorator = new MessageHandlerDecorator();
 		decorator.method = "handleMessage";
 		var registry:ObjectDefinitionRegistry = DefaultContext(context).registry;
-		var definition:DynamicObjectDefinition = registry.builders
-					.forDynamicDefinition(DynamicTestObject)
+		var definition:ObjectDefinition = registry.builders
+					.forNestedDefinition(DynamicTestObject)
 					.decorator(decorator)
 					.build();
 		if (dependencyAsRef) {

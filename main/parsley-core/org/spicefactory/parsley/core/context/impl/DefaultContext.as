@@ -15,14 +15,15 @@
  */
 
 package org.spicefactory.parsley.core.context.impl {
-import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.collection.SimpleMap;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
+import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.provider.impl.ContextObjectProviderFactory;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextEvent;
@@ -30,9 +31,11 @@ import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.view.ViewManager;
 
@@ -67,6 +70,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private var _viewManager:ViewManager;
 	
 	private var singletonCache:SimpleMap = new SimpleMap();
+	private var dynamicCache:SimpleMap = new SimpleMap();
 	
 	private var initSequence:InitializerSequence;
 	private var underConstruction:Dictionary = new Dictionary();
@@ -229,6 +233,44 @@ public class DefaultContext extends EventDispatcher implements Context {
 		return (def != null) ? getInstance(def) : null;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function addDynamicDefinition (definition:DynamicObjectDefinition) : DynamicObject {
+		return addDynamicObject(null, definition);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function addDynamicObject (instance:Object, definition:DynamicObjectDefinition = null) : DynamicObject {
+		checkState(false);
+		var targetDef:ObjectDefinition = definition;
+		if (targetDef == null) {
+			var ci:ClassInfo = ClassInfo.forInstance(instance, registry.domain);
+			targetDef = registry.builders.forNestedDefinition(ci.getClass()).build();
+		}
+		return new DefaultDynamicObject(this, targetDef, instance);
+	}
+	
+	/**
+	 * @private
+	 */
+	/*
+	internal function addInstance (object:DynamicObject) : void {
+		objects[object.instance] = object;	
+	}
+	 */
+	
+	/**
+	 * @private
+	 */
+	/*
+	internal function removeInstance (object:DefaultDynamicObject) : void {
+		if (objects != null) delete objects[object.instance];	
+	}
+	 */
+	
 
 	/**
 	 * @private
@@ -348,11 +390,11 @@ public class DefaultContext extends EventDispatcher implements Context {
 		return new DefaultDynamicContext(strategyProvider.createDynamicProvider(), this);
 	}
 	
-	private function checkState () : void {
+	private function checkState (mustBeConfigured:Boolean = true) : void {
 		if (destroyed) {
 			throw new IllegalStateError("Attempt to access Context after it was destroyed");
 		}
-		if (!configured) {
+		if (mustBeConfigured && !configured) {
 			throw new IllegalStateError("Attempt to access Context before it was fully configured");
 		}
 	}

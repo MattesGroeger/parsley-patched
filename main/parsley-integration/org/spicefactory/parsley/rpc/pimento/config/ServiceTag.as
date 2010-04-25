@@ -64,7 +64,7 @@ public class ServiceTag implements RootConfigurationTag {
 	public function process (registry:ObjectDefinitionRegistry) : void {
 		if (id == null) id = name;
 		var definition:RootObjectDefinition = registry.builders
-					.forRootDefinition(type)
+					.forSingletonDefinition(type)
 					.id(id)
 					.buildAndRegister();
 		var listener:ServiceLifecycleListener = new ServiceLifecycleListener(this);

@@ -61,7 +61,7 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 		if (definition is SingletonObjectDefinition) {
 			var singletonDefinition:SingletonObjectDefinition = SingletonObjectDefinition(definition);
 			return registry.builders
-					.forRootDefinition(targetType)
+					.forSingletonDefinition(targetType)
 					.id(singletonDefinition.id)
 					.lazy(singletonDefinition.lazy)
 					.instantiator(instantiator)

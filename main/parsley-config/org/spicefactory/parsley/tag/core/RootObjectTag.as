@@ -61,14 +61,23 @@ public class RootObjectTag implements RootConfigurationTag {
 	
 	
 	public function process (registry:ObjectDefinitionRegistry) : void {
-		registry.builders
-				.forRootDefinition(type)
-				.id(id)
-				.lazy(lazy)
-				.singleton(singleton)
-				.order(order)
-				.decorators(decorators)
-				.buildAndRegister();
+		if (singleton) {
+			registry.builders
+					.forSingletonDefinition(type)
+					.id(id)
+					.lazy(lazy)
+					.order(order)
+					.decorators(decorators)
+					.buildAndRegister();
+		}
+		else {
+			/* TODO - 2.3.M1 - log deprecation warning */
+			registry.builders
+					.forDynamicDefinition(type)
+					.id(id)
+					.decorators(decorators)
+					.buildAndRegister();
+		}
 	}
 	
 	

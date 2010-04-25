@@ -22,14 +22,14 @@ import org.spicefactory.lib.util.DelayedDelegateChain;
 import org.spicefactory.lib.util.Delegate;
 import org.spicefactory.lib.util.DelegateChain;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.DynamicContext;
+import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.FastInjectEvent;
 import org.spicefactory.parsley.core.events.ViewAutowireEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ViewDefinition;
 import org.spicefactory.parsley.core.registry.ViewDefinitionRegistry;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.ViewAutowireMode;
@@ -60,13 +60,12 @@ public class DefaultViewManager implements ViewManager {
 	private var _componentRemovedEvent:String = Event.REMOVED_FROM_STAGE;
 	private var _componentAddedEvent:String = ViewConfigurationEvent.CONFIGURE_VIEW;
 
-	private var parent:Context;
+	private var context:Context;
 	private var domain:ApplicationDomain;
 	private var registry:ViewDefinitionRegistry;
 	private var autowireFilter:ViewAutowireFilter;
 	private var viewRoots:Array = new Array();
 	private var configuredViews:Dictionary = new Dictionary();
-	private var viewContext:DynamicContext;
 
 	private var cachedFastInjectEvents:Array = new Array();
 	
@@ -102,7 +101,7 @@ public class DefaultViewManager implements ViewManager {
 	 */
 	function DefaultViewManager (context:Context, domain:ApplicationDomain, 
 			registry:ViewDefinitionRegistry, autowireFilter:ViewAutowireFilter) {
-		this.parent = context;
+		this.context = context;
 		this.domain = domain;
 		this.registry = registry;
 		this.autowireFilter = autowireFilter;
@@ -111,18 +110,19 @@ public class DefaultViewManager implements ViewManager {
 	
 	private function initialize () : void {
 		setUiComponentClass();
-		viewContext = parent.createDynamicContext();
-		viewContext.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		//viewContext = parent.createDynamicContext();
+		//context = parent;
+		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
 	
 	private function contextDestroyed (event:ContextEvent) : void {
-		viewContext.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		for each (var view:DisplayObject in viewRoots) {
 			handleRemovedViewRoot(view);	
 		}
 		viewRoots = new Array();
 		if (cachedFastInjectEvents.length > 0) {
-			viewContext.removeEventListener(ContextEvent.INITIALIZED, handleCachedFastInjectEvents);
+			context.removeEventListener(ContextEvent.INITIALIZED, handleCachedFastInjectEvents);
 			cachedFastInjectEvents = new Array();
 		}
 	}
@@ -133,7 +133,7 @@ public class DefaultViewManager implements ViewManager {
 	public function addViewRoot (view:DisplayObject) : void {
 		if (viewRoots.indexOf(view) >= 0) return;
 		log.info("Add view root: {0}/{1}", view.name, getQualifiedClassName(view));
-		if (viewContext == null) initialize();
+		if (context == null) initialize();
 		if (globalViewRootRegistry[view] != undefined) {
 			// we do not allow two view managers on the same view, but we allow switching them
 			log.info("Switching ViewManager for view root '{0}'", view);
@@ -163,7 +163,7 @@ public class DefaultViewManager implements ViewManager {
 			viewRoots.splice(index, 1);
 			if (viewRoots.length == 0) {
 				log.info("Last view root removed from ViewManager - Destroy Context");
-				parent.destroy();
+				context.destroy();
 			}
 		}
 	}
@@ -201,7 +201,7 @@ public class DefaultViewManager implements ViewManager {
 			event.domain = domain;
 		}
 		if (event.parent == null) {
-			event.parent = parent;
+			event.parent = context;
 		}
 		event.stopImmediatePropagation();
 	}
@@ -234,7 +234,7 @@ public class DefaultViewManager implements ViewManager {
 			configureView(view, getDefinition(view, view.name));
 		}
 		else if (mode == ViewAutowireMode.CONFIGURED) {
-			var definition:ObjectDefinition = getDefinition(view, view.name);
+			var definition:ViewDefinition = getDefinition(view, view.name);
 			if (definition != null) {
 				configureView(view, definition);
 			}
@@ -255,8 +255,8 @@ public class DefaultViewManager implements ViewManager {
 		configureView(configTarget, getDefinition(configTarget, configId));
 	}	
 	
-	protected function configureView (target:Object, definition:ObjectDefinition) : void {
-		log.debug("Add object '{0}' to {1}", target, viewContext);
+	protected function configureView (target:Object, definition:ViewDefinition) : void {
+		log.debug("Add object '{0}' to {1}", target, context);
 		if (target is IEventDispatcher) {
 			var info:ClassInfo = ClassInfo.forInstance(target, domain);
 			var removedEvent:String = 
@@ -270,12 +270,12 @@ public class DefaultViewManager implements ViewManager {
 				IEventDispatcher(target).addEventListener(removedEvent, componentRemoved);
 			}
 		}
-		configuredViews[target] = true;
-		viewContext.addObject(target, definition);
+		var dynObject:DynamicObject = context.addDynamicObject(target, definition);
+		configuredViews[target] = dynObject;
 	}
 	
-	protected function getDefinition (configTarget:Object, configId:String) : ObjectDefinition {
-		var definition:ObjectDefinition;
+	protected function getDefinition (configTarget:Object, configId:String) : ViewDefinition {
+		var definition:ViewDefinition;
 		if (configId != null) {
 			definition = registry.getDefinitionById(configId, configTarget);
 		}
@@ -294,15 +294,17 @@ public class DefaultViewManager implements ViewManager {
 		if (!isRemovable(view)) {
 			return;
 		}
-		log.debug("Remove object '{0}' from {1}", view, viewContext);
+		log.debug("Remove object '{0}' from {1}", view, context);
 		if (componentRemovedEvent == Event.REMOVED_FROM_STAGE && view is DisplayObject) {
 			stageEventFilter.removeTarget(view as DisplayObject);
 		}
 		else {
 			view.removeEventListener(componentRemovedEvent, componentRemoved);
 		}
+		var dynObject:DynamicObject = configuredViews[view];
+		if (dynObject == null) return;
 		delete configuredViews[view];
-		viewContext.removeObject(view);
+		dynObject.remove();
 	}
 	
 	private function filteredComponentAdded (view:IEventDispatcher) : void {
@@ -312,11 +314,11 @@ public class DefaultViewManager implements ViewManager {
 	
 	private function handleFastInject (event:FastInjectEvent) : void {
 		event.stopImmediatePropagation();
-		if (viewContext.destroyed) return;
+		if (context.destroyed) return;
 		event.markAsProcessed();
-		if (!viewContext.initialized) {
+		if (!context.initialized) {
 			if (cachedFastInjectEvents.length == 0) {
-				viewContext.addEventListener(ContextEvent.INITIALIZED, handleCachedFastInjectEvents);
+				context.addEventListener(ContextEvent.INITIALIZED, handleCachedFastInjectEvents);
 			}
 			cachedFastInjectEvents.push(event);
 			return;
@@ -339,8 +341,8 @@ public class DefaultViewManager implements ViewManager {
 				throw new ContextError("Exactly one attribute of type or objectId must be specified");
 			}
 			var object:Object = (injection.objectId != null)
-					? viewContext.getObject(injection.objectId)
-					: viewContext.getObjectByType(injection.type);
+					? context.getObject(injection.objectId)
+					: context.getObjectByType(injection.type);
 			target[injection.property] = object;
 		}
 	}
