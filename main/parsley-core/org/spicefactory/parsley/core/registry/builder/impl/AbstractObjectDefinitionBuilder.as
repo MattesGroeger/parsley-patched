@@ -24,7 +24,7 @@ import org.spicefactory.parsley.core.registry.DecoratorAssembler;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 
 import flash.utils.getQualifiedClassName;
 
@@ -116,9 +116,9 @@ public class AbstractObjectDefinitionBuilder {
 	private function validateDefinitionReplacement (oldDef:ObjectDefinition, newDef:ObjectDefinition, 
 			decorator:ObjectDefinitionDecorator) : void {
 		// we cannot allow "downgrades"
-		if (oldDef is RootObjectDefinition && (!(newDef is RootObjectDefinition))) {
+		if (oldDef is SingletonObjectDefinition && (!(newDef is SingletonObjectDefinition))) {
 			throw new ContextError("Decorator of type " + getQualifiedClassName(decorator) 
-					+ " attempts to downgrade a RootObjectDefinition to " + getQualifiedClassName(newDef));
+					+ " attempts to downgrade a SingletonObjectDefinition to " + getQualifiedClassName(newDef));
 		}
 	}
 	

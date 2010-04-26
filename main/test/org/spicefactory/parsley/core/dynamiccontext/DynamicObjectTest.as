@@ -73,7 +73,7 @@ public class DynamicObjectTest extends ContextTestBase {
 		}
 		else {
 			var childDef:ObjectDefinition = registry.builders
-					.forNestedDefinition(DynamicTestDependency)
+					.forDynamicDefinition(DynamicTestDependency)
 					.build();
 			definition.properties.addValue("dependency", childDef);
 		}

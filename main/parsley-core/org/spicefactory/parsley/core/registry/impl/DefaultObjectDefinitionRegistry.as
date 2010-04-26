@@ -24,7 +24,6 @@ import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
 import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.builder.ObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.registry.builder.impl.DefaultObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.scope.ScopeManager;
@@ -110,14 +109,14 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	/**
 	 * @inheritDoc
 	 */
-	public function getDefinition (id:String) : RootObjectDefinition {
-		return definitions.get(id) as RootObjectDefinition;
+	public function getDefinition (id:String) : ObjectDefinition {
+		return definitions.get(id) as ObjectDefinition;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function registerDefinition (definition:RootObjectDefinition) : void {
+	public function registerDefinition (definition:ObjectDefinition) : void {
 		checkState();
 		if (definitions.containsKey(definition.id)) {
 			throw new IllegalArgumentError("Duplicate id for object definition: " + definition.id);
@@ -128,7 +127,7 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	/**
 	 * @inheritDoc
 	 */
-	public function unregisterDefinition (definition:RootObjectDefinition) : void {
+	public function unregisterDefinition (definition:ObjectDefinition) : void {
 		checkState();
 		if (containsDefinition(definition.id)) {
 			if (getDefinition(definition.id) != definition) {
@@ -174,7 +173,7 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	/**
 	 * @inheritDoc
 	 */
-	public function getDefinitionByType (type:Class) : RootObjectDefinition {
+	public function getDefinitionByType (type:Class) : ObjectDefinition {
 		var defs:Array = getAllDefinitionsByType(type);
 		if (defs.length > 1) {
 			throw new IllegalArgumentError("More than one object of type " + getQualifiedClassName(type) 
@@ -201,7 +200,7 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 		};
 	}
 	
-	private function idMapper (definition:RootObjectDefinition, index:int, array:Array) : String {
+	private function idMapper (definition:ObjectDefinition, index:int, array:Array) : String {
 		return definition.id;
 	}
 	

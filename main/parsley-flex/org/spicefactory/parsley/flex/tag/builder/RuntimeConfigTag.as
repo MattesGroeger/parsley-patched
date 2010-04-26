@@ -19,9 +19,9 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.runtime.processor.RuntimeConfigurationProcessor;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
 
@@ -75,7 +75,7 @@ public class RuntimeConfigTag implements ContextBuilderProcessor, ConfigurationP
 			}
 			else if (instance is ObjectDefinitionFactory) {
 				/* TODO - ObjectDefinitionFactory is deprecated - remove in later versions */
-				var definition:RootObjectDefinition 
+				var definition:ObjectDefinition 
 						= ObjectDefinitionFactory(instance).createRootDefinition(registry);
 				registry.registerDefinition(definition);
 			}

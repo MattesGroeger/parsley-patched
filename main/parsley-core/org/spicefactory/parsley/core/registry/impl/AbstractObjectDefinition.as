@@ -40,6 +40,7 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 
 	
 	private var _type:ClassInfo;
+	private var _id:String;
 	
 	private var _instantiator:ObjectInstantiator;
     private var _processorFactories:Array = new Array();	
@@ -61,14 +62,18 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	 * Creates a new instance.
 	 * 
 	 * @param type the type to create a definition for
+	 * @param id the id the object should be registered with
 	 */
-	function AbstractObjectDefinition (type:ClassInfo) {
+	function AbstractObjectDefinition (type:ClassInfo, id:String) {
 		_type = type;
+		_id = id;
 		_constructorArgs = new DefaultConstructorArgRegistry(this);
 		_properties = new DefaultPropertyRegistry(this);
 		_methods = new DefaultMethodRegistry(this);
 		_listeners = new DefaultLifecycleListenerRegistry(this);
 	}
+	
+
 
 
 	/**
@@ -79,13 +84,15 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	public function populateFrom (definition:ObjectDefinition) : void {
 		checkState();
 		_instantiator = definition.instantiator;
+		_initMethod = definition.initMethod;
+		_destroyMethod = definition.destroyMethod;
+		_processorFactories = definition.processorFactories;
+		
+		/* deprecated */
 		_constructorArgs = definition.constructorArgs;
 		_properties = definition.properties;
 		_methods = definition.injectorMethods;
 		_listeners = definition.objectLifecycle;
-		
-		_initMethod = definition.initMethod;
-		_destroyMethod = definition.destroyMethod;
 	}
 
 	
@@ -94,6 +101,13 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	 */
 	public function get type () : ClassInfo {
 		return _type;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get id () : String {
+		return _id;
 	}
 	
 	/**

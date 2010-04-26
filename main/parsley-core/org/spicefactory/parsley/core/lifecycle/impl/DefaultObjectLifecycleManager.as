@@ -24,7 +24,6 @@ import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectProcessor;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.MethodParameterRegistry;
 import org.spicefactory.parsley.core.registry.model.ManagedArray;
 import org.spicefactory.parsley.core.registry.model.ObjectIdReference;
@@ -245,7 +244,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
  			listener(object.instance, object.context);
 		}	
 		
-		var id:String = (object.definition is RootObjectDefinition) ? RootObjectDefinition(object.definition).id : null;
+		var id:String = object.definition.id;
 		for each (var scope:ScopeDefinition in scopes) {
 			scope.lifecycleEventRouter.dispatchMessage(object.instance, domain, event.key);
 			if (id != null) {

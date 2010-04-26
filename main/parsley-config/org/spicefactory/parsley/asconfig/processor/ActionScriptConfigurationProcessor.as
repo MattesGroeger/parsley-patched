@@ -25,10 +25,10 @@ import org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata;
 import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
 import org.spicefactory.parsley.core.errors.ConfigurationProcessorError;
 import org.spicefactory.parsley.core.errors.ConfigurationUnitError;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
 
@@ -141,7 +141,7 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 	
 	private function handleLegacyFactory (factory:ObjectDefinitionFactory, registry:ObjectDefinitionRegistry) : void {
 		/* TODO - ObjectDefinitionFactory is deprecated - remove in later versions */
-		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
+		var definition:ObjectDefinition = factory.createRootDefinition(registry);
 		registry.registerDefinition(definition);
 	}
 	
@@ -170,8 +170,6 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 		}
 		return "ActionScriptConfig{" + classNames.join(",") + "}";
 	}
-	
-	
 }
 }
 

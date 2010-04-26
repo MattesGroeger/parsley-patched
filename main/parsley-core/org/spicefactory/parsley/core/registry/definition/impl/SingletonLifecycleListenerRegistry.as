@@ -15,14 +15,14 @@
  */
 
 package org.spicefactory.parsley.core.registry.definition.impl {
-import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
+import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
 
 import flash.events.Event;
@@ -48,7 +48,7 @@ public class SingletonLifecycleListenerRegistry extends DefaultLifecycleListener
 	 * @param definition the definition of the object this registry is associated with
 	 * @param registry the registry the definition belongs to
 	 */
-	function SingletonLifecycleListenerRegistry (definition:RootObjectDefinition, registry:ObjectDefinitionRegistry) {
+	function SingletonLifecycleListenerRegistry (definition:SingletonObjectDefinition, registry:ObjectDefinitionRegistry) {
 		super(definition);
 		this.registry = registry;
 	}
@@ -60,7 +60,7 @@ public class SingletonLifecycleListenerRegistry extends DefaultLifecycleListener
 	public override function synchronizeProvider (handler:Function) : LifecycleListenerRegistry {
 		checkState();
 		if (provider == null) {
-			var id:String = RootObjectDefinition(definition).id;
+			var id:String = definition.id;
 			var providerDelegate:ObjectProvider = registry.createObjectProvider(definition.type.getClass(), id);
 			provider = wrapProvider(providerDelegate);
 			addListener(ObjectLifecycle.POST_INIT, postInit);

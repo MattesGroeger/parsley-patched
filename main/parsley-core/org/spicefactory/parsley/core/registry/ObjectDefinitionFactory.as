@@ -22,7 +22,7 @@ package org.spicefactory.parsley.core.registry {
  */
 public interface ObjectDefinitionFactory {
 	
-	function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition;	
+	function createRootDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition;	
 
 	function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition;	
 	

@@ -22,12 +22,11 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.context.DynamicObject;
-import org.spicefactory.parsley.core.context.impl.ChildContext;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 
 import flash.events.Event;
 import flash.utils.Dictionary;
@@ -79,7 +78,7 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 		checkState();
 		if (definition == null) {
 			var ci:ClassInfo = ClassInfo.forInstance(instance, registry.domain);
-			definition = registry.builders.forNestedDefinition(ci.getClass()).build();
+			definition = registry.builders.forDynamicDefinition(ci.getClass()).build();
 		}
 		else {
 			checkDefinition(definition);
@@ -90,8 +89,8 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 	}
 	
 	private function checkDefinition (definition:ObjectDefinition) : void {
-		if (definition is RootObjectDefinition) {
-			throw new ContextError("RootObjectDefinitions cannot be added to a DynamicContext");
+		if (definition is SingletonObjectDefinition) {
+			throw new ContextError("SingletonObjectDefinition cannot be added to a DynamicContext");
 		}
 	}
 	

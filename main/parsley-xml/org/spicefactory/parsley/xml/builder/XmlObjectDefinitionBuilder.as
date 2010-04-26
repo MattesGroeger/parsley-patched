@@ -24,11 +24,10 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
-import org.spicefactory.parsley.xml.builder.XmlObjectDefinitionLoader;
 import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import org.spicefactory.parsley.xml.tag.ObjectsTag;
 
@@ -145,7 +144,7 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 	private function buildTargetDefinition (obj:Object) : void {
 		if (obj is ObjectDefinitionFactory) {
 			/* TODO - ObjectDefinitionFactory is deprecated - remove in later versions */
-			var definition:RootObjectDefinition = ObjectDefinitionFactory(obj).createRootDefinition(registry);
+			var definition:ObjectDefinition = ObjectDefinitionFactory(obj).createRootDefinition(registry);
 			registry.registerDefinition(definition);
 		}
 		else if (obj is RootConfigurationTag) {

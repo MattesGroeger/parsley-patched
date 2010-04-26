@@ -27,7 +27,7 @@ import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
  * 
  * @author Jens Halm
  */
-public class DefaultSingletonObjectDefinition extends AbstractRootObjectDefinition implements SingletonObjectDefinition {
+public class DefaultSingletonObjectDefinition extends AbstractObjectDefinition implements SingletonObjectDefinition {
 
 
 	private var _lazy:Boolean;

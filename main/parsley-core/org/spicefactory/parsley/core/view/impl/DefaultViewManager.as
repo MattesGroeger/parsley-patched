@@ -30,7 +30,7 @@ import org.spicefactory.parsley.core.events.FastInjectEvent;
 import org.spicefactory.parsley.core.events.ViewAutowireEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.ViewAutowireMode;
 import org.spicefactory.parsley.core.view.ViewManager;
@@ -323,7 +323,7 @@ public class DefaultViewManager implements ViewManager {
 	
 	private function getDefinitionById (id:String, configTarget:Object) : DynamicObjectDefinition {
 		if (!context.containsObject(id)) return null;
-		var definition:RootObjectDefinition = context.getDefinition(id);
+		var definition:ObjectDefinition = context.getDefinition(id);
 		if (definition is DynamicObjectDefinition && configTarget is definition.type.getClass()) {
 			return definition as DynamicObjectDefinition;
 		} else {
@@ -342,7 +342,7 @@ public class DefaultViewManager implements ViewManager {
 					+ getQualifiedClassName(configTarget) + " was registered");
 		}
 		else {
-			var def:RootObjectDefinition = context.getDefinitionByType(type);
+			var def:ObjectDefinition = context.getDefinitionByType(type);
 			return (def is DynamicObjectDefinition) ? def as DynamicObjectDefinition : null;
 		}
 	}

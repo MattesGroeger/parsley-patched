@@ -18,9 +18,7 @@ package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
-
 
 [DefaultProperty("decorators")]
 
@@ -53,7 +51,7 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 		this.instantiator = instantiator;
 	}
 
-	public function createRootDefinition (registry:ObjectDefinitionRegistry) : RootObjectDefinition {
+	public function createRootDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		if (id == null) id = IdGenerator.nextObjectId;
 		if (singleton) {
 			return registry.builders
@@ -77,7 +75,7 @@ public class DefaultObjectDefinitionFactory implements ObjectDefinitionFactory {
 	
 	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		return registry.builders
-					.forNestedDefinition(type)
+					.forDynamicDefinition(type)
 					.decorators(decorators)
 					.build();
 	}

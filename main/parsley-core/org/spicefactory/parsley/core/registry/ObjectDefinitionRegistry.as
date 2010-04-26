@@ -87,7 +87,7 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 * @param id the id of the definition
 	 * @return the definition with the specified id
 	 */
-	function getDefinition (id:String) : RootObjectDefinition;
+	function getDefinition (id:String) : ObjectDefinition;
 	
 	/**
 	 * Returns the definition for the specified type.
@@ -96,7 +96,7 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 * @param type the type for which the definition should be returned
 	 * @return the definition for the specified type
 	 */
-	function getDefinitionByType (type:Class) : RootObjectDefinition;
+	function getDefinitionByType (type:Class) : ObjectDefinition;
 	
 	/**
 	 * Returns all definitions that match the specified type. This includes subclasses or objects implementing
@@ -113,14 +113,14 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 * 
 	 * @param definition the definition to add to this registry
 	 */
-	function registerDefinition (definition:RootObjectDefinition) : void;	
+	function registerDefinition (definition:ObjectDefinition) : void;	
 	
 	/**
 	 * Unregisters an object definition from this registry.
 	 *
   	 * @param definition the definition to remove from this registry
 	 */
-	function unregisterDefinition (definition:RootObjectDefinition) : void;
+	function unregisterDefinition (definition:ObjectDefinition) : void;
 	
 	
 	/**

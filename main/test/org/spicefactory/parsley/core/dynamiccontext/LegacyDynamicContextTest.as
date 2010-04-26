@@ -69,7 +69,7 @@ public class LegacyDynamicContextTest extends ContextTestBase {
 		decorator.method = "handleMessage";
 		var registry:ObjectDefinitionRegistry = DefaultContext(context).registry;
 		var definition:ObjectDefinition = registry.builders
-					.forNestedDefinition(DynamicTestObject)
+					.forDynamicDefinition(DynamicTestObject)
 					.decorator(decorator)
 					.build();
 		if (dependencyAsRef) {
@@ -77,7 +77,7 @@ public class LegacyDynamicContextTest extends ContextTestBase {
 		}
 		else {
 			var childDef:ObjectDefinition = registry.builders
-					.forNestedDefinition(DynamicTestDependency)
+					.forDynamicDefinition(DynamicTestDependency)
 					.build();
 			definition.properties.addValue("dependency", childDef);
 		}

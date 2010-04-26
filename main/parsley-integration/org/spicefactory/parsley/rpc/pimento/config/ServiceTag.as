@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.rpc.pimento.config {
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
 
 /**
@@ -63,7 +63,7 @@ public class ServiceTag implements RootConfigurationTag {
 	 */
 	public function process (registry:ObjectDefinitionRegistry) : void {
 		if (id == null) id = name;
-		var definition:RootObjectDefinition = registry.builders
+		var definition:SingletonObjectDefinition = registry.builders
 					.forSingletonDefinition(type)
 					.id(id)
 					.buildAndRegister();

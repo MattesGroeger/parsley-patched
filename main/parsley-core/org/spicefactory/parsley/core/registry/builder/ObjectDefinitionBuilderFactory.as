@@ -37,13 +37,5 @@ public interface ObjectDefinitionBuilderFactory {
 	 */
 	function forDynamicDefinition (type:Class) : DynamicObjectDefinitionBuilder;
 	
-	/**
-	 * Returns a builder for a nested definition for the specified type.
-	 * 
-	 * @param type the type to create a definition for
-	 */
-	function forNestedDefinition (type:Class) : NestedObjectDefinitionBuilder;
-
-	
 }
 }

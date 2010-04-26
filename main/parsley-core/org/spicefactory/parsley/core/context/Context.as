@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.context {
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.view.ViewManager;
 
@@ -194,7 +194,7 @@ public interface Context extends IEventDispatcher {
 	 * @param id the id of the object
 	 * @return the definition for the object with the specified id
 	 */
-	function getDefinition (id:String) : RootObjectDefinition;		 
+	function getDefinition (id:String) : ObjectDefinition;		 
 	
 	/**
 	 * Returns the definition for the object of the specified type. 
@@ -204,7 +204,7 @@ public interface Context extends IEventDispatcher {
 	 * @param type the type of the object to return
 	 * @return the definition for the object of the specified type
 	 */
-	function getDefinitionByType (type:Class) : RootObjectDefinition;
+	function getDefinitionByType (type:Class) : ObjectDefinition;
 	
 	/**
 	 * Returns a new dynamic object for the specified id. Throws an Error if no such object exists.

@@ -24,11 +24,17 @@ import org.spicefactory.parsley.core.registry.definition.PropertyRegistry;
 
 /**
  * Represents the configuration for a single object definition.
+ * The sub-interfaces <code>SingletonObjectDefinition</code> and <code>DynamicObjectDefinition</code>
+ * represent the concrete definition types used in an <code>ObjectDefinitionRegistry</code>.
  * 
  * @author Jens Halm
  */
 public interface ObjectDefinition {
 	
+	/**
+	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#id
+	 */
+	function get id () : String;
 	
 	/**
 	 * The type of the configured object.
@@ -50,9 +56,7 @@ public interface ObjectDefinition {
 	 */
 	function get constructorArgs () : ConstructorArgRegistry;
 	
-	/**
-	 * The property values to set when configuring instances created from this definition.
-	 */
+	[Deprecated]
 	function get properties () : PropertyRegistry;
 	
 	/**

@@ -16,11 +16,9 @@
 
 package org.spicefactory.parsley.tag.lifecycle {
 import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.impl.ObjectDefinitionWrapper;
@@ -67,13 +65,9 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 					.instantiator(instantiator)
 					.build();
 		}
-		else if (definition is DynamicObjectDefinition) {
-			/* TODO - 2.3.M1 - build dynamic definition */
-			return null;
-		}
 		else {
 			return registry.builders
-					.forNestedDefinition(targetType)
+					.forDynamicDefinition(targetType)
 					.instantiator(instantiator)
 					.build();
 		}
@@ -84,17 +78,17 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 
 class FactoryMethodInstantiator implements ObjectInstantiator {
 
 	
-	private var definition:RootObjectDefinition;
+	private var definition:ObjectDefinition;
 	private var method:Method;
 
 
-	function FactoryMethodInstantiator (definition:RootObjectDefinition, method:Method) {
+	function FactoryMethodInstantiator (definition:ObjectDefinition, method:Method) {
 		this.definition = definition;
 		this.method = method;
 	}

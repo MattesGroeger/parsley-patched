@@ -19,7 +19,7 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 
 /**
  * Implementation of the <code>Context</code> interface that is capable of handling a parent <code>Context</code>.
@@ -148,14 +148,14 @@ public class ChildContext extends DefaultContext {
 	/**
 	 * @inheritDoc
 	 */
-	public override function getDefinition (id:String) : RootObjectDefinition {
+	public override function getDefinition (id:String) : ObjectDefinition {
 		return super.containsObject(id) ? super.getDefinition(id) : _parent.getDefinition(id);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public override function getDefinitionByType (type:Class) : RootObjectDefinition {
+	public override function getDefinitionByType (type:Class) : ObjectDefinition {
 		var localCount:int = super.getObjectCount(type);
 		return (localCount == 0) ? _parent.getDefinitionByType(type) : super.getDefinitionByType(type); 
 	}

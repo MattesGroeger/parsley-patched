@@ -26,9 +26,9 @@ import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.parsley.core.builder.AsyncConfigurationProcessor;
 import org.spicefactory.parsley.core.errors.ConfigurationUnitError;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
 import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import org.spicefactory.parsley.xml.tag.ObjectsTag;
@@ -179,7 +179,7 @@ public class XmlConfigurationProcessor extends EventDispatcher implements AsyncC
 	
 	private function handleLegacyFactory (factory:ObjectDefinitionFactory, registry:ObjectDefinitionRegistry) : void {
 		/* TODO - ObjectDefinitionFactory is deprecated - remove in later versions */
-		var definition:RootObjectDefinition = factory.createRootDefinition(registry);
+		var definition:ObjectDefinition = factory.createRootDefinition(registry);
 		registry.registerDefinition(definition);
 	}
 
@@ -202,8 +202,6 @@ public class XmlConfigurationProcessor extends EventDispatcher implements AsyncC
 	public override function toString () : String {
 		return description;
 	}
-	
-	
 }
 }
 

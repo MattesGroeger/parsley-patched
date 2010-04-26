@@ -15,11 +15,10 @@
  */
 
 package org.spicefactory.parsley.tag.core {
-	import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
 
 import flash.errors.IllegalOperationError;
 
@@ -46,7 +45,7 @@ public class NestedObjectTag implements ResolvableConfigurationValue {
 	/**
 	 * @private
 	 */
-	public function createRootDefinition (registry:ObjectDefinitionRegistry):RootObjectDefinition {
+	public function createRootDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		throw new IllegalOperationError("This tag may only be used for nested object declarations");
 	}
 	

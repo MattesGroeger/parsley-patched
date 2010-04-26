@@ -23,7 +23,7 @@ import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
  * 
  * @author Jens Halm
  */
-public interface SingletonObjectDefinition extends RootObjectDefinition {
+public interface SingletonObjectDefinition extends ObjectDefinition {
 	
 	/**
 	 * @copy org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata#lazy

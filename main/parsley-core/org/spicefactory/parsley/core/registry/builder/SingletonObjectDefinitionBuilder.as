@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.core.registry.builder {
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 
 /**
@@ -89,7 +89,7 @@ public interface SingletonObjectDefinitionBuilder {
 	 * 
 	 * @return a new root object definition
 	 */
-	function build () : RootObjectDefinition;
+	function build () : SingletonObjectDefinition;
 	
 	/**
 	 * Builds a new definition using all parameters set through other methods and registers
@@ -97,7 +97,7 @@ public interface SingletonObjectDefinitionBuilder {
 	 * 
 	 * @return a new root object definition
 	 */
-	function buildAndRegister () : RootObjectDefinition;
+	function buildAndRegister () : SingletonObjectDefinition;
 	
 	
 }

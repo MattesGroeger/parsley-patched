@@ -22,7 +22,7 @@ package org.spicefactory.parsley.core.registry {
  * 
  * @author Jens Halm
  */
-public interface DynamicObjectDefinition extends RootObjectDefinition {
+public interface DynamicObjectDefinition extends ObjectDefinition {
 	
 	
 }

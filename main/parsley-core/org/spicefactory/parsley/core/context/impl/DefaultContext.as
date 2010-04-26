@@ -34,7 +34,6 @@ import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.view.ViewManager;
@@ -121,7 +120,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 
 		// instantiate non-lazy singletons, with or without AsyncInit config
 		for each (var id:String in _registry.getDefinitionIds()) {
-			var definition:RootObjectDefinition = _registry.getDefinition(id);
+			var definition:ObjectDefinition = _registry.getDefinition(id);
 			if (definition is SingletonObjectDefinition && !SingletonObjectDefinition(definition).lazy) {
 				initSequence.addDefinition(definition);
 			}
@@ -214,7 +213,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 */
 	public function isDynamic (id:String) : Boolean {
 		checkState();
-		var def:RootObjectDefinition = getLocalDefinition(id);
+		var def:ObjectDefinition = getLocalDefinition(id);
 		return (def is DynamicObjectDefinition);
 	}
 	
@@ -226,7 +225,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 		checkState();
 		var defs:Array = _registry.getAllDefinitionsByType(type);
 		var objects:Array = new Array();
-		for each (var def:RootObjectDefinition in defs) {
+		for each (var def:ObjectDefinition in defs) {
 			objects.push(getInstance(def));
 		}
 		return objects;
@@ -237,14 +236,14 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 */
 	public function getObjectByType (type:Class) : Object {
 		checkState();
-		var def:RootObjectDefinition = _registry.getDefinitionByType(type);
+		var def:ObjectDefinition = _registry.getDefinitionByType(type);
 		return getInstance(def);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function getDefinition (id:String) : RootObjectDefinition {
+	public function getDefinition (id:String) : ObjectDefinition {
 		checkState();
 		return getLocalDefinition(id);
 	}
@@ -252,7 +251,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	/**
 	 * @inheritDoc
 	 */
-	public function getDefinitionByType (type:Class) : RootObjectDefinition {
+	public function getDefinitionByType (type:Class) : ObjectDefinition {
 		checkState();
 		return _registry.getDefinitionByType(type);
 	}
@@ -262,7 +261,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 */
 	public function createDynamicObject (id:String) : DynamicObject {
 		checkState();
-		var def:RootObjectDefinition = getLocalDefinition(id);
+		var def:ObjectDefinition = getLocalDefinition(id);
 		if (def is DynamicObjectDefinition) {
 			return addDynamicObject(null, def as DynamicObjectDefinition);
 		}
@@ -274,7 +273,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 */
 	public function createDynamicObjectByType (type:Class) : DynamicObject {
 		checkState();
-		var def:RootObjectDefinition = _registry.getDefinitionByType(type);
+		var def:ObjectDefinition = _registry.getDefinitionByType(type);
 		if (def is DynamicObjectDefinition) {
 			return addDynamicObject(null, def as DynamicObjectDefinition);
 		}
@@ -303,7 +302,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	/**
 	 * @private
 	 */
-	internal function getInstance (def:RootObjectDefinition) : Object {
+	internal function getInstance (def:ObjectDefinition) : Object {
 		var id:String = def.id;
 		
 		if (def is SingletonObjectDefinition && singletonCache.containsKey(id)) {
@@ -334,7 +333,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 		return object.instance;
 	}
 	
-	private function getLocalDefinition (id:String) : RootObjectDefinition {
+	private function getLocalDefinition (id:String) : ObjectDefinition {
 		if (!containsObject(id)) {
 			throw new ContextError("Context does not contain an object with id "
 					+ id);

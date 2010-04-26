@@ -18,7 +18,6 @@ package org.spicefactory.parsley.core.registry.builder.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.builder.DynamicObjectDefinitionBuilder;
-import org.spicefactory.parsley.core.registry.builder.NestedObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.builder.ObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.registry.builder.SingletonObjectDefinitionBuilder;
 
@@ -44,7 +43,7 @@ public class DefaultObjectDefinitionBuilderFactory implements ObjectDefinitionBu
 	 * @inheritDoc
 	 */
 	public function forSingletonDefinition (type:Class) : SingletonObjectDefinitionBuilder {
-		return new DefaultRootObjectDefinitionBuilder(ClassInfo.forClass(type, registry.domain), registry);
+		return new DefaultSingletonObjectDefinitionBuilder(ClassInfo.forClass(type, registry.domain), registry);
 	}
 	
 	/**
@@ -53,33 +52,23 @@ public class DefaultObjectDefinitionBuilderFactory implements ObjectDefinitionBu
 	public function forDynamicDefinition (type:Class) : DynamicObjectDefinitionBuilder {
 		return new DefaultDynamicObjectDefinitionBuilder(ClassInfo.forClass(type, registry.domain), registry);
 	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function forNestedDefinition (type:Class) : NestedObjectDefinitionBuilder {
-		return new DefaultNestedObjectDefinitionBuilder(ClassInfo.forClass(type, registry.domain), registry);
-	}
 }
 }
 
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
-import org.spicefactory.parsley.core.registry.NestedObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.RootObjectDefinition;
+import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.builder.DynamicObjectDefinitionBuilder;
-import org.spicefactory.parsley.core.registry.builder.NestedObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.builder.SingletonObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.builder.impl.AbstractObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.impl.DefaultDynamicObjectDefinition;
-import org.spicefactory.parsley.core.registry.impl.DefaultNestedObjectDefinition;
 import org.spicefactory.parsley.core.registry.impl.DefaultSingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.impl.IdGenerator;
 
-class DefaultRootObjectDefinitionBuilder extends AbstractObjectDefinitionBuilder implements SingletonObjectDefinitionBuilder {
+class DefaultSingletonObjectDefinitionBuilder extends AbstractObjectDefinitionBuilder implements SingletonObjectDefinitionBuilder {
 
 
 	private var _id:String;
@@ -88,7 +77,7 @@ class DefaultRootObjectDefinitionBuilder extends AbstractObjectDefinitionBuilder
 	private var _instantiator:ObjectInstantiator;
 
 	
-	function DefaultRootObjectDefinitionBuilder (type:ClassInfo, registry:ObjectDefinitionRegistry) {
+	function DefaultSingletonObjectDefinitionBuilder (type:ClassInfo, registry:ObjectDefinitionRegistry) {
 		super(type, registry);
 	}
 	
@@ -123,16 +112,16 @@ class DefaultRootObjectDefinitionBuilder extends AbstractObjectDefinitionBuilder
 		return this;
 	}
 	
-	public function build () : RootObjectDefinition {
+	public function build () : SingletonObjectDefinition {
 		if (_id == null) _id = IdGenerator.nextObjectId;
-		var def:RootObjectDefinition = new DefaultSingletonObjectDefinition(type, _id, registry, _lazy, _order);
+		var def:SingletonObjectDefinition = new DefaultSingletonObjectDefinition(type, _id, registry, _lazy, _order);
 		def.instantiator = _instantiator;
-		def = processDecorators(registry, def) as RootObjectDefinition;
+		def = processDecorators(registry, def) as SingletonObjectDefinition;
 		return def;
 	}
 	
-	public function buildAndRegister () : RootObjectDefinition {
-		var def:RootObjectDefinition = build();
+	public function buildAndRegister () : SingletonObjectDefinition {
+		var def:SingletonObjectDefinition = build();
 		registry.registerDefinition(def);
 		return def;
 	}
@@ -182,41 +171,6 @@ class DefaultDynamicObjectDefinitionBuilder extends AbstractObjectDefinitionBuil
 	public function buildAndRegister () : DynamicObjectDefinition {
 		var def:DynamicObjectDefinition = build();
 		registry.registerDefinition(def);
-		return def;
-	}
-	
-}
-
-
-class DefaultNestedObjectDefinitionBuilder extends AbstractObjectDefinitionBuilder implements NestedObjectDefinitionBuilder {
-
-	
-	private var _instantiator:ObjectInstantiator;
-
-
-	function DefaultNestedObjectDefinitionBuilder (type:ClassInfo, registry:ObjectDefinitionRegistry) {
-		super(type, registry);
-	}
-	
-	
-	public function decorator (decorator:ObjectDefinitionDecorator) : NestedObjectDefinitionBuilder {
-		decoratorList.push(decorator);		
-		return this;
-	}
-	
-	public function decorators (decorators:Array) : NestedObjectDefinitionBuilder {
-		this.decoratorList = this.decoratorList.concat(decorators);		
-		return this;
-	}
-	
-	public function instantiator (value:ObjectInstantiator) : NestedObjectDefinitionBuilder {
-		_instantiator = value;
-		return this;
-	}
-	
-	public function build () : NestedObjectDefinition {
-		var def:NestedObjectDefinition = new DefaultNestedObjectDefinition(type);
-		def = processDecorators(registry, def) as NestedObjectDefinition;
 		return def;
 	}
 	

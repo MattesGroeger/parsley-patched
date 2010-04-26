@@ -23,7 +23,7 @@ import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
  * 
  * @author Jens Halm
  */
-public class DefaultDynamicObjectDefinition extends AbstractRootObjectDefinition implements DynamicObjectDefinition {
+public class DefaultDynamicObjectDefinition extends AbstractObjectDefinition implements DynamicObjectDefinition {
 
 	/**
 	 * Creates a new instance.
