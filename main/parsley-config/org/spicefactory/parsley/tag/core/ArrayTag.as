@@ -16,9 +16,9 @@
 
 package org.spicefactory.parsley.tag.core {
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.RegistryValueResolver;
 import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
 import org.spicefactory.parsley.tag.model.ManagedArray;
+import org.spicefactory.parsley.tag.util.RegistryValueResolver;
 
 [DefaultProperty("values")]
 

@@ -18,9 +18,9 @@ package org.spicefactory.parsley.tag.core {
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.RegistryValueResolver;
 import org.spicefactory.parsley.tag.model.ObjectIdReference;
 import org.spicefactory.parsley.tag.model.ObjectTypeReference;
+import org.spicefactory.parsley.tag.util.RegistryValueResolver;
 
 /**
  * Represent the constructor arguments for an object definition. Can be used in MXML and XML configuration.
