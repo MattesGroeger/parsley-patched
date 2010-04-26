@@ -20,7 +20,7 @@ import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.util.RegistryValueResolver;
+import org.spicefactory.parsley.tag.util.ConfigurationValueResolver;
 
 [DefaultProperty("value")]
 /**
@@ -34,7 +34,7 @@ public class PropertyTag extends ObjectReferenceTag implements ObjectDefinitionD
 	/**
 	 * The resolver for value declarations.
 	 */
-	protected static const valueResolver:RegistryValueResolver = new RegistryValueResolver(); 
+	protected static const valueResolver:ConfigurationValueResolver = new ConfigurationValueResolver(); 
 
 	/**
 	 * The value of the property mapped as a child element.

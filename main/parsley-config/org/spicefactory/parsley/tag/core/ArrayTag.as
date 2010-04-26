@@ -18,7 +18,7 @@ package org.spicefactory.parsley.tag.core {
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
 import org.spicefactory.parsley.tag.model.ManagedArray;
-import org.spicefactory.parsley.tag.util.RegistryValueResolver;
+import org.spicefactory.parsley.tag.util.ConfigurationValueResolver;
 
 [DefaultProperty("values")]
 
@@ -30,7 +30,7 @@ import org.spicefactory.parsley.tag.util.RegistryValueResolver;
 public class ArrayTag implements ResolvableConfigurationValue {
 	
 	
-	private static const valueResolver:RegistryValueResolver = new RegistryValueResolver(); 
+	private static const valueResolver:ConfigurationValueResolver = new ConfigurationValueResolver(); 
 	
 	
 	/**

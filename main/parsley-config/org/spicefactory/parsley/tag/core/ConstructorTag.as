@@ -20,7 +20,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.tag.model.ObjectIdReference;
 import org.spicefactory.parsley.tag.model.ObjectTypeReference;
-import org.spicefactory.parsley.tag.util.RegistryValueResolver;
+import org.spicefactory.parsley.tag.util.ConfigurationValueResolver;
 
 /**
  * Represent the constructor arguments for an object definition. Can be used in MXML and XML configuration.
@@ -30,7 +30,7 @@ import org.spicefactory.parsley.tag.util.RegistryValueResolver;
 public class ConstructorTag extends ArrayTag implements ObjectDefinitionDecorator {
 
 
-	private static const valueResolver:RegistryValueResolver = new RegistryValueResolver(); 
+	private static const valueResolver:ConfigurationValueResolver = new ConfigurationValueResolver(); 
 
 
 	/**

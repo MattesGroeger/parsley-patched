@@ -25,7 +25,7 @@ import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
  * 
  * @author Jens Halm
  */
-public class RegistryValueResolver {
+public class ConfigurationValueResolver {
 	
 	
 	/**
