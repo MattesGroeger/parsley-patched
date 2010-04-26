@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.registry.model {
+package org.spicefactory.parsley.core.registry {
 import flash.events.ErrorEvent;
 import flash.events.Event;
 

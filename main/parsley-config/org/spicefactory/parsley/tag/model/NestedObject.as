@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.registry.model {
+package org.spicefactory.parsley.tag.model {
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;

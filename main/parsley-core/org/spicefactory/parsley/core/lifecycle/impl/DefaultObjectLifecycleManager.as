@@ -23,7 +23,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectProcessor;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 import org.spicefactory.parsley.core.registry.definition.MethodParameterRegistry;
-import org.spicefactory.parsley.core.registry.model.PropertyValue;
+import org.spicefactory.parsley.core.registry.definition.PropertyValue;
 import org.spicefactory.parsley.core.scope.impl.ScopeDefinition;
 
 import flash.system.ApplicationDomain;

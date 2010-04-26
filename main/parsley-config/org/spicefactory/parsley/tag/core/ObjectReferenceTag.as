@@ -18,9 +18,9 @@ package org.spicefactory.parsley.tag.core {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.model.ObjectIdReference;
-import org.spicefactory.parsley.core.registry.model.ObjectTypeReference;
 import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
+import org.spicefactory.parsley.tag.model.ObjectIdReference;
+import org.spicefactory.parsley.tag.model.ObjectTypeReference;
 
 /**
  * Represents a reference to another object in the container (either by id or by type) in MXML or XML configuration.

@@ -16,11 +16,11 @@
 
 package org.spicefactory.parsley.tag.lifecycle {
 import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.parsley.core.registry.AsyncInitConfig;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
-import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
 
 [Metadata(name="AsyncInit", types="class")]
 /**

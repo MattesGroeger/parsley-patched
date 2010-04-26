@@ -21,9 +21,9 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.PropertyRegistry;
-import org.spicefactory.parsley.core.registry.model.PropertyValue;
-import org.spicefactory.parsley.core.registry.model.ObjectIdReference;
-import org.spicefactory.parsley.core.registry.model.ObjectTypeReference;
+import org.spicefactory.parsley.core.registry.definition.PropertyValue;
+import org.spicefactory.parsley.tag.model.ObjectIdReference;
+import org.spicefactory.parsley.tag.model.ObjectTypeReference;
 
 import flash.utils.Dictionary;
 

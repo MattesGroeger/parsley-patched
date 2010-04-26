@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.registry.AsyncInitConfig;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
@@ -24,7 +25,6 @@ import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegist
 import org.spicefactory.parsley.core.registry.definition.MethodRegistry;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.definition.PropertyRegistry;
-import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
 
 /**
  * A simple wrapper around an existing root object definition.

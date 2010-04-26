@@ -15,7 +15,6 @@
  */
  
 package org.spicefactory.parsley.core.registry {
-import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
 
 /**
  * Represents the configuration for a singleton object.

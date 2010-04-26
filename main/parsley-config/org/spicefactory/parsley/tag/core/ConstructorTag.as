@@ -15,12 +15,12 @@
  */
 
 package org.spicefactory.parsley.tag.core {
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.impl.RegistryValueResolver;
-import org.spicefactory.parsley.core.registry.model.ObjectTypeReference;
-import org.spicefactory.parsley.core.registry.model.ObjectIdReference;
+import org.spicefactory.parsley.tag.RegistryValueResolver;
+import org.spicefactory.parsley.tag.model.ObjectIdReference;
+import org.spicefactory.parsley.tag.model.ObjectTypeReference;
 
 /**
  * Represent the constructor arguments for an object definition. Can be used in MXML and XML configuration.

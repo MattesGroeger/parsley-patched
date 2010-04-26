@@ -16,11 +16,11 @@
 
 package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.registry.AsyncInitConfig;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
 import org.spicefactory.parsley.core.registry.definition.impl.SingletonLifecycleListenerRegistry;
-import org.spicefactory.parsley.core.registry.model.AsyncInitConfig;
 
 /**
  * Default implementation of the SingletonObjectDefinition interface.

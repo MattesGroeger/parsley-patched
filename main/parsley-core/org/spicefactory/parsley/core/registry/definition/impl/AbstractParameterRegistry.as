@@ -21,8 +21,8 @@ import org.spicefactory.lib.reflect.FunctionBase;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.model.ObjectTypeReference;
-import org.spicefactory.parsley.core.registry.model.ObjectIdReference;
+import org.spicefactory.parsley.tag.model.ObjectIdReference;
+import org.spicefactory.parsley.tag.model.ObjectTypeReference;
 
 /**
  * Abstract base class for registries that contain values for method parameters.

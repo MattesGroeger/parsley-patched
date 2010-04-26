@@ -17,8 +17,8 @@
 package org.spicefactory.parsley.tag.core {
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.model.NestedObject;
 import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
+import org.spicefactory.parsley.tag.model.NestedObject;
 
 [DefaultProperty("decorators")]
 

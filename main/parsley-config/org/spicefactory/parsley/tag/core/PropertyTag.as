@@ -20,7 +20,7 @@ import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.impl.RegistryValueResolver;
+import org.spicefactory.parsley.tag.RegistryValueResolver;
 
 [DefaultProperty("value")]
 /**

@@ -20,7 +20,7 @@ import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.model.ObjectTypeReferenceArray;
+import org.spicefactory.parsley.tag.model.ObjectTypeReferenceArray;
 
 [Metadata(name="Inject", types="property")]
 /**

@@ -14,33 +14,44 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.registry.model {
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.lifecycle.ManagedObject;
-import org.spicefactory.parsley.core.registry.ResolvableValue;
+package org.spicefactory.parsley.core.registry.definition {
+import org.spicefactory.lib.reflect.Property;
 
 /**
- * Represent a reference to an object in the Parsley Context by type.
+ * Represents a single property value.
  * 
  * @author Jens Halm
  */
-public class ObjectTypeReferenceArray implements ResolvableValue {
-
-
-	private var type:ClassInfo;
+public class PropertyValue {
 	
-
+	
+	private var _property:Property;
+	private var _value:*;
+	
+	
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param id the type of the referenced objects
-	 */	
-	function ObjectTypeReferenceArray (type:ClassInfo) {
-		this.type = type;
+	 * @param property the Property instance
+	 * @param value the value for the property
+	 */
+	function PropertyValue (property:Property, value:*) {
+		_property = property;
+		_value = value;
 	}
-
-	public function resolve (target:ManagedObject) : * {
-		return target.context.getAllObjectsByType(type.getClass());
+	
+	/**
+	 * The Property instance.
+	 */
+	public function get property () : Property {
+		return _property;
+	}
+	
+	/**
+	 * The value for the property.
+	 */
+	public function get value () : * {
+		return _value;
 	}
 	
 	
