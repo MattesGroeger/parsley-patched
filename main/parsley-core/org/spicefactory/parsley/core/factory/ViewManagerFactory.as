@@ -16,7 +16,6 @@
 
 package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.ViewManager;
 
