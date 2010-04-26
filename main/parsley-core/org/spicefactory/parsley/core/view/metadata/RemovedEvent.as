@@ -21,7 +21,7 @@ package org.spicefactory.parsley.core.view.metadata {
  * Represents a metadata tag that can be used to specify the event that initiates
  * the removal from the Context for an individual component.
  * If it is not specified explicitly the default is the event type specified
- * in <code>ViewManager.viewRemovedEvent</code> in the corresponding Context,
+ * in <code>ViewManagerFactory.componentRemovedEvent</code> in the corresponding Context,
  * which in turn defaults to <code>Event.REMOVED_FROM_STAGE</code>.
  * 
  * @author Jens Halm
