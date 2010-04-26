@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.context {
-import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 
 /**
  * Represents a single dynamic object that belongs to a DynamicContext instance.
@@ -24,9 +24,25 @@ import org.spicefactory.parsley.core.lifecycle.ManagedObject;
  * 
  * @author Jens Halm
  */
-public interface DynamicObject extends ManagedObject {
+public interface DynamicObject {
 
+
+	/**
+	 * The definition the object was created from or the definition that
+	 * was applied to an existing instance.
+	 */
+	function get definition () : DynamicObjectDefinition;
 	
+	/**
+	 * The actual managed instance.
+	 */
+	function get instance () : Object;
+	
+	/**
+	 * The Context that managed this object.
+	 */
+	function get context () : Context;
+		
 	/**
 	 * Removes this object from the Context.
 	 * This will lead to the regular lifecycle events for objects that

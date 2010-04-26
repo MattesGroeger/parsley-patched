@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.registry.model {
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.registry.ResolvableValue;
 
 /**
  * Represents an Array that might contain special configuration values like object references or
@@ -22,7 +24,17 @@ package org.spicefactory.parsley.core.registry.model {
  * 
  * @author Jens Halm
  */
-public dynamic class ManagedArray extends Array {
+public dynamic class ManagedArray extends Array implements ResolvableValue {
+
+	
+	public function resolve (target:ManagedObject) : * {
+		var source:Array = this;
+		var result:Array = new Array();
+		for each (var element:* in source) {
+			result.push(target.resolveValue(element));			
+		}
+		return result;
+	}
 	
 	
 }

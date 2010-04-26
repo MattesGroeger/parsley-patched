@@ -19,7 +19,7 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 
 import flash.events.Event;
 
@@ -32,7 +32,7 @@ public class DefaultDynamicObject implements DynamicObject {
 	
 	
 	private var _context:DefaultContext;
-	private var _definition:ObjectDefinition;
+	private var _definition:DynamicObjectDefinition;
 	private var _instance:Object;
 	
 	private var managedObject:ManagedObject;
@@ -46,10 +46,13 @@ public class DefaultDynamicObject implements DynamicObject {
 	 * @param definition the definition that was applied to the instance
 	 * @param instance the actual instance that was dynamically added to the Context
 	 */
-	function DefaultDynamicObject (context:DefaultContext, definition:ObjectDefinition, instance:Object = null) {
+	function DefaultDynamicObject (context:DefaultContext, definition:DynamicObjectDefinition, instance:Object = null) {
 		_context = context;
 		_definition = definition;
 		_instance = instance;
+		if (instance != null) {
+			definition.instantiator = new ObjectWrapperInstantiator(instance);
+		}
 		if (!context.initialized) {
 			context.addEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		}
@@ -66,21 +69,15 @@ public class DefaultDynamicObject implements DynamicObject {
 	private function processInstance () : void {
 		if (processed) return;
 		processed = true;
-		if (_instance == null) {
-			managedObject = _context.lifecycleManager.createObject(definition, context);
-			_instance = managedObject.instance;
-			_context.addDynamicObject(this);
-		}
-		else {
-			managedObject = this;
-		}
+		managedObject = _context.lifecycleManager.createObject(definition, context);
+		_instance = managedObject.instance;
 		_context.lifecycleManager.configureObject(managedObject);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function get definition () : ObjectDefinition {
+	public function get definition () : DynamicObjectDefinition {
 		return _definition;
 	}
 	
@@ -88,7 +85,7 @@ public class DefaultDynamicObject implements DynamicObject {
 	 * @inheritDoc
 	 */
 	public function get instance () : Object {
-		if (_instance == null && _context.configured) {
+		if (managedObject == null && _context.configured) {
 			processInstance();
 		}
 		return _instance;
@@ -110,9 +107,21 @@ public class DefaultDynamicObject implements DynamicObject {
 		} else {
 			_context.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		}
-		//_context.removeInstance(this);
+	}
+}
+}
+
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.registry.definition.ContainerObjectInstantiator;
+
+class ObjectWrapperInstantiator implements ContainerObjectInstantiator {
+
+	private var instance:Object;
+	
+	function ObjectWrapperInstantiator (instance:Object) { this.instance = instance; }
+
+	public function instantiate (context:Context) : Object {
+		return instance;
 	}
 	
-	
-}
 }

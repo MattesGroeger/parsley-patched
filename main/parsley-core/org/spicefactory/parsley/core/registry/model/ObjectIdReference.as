@@ -15,13 +15,16 @@
  */
 
 package org.spicefactory.parsley.core.registry.model {
+import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.registry.ResolvableValue;
 
 /**
  * Represent a reference to an object in the Parsley Context by id.
  * 
  * @author Jens Halm
  */
-public class ObjectIdReference {
+public class ObjectIdReference implements ResolvableValue {
 
 
 	private var _id:String;
@@ -52,7 +55,20 @@ public class ObjectIdReference {
 	public function get id ():String {
 		return _id;
 	}
-
+	
+	public function resolve (target:ManagedObject) : * {
+		if (!target.context.containsObject(id)) {
+			if (required) {
+				throw new ContextError("Required object with id " + id + " does not exist");
+			}
+			else {
+				return null;
+			}
+		} else {
+			return target.context.getObject(id);
+		}
+	}
+	
 	
 }
 

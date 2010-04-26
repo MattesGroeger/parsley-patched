@@ -15,9 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.lifecycle.impl {
-import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
@@ -25,9 +23,6 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectProcessor;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 import org.spicefactory.parsley.core.registry.definition.MethodParameterRegistry;
-import org.spicefactory.parsley.core.registry.model.ManagedArray;
-import org.spicefactory.parsley.core.registry.model.ObjectIdReference;
-import org.spicefactory.parsley.core.registry.model.ObjectTypeReference;
 import org.spicefactory.parsley.core.registry.model.PropertyValue;
 import org.spicefactory.parsley.core.scope.impl.ScopeDefinition;
 
@@ -44,12 +39,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	
 	// maps ManagedObject -> Boolean
 	private var rootInstances:Dictionary = new Dictionary();
-	// maps ManagedObject -> Boolean
-	private var dependentInstances:Dictionary = new Dictionary();
 
-	// maps parent ManagedObject -> child ManagedObject
-	private var parentChildMap:Dictionary = new Dictionary();
-	
 	// maps ManagedObject -> processors
 	private var processorMap:Dictionary = new Dictionary();
 
@@ -111,36 +101,13 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 		processLifecycle(object, ObjectLifecycle.POST_INIT);
 	}
 	
-	private function mapChild (parent:ManagedObject, child:ManagedObject) : void {
-		dependentInstances[child] = true;
-		var children:Array = parentChildMap[parent];
-		if (children == null) {
-			children = new Array();
-			parentChildMap[parent] = children;
-		}
-		children.push(child);
-	}
-	
 	/**
 	 * @inheritDoc
 	 */
 	public function destroyObject (object:ManagedObject) : void {
-		if (dependentInstances[object] != undefined) {
-			throw new IllegalArgumentError("Instance that depends on the lifecycle of a parent object cannot be removed: "
-					+ object.instance);
-		}
 		doDestroy(object);
 		delete rootInstances[object];
 		delete processorMap[object];
-		var children:Array = parentChildMap[object];
-		if (children != null) {
-			for each (var child:ManagedObject in children) {
-				doDestroy(child);
-				delete dependentInstances[child];
-				delete processorMap[child];
-			}
-			delete parentChildMap[object];
-		}
 	}
 
 	/**
@@ -150,12 +117,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 		for (var object:Object in rootInstances) {
 			doDestroy(ManagedObject(object));
 		}
-		for (var child:Object in dependentInstances) {
-			doDestroy(ManagedObject(child));
-		}
 		rootInstances = new Dictionary();
-		dependentInstances = new Dictionary();
-		parentChildMap = new Dictionary();
 		processorMap = new Dictionary();
 	}
 	
@@ -206,29 +168,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 		processorMap[object] = processors;
 	}
 	
-	/**
-	 * Deprecated
-	 */
-	private function processProperties (object:ManagedObject) : void {
-	 	var props:Array = object.definition.properties.getAll();
-	 	for each (var prop:PropertyValue in props) {
-	 		var value:* = resolveValue(prop.value, object, true, prop.property.type.isType(Array));
-	 		if (!(value is UnsatisfiedDependency)) {
-	 			prop.property.setValue(object.instance, value);
-	 		}
-		}		
-	}
 
-	/**
-	 * Deprecated
-	 */
-	private function processMethods (object:ManagedObject) : void {
-	 	var methods:Array = object.definition.injectorMethods.getAll();
-	 	for each (var mpr:MethodParameterRegistry in methods) {
-			var params:Array = resolveArray(mpr.getAll(), object);
-	 		mpr.method.invoke(object.instance, params);
-		}		
-	}
 	
 	/**
 	 * Processes the lifecycle listeners for the specified instance.
@@ -253,88 +193,35 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 		}
 	}
 
-	
-	/**
-	 * Resolves the specified value, resolving any object references or inline object definitions.
+
+	/********************************************************************************************************
 	 * 
-	 * @param value the value to resolve
-	 * @param parent the object the value belongs to
-	 * @param designateUnsatisfiedDependencies if true returns an instance of UnsatisfiedDependency instead of null
-	 * @param arrayTargetType whether to resolve type reference for an Array target type
-	 * @return the resolved value
-	 */
-	protected function resolveValue (value:*, parent:ManagedObject, 
-			designateUnsatisfiedDependencies:Boolean = false, arrayTargetType:Boolean = false) : * {
-		if (value is ObjectIdReference) {
-			var idRef:ObjectIdReference = ObjectIdReference(value);
-			if (!parent.context.containsObject(idRef.id)) {
-				if (idRef.required) {
-					throw new ContextError("Required object with id " + idRef.id + " does not exist");
-				}
-				else {
-					return (designateUnsatisfiedDependencies) ? UnsatisfiedDependency.INSTANCE : null;
-				}
-			} else {
-				return parent.context.getObject(idRef.id);
-			}
-		}
-		else if (value is ObjectTypeReference) {
-			var typeRef:ObjectTypeReference = ObjectTypeReference(value);
-			if (typeRef.type.isType(Context)) {
-				return parent.context;
-			}
-			if (arrayTargetType) {
-				return parent.context.getAllObjectsByType(typeRef.type.getClass());
-			}
-			var ids:Array = parent.context.getObjectIds(typeRef.type.getClass());
-			if (ids.length > 1) {
-				throw new ContextError("Ambigous dependency: Context contains more than one object of type "
-						+ typeRef.type.name);
-			} 
-			else if (ids.length == 0) {
-				if (typeRef.required) {
-					throw new ContextError("Unsatisfied dependency: Context does not contain an object of type " 
-						+ typeRef.type.name);
-				}
-				else {
-					return (designateUnsatisfiedDependencies) ? UnsatisfiedDependency.INSTANCE : null;
-				}				
-			}
-			else {
-				return parent.context.getObject(ids[0]);
-			}
-		}
-		else if (value is ObjectDefinition) {
-			var definition:ObjectDefinition = ObjectDefinition(value);
-			var child:ManagedObject = createObject(definition, parent.context);
-			doConfigure(child);
-			mapChild(parent, child);
-			return child.instance;
-		}
-		else if (value is ManagedArray) {
-			var source:Array = value as Array;
-			var result:Array = new Array();
-			for each (var element:* in source) {
-				result.push(resolveValue(element, parent));			
-			}
-			return result;
-		} 
-		else {
-			return value;
-		}
+	 * Deprecated methods
+	 *
+	 ********************************************************************************************************/
+	
+
+	private function processProperties (object:ManagedObject) : void {
+	 	var props:Array = object.definition.properties.getAll();
+	 	for each (var prop:PropertyValue in props) {
+	 		var value:* = object.resolveValue(prop.value);
+	 		if (value != null || prop.value == null) {
+	 			prop.property.setValue(object.instance, value);
+	 		}
+		}		
 	}
 
-	/**
-	 * Resolves the specified Array, recursively resolving any object references or inline object definitions 
-	 * of its elements.
-	 * 
-	 * @param array the Array to resolve
-	 * @param parent the object the value belongs to
-	 * @return the resolved Array
-	 */
-	protected function resolveArray (array:Array, parent:ManagedObject) : Array {
+	private function processMethods (object:ManagedObject) : void {
+	 	var methods:Array = object.definition.injectorMethods.getAll();
+	 	for each (var mpr:MethodParameterRegistry in methods) {
+			var params:Array = resolveArray(mpr.getAll(), object);
+	 		mpr.method.invoke(object.instance, params);
+		}		
+	}
+		
+	private function resolveArray (array:Array, parent:ManagedObject) : Array {
 		for (var i:uint = 0; i < array.length; i++) {
-			array[i] = resolveValue(array[i], parent);
+			array[i] = parent.resolveValue(array[i]);
 		}
 		return array;
 	}
@@ -344,8 +231,10 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 }
 
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ResolvableValue;
 
 class ManagedObjectImpl implements ManagedObject {
 	
@@ -372,6 +261,19 @@ class ManagedObjectImpl implements ManagedObject {
 	
 	public function set instance (value:Object) : void {
 		_instance = value;
+	}
+	
+	public function resolveValue (value:*) : * {
+		if (value is ResolvableValue) {
+			return ResolvableValue(value).resolve(this);
+		}
+		else {
+			return value;
+		}
+	}
+	
+	public function synchronizeLifecycle (object:DynamicObject) : void {
+		
 	}
 	
 }

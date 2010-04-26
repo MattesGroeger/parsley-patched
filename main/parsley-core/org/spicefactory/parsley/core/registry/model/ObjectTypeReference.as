@@ -16,13 +16,17 @@
 
 package org.spicefactory.parsley.core.registry.model {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.registry.ResolvableValue;
 
 /**
  * Represent a reference to an object in the Parsley Context by type.
  * 
  * @author Jens Halm
  */
-public class ObjectTypeReference {
+public class ObjectTypeReference implements ResolvableValue {
 
 
 	private var _type:ClassInfo;
@@ -32,7 +36,7 @@ public class ObjectTypeReference {
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param id the type of the referenced object
+	 * @param type the type of the referenced object
 	 * @param required whether this instance represents a required dependency
 	 */	
 	function ObjectTypeReference (type:ClassInfo, required:Boolean = true) {
@@ -53,7 +57,30 @@ public class ObjectTypeReference {
 	public function get type () : ClassInfo {
 		return _type;
 	}
-
+	
+	public function resolve (target:ManagedObject) : * {
+		if (type.isType(Context)) {
+			return target.context;
+		}
+		var ids:Array = target.context.getObjectIds(type.getClass());
+		if (ids.length > 1) {
+			throw new ContextError("Ambigous dependency: Context contains more than one object of type "
+					+ type.name);
+		} 
+		else if (ids.length == 0) {
+			if (required) {
+				throw new ContextError("Unsatisfied dependency: Context does not contain an object of type " 
+					+ type.name);
+			}
+			else {
+				return null;
+			}				
+		}
+		else {
+			return target.context.getObject(ids[0]);
+		}
+	}
+	
 	
 }
 

@@ -25,6 +25,7 @@ import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 
@@ -64,7 +65,7 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 	public function addDefinition (definition:ObjectDefinition) : DynamicObject {
 		checkState();
 		checkDefinition(definition);
-		var object:DynamicObject = new DefaultDynamicObject(this, definition);
+		var object:DynamicObject = new DefaultDynamicObject(this, DynamicObjectDefinition(definition));
 		if (object.instance != null) {
 			addDynamicObject(object);		
 		}
@@ -83,7 +84,7 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 		else {
 			checkDefinition(definition);
 		}
-		var object:DynamicObject = new DefaultDynamicObject(this, definition, instance);
+		var object:DynamicObject = new DefaultDynamicObject(this, DynamicObjectDefinition(definition), instance);
 		addDynamicObject(object);
 		return object;
 	}

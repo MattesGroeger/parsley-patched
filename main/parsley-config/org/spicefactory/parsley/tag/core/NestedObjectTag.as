@@ -15,12 +15,10 @@
  */
 
 package org.spicefactory.parsley.tag.core {
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
+import org.spicefactory.parsley.core.registry.model.NestedObject;
 import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
-
-import flash.errors.IllegalOperationError;
 
 [DefaultProperty("decorators")]
 
@@ -43,26 +41,14 @@ public class NestedObjectTag implements ResolvableConfigurationValue {
 	public var decorators:Array = new Array();	
 	
 	/**
-	 * @private
-	 */
-	public function createRootDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		throw new IllegalOperationError("This tag may only be used for nested object declarations");
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function createNestedDefinition (registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		var factory:DefaultObjectDefinitionFactory = new DefaultObjectDefinitionFactory(type);
-		factory.decorators = decorators;
-		return factory.createNestedDefinition(registry);
-	}
-	
-	/**
 	 * @inheritDoc
 	 */
 	public function resolve (registry:ObjectDefinitionRegistry) : * {
-		return createNestedDefinition(registry);
+		var def:DynamicObjectDefinition = registry.builders
+				.forDynamicDefinition(type)
+				.decorators(decorators)
+				.build();
+		return new NestedObject(def);
 	}
 	
 	

@@ -50,27 +50,6 @@ public interface ObjectDefinition {
 	
 	function set instantiator (value:ObjectInstantiator) : void;
 
-	
-	/**
-	 * The values to be used as constructor arguments when creating instances from this definition.
-	 */
-	function get constructorArgs () : ConstructorArgRegistry;
-	
-	[Deprecated]
-	function get properties () : PropertyRegistry;
-	
-	/**
-	 * The methods for which method injection should be performed when configuring instances created from this definition.
-	 */
-	function get injectorMethods () : MethodRegistry;
-
-	
-	/**
-	 * The lifecycle listeners to process for instances created from this definition.
-	 */
-	function get objectLifecycle () : LifecycleListenerRegistry;
-	
-	
 	/**
 	 * Adds the specified processor factory to this definition.
 	 * The factory will be invoked for each new instance created from this definition,
@@ -125,6 +104,26 @@ public interface ObjectDefinition {
 	 */	
 	function get frozen () : Boolean;
 
+	
+	
+	/**
+	 * The values to be used as constructor arguments when creating instances from this definition.
+	 */
+	function get constructorArgs () : ConstructorArgRegistry;
+	
+	[Deprecated]
+	function get properties () : PropertyRegistry;
+	
+	/**
+	 * The methods for which method injection should be performed when configuring instances created from this definition.
+	 */
+	function get injectorMethods () : MethodRegistry;
+
+	/**
+	 * The lifecycle listeners to process for instances created from this definition.
+	 */
+	function get objectLifecycle () : LifecycleListenerRegistry;
+	
 	
 }
 

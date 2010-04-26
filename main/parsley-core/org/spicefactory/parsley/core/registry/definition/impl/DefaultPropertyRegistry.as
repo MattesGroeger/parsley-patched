@@ -27,9 +27,8 @@ import org.spicefactory.parsley.core.registry.model.ObjectTypeReference;
 
 import flash.utils.Dictionary;
 
+[Deprecated]
 /**
- * Default implementation of the PropertyRegistry interface.
- * 
  * @author Jens Halm
  */
 public class DefaultPropertyRegistry extends AbstractRegistry implements PropertyRegistry {
@@ -39,20 +38,11 @@ public class DefaultPropertyRegistry extends AbstractRegistry implements Propert
 	private var targetType:ClassInfo;
 	
 	
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param def the definition of the object this registry is associated with
-	 */
 	function DefaultPropertyRegistry (def:ObjectDefinition) {
 		super(def);
 		this.targetType = def.type;
 	}
 
-	
-	/**
-	 * @inheritDoc
-	 */
 	public function addValue (name:String, value:*) : PropertyRegistry {
 		checkState();
 		var property:Property = getProperty(targetType, name, false, true);
@@ -60,9 +50,6 @@ public class DefaultPropertyRegistry extends AbstractRegistry implements Propert
 		return this;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function addIdReference (name:String, id:String, required:Boolean = true) : PropertyRegistry {
 		checkState();
 		var property:Property = getProperty(targetType, name, false, true);
@@ -70,9 +57,6 @@ public class DefaultPropertyRegistry extends AbstractRegistry implements Propert
 		return this;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function addTypeReference (name:String, required:Boolean = true, type:ClassInfo = null) : PropertyRegistry {
 		checkState();
 		var property:Property = getProperty(targetType, name, false, true);
@@ -99,24 +83,15 @@ public class DefaultPropertyRegistry extends AbstractRegistry implements Propert
 		return property;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function removeValue (name:String) : void {
 		checkState();
 		delete properties[name];
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getValue (name:String) : * {
 		return PropertyValue(properties[name]).value;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getAll () : Array {
 		var all:Array = new Array();
 		for each (var pv:Object in properties) {

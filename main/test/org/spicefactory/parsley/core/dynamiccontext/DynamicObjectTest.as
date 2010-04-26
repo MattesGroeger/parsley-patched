@@ -5,8 +5,8 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.impl.DefaultContext;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.model.NestedObject;
 import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
 import org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator;
 
@@ -72,10 +72,10 @@ public class DynamicObjectTest extends ContextTestBase {
 			definition.properties.addTypeReference("dependency");
 		}
 		else {
-			var childDef:ObjectDefinition = registry.builders
+			var childDef:DynamicObjectDefinition = registry.builders
 					.forDynamicDefinition(DynamicTestDependency)
 					.build();
-			definition.properties.addValue("dependency", childDef);
+			definition.properties.addValue("dependency", new NestedObject(childDef));
 		}
 		return definition;
 	}

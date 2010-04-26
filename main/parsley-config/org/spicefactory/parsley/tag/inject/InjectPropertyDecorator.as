@@ -20,7 +20,7 @@ import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.model.ObjectTypeReference;
+import org.spicefactory.parsley.core.registry.model.ObjectTypeReferenceArray;
 
 [Metadata(name="Inject", types="property")]
 /**
@@ -65,7 +65,7 @@ public class InjectPropertyDecorator implements ObjectDefinitionDecorator {
 			if (!definition.type.getProperty(property).type.isType(Array)) {
 				throw new ContextError("type attribute may only be used for Array properties");
 			}
-			definition.properties.addValue(property, new ObjectTypeReference(ClassInfo.forClass(type, registry.domain)));
+			definition.properties.addValue(property, new ObjectTypeReferenceArray(ClassInfo.forClass(type, registry.domain)));
 		}
 		else if (id == null) {
 			definition.properties.addTypeReference(property, required);
