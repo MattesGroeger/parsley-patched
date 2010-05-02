@@ -74,6 +74,7 @@ public class MessageDispatcherDecorator implements ObjectDefinitionDecorator {
 	private function disableDispatcher (instance:Object, context:Context) : void {
 		var dispatcher:MessageDispatcherFunctionReference = dispatcherMap[instance] as MessageDispatcherFunctionReference;
 		if (dispatcher) dispatcher.disable();
+		delete dispatcherMap[instance];
 	}
 	
 	
