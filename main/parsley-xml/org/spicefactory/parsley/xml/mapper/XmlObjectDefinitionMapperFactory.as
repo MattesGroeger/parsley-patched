@@ -340,7 +340,7 @@ class SimpleValueXmlObjectMapper extends AbstractXmlObjectMapper {
 	}
 	
 	public override function mapToObject (element:XML, context:XmlProcessorContext) : Object {
-		return converter.convert(context.expressionContext.createExpression(element.text()[0]).value);
+		return converter.convert(context.expressionContext.createExpression(element.text()[0]).value, context.applicationDomain);
 	}
 
 	public override function mapToXml (object:Object, context:XmlProcessorContext) : XML {
