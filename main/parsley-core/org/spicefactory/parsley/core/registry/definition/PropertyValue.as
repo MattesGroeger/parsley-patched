@@ -17,43 +17,27 @@
 package org.spicefactory.parsley.core.registry.definition {
 import org.spicefactory.lib.reflect.Property;
 
+[Deprecated]
 /**
- * Represents a single property value.
- * 
  * @author Jens Halm
  */
 public class PropertyValue {
 	
-	
 	private var _property:Property;
 	private var _value:*;
 	
-	
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param property the Property instance
-	 * @param value the value for the property
-	 */
 	function PropertyValue (property:Property, value:*) {
 		_property = property;
 		_value = value;
 	}
 	
-	/**
-	 * The Property instance.
-	 */
 	public function get property () : Property {
 		return _property;
 	}
 	
-	/**
-	 * The value for the property.
-	 */
 	public function get value () : * {
 		return _value;
 	}
-	
 	
 }
 
