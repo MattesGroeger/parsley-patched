@@ -15,20 +15,23 @@
  */
 
 package org.spicefactory.parsley.tag.util {
-	import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 
 /**
  * Static utility methods for decorator implementations.
  * 
  * @author Jens Halm
  */
-public class DecoratorUtil {
+public class ReflectionUtil {
 	
 	
 	/**
 	 * Returns the method with the specified name for the class configured by the specified definition.
+	 * Throws an Error if no such method exists.
 	 * 
 	 * @param name the name of the method.
 	 * @param definition the object definition
@@ -40,6 +43,32 @@ public class DecoratorUtil {
 			throw new ContextError("Class " + definition.type.name + " does not contain a method with name " + name);
 		}
 		return method;
+	}
+	
+	/**
+	 * Returns the property with the specified name for the class configured by the specified definition.
+	 * Throws an Error if no such property exists or if some requirements specified by the boolean parameters
+	 * are not met.
+	 * 
+	 * @param name the name of the property
+	 * @param definition the object definition
+	 * @param readableRequired whether the property must be readable
+	 * @param writableRequired whether the property must be writable
+	 * @return the Property instance for the specified name
+	 */
+	public static function getProperty (name:String, definition:ObjectDefinition, 
+			readableRequired:Boolean, writableRequired:Boolean) : Property {
+		var property:Property = definition.type.getProperty(name);
+		if (property == null) {
+			throw new IllegalArgumentError("Property with name " + name + " does not exist in Class " + definition.type.name);
+		}
+		if (readableRequired && !property.readable) {
+			throw new IllegalArgumentError("" + property + " is not readable");
+		}
+		if (readableRequired && !property.writable) {
+			throw new IllegalArgumentError("" + property + " is not writable");
+		}
+		return property;		
 	}
 	
 	

@@ -16,11 +16,16 @@
 
 package org.spicefactory.parsley.tag.inject {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.processor.core.PropertyProcessor;
+import org.spicefactory.parsley.tag.model.ObjectIdReference;
+import org.spicefactory.parsley.tag.model.ObjectTypeReference;
 import org.spicefactory.parsley.tag.model.ObjectTypeReferenceArray;
+import org.spicefactory.parsley.tag.util.ReflectionUtil;
 
 [Metadata(name="Inject", types="property")]
 /**
@@ -61,18 +66,25 @@ public class InjectPropertyDecorator implements ObjectDefinitionDecorator {
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		var target:Property = ReflectionUtil.getProperty(property, definition, false, true);
+		
+		var propValue:*;
 		if (type != null) {
 			if (!definition.type.getProperty(property).type.isType(Array)) {
 				throw new ContextError("type attribute may only be used for Array properties");
 			}
-			definition.properties.addValue(property, new ObjectTypeReferenceArray(ClassInfo.forClass(type, registry.domain)));
+			propValue = new ObjectTypeReferenceArray(ClassInfo.forClass(type, registry.domain));
 		}
 		else if (id == null) {
-			definition.properties.addTypeReference(property, required);
+			var ci:ClassInfo = (type == null) ? target.type : ClassInfo.forClass(type, registry.domain);
+			propValue = new ObjectTypeReference(ci, required);
 		}
 		else {
-			definition.properties.addIdReference(property, id, required);
+			propValue = new ObjectIdReference(id, required);
 		}
+		
+		definition.addProcessorFactory(PropertyProcessor.newFactory(target, propValue));
+		
 		return definition;
 	}
 	

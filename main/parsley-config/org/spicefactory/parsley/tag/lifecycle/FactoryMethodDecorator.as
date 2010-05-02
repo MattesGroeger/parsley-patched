@@ -22,7 +22,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.impl.ObjectDefinitionWrapper;
-import org.spicefactory.parsley.tag.util.DecoratorUtil;
+import org.spicefactory.parsley.tag.util.ReflectionUtil;
 
 [Metadata(name="Factory", types="method")]
 /**
@@ -51,7 +51,7 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 		registry.registerDefinition(factoryDefinition);
 		
 		// Must create a new definition for the target type
-		var method:Method = DecoratorUtil.getMethod(this.method, definition);
+		var method:Method = ReflectionUtil.getMethod(this.method, definition);
 		var targetType:Class = method.returnType.getClass();
 		var instantiator:ObjectInstantiator 
 				= new FactoryMethodInstantiator(factoryDefinition, method);

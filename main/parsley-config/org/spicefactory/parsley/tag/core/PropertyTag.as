@@ -15,12 +15,17 @@
  */
 
 package org.spicefactory.parsley.tag.core {
+import org.spicefactory.parsley.processor.core.PropertyProcessor;
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.tag.model.ObjectIdReference;
+import org.spicefactory.parsley.tag.model.ObjectTypeReference;
 import org.spicefactory.parsley.tag.util.ConfigurationValueResolver;
+import org.spicefactory.parsley.tag.util.ReflectionUtil;
 
 [DefaultProperty("value")]
 /**
@@ -73,22 +78,29 @@ public class PropertyTag extends ObjectReferenceTag implements ObjectDefinitionD
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		validate();
+
+		var property:Property = ReflectionUtil.getProperty(name, definition, false, true);
+		
+		var propValue:*;
 		if (idRef != null) {
-			definition.properties.addIdReference(name, idRef, required);
+			propValue = new ObjectIdReference(idRef, required);
 		}
 		else if (typeRef != null) {
 			var ci:ClassInfo = ClassInfo.forClass(typeRef, registry.domain);
-			definition.properties.addTypeReference(name, required, ci);
+			propValue = new ObjectTypeReference(ci, required);
 		}
 		else if (childValue != null) {
-			definition.properties.addValue(name, valueResolver.resolveValue(childValue, registry));
+			propValue = valueResolver.resolveValue(childValue, registry);
 		}
 		else if (value != null) {
-			definition.properties.addValue(name, valueResolver.resolveValue(value, registry));
+			propValue = valueResolver.resolveValue(value, registry);
 		}
 		else {
-			definition.properties.addTypeReference(name, required);
+			propValue = new ObjectTypeReference(property.type, required);
 		}
+		
+		definition.addProcessorFactory(PropertyProcessor.newFactory(property, propValue));
+		
 		return definition;
 	}
 	
