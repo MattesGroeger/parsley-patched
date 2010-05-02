@@ -1,15 +1,9 @@
 package org.spicefactory.parsley.core.dynamiccontext {
 import org.spicefactory.lib.errors.AbstractMethodError;
-import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
 import org.spicefactory.parsley.core.ContextTestBase;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
-import org.spicefactory.parsley.core.context.impl.DefaultContext;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
-import org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator;
 
 /**
  * @author Jens Halm
@@ -46,6 +40,14 @@ public class DynamicObjectTagTestBase extends ContextTestBase {
 		var instance:AnnotatedDynamicTestObject = dynObject.instance as AnnotatedDynamicTestObject;
 		assertFalse("Unexpected destroy method invocation", instance.dependency.destroyMethodCalled);
 		validateDynamicObject(dynObject, context);
+		assertTrue("Expected destroy method invocation", instance.dependency.destroyMethodCalled);
+	}
+	
+	public function testSynchronizedRootDynamicObjectLifecycle () : void {
+		var dynObject:DynamicObject = context.createDynamicObject("testObjectWithRootRef");
+		var instance:SimpleDynamicTestObject = dynObject.instance as SimpleDynamicTestObject;
+		assertFalse("Unexpected destroy method invocation", instance.dependency.destroyMethodCalled);
+		dynObject.remove();
 		assertTrue("Expected destroy method invocation", instance.dependency.destroyMethodCalled);
 	}
 

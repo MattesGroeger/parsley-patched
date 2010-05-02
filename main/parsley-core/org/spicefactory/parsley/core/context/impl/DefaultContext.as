@@ -29,7 +29,7 @@ import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
-import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.lifecycle.ManagedObjectHandler;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
@@ -317,20 +317,25 @@ public class DefaultContext extends EventDispatcher implements Context {
 		underConstruction[id] = true;
 		
 		try {
-			var object:ManagedObject = _lifecycleManager.createObject(def, this);
+			var handler:ManagedObjectHandler = _lifecycleManager.createHandler(def, this);
+			handler.createObject();
 			if (def is SingletonObjectDefinition) {
-				var singleton:SingletonObjectDefinition = SingletonObjectDefinition(def);
-				singletonCache.put(id, object.instance);
-				if (!initialized && singleton.asyncInitConfig != null && initSequence != null) {
-					initSequence.addInstance(object);
-				}
+				handleSingleton(handler);
 			}
-			_lifecycleManager.configureObject(object);
+			handler.configureObject();
 		}
 		finally {
 			delete underConstruction[id];
 		}
-		return object.instance;
+		return handler.target.instance;
+	}
+	
+	private function handleSingleton (handler:ManagedObjectHandler) : void {
+		var singleton:SingletonObjectDefinition = SingletonObjectDefinition(handler.target.definition);
+		singletonCache.put(singleton.id, handler.target.instance);
+		if (!initialized && singleton.asyncInitConfig != null && initSequence != null) {
+			initSequence.addInstance(handler.target);
+		}
 	}
 	
 	private function getLocalDefinition (id:String) : ObjectDefinition {

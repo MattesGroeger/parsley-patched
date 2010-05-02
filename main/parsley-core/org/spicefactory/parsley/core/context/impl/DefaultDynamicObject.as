@@ -18,7 +18,7 @@ package org.spicefactory.parsley.core.context.impl {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.lifecycle.ManagedObjectHandler;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 
 import flash.events.Event;
@@ -35,7 +35,7 @@ public class DefaultDynamicObject implements DynamicObject {
 	private var _definition:DynamicObjectDefinition;
 	private var _instance:Object;
 	
-	private var managedObject:ManagedObject;
+	private var handler:ManagedObjectHandler;
 	private var processed:Boolean;
 	
 	
@@ -69,9 +69,10 @@ public class DefaultDynamicObject implements DynamicObject {
 	private function processInstance () : void {
 		if (processed) return;
 		processed = true;
-		managedObject = _context.lifecycleManager.createObject(definition, context);
-		_instance = managedObject.instance;
-		_context.lifecycleManager.configureObject(managedObject);
+		handler = _context.lifecycleManager.createHandler(definition, context);
+		handler.createObject();
+		_instance = handler.target.instance;
+		handler.configureObject();
 	}
 
 	/**
@@ -85,7 +86,7 @@ public class DefaultDynamicObject implements DynamicObject {
 	 * @inheritDoc
 	 */
 	public function get instance () : Object {
-		if (managedObject == null && _context.configured) {
+		if (handler == null && _context.configured) {
 			processInstance();
 		}
 		return _instance;
@@ -102,8 +103,8 @@ public class DefaultDynamicObject implements DynamicObject {
 	 * @inheritDoc
 	 */
 	public function remove () : void {
-		if (managedObject) {
-			_context.lifecycleManager.destroyObject(managedObject);
+		if (handler) {
+			handler.destroyObject();
 		} else {
 			_context.removeEventListener(ContextEvent.INITIALIZED, contextInitialized);
 		}

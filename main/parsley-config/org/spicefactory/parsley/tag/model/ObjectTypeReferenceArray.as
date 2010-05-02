@@ -40,7 +40,12 @@ public class ObjectTypeReferenceArray implements ResolvableValue {
 	}
 
 	public function resolve (target:ManagedObject) : * {
-		return target.context.getAllObjectsByType(type.getClass());
+		var ids:Array = target.context.getObjectIds(type.getClass());
+		var resolved:Array = new Array();
+		for each (var id:String in ids) {
+			resolved.push(target.resolveObjectReference(id));
+		}
+		return resolved;
 	}
 	
 	

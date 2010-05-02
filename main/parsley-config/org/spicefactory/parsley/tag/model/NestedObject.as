@@ -42,6 +42,7 @@ public class NestedObject implements ResolvableValue {
 
 	public function resolve (target:ManagedObject) : * {
 		var child:DynamicObject = target.context.addDynamicDefinition(_definition);
+		target.synchronizeLifecycle(child);
 		return child.instance;
 	}
 	

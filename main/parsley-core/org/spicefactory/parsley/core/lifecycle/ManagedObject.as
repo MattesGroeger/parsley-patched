@@ -61,6 +61,16 @@ public interface ManagedObject {
 	function resolveValue (value:*) : *;
 	
 	/**
+	 * Resolves the reference to the object with the specified id, potentially synchronizing
+	 * its lifecycle to the lifecycle of this managed object in case the id points to a 
+	 * DynamicObject.
+	 * 
+	 * @param id the id to resolve
+	 * @return the reolved object
+	 */
+	function resolveObjectReference (id:String) : Object;
+	
+	/**
 	 * Snychronizes the lifecycle of the specified dynamic object with the lifecycle
 	 * of this ManagedObject instance.
 	 * When this object gets removed from the Context, the specified dynamic object

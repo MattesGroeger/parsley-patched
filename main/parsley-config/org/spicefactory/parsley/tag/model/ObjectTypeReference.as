@@ -77,7 +77,7 @@ public class ObjectTypeReference implements ResolvableValue {
 			}				
 		}
 		else {
-			return target.context.getObject(ids[0]);
+			return target.resolveObjectReference(ids[0]);
 		}
 	}
 	

@@ -5,6 +5,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import org.spicefactory.parsley.core.dynamiccontext.SimpleDynamicTestObject;
 			import org.spicefactory.parsley.core.dynamiccontext.DynamicTestDependency;
 			import org.spicefactory.parsley.core.dynamiccontext.AnnotatedDynamicTestObject;
 		]]>
@@ -16,6 +17,10 @@
 			<flextag:NestedObjectTag type="{DynamicTestDependency}"/>
 		</flextag:PropertyTag>
 	</flextag:MxmlDynamicObjectTag> 
+	
+	<flextag:MxmlDynamicObjectTag id="testObjectWithRootRef" type="{SimpleDynamicTestObject}"/>
+	
+	<flextag:MxmlDynamicObjectTag id="ref" type="{DynamicTestDependency}"/>
 	
 	
 </mx:Object> 

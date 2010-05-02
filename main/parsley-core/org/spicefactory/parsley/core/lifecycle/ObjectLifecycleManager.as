@@ -19,7 +19,7 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 
 /**
- * Responsible for managing the lifecycle of objects based on their <code>ObjectDefinition</code>s.
+ * Responsible for managing the lifecycle of objects, creating and destroying their handlers.
  * It is used as a strategy in the builtin <code>Context</code> implementations.
  * 
  * @author Jens Halm
@@ -27,35 +27,18 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 public interface ObjectLifecycleManager {
 	
 	/**
-	 * Instantiates a new object based on the specified ObjectDefinition.
-	 * This should not include processing its configuration, like performing dependency injection or message handler registration.
-	 * To allow bidirectional associations this step is deferred until <code>configureObject</code> is invoked.
+	 * Creates a new handler for the specified ObjectDefinition. The handler instance can then 
+	 * be used to control the lifecycle of a single target object.
 	 * 
-	 * @param definition the definition to create a new instance for
+	 * @param definition the definition to create a new handler for
 	 * @param context the Context the object belongs to
-	 * @return the new instance
+	 * @return a new handler for the specified ObjectDefinition
 	 */
-	function createObject (definition:ObjectDefinition, context:Context) : ManagedObject;	
+	function createHandler (definition:ObjectDefinition, context:Context) : ManagedObjectHandler;	
 
 	/**
-	 * Processes the configuration for the specified object and performs dependency injection, message handler registration
-	 * or invocation of methods marked with <code>[Init]</code> and similar tasks.
-	 * 
-	 * @param object the object to configure
-	 */
-	function configureObject (object:ManagedObject) : void;	
-
-	/**
-	 * Processes lifecycle listeners for the object before it will be removed from the Context.
-	 * This includes invoking methods marked with <code>[Destroy]</code>.
-	 * 
-	 * @param object the object to process
-	 */
-	function destroyObject (object:ManagedObject) : void;	
-	
-	/**
-	 * Processes lifecycle listeners for all objects created by this manager. This means that
-	 * implementations have to keep track of all instances they create.
+	 * Destroys all managed objects created by this instance. This means that
+	 * implementations have to keep track of all handlers they create.
 	 */
 	function destroyAll () : void;
 	

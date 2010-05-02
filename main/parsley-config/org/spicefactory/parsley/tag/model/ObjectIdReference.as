@@ -65,7 +65,7 @@ public class ObjectIdReference implements ResolvableValue {
 				return null;
 			}
 		} else {
-			return target.context.getObject(id);
+			return target.resolveObjectReference(id);
 		}
 	}
 	

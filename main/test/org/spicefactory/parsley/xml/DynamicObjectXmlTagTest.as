@@ -20,6 +20,10 @@ public class DynamicObjectXmlTagTest extends DynamicObjectTagTestBase {
 				<object type="org.spicefactory.parsley.core.dynamiccontext.DynamicTestDependency"/>
 			</property>
 		</dynamic-object> 
+		
+		<dynamic-object id="testObjectWithRootRef" type="org.spicefactory.parsley.core.dynamiccontext.SimpleDynamicTestObject"/>
+		
+		<dynamic-object id="ref" type="org.spicefactory.parsley.core.dynamiccontext.DynamicTestDependency"/>
 	
 	</objects>;	
 }
