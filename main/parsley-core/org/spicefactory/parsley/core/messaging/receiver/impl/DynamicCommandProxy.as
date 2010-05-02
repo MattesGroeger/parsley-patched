@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
+import flash.system.ApplicationDomain;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
@@ -109,9 +110,10 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 		var object:DynamicObject = createObject();
 		
 		var command:Command;
+		var domain:ApplicationDomain = definition.type.applicationDomain;
 		try {
 			var invoker:DynamicCommandTarget
-					= new DynamicCommandTarget(Provider.forInstance(object.instance, definition.type.applicationDomain), execute, 
+					= new DynamicCommandTarget(Provider.forInstance(object.instance, domain), execute, 
 					selector, messageInfo, messageProperties, order);
 					
 			var returnValue:* = invoker.invoke(processor.message);
@@ -124,13 +126,13 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 		if (result != null) {
 			var resultHandler:CommandObserver
 					= new DynamicCommandObserver(object, stateful, result, CommandStatus.COMPLETE, 
-					selector, messageInfo, int.MIN_VALUE);
+					selector, messageInfo, int.MIN_VALUE, domain);
 			command.addObserver(resultHandler);
 		}
 		if (error != null) {
 			var errorHandler:CommandObserver
 					= new DynamicCommandObserver(object, stateful, error, CommandStatus.ERROR, 
-					selector, messageInfo, int.MIN_VALUE);
+					selector, messageInfo, int.MIN_VALUE, domain);
 			command.addObserver(errorHandler);
 		}
 		if (!stateful) {
@@ -164,6 +166,7 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 }
 }
 
+import flash.system.ApplicationDomain;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
@@ -204,9 +207,10 @@ class DynamicCommandObserver extends DefaultCommandObserver {
 			status:CommandStatus, 
 			selector:* = undefined, 
 			messageType:ClassInfo = null, 
-			order:int = int.MAX_VALUE
+			order:int = int.MAX_VALUE,
+			domain:ApplicationDomain = null
 			) {
-		super(Provider.forInstance(object.instance), methodName, status, selector, messageType, order);
+		super(Provider.forInstance(object.instance, domain), methodName, status, selector, messageType, order);
 		this.object = object;
 		this.stateful = stateful;
 	}
