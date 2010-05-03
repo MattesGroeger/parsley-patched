@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml.builder {
+import org.spicefactory.parsley.instantiator.ObjectWrapperInstantiator;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.expr.impl.DefaultExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
@@ -173,19 +174,4 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 		_loader.cancel();
 	}
 }
-}
-
-import org.spicefactory.parsley.core.lifecycle.ManagedObject;
-import org.spicefactory.parsley.core.registry.ContainerObjectInstantiator;
-
-class ObjectWrapperInstantiator implements ContainerObjectInstantiator {
-
-	private var instance:Object;
-	
-	function ObjectWrapperInstantiator (instance:Object) { this.instance = instance; }
-
-	public function instantiate (target:ManagedObject) : Object {
-		return instance;
-	}
-	
 }

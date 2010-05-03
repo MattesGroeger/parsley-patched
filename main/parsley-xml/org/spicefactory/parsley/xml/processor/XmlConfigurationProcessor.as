@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml.processor {
+import org.spicefactory.parsley.instantiator.ObjectWrapperInstantiator;
 import org.spicefactory.lib.events.CompoundErrorEvent;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.expr.impl.DefaultExpressionContext;
@@ -203,19 +204,4 @@ public class XmlConfigurationProcessor extends EventDispatcher implements AsyncC
 		return description;
 	}
 }
-}
-
-import org.spicefactory.parsley.core.lifecycle.ManagedObject;
-import org.spicefactory.parsley.core.registry.ContainerObjectInstantiator;
-
-class ObjectWrapperInstantiator implements ContainerObjectInstantiator {
-
-	private var instance:Object;
-	
-	function ObjectWrapperInstantiator (instance:Object) { this.instance = instance; }
-
-	public function instantiate (target:ManagedObject) : Object {
-		return instance;
-	}
-	
 }

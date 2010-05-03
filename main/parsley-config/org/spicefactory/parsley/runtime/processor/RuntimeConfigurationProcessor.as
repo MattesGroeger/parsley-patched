@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.runtime.processor {
+import org.spicefactory.parsley.instantiator.ObjectWrapperInstantiator;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
@@ -118,9 +119,6 @@ public class RuntimeConfigurationProcessor implements ConfigurationProcessor {
 }
 }
 
-import org.spicefactory.parsley.core.lifecycle.ManagedObject;
-import org.spicefactory.parsley.core.registry.ContainerObjectInstantiator;
-
 class InstanceDefinition {
 
 	internal var instance:Object;
@@ -147,16 +145,4 @@ class ClassDefinition {
 		this.lazy = lazy;
 		this.order = order;
 	}
-}
-
-class ObjectWrapperInstantiator implements ContainerObjectInstantiator {
-
-	private var instance:Object;
-	
-	function ObjectWrapperInstantiator (instance:Object) { this.instance = instance; }
-
-	public function instantiate (target:ManagedObject) : Object {
-		return instance;
-	}
-	
 }

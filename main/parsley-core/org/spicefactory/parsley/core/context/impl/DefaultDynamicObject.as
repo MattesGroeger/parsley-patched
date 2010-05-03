@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.context.impl {
+import org.spicefactory.parsley.instantiator.ObjectWrapperInstantiator;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.events.ContextEvent;
@@ -112,17 +113,3 @@ public class DefaultDynamicObject implements DynamicObject {
 }
 }
 
-import org.spicefactory.parsley.core.lifecycle.ManagedObject;
-import org.spicefactory.parsley.core.registry.ContainerObjectInstantiator;
-
-class ObjectWrapperInstantiator implements ContainerObjectInstantiator {
-
-	private var instance:Object;
-	
-	function ObjectWrapperInstantiator (instance:Object) { this.instance = instance; }
-
-	public function instantiate (target:ManagedObject) : Object {
-		return instance;
-	}
-	
-}
