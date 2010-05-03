@@ -274,18 +274,8 @@
 			
 			<arg line="-package org.spicefactory.parsley.core.registry"/>
 			<arg value="API for IOC kernel services for the object definition registry"/>
-			<arg line="-package org.spicefactory.parsley.core.registry.builder"/>
-			<arg value="API for the configuration DSL of the registry"/>
-			<arg line="-package org.spicefactory.parsley.core.registry.builder.impl"/>
-			<arg value="Implementation of the configuration DSL of the registry"/>
 			<arg line="-package org.spicefactory.parsley.core.registry.impl"/>
 			<arg value="Implementation for IOC kernel services for the object definition registry"/>
-			<arg line="-package org.spicefactory.parsley.core.registry.definition"/>
-			<arg value="API for various individual aspects of an ObjectDefinition"/>
-			<arg line="-package org.spicefactory.parsley.core.registry.definition.impl"/>
-			<arg value="Implementation for various individual aspects of an ObjectDefinition"/>
-			<arg line="-package org.spicefactory.parsley.core.registry.model"/>
-			<arg value="Configuration model of the object definition registry"/>
 			
 			<arg line="-package org.spicefactory.parsley.core.scope"/>
 			<arg value="API for IOC kernel services for scope management"/>
@@ -493,18 +483,8 @@
 			
 			<arg line="-package org.spicefactory.parsley.core.registry"/>
 			<arg value="API for IOC kernel services for the object definition registry"/>
-			<arg line="-package org.spicefactory.parsley.core.registry.builder"/>
-			<arg value="API for the configuration DSL of the registry"/>
-			<arg line="-package org.spicefactory.parsley.core.registry.builder.impl"/>
-			<arg value="Implementation of the configuration DSL of the registry"/>
 			<arg line="-package org.spicefactory.parsley.core.registry.impl"/>
 			<arg value="Implementation for IOC kernel services for the object definition registry"/>
-			<arg line="-package org.spicefactory.parsley.core.registry.definition"/>
-			<arg value="API for various individual aspects of an ObjectDefinition"/>
-			<arg line="-package org.spicefactory.parsley.core.registry.definition.impl"/>
-			<arg value="Implementation for various individual aspects of an ObjectDefinition"/>
-			<arg line="-package org.spicefactory.parsley.core.registry.model"/>
-			<arg value="Configuration model of the object definition registry"/>
 			
 			<arg line="-package org.spicefactory.parsley.core.scope"/>
 			<arg value="API for IOC kernel services for scope management"/>
