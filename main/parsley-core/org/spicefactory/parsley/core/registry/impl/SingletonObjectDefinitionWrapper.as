@@ -31,7 +31,7 @@ import org.spicefactory.parsley.core.registry.definition.PropertyRegistry;
  * 
  * @author Jens Halm
  */
-public class ObjectDefinitionWrapper implements SingletonObjectDefinition {
+public class SingletonObjectDefinitionWrapper implements SingletonObjectDefinition {
 
 
 	private var _id:String;
@@ -52,7 +52,7 @@ public class ObjectDefinitionWrapper implements SingletonObjectDefinition {
 	 * @param order the initialization order for non-lazy singletons
 	 * @param asyncInit the configuration for an asynchronously initializing object
 	 */
-	function ObjectDefinitionWrapper (wrappedDefinition:ObjectDefinition, id:String = null, 
+	function SingletonObjectDefinitionWrapper (wrappedDefinition:ObjectDefinition, id:String = null, 
 			lazy:Boolean = false, singleton:Boolean = true, order:int = int.MAX_VALUE, asyncInit:AsyncInitConfig = null) : void {
 		this.wrappedDefinition = wrappedDefinition;
 		_id = (id != null) ? id : IdGenerator.nextObjectId;
