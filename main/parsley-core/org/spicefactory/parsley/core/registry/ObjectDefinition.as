@@ -114,9 +114,7 @@ public interface ObjectDefinition {
 	[Deprecated]
 	function get injectorMethods () : MethodRegistry;
 
-	/**
-	 * The lifecycle listeners to process for instances created from this definition.
-	 */
+	[Deprecated]
 	function get objectLifecycle () : LifecycleListenerRegistry;
 	
 	

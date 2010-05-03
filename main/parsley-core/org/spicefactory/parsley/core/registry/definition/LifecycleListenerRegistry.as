@@ -17,52 +17,18 @@
 package org.spicefactory.parsley.core.registry.definition {
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 
+[Deprecated]
 /**
- * A registry for all lifecycle listeners registered for a single instance.
- * 
  * @author Jens Halm
  */
 public interface LifecycleListenerRegistry {
 	
-	/**
-	 * Adds a handler to be invoked when a new provider is available for an instance
-	 * created from the associated definition. The timing for this method is different than
-	 * for simple lifecycle listeners. It takes into account subtle synchronization issues
-	 * for singletons created upon container initialization. This method should be used
-	 * for all configuration tasks that require an ObjectProvider, like registering
-	 * message receivers or lifecycle observers. 
-	 * 
-	 * <p>The specified handler function must accept a single parameter of type
-	 * <code>SynchronizedObjectProvider</code>.</p>
-	 */
 	function synchronizeProvider (handler:Function) : LifecycleListenerRegistry;
 	
-	/**
-	 * Adds a lifecycle listener to this registry.
-	 * The function must have two parameters, the first for the instance itself and
-	 * the second the Context the instance belongs to.
-	 * 
-	 * @param event the lifecycle event to listen for
-	 * @param listener the listener function to invoke
-	 * @return this registry instance for method chaining
-	 */
 	function addListener (event:ObjectLifecycle, listener:Function) : LifecycleListenerRegistry;
 	
-	/**
-	 * Removes the specified listener from this registry.
-	 * 
-	 * @param event the lifecycle event
-	 * @param listener the listener function
-	 * @return this registry instance for method chaining
-	 */
 	function removeListener (event:ObjectLifecycle, listener:Function) : LifecycleListenerRegistry;
 	
-	/**
-	 * Returns all listeners for the specified event type.
-	 * 
-	 * @param event the event to return the listeners for
-	 * @return all listeners added to this registry (an Array of function references)
-	 */
 	function getListeners (event:ObjectLifecycle) : Array;
 	
 }

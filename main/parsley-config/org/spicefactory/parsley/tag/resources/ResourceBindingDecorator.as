@@ -16,14 +16,13 @@
 
 package org.spicefactory.parsley.tag.resources {
 import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
-import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.processor.resources.ResourceBindingProcessor;
+import org.spicefactory.parsley.tag.util.ReflectionUtil;
 
-import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
 
 [Metadata(name="ResourceBinding", types="property")]
@@ -42,6 +41,8 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator {
 	 */
 	public static var adapterClass:Class;
 
+	private static var adapter:ResourceBindingAdapter;
+
 
 	/**
 	 * The resource key.
@@ -58,13 +59,6 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator {
 	 * The property to bind to.
 	 */
 	public var property:String;
-	
-
-	private static var adapter:ResourceBindingAdapter;
-	
-	private var managedObjects:Dictionary = new Dictionary();
-	
-	private var _property:Property;
 	
 	
 	private static function initializeAdapter () : void {
@@ -87,34 +81,12 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator {
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		initializeAdapter();
-		adapter.addEventListener(ResourceBindingEvent.UPDATE, handleUpdate);
-		_property = definition.type.getProperty(property);
-		if (_property == null) {
-			throw new ObjectDefinitionBuilderError("Class " + definition.type.name 
-					+ " does not contain a property with name " + _property);
-		}
-		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_INIT, preInit);
-		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_DESTROY, preDestroy);
+		var target:Property = ReflectionUtil.getProperty(property, definition, false, true);
+		definition.addProcessorFactory(ResourceBindingProcessor.newFactory(target, adapter, key, bundle));		
 		return definition;
 	}
-
-	private function preInit (instance:Object, context:Context) : void {
-		_property.setValue(instance, adapter.getResource(bundle, key));
-		managedObjects[instance] = true;
-	}
-
-	private function preDestroy (instance:Object, context:Context) : void {
-		delete managedObjects[instance];
-	}
-
-	private function handleUpdate (event:ResourceBindingEvent) : void {
-		var resource:* = adapter.getResource(bundle, key);
-		for (var instance:Object in managedObjects) {
-			_property.setValue(instance, resource);
-		}
-	}
 	
-	
+
 }
 
 }

@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.rpc.pimento.config {
-import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
@@ -67,42 +66,9 @@ public class ServiceTag implements RootConfigurationTag {
 					.forSingletonDefinition(type)
 					.id(id)
 					.buildAndRegister();
-		var listener:ServiceLifecycleListener = new ServiceLifecycleListener(this);
-		definition.objectLifecycle.addListener(ObjectLifecycle.POST_INIT, listener.postInit);
+		definition.addProcessorFactory(ServiceProcessor.newFactory(name, config, timeout));
 	}
+	
+	
 }
-}
-
-import org.spicefactory.cinnamon.service.ServiceProxy;
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.rpc.pimento.config.ServiceTag;
-import org.spicefactory.pimento.config.PimentoConfig;
-
-class ServiceLifecycleListener {
-
-	private var tag:ServiceTag;
-	
-	function ServiceLifecycleListener (tag:ServiceTag) {
-		this.tag = tag;
-	}
-
-	public function postInit (instance:Object, context:Context):void {
-		var configInstance:PimentoConfig;
-		if (tag.config != null) {
-			var configRef:Object = context.getObject(tag.config);
-			if (!(configRef is PimentoConfig)) {
-				throw new ContextError("Object with id " + tag.config + " is not a PimentoConfig instance");
-			}
-			configInstance = configRef as PimentoConfig;
-		}
-		else {
-			configInstance = context.getObjectByType(PimentoConfig) as PimentoConfig;
-		}
-		configInstance.addService(tag.name, instance);
-		var proxy:ServiceProxy = ServiceProxy.forService(instance);
-		if (tag.timeout != 0) proxy.timeout = tag.timeout;
-	}
-	
-	
 }

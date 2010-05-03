@@ -25,32 +25,20 @@ import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegist
 
 import flash.utils.Dictionary;
 
+[Deprecated]
 /**
- * Default implementation of the LifecycleListenerRegistry interface.
- * 
  * @author Jens Halm
  */
 public class DefaultLifecycleListenerRegistry extends AbstractRegistry implements LifecycleListenerRegistry {
-
 
 	private var listeners:Dictionary = new Dictionary();
 	private var providers:Dictionary = new Dictionary();
 	private var providerHandlers:Array = new Array();
 
-
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param def the definition of the object this registry is associated with
-	 */
 	function DefaultLifecycleListenerRegistry (def:ObjectDefinition) {
 		super(def);
 	}
 
-
-	/**
-	 * @inheritDoc
-	 */
 	public function synchronizeProvider (handler:Function) : LifecycleListenerRegistry {
 		checkState();
 		if (providerHandlers.length == 0) {
@@ -76,50 +64,24 @@ public class DefaultLifecycleListenerRegistry extends AbstractRegistry implement
 		delete providers[instance];
 	}
 	
-	/**
-	 * Adds a handler that wants to be invoked whenever a new ObjectProvider becomes available,
-	 * that represent an instance created from the definition this registry belongs to.
-	 * 
-	 * @param handler the handler to invoke for each new ObjectProvider
-	 */
 	protected function addProviderHandler (handler:Function) : void {
 		providerHandlers.push(handler);
 	}
 	
-	/**
-	 * Invokes all handlers that were added to this registry and passes the specified
-	 * provider to the handler.
-	 * 
-	 * @param provider the provider to pass to all handlers
-	 */
 	protected function invokeProviderHandlers (provider:SynchronizedObjectProvider) : void {
 		for each (var handler:Function in providerHandlers) {
 			handler(provider);
 		}
 	}
 	
-	/**
-	 * Invokes all destroy handlers for the specified provider.
-	 * 
-	 * @param provider the provider to invoke all destroy handlers for
-	 */
 	protected function invokeDestroyHandlers (provider:SynchronizedObjectProvider) : void {
 		SynchronizedProvider(provider).invokeDestroyHandlers();
 	}
 	
-	/**
-	 * Wraps the specified regular ObjectProvider in a synchronized provider.
-	 * 
-	 * @param provider the provider to wrap
-	 * @return a synchronized provider that wraps the specified regular one
-	 */
 	protected function wrapProvider (provider:ObjectProvider) : SynchronizedObjectProvider {
 		return new SynchronizedProvider(provider);
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	public function addListener (event:ObjectLifecycle, listener:Function) : LifecycleListenerRegistry {
 		checkState();
 		var arr:Array = listeners[event.key];
@@ -131,9 +93,6 @@ public class DefaultLifecycleListenerRegistry extends AbstractRegistry implement
 		return this;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function removeListener (event:ObjectLifecycle, listener:Function) : LifecycleListenerRegistry {
 		checkState();
 		var arr:Array = listeners[event.key];
@@ -144,9 +103,6 @@ public class DefaultLifecycleListenerRegistry extends AbstractRegistry implement
 		return this;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getListeners (event:ObjectLifecycle) : Array {
 		var arr:Array = listeners[event.key];
 		return (arr == null) ? [] : arr.concat();

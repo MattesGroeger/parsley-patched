@@ -27,36 +27,20 @@ import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegist
 
 import flash.events.Event;
 
-/**
- * Extends the default implementation of the LifecycleListenerRegistry interface and
- * adds special synchronization required for singleton ObjectProviders.
- * These are primarily needed to prevent that a message receiver misses a message
- * only because the sender was initialized earlier on container startup.
- * 
+[Deprecated]
+/** 
  * @author Jens Halm
  */
 public class SingletonLifecycleListenerRegistry extends DefaultLifecycleListenerRegistry {
 	
-	
 	private var registry:ObjectDefinitionRegistry;
 	private var provider:SynchronizedObjectProvider;
 	
-	
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param definition the definition of the object this registry is associated with
-	 * @param registry the registry the definition belongs to
-	 */
 	function SingletonLifecycleListenerRegistry (definition:SingletonObjectDefinition, registry:ObjectDefinitionRegistry) {
 		super(definition);
 		this.registry = registry;
 	}
 
-	
-	/**
-	 * @inheritDoc
-	 */
 	public override function synchronizeProvider (handler:Function) : LifecycleListenerRegistry {
 		checkState();
 		if (provider == null) {
@@ -94,7 +78,6 @@ public class SingletonLifecycleListenerRegistry extends DefaultLifecycleListener
 		invokeDestroyHandlers(provider);
 		provider = null;
 	}
-	
 	
 }
 }
