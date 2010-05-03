@@ -25,5 +25,14 @@ package org.spicefactory.parsley.core.registry {
 public interface DynamicObjectDefinition extends ObjectDefinition {
 	
 	
+	/**
+	 * Creates a copy of this definition wrapping the existing instance.
+	 * 
+	 * @param instance the instance to wrap
+	 * @return a new ObjectDefinition wrapping the existing instance
+	 */
+	function copyForInstance (instance:Object) : DynamicObjectDefinition;
+	
+	
 }
 }

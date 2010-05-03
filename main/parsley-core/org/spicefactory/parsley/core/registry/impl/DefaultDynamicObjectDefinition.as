@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.registry.impl {
+import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
+import org.spicefactory.parsley.instantiator.ObjectWrapperInstantiator;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 
@@ -33,6 +35,26 @@ public class DefaultDynamicObjectDefinition extends AbstractObjectDefinition imp
 	 */
 	function DefaultDynamicObjectDefinition (type:ClassInfo, id:String) {
 		super(type, id);
+	}
+	
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function copyForInstance (instance:Object) : DynamicObjectDefinition {
+		var def:DefaultDynamicObjectDefinition = new DefaultDynamicObjectDefinition(type, id);
+		if (initMethod != null) {
+			def.initMethod = initMethod;
+		}
+		if (destroyMethod != null) {
+			def.destroyMethod = destroyMethod;
+		}
+		def.instantiator = new ObjectWrapperInstantiator(instance);
+		for each (var factory:ObjectProcessorFactory in processorFactories) {
+			def.addProcessorFactory(factory);
+		}
+		def.replaceLegacyRegistries(this);
+		return def;
 	}
 	
 

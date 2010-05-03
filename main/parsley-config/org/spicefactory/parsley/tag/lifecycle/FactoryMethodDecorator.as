@@ -21,7 +21,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
-import org.spicefactory.parsley.core.registry.impl.ObjectDefinitionWrapper;
+import org.spicefactory.parsley.core.registry.impl.SingletonObjectDefinitionWrapper;
 import org.spicefactory.parsley.tag.util.ReflectionUtil;
 
 [Metadata(name="Factory", types="method")]
@@ -47,7 +47,7 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 		
 		// Specified definition is for the factory, must be registered as a root factory, 
 		// even if the original definition is for a nested object
-		var factoryDefinition:SingletonObjectDefinition = new ObjectDefinitionWrapper(definition);
+		var factoryDefinition:SingletonObjectDefinition = new SingletonObjectDefinitionWrapper(definition);
 		registry.registerDefinition(factoryDefinition);
 		
 		// Must create a new definition for the target type

@@ -218,6 +218,18 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	/**
 	 * @private
 	 */
+	internal function replaceLegacyRegistries (source:ObjectDefinition) : void {
+		// deprecated
+		_constructorArgs = source.constructorArgs;
+		_properties = source.properties;
+		_methods = source.injectorMethods;
+		_listeners = source.objectLifecycle;
+	}
+
+	
+	/**
+	 * @private
+	 */
 	public function toString () : String {
 		return "ObjectDefinition for Class " + _type.name;
 	}

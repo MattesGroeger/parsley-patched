@@ -52,7 +52,10 @@ public class DefaultDynamicObject implements DynamicObject {
 		_definition = definition;
 		_instance = instance;
 		if (instance != null) {
-			definition.instantiator = new ObjectWrapperInstantiator(instance);
+			_definition = definition.copyForInstance(instance);
+		}
+		if (!_definition.frozen) {
+			_definition.freeze();
 		}
 		if (!context.initialized) {
 			context.addEventListener(ContextEvent.INITIALIZED, contextInitialized);
