@@ -15,11 +15,10 @@
  */
 
 package org.spicefactory.parsley.tag.core {
+import org.spicefactory.parsley.instantiator.ConstructorInstantiator;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.model.ObjectIdReference;
-import org.spicefactory.parsley.tag.model.ObjectTypeReference;
 import org.spicefactory.parsley.tag.util.ConfigurationValueResolver;
 
 /**
@@ -38,18 +37,7 @@ public class ConstructorTag extends ArrayTag implements ObjectDefinitionDecorato
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		valueResolver.resolveValues(values, registry);
-		for each (var arg:* in values) {
-			if (arg is ObjectIdReference) {
-				// ignoring required value from config - will be detected with reflection
-				definition.constructorArgs.addIdReference(ObjectIdReference(arg).id);
-			}
-			else if (arg is ObjectTypeReference) {
-				definition.constructorArgs.addTypeReference(ObjectTypeReference(arg).type);
-			}
-			else {
-				definition.constructorArgs.addValue(arg);
-			}
-		}
+		definition.instantiator = new ConstructorInstantiator(values);
 		return definition;
 	}
 	

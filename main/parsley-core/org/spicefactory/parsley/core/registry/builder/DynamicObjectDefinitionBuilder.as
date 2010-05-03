@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.core.registry.builder {
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
+import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 
 /**
  * Builder for creating dynamic object definitions.

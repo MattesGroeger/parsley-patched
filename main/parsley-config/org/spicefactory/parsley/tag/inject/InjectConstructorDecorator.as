@@ -15,9 +15,11 @@
  */
 
 package org.spicefactory.parsley.tag.inject {
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.instantiator.ConstructorInstantiator;
+import org.spicefactory.parsley.tag.util.ReflectionUtil;
 
 [Metadata(name="InjectConstructor", types="class")]
 /**
@@ -36,9 +38,8 @@ public class InjectConstructorDecorator implements ObjectDefinitionDecorator {
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		for (var i:uint = 0; i < definition.type.getConstructor().parameters.length; i++) {
-			definition.constructorArgs.addTypeReference();
-		}
+		var refs:Array = ReflectionUtil.getTypeReferencesForParameters(definition.type.getConstructor());
+		definition.instantiator = new ConstructorInstantiator(refs);
 		return definition;
 	}
 	

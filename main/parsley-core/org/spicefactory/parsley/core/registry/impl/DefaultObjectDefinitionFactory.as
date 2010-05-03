@@ -18,7 +18,7 @@ package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
+import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 
 [DefaultProperty("decorators")]
 

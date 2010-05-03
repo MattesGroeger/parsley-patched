@@ -19,48 +19,30 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ConstructorArgRegistry;
 
+[Deprecated]
 /**
- * Default implementation of the ConstructorArgRegistry interface.
- * 
  * @author Jens Halm
  */
 public class DefaultConstructorArgRegistry extends AbstractParameterRegistry implements ConstructorArgRegistry {
 
-
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param def the definition of the object this registry is associated with
-	 */
 	function DefaultConstructorArgRegistry (def:ObjectDefinition) {
 		super(def.type.getConstructor(), def);
 	}
 		
-	
-	/**
-	 * @inheritDoc
-	 */
 	public function addValue (value:*) : ConstructorArgRegistry {
 		doAddValue(value);
 		return this;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function addIdReference (id:String) : ConstructorArgRegistry {
 		doAddIdReference(id);
 		return this;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function addTypeReference (type:ClassInfo = null) : ConstructorArgRegistry {
 		doAddTypeReference(type);
 		return this;
 	}
-	
 	
 }
 

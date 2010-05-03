@@ -16,8 +16,8 @@
 
 package org.spicefactory.parsley.core.registry.builder {
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 
 /**
  * Builder for creating root object definitions.

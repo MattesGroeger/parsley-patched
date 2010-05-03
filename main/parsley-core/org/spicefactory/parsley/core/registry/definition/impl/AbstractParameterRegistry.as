@@ -23,49 +23,30 @@ import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.tag.model.ObjectIdReference;
 import org.spicefactory.parsley.tag.model.ObjectTypeReference;
 
+[Deprecated]
 /**
- * Abstract base class for registries that contain values for method parameters.
- * 
  * @author Jens Halm
  */
 public class AbstractParameterRegistry extends AbstractRegistry {
 	
-	
 	private var args:Array = new Array();
 	private var func:FunctionBase;
-
 	
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param func the function reference associated with this registry (Constructor or Method)
-	 * @param def the definition of the object this registry is associated with
-	 */
 	function AbstractParameterRegistry (func:FunctionBase, def:ObjectDefinition) {
 		super(def);
 		this.func = func;
 	}
 		
-	
-	/**
-	 * @private
-	 */
 	protected function doAddValue (value:*) : void {
 		checkState();
 		args.push(value);
 	}
 	
-	/**
-	 * @private
-	 */
 	protected function doAddIdReference (id:String) : void {
 		checkState();
 		args.push(new ObjectIdReference(id, nextParamRequired()));		
 	}
 	
-	/**
-	 * @private
-	 */
 	protected function doAddTypeReference (type:ClassInfo = null) : void {
 		checkState();
 		if (args.length >= func.parameters.length) {
@@ -84,20 +65,13 @@ public class AbstractParameterRegistry extends AbstractRegistry {
 		return Parameter(func.parameters[args.length]).required;
 	}
 	
-	/**
-	 * @private
-	 */
 	public function getAt (index:uint) : * {
 		return args[index];	
 	}
 	
-	/**
-	 * @private
-	 */
 	public function getAll () : Array {
 		return args.concat();
 	}
-	
 	
 }
 }

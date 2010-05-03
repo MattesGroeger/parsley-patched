@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.registry.definition {
-import org.spicefactory.parsley.core.context.Context;
+package org.spicefactory.parsley.core.registry {
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 
 /**
  * An object responsible for creating instances. Such an object may be registered with a
@@ -26,13 +26,13 @@ import org.spicefactory.parsley.core.context.Context;
 public interface ObjectInstantiator {
 	
 	/**
-	 * Creates a new instance. The specified Context instance may be used to fetch dependencies
+	 * Creates a new instance. The specified ManagedObject instance may be used to resolve dependencies
 	 * for the new object.
 	 * 
-	 * @param context the Context that the new instance will belong to
+	 * @param target the target that will hold the new instance
 	 * @return a new instance
 	 */
-	function instantiate (context:Context) : Object;
+	function instantiate (target:ManagedObject) : Object;
 	
 }
 }

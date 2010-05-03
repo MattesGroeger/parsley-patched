@@ -205,8 +205,8 @@ public class XmlConfigurationProcessor extends EventDispatcher implements AsyncC
 }
 }
 
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.registry.definition.ContainerObjectInstantiator;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.registry.ContainerObjectInstantiator;
 
 class ObjectWrapperInstantiator implements ContainerObjectInstantiator {
 
@@ -214,7 +214,7 @@ class ObjectWrapperInstantiator implements ContainerObjectInstantiator {
 	
 	function ObjectWrapperInstantiator (instance:Object) { this.instance = instance; }
 
-	public function instantiate (context:Context) : Object {
+	public function instantiate (target:ManagedObject) : Object {
 		return instance;
 	}
 	

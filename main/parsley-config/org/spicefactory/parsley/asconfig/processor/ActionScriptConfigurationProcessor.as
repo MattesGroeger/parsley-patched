@@ -174,8 +174,8 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 }
 
 import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.registry.definition.ContainerObjectInstantiator;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.registry.ContainerObjectInstantiator;
 
 class ConfingClassPropertyInstantiator implements ContainerObjectInstantiator {
 
@@ -187,7 +187,7 @@ class ConfingClassPropertyInstantiator implements ContainerObjectInstantiator {
 		this.property = property;
 	}
 	
-	public function instantiate (context:Context) : Object {
+	public function instantiate (target:ManagedObject) : Object {
 		return property.getValue(configClass);
 	}
 	

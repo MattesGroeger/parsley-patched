@@ -19,7 +19,6 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.definition.ConstructorArgRegistry;
 import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
 import org.spicefactory.parsley.core.registry.definition.MethodRegistry;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.definition.PropertyRegistry;
 
 /**
@@ -106,9 +105,7 @@ public interface ObjectDefinition {
 
 	
 	
-	/**
-	 * The values to be used as constructor arguments when creating instances from this definition.
-	 */
+	[Deprecated]
 	function get constructorArgs () : ConstructorArgRegistry;
 	
 	[Deprecated]

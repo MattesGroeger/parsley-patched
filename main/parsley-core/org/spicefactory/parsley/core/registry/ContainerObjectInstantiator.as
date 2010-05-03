@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.registry.definition {
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
+package org.spicefactory.parsley.core.registry {
 
 /**
  * Marker interface for instantiators that are required by the container and cannot be overwritten for 

@@ -136,8 +136,8 @@ public class ResourceBundleTag extends EventDispatcher implements RootConfigurat
 }
 }
 
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 import org.spicefactory.parsley.flash.resources.tag.ResourceBundleTag;
 
 class TagInstantiator implements ObjectInstantiator {
@@ -145,7 +145,7 @@ class TagInstantiator implements ObjectInstantiator {
 	function TagInstantiator (tag:ResourceBundleTag) {
 		this.tag = tag;
 	}
-	public function instantiate (context:Context):Object {
+	public function instantiate (target:ManagedObject):Object {
 		return tag;
 	}
 }

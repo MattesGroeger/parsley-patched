@@ -19,8 +19,8 @@ import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.impl.ObjectDefinitionWrapper;
 import org.spicefactory.parsley.tag.util.ReflectionUtil;
 
@@ -76,10 +76,10 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 }
 
 import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
+import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 
 class FactoryMethodInstantiator implements ObjectInstantiator {
 
@@ -94,8 +94,8 @@ class FactoryMethodInstantiator implements ObjectInstantiator {
 	}
 
 	
-	public function instantiate (context:Context) : Object {
-		var factory:Object = context.getObject(definition.id);
+	public function instantiate (target:ManagedObject) : Object {
+		var factory:Object = target.context.getObject(definition.id);
 		if (factory == null) {
 			throw new ContextError("Unable to obtain factory of type " + definition.type.name);
 		}

@@ -78,7 +78,7 @@ public class DefaultManagedObjectHandler implements ManagedObjectHandler {
 		checkState(PREPARED);
 		state = CREATED;
 		if (target.definition.instantiator != null) {
-			 _target.instance = target.definition.instantiator.instantiate(target.context);
+			 _target.instance = target.definition.instantiator.instantiate(target);
 		}
 		else {
 			/* deprecated */

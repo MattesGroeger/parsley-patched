@@ -18,12 +18,12 @@ package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.AsyncInitConfig;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.ConstructorArgRegistry;
 import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
 import org.spicefactory.parsley.core.registry.definition.MethodRegistry;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.definition.PropertyRegistry;
 
 /**

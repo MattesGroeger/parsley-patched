@@ -2,9 +2,9 @@ package org.spicefactory.parsley.samples {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
 /**
  * @author Jens Halm
@@ -55,7 +55,8 @@ public class Singleton implements ObjectDefinitionDecorator {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 
 class SingletonPropertyInstantiator implements ObjectInstantiator {
 	
@@ -65,7 +66,7 @@ class SingletonPropertyInstantiator implements ObjectInstantiator {
 		this.property = p;
 	}
 	
-	public function instantiate (context:Context) : Object {
+	public function instantiate (target:ManagedObject) : Object {
 		return property.getValue(null);
 	}
 	
@@ -79,7 +80,7 @@ class SingletonMethodInstantiator implements ObjectInstantiator {
 		this.method = m;
 	}
 	
-	public function instantiate (context:Context) : Object {
+	public function instantiate (target:ManagedObject) : Object {
 		return method.invoke(null, []);
 	}
 	

@@ -115,9 +115,11 @@ public class RuntimeConfigurationProcessor implements ConfigurationProcessor {
 	public function toString () : String {
 		return "RuntimeConfig{" + (instances.length + classes.length) + " instance(s)}";
 	}
-	
 }
 }
+
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.registry.ContainerObjectInstantiator;
 
 class InstanceDefinition {
 
@@ -145,11 +147,7 @@ class ClassDefinition {
 		this.lazy = lazy;
 		this.order = order;
 	}
-	
 }
-
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.registry.definition.ContainerObjectInstantiator;
 
 class ObjectWrapperInstantiator implements ContainerObjectInstantiator {
 
@@ -157,7 +155,7 @@ class ObjectWrapperInstantiator implements ContainerObjectInstantiator {
 	
 	function ObjectWrapperInstantiator (instance:Object) { this.instance = instance; }
 
-	public function instantiate (context:Context) : Object {
+	public function instantiate (target:ManagedObject) : Object {
 		return instance;
 	}
 	

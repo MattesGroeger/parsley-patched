@@ -70,8 +70,8 @@ public class ConfigTag implements RootConfigurationTag {
 }
 }
 
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.registry.definition.ObjectInstantiator;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 import org.spicefactory.pimento.config.PimentoConfig;
 
 class EntityManagerInstantiator implements ObjectInstantiator {
@@ -80,8 +80,8 @@ class EntityManagerInstantiator implements ObjectInstantiator {
 
 	function EntityManagerInstantiator (id:String) { this.configId = id; }
 
-	public function instantiate (context:Context) : Object {
-		return PimentoConfig(context.getObject(configId)).entityManager;
+	public function instantiate (target:ManagedObject) : Object {
+		return PimentoConfig(target.context.getObject(configId)).entityManager;
 	}
 	
 }
