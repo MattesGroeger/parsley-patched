@@ -21,7 +21,7 @@ import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ResolvableValue;
 
 /**
- * Represent a reference to an object in the Parsley Context by type.
+ * Represents an inline object reference.
  * 
  * @author Jens Halm
  */
