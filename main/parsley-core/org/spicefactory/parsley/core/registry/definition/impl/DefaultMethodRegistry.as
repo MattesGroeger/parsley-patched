@@ -24,32 +24,20 @@ import org.spicefactory.parsley.core.registry.definition.MethodRegistry;
 
 import flash.utils.Dictionary;
 
+[Deprecated]
 /**
- * Default implementation of the MethodRegistry interface.
- *  
  * @author Jens Halm
  */
 public class DefaultMethodRegistry extends AbstractRegistry implements MethodRegistry {
 
-
 	private var methods:Dictionary = new Dictionary();
 	private var targetType:ClassInfo;
-	
 
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param def the definition of the object this registry is associated with
-	 */
 	function DefaultMethodRegistry (def:ObjectDefinition) {
 		super(def);
 		this.targetType = def.type;
 	}
 
-	
-	/**
-	 * @inheritDoc
-	 */
 	public function addTypeReferences (methodName:String) : void {
 		checkState();
 		var mpr:MethodParameterRegistry = addMethod(methodName);
@@ -63,9 +51,6 @@ public class DefaultMethodRegistry extends AbstractRegistry implements MethodReg
 		}
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	public function addMethod (methodName:String) : MethodParameterRegistry {
 		checkState();
 		var method:Method = getMethodReference(targetType, methodName);
@@ -82,24 +67,15 @@ public class DefaultMethodRegistry extends AbstractRegistry implements MethodReg
 		return method;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function removeMethod (methodName:String) : void {
 		checkState();
 		delete methods[methodName];
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getMethod (methodName:String) : MethodParameterRegistry {
 		return methods[methodName];
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getAll () : Array {
 		var all:Array = new Array();
 		for each (var pv:Object in methods) {
@@ -107,7 +83,6 @@ public class DefaultMethodRegistry extends AbstractRegistry implements MethodReg
 		}
 		return all;
 	}
-	
 	
 }
 

@@ -114,9 +114,7 @@ public interface ObjectDefinition {
 	[Deprecated]
 	function get properties () : PropertyRegistry;
 	
-	/**
-	 * The methods for which method injection should be performed when configuring instances created from this definition.
-	 */
+	[Deprecated]
 	function get injectorMethods () : MethodRegistry;
 
 	/**

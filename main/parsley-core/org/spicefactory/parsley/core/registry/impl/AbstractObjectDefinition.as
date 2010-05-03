@@ -74,28 +74,6 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	}
 	
 
-
-
-	/**
-	 * Copies the internal state of the specified definition to this instance.
-	 * 
-	 * @param definition the definition whose state should be copied into this instance
-	 */
-	public function populateFrom (definition:ObjectDefinition) : void {
-		checkState();
-		_instantiator = definition.instantiator;
-		_initMethod = definition.initMethod;
-		_destroyMethod = definition.destroyMethod;
-		_processorFactories = definition.processorFactories;
-		
-		/* deprecated */
-		_constructorArgs = definition.constructorArgs;
-		_properties = definition.properties;
-		_methods = definition.injectorMethods;
-		_listeners = definition.objectLifecycle;
-	}
-
-	
 	/**
 	 * @inheritDoc
 	 */

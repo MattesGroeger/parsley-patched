@@ -20,54 +20,33 @@ import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.MethodParameterRegistry;
 
+[Deprecated]
 /**
- * Default implementation of the MethodParameterRegistry interface.
- * 
  * @author Jens Halm
  */
 public class DefaultMethodParameterRegistry extends AbstractParameterRegistry implements MethodParameterRegistry {
 
-
 	private var _method:Method;
 
-	
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param def the definition of the object this registry is associated with
-	 */
 	function DefaultMethodParameterRegistry (method:Method, def:ObjectDefinition) {
 		super(method, def);
 		_method = method;
 	}
-	
-	
-	/**
-	 * @inheritDoc
-	 */
+
 	public function get method () : Method {
 		return _method;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	public function addValue (value:*) : MethodParameterRegistry {
 		doAddValue(value);
 		return this;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function addIdReference (id:String) : MethodParameterRegistry {
 		doAddIdReference(id);
 		return this;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	public function addTypeReference (type:ClassInfo = null) : MethodParameterRegistry {
 		doAddTypeReference(type);
 		return this;

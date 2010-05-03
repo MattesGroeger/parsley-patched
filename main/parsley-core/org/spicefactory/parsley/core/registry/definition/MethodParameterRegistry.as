@@ -18,57 +18,22 @@ package org.spicefactory.parsley.core.registry.definition {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 
+[Deprecated]
 /**
- * Registry for the parameter values for a single method.
- * 
  * @author Jens Halm
  */
 public interface MethodParameterRegistry {
 	
-	/**
-	 * The method associated with this registry.
-	 */
 	function get method () : Method;
 	
-	/**
-	 * Adds a value to the list of method parameters.
-	 * 
-	 * @param value the value to add
-	 * @return this registry instance for method chaining
-	 */
 	function addValue (value:*) : MethodParameterRegistry;
 	
-	/**
-	 * Adds a reference to another object in the registry by id to the list of method parameters.
-	 * 
-	 * @param id the id of the referenced object
-	 * @return this registry instance for method chaining
-	 */	
 	function addIdReference (id:String) : MethodParameterRegistry;
 
-	/**
-	 * Adds a reference to another object in the registry by type to the list of method parameters.
-	 * If the type parameter is omitted the registry will reflect on the type of the next method parameter 
-	 * the reference will be associated with.
-	 * 
-	 * @param type the type of the referenced object or null for auto-resolving
-	 * @return this registry instance for method chaining
-	 */	
 	function addTypeReference (type:ClassInfo = null) : MethodParameterRegistry;
 	
-	/**
-	 * Returns the method parameter value for the specified argument index.
-	 * 
-	 * @param index the index to return the value for
-	 * @return the method parameter value for the specified argument index
-	 */
 	function getAt (index:uint) : *;
 	
-	/**
-	 * Returns all method parameter values added to this registry.
-	 * 
-	 * @return all method parameter values added to this registry
-	 */
 	function getAll () : Array;
 		
 }

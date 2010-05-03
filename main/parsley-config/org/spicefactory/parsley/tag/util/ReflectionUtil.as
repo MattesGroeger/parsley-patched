@@ -16,10 +16,13 @@
 
 package org.spicefactory.parsley.tag.util {
 import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.lib.reflect.FunctionBase;
 import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.tag.model.ObjectTypeReference;
 
 /**
  * Static utility methods for decorator implementations.
@@ -69,6 +72,27 @@ public class ReflectionUtil {
 			throw new IllegalArgumentError("" + property + " is not writable");
 		}
 		return property;		
+	}
+	
+	/**
+	 * Returns an Array containing an ObjectTypeReference instance for each of the
+	 * parameters of the specified constructor or method.
+	 * 
+	 * @param target the constructor or method to process
+	 * @return an Array containing an ObjectTypeReference instance for each of the
+	 * parameters of the specified constructor or method
+	 */
+	public static function getTypeReferencesForParameters (target:FunctionBase) : Array {
+		var params:Array = target.parameters;
+		if (params.length == 0) {
+			throw new IllegalArgumentError("Cannot inject into " + target 
+					+ " as it does not have any parameters");
+		}
+		var refs:Array = new Array();
+		for each (var param:Parameter in params) {
+			refs.push(new ObjectTypeReference(param.type, param.required));
+		}
+		return refs;
 	}
 	
 	

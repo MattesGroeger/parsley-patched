@@ -19,7 +19,6 @@ import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.FunctionBase;
 import org.spicefactory.lib.reflect.Parameter;
-import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.tag.model.ObjectIdReference;
 import org.spicefactory.parsley.tag.model.ObjectTypeReference;
@@ -74,10 +73,6 @@ public class AbstractParameterRegistry extends AbstractRegistry {
 					+ args.length + " of " + func);
 		}
 		var param:Parameter = Parameter(func.parameters[args.length]);
-		if (type != null && !type.isType(param.type.getClass())) {
-			throw new ObjectDefinitionBuilderError("The type reference to " + type.name
-					+ " is not applicable for the target type " + param.type.name + " of " + func);
-		}
 		type = (type == null || type.name == "*") ? param.type : type;
 		args.push(new ObjectTypeReference(type, nextParamRequired()));	
 	}
