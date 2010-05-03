@@ -144,10 +144,12 @@ public class DefaultViewManager implements ViewManager {
 	}
 
 	private function viewRootRemoved (event:Event) : void {
-		var view:DisplayObject = DisplayObject(event.target);
-		if (isRemovable(view)) {
-			removeViewRoot(view);
-		}
+		var viewRoot:DisplayObject = DisplayObject(event.target);
+		removeViewRoot(viewRoot);
+	}
+	
+	private function filteredViewRootRemoved (viewRoot:DisplayObject) : void {
+		removeViewRoot(viewRoot);
 	}
 	
 	/**
@@ -167,7 +169,17 @@ public class DefaultViewManager implements ViewManager {
 	}
 	
 	private function addListeners (viewRoot:DisplayObject) : void {
-		viewRoot.addEventListener(viewRootRemovedEvent, viewRootRemoved);
+		var info:ClassInfo = ClassInfo.forInstance(viewRoot, domain);
+		var removedEvent:String = 
+				(info.hasMetadata(RemovedEvent)) 
+				? (info.getMetadata(RemovedEvent)[0] as RemovedEvent).name
+				: viewRootRemovedEvent; 
+		if (removedEvent == Event.REMOVED_FROM_STAGE) {
+			stageEventFilter.addTarget(viewRoot, filteredViewRootRemoved, ignoredFilteredAddedToStage);
+		}
+		else {
+			viewRoot.addEventListener(viewRootRemovedEvent, viewRootRemoved);
+		}
 		viewRoot.addEventListener(componentAddedEvent, handleConfigurationEvent);
 		viewRoot.addEventListener(LEGACY_CONFIGURE_EVENT, handleConfigurationEvent);
 		viewRoot.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
@@ -180,7 +192,12 @@ public class DefaultViewManager implements ViewManager {
 	}
 	
 	private function handleRemovedViewRoot (viewRoot:DisplayObject) : void {
-	 	viewRoot.removeEventListener(viewRootRemovedEvent, viewRootRemoved);
+		if (viewRootRemovedEvent == Event.REMOVED_FROM_STAGE) {
+			stageEventFilter.removeTarget(viewRoot);
+		}
+		else {
+	 		viewRoot.removeEventListener(viewRootRemovedEvent, viewRootRemoved);
+		}
 		viewRoot.removeEventListener(componentAddedEvent, handleConfigurationEvent);
 		viewRoot.removeEventListener(LEGACY_CONFIGURE_EVENT, handleConfigurationEvent);
 		viewRoot.removeEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
@@ -300,7 +317,7 @@ public class DefaultViewManager implements ViewManager {
 					? (info.getMetadata(RemovedEvent)[0] as RemovedEvent).name
 					: componentRemovedEvent; 
 			if (removedEvent == Event.REMOVED_FROM_STAGE && target is DisplayObject) {
-				stageEventFilter.addTarget(target as DisplayObject, filteredComponentRemoved, filteredComponentAdded);
+				stageEventFilter.addTarget(target as DisplayObject, filteredComponentRemoved, ignoredFilteredAddedToStage);
 			}
 			else {
 				IEventDispatcher(target).addEventListener(removedEvent, componentRemoved);
@@ -353,9 +370,6 @@ public class DefaultViewManager implements ViewManager {
 	}
 	
 	private function filteredComponentRemoved (view:IEventDispatcher) : void {
-		if (!isRemovable(view)) {
-			return;
-		}
 		log.debug("Remove object '{0}' from {1}", view, context);
 		if (componentRemovedEvent == Event.REMOVED_FROM_STAGE && view is DisplayObject) {
 			stageEventFilter.removeTarget(view as DisplayObject);
@@ -369,7 +383,7 @@ public class DefaultViewManager implements ViewManager {
 		dynObject.remove();
 	}
 	
-	private function filteredComponentAdded (view:IEventDispatcher) : void {
+	private function ignoredFilteredAddedToStage (view:IEventDispatcher) : void {
 		/* do nothing */
 	}
 	
@@ -407,25 +421,6 @@ public class DefaultViewManager implements ViewManager {
 					: context.getObjectByType(injection.type);
 			target[injection.property] = object;
 		}
-	}
-	
-	
-	/**
-	 * Checks whether the specified view object can be removed.
-	 * Will be invoked for view roots and components.
-	 * The method should check if the removal should be performed
-	 * based on the state of the specified view instance.
-	 * For Flex components for example it should check whether 
-	 * they have been fully intialized yet. In case the component
-	 * dispatches a premature removedFromStage, which often happens
-	 * if it is placed within popups or scroll panes, this method
-	 * should return false.
-	 * 
-	 * @param view the view for which to check whether it can be removed
-	 * @return true if the specified view can be removed
-	 */
-	protected function isRemovable (view:Object) : Boolean {
-		return (uiComponentClass == null || !(view is uiComponentClass) || view.initialized);
 	}
 	
 	
