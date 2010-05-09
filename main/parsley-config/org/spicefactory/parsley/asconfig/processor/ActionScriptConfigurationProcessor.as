@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.asconfig.processor {
+import org.spicefactory.parsley.asconfig.metadata.DynamicObjectDefinitionMetadata;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -119,14 +120,15 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 	}
 	
 	private function createDefinition (property:Property, configClass:Object, registry:ObjectDefinitionRegistry) : void {
-		var metadata:ObjectDefinitionMetadata = getMetadata(property);
+		var metadata:Object = getMetadata(property);
 		var id:String = (metadata.id != null) ? metadata.id : property.name;
-		if (metadata.singleton) {
+		if (metadata is ObjectDefinitionMetadata && ObjectDefinitionMetadata(metadata).singleton) {
+			var singleton:ObjectDefinitionMetadata = ObjectDefinitionMetadata(metadata);
 			registry.builders
 					.forSingletonDefinition(property.type.getClass())
 					.id(id)
-					.lazy(metadata.lazy)
-					.order(metadata.order)
+					.lazy(singleton.lazy)
+					.order(singleton.order)
 					.instantiator(new ConfingClassPropertyInstantiator(configClass, property))
 					.buildAndRegister();
 		}
@@ -152,7 +154,11 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 				&& !property.type.isType(ObjectDefinitionDecorator));
 	}
 	
-	private function getMetadata (property:Property) : ObjectDefinitionMetadata {
+	private function getMetadata (property:Property) : Object {
+		var dynMetadataArray:Array = property.getMetadata(DynamicObjectDefinitionMetadata);
+		if (dynMetadataArray.length > 0) {
+			return DynamicObjectDefinitionMetadata(dynMetadataArray[0]); 
+		}
 		var definitionMetaArray:Array = property.getMetadata(ObjectDefinitionMetadata);
 		return (definitionMetaArray.length > 0) 
 				? ObjectDefinitionMetadata(definitionMetaArray[0]) 

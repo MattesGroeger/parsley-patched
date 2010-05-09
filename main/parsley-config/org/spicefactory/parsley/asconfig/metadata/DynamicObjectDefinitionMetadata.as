@@ -16,38 +16,20 @@
 
 package org.spicefactory.parsley.asconfig.metadata {
 
-[Metadata(name="ObjectDefinition", types="property")]
+[Metadata(name="DynamicObject", types="property")]
 /**
- * Represents a metadata tag that can be used to specify additional configuration for object definitions
+ * Represents a metadata tag that can be used to specify additional configuration for dynamic object definitions
  * in an ActionScript configuration class.
  * 
  * @author Jens Halm
  */
-public class ObjectDefinitionMetadata {
-	
+public class DynamicObjectDefinitionMetadata {
 
+	
 	/**
 	 * The id the object should be registered with.
 	 */
 	public var id:String;
-	
-	/**
-	 * Indicates whether this object should be lazily initialized.
-	 * If set to false the object will be instantiated upon Context initialization.
-	 */
-	public var lazy:Boolean = false;
-	
-	[Deprecated]
-	public var singleton:Boolean = true;
-	
-	/**
-	 * The processing order for this object. 
-	 * 
-	 * Only has an effect for non-lazy singletons. Those are instantiated when the
-	 * Context initializes and this property allows to determine the initialization
-	 * order of these singletons. Will be processed in ascending order.
-	 */
-	public var order:int = int.MAX_VALUE;
 	
 	
 }
