@@ -178,7 +178,7 @@ public class DefaultViewManager implements ViewManager {
 			stageEventFilter.addTarget(viewRoot, filteredViewRootRemoved, ignoredFilteredAddedToStage);
 		}
 		else {
-			viewRoot.addEventListener(viewRootRemovedEvent, viewRootRemoved);
+			viewRoot.addEventListener(removedEvent, viewRootRemoved);
 		}
 		viewRoot.addEventListener(componentAddedEvent, handleConfigurationEvent);
 		viewRoot.addEventListener(LEGACY_CONFIGURE_EVENT, handleConfigurationEvent);
