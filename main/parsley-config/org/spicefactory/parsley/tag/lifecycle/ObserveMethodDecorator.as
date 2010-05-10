@@ -15,8 +15,12 @@
  */
 
 package org.spicefactory.parsley.tag.lifecycle {
-import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.scope.ScopeName;
+import org.spicefactory.parsley.processor.lifecycle.ObserveMethodProcessorFactory;
 
 [Metadata(name="Observe", types="method", multiple="true")]
 /**
@@ -25,7 +29,7 @@ import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
  * 
  * @author Jens Halm
  */
-public class ObserveMethodDecorator extends AbstractSynchronizedProviderDecorator {
+public class ObserveMethodDecorator implements ObjectDefinitionDecorator {
 
 
 	[Target]
@@ -34,6 +38,11 @@ public class ObserveMethodDecorator extends AbstractSynchronizedProviderDecorato
 	 */
 	public var method:String;
 
+	/**
+	 * The name of the scope to observe.
+	 */
+	public var scope:String = ScopeName.GLOBAL;
+	
 	/**
 	 * The object lifecycle phase to listen for. Default is postInit.
 	 */
@@ -46,15 +55,11 @@ public class ObserveMethodDecorator extends AbstractSynchronizedProviderDecorato
 	
 
 	/**
-	 * @private
+	 * @inheritDoc
 	 */
-	protected override function handleProvider (provider:SynchronizedObjectProvider) : void {
-		provider.addDestroyHandler(removeObserver, provider);
-		targetScope.objectLifecycle.addProvider(provider, method, phase, objectId);
-	}
-	
-	private function removeObserver (provider:SynchronizedObjectProvider) : void {
-		targetScope.objectLifecycle.removeProvider(provider, method, phase, objectId);
+	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		definition.addProcessorFactory(new ObserveMethodProcessorFactory(definition, method, phase, objectId, registry.context, scope));
+		return definition;
 	}
 	
 	
