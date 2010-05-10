@@ -107,7 +107,7 @@ public class SettingsTag implements ContextBuilderProcessor {
 
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
-import org.spicefactory.parsley.core.messaging.receiver.impl.AbstractMessageReceiver;
+import org.spicefactory.parsley.processor.messaging.receiver.AbstractMessageReceiver;
 
 class GlobalMessageErrorHandler extends AbstractMessageReceiver implements MessageErrorHandler {
 

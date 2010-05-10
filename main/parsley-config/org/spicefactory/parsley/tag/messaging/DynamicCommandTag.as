@@ -21,16 +21,15 @@ import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
-import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultCommandObserver;
-import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultCommandTarget;
-import org.spicefactory.parsley.core.messaging.receiver.impl.DynamicCommandProxy;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.ScopeName;
+import org.spicefactory.parsley.processor.messaging.receiver.DefaultCommandObserver;
+import org.spicefactory.parsley.processor.messaging.receiver.DefaultCommandTarget;
+import org.spicefactory.parsley.processor.messaging.receiver.DynamicCommandProxy;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
 
 [DefaultProperty("decorators")]
-
 /**
  * Represents the root DynamicCommand tag for an object definition in MXML or XML configuration.
  * 

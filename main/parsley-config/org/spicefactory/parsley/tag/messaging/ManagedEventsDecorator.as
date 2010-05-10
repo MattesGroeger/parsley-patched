@@ -16,15 +16,12 @@
 
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.metadata.EventInfo;
-import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-
-import flash.events.IEventDispatcher;
+import org.spicefactory.parsley.processor.messaging.ManagedEventsProcessor;
 
 [Metadata(name="ManagedEvents", types="class", multiple="true")]
 /**
@@ -41,7 +38,7 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
 
 	[DefaultProperty]
 	/**
-	 * The event names/types of all events dispatched by the annotated class that should be mamaged by Parsley.
+	 * The event names/types of all events dispatched by the annotated class that should be managed by Parsley.
 	 */
 	public var names:Array;
 	
@@ -52,14 +49,12 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
 	 */
 	public var scope:String;
 	
-	private var delegate:MessageDispatcherFunctionReference;
-
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		delegate = new MessageDispatcherFunctionReference(registry.context.scopeManager, scope);
+		var dispatcher:Function = new MessageDispatcherFunctionReference(registry.context.scopeManager, scope).dispatchMessage;
 		if (names == null) {
 			names = new Array();
 			var events:Array = definition.type.getMetadata(EventInfo);
@@ -71,26 +66,10 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
 			throw new ContextError("ManagedEvents on class " + definition.type.name 
 					+ ": No event names specified in ManagedEvents tag and no Event tag on class");	
 		}
-		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_INIT, preInit);
-		definition.objectLifecycle.addListener(ObjectLifecycle.POST_DESTROY, postDestroy);
+		definition.addProcessorFactory(ManagedEventsProcessor.newFactory(names, dispatcher));
 		return definition;
 	}
 	
-	
-	private function preInit (instance:Object, context:Context) : void {
-		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
-		for each (var name:String in names) {		
-			eventDispatcher.addEventListener(name, delegate.dispatchMessage);
-		}
-	}
-
-	private function postDestroy (instance:Object, context:Context) : void {
-		var eventDispatcher:IEventDispatcher = IEventDispatcher(instance);
-		for each (var name:String in names) {		
-			eventDispatcher.removeEventListener(name, delegate.dispatchMessage);
-		}
-	}
-
 	
 }
 }

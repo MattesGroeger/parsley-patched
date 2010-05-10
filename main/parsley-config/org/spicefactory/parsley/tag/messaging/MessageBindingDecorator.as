@@ -16,13 +16,13 @@
 
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
-import org.spicefactory.parsley.core.messaging.receiver.impl.MessageBinding;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverProcessorFactory;
+import org.spicefactory.parsley.processor.messaging.receiver.MessageBinding;
 
 [Metadata(name="MessageBinding", types="property", multiple="true")]
 /**
@@ -31,7 +31,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
  * 
  * @author Jens Halm
  */
-public class MessageBindingDecorator extends AbstractMessageReceiverDecorator implements ObjectDefinitionDecorator {
+public class MessageBindingDecorator extends MessageReceiverDecoratorBase implements ObjectDefinitionDecorator {
 
 
 	[Required]
@@ -48,28 +48,18 @@ public class MessageBindingDecorator extends AbstractMessageReceiverDecorator im
 	
 	
 	/**
-	 * @private
+	 * @inheritDoc
 	 */
-	protected override function validate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : void {
+	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		if (type == null) {
 			throw new ContextError("type attribute must be specified for MessageBindings");
 		}
+		var messageType:ClassInfo = ClassInfo.forClass(type, registry.domain);
+		var factory:MessageReceiverFactory = MessageBinding.newFactory(targetProperty, messageType, messageProperty, selector, order);
+		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
+		return definition;
 	}
 	
-	/**
-	 * @private
-	 */
-	protected override function handleProvider (provider:SynchronizedObjectProvider) : void {
-		var messageType:ClassInfo = ClassInfo.forClass(type, domain);
-		var target:MessageTarget = new MessageBinding(provider,	targetProperty, messageType, messageProperty, selector, order);
-		provider.addDestroyHandler(removeTarget, target);
-		targetScope.messageReceivers.addTarget(target);		
-	}
-	
-	private function removeTarget (target:MessageTarget) : void {
-		targetScope.messageReceivers.removeTarget(target);
-	}
-
 	
 }
 

@@ -15,10 +15,12 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
-import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
-import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultMessageInterceptor;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverProcessorFactory;
+import org.spicefactory.parsley.processor.messaging.receiver.DefaultMessageInterceptor;
 
 [Metadata(name="MessageInterceptor", types="method", multiple="true")]
 /**
@@ -27,7 +29,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
  * 
  * @author Jens Halm
  */
-public class MessageInterceptorDecorator extends AbstractMessageReceiverDecorator implements ObjectDefinitionDecorator {
+public class MessageInterceptorDecorator extends MessageReceiverDecoratorBase implements ObjectDefinitionDecorator {
 
 
 	[Target]
@@ -37,16 +39,12 @@ public class MessageInterceptorDecorator extends AbstractMessageReceiverDecorato
 	public var method:String;
 	
 	/**
-	 * @private
+	 * @inheritDoc
 	 */
-	protected override function handleProvider (provider:SynchronizedObjectProvider) : void {
-		var interceptor:MessageInterceptor = new DefaultMessageInterceptor(provider, method, type, selector, order);
-		provider.addDestroyHandler(removeInterceptor, interceptor);
-		targetScope.messageReceivers.addInterceptor(interceptor);
-	}
-	
-	private function removeInterceptor (interceptor:MessageInterceptor) : void {
-		targetScope.messageReceivers.removeInterceptor(interceptor);
+	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		var factory:MessageReceiverFactory = DefaultMessageInterceptor.newFactory(method, type, selector, order);
+		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
+		return definition;
 	}
 	
 	

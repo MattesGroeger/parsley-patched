@@ -17,37 +17,17 @@
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.parsley.tag.lifecycle.AbstractSynchronizedProviderDecorator;
 
+[Deprecated]
 /**
- * Abstract base class for decorators used for message receivers that offer the attributes type, selector and order.
- * 
- * <p>It is recommended that subclasses simply override the (pseudo-)abstract methods
- * <code>handleProvider</code> and (optionally) <code>validate</code> instead of implementing
- * the <code>decorate</code> method itself, since this base class already does some
- * of the plumbing.</p>
- * 
  * @author Jens Halm
  */
 public class AbstractMessageReceiverDecorator extends AbstractSynchronizedProviderDecorator {
 	
-
-	/**
-	 * The type of the messages the receiver wants to handle.
-	 */
 	public var type:Class;
 
-	/**
-	 * An optional selector value to be used in addition to selecting messages by type.
-	 * Will be checked against the value of the property in the message marked with <code>[Selector]</code>
-	 * or against the event type if the message is an event and does not have a selector property specified explicitly.
-	 */
 	public var selector:*;
 	
-	/**
-	 * The execution order for this receiver. Will be processed in ascending order. 
-	 * The default is <code>int.MAX_VALUE</code>.</p>
-	 */
 	public var order:int = int.MAX_VALUE;
-	
 	
 }
 }

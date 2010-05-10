@@ -19,37 +19,20 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
+[Deprecated(replacement="same class in new parsley.processor.messaging.receiver package")]
 /**
- * A regular message handler where the message is simply passed to a method on the target instance.
- * 
  * @author Jens Halm
  */
 public class MessageHandler extends AbstractMessageHandler implements MessageTarget {
 	
-	
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param provider the provider for the instance that contains the target method
-	 * @param methodName the name of the target method that should be invoked
-	 * @param selector an optional selector value to be used for selecting matching message targets
-	 * @param messageType the type of the message or null if it should be autodetected by the parameter of the target method
-	 * @param messageProperties the list of names of properties of the message that should be used as method parameters
-	 * @param order the execution order for this receiver
-	 */
 	function MessageHandler (provider:ObjectProvider, methodName:String, selector:* = undefined, 
 			messageType:ClassInfo = null, messageProperties:Array = null, order:int = int.MAX_VALUE) {
 		super(provider, methodName, selector, messageType, messageProperties, order);
 	}
 
-	
-	/**
-	 * @inheritDoc
-	 */
 	public function handleMessage (message:Object) : void {
 		invokeMethod(message);
 	}
-	
 	
 }
 }

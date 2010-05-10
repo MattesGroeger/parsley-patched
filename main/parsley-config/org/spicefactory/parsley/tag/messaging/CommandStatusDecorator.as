@@ -17,25 +17,24 @@
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.provider.ObjectProvider;
-import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
-import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
+import org.spicefactory.parsley.core.messaging.command.CommandManager;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
-import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
-import org.spicefactory.parsley.core.messaging.receiver.impl.CommandStatusFlag;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.processor.core.PropertyProcessor;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverProcessorFactory;
+import org.spicefactory.parsley.processor.messaging.receiver.CommandStatusFlag;
 
 [Metadata(name="CommandStatus", types="property", multiple="false")]
-
 /**
  * Represents a Metadata, MXML or XML tag that can be used on properties that serve as a flag
  * for indicating whether any matching asynchronous command is currently active.
  * 
  * @author Jens Halm
  */
-public class CommandStatusDecorator extends AbstractMessageReceiverDecorator {
+public class CommandStatusDecorator extends MessageReceiverDecoratorBase implements ObjectDefinitionDecorator {
 	
 	
 	[Target]
@@ -45,50 +44,56 @@ public class CommandStatusDecorator extends AbstractMessageReceiverDecorator {
 	public var property:String;
 	
 	
-	private var messageType:ClassInfo;
-	
-	private var targetProperty:Property;
-	
-	
 	/**
-	 * @private
+	 * @inheritDoc
 	 */
-	public override function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		targetProperty = definition.type.getProperty(property);
-		messageType = (type != null) ? ClassInfo.forClass(type, domain) : ClassInfo.forClass(Object);
-		definition.objectLifecycle.addListener(ObjectLifecycle.PRE_CONFIGURE, initStatusFlag);
-		return super.decorate(definition, registry);
-	}
-	
-	private function initStatusFlag (instance:Object, context:Context) : void {
-		targetProperty.setValue(instance, targetScope.commandManager.hasActiveCommands(messageType.getClass(), selector));
-	}
+	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, registry.domain) : ClassInfo.forClass(Object);
+		var manager:CommandManager = registry.context.scopeManager.getScope(scope).commandManager;
 
-	/**
-	 * @private
-	 */
-	protected override function handleProvider (provider:SynchronizedObjectProvider) : void {
-		var observers:Array = new Array();
-		observers.push(createObserver(provider, messageType, CommandStatus.EXECUTE)); 
-		observers.push(createObserver(provider, messageType, CommandStatus.COMPLETE)); 
-		observers.push(createObserver(provider, messageType, CommandStatus.ERROR)); 
-		observers.push(createObserver(provider, messageType, CommandStatus.CANCEL)); 
-		provider.addDestroyHandler(removeObservers, observers);
-	}
-	
-	private function createObserver (provider:ObjectProvider, messageType:ClassInfo, status:CommandStatus) : CommandObserver {
-		var observer:CommandObserver 
-			= new CommandStatusFlag(provider, property, targetScope.commandManager, status, messageType, selector, order);
-		targetScope.messageReceivers.addCommandObserver(observer);
-		return observer;		
-	}
-	
-	private function removeObservers (observers:Array) : void {
-		for each (var observer:CommandObserver in observers) {
-			targetScope.messageReceivers.removeCommandObserver(observer);
-		}
+		var factory:MessageReceiverFactory;
+		
+		factory = CommandStatusFlag.newFactory(property, manager, CommandStatus.EXECUTE, messageType, selector, order);
+		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
+		
+		factory = CommandStatusFlag.newFactory(property, manager, CommandStatus.COMPLETE, messageType, selector, order);
+		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
+		
+		factory = CommandStatusFlag.newFactory(property, manager, CommandStatus.ERROR, messageType, selector, order);
+		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
+		
+		factory = CommandStatusFlag.newFactory(property, manager, CommandStatus.CANCEL, messageType, selector, order);
+		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
+
+		var targetProperty:Property = definition.type.getProperty(property);
+		definition.addProcessorFactory(PropertyProcessor.newFactory(targetProperty, 
+														new CommandStatusValue(manager, messageType.getClass(), selector)));
+
+		return definition;
 	}
 	
 	
 }
+}
+
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.messaging.command.CommandManager;
+import org.spicefactory.parsley.core.registry.ResolvableValue;
+
+class CommandStatusValue implements ResolvableValue {
+
+	private var manager:CommandManager;
+	private var messageType:Class;
+	private var selector:*;
+
+	function CommandStatusValue (manager:CommandManager, messageType:Class, selector:*) {
+		this.manager = manager;
+		this.messageType = messageType;
+		this.selector = selector;
+	}
+
+	public function resolve (target:ManagedObject) : * {
+		return manager.hasActiveCommands(messageType, selector);
+	}
+	
 }

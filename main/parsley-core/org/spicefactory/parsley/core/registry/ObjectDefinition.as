@@ -60,20 +60,9 @@ public interface ObjectDefinition {
 	function addProcessorFactory (factory:ObjectProcessorFactory) : void;
 	
 	/**
-	 * Adds the specified factory method to this definition.
-	 * The signature of the method must be identical with <code>ObjectProcessorFactory.createInstance</code>.
-	 * Otherwise the behavior is the same as for <code>addProcessorFactory</code>.
-	 * 
-	 * @param method the factory method to add to this definition
-	 */
-	function addProcessorFactoryMethod (method:Function) : void;
-	
-	/**
 	 * Returns all processor factories added to this instance.
 	 * Modifications on the returned Array are not reflected within the definition.
-	 * The Array will contain instances of <code>ObjectProcessorFactory</code>, even for
-	 * those factories which have been added with <code>addProcessorFactoryMethod</code>
-	 * as they will be wrapped in an <code>ObjectProcessorFactory</code>.
+	 * The Array will contain instances of <code>ObjectProcessorFactory</code>.
 	 */
 	function get processorFactories () : Array;
 

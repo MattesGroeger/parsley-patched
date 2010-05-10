@@ -16,10 +16,12 @@
 
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
-import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
-import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultMessageErrorHandler;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverProcessorFactory;
+import org.spicefactory.parsley.processor.messaging.receiver.DefaultMessageErrorHandler;
 
 [Metadata(name="MessageError", types="method", multiple="true")]
 /**
@@ -28,7 +30,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
  * 
  * @author Jens Halm
  */
-public class MessageErrorDecorator extends AbstractMessageReceiverDecorator implements ObjectDefinitionDecorator {
+public class MessageErrorDecorator extends MessageReceiverDecoratorBase implements ObjectDefinitionDecorator {
 
 	
 	[Target]
@@ -42,20 +44,16 @@ public class MessageErrorDecorator extends AbstractMessageReceiverDecorator impl
 	 * The default is the top level Error class.
 	 */
 	public var errorType:Class;
+
 	
 	/**
-	 * @private
+	 * @inheritDoc
 	 */
-	protected override function handleProvider (provider:SynchronizedObjectProvider) : void {
-		var errorTypeInfo:ClassInfo = (errorType != null) ? ClassInfo.forClass(errorType, domain) : null;
-		var handler:MessageErrorHandler = 
-				new DefaultMessageErrorHandler(provider, method, type, selector, errorTypeInfo, order);
-		provider.addDestroyHandler(removeHandler, handler);
-		targetScope.messageReceivers.addErrorHandler(handler);
-	}
-	
-	private function removeHandler (handler:MessageErrorHandler) : void {
-		targetScope.messageReceivers.removeErrorHandler(handler);
+	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		var errorTypeInfo:ClassInfo = (errorType != null) ? ClassInfo.forClass(errorType, registry.domain) : null;
+		var factory:MessageReceiverFactory = DefaultMessageErrorHandler.newFactory(method, type, selector, errorTypeInfo, order);
+		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
+		return definition;
 	}
 	
 	

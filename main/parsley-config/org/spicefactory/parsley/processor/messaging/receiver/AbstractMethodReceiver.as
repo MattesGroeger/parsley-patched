@@ -14,21 +14,33 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.messaging.receiver.impl {
+package org.spicefactory.parsley.processor.messaging.receiver {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
 
-[Deprecated(replacement="same class in new parsley.processor.messaging.receiver package")]
 /**
+ * Abstract base class for all message handlers where the message is handled
+ * by a method invocation on the target instance.
+ * 
  * @author Jens Halm
  */
-public class AbstractMethodReceiver extends AbstractTargetInstanceReceiver {
+public class AbstractMethodReceiver extends AbstractObjectProviderReceiver {
+	
 	
 	private var _targetMethod:Method;
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param provider the provider for the actual instance handling the message
+	 * @param methodName the name of the method to invoke for matching messages
+	 * @param messageType the type of the message this receiver is interested in
+	 * @param selector an additional selector value to be used to determine matching messages
+	 * @param order the execution order for this receiver
+	 */
 	function AbstractMethodReceiver (provider:ObjectProvider, methodName:String,  
 			messageType:Class = null, selector:* = undefined, order:int = int.MAX_VALUE) {
 		super(provider, messageType, selector, order);
@@ -39,10 +51,22 @@ public class AbstractMethodReceiver extends AbstractTargetInstanceReceiver {
 		}
 	}
 
+	/**
+	 * The method to invoke for matching messages.
+	 */
 	protected function get targetMethod () : Method {
 		return _targetMethod;
 	}
 	
+	/**
+	 * Returns the Class to use as the message type.
+	 * When the explicit type is set, this method will validate if it matches the target parameter of the method
+	 * (subtypes are allowed). If omitted the message type will be solely determined by the parameter type.
+	 * 
+	 * @param method the target method
+	 * @param paramIndex the index of the parameter that expects the dispatched message
+	 * @param explicitType the message type explicitly set for this receiver
+	 */
 	protected function getMessageTypeFromParameter (method:Method, paramIndex:uint, explicitType:ClassInfo = null) : Class {
 		var param:Parameter = method.parameters[paramIndex];
 		if (explicitType == null) {
@@ -57,6 +81,7 @@ public class AbstractMethodReceiver extends AbstractTargetInstanceReceiver {
 			return explicitType.getClass();
 		}
 	}
+	
 	
 }
 }

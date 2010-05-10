@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.messaging.receiver.impl {
-import flash.system.ApplicationDomain;
+package org.spicefactory.parsley.processor.messaging.receiver {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
@@ -27,8 +26,15 @@ import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
 import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 
-[Deprecated(replacement="same class in new parsley.processor.messaging.receiver package")]
+import flash.system.ApplicationDomain;
+
 /**
+ * A dynamic command is a special type of object that only gets created when a matching
+ * message was dispatched. It can contain "private" result and error handlers that will
+ * only be called for the result of the asynchronous command executed by the same instance. 
+ * If the <code>stateful</code> property is false (the default) a new instance will be 
+ * created for each matching message. 
+ * 
  * @author Jens Halm
  */
 public class DynamicCommandProxy extends AbstractMessageReceiver implements CommandTarget {
@@ -47,6 +53,21 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 	
 	private var statefulTarget:DynamicObject;
 	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param messageInfo the type of the message which should trigger command execution
+	 * @param selector the selector value to be used for selecting matching message targets
+	 * @param order the execution order for this receiver
+	 * @param context the dynamic Context to use for creating new target instances
+	 * @param definition the object definition to create new instances from
+	 * @param stateful whether the target command should keep state between command executions
+	 * @param returnType the return type of the method that executes the command
+	 * @param execute the name of the method that executes the command
+	 * @param result the (optional) name of the method to invoke for the result
+	 * @param error the (optional) name of the method to invoke in case of errors.
+	 * @param messageProperties the list of names of properties of the message that should be used as method parameters
+	 */
 	function DynamicCommandProxy (
 			messageInfo:ClassInfo, 
 			selector:*, 
@@ -75,10 +96,16 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 		_returnType = returnType;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function get returnType () : Class {
 		return _returnType;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function executeCommand (processor:CommandProcessor) : void {
 		
 		var object:DynamicObject = createObject();
@@ -140,15 +167,16 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 }
 }
 
-import flash.system.ApplicationDomain;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.context.provider.Provider;
 import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
-import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultCommandObserver;
-import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultCommandTarget;
+import org.spicefactory.parsley.processor.messaging.receiver.DefaultCommandObserver;
+import org.spicefactory.parsley.processor.messaging.receiver.DefaultCommandTarget;
+
+import flash.system.ApplicationDomain;
 
 class DynamicCommandTarget extends DefaultCommandTarget {
 	

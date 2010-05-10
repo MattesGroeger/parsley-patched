@@ -16,17 +16,20 @@
 
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
-import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
-import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultCommandObserver;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverProcessorFactory;
+import org.spicefactory.parsley.processor.messaging.receiver.DefaultCommandObserver;
 
 /**
  * Abstract base class for methods that wish to be invoked after completion of asynchronous commands.
  * 
  * @author Jens Halm
  */
-public class AbstractCommandObserverDecorator extends AbstractMessageReceiverDecorator {
+public class AbstractCommandObserverDecorator extends MessageReceiverDecoratorBase implements ObjectDefinitionDecorator {
 	
 	
 	[Target]
@@ -49,17 +52,13 @@ public class AbstractCommandObserverDecorator extends AbstractMessageReceiverDec
 
 	
 	/**
-	 * @private
+	 * @inheritDoc
 	 */
-	protected override function handleProvider (provider:SynchronizedObjectProvider) : void {
-		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
-		var observer:CommandObserver = new DefaultCommandObserver(provider, method, status, selector, messageType, order);
-		provider.addDestroyHandler(removeObserver, observer);
-		targetScope.messageReceivers.addCommandObserver(observer);		
-	}
-	
-	private function removeObserver (observer:CommandObserver) : void {
-		targetScope.messageReceivers.removeCommandObserver(observer);
+	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, registry.domain) : null;
+		var factory:MessageReceiverFactory = DefaultCommandObserver.newFactory(method, status, selector, messageType, order);
+		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
+		return definition;
 	}
 	
 	

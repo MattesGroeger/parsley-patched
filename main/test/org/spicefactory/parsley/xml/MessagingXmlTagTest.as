@@ -27,30 +27,30 @@ public class MessagingXmlTagTest extends MessagingTestBase {
 			<managed-events names="test1, test2, foo"/>
 		</object> 
 		
-		<object id="testDispatcher" type="org.spicefactory.parsley.core.messaging.model.TestMessageDispatcher" lazy="true">
+		<dynamic-object id="testDispatcher" type="org.spicefactory.parsley.core.messaging.model.TestMessageDispatcher">
 			<message-dispatcher property="dispatcher"/>
-		</object> 
+		</dynamic-object> 
 	
-		<object id="testMessageHandlers" type="org.spicefactory.parsley.core.messaging.model.TestMessageHandlers" lazy="true">
+		<dynamic-object id="testMessageHandlers" type="org.spicefactory.parsley.core.messaging.model.TestMessageHandlers">
 			<message-handler method="allTestMessages" type="org.spicefactory.parsley.core.messaging.TestMessage"/>
 			<message-handler method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestMessage"/>
 			<message-handler method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestMessage"/>
-		</object> 
+		</dynamic-object> 
 		
-		<object id="messageHandlers" type="org.spicefactory.parsley.core.messaging.model.MessageHandlers" lazy="true">
+		<dynamic-object id="messageHandlers" type="org.spicefactory.parsley.core.messaging.model.MessageHandlers">
 			<message-handler method="allTestEvents" type="org.spicefactory.parsley.core.messaging.TestEvent" order="3"/>
 			<message-handler method="allEvents" type="flash.events.Event" order="2"/>
 			<message-handler method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestEvent" order="1"/>
 			<message-handler method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent" order="1"/>
 			<message-handler method="mappedProperties" message-properties="stringProp,intProp" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
-		</object>
+		</dynamic-object>
 		
-		<object id="faultyHandlers" type="org.spicefactory.parsley.core.messaging.model.FaultyMessageHandlers" lazy="true">
+		<dynamic-object id="faultyHandlers" type="org.spicefactory.parsley.core.messaging.model.FaultyMessageHandlers">
 			<message-handler method="allTestEvents" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
 			<message-handler method="allEvents" type="flash.events.Event"/>
 			<message-handler method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
 			<message-handler method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
-		</object>
+		</dynamic-object>
 		
 		<object id="errorHandlers" type="org.spicefactory.parsley.core.messaging.model.ErrorHandlers">
 			<message-error method="allTestEvents" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
@@ -59,18 +59,18 @@ public class MessagingXmlTagTest extends MessagingTestBase {
 			<message-error method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
 		</object>
 	
-		<object id="messageBindings" type="org.spicefactory.parsley.core.messaging.model.MessageBindingsBlank" lazy="true">
+		<dynamic-object id="messageBindings" type="org.spicefactory.parsley.core.messaging.model.MessageBindingsBlank">
 			<message-binding target-property="stringProp" message-property="stringProp" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
 			<message-binding target-property="intProp1" message-property="intProp" selector="test1" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
 			<message-binding target-property="intProp2" message-property="intProp" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
-		</object> 
+		</dynamic-object> 
 	
-		<object id="messageInterceptors" type="org.spicefactory.parsley.core.messaging.model.MessageInterceptors" lazy="true">
+		<dynamic-object id="messageInterceptors" type="org.spicefactory.parsley.core.messaging.model.MessageInterceptors">
 			<message-interceptor method="interceptAllMessages" type="org.spicefactory.parsley.core.messaging.TestEvent"/>
 			<message-interceptor method="allEvents"/>
 			<message-interceptor method="event1" selector="test1" type="org.spicefactory.parsley.core.messaging.TestEvent" order="1"/>
 			<message-interceptor method="event2" selector="test2" type="org.spicefactory.parsley.core.messaging.TestEvent" order="1"/>
-		</object> 	
+		</dynamic-object> 	
 	</objects>;
 
 	

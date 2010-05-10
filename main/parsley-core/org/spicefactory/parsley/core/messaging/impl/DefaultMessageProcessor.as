@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.messaging.impl {
-import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultMessageInterceptor;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;

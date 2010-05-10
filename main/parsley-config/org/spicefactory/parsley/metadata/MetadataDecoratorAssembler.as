@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.metadata {
+import org.spicefactory.parsley.asconfig.metadata.DynamicObjectDefinitionMetadata;
 import org.spicefactory.parsley.core.view.metadata.RemovedEvent;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Converters;
@@ -106,7 +107,8 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 		Target,
 		
 		InternalProperty, // TODO - move to ActionScriptContextBuilder
-		ObjectDefinitionMetadata
+		ObjectDefinitionMetadata,
+		DynamicObjectDefinitionMetadata
 		
 	];
 	

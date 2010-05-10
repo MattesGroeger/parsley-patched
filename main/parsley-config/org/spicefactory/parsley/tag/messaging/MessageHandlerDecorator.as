@@ -16,12 +16,13 @@
 
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.provider.SynchronizedObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
-import org.spicefactory.parsley.core.messaging.receiver.impl.MessageHandler;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverProcessorFactory;
+import org.spicefactory.parsley.processor.messaging.receiver.MessageHandler;
 
 [Metadata(name="MessageHandler", types="method", multiple="true")]
 /**
@@ -30,7 +31,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
  * 
  * @author Jens Halm
  */
-public class MessageHandlerDecorator extends AbstractMessageReceiverDecorator {
+public class MessageHandlerDecorator extends MessageReceiverDecoratorBase implements ObjectDefinitionDecorator {
 
 
 	/**
@@ -45,27 +46,18 @@ public class MessageHandlerDecorator extends AbstractMessageReceiverDecorator {
 	 */
 	public var method:String;
 	
+	
 	/**
-	 * @private
+	 * @inheritDoc
 	 */
-	protected override function validate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : void {
+	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
 		if (messageProperties != null && type == null) {
 			throw new ContextError("Message type must be specified if messageProperties attribute is used");
 		}
-	}
-	
-	/**
-	 * @private
-	 */
-	protected override function handleProvider (provider:SynchronizedObjectProvider) : void {
-		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, domain) : null;
-		var target:MessageTarget = new MessageHandler(provider, method, selector, messageType, messageProperties, order);
-		provider.addDestroyHandler(removeTarget, target);
-		targetScope.messageReceivers.addTarget(target);		
-	}
-	
-	private function removeTarget (target:MessageTarget) : void {
-		targetScope.messageReceivers.removeTarget(target);
+		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, registry.domain) : null;
+		var factory:MessageReceiverFactory = MessageHandler.newFactory(method, selector, messageType, messageProperties, order);
+		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
+		return definition;
 	}
 	
 	

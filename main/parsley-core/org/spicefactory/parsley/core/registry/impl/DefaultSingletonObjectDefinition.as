@@ -50,10 +50,7 @@ public class DefaultSingletonObjectDefinition extends AbstractObjectDefinition i
 		super(type, id);
 		_lazy = lazy;
 		_order = order;
-		if (!lazy) {
-			/* TODO - 2.3.M1 - proxies should be used for lazy singletons too, but messaging tests must be adapted then */
-			_singletonListeners = new SingletonLifecycleListenerRegistry(this, registry);
-		}
+		_singletonListeners = new SingletonLifecycleListenerRegistry(this, registry);
 	}
 	
 	
@@ -89,7 +86,7 @@ public class DefaultSingletonObjectDefinition extends AbstractObjectDefinition i
 	 * @private
 	 */
 	public override function get objectLifecycle () : LifecycleListenerRegistry {
-		return (_singletonListeners) ? _singletonListeners : super.objectLifecycle;
+		return _singletonListeners;
 	}
 	
 	

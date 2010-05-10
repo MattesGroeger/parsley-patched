@@ -14,22 +14,39 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.messaging.receiver.impl {
+package org.spicefactory.parsley.processor.messaging.receiver {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
+import org.spicefactory.parsley.processor.util.MessageReceiverFactories;
 
-[Deprecated(replacement="same class in new parsley.processor.messaging.receiver package")]
 /**
+ * Default implementation of the MessageErrorHandler interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultMessageErrorHandler extends AbstractMethodReceiver implements MessageErrorHandler {
 
+
 	private var _errorType:Class;
 
+	
+	/**
+	 * Creates a new instance.
+	 * The target method must have a parameter of type <code>org.spicefactory.parsley.messaging.MessageProcessor</code>
+	 * and a second parameter of type Error (or a subtype).
+	 * 
+	 * @param provider the provider for the actual instance handling the message
+	 * @param methodName the name of the method to invoke for matching messages
+	 * @param messageType the type of the message this error handler is interested in
+	 * @param selector an additional selector value to be used to determine matching messages
+	 * @param errorType the type of Error this handler is interested in
+	 * @param order the execution order for this receiver
+	 */
 	function DefaultMessageErrorHandler (provider:ObjectProvider, methodName:String, messageType:Class,
 			selector:* = undefined, errorType:ClassInfo = null, order:int = int.MAX_VALUE) {
 		super(provider, methodName, messageType, selector, order);
@@ -64,14 +81,41 @@ public class DefaultMessageErrorHandler extends AbstractMethodReceiver implement
 		}			
 	}
 
+
+	/**
+	 * @inheritDoc
+	 */
 	public function get errorType () : Class {
 		return _errorType;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function handleError (processor:MessageProcessor, error:Error) : void {
 		var params:Array = (targetMethod.parameters.length == 2) ? [processor, error] : [processor];
 		targetMethod.invoke(targetInstance, params);
 	}
+	
+	
+	/**
+	 * Creates a new factory that creates MessageHandler instances. 
+	 * Such a factory can be used for convenient registration of a <code>MessageReceiverProcessorFactory</code>
+	 * with a target <code>ObjectDefinition</code>.
+	 * 
+	 * @param methodName the name of the target method that should be invoked
+	 * @param selector an optional selector value to be used for selecting matching message targets
+	 * @param messageType the type of the message or null if it should be autodetected by the parameter of the target method
+	 * @param messageProperties the list of names of properties of the message that should be used as method parameters
+	 * @param order the execution order for this receiver
+	 * @return a new factory that creates MessageHandler instance
+	 */
+	public static function newFactory (methodName:String, messageType:Class, 
+			selector:* = undefined, errorType:ClassInfo = null, order:int = int.MAX_VALUE) : MessageReceiverFactory {
+				
+		return MessageReceiverFactories.newFactory(DefaultMessageErrorHandler, [methodName, messageType, selector, errorType, order]);
+	}
+	
 
 }
 }

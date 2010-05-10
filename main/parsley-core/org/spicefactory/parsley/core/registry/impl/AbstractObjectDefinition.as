@@ -133,13 +133,6 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	/**
 	 * @inheritDoc
 	 */
-	public function addProcessorFactoryMethod (method:Function) : void {
-		_processorFactories.push(new ObjectProcessorFactoryMethod(method));
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
 	public function get processorFactories () : Array {
 		return _processorFactories.concat();
 	}
@@ -237,29 +230,4 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	
 }
 }
-
-import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.lifecycle.ManagedObject;
-import org.spicefactory.parsley.core.registry.ObjectProcessor;
-import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
-
-class ObjectProcessorFactoryMethod implements ObjectProcessorFactory {
-
-    private var _method:Function;
-
-	function ObjectProcessorFactoryMethod (method:Function) {
-		_method = method;
-	}
-
-	public function createInstance (target:ManagedObject) : ObjectProcessor {
-		var processor:Object = _method(target);
-		if (!(processor is ObjectProcessor)) {
-			throw new ContextError("Instance created by processor factory method does not implement ObjectProcessor: " 
-					+ processor);
-		}
-		return processor as ObjectProcessor;
-	}
-	
-}
-
 

@@ -20,7 +20,7 @@ public class LazyMessagingTestConfig {
 		return new EventSourceMetadata();
 	}
 	
-	[ObjectDefinition(singleton="false")]
+	[DynamicObject]
 	public function get eventSource2 () : EventSourceMetadata {
 		return new EventSourceMetadata();
 	}
@@ -29,27 +29,27 @@ public class LazyMessagingTestConfig {
 		return new TestMessageDispatcherMetadata();
 	}
 	
-	[ObjectDefinition(lazy="true")]
+	[DynamicObject]
 	public function get testMessageHandlers () : TestMessageHandlersMetadata {
 		return new TestMessageHandlersMetadata();
 	}
 	
-	[ObjectDefinition(lazy="true")]
+	[DynamicObject]
 	public function get messageHandlers () : MessageHandlersMetadata {
 		return new MessageHandlersMetadata();
 	}
 	
-	[ObjectDefinition(lazy="true")]
+	[DynamicObject]
 	public function get faultyHandlers () : FaultyMessageHandlersMetadata {
 		return new FaultyMessageHandlersMetadata();
 	}
 	
-	[ObjectDefinition(lazy="true")]
+	[DynamicObject]
 	public function get commandExecutors () : CommandExecutors {
 		return new CommandExecutors();
 	}
 	
-	[ObjectDefinition(lazy="true")]
+	[DynamicObject]
 	public function get commandObservers () : CommandObservers {
 		return new CommandObservers();
 	}
@@ -59,12 +59,12 @@ public class LazyMessagingTestConfig {
 		return new ErrorHandlersMetadata();
 	}
 	
-	[ObjectDefinition(lazy="true")]
+	[DynamicObject]
 	public function get messageBindings () : MessageBindingsMetadata {
 		return new MessageBindingsMetadata();
 	}
 	
-	[ObjectDefinition(lazy="true")]
+	[DynamicObject]
 	public function get messageInterceptors () : MessageInterceptorsMetadata {
 		return new MessageInterceptorsMetadata();
 	}

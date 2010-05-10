@@ -61,7 +61,6 @@ public class DefaultContext extends EventDispatcher implements Context {
 
 	
 	private var strategyProvider:ContextStrategyProvider;
-	private var objectProviderFactory:ContextObjectProviderFactory;
 	
 	private var _registry:ObjectDefinitionRegistry;
 	private var _lifecycleManager:ObjectLifecycleManager;
@@ -79,6 +78,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 	
 	private var description:String;
 	
+	/* deprecated */
+	private var objectProviderFactory:ContextObjectProviderFactory;
+
 	
 	/**
 	 * Creates a new instance.

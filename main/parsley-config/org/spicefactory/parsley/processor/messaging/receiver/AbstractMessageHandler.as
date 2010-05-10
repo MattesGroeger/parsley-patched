@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.messaging.receiver.impl {
+package org.spicefactory.parsley.processor.messaging.receiver {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Parameter;
@@ -22,14 +22,27 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
 
-[Deprecated(replacement="same class in new parsley.processor.messaging.receiver package")]
 /**
+ * Abstract base class for regular message handlers where the message is simply passed to a method on the target instance.
+ * 
  * @author Jens Halm
  */
 public class AbstractMessageHandler extends AbstractMethodReceiver {
 	
+	
 	private var messageProperties:Array;
 	
+	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param provider the provider for the instance that contains the target method
+	 * @param methodName the name of the target method that should be invoked
+	 * @param selector an optional selector value to be used for selecting matching message targets
+	 * @param messageType the type of the message or null if it should be autodetected by the parameter of the target method
+	 * @param messageProperties the list of names of properties of the message that should be used as method parameters
+	 * @param order the execution order for this receiver
+	 */
 	function AbstractMessageHandler (provider:ObjectProvider, methodName:String, selector:* = undefined, 
 			messageType:ClassInfo = null, messageProperties:Array = null, order:int = int.MAX_VALUE) {
 		super(provider, methodName, getMessageType(provider, methodName, messageType, messageProperties), selector, order);
@@ -37,6 +50,7 @@ public class AbstractMessageHandler extends AbstractMethodReceiver {
 			setMessageProperties(messageProperties, messageType);
 		}
 	}
+	
 
 	private function getMessageType (provider:ObjectProvider, methodName:String, 
 			explicitType:ClassInfo, messageProperties:Array) : Class {
@@ -61,6 +75,7 @@ public class AbstractMessageHandler extends AbstractMethodReceiver {
 		}		
 		return Object;
 	}
+	
 	
 	private function setMessageProperties (messageProperties:Array, messageType:ClassInfo) : void {
 		var requiredParams:uint = 0;
@@ -88,6 +103,10 @@ public class AbstractMessageHandler extends AbstractMethodReceiver {
 		}
 	}
 	
+	
+	/**
+	 * @inheritDoc
+	 */
 	protected function invokeMethod (message:Object) : * {
 		var params:Array;
 		if (messageProperties == null) {

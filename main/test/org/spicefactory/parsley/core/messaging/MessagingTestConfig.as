@@ -20,7 +20,7 @@ public class MessagingTestConfig {
 		return new EventSourceMetadata();
 	}
 	
-	[ObjectDefinition(singleton="false")]
+	[DynamicObject]
 	public function get eventSource2 () : EventSourceMetadata {
 		return new EventSourceMetadata();
 	}
@@ -37,17 +37,17 @@ public class MessagingTestConfig {
 		return new MessageHandlersMetadata();
 	}
 	
-	[ObjectDefinition(lazy="true")]
+	[DynamicObject]
 	public function get faultyHandlers () : FaultyMessageHandlersMetadata {
 		return new FaultyMessageHandlersMetadata();
 	}
 	
-	[ObjectDefinition(lazy="true")]
+	[DynamicObject]
 	public function get commandExecutors () : CommandExecutors {
 		return new CommandExecutors();
 	}
 	
-	[ObjectDefinition(lazy="true")]
+	[DynamicObject]
 	public function get commandObservers () : CommandObservers {
 		return new CommandObservers();
 	}
@@ -60,7 +60,7 @@ public class MessagingTestConfig {
 		return new MessageBindingsMetadata();
 	}
 	
-	[ObjectDefinition(lazy="true")]
+	[DynamicObject]
 	public function get messageInterceptors () : MessageInterceptorsMetadata {
 		return new MessageInterceptorsMetadata();
 	}

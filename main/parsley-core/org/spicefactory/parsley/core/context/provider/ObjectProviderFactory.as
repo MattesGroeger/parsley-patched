@@ -16,33 +16,15 @@
 
 package org.spicefactory.parsley.core.context.provider {
 
+[Deprecated]
 /**
- * Factory that creates lazy initializing ObjectProvider instances. Those may be used for 
- * registering message receivers or object lifecycle listeners or similar use cases.
- * 
  * @author Jens Halm
  */
 public interface ObjectProviderFactory {
 	
-	
-	/**
-	 * Creates a provider for the specified type and optional id.
-	 * If the id is omitted the Context built for this registry must contain exactly
-	 * one instance with a matching type. 
-	 * 
-	 * @param type the type of the object to provide
-	 * @param id the id of the object in the Context this factory is associated with
-	 * @return a new ObjectProvider instance
- 	 */
 	function createProvider (type:Class, id:String = null) : ObjectProvider;
 	
-	/**
-	 * Initializes and validates all providers created by this instance.
-	 * 
-	 * @throws ContextError if one or more of the providers created by this factory are invalid
-	 */
 	function initialize () : void;
-	
 	
 }
 }

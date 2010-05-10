@@ -48,8 +48,10 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	
 	private var _frozen:Boolean;
 	
-	private var objectProviderFactory:ObjectProviderFactory;
 	private var definitions:SimpleMap = new SimpleMap();
+
+	/* Deprecated */
+	private var objectProviderFactory:ObjectProviderFactory;
 
 
 	/**

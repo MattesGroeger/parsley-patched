@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.messaging.receiver.impl {
+package org.spicefactory.parsley.processor.messaging.receiver {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Parameter;
@@ -23,15 +23,30 @@ import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
+import org.spicefactory.parsley.processor.util.MessageReceiverFactories;
 
-[Deprecated(replacement="same class in new parsley.processor.messaging.receiver package")]
 /**
+ * Default implementation of the CommandObserver interface.
+ * 
  * @author Jens Halm
  */
 public class DefaultCommandObserver extends AbstractMethodReceiver implements CommandObserver {
 	
+	
 	private var _status:CommandStatus;
 	
+	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param provider the provider for the instance that contains the target method
+	 * @param methodName the name of the target method that should be invoked
+	 * @param status the command status this object is interested in
+	 * @param selector an optional selector value to be used for selecting matching message targets
+	 * @param messageType the type of the message or null if it should be autodetected by the parameter of the target method
+	 * @param order the execution order for this receiver
+	 */
 	function DefaultCommandObserver (provider:ObjectProvider, methodName:String, status:CommandStatus, 
 			selector:* = undefined, messageType:ClassInfo = null, order:int = int.MAX_VALUE) {
 		super(provider, methodName, getMessageType(provider, methodName, messageType), selector, order);
@@ -59,6 +74,9 @@ public class DefaultCommandObserver extends AbstractMethodReceiver implements Co
 		return Object;
 	}
 		
+	/**
+	 * @inheritDoc
+	 */
 	public function observeCommand (command:Command) : void {
 		var paramTypes:Array = targetMethod.parameters;
 		var params:Array = new Array();
@@ -72,9 +90,32 @@ public class DefaultCommandObserver extends AbstractMethodReceiver implements Co
 		targetMethod.invoke(targetInstance, params);
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get status () : CommandStatus {
 		return _status;
 	}
+	
+	
+	/**
+	 * Creates a new factory that creates DefaultCommandObserver instances. 
+	 * Such a factory can be used for convenient registration of a <code>MessageReceiverProcessorFactory</code>
+	 * with a target <code>ObjectDefinition</code>.
+	 * 
+	 * @param methodName the name of the target method that should be invoked
+	 * @param status the command status this object is interested in
+	 * @param selector an optional selector value to be used for selecting matching message targets
+	 * @param messageType the type of the message or null if it should be autodetected by the parameter of the target method
+	 * @param order the execution order for this receiver
+	 * @return a new factory that creates DefaultCommandObserver instance
+	 */
+	public static function newFactory (methodName:String, status:CommandStatus, selector:* = undefined, 
+			messageType:ClassInfo = null, order:int = int.MAX_VALUE) : MessageReceiverFactory {
+				
+		return MessageReceiverFactories.newFactory(DefaultCommandObserver, [methodName, status, selector, messageType, order]);
+	}
+	
 	
 }
 }

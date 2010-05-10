@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.messaging.receiver.impl {
+package org.spicefactory.parsley.processor.messaging.receiver {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
@@ -23,17 +23,36 @@ import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandManager;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
+import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
+import org.spicefactory.parsley.processor.util.MessageReceiverFactories;
 
-[Deprecated(replacement="same class in new parsley.processor.messaging.receiver package")]
 /**
+ * A message target where a property value serves as a flag for indicating whether there is 
+ * at least one active command matching the specified message type and selector. 
+ *  
  * @author Jens Halm
  */
-public class CommandStatusFlag extends AbstractTargetInstanceReceiver implements CommandObserver {
+public class CommandStatusFlag extends AbstractObjectProviderReceiver implements CommandObserver {
+	
 	
 	private var manager:CommandManager;
+	
 	private var property:Property;
+	
 	private var _status:CommandStatus;
 	
+	
+	/**
+	 * Creates a new instance. 
+	 * 
+	 * @param provider the provider for the instance that contains the target property
+	 * @param propertyName the name of the target property that should be bound
+	 * @param manager the command manager to look up matching active commands
+	 * @param status the command status this object is interested in
+	 * @param messageType the type of the message
+	 * @param selector an optional selector value to be used for selecting matching message targets
+	 * @param order the execution order for this receiver
+	 */
 	function CommandStatusFlag (provider:ObjectProvider, propertyName:String, manager:CommandManager, 
 			status:CommandStatus, messageType:ClassInfo, selector:* = undefined, order:int = int.MAX_VALUE) {
 		super(provider, messageType.getClass(), selector, order);
@@ -52,13 +71,40 @@ public class CommandStatusFlag extends AbstractTargetInstanceReceiver implements
 		this.manager = manager;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function observeCommand (command:Command) : void {
 		property.setValue(targetInstance, manager.hasActiveCommands(messageType, selector));
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function get status () : CommandStatus {
 		return _status;
 	}
+	
+	
+	/**
+	 * Creates a new factory that creates CommandStatusFlag instances. 
+	 * Such a factory can be used for convenient registration of a <code>MessageReceiverProcessorFactory</code>
+	 * with a target <code>ObjectDefinition</code>.
+	 * 
+	 * @param propertyName the name of the target property that should be bound
+	 * @param manager the command manager to look up matching active commands
+	 * @param status the command status this object is interested in
+	 * @param messageType the type of the message
+	 * @param selector an optional selector value to be used for selecting matching message targets
+	 * @param order the execution order for this receiver
+	 * @return a new factory that creates CommandStatusFlag instance
+	 */
+	public static function newFactory (propertyName:String, manager:CommandManager, status:CommandStatus, 
+			messageType:ClassInfo, selector:* = undefined, order:int = int.MAX_VALUE) : MessageReceiverFactory {
+				
+		return MessageReceiverFactories.newFactory(CommandStatusFlag, [propertyName, manager, status, messageType, selector, order]);
+	}
+	
 	
 }
 }

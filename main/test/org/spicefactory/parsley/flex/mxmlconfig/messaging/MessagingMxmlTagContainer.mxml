@@ -14,38 +14,38 @@
 	</mx:Script>
 	
 	
-	<flextag:MxmlRootObjectTag id="eventSource" type="{EventSource}" lazy="true">
+	<flextag:MxmlDynamicObjectTag id="eventSource" type="{EventSource}">
 		<msg:ManagedEventsDecorator names="['test1','test2','foo']"/>
-	</flextag:MxmlRootObjectTag> 
+	</flextag:MxmlDynamicObjectTag> 
 	
-	<flextag:MxmlRootObjectTag id="eventSource2" type="{EventSource}" singleton="false">
+	<flextag:MxmlDynamicObjectTag id="eventSource2" type="{EventSource}">
 		<msg:ManagedEventsDecorator names="['test1','test2','foo']"/>
-	</flextag:MxmlRootObjectTag>
+	</flextag:MxmlDynamicObjectTag>
 	
-	<flextag:MxmlRootObjectTag id="testDispatcher" type="{TestMessageDispatcher}" lazy="true">
+	<flextag:MxmlDynamicObjectTag id="testDispatcher" type="{TestMessageDispatcher}">
 		<msg:MessageDispatcherDecorator property="dispatcher"/>
-	</flextag:MxmlRootObjectTag> 
+	</flextag:MxmlDynamicObjectTag> 
 
-	<flextag:MxmlRootObjectTag id="testMessageHandlers" type="{TestMessageHandlers}" lazy="true">
+	<flextag:MxmlDynamicObjectTag id="testMessageHandlers" type="{TestMessageHandlers}">
 		<msg:MessageHandlerDecorator method="allTestMessages" type="{TestMessage}"/>
 		<msg:MessageHandlerDecorator method="event1" selector="test1" type="{TestMessage}"/>
 		<msg:MessageHandlerDecorator method="event2" selector="test2" type="{TestMessage}"/>
-	</flextag:MxmlRootObjectTag> 
+	</flextag:MxmlDynamicObjectTag> 
 
-	<flextag:MxmlRootObjectTag id="messageHandlers" type="{MessageHandlers}" lazy="true">
+	<flextag:MxmlDynamicObjectTag id="messageHandlers" type="{MessageHandlers}">
 		<msg:MessageHandlerDecorator method="allTestEvents" type="{TestEvent}" order="3"/>
 		<msg:MessageHandlerDecorator method="allEvents" type="{Event}" order="2"/>
 		<msg:MessageHandlerDecorator method="event1" selector="test1" type="{TestEvent}" order="1"/>
 		<msg:MessageHandlerDecorator method="event2" selector="test2" type="{TestEvent}" order="1"/>
 		<msg:MessageHandlerDecorator method="mappedProperties" messageProperties="['stringProp','intProp']" type="{TestEvent}"/>
-	</flextag:MxmlRootObjectTag> 
+	</flextag:MxmlDynamicObjectTag> 
 	
-	<flextag:MxmlRootObjectTag id="faultyHandlers" type="{FaultyMessageHandlers}" lazy="true">
+	<flextag:MxmlDynamicObjectTag id="faultyHandlers" type="{FaultyMessageHandlers}">
 		<msg:MessageHandlerDecorator method="allTestEvents" type="{TestEvent}"/>
 		<msg:MessageHandlerDecorator method="allEvents" type="{Event}"/>
 		<msg:MessageHandlerDecorator method="event1" selector="test1" type="{TestEvent}"/>
 		<msg:MessageHandlerDecorator method="event2" selector="test2" type="{TestEvent}"/>
-	</flextag:MxmlRootObjectTag> 
+	</flextag:MxmlDynamicObjectTag> 
 	
 	<flextag:MxmlRootObjectTag id="errorHandlers" type="{ErrorHandlers}">
 		<msg:MessageErrorDecorator method="allTestEvents" type="{TestEvent}"/>
@@ -55,18 +55,18 @@
 	</flextag:MxmlRootObjectTag> 
 	
 	
-	<flextag:MxmlRootObjectTag id="messageBindings" type="{MessageBindingsBlank}" lazy="true">
+	<flextag:MxmlDynamicObjectTag id="messageBindings" type="{MessageBindingsBlank}">
 		<msg:MessageBindingDecorator targetProperty="stringProp" messageProperty="stringProp" type="{TestEvent}"/>
 		<msg:MessageBindingDecorator targetProperty="intProp1" messageProperty="intProp" selector="test1" type="{TestEvent}"/>
 		<msg:MessageBindingDecorator targetProperty="intProp2" messageProperty="intProp" selector="test2" type="{TestEvent}"/>
-	</flextag:MxmlRootObjectTag> 
+	</flextag:MxmlDynamicObjectTag> 
 
-	<flextag:MxmlRootObjectTag id="messageInterceptors" type="{MessageInterceptors}" lazy="true">
+	<flextag:MxmlDynamicObjectTag id="messageInterceptors" type="{MessageInterceptors}">
 		<msg:MessageInterceptorDecorator method="interceptAllMessages" type="{TestEvent}"/>
 		<msg:MessageInterceptorDecorator method="allEvents"/>
 		<msg:MessageInterceptorDecorator method="event1" selector="test1" type="{TestEvent}" order="1"/>
 		<msg:MessageInterceptorDecorator method="event2" selector="test2" type="{TestEvent}" order="1"/>
-	</flextag:MxmlRootObjectTag> 
+	</flextag:MxmlDynamicObjectTag> 
 	
 	
 </mx:Object>

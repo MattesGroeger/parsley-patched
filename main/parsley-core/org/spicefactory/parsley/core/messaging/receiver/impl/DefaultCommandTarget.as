@@ -17,33 +17,18 @@
 package org.spicefactory.parsley.core.messaging.receiver.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.lib.reflect.types.Void;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
-import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.command.CommandProcessor;
 import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
 
+[Deprecated(replacement="same class in new parsley.processor.messaging.receiver package")]
 /**
- * Default implementation of the CommandTarget interface.
- * 
  * @author Jens Halm
  */
 public class DefaultCommandTarget extends AbstractMessageHandler implements CommandTarget {
 	
-	
 	private var _returnType:Class;
 	
-	
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param provider the provider for the instance that contains the target method
-	 * @param methodName the name of the target method that should be invoked
-	 * @param selector an optional selector value to be used for selecting matching message targets
-	 * @param messageType the type of the message or null if it should be autodetected by the parameter of the target method
-	 * @param messageProperties the list of names of properties of the message that should be used as method parameters
-	 * @param order the execution order for this receiver
-	 */
 	function DefaultCommandTarget (provider:ObjectProvider, methodName:String, selector:* = undefined, 
 			messageType:ClassInfo = null, messageProperties:Array = null, order:int = int.MAX_VALUE) {
 		super(provider, methodName, selector, messageType, messageProperties, order);
@@ -55,22 +40,14 @@ public class DefaultCommandTarget extends AbstractMessageHandler implements Comm
 		_returnType = targetMethod.returnType.getClass();
 	}
 	
-	
-	/**
-	 * @inheritDoc
-	 */
 	public function get returnType () : Class {
 		return _returnType;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function executeCommand (processor:CommandProcessor) : void {
 		var returnValue:* = invokeMethod(processor.message);
 		processor.process(returnValue);
 	}
-	
 	
 }
 }

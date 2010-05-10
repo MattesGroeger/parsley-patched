@@ -171,13 +171,6 @@ public class SingletonObjectDefinitionWrapper implements SingletonObjectDefiniti
 	/**
 	 * @inheritDoc
 	 */
-	public function addProcessorFactoryMethod (method:Function) : void {
-		wrappedDefinition.addProcessorFactoryMethod(method);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	public function get processorFactories () : Array {
 		return wrappedDefinition.processorFactories;
 	}

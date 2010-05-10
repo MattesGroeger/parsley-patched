@@ -16,28 +16,13 @@
 
 package org.spicefactory.parsley.core.context.provider {
 
+[Deprecated]
 /**
- * ObjectProvider extension that allows to add a callback to be invoked when
- * the provided object gets removed from the Context.
- * 
  * @author Jens Halm
  */
 public interface SynchronizedObjectProvider extends ObjectProvider {
 	
-	
-	/**
-	 * Adds a callback to be invoked when
- 	 * the provided object gets removed from the Context.
- 	 * The specified parameters will be passed to the handler.
- 	 * The provider itself will not be added to the parameters
- 	 * since it is not used in most cases when cleaning up.
- 	 * 
- 	 * @param handler the handler to be invoked when
- 	 * the provided object gets removed from the Context
- 	 * @param params the parameters to be passed to the handler
-	 */
 	function addDestroyHandler (handler:Function, ...params) : void;
-	
 	
 }
 }

@@ -22,31 +22,22 @@ import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
 
 import flash.system.ApplicationDomain;
 
+[Deprecated]
 /**
- * Default implementation of the ObjectProviderFactory interface that creates 
- * providers for objects in a Context.
- * 
  * @author Jens Halm
  */
 public class ContextObjectProviderFactory implements ObjectProviderFactory {
 
-	
 	private var context:Context;
 	private var domain:ApplicationDomain;
 	private var providers:Array = new Array();
 	private var initialized:Boolean = false;
 
-	/**
-	 * @private
-	 */
 	function ContextObjectProviderFactory (context:Context, domain:ApplicationDomain) {
 		this.context = context;
 		this.domain = domain;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	public function initialize () : void {
 		initialized = true;
 		for each (var provider:ContextObjectProvider in providers) {
@@ -54,16 +45,12 @@ public class ContextObjectProviderFactory implements ObjectProviderFactory {
 		}
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function createProvider (type:Class, id:String = null) : ObjectProvider {
 		var provider:ContextObjectProvider = new ContextObjectProvider(context, ClassInfo.forClass(type, domain), id);
 		providers.push(provider);
 		if (initialized) provider.initialize();
 		return provider;
 	}
-	
 	
 }
 }
