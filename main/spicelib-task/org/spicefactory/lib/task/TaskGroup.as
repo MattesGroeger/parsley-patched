@@ -221,7 +221,7 @@ public class TaskGroup extends Task {
 	 */
 	public function removeAllTasks () : void {
 		for (var i:uint = 0; i < allTasks.getSize(); i++) {
-			var t:Task = Task(allTasks[i]);
+			var t:Task = Task(allTasks.get(i));
 			t.setParent(null);
 		}
 		allTasks.removeAll();

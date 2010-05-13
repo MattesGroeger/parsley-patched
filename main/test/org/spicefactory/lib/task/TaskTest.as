@@ -398,6 +398,32 @@ public class TaskTest extends TestCase {
 		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt2.state);		
 	}
 	
+	public function testRemoveAllTasksFromRunningConcurrent () : void {
+		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
+		var tt1:TimerTask = new TimerTask(150, true);
+		var tt2:TimerTask = new TimerTask(150, true);
+		var tg:TaskGroup = startConcurrent([tt1, tt2], TaskEvent.COMPLETE, 
+				TaskState.INACTIVE);
+		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);		
+		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt2.state);		
+		tg.removeAllTasks();	
+		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);	
+		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt2.state);
+	}
+	
+	public function testRemoveAllTasksFromRunningSequential () : void {
+		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
+		var tt1:TimerTask = new TimerTask(150, true);
+		var tt2:TimerTask = new TimerTask(150, true);
+		var tg:TaskGroup = startSequential([tt1, tt2], TaskEvent.COMPLETE, 
+				TaskState.INACTIVE);
+		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);		
+		assertEquals("Unexpected state of child Task", TaskState.INACTIVE, tt2.state);		
+		tg.removeAllTasks();	
+		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);	
+		assertEquals("Unexpected state of child Task", TaskState.INACTIVE, tt2.state);
+	}
+	
 	public function testResultTask () : void {
 		var t:ResultTask = new SimpleResultTask();
 		eventCounter = new EventCounter(t);
