@@ -117,7 +117,13 @@ public class ContextBuilder {
 		return this;
 	}
 	
-	public function processor (processor:ConfigurationProcessor) : ContextBuilder {
+	/**
+	 * Adds a custom configuration processor to this builder.
+	 * 
+	 * @param processor the processor to add
+	 * @return this builder instance for method chaining
+	 */
+	public function customConfig (processor:ConfigurationProcessor) : ContextBuilder {
 		builder.addProcessor(processor);
 		return this;
 	}
