@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.processor.lifecycle {
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.context.provider.Provider;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
@@ -94,7 +95,8 @@ public class ObserveMethodProcessorFactory implements ObjectProcessorFactory {
 			return processor;
 		}
 		else {
-			return new ObserveMethodProcessor(Provider.forInstance(target.instance), method, phase, objectId, scope);
+			var provider:ObjectProvider = Provider.forInstance(target.instance, target.definition.registry.domain);
+			return new ObserveMethodProcessor(provider, method, phase, objectId, scope);
 		}
 	}
 }
