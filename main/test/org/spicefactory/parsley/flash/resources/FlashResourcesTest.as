@@ -141,7 +141,7 @@ public class FlashResourcesTest extends XmlContextTestBase {
 		var xmlProcessor:XmlConfigurationProcessor = new XmlConfigurationProcessor([]);
 		xmlProcessor.addXml(xml1);
 		xmlProcessor.addXml(xml2);
-		var context:Context = ContextBuilder.newBuilder().processor(xmlProcessor).build();
+		var context:Context = ContextBuilder.newBuilder().customConfig(xmlProcessor).build();
     	checkState(context, true, false);
     	var f:Function = addAsync(onTestTwoBundles, 3000);		
 		context.addEventListener(ContextEvent.INITIALIZED, f);

@@ -21,7 +21,7 @@ public class XmlContextTestBase extends ContextTestBase {
 		if (customScope) {
 			setup.scope(customScope, inherited);
 		}
-		return setup.newBuilder().processor(xmlProcessor).build();
+		return setup.newBuilder().customConfig(xmlProcessor).build();
 	}
 	
 	

@@ -18,7 +18,7 @@ public class ContextTestBase extends TestCase {
 		if (customScope) {
 			setup.scope(customScope, inherited);
 		}
-		return setup.newBuilder().processor(processor).build();
+		return setup.newBuilder().customConfig(processor).build();
 	}
 	
 	
