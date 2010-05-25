@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.processor.messaging {
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.Provider;
 import org.spicefactory.parsley.core.events.ContextEvent;
@@ -87,7 +88,8 @@ public class MessageReceiverProcessorFactory implements ObjectProcessorFactory {
 			return processor;
 		}
 		else {
-			return new MessageReceiverProcessor(Provider.forInstance(target.instance), receiverFactory, scope);
+			var provider:ObjectProvider = Provider.forInstance(target.instance, definition.registry.domain);
+			return new MessageReceiverProcessor(provider, receiverFactory, scope);
 		}
 	}
 	
