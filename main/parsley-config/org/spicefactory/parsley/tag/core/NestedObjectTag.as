@@ -15,9 +15,9 @@
  */
 
 package org.spicefactory.parsley.tag.core {
+import org.spicefactory.parsley.config.Configuration;
+import org.spicefactory.parsley.config.NestedConfigurationElement;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
 import org.spicefactory.parsley.tag.model.NestedObject;
 
 [DefaultProperty("decorators")]
@@ -27,7 +27,7 @@ import org.spicefactory.parsley.tag.model.NestedObject;
  * 
  * @author Jens Halm
  */
-public class NestedObjectTag implements ResolvableConfigurationValue {
+public class NestedObjectTag implements NestedConfigurationElement {
 
 	
 	/**
@@ -35,6 +35,7 @@ public class NestedObjectTag implements ResolvableConfigurationValue {
 	 */
 	public var type:Class = Object;
 	
+	[ArrayElementType("org.spicefactory.parsley.tag.core.ObjectDecoratorMarker")]
 	/**
 	 * The ObjectDefinitionDecorator instances added to this definition.
 	 */
@@ -43,11 +44,12 @@ public class NestedObjectTag implements ResolvableConfigurationValue {
 	/**
 	 * @inheritDoc
 	 */
-	public function resolve (registry:ObjectDefinitionRegistry) : * {
-		var def:DynamicObjectDefinition = registry.builders
-				.forDynamicDefinition(type)
-				.decorators(decorators)
-				.build();
+	public function resolve (config:Configuration) : Object {
+		var def:DynamicObjectDefinition = config.builders
+				.forClass(type)
+					.asDynamicObject()
+						.decorators(decorators)
+						.build();
 		return new NestedObject(def);
 	}
 	

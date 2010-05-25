@@ -21,35 +21,35 @@ import org.spicefactory.parsley.core.registry.builder.DynamicObjectDefinitionBui
 import org.spicefactory.parsley.core.registry.builder.ObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.registry.builder.SingletonObjectDefinitionBuilder;
 
+[Deprecated(replacement="new configuration DSL")]
 /**
- * Default implementation of the ObjectDefinitionBuilderFactory interface.
- * 
  * @author Jens Halm
  */
 public class DefaultObjectDefinitionBuilderFactory implements ObjectDefinitionBuilderFactory {
 
 	private var registry:ObjectDefinitionRegistry;
 	
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param registry the registry associated with this builder
-	 */
 	function DefaultObjectDefinitionBuilderFactory (registry:ObjectDefinitionRegistry) {
 		this.registry = registry;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function forSingletonDefinition (type:Class) : SingletonObjectDefinitionBuilder {
 		return new DefaultSingletonObjectDefinitionBuilder(ClassInfo.forClass(type, registry.domain), registry);
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
+	public function forRootDefinition (type:Class) : SingletonObjectDefinitionBuilder {
+		return new DefaultSingletonObjectDefinitionBuilder(ClassInfo.forClass(type, registry.domain), registry);
+	}
+	
 	public function forDynamicDefinition (type:Class) : DynamicObjectDefinitionBuilder {
+		return new DefaultDynamicObjectDefinitionBuilder(ClassInfo.forClass(type, registry.domain), registry);
+	}
+	
+	public function forNestedDefinition (type:Class) : DynamicObjectDefinitionBuilder {
+		return new DefaultDynamicObjectDefinitionBuilder(ClassInfo.forClass(type, registry.domain), registry);
+	}
+	
+	public function forViewDefinition (type:Class) : DynamicObjectDefinitionBuilder {
 		return new DefaultDynamicObjectDefinitionBuilder(ClassInfo.forClass(type, registry.domain), registry);
 	}
 }
@@ -57,6 +57,7 @@ public class DefaultObjectDefinitionBuilderFactory implements ObjectDefinitionBu
 
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.ObjectInstantiator;
@@ -71,6 +72,7 @@ import org.spicefactory.parsley.core.registry.impl.IdGenerator;
 class DefaultSingletonObjectDefinitionBuilder extends AbstractObjectDefinitionBuilder implements SingletonObjectDefinitionBuilder {
 
 
+	private var _singleton:Boolean = true;
 	private var _id:String;
 	private var _lazy:Boolean = false;
 	private var _order:int = int.MAX_VALUE;
@@ -81,6 +83,11 @@ class DefaultSingletonObjectDefinitionBuilder extends AbstractObjectDefinitionBu
 		super(type, registry);
 	}
 	
+	
+	public function singleton (value:Boolean) : SingletonObjectDefinitionBuilder {
+		_singleton = value;
+		return this;
+	}
 	
 	public function id (value:String) : SingletonObjectDefinitionBuilder {
 		_id = value;
@@ -112,16 +119,18 @@ class DefaultSingletonObjectDefinitionBuilder extends AbstractObjectDefinitionBu
 		return this;
 	}
 	
-	public function build () : SingletonObjectDefinition {
+	public function build () : ObjectDefinition {
 		if (_id == null) _id = IdGenerator.nextObjectId;
-		var def:SingletonObjectDefinition = new DefaultSingletonObjectDefinition(type, _id, registry, _lazy, _order);
+		var def:ObjectDefinition = (_singleton) 
+				? new DefaultSingletonObjectDefinition(type, _id, registry, _lazy, _order)
+				: new DefaultDynamicObjectDefinition(type, _id, registry);
 		def.instantiator = _instantiator;
-		def = processDecorators(registry, def) as SingletonObjectDefinition;
+		def = processDecorators(registry, def);
 		return def;
 	}
 	
-	public function buildAndRegister () : SingletonObjectDefinition {
-		var def:SingletonObjectDefinition = build();
+	public function buildAndRegister () : ObjectDefinition {
+		var def:ObjectDefinition = build();
 		registry.registerDefinition(def);
 		return def;
 	}
@@ -162,7 +171,7 @@ class DefaultDynamicObjectDefinitionBuilder extends AbstractObjectDefinitionBuil
 	
 	public function build () : DynamicObjectDefinition {
 		if (_id == null) _id = IdGenerator.nextObjectId;
-		var def:DynamicObjectDefinition = new DefaultDynamicObjectDefinition(type, _id);
+		var def:DynamicObjectDefinition = new DefaultDynamicObjectDefinition(type, _id, registry);
 		def.instantiator = _instantiator;
 		def = processDecorators(registry, def) as DynamicObjectDefinition;
 		return def;

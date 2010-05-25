@@ -1,10 +1,10 @@
 package org.spicefactory.parsley.core {
 import flexunit.framework.TestCase;
 
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
-import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.dsl.context.ContextBuilder;
+import org.spicefactory.parsley.dsl.context.ContextBuilderSetup;
 
 /**
  * @author Jens Halm
@@ -14,12 +14,11 @@ public class ContextTestBase extends TestCase {
 	
 	protected function getContext (processor:ConfigurationProcessor, parent:Context = null, 
 			customScope:String = null, inherited:Boolean = true) : Context {
-		var contextBuilder:CompositeContextBuilder = new DefaultCompositeContextBuilder(null, parent);
-		contextBuilder.addProcessor(processor);
+		var setup:ContextBuilderSetup = ContextBuilder.newSetup().parent(parent);
 		if (customScope) {
-			contextBuilder.addScope(customScope, inherited);
+			setup.scope(customScope, inherited);
 		}
-		return contextBuilder.build();
+		return setup.newBuilder().processor(processor).build();
 	}
 	
 	

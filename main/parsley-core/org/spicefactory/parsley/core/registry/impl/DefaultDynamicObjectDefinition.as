@@ -15,10 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.registry.impl {
-import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
-import org.spicefactory.parsley.instantiator.ObjectWrapperInstantiator;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.instantiator.ObjectWrapperInstantiator;
 
 /**
  * Default implementation of the DynamicObjectDefinition interface.
@@ -32,9 +32,10 @@ public class DefaultDynamicObjectDefinition extends AbstractObjectDefinition imp
 	 * 
 	 * @param type the type to create a definition for
 	 * @param id the id the object should be registered with
+	 * @param registry the registry this definition belongs to
 	 */
-	function DefaultDynamicObjectDefinition (type:ClassInfo, id:String) {
-		super(type, id);
+	function DefaultDynamicObjectDefinition (type:ClassInfo, id:String, registry:ObjectDefinitionRegistry) {
+		super(type, id, registry);
 	}
 	
 	
@@ -42,18 +43,9 @@ public class DefaultDynamicObjectDefinition extends AbstractObjectDefinition imp
 	 * @inheritDoc
 	 */
 	public function copyForInstance (instance:Object) : DynamicObjectDefinition {
-		var def:DefaultDynamicObjectDefinition = new DefaultDynamicObjectDefinition(type, id);
-		if (initMethod != null) {
-			def.initMethod = initMethod;
-		}
-		if (destroyMethod != null) {
-			def.destroyMethod = destroyMethod;
-		}
+		var def:DefaultDynamicObjectDefinition = new DefaultDynamicObjectDefinition(type, id, registry);
+		def.populateFrom(this);
 		def.instantiator = new ObjectWrapperInstantiator(instance);
-		for each (var factory:ObjectProcessorFactory in processorFactories) {
-			def.addProcessorFactory(factory);
-		}
-		def.replaceLegacyRegistries(this);
 		return def;
 	}
 	

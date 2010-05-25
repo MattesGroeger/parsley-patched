@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.runtime.processor {
-import org.spicefactory.parsley.instantiator.ObjectWrapperInstantiator;
-import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.config.Configuration;
+import org.spicefactory.parsley.config.Configurations;
 import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
@@ -76,35 +76,38 @@ public class RuntimeConfigurationProcessor implements ConfigurationProcessor {
 	 * @inheritDoc
 	 */
 	public function processConfiguration (registry:ObjectDefinitionRegistry) : void {
-		processInstances(registry);
-		processClasses(registry);
+		var config:Configuration = Configurations.forRegistry(registry);
+		processInstances(config);
+		processClasses(config);
 	}
 	
-	private function processInstances (registry:ObjectDefinitionRegistry) : void {
+	private function processInstances (config:Configuration) : void {
 		for each (var instanceDef:InstanceDefinition in instances) {
-			registry.builders
-					.forSingletonDefinition(ClassInfo.forInstance(instanceDef.instance, registry.domain).getClass())
-					.id(instanceDef.id)
-					.instantiator(new ObjectWrapperInstantiator(instanceDef.instance))
-					.buildAndRegister();
+			config.builders
+				.forInstance(instanceDef.instance)
+					.asSingleton()
+						.id(instanceDef.id)
+						.register();
 		}
 	}
 	
-	private function processClasses (registry:ObjectDefinitionRegistry) : void {
+	private function processClasses (config:Configuration) : void {
 		for each (var classDef:ClassDefinition in classes) {
 			if (classDef.singleton) {
-				registry.builders
-						.forSingletonDefinition(classDef.type)
-						.id(classDef.id)
-						.lazy(classDef.lazy)
-						.order(classDef.order)
-						.buildAndRegister();
+				config.builders
+					.forClass(classDef.type)
+						.asSingleton()
+							.id(classDef.id)
+							.lazy(classDef.lazy)
+							.order(classDef.order)
+							.register();
 			}
 			else {
-				registry.builders
-						.forDynamicDefinition(classDef.type)
-						.id(classDef.id)
-						.buildAndRegister();
+				config.builders
+					.forClass(classDef.type)
+						.asDynamicObject()
+							.id(classDef.id)
+							.register();
 			}
 		}
 	}

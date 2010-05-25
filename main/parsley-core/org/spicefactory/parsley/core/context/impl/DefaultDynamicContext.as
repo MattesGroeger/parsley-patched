@@ -16,8 +16,6 @@
 
 package org.spicefactory.parsley.core.context.impl {
 import org.spicefactory.lib.errors.IllegalStateError;
-import org.spicefactory.lib.logging.LogContext;
-import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
@@ -32,36 +30,20 @@ import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import flash.events.Event;
 import flash.utils.Dictionary;
 
+[Deprecated]
 /**
- * Default implementation of the DynamicContext interface.
- * 
  * @author Jens Halm
  */
 public class DefaultDynamicContext extends ChildContext implements DynamicContext {
 	
-	
-	private static const log:Logger = LogContext.getLogger(DefaultDynamicContext);
-
-	
 	private var objects:Dictionary = new Dictionary();
 	
-
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param provider instances to fetch all required strategies from
-	 * @param parent the Context that should be used as a parent of this Context
-	 */
 	public function DefaultDynamicContext (provider:ContextStrategyProvider, parent:Context) {
 		super(provider, parent);
 		addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		registry.freeze();
 	}
 	
-	
-	/**
-	 * @inheritDoc
-	 */
 	public function addDefinition (definition:ObjectDefinition) : DynamicObject {
 		checkState();
 		checkDefinition(definition);
@@ -72,9 +54,6 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 		return object;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	public function addObject (instance:Object, definition:ObjectDefinition = null) : DynamicObject {
 		checkState();
 		if (definition == null) {
@@ -95,9 +74,6 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 		}
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function removeObject (instance:Object) : void {
 		if (destroyed) return;
 		var object:DefaultDynamicObject = DefaultDynamicObject(objects[instance]);
@@ -116,7 +92,6 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 			throw new IllegalStateError("Attempt to access Context after it was destroyed");
 		}
 	}
-	
 	
 }
 }

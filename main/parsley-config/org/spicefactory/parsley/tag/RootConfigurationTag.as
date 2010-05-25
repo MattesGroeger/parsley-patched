@@ -17,18 +17,12 @@
 package org.spicefactory.parsley.tag {
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
+[Deprecated(replacement="RootConfigurationElement")]
 /**
- * Represent a root configuration tag in MXML or XML configuration files.
- * 
  * @author Jens Halm
  */
 public interface RootConfigurationTag {
 	
-	/**
-	 * Processes this configuration tag, possilbly adding object definitions to the specified registry.
-	 * 
-	 * @param registry the registry to process
-	 */
 	function process (registry:ObjectDefinitionRegistry) : void;
 	
 }

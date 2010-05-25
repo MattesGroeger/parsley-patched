@@ -15,7 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.parsley.core.messaging.command.CommandStatus;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="CommandError", types="method", multiple="true")]
 
@@ -25,13 +26,24 @@ import org.spicefactory.parsley.core.messaging.command.CommandStatus;
  * 
  * @author Jens Halm
  */
-public class CommandErrorDecorator extends AbstractCommandObserverDecorator {
+public class CommandErrorDecorator extends MessageReceiverDecoratorBase implements ObjectDefinitionDecorator {
 	
+	
+	[Target]
 	/**
-	 * @private
+	 * The name of the method that wishes to handle the message.
 	 */
-	function CommandErrorDecorator () {
-		super(CommandStatus.ERROR);
+	public var method:String;
+	
+	
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder
+			.method(method)
+				.commandError()
+					.scope(scope)
+					.type(type)
+					.selector(selector)
+					.order(order);
 	}
 	
 }

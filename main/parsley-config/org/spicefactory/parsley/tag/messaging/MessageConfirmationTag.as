@@ -15,11 +15,11 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.config.Configuration;
+import org.spicefactory.parsley.config.RootConfigurationElement;
 import org.spicefactory.parsley.core.scope.ScopeName;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.flex.util.MessageConfirmation;
-import org.spicefactory.parsley.tag.RootConfigurationTag;
 
 /**
  * Utility tag for convenient declaration of a confirmation dialog that opens
@@ -27,7 +27,7 @@ import org.spicefactory.parsley.tag.RootConfigurationTag;
  * 
  * @author Jens Halm
  */
-public class MessageConfirmationTag implements RootConfigurationTag {
+public class MessageConfirmationTag implements RootConfigurationElement {
 
 	/**
 	 * The text of the Alert.
@@ -58,22 +58,26 @@ public class MessageConfirmationTag implements RootConfigurationTag {
 	/**
 	 * @inheritDoc
 	 */
-	public function process (registry:ObjectDefinitionRegistry) : void {
+	public function process (config:Configuration) : void {
 		
-		var interceptor:MessageInterceptorDecorator = new MessageInterceptorDecorator();
-		interceptor.type = type;
-		interceptor.selector = selector;
-		interceptor.method = "showAlert";
-		interceptor.scope = scope;
+		var builder:ObjectDefinitionBuilder 
+				= config.builders.forClass(MessageConfirmation);
 		
-		var def:ObjectDefinition = registry.builders
-				.forSingletonDefinition(MessageConfirmation)
-				.decorator(interceptor)
-				.buildAndRegister();
+		builder
+			.constructorArgs()
+				.value(title)
+				.value(text);
+				
+		builder
+			.method("showAlert")
+				.messageInterceptor()
+					.type(type)
+					.selector(selector)
+					.scope(scope);
 		
-		def.constructorArgs
-				.addValue(title)
-				.addValue(text);
+		builder
+			.asSingleton()
+				.register();
 		
 	}
 	

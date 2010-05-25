@@ -17,25 +17,19 @@
 package org.spicefactory.parsley.core.registry.builder {
 
 /**
- * A factory for builders that can be used to create ObjectDefinitions programmatically.
- * 
  * @author Jens Halm
  */
 public interface ObjectDefinitionBuilderFactory {
 	
-	/**
-	 * Returns a builder for a singleton definition for the specified type.
-	 * 
-	 * @param type the type to create a definition for
-	 */
 	function forSingletonDefinition (type:Class) : SingletonObjectDefinitionBuilder;
 	
-	/**
-	 * Returns a builder for a dynamic definition for the specified type.
-	 * 
-	 * @param type the type to create a definition for
-	 */
 	function forDynamicDefinition (type:Class) : DynamicObjectDefinitionBuilder;
+	
+	function forRootDefinition (type:Class) : SingletonObjectDefinitionBuilder;
+	
+	function forNestedDefinition (type:Class) : DynamicObjectDefinitionBuilder;
+
+	function forViewDefinition (type:Class) : DynamicObjectDefinitionBuilder;
 	
 }
 }

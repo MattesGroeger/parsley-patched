@@ -15,16 +15,18 @@
  */
 
 package org.spicefactory.parsley.rpc.cinnamon.config {
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
+import org.spicefactory.parsley.config.Configuration;
+import org.spicefactory.parsley.config.RootConfigurationElement;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
-import org.spicefactory.parsley.tag.RootConfigurationTag;
 
 /**
  * Represents the Service MXML or XML tag, defining the configuration for a Cinnamon service.
  * 
  * @author Jens Halm
  */
-public class ServiceTag implements RootConfigurationTag {
+public class ServiceTag implements RootConfigurationElement {
 	
     
     /**
@@ -60,13 +62,19 @@ public class ServiceTag implements RootConfigurationTag {
 	/**
 	 * @inheritDoc
 	 */
-	public function process (registry:ObjectDefinitionRegistry) : void {
+	public function process (config:Configuration) : void {
 		if (id == null) id = name;
-		var definition:SingletonObjectDefinition = registry.builders
-				.forSingletonDefinition(type)
+		
+		var builder:ObjectDefinitionBuilder = config.builders.forClass(type);
+		
+		builder
+			.lifecycle()
+				.processorFactory(ServiceProcessor.newFactory(name, channel, timeout));
+		
+		builder
+			.asSingleton()
 				.id(id)
-				.buildAndRegister();
-		definition.addProcessorFactory(ServiceProcessor.newFactory(name, channel, timeout));
+				.register();
 	}
 	
 	

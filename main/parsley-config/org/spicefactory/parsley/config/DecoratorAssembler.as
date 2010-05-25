@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.registry {
+package org.spicefactory.parsley.config {
 import org.spicefactory.lib.reflect.ClassInfo;
 
 /**
- * Assembles decorators for a single ObjectDefinition.
- * DecoratorAssemblers can be added to an ObjectDefinitionRegistry and assemble decorators in addition to the
+ * Assembles decorators for a single ObjectDefinitionBuilder.
+ * DecoratorAssemblers can be added to an ConfigurationFactory to assemble decorators in addition to the
  * ones provided by the core configuration mechanism in use (e.g. MXML or XML). The only builtin implementation
- * is responsible for processing metadata tags on classes, but any custom implementation may be added to a registry. 
+ * is responsible for processing metadata tags on classes, but any custom implementation may be added to a factory. 
  * 
  * @author Jens Halm
  */

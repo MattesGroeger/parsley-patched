@@ -15,9 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.lifecycle {
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="Destroy", types="method")]
 /**
@@ -28,7 +27,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
  */
 public class DestroyMethodDecorator implements ObjectDefinitionDecorator {
 
-	
+
 	[Target]
 	/**
 	 * The name of the method.
@@ -39,9 +38,8 @@ public class DestroyMethodDecorator implements ObjectDefinitionDecorator {
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		definition.destroyMethod = method;
-		return definition;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder.method(method).destroyMethod();
 	}
 	
 	

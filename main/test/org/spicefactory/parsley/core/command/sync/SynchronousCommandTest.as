@@ -22,9 +22,9 @@ public class SynchronousCommandTest extends TestCase {
 		var context:Context = RuntimeContextBuilder.build([executor, observer]);
 		assertEquals("Unexpected number of objects in Context", 2, context.getObjectCount());
 		
-		context.scopeManager.dispatchMessage(new TestEvent("test1", "foo", 0));
-		var timer:Timer = new Timer(10, 1);
-		var f:Function = addAsync(synchronousCommandResult, 100);
+ 		context.scopeManager.dispatchMessage(new TestEvent("test1", "foo", 0));
+		var timer:Timer = new Timer(100, 1);
+		var f:Function = addAsync(synchronousCommandResult, 1000);
 		timer.addEventListener(TimerEvent.TIMER, f);
 		timer.start();
 	}

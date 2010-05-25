@@ -15,17 +15,10 @@
  */
 
 package org.spicefactory.parsley.tag.core {
-import org.spicefactory.parsley.processor.core.PropertyProcessor;
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.model.ObjectIdReference;
-import org.spicefactory.parsley.tag.model.ObjectTypeReference;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.tag.util.ConfigurationValueResolver;
-import org.spicefactory.parsley.tag.util.ReflectionUtil;
 
 [DefaultProperty("value")]
 /**
@@ -76,32 +69,24 @@ public class PropertyTag extends ObjectReferenceTag implements ObjectDefinitionD
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
 		validate();
 
-		var property:Property = ReflectionUtil.getProperty(name, definition, false, true);
-		
-		var propValue:*;
 		if (idRef != null) {
-			propValue = new ObjectIdReference(idRef, required);
+			builder.property(name).injectById(idRef, !required);
 		}
 		else if (typeRef != null) {
-			var ci:ClassInfo = ClassInfo.forClass(typeRef, registry.domain);
-			propValue = new ObjectTypeReference(ci, required);
+			builder.property(name).injectByType(typeRef);
 		}
 		else if (childValue != null) {
-			propValue = valueResolver.resolveValue(childValue, registry);
+			builder.property(name).value(valueResolver.resolveValue(childValue, builder.config));
 		}
 		else if (value != null) {
-			propValue = valueResolver.resolveValue(value, registry);
+			builder.property(name).value(valueResolver.resolveValue(value, builder.config));
 		}
 		else {
-			propValue = new ObjectTypeReference(property.type, required);
+			builder.property(name).injectByType(null, !required);
 		}
-		
-		definition.addProcessorFactory(PropertyProcessor.newFactory(property, propValue));
-		
-		return definition;
 	}
 	
 	

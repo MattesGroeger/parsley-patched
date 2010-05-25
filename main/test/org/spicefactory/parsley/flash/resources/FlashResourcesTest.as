@@ -1,8 +1,7 @@
 package org.spicefactory.parsley.flash.resources {
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.dsl.context.ContextBuilder;
 import org.spicefactory.parsley.flash.resources.events.LocaleSwitchEvent;
 import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
 import org.spicefactory.parsley.flash.resources.tag.FlashResourceXmlSupport;
@@ -139,12 +138,10 @@ public class FlashResourcesTest extends XmlContextTestBase {
 			
 	        <res:resource-bundle id="b_text" basename="textB" localized="false" ignore-country="true"/>
     	</objects>;  
-		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
-		var xmlBuilder:XmlConfigurationProcessor = new XmlConfigurationProcessor([]);
-		xmlBuilder.addXml(xml1);
-		xmlBuilder.addXml(xml2);
-		builder.addProcessor(xmlBuilder);
-		var context:Context = builder.build();
+		var xmlProcessor:XmlConfigurationProcessor = new XmlConfigurationProcessor([]);
+		xmlProcessor.addXml(xml1);
+		xmlProcessor.addXml(xml2);
+		var context:Context = ContextBuilder.newBuilder().processor(xmlProcessor).build();
     	checkState(context, true, false);
     	var f:Function = addAsync(onTestTwoBundles, 3000);		
 		context.addEventListener(ContextEvent.INITIALIZED, f);

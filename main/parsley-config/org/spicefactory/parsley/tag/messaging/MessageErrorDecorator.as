@@ -15,13 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
-import org.spicefactory.parsley.processor.messaging.MessageReceiverProcessorFactory;
-import org.spicefactory.parsley.processor.messaging.receiver.DefaultMessageErrorHandler;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="MessageError", types="method", multiple="true")]
 /**
@@ -49,11 +44,15 @@ public class MessageErrorDecorator extends MessageReceiverDecoratorBase implemen
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		var errorTypeInfo:ClassInfo = (errorType != null) ? ClassInfo.forClass(errorType, registry.domain) : null;
-		var factory:MessageReceiverFactory = DefaultMessageErrorHandler.newFactory(method, type, selector, errorTypeInfo, order);
-		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
-		return definition;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder
+			.method(method)
+				.messageError()
+					.scope(scope)
+					.type(type)
+					.selector(selector)
+					.errorType(errorType)
+					.order(order);
 	}
 	
 	

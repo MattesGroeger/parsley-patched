@@ -15,12 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.processor.messaging.MessageDispatcherProcessor;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="MessageDispatcher", types="property")]
 /**
@@ -52,11 +48,8 @@ public class MessageDispatcherDecorator implements ObjectDefinitionDecorator {
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		var target:Property = definition.type.getProperty(property);
-		var dispatcher:MessageDispatcherFunctionReference = new MessageDispatcherFunctionReference(registry.context.scopeManager, scope);
-		definition.addProcessorFactory(MessageDispatcherProcessor.newFactory(target, dispatcher));
-		return definition;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder.property(property).messageDispatcher(scope);
 	}
 	
 	

@@ -15,9 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.lifecycle {
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="Init", types="method")]
 /**
@@ -39,9 +38,8 @@ public class InitMethodDecorator implements ObjectDefinitionDecorator {
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		definition.initMethod = method;
-		return definition;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder.method(method).initMethod();
 	}
 	
 	

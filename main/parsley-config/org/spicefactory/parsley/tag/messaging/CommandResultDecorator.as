@@ -1,5 +1,6 @@
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.parsley.core.messaging.command.CommandStatus;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="CommandResult", types="method", multiple="true")]
 
@@ -9,13 +10,24 @@ import org.spicefactory.parsley.core.messaging.command.CommandStatus;
  * 
  * @author Jens Halm
  */
-public class CommandResultDecorator extends AbstractCommandObserverDecorator {
+public class CommandResultDecorator extends MessageReceiverDecoratorBase implements ObjectDefinitionDecorator {
 	
+	
+	[Target]
 	/**
-	 * @private
+	 * The name of the method that wishes to handle the message.
 	 */
-	function CommandResultDecorator () {
-		super(CommandStatus.COMPLETE);
+	public var method:String;
+	
+	
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder
+			.method(method)
+				.commandResult()
+					.scope(scope)
+					.type(type)
+					.selector(selector)
+					.order(order);
 	}
 	
 }

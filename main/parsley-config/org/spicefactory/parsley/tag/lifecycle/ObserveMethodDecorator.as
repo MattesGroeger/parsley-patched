@@ -15,12 +15,10 @@
  */
 
 package org.spicefactory.parsley.tag.lifecycle {
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.ScopeName;
-import org.spicefactory.parsley.processor.lifecycle.ObserveMethodProcessorFactory;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="Observe", types="method", multiple="true")]
 /**
@@ -57,9 +55,13 @@ public class ObserveMethodDecorator implements ObjectDefinitionDecorator {
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		definition.addProcessorFactory(new ObserveMethodProcessorFactory(definition, method, phase, objectId, registry.context, scope));
-		return definition;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder
+			.method(method)
+				.observe()
+					.phase(phase)
+					.scope(scope)
+					.objectId(objectId);
 	}
 	
 	

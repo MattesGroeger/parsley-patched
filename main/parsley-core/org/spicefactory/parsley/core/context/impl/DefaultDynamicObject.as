@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.context.impl {
-import org.spicefactory.parsley.instantiator.ObjectWrapperInstantiator;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.events.ContextEvent;

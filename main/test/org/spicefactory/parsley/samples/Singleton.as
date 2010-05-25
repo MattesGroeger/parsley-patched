@@ -1,10 +1,10 @@
 package org.spicefactory.parsley.samples {
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 /**
  * @author Jens Halm
@@ -18,43 +18,43 @@ public class Singleton implements ObjectDefinitionDecorator {
 	public var method:String;
 
 
-
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) 
+	public function decorate (builder:ObjectDefinitionBuilder) 
 			: ObjectDefinition {
 		if (property != null && method != null) {
 			throw new ContextError("Only one of 'method' or 'property' may be specified for " 
-					+ definition);
+					+ builder);
 		}
 		if (property != null) {
-			var p:Property = definition.type.getStaticProperty(property);
+			var p:Property = builder.typeInfo.getStaticProperty(property);
 			if (p == null) {
-				throw new ContextError("Class " + definition.type.name 
+				throw new ContextError("Class " + builder.typeInfo.name 
 						+ " does not contain a property with name " + property);
 			}
 			if (!p.readable) {
 				throw new ContextError(p.toString() + " is not readable");
 			}
-			definition.instantiator = new SingletonPropertyInstantiator(p);
+			builder.lifecycle().instantiator(new SingletonPropertyInstantiator(p));
 		}
 		else {
 			if (method == null) method = "getInstance";
-			var m:Method = definition.type.getStaticMethod(method);
+			var m:Method = builder.typeInfo.getStaticMethod(method);
 			if (m == null) {
-				throw new ContextError("Class " + definition.type.name 
+				throw new ContextError("Class " + builder.typeInfo.name 
 						+ " does not contain a method with name " + method);
 			}
 			if (m.parameters.length > 0) {
 				throw new ContextError(m.toString() + " requires method parameters");
 			}			
-			definition.instantiator = new SingletonMethodInstantiator(m);
+			builder.lifecycle().instantiator(new SingletonMethodInstantiator(m));
 		}
 	}
+	
+	
 }
 }
 
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 

@@ -1,14 +1,11 @@
 package org.spicefactory.parsley.flex.rpc {
 import flexunit.framework.TestCase;
 
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.messaging.TestEvent;
-import org.spicefactory.parsley.flex.FlexContextBuilder;
-import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
+import org.spicefactory.parsley.dsl.context.ContextBuilder;
 
 import mx.collections.ArrayCollection;
 import mx.rpc.events.ResultEvent;
@@ -31,10 +28,12 @@ public class AsyncTokenCommandTest extends TestCase {
 		
 		var executor:ServiceExecutor = new ServiceExecutor();
 		observer = new ServiceObserver();
-		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
-		FlexContextBuilder.merge(AsyncTokenTestConfig, builder);
-		RuntimeContextBuilder.merge([executor, observer], builder);
-		var context:Context = builder.build();
+		
+		var context:Context = ContextBuilder.newBuilder()
+				.flexConfig(AsyncTokenTestConfig)
+				.object(executor)
+				.object(observer)
+				.build();
 		
 		assertEquals("Unexpected number of objects in Context", 3, context.getObjectCount());
 		

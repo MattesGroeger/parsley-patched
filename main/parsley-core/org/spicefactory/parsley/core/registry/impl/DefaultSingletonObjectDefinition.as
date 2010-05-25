@@ -47,7 +47,7 @@ public class DefaultSingletonObjectDefinition extends AbstractObjectDefinition i
 	 */
 	function DefaultSingletonObjectDefinition (type:ClassInfo, id:String, registry:ObjectDefinitionRegistry,
 			lazy:Boolean = false, order:int = int.MAX_VALUE) {
-		super(type, id);
+		super(type, id, registry);
 		_lazy = lazy;
 		_order = order;
 		_singletonListeners = new SingletonLifecycleListenerRegistry(this, registry);

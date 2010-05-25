@@ -15,14 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.lifecycle {
-import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.ObjectInstantiator;
-import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
-import org.spicefactory.parsley.core.registry.impl.SingletonObjectDefinitionWrapper;
-import org.spicefactory.parsley.tag.util.ReflectionUtil;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="Factory", types="method")]
 /**
@@ -43,68 +37,9 @@ public class FactoryMethodDecorator implements ObjectDefinitionDecorator {
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		
-		// Specified definition is for the factory, must be registered as a root factory, 
-		// even if the original definition is for a nested object
-		var factoryDefinition:SingletonObjectDefinition = new SingletonObjectDefinitionWrapper(definition);
-		registry.registerDefinition(factoryDefinition);
-		
-		// Must create a new definition for the target type
-		var method:Method = ReflectionUtil.getMethod(this.method, definition);
-		var targetType:Class = method.returnType.getClass();
-		var instantiator:ObjectInstantiator 
-				= new FactoryMethodInstantiator(factoryDefinition, method);
-				
-		if (definition is SingletonObjectDefinition) {
-			var singletonDefinition:SingletonObjectDefinition = SingletonObjectDefinition(definition);
-			return registry.builders
-					.forSingletonDefinition(targetType)
-					.id(singletonDefinition.id)
-					.lazy(singletonDefinition.lazy)
-					.instantiator(instantiator)
-					.build();
-		}
-		else {
-			return registry.builders
-					.forDynamicDefinition(targetType)
-					.instantiator(instantiator)
-					.build();
-		}
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder.method(method).factory();
 	}
+	
 }
-}
-
-import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.lifecycle.ManagedObject;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectInstantiator;
-
-class FactoryMethodInstantiator implements ObjectInstantiator {
-
-	
-	private var definition:ObjectDefinition;
-	private var method:Method;
-
-
-	function FactoryMethodInstantiator (definition:ObjectDefinition, method:Method) {
-		this.definition = definition;
-		this.method = method;
-	}
-
-	
-	public function instantiate (target:ManagedObject) : Object {
-		var factory:Object = target.context.getObject(definition.id);
-		if (factory == null) {
-			throw new ContextError("Unable to obtain factory of type " + definition.type.name);
-		}
-		var instance:Object = method.invoke(factory, []);
-		if (instance == null) {
-			throw new ContextError("Factory " + method + " returned null");
-		}
-		return instance; 
-	}
-	
-	
 }

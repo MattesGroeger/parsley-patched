@@ -15,12 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.inject {
-import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.processor.core.MethodProcessor;
-import org.spicefactory.parsley.tag.util.ReflectionUtil;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="Inject", types="method")]
 /**
@@ -42,11 +38,8 @@ public class InjectMethodDecorator implements ObjectDefinitionDecorator {
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		var target:Method = ReflectionUtil.getMethod(method, definition);
-		var refs:Array = ReflectionUtil.getTypeReferencesForParameters(target);
-		definition.addProcessorFactory(MethodProcessor.newFactory(target, refs));
-		return definition;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder.method(method).injectAllByType();
 	}
 	
 	

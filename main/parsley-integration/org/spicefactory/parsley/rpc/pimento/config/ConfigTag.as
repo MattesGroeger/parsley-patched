@@ -15,10 +15,11 @@
  */
 
 package org.spicefactory.parsley.rpc.pimento.config {
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
+import org.spicefactory.parsley.config.Configuration;
+import org.spicefactory.parsley.config.RootConfigurationElement;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.rpc.cinnamon.command.CinnamonCommandSupport;
-import org.spicefactory.parsley.tag.RootConfigurationTag;
 import org.spicefactory.pimento.config.PimentoConfig;
 import org.spicefactory.pimento.service.EntityManager;
 
@@ -27,7 +28,7 @@ import org.spicefactory.pimento.service.EntityManager;
  * 
  * @author Jens Halm
  */
-public class ConfigTag implements RootConfigurationTag {
+public class ConfigTag implements RootConfigurationElement {
 
 	
 	/**
@@ -51,21 +52,17 @@ public class ConfigTag implements RootConfigurationTag {
 	/**
 	 * @inheritDoc
 	 */
-	public function process (registry:ObjectDefinitionRegistry) : void {
+	public function process (config:Configuration) : void {
 		CinnamonCommandSupport.initialize();
 		
-		var configDef:SingletonObjectDefinition = registry.builders
-				.forSingletonDefinition(PimentoConfig)
-				.id(id)
-				.buildAndRegister();
-		configDef.properties.addValue("serviceUrl", url);
-		if (timeout != 0) configDef.properties.addValue("defaultTimeout", timeout);
+		var builder:ObjectDefinitionBuilder = config.builders.forClass(PimentoConfig);
+		builder.property("serviceUrl").value(url);
+		if (timeout != 0) builder.property("defaultTimeout").value(timeout);
+		var def:ObjectDefinition = builder.asSingleton().id(id).register();
 		
-		registry.builders
-				.forSingletonDefinition(EntityManager)
-				.id(configDef.id + "_entityManager")
-				.instantiator(new EntityManagerInstantiator(configDef.id))
-				.buildAndRegister();
+		builder = config.builders.forClass(EntityManager);
+		builder.lifecycle().instantiator(new EntityManagerInstantiator(def.id));
+		builder.asSingleton().id(def.id + "_entityManager").register();
 	}
 }
 }

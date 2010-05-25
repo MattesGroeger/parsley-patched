@@ -18,7 +18,6 @@ package org.spicefactory.parsley.flex.tag.builder {
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.lib.logging.flex.FlexLogFactory;
 import org.spicefactory.lib.util.DelayedDelegateChain;
 import org.spicefactory.lib.util.Delegate;
 import org.spicefactory.lib.util.DelegateChain;
@@ -33,12 +32,11 @@ import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
-import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
+import org.spicefactory.parsley.flex.FlexSupport;
 import org.spicefactory.parsley.flex.processor.FlexConfigurationProcessor;
 import org.spicefactory.parsley.flex.resources.FlexResourceBindingAdapter;
 import org.spicefactory.parsley.flex.tag.ConfigurationTagBase;
-import org.spicefactory.parsley.rpc.flex.command.AsyncTokenCommandSupport;
-import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
+import org.spicefactory.parsley.processor.resources.ResourceBindingProcessor;
 
 import flash.display.DisplayObject;
 import flash.events.ErrorEvent;
@@ -88,7 +86,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	private static var prefilterCachePurger:DelegateChain;
 
 
-	ResourceBindingDecorator.adapterClass = FlexResourceBindingAdapter;
+	ResourceBindingProcessor.adapterClass = FlexResourceBindingAdapter;
 	
 
 	/**
@@ -155,7 +153,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	 * @private
 	 */
 	public override function initialized (document:Object, id:String) : void {
-		FlexModuleSupport.initialize();
+		FlexSupport.initialize();
 		if (document is DisplayObject) {
 			cachedAutowirePrefilterTargets.push(document);
 		}
@@ -282,8 +280,6 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	
 	private function createContext () : void {
 		try {
-			if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
-			AsyncTokenCommandSupport.initialize();
 			
 			var factory:ContextBuilderFactory = GlobalFactoryRegistry.instance.contextBuilder;
 			var builder:CompositeContextBuilder = factory.create(viewRoot, parent, domain, description);

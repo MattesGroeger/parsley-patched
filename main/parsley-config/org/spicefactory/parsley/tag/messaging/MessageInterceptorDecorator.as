@@ -15,12 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
-import org.spicefactory.parsley.processor.messaging.MessageReceiverProcessorFactory;
-import org.spicefactory.parsley.processor.messaging.receiver.DefaultMessageInterceptor;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="MessageInterceptor", types="method", multiple="true")]
 /**
@@ -41,10 +37,14 @@ public class MessageInterceptorDecorator extends MessageReceiverDecoratorBase im
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		var factory:MessageReceiverFactory = DefaultMessageInterceptor.newFactory(method, type, selector, order);
-		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
-		return definition;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder
+			.method(method)
+				.messageInterceptor()
+					.scope(scope)
+					.type(type)
+					.selector(selector)
+					.order(order);
 	}
 	
 	

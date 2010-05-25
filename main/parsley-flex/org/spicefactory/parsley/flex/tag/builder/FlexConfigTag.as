@@ -19,7 +19,7 @@ import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.flex.processor.FlexConfigurationProcessor;
 
 /**
- * MXML tag for adding a MXML configuration class to a CompositeContext.
+ * MXML tag for adding a MXML configuration class to a ContextBuilder.
  * 
  * <p>Example:</p>
  * 

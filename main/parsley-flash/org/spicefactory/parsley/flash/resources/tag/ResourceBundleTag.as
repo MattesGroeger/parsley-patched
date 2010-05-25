@@ -19,13 +19,14 @@ import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.task.SequentialTaskGroup;
 import org.spicefactory.lib.task.TaskGroup;
 import org.spicefactory.lib.task.events.TaskEvent;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.config.Configuration;
+import org.spicefactory.parsley.config.RootConfigurationElement;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.flash.resources.impl.DefaultBundleLoaderFactory;
 import org.spicefactory.parsley.flash.resources.impl.DefaultResourceBundle;
 import org.spicefactory.parsley.flash.resources.spi.BundleLoaderFactory;
 import org.spicefactory.parsley.flash.resources.spi.ResourceBundleSpi;
 import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
-import org.spicefactory.parsley.tag.RootConfigurationTag;
 
 import flash.events.ErrorEvent;
 import flash.events.Event;
@@ -38,7 +39,7 @@ import flash.utils.getQualifiedClassName;
  * @author Jens Halm
  */
 [AsyncInit]
-public class ResourceBundleTag extends EventDispatcher implements RootConfigurationTag {
+public class ResourceBundleTag extends EventDispatcher implements RootConfigurationElement {
 	
 	
 	[Required]
@@ -125,14 +126,13 @@ public class ResourceBundleTag extends EventDispatcher implements RootConfigurat
 		dispatchEvent(event.clone());
 	}
 	
-	public function process (registry:ObjectDefinitionRegistry) : void {
-		registry.builders
-				.forSingletonDefinition(ResourceBundleTag)
-				.id(id)
-				.order(int.MIN_VALUE)
-				.instantiator(new TagInstantiator(this))
-				.buildAndRegister();
+	public function process (config:Configuration) : void {
+		var builder:ObjectDefinitionBuilder = config.builders.forClass(ResourceBundleTag);
+		builder.lifecycle().instantiator(new TagInstantiator(this));
+		builder.asSingleton().id(id).order(int.MIN_VALUE).register();
 	}
+	
+	
 }
 }
 

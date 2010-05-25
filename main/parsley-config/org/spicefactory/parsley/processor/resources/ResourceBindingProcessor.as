@@ -16,12 +16,15 @@
 
 package org.spicefactory.parsley.processor.resources {
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.registry.ObjectProcessor;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 import org.spicefactory.parsley.processor.util.ObjectProcessorFactories;
 import org.spicefactory.parsley.tag.resources.ResourceBindingAdapter;
 import org.spicefactory.parsley.tag.resources.ResourceBindingEvent;
+
+import flash.utils.getQualifiedClassName;
 
 /**
  * Processes a resource binding for a single target property.
@@ -33,10 +36,33 @@ import org.spicefactory.parsley.tag.resources.ResourceBindingEvent;
 public class ResourceBindingProcessor implements ObjectProcessor {
 
 
+	/**
+	 * The type of the adapter to use. 
+	 * The processor need to adapt to either the Flex ResourceManager or the Parsley Flash ResourceManager.
+	 */
+	public static var adapterClass:Class;
+
+	private static var adapter:ResourceBindingAdapter;
+	
+
+	private static function initializeAdapter () : void {
+		if (adapter == null) {
+			if (adapterClass == null) {
+				throw new ObjectDefinitionBuilderError("adapterClass property for ResourceBindingDecorator has not been set");
+			}
+			var adapterImpl:Object = new adapterClass();
+			if (!(adapterImpl is ResourceBindingAdapter)) {
+				throw new ObjectDefinitionBuilderError("Specified adapterClass " + getQualifiedClassName(adapterClass) 
+					+ " does not implement the ResourceBindingAdapter interface");
+			}
+			adapter = adapterImpl as ResourceBindingAdapter;
+		}
+	}
+	
+	
 	private var target:ManagedObject;
 	private var property:Property;
 
-	private var adapter:ResourceBindingAdapter;
 	private var key:String;
 	private var bundle:String;
 
@@ -46,17 +72,15 @@ public class ResourceBindingProcessor implements ObjectProcessor {
 	 * 
 	 * @param target the target instance to inject the resource into
 	 * @param property the target property to inject the resource into
-	 * @param adapter the adpater to use to listen for updates
 	 * @param key the key for the resource
 	 * @param bundle the bundle name 
 	 */
-	function ResourceBindingProcessor (target:ManagedObject, property:Property, adapter:ResourceBindingAdapter, 
-			key:String, bundle:String) {
+	function ResourceBindingProcessor (target:ManagedObject, property:Property, key:String, bundle:String) {
 		this.target = target;
 		this.property = property;
-		this.adapter = adapter;
 		this.key = key;
 		this.bundle = bundle;		
+		initializeAdapter();
 	}
 
 	/**
@@ -88,14 +112,12 @@ public class ResourceBindingProcessor implements ObjectProcessor {
 	 * Creates a new processor factory.
 	 * 
 	 * @param property the target property to inject the resource into
-	 * @param adapter the adpater to use to listen for updates
 	 * @param key the key for the resource
 	 * @param bundle the bundle name
 	 * @return a new processor factory 
 	 */
-	public static function newFactory (property:Property, adapter:ResourceBindingAdapter, 
-			key:String, bundle:String) : ObjectProcessorFactory {
-		return ObjectProcessorFactories.newFactory(ResourceBindingProcessor, [property, adapter, key, bundle]);
+	public static function newFactory (property:Property, key:String, bundle:String) : ObjectProcessorFactory {
+		return ObjectProcessorFactories.newFactory(ResourceBindingProcessor, [property, key, bundle]);
 	}
 	
 	

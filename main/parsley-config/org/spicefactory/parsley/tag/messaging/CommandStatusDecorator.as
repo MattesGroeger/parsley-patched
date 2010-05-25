@@ -15,17 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.core.messaging.command.CommandManager;
-import org.spicefactory.parsley.core.messaging.command.CommandStatus;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.processor.core.PropertyProcessor;
-import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
-import org.spicefactory.parsley.processor.messaging.MessageReceiverProcessorFactory;
-import org.spicefactory.parsley.processor.messaging.receiver.CommandStatusFlag;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="CommandStatus", types="property", multiple="false")]
 /**
@@ -47,53 +38,14 @@ public class CommandStatusDecorator extends MessageReceiverDecoratorBase impleme
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, registry.domain) : ClassInfo.forClass(Object);
-		var manager:CommandManager = registry.context.scopeManager.getScope(scope).commandManager;
-
-		var factory:MessageReceiverFactory;
-		
-		factory = CommandStatusFlag.newFactory(property, manager, CommandStatus.EXECUTE, messageType, selector, order);
-		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
-		
-		factory = CommandStatusFlag.newFactory(property, manager, CommandStatus.COMPLETE, messageType, selector, order);
-		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
-		
-		factory = CommandStatusFlag.newFactory(property, manager, CommandStatus.ERROR, messageType, selector, order);
-		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
-		
-		factory = CommandStatusFlag.newFactory(property, manager, CommandStatus.CANCEL, messageType, selector, order);
-		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
-
-		var targetProperty:Property = definition.type.getProperty(property);
-		definition.addProcessorFactory(PropertyProcessor.newFactory(targetProperty, 
-														new CommandStatusValue(manager, messageType.getClass(), selector)));
-
-		return definition;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder
+			.property(property)
+				.commandStatus()
+					.type(type)
+					.selector(selector)
+					.scope(scope)
+					.order(order);
 	}
-	
-	
 }
-}
-
-import org.spicefactory.parsley.core.lifecycle.ManagedObject;
-import org.spicefactory.parsley.core.messaging.command.CommandManager;
-import org.spicefactory.parsley.core.registry.ResolvableValue;
-
-class CommandStatusValue implements ResolvableValue {
-
-	private var manager:CommandManager;
-	private var messageType:Class;
-	private var selector:*;
-
-	function CommandStatusValue (manager:CommandManager, messageType:Class, selector:*) {
-		this.manager = manager;
-		this.messageType = messageType;
-		this.selector = selector;
-	}
-
-	public function resolve (target:ManagedObject) : * {
-		return manager.hasActiveCommands(messageType, selector);
-	}
-	
 }

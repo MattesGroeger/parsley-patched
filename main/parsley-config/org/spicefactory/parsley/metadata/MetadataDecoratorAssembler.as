@@ -15,46 +15,21 @@
  */
 
 package org.spicefactory.parsley.metadata {
-import org.spicefactory.parsley.asconfig.metadata.DynamicObjectDefinitionMetadata;
-import org.spicefactory.parsley.core.view.metadata.RemovedEvent;
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.reflect.Converters;
-import org.spicefactory.lib.reflect.Member;
-import org.spicefactory.lib.reflect.Metadata;
-import org.spicefactory.lib.reflect.MetadataAware;
-import org.spicefactory.lib.reflect.Method;
-import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.lib.reflect.*;
 import org.spicefactory.lib.reflect.converter.EnumerationConverter;
-import org.spicefactory.parsley.asconfig.metadata.InternalProperty;
-import org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata;
+import org.spicefactory.parsley.asconfig.metadata.*;
+import org.spicefactory.parsley.config.DecoratorAssembler;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.messaging.impl.Selector;
-import org.spicefactory.parsley.core.registry.DecoratorAssembler;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.tag.inject.InjectConstructorDecorator;
-import org.spicefactory.parsley.tag.inject.InjectMethodDecorator;
-import org.spicefactory.parsley.tag.inject.InjectPropertyDecorator;
-import org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator;
-import org.spicefactory.parsley.tag.lifecycle.DestroyMethodDecorator;
-import org.spicefactory.parsley.tag.lifecycle.FactoryMethodDecorator;
-import org.spicefactory.parsley.tag.lifecycle.InitMethodDecorator;
-import org.spicefactory.parsley.tag.lifecycle.ObserveMethodDecorator;
-import org.spicefactory.parsley.tag.lifecycle.legacy.PostConstructMethodDecorator;
-import org.spicefactory.parsley.tag.lifecycle.legacy.PreDestroyMethodDecorator;
-import org.spicefactory.parsley.tag.messaging.CommandDecorator;
-import org.spicefactory.parsley.tag.messaging.CommandErrorDecorator;
-import org.spicefactory.parsley.tag.messaging.CommandResultDecorator;
-import org.spicefactory.parsley.tag.messaging.CommandStatusDecorator;
-import org.spicefactory.parsley.tag.messaging.ManagedEventsDecorator;
-import org.spicefactory.parsley.tag.messaging.MessageBindingDecorator;
-import org.spicefactory.parsley.tag.messaging.MessageDispatcherDecorator;
-import org.spicefactory.parsley.tag.messaging.MessageErrorDecorator;
-import org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator;
-import org.spicefactory.parsley.tag.messaging.MessageInterceptorDecorator;
+import org.spicefactory.parsley.core.view.metadata.RemovedEvent;
+import org.spicefactory.parsley.tag.core.ObjectDecoratorMarker;
+import org.spicefactory.parsley.tag.inject.*;
+import org.spicefactory.parsley.tag.lifecycle.*;
+import org.spicefactory.parsley.tag.lifecycle.legacy.*;
+import org.spicefactory.parsley.tag.messaging.*;
 import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
 
-import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
@@ -117,10 +92,8 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 	 * Initializes the metadata tag registrations for all builtin metadata tags.
 	 * Will usually be called by the framework
 	 * and does not need to be called by an application.
-	 * 
-	 * @param domain the ApplicationDomain to use for reflection
 	 */
-	public static function initialize (domain:ApplicationDomain) : void {
+	public static function initialize () : void {
 		if (initialized) return;
 		initialized = true;
 		
@@ -128,16 +101,14 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 			Metadata.registerMetadataClass(metadataClass);
 		}
 		
-		Converters.addConverter(ObjectLifecycle, new EnumerationConverter(ClassInfo.forClass(ObjectLifecycle, domain)));
+		Converters.addConverter(ObjectLifecycle, new EnumerationConverter(ClassInfo.forClass(ObjectLifecycle)));
 	}
 	
 	/**
 	 * Creates a new instance.
-	 * 
-	 * @param domain the ApplicationDomain to use for reflection
 	 */
-	function MetadataDecoratorAssembler (domain:ApplicationDomain) {
-		initialize(domain);
+	function MetadataDecoratorAssembler () {
+		initialize();
 	}
 
 
@@ -158,7 +129,7 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 
 	private static function extractMetadataDecorators (type:MetadataAware, decorators:Array) : void {
 		for each (var metadata:Object in type.getAllMetadata()) {
-			if (metadata is ObjectDefinitionDecorator) {
+			if (metadata is ObjectDecoratorMarker) {
 				if (type is Member) {
 					setTargetProperty(type as Member, metadata);
 				}
@@ -198,7 +169,5 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 			throw new ContextError(Error(target).message);
 		}					
 	}
-	
-	
 }
 }

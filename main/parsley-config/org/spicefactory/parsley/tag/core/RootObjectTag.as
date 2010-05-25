@@ -17,8 +17,8 @@
 package org.spicefactory.parsley.tag.core {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.RootConfigurationTag;
+import org.spicefactory.parsley.config.Configuration;
+import org.spicefactory.parsley.config.RootConfigurationElement;
 
 [DefaultProperty("decorators")]
 
@@ -27,7 +27,7 @@ import org.spicefactory.parsley.tag.RootConfigurationTag;
  * 
  * @author Jens Halm
  */
-public class RootObjectTag implements RootConfigurationTag {
+public class RootObjectTag implements RootConfigurationElement {
 	
 	
 	private static const log:Logger = LogContext.getLogger(RootObjectTag);
@@ -56,30 +56,35 @@ public class RootObjectTag implements RootConfigurationTag {
 	 */
 	public var order:int = int.MAX_VALUE;
 
-	[ArrayElementType("org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator")]
+	[ArrayElementType("org.spicefactory.parsley.tag.core.ObjectDecoratorMarker")]
 	/**
 	 * The ObjectDefinitionDecorator instances added to this definition.
 	 */
 	public var decorators:Array = new Array();
 	
 	
-	public function process (registry:ObjectDefinitionRegistry) : void {
+	/**
+	 * @inheritDoc
+	 */
+	public function process (config:Configuration) : void {
 		if (singleton) {
-			registry.builders
-					.forSingletonDefinition(type)
-					.id(id)
-					.lazy(lazy)
-					.order(order)
-					.decorators(decorators)
-					.buildAndRegister();
+			config.builders
+				.forClass(type)
+					.asSingleton()
+						.id(id)
+						.lazy(lazy)
+						.order(order)
+						.decorators(decorators)
+						.register();
 		}
 		else {
 			log.warn("The use of the singleton attribute is deprecated. Use <DynamicObject> instead");
-			registry.builders
-					.forDynamicDefinition(type)
-					.id(id)
-					.decorators(decorators)
-					.buildAndRegister();
+			config.builders
+				.forClass(type)
+					.asDynamicObject()
+						.id(id)
+						.decorators(decorators)
+						.register();
 		}
 	}
 	

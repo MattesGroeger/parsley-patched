@@ -48,12 +48,6 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	function get domain () : ApplicationDomain;
 
 	/**
-	 * Assemblers used to gather additonal ObjectDefinitionDecorators for definitions managed by this instance.
-	 * The Array is read-only and contains instances of <code>DecoratorAssembler</code>.
-	 */
-	function get decoratorAssemblers () : Array;
-	
-	/**
 	 * Returns the number of definitions in this registry that match the specified type.
 	 * If the type parameter is omitted the number of all definitions in this registry will be returned.
 	 * 
@@ -124,11 +118,6 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	
 	
 	/**
-	 * A factory for creating builders for ObjectDefinitions.
-	 */
-	function get builders () : ObjectDefinitionBuilderFactory;
-	
-	/**
 	 * Freezes this registry. After calling this method any attempt to modify this registry or any
 	 * of the definitions it contains will lead to an Error.
 	 */
@@ -140,9 +129,6 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 */	
 	function get frozen () : Boolean;
 	
-	[Deprecated(replacement="context.scopeManager")]
-	function get scopeManager () : ScopeManager;
-	
 	/**
 	 * The Context associated with this registry.
 	 * During processing of ObjectDefinitions the <code>configured</code> property of the Context
@@ -152,8 +138,19 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 */
 	function get context () : Context;
 	
-	[Deprecated(replacement="Provider.forReference")]
+	
+
+	[Deprecated(replacement="Configuration.builders")]
+	function get builders () : ObjectDefinitionBuilderFactory;
+	
+	[Deprecated(replacement="context.scopeManager")]
+	function get scopeManager () : ScopeManager;
+	
+	[Deprecated(replacement="Provider.forDefinition")]
  	function createObjectProvider (type:Class, id:String = null) : ObjectProvider;
+ 	
+ 	[Deprecated(replacement="ConfigurationFactory.addDecoratorAssembler")]
+	function get decoratorAssemblers () : Array;
 	
 	
 }

@@ -15,10 +15,9 @@
  */
 
 package org.spicefactory.parsley.tag.core {
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.instantiator.ConstructorInstantiator;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.tag.util.ConfigurationValueResolver;
 
 /**
@@ -35,10 +34,9 @@ public class ConstructorTag extends ArrayTag implements ObjectDefinitionDecorato
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		valueResolver.resolveValues(values, registry);
-		definition.instantiator = new ConstructorInstantiator(values);
-		return definition;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		valueResolver.resolveValues(values, builder.config);
+		builder.lifecycle().instantiator(new ConstructorInstantiator(values));
 	}
 	
 	

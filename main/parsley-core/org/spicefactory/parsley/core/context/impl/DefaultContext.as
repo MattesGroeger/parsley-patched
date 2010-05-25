@@ -15,12 +15,13 @@
  */
 
 package org.spicefactory.parsley.core.context.impl {
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.collection.SimpleMap;
+import org.spicefactory.parsley.config.Configurations;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.context.DynamicObject;
@@ -295,8 +296,12 @@ public class DefaultContext extends EventDispatcher implements Context {
 	public function addDynamicObject (instance:Object, definition:DynamicObjectDefinition = null) : DynamicObject {
 		checkState(false);
 		if (definition == null) {
-			var ci:ClassInfo = ClassInfo.forInstance(instance, registry.domain);
-			definition = registry.builders.forDynamicDefinition(ci.getClass()).build();
+			// TODO - IOC Kernel should not depend on config DSL
+			definition = Configurations.forRegistry(registry)
+				.builders	
+					.forClass(ClassInfo.forInstance(instance, registry.domain).getClass())
+						.asDynamicObject()
+							.build();
 		}
 		return new DefaultDynamicObject(this, definition, instance);
 	}

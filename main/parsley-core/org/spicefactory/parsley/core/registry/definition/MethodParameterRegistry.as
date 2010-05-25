@@ -18,7 +18,7 @@ package org.spicefactory.parsley.core.registry.definition {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 
-[Deprecated]
+[Deprecated(replacement="new configuration DSL")]
 /**
  * @author Jens Halm
  */

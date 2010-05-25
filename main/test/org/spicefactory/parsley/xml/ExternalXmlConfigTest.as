@@ -1,4 +1,5 @@
 package org.spicefactory.parsley.xml {
+import org.spicefactory.parsley.dsl.context.ContextBuilder;
 import org.spicefactory.parsley.core.ContextTestBase;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
@@ -12,7 +13,8 @@ public class ExternalXmlConfigTest extends ContextTestBase {
 	
 	
 	public function testExternalConfig () : void {
-		var context:Context = XmlContextBuilder.build("test.xml");
+		//var context:Context = XmlContextBuilder.build("test.xml");
+		var context:Context = ContextBuilder.newBuilder().xmlConfig("test.xml").build();
 		checkState(context, false, false);
 		var func:Function = addAsync(onContextComplete, 5000);
 		context.addEventListener(ContextEvent.INITIALIZED, func);

@@ -240,7 +240,7 @@ class DefaultDefinitionRegistryFactory implements ObjectDefinitionRegistryFactor
 		return new DefaultObjectDefinitionRegistry(domain, 
 				context, 
 				providerFactory, 
-				[new MetadataDecoratorAssembler(domain)]);
+				[new MetadataDecoratorAssembler()]);
 	}
 	
 }

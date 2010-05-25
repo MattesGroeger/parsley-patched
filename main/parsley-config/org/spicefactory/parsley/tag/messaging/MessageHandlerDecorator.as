@@ -15,14 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
-import org.spicefactory.parsley.processor.messaging.MessageReceiverProcessorFactory;
-import org.spicefactory.parsley.processor.messaging.receiver.MessageHandler;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="MessageHandler", types="method", multiple="true")]
 /**
@@ -50,14 +44,15 @@ public class MessageHandlerDecorator extends MessageReceiverDecoratorBase implem
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		if (messageProperties != null && type == null) {
-			throw new ContextError("Message type must be specified if messageProperties attribute is used");
-		}
-		var messageType:ClassInfo = (type != null) ? ClassInfo.forClass(type, registry.domain) : null;
-		var factory:MessageReceiverFactory = MessageHandler.newFactory(method, selector, messageType, messageProperties, order);
-		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
-		return definition;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder
+			.method(method)
+				.messageHandler()
+					.scope(scope)
+					.type(type)
+					.selector(selector)
+					.messageProperties(messageProperties)
+					.order(order);
 	}
 	
 	

@@ -20,10 +20,11 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.NamingStrategy;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.config.RootConfigurationElement;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionFactory;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
+import org.spicefactory.parsley.tag.core.ObjectDecoratorMarker;
 import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 
 import flash.system.ApplicationDomain;
@@ -241,9 +242,10 @@ public class XmlConfigurationNamespace {
 		if (factories[tagName] != null) {
 			throw new IllegalArgumentError("Duplicate registration for object tag name " + tagName + " in namespace " + uri);
 		}
-		if (mustBeFactory && !type.isType(ObjectDefinitionFactory) && !type.isType(RootConfigurationTag)) {
+		if (mustBeFactory && !type.isType(ObjectDefinitionFactory) 
+				&& !type.isType(RootConfigurationTag) && !type.isType(RootConfigurationElement)) {
 			throw new IllegalArgumentError("The specified factory class " + type.name 
-					+ " does not implement the ConfigurationProcessor interface");
+					+ " does not implement the RootConfigurationElement interface");
 		}
 	}
 	
@@ -251,8 +253,8 @@ public class XmlConfigurationNamespace {
 		if (decorators[tagName] != null) {
 			throw new IllegalArgumentError("Duplicate registration for decorator tag name " + tagName + " in namespace " + uri);
 		}
-		if (!type.isType(ObjectDefinitionDecorator)) {
-			throw new IllegalArgumentError("The specified factory class " + type.name 
+		if (!type.isType(ObjectDecoratorMarker)) {
+			throw new IllegalArgumentError("The specified decorator class " + type.name 
 					+ " does not implement the ObjectDefinitionDecorator interface");
 		}
 	}
@@ -263,7 +265,6 @@ public class XmlConfigurationNamespace {
 					+ " of mapper " + mapper + " does not match this configuration namespace: " + _uri);
 		}		
 	}
-	
-	
 }
 }
+

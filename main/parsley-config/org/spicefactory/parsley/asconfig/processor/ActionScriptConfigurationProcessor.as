@@ -15,19 +15,23 @@
  */
 
 package org.spicefactory.parsley.asconfig.processor {
-import org.spicefactory.parsley.asconfig.metadata.DynamicObjectDefinitionMetadata;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
+import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.util.ClassUtil;
+import org.spicefactory.parsley.asconfig.metadata.DynamicObjectDefinitionMetadata;
 import org.spicefactory.parsley.asconfig.metadata.InternalProperty;
 import org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata;
+import org.spicefactory.parsley.config.Configurations;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.config.RootConfigurationElement;
 import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
 import org.spicefactory.parsley.core.errors.ConfigurationProcessorError;
 import org.spicefactory.parsley.core.errors.ConfigurationUnitError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
@@ -62,11 +66,12 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 	 * @inheritDoc
 	 */
 	public function processConfiguration (registry:ObjectDefinitionRegistry) : void {
+		var config:Configuration = Configurations.forRegistry(registry);
 		var errors:Array = new Array();
 		for each (var configClass:Class in configClasses) {
 			try {
 				
-				processClass(configClass, registry);
+				processClass(configClass, config);
 				
 			}
 			catch (e:Error) {
@@ -79,8 +84,8 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 		}
 	}
 	
-	private function processClass (configClass:Class, registry:ObjectDefinitionRegistry) : void {
-		var ci:ClassInfo = ClassInfo.forClass(configClass, registry.domain);
+	private function processClass (configClass:Class, config:Configuration) : void {
+		var ci:ClassInfo = ClassInfo.forClass(configClass, config.domain);
 		var configInstance:Object = new configClass();
 
 		var errors:Array = new Array();
@@ -88,7 +93,7 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 			try {
 				if (isValidRootConfig(property)) {
 							
-					processProperty(property, configInstance, registry);
+					processProperty(property, configInstance, config);
 					
 				} 
 			}
@@ -101,16 +106,19 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 		}
 	}
 	
-	private function processProperty (property:Property, configClass:Object, registry:ObjectDefinitionRegistry) : void {
+	private function processProperty (property:Property, configClass:Object, config:Configuration) : void {
 		try {
 			if (property.type.isType(ObjectDefinitionFactory)) {
-				handleLegacyFactory(property.getValue(configClass), registry);
+				handleLegacyFactory(property.getValue(configClass), config.registry);
 			}
 			else if (property.type.isType(RootConfigurationTag)) {
-				RootConfigurationTag(property.getValue(configClass)).process(registry);
+				RootConfigurationTag(property.getValue(configClass)).process(config.registry);
+			}
+			else if (property.type.isType(RootConfigurationElement)) {
+				RootConfigurationElement(property.getValue(configClass)).process(config);
 			}
 			else {
-				createDefinition(property, configClass, registry);
+				createDefinition(property, configClass, config);
 			}
 		}
 		catch (e:Error) {
@@ -119,25 +127,36 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 		}
 	}
 	
-	private function createDefinition (property:Property, configClass:Object, registry:ObjectDefinitionRegistry) : void {
+	private function createDefinition (property:Property, configClass:Object, config:Configuration) : void {
 		var metadata:Object = getMetadata(property);
 		var id:String = (metadata.id != null) ? metadata.id : property.name;
 		if (metadata is ObjectDefinitionMetadata && ObjectDefinitionMetadata(metadata).singleton) {
 			var singleton:ObjectDefinitionMetadata = ObjectDefinitionMetadata(metadata);
-			registry.builders
-					.forSingletonDefinition(property.type.getClass())
+			
+			var builder:ObjectDefinitionBuilder = config.builders.forClass(property.type.getClass());
+			
+			builder
+				.lifecycle()
+					.instantiator(new ConfigClassPropertyInstantiator(configClass, property));
+			
+			builder
+				.asSingleton()
 					.id(id)
 					.lazy(singleton.lazy)
 					.order(singleton.order)
-					.instantiator(new ConfingClassPropertyInstantiator(configClass, property))
-					.buildAndRegister();
+					.register();
 		}
 		else {
-			registry.builders
-					.forDynamicDefinition(property.type.getClass())
+			var dynBuilder:ObjectDefinitionBuilder = config.builders.forClass(property.type.getClass());
+			
+			dynBuilder
+				.lifecycle()
+					.instantiator(new ConfigClassPropertyInstantiator(configClass, property));
+			
+			dynBuilder
+				.asDynamicObject()
 					.id(id)
-					.instantiator(new ConfingClassPropertyInstantiator(configClass, property))
-					.buildAndRegister();
+					.register();
 		}
 	}
 	
@@ -183,12 +202,12 @@ import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.registry.ContainerObjectInstantiator;
 
-class ConfingClassPropertyInstantiator implements ContainerObjectInstantiator {
+class ConfigClassPropertyInstantiator implements ContainerObjectInstantiator {
 
 	private var configClass:Object;
 	private var property:Property;
 
-	function ConfingClassPropertyInstantiator (configClass:Object, property:Property) {
+	function ConfigClassPropertyInstantiator (configClass:Object, property:Property) {
 		this.configClass = configClass;
 		this.property = property;
 	}

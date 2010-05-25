@@ -46,6 +46,7 @@
 	<component id="FlexConfig" class="org.spicefactory.parsley.flex.tag.builder.FlexConfigTag"/>
 	<component id="XmlConfig" class="org.spicefactory.parsley.flex.tag.builder.XmlConfigTag"/>
 	<component id="RuntimeConfig" class="org.spicefactory.parsley.flex.tag.builder.RuntimeConfigTag"/>
+	<component id="CustomConfig" class="org.spicefactory.parsley.flex.tag.builder.CustomConfigTag"/>
 	<component id="Instance" class="org.spicefactory.parsley.flex.tag.builder.InstanceTag"/>
 	<component id="Scope" class="org.spicefactory.parsley.flex.tag.builder.ScopeTag"/>
 	<component id="Settings" class="org.spicefactory.parsley.flex.tag.builder.SettingsTag"/>

@@ -18,24 +18,14 @@ package org.spicefactory.parsley.core.errors {
 import org.spicefactory.lib.errors.NestedError;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 
+[Deprecated]
 /**
- * Error thrown while processing an <code>ObjectDefinitionDecorator</code>.
- * 
  * @author Jens Halm
  */
 public class ObjectDefinitionDecoratorError extends NestedError {
 
-
 	private var _decorator:ObjectDefinitionDecorator;
 
-
-	/**
-	 * Create a new instance.
-	 * 
-	 * @param definition the definition being processed
-	 * @param causes the causes of this Error
-	 * @param message the error message
-	 */
 	public function ObjectDefinitionDecoratorError (decorator:ObjectDefinitionDecorator, cause:Error = null, message:String = "") {
 		super(getMessage(decorator, message), cause);
 		_decorator = decorator;
@@ -49,13 +39,9 @@ public class ObjectDefinitionDecoratorError extends NestedError {
 		return msg;
 	}
 	
-	/**
-	 * The decorator that has been processed while the Error was thrown.
-	 */
 	public function get decorator () : ObjectDefinitionDecorator {
 		return _decorator;
 	}
-	
 	
 }
 }

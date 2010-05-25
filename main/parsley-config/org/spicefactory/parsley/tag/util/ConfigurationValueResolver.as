@@ -15,9 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.util {
-import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
+import org.spicefactory.parsley.config.Configuration;
+import org.spicefactory.parsley.config.NestedConfigurationElement;
 
 /**
  * Responsible for resolving some special tags that can be used in MXML or XML configuration
@@ -33,16 +32,15 @@ public class ConfigurationValueResolver {
 	 * and returns representations that can be used in object definitions.
 	 * 
 	 * @param value the value (tag) to resolve
-	 * @param registry the associated registry
+	 * @param config the associated configuration
 	 * @return the resolved configuration value
 	 */
-	public function resolveValue (value:*, registry:ObjectDefinitionRegistry) : * {
-		if (value is ObjectDefinitionFactory) {
-			/* TODO - deprecated - remove in later versions */
-			return ObjectDefinitionFactory(value).createNestedDefinition(registry);
+	public function resolveValue (value:*, config:Configuration) : Object {
+		if (value is NestedConfigurationElement) {
+			return NestedConfigurationElement(value).resolve(config);
 		}
-		else if (value is ResolvableConfigurationValue) {
-			return ResolvableConfigurationValue(value).resolve(registry);
+		else if (LegacyConfigurationValueResolver.isLegacyValue(value)) {
+			return LegacyConfigurationValueResolver.resolveValue(value, config.registry);
 		}
 		else {
 			return value;
@@ -55,11 +53,11 @@ public class ConfigurationValueResolver {
 	 * and replaces them with representations that can be used in object definitions.
 	 * 
 	 * @param values the Array to resolve
-	 * @param registry the associated registry
+	 * @param config the associated configuration
 	 */	
-	public function resolveValues (values:Array, registry:ObjectDefinitionRegistry) : void {
+	public function resolveValues (values:Array, config:Configuration) : void {
 		for (var i:int = 0; i < values.length; i++) {
-			values[i] = resolveValue(values[i], registry);
+			values[i] = resolveValue(values[i], config);
 		}
 	}	
 

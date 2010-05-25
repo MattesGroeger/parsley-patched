@@ -20,6 +20,7 @@ import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.ContainerObjectInstantiator;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 import org.spicefactory.parsley.core.registry.definition.ConstructorArgRegistry;
@@ -42,6 +43,8 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	private var _type:ClassInfo;
 	private var _id:String;
 	
+	private var _registry:ObjectDefinitionRegistry;
+	
 	private var _instantiator:ObjectInstantiator;
     private var _processorFactories:Array = new Array();	
 	
@@ -63,10 +66,14 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	 * 
 	 * @param type the type to create a definition for
 	 * @param id the id the object should be registered with
+	 * @param registry the registry this definition belongs to
 	 */
-	function AbstractObjectDefinition (type:ClassInfo, id:String) {
+	function AbstractObjectDefinition (type:ClassInfo, id:String, registry:ObjectDefinitionRegistry) {
 		_type = type;
 		_id = id;
+		_registry = registry;
+		
+		/* deprecated */
 		_constructorArgs = new DefaultConstructorArgRegistry(this);
 		_properties = new DefaultPropertyRegistry(this);
 		_methods = new DefaultMethodRegistry(this);
@@ -86,6 +93,13 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	 */
 	public function get id () : String {
 		return _id;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get registry () : ObjectDefinitionRegistry {
+		return _registry;
 	}
 	
 	/**
@@ -143,7 +157,7 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	public function set instantiator (value:ObjectInstantiator) : void {
 		checkState();
 		if (_instantiator != null && (_instantiator is ContainerObjectInstantiator)) {
-			throw IllegalStateError("Instantiator has been set by the container and cannot be overwritten");
+			throw new IllegalStateError("Instantiator has been set by the container and cannot be overwritten");
 		}
 		_instantiator = value;
 	}
@@ -207,11 +221,29 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 		return _frozen;
 	}
 	
+	/**
+	 * Populates this definition with all configuration artifacts from the specified source.
+	 *
+	 * @param source the definition to copy all configuration artifacts from
+	 */
+	public function populateFrom (source:ObjectDefinition) : void {
+		if (source.initMethod != null) {
+			initMethod = source.initMethod;
+		}
+		if (source.destroyMethod != null) {
+			destroyMethod = source.destroyMethod;
+		}
+		instantiator = source.instantiator;
+		for each (var factory:ObjectProcessorFactory in source.processorFactories) {
+			addProcessorFactory(factory);
+		}
+		replaceLegacyRegistries(source);
+	}
 	
 	/**
 	 * @private
 	 */
-	internal function replaceLegacyRegistries (source:ObjectDefinition) : void {
+	private function replaceLegacyRegistries (source:ObjectDefinition) : void {
 		// deprecated
 		_constructorArgs = source.constructorArgs;
 		_properties = source.properties;

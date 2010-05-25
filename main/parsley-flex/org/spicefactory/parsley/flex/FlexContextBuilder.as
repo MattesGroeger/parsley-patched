@@ -15,16 +15,12 @@
  */
 
 package org.spicefactory.parsley.flex {
-import org.spicefactory.lib.logging.LogContext;
-import org.spicefactory.lib.logging.flex.FlexLogFactory;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
-import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
 import org.spicefactory.parsley.flex.processor.FlexConfigurationProcessor;
 import org.spicefactory.parsley.flex.resources.FlexResourceBindingAdapter;
-import org.spicefactory.parsley.rpc.flex.command.AsyncTokenCommandSupport;
-import org.spicefactory.parsley.tag.resources.ResourceBindingDecorator;
+import org.spicefactory.parsley.processor.resources.ResourceBindingProcessor;
 
 import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
@@ -41,7 +37,7 @@ import flash.system.ApplicationDomain;
 public class FlexContextBuilder {
 	
 	
-	ResourceBindingDecorator.adapterClass = FlexResourceBindingAdapter;
+	ResourceBindingProcessor.adapterClass = FlexResourceBindingAdapter;
 
 
 	/**
@@ -98,9 +94,7 @@ public class FlexContextBuilder {
 	 * 
 	 */
 	public static function mergeAll (configClasses:Array, builder:CompositeContextBuilder) : void {
-		if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
-		FlexModuleSupport.initialize();
-		AsyncTokenCommandSupport.initialize();
+		FlexSupport.initialize();
 		builder.addProcessor(new FlexConfigurationProcessor(configClasses));
 	}
 

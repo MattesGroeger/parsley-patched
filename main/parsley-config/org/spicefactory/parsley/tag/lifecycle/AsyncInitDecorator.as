@@ -15,12 +15,9 @@
  */
 
 package org.spicefactory.parsley.tag.lifecycle {
-import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.AsyncInitConfig;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="AsyncInit", types="class")]
 /**
@@ -34,14 +31,12 @@ public class AsyncInitDecorator extends AsyncInitConfig implements ObjectDefinit
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		if (!(definition is SingletonObjectDefinition)) {
-			throw new IllegalArgumentError("AsyncInit can only be applied to singleton object definitions");
-		}
-		SingletonObjectDefinition(definition).asyncInitConfig = this;
-		return definition;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder
+			.lifecycle()
+				.asyncInit()
+					.completeEvent(completeEvent)
+					.errorEvent(errorEvent);
 	}
-	
-	
 }
 }

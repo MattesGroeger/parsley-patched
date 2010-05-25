@@ -39,11 +39,15 @@ public interface ObjectDefinition {
 	 * The type of the configured object.
 	 */
 	function get type () : ClassInfo;
+	
+	/**
+	 * The registry this definition is associated with.
+	 */
+	function get registry () : ObjectDefinitionRegistry;
 
 
 	/**
 	 * The object responsible for creating instances from this definition.
-	 * If this property is not null the <code>constructorArgs</code> will be ignored.
 	 */
 	function get instantiator () : ObjectInstantiator;
 	

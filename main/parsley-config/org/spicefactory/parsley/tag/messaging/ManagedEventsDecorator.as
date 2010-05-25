@@ -16,11 +16,10 @@
 
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.metadata.EventInfo;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.processor.messaging.ManagedEventsProcessor;
 
 [Metadata(name="ManagedEvents", types="class", multiple="true")]
@@ -53,21 +52,22 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		var dispatcher:Function = new MessageDispatcherFunctionReference(registry.context.scopeManager, scope).dispatchMessage;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		var dispatcher:Function = new MessageDispatcherFunctionReference(builder.config.context.scopeManager, scope).dispatchMessage;
 		if (names == null) {
 			names = new Array();
-			var events:Array = definition.type.getMetadata(EventInfo);
-			for each (var event:EventInfo in events) {
-				names.push(event.name);	
+			var events:Array = builder.typeInfo.getMetadata(EventInfo);
+			for each (var eventInfo:EventInfo in events) {
+				names.push(eventInfo.name);	
 			}
 		}
 		if (names.length == 0) {
-			throw new ContextError("ManagedEvents on class " + definition.type.name 
+			throw new ContextError("ManagedEvents on class " + builder.typeInfo.name 
 					+ ": No event names specified in ManagedEvents tag and no Event tag on class");	
 		}
-		definition.addProcessorFactory(ManagedEventsProcessor.newFactory(names, dispatcher));
-		return definition;
+		for each (var event:String in names) {
+			builder.event(event).manage(scope);
+		}
 	}
 	
 	

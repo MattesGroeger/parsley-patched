@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry.impl {
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.AsyncInitConfig;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
@@ -77,6 +78,13 @@ public class SingletonObjectDefinitionWrapper implements SingletonObjectDefiniti
 		return _lazy;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function get registry () : ObjectDefinitionRegistry {
+		return wrappedDefinition.registry;
+	}
+
 	/**
 	 * @inheritDoc
 	 */

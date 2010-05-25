@@ -55,6 +55,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 
 	
 	private var _factories:LocalFactoryRegistry;
+	private var _registry:ObjectDefinitionRegistry;
 	
 	private var description:String;
 	
@@ -62,11 +63,11 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	private var context:Context;
 	private var parent:Context;
 	private var domain:ApplicationDomain;
-	private var registry:ObjectDefinitionRegistry;
 	
 	private var scopes:ScopeCollection = new ScopeCollection();
 	private var processors:Array = new Array();
 	private var currentProcessor:Object;
+	private var processed:Boolean;
 	
 	private var errors:Array = new Array();
 	private var async:Boolean = false;
@@ -124,8 +125,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	public function get factories () : FactoryRegistry {
 		return _factories;
 	}
-
-
+	
 	private function assembleScopeDefinitions () : void {
 		scopes.addScope(createScopeDefinition(ScopeName.LOCAL, false));
 		if (parent == null) {
@@ -149,7 +149,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		ContextRegistry.addContext(context, scopes.getInherited());
 		ReflectionCacheManager.addDomain(context, domain);
-		registry = provider.registry;
+		_registry = provider.registry;
 		if (viewRoot != null) {
 			context.viewManager.addViewRoot(viewRoot);
 		}
@@ -165,18 +165,46 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 * @inheritDoc
 	 */
 	public function build () : Context {
-		if (context != null) {
+		if (processed) {
 			log.warn("Context was already built. Returning existing instance");
 			return context;
+		}
+		prepareRegistry();
+		processConfiguration();
+		return context;	
+	}
+	
+	/**
+	 * Builds the registry and Context for this builder without
+	 * invoking the ConfigurationProcessors.
+	 * After this method has been called, changes to the
+	 * factories or adding further scopes does not have any
+	 * effect on this Context.
+	 * But the associated registry can still be modified and 
+	 * further ConfigurationProcessor can also be added to this builder
+	 * until the <code>build</code> method is called.
+	 *
+	 * @return the registry used by this builder or null if this builder does not use a registry
+	 */
+	public function prepareRegistry () : ObjectDefinitionRegistry {
+		if (_registry != null) {
+			return _registry;
 		}
 		_factories.activate(GlobalFactoryRegistry.instance);
 		assembleScopeDefinitions();
 		createContext();
+		return _registry;
+	}
+	
+	private function processConfiguration () : void {
+		if (context == null) {
+			prepareRegistry();
+		}
 		invokeNextProcessor();
 		if (currentProcessor != null) {
 			async = true;
 		}
-		return context;	
+		processed = true;
 	}
 	
 	private function invokeNextProcessor () : void {
@@ -187,7 +215,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 			}
 			else {
 				context.addEventListener(ErrorEvent.ERROR, contextError);
-				registry.freeze();
+				_registry.freeze();
 				context.removeEventListener(ErrorEvent.ERROR, contextError);
 				if (errors.length > 0) {
 					handleErrors();
@@ -219,11 +247,11 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 			var asyncProcessor:AsyncConfigurationProcessor = AsyncConfigurationProcessor(processor);
 			asyncProcessor.addEventListener(Event.COMPLETE, processorComplete);				
 			asyncProcessor.addEventListener(ErrorEvent.ERROR, processorError);		
-			asyncProcessor.processConfiguration(registry);
+			asyncProcessor.processConfiguration(_registry);
 			return false;
 		}
 		else {
-			ConfigurationProcessor(processor).processConfiguration(registry);
+			ConfigurationProcessor(processor).processConfiguration(_registry);
 			return true;
 		}
 	}
@@ -235,11 +263,11 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 			var asyncBuilder:AsyncObjectDefinitionBuilder = AsyncObjectDefinitionBuilder(builder);
 			asyncBuilder.addEventListener(Event.COMPLETE, processorComplete);				
 			asyncBuilder.addEventListener(ErrorEvent.ERROR, processorError);		
-			asyncBuilder.build(registry);
+			asyncBuilder.build(_registry);
 			return false;
 		}
 		else {
-			builder.build(registry);
+			builder.build(_registry);
 			return true;
 		}
 	}

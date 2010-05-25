@@ -15,15 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.resources {
-import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.core.errors.ObjectDefinitionBuilderError;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.processor.resources.ResourceBindingProcessor;
-import org.spicefactory.parsley.tag.util.ReflectionUtil;
-
-import flash.utils.getQualifiedClassName;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="ResourceBinding", types="property")]
 /**
@@ -33,15 +26,6 @@ import flash.utils.getQualifiedClassName;
  * @author Jens Halm
  */
 public class ResourceBindingDecorator implements ObjectDefinitionDecorator {
-
-
-	/**
-	 * The type of the adapter to use. 
-	 * The decorator need to adapt to either the Flex ResourceManager or the Parsley Flash ResourceManager.
-	 */
-	public static var adapterClass:Class;
-
-	private static var adapter:ResourceBindingAdapter;
 
 
 	/**
@@ -61,32 +45,13 @@ public class ResourceBindingDecorator implements ObjectDefinitionDecorator {
 	public var property:String;
 	
 	
-	private static function initializeAdapter () : void {
-		if (adapter == null) {
-			if (adapterClass == null) {
-				throw new ObjectDefinitionBuilderError("adapterClass property for ResourceBindingDecorator has not been set");
-			}
-			var adapterImpl:Object = new adapterClass();
-			if (!(adapterImpl is ResourceBindingAdapter)) {
-				throw new ObjectDefinitionBuilderError("Specified adapterClass " + getQualifiedClassName(adapterClass) 
-					+ " does not implement the ResourceBindingAdapter interface");
-			}
-			adapter = adapterImpl as ResourceBindingAdapter;
-		}
-	}
-
-	
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		initializeAdapter();
-		var target:Property = ReflectionUtil.getProperty(property, definition, false, true);
-		definition.addProcessorFactory(ResourceBindingProcessor.newFactory(target, adapter, key, bundle));		
-		return definition;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder.property(property).resourceBinding(bundle, key);
 	}
 	
 
 }
-
 }

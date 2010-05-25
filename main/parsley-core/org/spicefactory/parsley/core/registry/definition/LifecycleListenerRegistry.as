@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.core.registry.definition {
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 
-[Deprecated]
+[Deprecated(replacement="new configuration DSL")]
 /**
  * @author Jens Halm
  */

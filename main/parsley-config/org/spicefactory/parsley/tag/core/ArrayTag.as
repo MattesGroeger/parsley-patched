@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.core {
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
+import org.spicefactory.parsley.config.Configuration;
+import org.spicefactory.parsley.config.NestedConfigurationElement;
 import org.spicefactory.parsley.tag.model.ManagedArray;
 import org.spicefactory.parsley.tag.util.ConfigurationValueResolver;
 
@@ -27,7 +27,7 @@ import org.spicefactory.parsley.tag.util.ConfigurationValueResolver;
  * 
  * @author Jens Halm
  */
-public class ArrayTag implements ResolvableConfigurationValue {
+public class ArrayTag implements NestedConfigurationElement {
 	
 	
 	private static const valueResolver:ConfigurationValueResolver = new ConfigurationValueResolver(); 
@@ -41,10 +41,10 @@ public class ArrayTag implements ResolvableConfigurationValue {
 	/**
 	 * @inheritDoc
 	 */
-	public function resolve (registry:ObjectDefinitionRegistry) : * {
+	public function resolve (config:Configuration) : Object {
 		var managedArray:Array = new ManagedArray();
 		for (var i:int = 0; i < values.length; i++) {
-			var value:* = valueResolver.resolveValue(values[i], registry);
+			var value:* = valueResolver.resolveValue(values[i], config);
 			managedArray.push(value);
 		}
 		return managedArray;

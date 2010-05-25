@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml.builder {
-import org.spicefactory.parsley.instantiator.ObjectWrapperInstantiator;
+import org.spicefactory.parsley.config.Configurations;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.expr.impl.DefaultExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
@@ -24,10 +24,12 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
+import org.spicefactory.parsley.config.RootConfigurationElement;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.instantiator.ObjectWrapperInstantiator;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
 import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import org.spicefactory.parsley.xml.tag.ObjectsTag;
@@ -148,7 +150,11 @@ public class XmlObjectDefinitionBuilder extends EventDispatcher implements Async
 			var definition:ObjectDefinition = ObjectDefinitionFactory(obj).createRootDefinition(registry);
 			registry.registerDefinition(definition);
 		}
+		else if (obj is RootConfigurationElement) {
+			RootConfigurationElement(obj).process(Configurations.forRegistry(registry));
+		}
 		else if (obj is RootConfigurationTag) {
+			/* TODO - RootConfigurationTag is deprecated - remove in later versions */
 			RootConfigurationTag(obj).process(registry);
 		}
 		else {

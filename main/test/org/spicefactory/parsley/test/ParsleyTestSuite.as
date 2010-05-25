@@ -20,6 +20,7 @@ import org.spicefactory.parsley.core.messaging.LazyMessagingMetadataTagTest;
 import org.spicefactory.parsley.core.messaging.MessagingMetadataTagTest;
 import org.spicefactory.parsley.core.messaging.proxy.MessageProxyTest;
 import org.spicefactory.parsley.core.scope.ScopeTest;
+import org.spicefactory.parsley.dsl.DslConfigTest;
 import org.spicefactory.parsley.flash.logging.FlashLoggingXmlTagTest;
 import org.spicefactory.parsley.flash.resources.FlashResourcesTest;
 import org.spicefactory.parsley.flex.logging.FlexLoggingXmlTagTest;
@@ -59,6 +60,7 @@ public class ParsleyTestSuite {
 		
 		suite.addTestSuite(ActionScriptConfigurationTest);
 		suite.addTestSuite(RuntimeConfigurationTest);
+		suite.addTestSuite(DslConfigTest);
 
 		suite.addTestSuite(InjectMetadataTagTest);
 
@@ -69,7 +71,7 @@ public class ParsleyTestSuite {
 		suite.addTestSuite(FactoryMetadataTagTest);
 		suite.addTestSuite(FactoryMxmlTagTest);
 		suite.addTestSuite(FactoryXmlTagTest);
-		
+
 		suite.addTestSuite(LifecycleMetadataTagTest);
 		suite.addTestSuite(LifecycleMxmlTagTest);
 		suite.addTestSuite(LifecycleXmlTagTest);
@@ -115,6 +117,7 @@ public class ParsleyTestSuite {
 		suite.addTestSuite(PimentoMxmlTagTest);
 
 		return suite;
+
 	}
 	
 	

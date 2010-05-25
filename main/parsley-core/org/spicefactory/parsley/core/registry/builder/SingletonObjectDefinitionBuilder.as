@@ -15,90 +15,33 @@
  */
 
 package org.spicefactory.parsley.core.registry.builder {
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.registry.ObjectInstantiator;
-import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 
+[Deprecated(replacement="new configuration DSL")]
 /**
- * Builder for creating root object definitions.
- * 
  * @author Jens Halm
  */
 public interface SingletonObjectDefinitionBuilder {
 	
-	
-	/**
-	 * Sets the id the object should be registered with.
-	 * 
-	 * @param value the id the object should be registered with
-	 * @return this builder instance for method chaining
-	 */
 	function id (value:String) : SingletonObjectDefinitionBuilder;
 	
-	/**
-	 * Indicates whether this object should be lazily initialized.
-	 * If set to false (the default) the object will be instantiated upon Context initialization.
-	 * 
-	 * @param value indicates whether this object should be lazily initialized
-	 * @return this builder instance for method chaining
-	 */
 	function lazy (value:Boolean) : SingletonObjectDefinitionBuilder;
 
-	/**
-	 * Sets the processing order for this object upon Context creation.
-	 * Only has an effect for non-lazy singletons. 
-	 * 
-	 * @param value the processing order for this object upon Context creation
-	 * @return this builder instance for method chaining
-	 */
 	function order (value:int) : SingletonObjectDefinitionBuilder;
+	
+	function singleton (value:Boolean) : SingletonObjectDefinitionBuilder;
 
-	/**
-	 * Sets the object responsible for creating instances from this definition.
-	 * If this property is not null the <code>constructorArgs</code> will be ignored.
-	 * 
-	 * @param value the object responsible for creating instances from this definition
-	 * @return this builder instance for method chaining
-	 */
 	function instantiator (value:ObjectInstantiator) : SingletonObjectDefinitionBuilder;
 	
-	/**
-	 * Adds a decorator to be processed when creating the definition.
-	 * This decorator will be processed in addition to any decorators assembled by the
-	 * DecoratorAssemblers registered with the ObjectDefinitionRegistry.
-	 * 
-	 * @param value the decorator to add to this builder
-	 * @return this builder instance for method chaining
-	 */
 	function decorator (value:ObjectDefinitionDecorator) : SingletonObjectDefinitionBuilder;
 
-	/**
-	 * Adds decorators to be processed when creating the definition.
-	 * These decorators will be processed in addition to any decorators assembled by the
-	 * DecoratorAssemblers registered with the ObjectDefinitionRegistry.
-	 * 
-	 * @param value the decorators to add to this builder
-	 * @return this builder instance for method chaining
-	 */
 	function decorators (value:Array) : SingletonObjectDefinitionBuilder;
 	
-	/**
-	 * Builds a new definition using all parameters set through the other methods of this builder.
-	 * With this method the returned definition will not be registered
-	 * with the registry associated with this builder.
-	 * 
-	 * @return a new root object definition
-	 */
-	function build () : SingletonObjectDefinition;
+	function build () : ObjectDefinition;
 	
-	/**
-	 * Builds a new definition using all parameters set through other methods and registers
-	 * it with the registry associated with this builder.
-	 * 
-	 * @return a new root object definition
-	 */
-	function buildAndRegister () : SingletonObjectDefinition;
-	
+	function buildAndRegister () : ObjectDefinition;
 	
 }
 }

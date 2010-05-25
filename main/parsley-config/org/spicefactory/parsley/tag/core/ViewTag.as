@@ -15,8 +15,9 @@
  */
 
 package org.spicefactory.parsley.tag.core {
+import org.spicefactory.parsley.config.Configuration;
+import org.spicefactory.parsley.config.RootConfigurationElement;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.RootConfigurationTag;
 
 [DefaultProperty("decorators")]
 
@@ -25,7 +26,7 @@ import org.spicefactory.parsley.tag.RootConfigurationTag;
  * 
  * @author Jens Halm
  */
-public class ViewTag implements RootConfigurationTag {
+public class ViewTag implements RootConfigurationElement {
 	
 	
 	/**
@@ -47,12 +48,13 @@ public class ViewTag implements RootConfigurationTag {
 	/**
 	 * @inheritDoc
 	 */
-	public function process (registry:ObjectDefinitionRegistry) : void {
-		registry.builders
-				.forDynamicDefinition(type)
-				.id(id)
-				.decorators(decorators)
-				.buildAndRegister();
+	public function process (config:Configuration) : void {
+		config.builders
+			.forClass(type)
+				.asDynamicObject()
+					.id(id)
+					.decorators(decorators)
+					.register();
 	}
 	
 	

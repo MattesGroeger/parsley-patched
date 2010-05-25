@@ -15,19 +15,11 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.provider.ObjectProvider;
-import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.messaging.command.CommandStatus;
-import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
+import org.spicefactory.parsley.dsl.messaging.impl.DynamicCommandBuilder;
+import org.spicefactory.parsley.config.Configuration;
+import org.spicefactory.parsley.config.RootConfigurationElement;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.ScopeName;
-import org.spicefactory.parsley.processor.messaging.receiver.DefaultCommandObserver;
-import org.spicefactory.parsley.processor.messaging.receiver.DefaultCommandTarget;
-import org.spicefactory.parsley.processor.messaging.receiver.DynamicCommandProxy;
-import org.spicefactory.parsley.tag.RootConfigurationTag;
 
 [DefaultProperty("decorators")]
 /**
@@ -47,7 +39,7 @@ import org.spicefactory.parsley.tag.RootConfigurationTag;
  * 
  * @author Jens Halm
  */
-public class DynamicCommandTag implements RootConfigurationTag {
+public class DynamicCommandTag implements RootConfigurationElement {
 
 
 	/**
@@ -112,82 +104,38 @@ public class DynamicCommandTag implements RootConfigurationTag {
 	 */
 	public var error:String;
 	
-	[ArrayElementType("org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator")]
+	[ArrayElementType("org.spicefactory.parsley.tag.core.ObjectDecoratorMarker")]
 	/**
 	 * @copy org.spicefactory.parsley.tag.core.RootObjectTag#decorators
 	 */
 	public var decorators:Array = new Array();
 	 
 
-	private var target:CommandTarget;
-	
-	
 	/**
 	 * @inheritDoc
 	 */
-	public function process (registry:ObjectDefinitionRegistry) : void {
+	public function process (config:Configuration) : void {
 		
-		var targetDef:DynamicObjectDefinition = registry.builders
-				.forDynamicDefinition(type)
-				.decorators(decorators)
+		var targetDef:DynamicObjectDefinition = config.builders
+			.forClass(type)
+				.asDynamicObject()
+					.decorators(decorators)
+					.build();
+
+		DynamicCommandBuilder
+			.newBuilder(targetDef)
+				.scope(scope)
+				.messageType(messageType)
+				.selector(selector)
+				.messageProperties(messageProperties)
+				.order(order)
+				.stateful(stateful)
+				.execute(execute)
+				.result(result)
+				.error(error)		
 				.build();
-		
-		var messageInfo:ClassInfo = (messageType == null) ? null : ClassInfo.forClass(messageType, registry.domain);
-		
-		/* message receivers will be created on demand - we create mocks here just for using
-		   the validation logic of these receiver implementations early */
-		var provider:ObjectProvider = new MockObjectProvider(targetDef.type);
-		var invoker:CommandTarget 
-				= new DefaultCommandTarget(provider, execute, selector, messageInfo, messageProperties, order);
-		messageInfo = ClassInfo.forClass(invoker.messageType, registry.domain);
-		
-		if (result != null || targetDef.type.getMethod("result") != null) {
-			if (result == null) {
-				result = "result";
-			}
-			new DefaultCommandObserver(provider, result, CommandStatus.COMPLETE, selector, messageInfo);
-		}
-		if (error != null || targetDef.type.getMethod("error") != null) {
-			if (error == null) {
-				error = "error";
-			}
-			new DefaultCommandObserver(provider, error, CommandStatus.ERROR, selector, messageInfo);
-		}
-		
-		target = new DynamicCommandProxy(messageInfo, selector, order, registry.context, targetDef, stateful,
-				invoker.returnType, execute, result, error, messageProperties);
-				
-		registry.context.scopeManager.getScope(scope).messageReceivers.addCommand(target);
-		
-		registry.context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
 
-	
-	private function contextDestroyed (event:ContextEvent) : void {
-		Context(event.target).scopeManager.getScope(scope).messageReceivers.removeCommand(target);
-	}
+
 }
-}
-
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.provider.ObjectProvider;
-
-import flash.errors.IllegalOperationError;
-
-class MockObjectProvider implements ObjectProvider {
-
-	private var _type:ClassInfo;
-	
-	function MockObjectProvider (type:ClassInfo) {
-		_type = type;
-	}
-
-	public function get instance () : Object {
-		throw new IllegalOperationError("This mock does not provide actual instances");
-	}
-	
-	public function get type () : ClassInfo {
-		return _type;
-	}
-	
 }

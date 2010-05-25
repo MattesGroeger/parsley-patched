@@ -20,7 +20,7 @@ import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 
 /**
  * Default ObjectInstantiator implementation that provides a new instance by invoking its constructor, potentially 
- * resolving references to other objects in the Context for the parameter values.
+ * resolving references to other objects in the Context for the constructor arguments.
  * 
  * @author Jens Halm
  */

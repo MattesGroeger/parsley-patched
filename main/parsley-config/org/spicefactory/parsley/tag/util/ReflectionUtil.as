@@ -16,12 +16,12 @@
 
 package org.spicefactory.parsley.tag.util {
 import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.FunctionBase;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.tag.model.ObjectTypeReference;
 
 /**
@@ -33,37 +33,37 @@ public class ReflectionUtil {
 	
 	
 	/**
-	 * Returns the method with the specified name for the class configured by the specified definition.
+	 * Returns the method with the specified name for the given class.
 	 * Throws an Error if no such method exists.
 	 * 
 	 * @param name the name of the method.
-	 * @param definition the object definition
+	 * @param type the class to look up the method for
 	 * @return the Method instance for the specified name
 	 */
-	public static function getMethod (name:String, definition:ObjectDefinition) : Method {
-		var method:Method = definition.type.getMethod(name);
+	public static function getMethod (name:String, type:ClassInfo) : Method {
+		var method:Method = type.getMethod(name);
 		if (method == null) {
-			throw new ContextError("Class " + definition.type.name + " does not contain a method with name " + name);
+			throw new ContextError("Class " + type.name + " does not contain a method with name " + name);
 		}
 		return method;
 	}
 	
 	/**
-	 * Returns the property with the specified name for the class configured by the specified definition.
+	 * Returns the property with the specified name for the given class.
 	 * Throws an Error if no such property exists or if some requirements specified by the boolean parameters
 	 * are not met.
 	 * 
 	 * @param name the name of the property
-	 * @param definition the object definition
+	 * @param type the class to look up the property for
 	 * @param readableRequired whether the property must be readable
 	 * @param writableRequired whether the property must be writable
 	 * @return the Property instance for the specified name
 	 */
-	public static function getProperty (name:String, definition:ObjectDefinition, 
+	public static function getProperty (name:String, type:ClassInfo, 
 			readableRequired:Boolean, writableRequired:Boolean) : Property {
-		var property:Property = definition.type.getProperty(name);
+		var property:Property = type.getProperty(name);
 		if (property == null) {
-			throw new IllegalArgumentError("Property with name " + name + " does not exist in Class " + definition.type.name);
+			throw new IllegalArgumentError("Property with name " + name + " does not exist in Class " + type.name);
 		}
 		if (readableRequired && !property.readable) {
 			throw new IllegalArgumentError("" + property + " is not readable");

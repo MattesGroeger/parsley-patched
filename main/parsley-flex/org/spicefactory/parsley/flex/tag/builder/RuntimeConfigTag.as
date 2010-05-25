@@ -15,8 +15,10 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
+import org.spicefactory.parsley.config.Configurations;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.config.RootConfigurationElement;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
@@ -79,7 +81,11 @@ public class RuntimeConfigTag implements ContextBuilderProcessor, ConfigurationP
 						= ObjectDefinitionFactory(instance).createRootDefinition(registry);
 				registry.registerDefinition(definition);
 			}
+			else if (instance is RootConfigurationElement) {
+				RootConfigurationElement(instance).process(Configurations.forRegistry(registry));
+			}
 			else if (instance is RootConfigurationTag) {
+				/* TODO - RootConfigurationTag is deprecated - remove in later versions */
 				RootConfigurationTag(instance).process(registry);
 			}
 			else {

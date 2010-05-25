@@ -15,14 +15,8 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
-import org.spicefactory.parsley.processor.messaging.MessageReceiverProcessorFactory;
-import org.spicefactory.parsley.processor.messaging.receiver.MessageBinding;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="MessageBinding", types="property", multiple="true")]
 /**
@@ -50,14 +44,15 @@ public class MessageBindingDecorator extends MessageReceiverDecoratorBase implem
 	/**
 	 * @inheritDoc
 	 */
-	public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) : ObjectDefinition {
-		if (type == null) {
-			throw new ContextError("type attribute must be specified for MessageBindings");
-		}
-		var messageType:ClassInfo = ClassInfo.forClass(type, registry.domain);
-		var factory:MessageReceiverFactory = MessageBinding.newFactory(targetProperty, messageType, messageProperty, selector, order);
-		definition.addProcessorFactory(new MessageReceiverProcessorFactory(definition, factory, registry.context, scope));
-		return definition;
+	public function decorate (builder:ObjectDefinitionBuilder) : void {
+		builder
+			.property(targetProperty)
+				.messageBinding()
+					.scope(scope)
+					.type(type)
+					.selector(selector)
+					.messageProperty(messageProperty)
+					.order(order);
 	}
 	
 	

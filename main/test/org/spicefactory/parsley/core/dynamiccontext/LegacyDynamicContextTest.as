@@ -1,5 +1,6 @@
 package org.spicefactory.parsley.core.dynamiccontext {
 import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
+import org.spicefactory.parsley.config.Configurations;
 import org.spicefactory.parsley.core.ContextTestBase;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
@@ -8,9 +9,10 @@ import org.spicefactory.parsley.core.context.impl.DefaultContext;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.tag.model.NestedObject;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
 import org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator;
+import org.spicefactory.parsley.tag.model.NestedObject;
 
 /**
  * @author Jens Halm
@@ -67,23 +69,19 @@ public class LegacyDynamicContextTest extends ContextTestBase {
 	}
 	
 	private function createDefinition (context:DynamicContext, dependencyAsRef:Boolean = true) : ObjectDefinition {
-		var decorator:MessageHandlerDecorator = new MessageHandlerDecorator();
-		decorator.method = "handleMessage";
 		var registry:ObjectDefinitionRegistry = DefaultContext(context).registry;
-		var definition:ObjectDefinition = registry.builders
-					.forDynamicDefinition(DynamicTestObject)
-					.decorator(decorator)
-					.build();
+		var builder:ObjectDefinitionBuilder 
+				= Configurations.forRegistry(registry).builders.forClass(DynamicTestObject);
+		builder.method("handleMessage").messageHandler();
 		if (dependencyAsRef) {
-			definition.properties.addTypeReference("dependency");
+			builder.property("dependency").injectByType();
 		}
 		else {
-			var childDef:DynamicObjectDefinition = registry.builders
-					.forDynamicDefinition(DynamicTestDependency)
-					.build();
-			definition.properties.addValue("dependency", new NestedObject(childDef));
+			var childDef:DynamicObjectDefinition = Configurations.forRegistry(registry).builders
+					.forClass(DynamicTestDependency).asDynamicObject().build();
+			builder.property("dependency").value(new NestedObject(childDef));
 		}
-		return definition;
+		return builder.asDynamicObject().build();
 	}
 
 
