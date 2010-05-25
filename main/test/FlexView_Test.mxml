@@ -15,6 +15,7 @@
 >    
     <mx:Script>
         <![CDATA[
+        	import org.spicefactory.parsley.flex.view.DslModel;
         	import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
         	import org.spicefactory.parsley.flex.view.RootConfig;
         	import org.spicefactory.parsley.core.builder.SimpleClass;
@@ -50,6 +51,9 @@
             	
             	trace("Descr: " + builder.context);
             	 */
+            	 
+            	var model:DslModel = builder.context.getObjectByType(DslModel) as DslModel;
+            	trace("dsl model: " + model.value);
             }
  
         ]]>
@@ -69,6 +73,9 @@
 				<builder:SimpleClass/>
 			</parsley:InstanceTag>
    		</parsley:RuntimeConfigTag>
+   		<parsley:CustomConfigTag>
+   			<view:TestDslProcessor foo="bar"/>
+   		</parsley:CustomConfigTag>
     </parsley:ContextBuilderTag>
     
     <mx:TraceTarget id="logTarget" 
