@@ -88,7 +88,7 @@ public class MessageReceiverProcessorFactory implements ObjectProcessorFactory {
 			return processor;
 		}
 		else {
-			var provider:ObjectProvider = Provider.forInstance(target.instance, definition.registry.domain);
+			var provider:ObjectProvider = Provider.forInstance(target.instance, target.definition.registry.domain);
 			return new MessageReceiverProcessor(provider, receiverFactory, scope);
 		}
 	}
