@@ -48,7 +48,7 @@ public class RootObjectTag implements RootConfigurationElement {
 	 */
 	public var lazy:Boolean = false;
 	
-	[Deprecated(replacement="<DynamicObject> tag")]
+	[Deprecated(replacement="DynamicObject tag")]
 	public var singleton:Boolean = true;
 	
 	/**
