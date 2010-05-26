@@ -111,7 +111,6 @@ public class DefaultObjectDefinitionContext implements ObjectDefinitionContext {
 
 	private function applyBuilderParts (target:ObjectDefinition) : void {
 		for each (var part:ObjectDefinitionBuilderPart in builderParts) {
-			trace("apply part " + part);
 			part.apply(target);
 		}
 	}
