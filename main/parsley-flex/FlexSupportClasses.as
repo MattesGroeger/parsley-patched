@@ -15,9 +15,10 @@
  */
 
 package {
+import org.spicefactory.parsley.flex.FlexConfig;
 import org.spicefactory.parsley.flex.FlexContextBuilder;
+import org.spicefactory.parsley.flex.FlexSupport;
 import org.spicefactory.parsley.flex.logging.FlexLoggingXmlSupport;
-import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
 import org.spicefactory.parsley.flex.resources.FlexResourceBindingAdapter;
 
 /**
@@ -31,9 +32,10 @@ import org.spicefactory.parsley.flex.resources.FlexResourceBindingAdapter;
 public class FlexSupportClasses {
 	
 	FlexLoggingXmlSupport;
-	FlexModuleSupport;
+	FlexSupport;
 	FlexResourceBindingAdapter;
 	FlexContextBuilder;
+	FlexConfig;
 	
 }
 }

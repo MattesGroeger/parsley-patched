@@ -15,9 +15,13 @@
  */
 
 package {
+import org.spicefactory.parsley.tag.messaging.AbstractMessageReceiverDecorator;
+import org.spicefactory.parsley.tag.lifecycle.AbstractSynchronizedProviderDecorator;
+import org.spicefactory.parsley.asconfig.ActionScriptConfig;
 import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
 import org.spicefactory.parsley.asconfig.builder.ActionScriptObjectDefinitionBuilder;
 import org.spicefactory.parsley.asconfig.processor.ActionScriptConfigurationProcessor;
+import org.spicefactory.parsley.dsl.context.ContextBuilder;
 import org.spicefactory.parsley.metadata.MetadataDecoratorAssembler;
 import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
 import org.spicefactory.parsley.runtime.processor.RuntimeConfigurationProcessor;
@@ -35,11 +39,17 @@ public class ConfigurationClasses {
 	ActionScriptObjectDefinitionBuilder;
 	ActionScriptConfigurationProcessor;
 	ActionScriptContextBuilder;
+	ActionScriptConfig;
 	
 	RuntimeConfigurationProcessor;
 	RuntimeContextBuilder;
 	
 	MetadataDecoratorAssembler;
+	
+	ContextBuilder;
+	
+	AbstractSynchronizedProviderDecorator;
+	AbstractMessageReceiverDecorator;
 
 }
 }
