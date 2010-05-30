@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.dsl.core.impl {
+import org.spicefactory.parsley.tag.model.NestedObject;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
 import org.spicefactory.parsley.processor.messaging.MessageDispatcherProcessor;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
@@ -72,6 +74,14 @@ public class DefaultPropertyBuilder implements PropertyBuilder {
 	 */
 	public function injectById (id:String, optional:Boolean = false) : void {
 		var factory:ObjectProcessorFactory = PropertyProcessor.newFactory(property, new ObjectIdReference(id, !optional));
+		context.addBuilderPart(new ObjectProcessorBuilderPart(factory));
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function injectFromDefinition (definition:DynamicObjectDefinition) : void {
+		var factory:ObjectProcessorFactory = PropertyProcessor.newFactory(property, new NestedObject(definition));
 		context.addBuilderPart(new ObjectProcessorBuilderPart(factory));
 	}
 	

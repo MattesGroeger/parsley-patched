@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.dsl.core {
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.dsl.messaging.MessageBindingBuilder;
 import org.spicefactory.parsley.dsl.messaging.MessageReceiverBuilder;
 
@@ -44,6 +45,15 @@ public interface PropertyBuilder {
 	 */
 	function injectById (id:String, optional:Boolean = false) : void;
 
+	/**
+	 * Adds a definition of an object to be created at runtime to the list of constructor arguments.
+	 * For each injection a new instance will be created from that definition.
+	 * 
+	 * @param definition the definition of the object
+	 * @return this builder for method chaining
+	 */
+	function injectFromDefinition (definition:DynamicObjectDefinition) : void;
+	
 	/**
 	 * Sets the value of this property. This may be a simple value
 	 * or an instance that implements <code>ResolvableValue</code> to be resolved

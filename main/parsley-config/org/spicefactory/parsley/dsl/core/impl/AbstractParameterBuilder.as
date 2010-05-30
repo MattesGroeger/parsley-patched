@@ -15,11 +15,13 @@
  */
 
 package org.spicefactory.parsley.dsl.core.impl {
-import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.FunctionBase;
 import org.spicefactory.lib.reflect.Parameter;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
+import org.spicefactory.parsley.tag.model.NestedObject;
 import org.spicefactory.parsley.tag.model.ObjectIdReference;
 import org.spicefactory.parsley.tag.model.ObjectTypeReference;
 
@@ -82,6 +84,16 @@ public class AbstractParameterBuilder {
 		var param:Parameter = Parameter(func.parameters[params.length]);
 		type = (type == null || type.name == "*") ? param.type : type;
 		params.push(new ObjectTypeReference(type, nextParamRequired()));	
+	}
+	
+	/**
+	 * Adds a definition of an object to be created at runtime.
+	 * For each injection a new instance will be created from that definition.
+	 * 
+	 * @param definition the definition of the object
+	 */
+	protected function addDefinition (definition:DynamicObjectDefinition) : void {
+		params.push(new NestedObject(definition));
 	}
 	
 	/**

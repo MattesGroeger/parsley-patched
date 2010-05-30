@@ -15,15 +15,16 @@
  */
 
 package org.spicefactory.parsley.dsl.core.impl {
-import org.spicefactory.parsley.dsl.lifecycle.impl.FactoryDefinitionReplacer;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.dsl.core.MethodBuilder;
 import org.spicefactory.parsley.dsl.impl.ObjectDefinitionBuilderPart;
 import org.spicefactory.parsley.dsl.impl.ObjectDefinitionContext;
 import org.spicefactory.parsley.dsl.lifecycle.ObserveMethodBuilder;
 import org.spicefactory.parsley.dsl.lifecycle.impl.DefaultObserveMethodBuilder;
+import org.spicefactory.parsley.dsl.lifecycle.impl.FactoryDefinitionReplacer;
 import org.spicefactory.parsley.dsl.messaging.MessageErrorBuilder;
 import org.spicefactory.parsley.dsl.messaging.MessageHandlerBuilder;
 import org.spicefactory.parsley.dsl.messaging.MessageReceiverBuilder;
@@ -82,6 +83,15 @@ public class DefaultMethodBuilder extends AbstractParameterBuilder implements Me
 	public function injectById (id:String) : MethodBuilder {
 		addPart();
 		addIdReference(id);
+		return this;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function injectFromDefinition (definition:DynamicObjectDefinition) : MethodBuilder {
+		addPart();
+		addDefinition(definition);
 		return this;
 	}
 	

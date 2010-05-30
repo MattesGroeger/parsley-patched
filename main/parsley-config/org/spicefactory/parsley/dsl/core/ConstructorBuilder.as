@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.dsl.core {
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 
 /**
  * Builder for constructor arguments.
@@ -49,6 +50,15 @@ public interface ConstructorBuilder {
 	 * @return this builder for method chaining
 	 */
 	function injectById (id:String) : ConstructorBuilder;
+	
+	/**
+	 * Adds a definition of an object to be created at runtime to the list of constructor arguments.
+	 * For each injection a new instance will be created from that definition.
+	 * 
+	 * @param definition the definition of the object
+	 * @return this builder for method chaining
+	 */
+	function injectFromDefinition (definition:DynamicObjectDefinition) : ConstructorBuilder;
 
 	/**
 	 * Adds a value to the list of constructor arguments. This may be a simple value

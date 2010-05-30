@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.dsl.core.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.dsl.core.ConstructorBuilder;
 import org.spicefactory.parsley.dsl.impl.ObjectDefinitionBuilderPart;
@@ -64,6 +65,14 @@ public class DefaultConstructorBuilder extends AbstractParameterBuilder implemen
 	 */
 	public function injectById (id:String) : ConstructorBuilder {
 		addIdReference(id);
+		return this;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function injectFromDefinition (definition:DynamicObjectDefinition) : ConstructorBuilder {
+		addDefinition(definition);
 		return this;
 	}
 	
