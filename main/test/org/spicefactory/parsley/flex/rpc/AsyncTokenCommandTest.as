@@ -6,6 +6,7 @@ import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.messaging.TestEvent;
 import org.spicefactory.parsley.dsl.context.ContextBuilder;
+import org.spicefactory.parsley.flex.FlexConfig;
 
 import mx.collections.ArrayCollection;
 import mx.rpc.events.ResultEvent;
@@ -30,7 +31,7 @@ public class AsyncTokenCommandTest extends TestCase {
 		observer = new ServiceObserver();
 		
 		var context:Context = ContextBuilder.newBuilder()
-				.flexConfig(AsyncTokenTestConfig)
+				.config(FlexConfig.forClass(AsyncTokenTestConfig))
 				.object(executor)
 				.object(observer)
 				.build();

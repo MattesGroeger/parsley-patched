@@ -8,8 +8,8 @@ import org.spicefactory.parsley.flash.resources.tag.FlashResourceXmlSupport;
 import org.spicefactory.parsley.flash.resources.tag.ResourceBundleTag;
 import org.spicefactory.parsley.testmodel.AnnotatedResourceBinding;
 import org.spicefactory.parsley.testmodel.SecondResourceBinding;
+import org.spicefactory.parsley.xml.XmlConfig;
 import org.spicefactory.parsley.xml.XmlContextTestBase;
-import org.spicefactory.parsley.xml.processor.XmlConfigurationProcessor;
 
 import flash.net.SharedObject;
 
@@ -138,10 +138,10 @@ public class FlashResourcesTest extends XmlContextTestBase {
 			
 	        <res:resource-bundle id="b_text" basename="textB" localized="false" ignore-country="true"/>
     	</objects>;  
-		var xmlProcessor:XmlConfigurationProcessor = new XmlConfigurationProcessor([]);
-		xmlProcessor.addXml(xml1);
-		xmlProcessor.addXml(xml2);
-		var context:Context = ContextBuilder.newBuilder().customConfig(xmlProcessor).build();
+		var context:Context = ContextBuilder.newBuilder()
+			.config(XmlConfig.forInstance(xml1))
+			.config(XmlConfig.forInstance(xml2))
+			.build();
     	checkState(context, true, false);
     	var f:Function = addAsync(onTestTwoBundles, 3000);		
 		context.addEventListener(ContextEvent.INITIALIZED, f);

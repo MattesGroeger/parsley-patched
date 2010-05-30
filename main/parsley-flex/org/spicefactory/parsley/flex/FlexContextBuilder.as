@@ -29,7 +29,7 @@ import flash.system.ApplicationDomain;
  * Static entry point methods for building a Context from MXML configuration classes.
  * 
  * <p>For details see 
- * <a href="http://www.spicefactory.org/parsley/docs/2.2/manual?page=config&section=mxml>3.2 MXML Configuration</a>
+ * <a href="http://www.spicefactory.org/parsley/docs/2.3/manual?page=config&section=mxml>3.2 MXML Configuration</a>
  * in the Parsley Manual.</p>
  * 
  * @author Jens Halm
@@ -75,24 +75,12 @@ public class FlexContextBuilder {
 	}
 	
 	
-	/**
-	 * Merges the specified MXML configuration class with the specified composite builder.
-	 * 
-	 * @param configClass the class that contains the MXML configuration to be merged into the composite builder
-	 * @param builder the builder to add the configuration to
-	 * 
-	 */
+	[Deprecated(replacement="ContextBuilder DSL")]
 	public static function merge (configClass:Class, builder:CompositeContextBuilder) : void {
 		mergeAll([configClass], builder);
 	}
 
-	/**
-	 * Merges the specified MXML configuration classes with the specified composite builder.
-	 * 
-	 * @param configClasses the classes that contain the MXML configuration to be merged into the composite builder
-	 * @param builder the builder to add the configuration to
-	 * 
-	 */
+	[Deprecated(replacement="ContextBuilder DSL")]
 	public static function mergeAll (configClasses:Array, builder:CompositeContextBuilder) : void {
 		FlexSupport.initialize();
 		builder.addProcessor(new FlexConfigurationProcessor(configClasses));

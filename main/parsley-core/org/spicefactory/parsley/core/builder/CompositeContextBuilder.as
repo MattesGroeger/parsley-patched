@@ -21,6 +21,11 @@ import org.spicefactory.parsley.core.factory.FactoryRegistry;
 /**
  * Responsible for building Context instances using one or more ObjectDefinitionBuilder instances.
  * 
+ * <p>As of version 2.3 this is now considered an internal interface. The entire Context building
+ * process in the IOC kernel still relies on this core interface. But application code is now
+ * expected to either use the MXML <code>&lt;ContextBuilder&gt;</code> tags introduced with version 2.2 
+ * or the convenient configuration DSL introduced with version 2.3.</p>
+ * 
  * <p>A composite builder may be used when combining multiple configuration mechanisms like MXML or XML
  * into a single Context. It is also used by all short cut entry points that only use a single
  * configuration mechanism under the hood. So under the hood an implementation of this interface

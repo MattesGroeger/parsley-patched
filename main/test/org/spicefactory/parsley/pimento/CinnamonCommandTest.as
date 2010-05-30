@@ -6,6 +6,7 @@ import org.spicefactory.cinnamon.service.ServiceEvent;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.messaging.TestEvent;
 import org.spicefactory.parsley.dsl.context.ContextBuilder;
+import org.spicefactory.parsley.flex.FlexConfig;
 
 import flash.events.Event;
 
@@ -24,7 +25,7 @@ public class CinnamonCommandTest extends TestCase {
 		observer = new ServiceObserver();
 		
 		var context:Context = ContextBuilder.newBuilder()
-				.flexConfig(CinnamonMxmlTagContainer)
+				.config(FlexConfig.forClass(CinnamonMxmlTagContainer))
 				.object(executor)
 				.object(observer)
 				.build();

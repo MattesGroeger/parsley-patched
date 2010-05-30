@@ -27,7 +27,7 @@ import flash.system.ApplicationDomain;
  * Static entry point methods for building a Context from ActionScript configuration classes.
  * 
  * <p>For details see 
- * <a href="http://www.spicefactory.org/parsley/docs/2.2/manual?page=config&section=as3">3.4 ActionScript Configuration</a>
+ * <a href="http://www.spicefactory.org/parsley/docs/2.3/manual?page=config&section=as3">3.6 ActionScript Configuration</a>
  * in the Parsley Manual.</p>
  * 
  * @author Jens Halm
@@ -69,24 +69,12 @@ public class ActionScriptContextBuilder {
 		return builder.build();
 	}
 	
-	/**
-	 * Merges the specified ActionScript configuration class with the specified composite builder.
-	 * 
-	 * @param configClass the class that contains the ActionScript configuration to be merged into the composite builder
-	 * @param builder the builder to add the configuration to
-	 * 
-	 */
+	[Deprecated(replacement="ContextBuilder DSL")]
 	public static function merge (configClass:Class, builder:CompositeContextBuilder) : void {
 		mergeAll([configClass], builder);
 	}
 	
-	/**
-	 * Merges the specified ActionScript configuration classes with the specified composite builder.
-	 * 
-	 * @param configClasses the classes that contain the ActionScript configuration to be merged into the composite builder
-	 * @param builder the builder to add the configuration to
-	 * 
-	 */
+	[Deprecated(replacement="ContextBuilder DSL")]
 	public static function mergeAll (configClasses:Array, builder:CompositeContextBuilder) : void {
 		builder.addProcessor(new ActionScriptConfigurationProcessor(configClasses));
 	}

@@ -13,8 +13,7 @@ public class ExternalXmlConfigTest extends ContextTestBase {
 	
 	
 	public function testExternalConfig () : void {
-		//var context:Context = XmlContextBuilder.build("test.xml");
-		var context:Context = ContextBuilder.newBuilder().xmlConfig("test.xml").build();
+		var context:Context = ContextBuilder.newBuilder().config(XmlConfig.forFile("test.xml")).build();
 		checkState(context, false, false);
 		var func:Function = addAsync(onContextComplete, 5000);
 		context.addEventListener(ContextEvent.INITIALIZED, func);

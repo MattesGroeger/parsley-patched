@@ -7,6 +7,8 @@ import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.flex.FlexSupport;
+import org.spicefactory.parsley.runtime.processor.RuntimeConfigurationProcessor;
+
 /*
  * Copyright 2010 the original author or authors.
  *
@@ -23,9 +25,6 @@ import org.spicefactory.parsley.flex.FlexSupport;
  * limitations under the License.
  */
 
-import org.spicefactory.parsley.flex.processor.FlexConfigurationProcessor;
-import org.spicefactory.parsley.runtime.processor.RuntimeConfigurationProcessor;
-import org.spicefactory.parsley.xml.processor.XmlConfigurationProcessor;
 
 /**
  * A ContextBuilder offers the option to create a new Context programmatically using the convenient
@@ -82,48 +81,29 @@ public class ContextBuilder {
 	
 	private var builder:CompositeContextBuilder;
 	private var runtimeConfig:RuntimeConfigurationProcessor;
-	private var config:Configuration;
+	private var _config:Configuration;
 	
 	
 	/**
 	 * @private
 	 */
 	function ContextBuilder (builder:DefaultCompositeContextBuilder) {
-		this.config = Configurations.forRegistry(builder.prepareRegistry());
+		this._config = Configurations.forRegistry(builder.prepareRegistry());
 		this.builder = builder;
 		FlexSupport.initialize();
 	}
 	
-	
 	/**
-	 * Adds an MXML configuration class to this builder.
+	 * Adds a configuration processor to this builder.
 	 * 
-	 * @param config the MXML configuration class to add
-	 * @return this builder instance for method chaining
-	 */
-	public function flexConfig (config:Class) : ContextBuilder {
-		builder.addProcessor(new FlexConfigurationProcessor([config]));
-		return this;
-	}
-	
-	/**
-	 * Adds an XML configuration file to this builder.
-	 * 
-	 * @param config the XML configuration file to add
-	 * @return this builder instance for method chaining
-	 */
-	public function xmlConfig (file:String) : ContextBuilder {
-		builder.addProcessor(new XmlConfigurationProcessor([file]));
-		return this;
-	}
-	
-	/**
-	 * Adds a custom configuration processor to this builder.
+	 * <p>The builtin configuration mechanisms offer convenient shortuts to 
+	 * create such a processor like <code>FlexConfig.forClass(MyConfig)</code>
+	 * or <code>XmlConfig.forFile("config.xml")</code>.</p>
 	 * 
 	 * @param processor the processor to add
 	 * @return this builder instance for method chaining
 	 */
-	public function customConfig (processor:ConfigurationProcessor) : ContextBuilder {
+	public function config (processor:ConfigurationProcessor) : ContextBuilder {
 		builder.addProcessor(processor);
 		return this;
 	}
@@ -158,7 +138,7 @@ public class ContextBuilder {
 	 * @return the factory that can be used to programmatically create new object definitions
 	 */
 	public function objectDefinition () : ObjectDefinitionBuilderFactory {
-		return config.builders;
+		return _config.builders;
 	}
 	
 	/**

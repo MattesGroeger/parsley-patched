@@ -28,7 +28,7 @@ import flash.system.ApplicationDomain;
  * Static entry point methods for building a Context from XML configuration files.
  * 
  * <p>For details see 
- * <a href="http://www.spicefactory.org/parsley/docs/2.2/manual?page=config&section=xml>3.3 XML Configuration</a>
+ * <a href="http://www.spicefactory.org/parsley/docs/2.3/manual?page=config&section=xml>3.3 XML Configuration</a>
  * in the Parsley Manual.</p>
  * 
  * @author Jens Halm
@@ -72,25 +72,13 @@ public class XmlContextBuilder {
 		return builder.build();
 	}
 	
-	/**
-	 * Merges the specified XML configuration file with the specified composite builder.
-	 * 
-	 * @param filename the name of the file that contains the XML configuration to be merged into the composite builder
-	 * @param builder the builder to add the configuration to
-	 * @param expressionContext an ExpressionContext that may contain variables that may be used in the configuration file
-	 */
+	[Deprecated(replacement="ContextBuilder DSL")]
 	public static function merge (filename:String, builder:CompositeContextBuilder, 
 			expressionContext:ExpressionContext = null) : void {
 		mergeAll([filename], builder, expressionContext);
 	}
 
-	/**
-	 * Merges the specified XML configuration files with the specified composite builder.
-	 * 
-	 * @param filenames the names of the files that contain the XML configuration to be merged into the composite builder
-	 * @param builder the builder to add the configuration to
-	 * @param expressionContext an ExpressionContext that may contain variables that may be used in the configuration file
-	 */
+	[Deprecated(replacement="ContextBuilder DSL")]
 	public static function mergeAll (filenames:Array, builder:CompositeContextBuilder, 
 			expressionContext:ExpressionContext = null) : void {
 		builder.addProcessor(new XmlConfigurationProcessor(filenames, expressionContext));

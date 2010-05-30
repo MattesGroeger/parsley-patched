@@ -63,12 +63,7 @@ public class RuntimeContextBuilder {
 		return builder.build();
 	}
 	
-	/**
-	 * Merges the specified existing instances with the specified composite builder.
-	 * 
-	 * @param instances the instances to include in the Context
-	 * @param builder the builder to add the configuration to
-	 */
+	[Deprecated(replacement="ContextBuilder DSL")]
 	public static function merge (instances:Array, builder:CompositeContextBuilder) : void {
 		builder.addProcessor(new RuntimeConfigurationProcessor(instances));
 	}
