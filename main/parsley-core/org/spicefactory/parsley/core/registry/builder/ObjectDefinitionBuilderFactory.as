@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.registry.builder {
 
+[Deprecated(replacement="new configuration DSL")]
 /**
  * @author Jens Halm
  */
