@@ -19,6 +19,10 @@
 	</target>
 	
 	<target name="compile_parsley_flash">
+		<replace file="${project.dir}/parsley-config/org/spicefactory/parsley/dsl/context/ContextBuilder.as" 
+					token="FlexSupport.initialize();" value="//***FlexSupport.initialize();"/>
+		<replace file="${project.dir}/parsley-config/org/spicefactory/parsley/dsl/context/ContextBuilder.as" 
+					token="import org.spicefactory.parsley.flex.FlexSupport;" value="//***import org.spicefactory.parsley.flex.FlexSupport;"/>
 		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,RemovedEvent,Selector,Target,Internal,ObjectDefinition,DynamicObject" />
 			<arg line="-o ${release.target.dir}/release/parsley-flash-${version}.swc" />
@@ -38,6 +42,8 @@
 			<arg line="-debug=true"/>
 			<arg line="-verbose-stacktraces"/>
 		</exec>
+		<replace file="${project.dir}/parsley-config/org/spicefactory/parsley/dsl/context/ContextBuilder.as" 
+					token="//***" value=""/>
 	</target>
 	
 	<target name="compile_parsley_flex3">
@@ -269,8 +275,6 @@
 			<arg value="Implementation for IOC kernel services for the messaging system"/>
 			<arg line="-package org.spicefactory.parsley.core.messaging.receiver"/>
 			<arg value="API for various types of message receivers"/>
-			<arg line="-package org.spicefactory.parsley.core.messaging.receiver.impl"/>
-			<arg value="Implementation for various types of message receivers"/>
 			
 			<arg line="-package org.spicefactory.parsley.core.registry"/>
 			<arg value="API for IOC kernel services for the object definition registry"/>
@@ -297,8 +301,48 @@
 			<arg line="-package org.spicefactory.parsley.asconfig.processor"/>
 			<arg value="ConfigurationProcessor implementation for ActionScript configuration"/>
 				
+			<arg line="-package org.spicefactory.parsley.config"/>
+			<arg value="Core interfaces for the configuration extension points"/>
+			<arg line="-package org.spicefactory.parsley.config.impl"/>
+			<arg value="Default implementations of the core configuration interfaces"/>
+
+			<arg line="-package org.spicefactory.parsley.dsl"/>
+			<arg value="Core interfaces for the configuration DSL"/>
+			<arg line="-package org.spicefactory.parsley.dsl.context"/>
+			<arg value="Builders for creating a new Context"/>
+			<arg line="-package org.spicefactory.parsley.dsl.core"/>
+			<arg value="Core interfaces for the main builder parts of the configuration DSL"/>
+			<arg line="-package org.spicefactory.parsley.dsl.core.impl"/>
+			<arg value="Default implementations of the main builder parts"/>
+			<arg line="-package org.spicefactory.parsley.dsl.impl"/>
+			<arg value="Default implementations of the core DSL interfaces"/>
+			<arg line="-package org.spicefactory.parsley.dsl.lifecycle"/>
+			<arg value="Builders for configuring the object lifecycle"/>
+			<arg line="-package org.spicefactory.parsley.dsl.lifecycle.impl"/>
+			<arg value="Default implementations of the lifecycle builder interfaces"/>
+			<arg line="-package org.spicefactory.parsley.dsl.messaging"/>
+			<arg value="Builders for configuring message receivers"/>
+			<arg line="-package org.spicefactory.parsley.dsl.messaging.impl"/>
+			<arg value="Default implementations of the message receiver builder interfaces"/>
+			
+			<arg line="-package org.spicefactory.parsley.instantiator"/>
+			<arg value="Default implementations of the ObjectInstantiator interface"/>
+			
 			<arg line="-package org.spicefactory.parsley.metadata"/>
 			<arg value="Classes for Metadata processing"/>
+			
+			<arg line="-package org.spicefactory.parsley.processor.core"/>
+			<arg value="Core processors for basic operations like setting properties and invoking methods"/>
+			<arg line="-package org.spicefactory.parsley.processor.lifecycle"/>
+			<arg value="Processor for registering lifecycle observers"/>
+			<arg line="-package org.spicefactory.parsley.processor.messaging"/>
+			<arg value="Processor for registering message receivers"/>
+			<arg line="-package org.spicefactory.parsley.processor.messaging.receiver"/>
+			<arg value="Default implementations of the various message receiver interfaces"/>
+			<arg line="-package org.spicefactory.parsley.processor.resources"/>
+			<arg value="Processor for registering resource bindings"/>
+			<arg line="-package org.spicefactory.parsley.processor.util"/>
+			<arg value="Utilities shared by all processors"/>
 			
 			<arg line="-package org.spicefactory.parsley.runtime"/>
 			<arg value="IOC Container initialization based on runtime configuration"/>
@@ -313,6 +357,8 @@
 			<arg value="Configuration tags for dependency injection"/>
 			<arg line="-package org.spicefactory.parsley.tag.lifecycle"/>
 			<arg value="Configuration tags for object lifecycle management"/>
+			<arg line="-package org.spicefactory.parsley.tag.model"/>
+			<arg value="Configuration model shared by the tag implementations"/>
 			<arg line="-package org.spicefactory.parsley.tag.messaging"/>
 			<arg value="Configuration tags for the Messaging Framework"/>
 			<arg line="-package org.spicefactory.parsley.tag.resources"/>
@@ -478,8 +524,6 @@
 			<arg value="Implementation for IOC kernel services for the messaging system"/>
 			<arg line="-package org.spicefactory.parsley.core.messaging.receiver"/>
 			<arg value="API for various types of message receivers"/>
-			<arg line="-package org.spicefactory.parsley.core.messaging.receiver.impl"/>
-			<arg value="Implementation for various types of message receivers"/>
 			
 			<arg line="-package org.spicefactory.parsley.core.registry"/>
 			<arg value="API for IOC kernel services for the object definition registry"/>
@@ -700,8 +744,8 @@
 	</target>
 	
 	<target name="api_all" description="Create Public and Full Client API">
-		<antcall target="api_parsley_minimal"/>
-		<antcall target="api_parsley_spicelib"/>
+		<antcall target="api_parsley_spicelib_flex"/>
+		<antcall target="api_parsley_spicelib_flash"/>
 		<antcall target="api_spicelib"/>
 	</target>
 
