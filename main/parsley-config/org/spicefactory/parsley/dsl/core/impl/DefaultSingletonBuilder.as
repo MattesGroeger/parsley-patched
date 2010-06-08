@@ -27,8 +27,11 @@ import org.spicefactory.parsley.dsl.impl.ObjectDefinitionContext;
  * 
  * @author Jens Halm
  */
-public class DefaultSingletonBuilder extends AbstractTargetDefinitionBuilder implements SingletonBuilder {
+public class DefaultSingletonBuilder implements SingletonBuilder {
 	
+	
+	private var context:ObjectDefinitionContext;
+	private var builder:ObjectDefinitionBuilder;
 	
 	private var _decorators:Array = new Array();
 	private var _id:String;
@@ -43,7 +46,8 @@ public class DefaultSingletonBuilder extends AbstractTargetDefinitionBuilder imp
 	 * @param builder the root builder for the target definition
 	 */
 	function DefaultSingletonBuilder (context:ObjectDefinitionContext, builder:ObjectDefinitionBuilder) {
-		super(context, builder);
+		this.context = context;
+		this.builder = builder;
 	}
 
 	
@@ -85,8 +89,8 @@ public class DefaultSingletonBuilder extends AbstractTargetDefinitionBuilder imp
 	public function build () : SingletonObjectDefinition {
 		if (_id == null) _id = IdGenerator.nextObjectId;
 		var def:DefaultSingletonObjectDefinition 
-				= new DefaultSingletonObjectDefinition(context.targetType, _id, context.config.registry, _lazy, _order);
-		return processDefinition(def, _decorators) as SingletonObjectDefinition;
+				= new DefaultSingletonObjectDefinition(context.targetType, _id, context.config.registry, _lazy, _order, context.parent);
+		return context.processDefinition(def, _decorators, builder) as SingletonObjectDefinition;
 	}
 	
 	/**

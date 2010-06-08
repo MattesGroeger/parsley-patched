@@ -27,8 +27,11 @@ import org.spicefactory.parsley.dsl.impl.ObjectDefinitionContext;
  * 
  * @author Jens Halm
  */
-public class DefaultDynamicObjectBuilder extends AbstractTargetDefinitionBuilder implements DynamicObjectBuilder {
+public class DefaultDynamicObjectBuilder implements DynamicObjectBuilder {
 	
+	
+	private var context:ObjectDefinitionContext;
+	private var builder:ObjectDefinitionBuilder;
 	
 	private var _decorators:Array = new Array();
 	private var _id:String;
@@ -41,7 +44,8 @@ public class DefaultDynamicObjectBuilder extends AbstractTargetDefinitionBuilder
 	 * @param builder the root builder for the target definition
 	 */
 	function DefaultDynamicObjectBuilder (context:ObjectDefinitionContext, builder:ObjectDefinitionBuilder) {
-		super(context, builder);
+		this.context = context;
+		this.builder = builder;
 	}
 
 	
@@ -67,8 +71,8 @@ public class DefaultDynamicObjectBuilder extends AbstractTargetDefinitionBuilder
 	public function build () : DynamicObjectDefinition {
 		if (_id == null) _id = IdGenerator.nextObjectId;
 		var def:DefaultDynamicObjectDefinition 
-				= new DefaultDynamicObjectDefinition(context.targetType, _id, context.config.registry);
-		return processDefinition(def, _decorators) as DynamicObjectDefinition;
+				= new DefaultDynamicObjectDefinition(context.targetType, _id, context.config.registry, context.parent);
+		return context.processDefinition(def, _decorators, builder) as DynamicObjectDefinition;
 	}
 	
 	/**

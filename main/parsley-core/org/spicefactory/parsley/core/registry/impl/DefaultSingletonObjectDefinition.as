@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.registry.AsyncInitConfig;
+import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
 import org.spicefactory.parsley.core.registry.definition.LifecycleListenerRegistry;
@@ -33,6 +34,7 @@ public class DefaultSingletonObjectDefinition extends AbstractObjectDefinition i
 	private var _lazy:Boolean;
 	private var _order:int;
 	private var _asyncInitConfig:AsyncInitConfig;
+	private var _parent:SingletonObjectDefinition;
 
 	private var _singletonListeners:LifecycleListenerRegistry;
 
@@ -44,13 +46,17 @@ public class DefaultSingletonObjectDefinition extends AbstractObjectDefinition i
 	 * @param registry the registry this definition belongs to
 	 * @param lazy whether the object is lazy initializing
 	 * @param order the initialization order for non-lazy singletons
+	 * @param parent the parent definition containing shared configuration for this definition
 	 */
 	function DefaultSingletonObjectDefinition (type:ClassInfo, id:String, registry:ObjectDefinitionRegistry,
-			lazy:Boolean = false, order:int = int.MAX_VALUE) {
-		super(type, id, registry);
+			lazy:Boolean = false, order:int = int.MAX_VALUE, parent:ObjectDefinition = null) {
+		super(type, id, registry, parent);
 		_lazy = lazy;
 		_order = order;
 		_singletonListeners = new SingletonLifecycleListenerRegistry(this, registry);
+		if (parent is SingletonObjectDefinition) {
+			_parent = SingletonObjectDefinition(parent);
+		}
 	}
 	
 	
@@ -72,7 +78,7 @@ public class DefaultSingletonObjectDefinition extends AbstractObjectDefinition i
 	 * @inheritDoc
 	 */
 	public function get asyncInitConfig () : AsyncInitConfig {
-		return _asyncInitConfig;
+		return (_asyncInitConfig) ? _asyncInitConfig : ((_parent) ? _parent.asyncInitConfig : null);
 	}
 	
 	/**

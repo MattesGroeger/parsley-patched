@@ -44,6 +44,7 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	private var _id:String;
 	
 	private var _registry:ObjectDefinitionRegistry;
+	private var _parent:ObjectDefinition;
 	
 	private var _instantiator:ObjectInstantiator;
     private var _processorFactories:Array = new Array();	
@@ -67,11 +68,14 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	 * @param type the type to create a definition for
 	 * @param id the id the object should be registered with
 	 * @param registry the registry this definition belongs to
+	 * @param parent the parent definition containing shared configuration for this definition
 	 */
-	function AbstractObjectDefinition (type:ClassInfo, id:String, registry:ObjectDefinitionRegistry) {
+	function AbstractObjectDefinition (type:ClassInfo, id:String, 
+			registry:ObjectDefinitionRegistry, parent:ObjectDefinition = null) {
 		_type = type;
 		_id = id;
 		_registry = registry;
+		_parent = parent;		
 		
 		/* deprecated */
 		_constructorArgs = new DefaultConstructorArgRegistry(this);
@@ -106,35 +110,35 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	 * @inheritDoc
 	 */
 	public function get constructorArgs () : ConstructorArgRegistry {
-		return _constructorArgs;
+		return (_parent) ? _parent.constructorArgs : _constructorArgs;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function get properties () : PropertyRegistry {
-		return _properties;
+		return (_parent) ? _parent.properties : _properties;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function get injectorMethods () : MethodRegistry {
-		return _methods;
+		return (_parent) ? _parent.injectorMethods : _methods;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function get objectLifecycle () : LifecycleListenerRegistry {
-		return _listeners;
+		return (_parent) ? _parent.objectLifecycle : _listeners;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function get instantiator () : ObjectInstantiator {
-		return _instantiator;
+		return (_instantiator) ? _instantiator : ((_parent) ? _parent.instantiator : null);
 	}
 	
 	/**
@@ -148,7 +152,7 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	 * @inheritDoc
 	 */
 	public function get processorFactories () : Array {
-		return _processorFactories.concat();
+		return (_parent) ? _parent.processorFactories.concat(_processorFactories) : _processorFactories.concat();
 	}
 
 	/**
@@ -156,7 +160,7 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	 */
 	public function set instantiator (value:ObjectInstantiator) : void {
 		checkState();
-		if (_instantiator != null && (_instantiator is ContainerObjectInstantiator)) {
+		if (instantiator != null && (instantiator is ContainerObjectInstantiator)) {
 			throw new IllegalStateError("Instantiator has been set by the container and cannot be overwritten");
 		}
 		_instantiator = value;
@@ -166,7 +170,7 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	 * @inheritDoc
 	 */
 	public function get initMethod () : String {
-		return _initMethod;
+		return (_initMethod) ? _initMethod : ((_parent) ? _parent.initMethod : null);
 	}
 
 	/**
@@ -182,7 +186,7 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	 * @inheritDoc
 	 */
 	public function get destroyMethod () : String {
-		return _destroyMethod;
+		return (_destroyMethod) ? _destroyMethod : ((_parent) ? _parent.destroyMethod : null);
 	}
 
 	/**
@@ -202,7 +206,7 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	}
 	
 	private function checkState () : void {
-		if (_frozen) {
+		if (frozen) {
 			throw new IllegalStateError(toString() + " is frozen");
 		}
 	}

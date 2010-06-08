@@ -16,11 +16,17 @@
 
 package org.spicefactory.parsley.dsl.impl {
 import org.spicefactory.lib.errors.IllegalStateError;
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.config.Configuration;
+import org.spicefactory.parsley.config.DecoratorAssembler;
+import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.errors.ObjectDefinitionError;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.dsl.core.ObjectDefinitionReplacer;
 
 import flash.errors.IllegalOperationError;
@@ -34,12 +40,18 @@ import flash.errors.IllegalOperationError;
 public class DefaultObjectDefinitionContext implements ObjectDefinitionContext {
 
 
+	private static var log:Logger = LogContext.getLogger(DefaultObjectDefinitionContext);
+
+	private var _parent:ObjectDefinition;
+
 	private var _targetType:ClassInfo;
 	private var _config:Configuration;
 	private var _assemblers:Array;
 	
 	private var builderParts:Array = new Array();
 	private var replacer:ObjectDefinitionReplacer;
+	
+	private var legacyHandler:LegacyDecoratorHandler = new LegacyDecoratorHandler();
 	
 	
 	/**
@@ -55,6 +67,13 @@ public class DefaultObjectDefinitionContext implements ObjectDefinitionContext {
 		_assemblers = assemblers;
 	}
 
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get parent () : ObjectDefinition {
+		return _parent;
+	}
 
 	/**
 	 * @inheritDoc
@@ -104,7 +123,9 @@ public class DefaultObjectDefinitionContext implements ObjectDefinitionContext {
 	/**
 	 * @inheritDoc
 	 */
-	public function processDefinition (target:ObjectDefinition) : ObjectDefinition {
+	public function processDefinition (target:ObjectDefinition, additionalDecorators:Array, 
+			builder:ObjectDefinitionBuilder) : ObjectDefinition {
+		processDecorators(target, additionalDecorators, builder);
 		applyBuilderParts(target);
 		return applyDefinitionReplacer(target);
 	}
@@ -127,11 +148,56 @@ public class DefaultObjectDefinitionContext implements ObjectDefinitionContext {
 		}
 		return newDef;
 	}
+	
+	
+	/**
+	 * Processes the decorators for this builder. This implementation processes all decorators obtained
+	 * through the decorator assemblers registered for the core <code>Configuration</code> instance 
+	 * (usually one assembler processing metadata tags)
+	 * along with decorators which were explicitly added, 
+	 * possibly through some additional configuration mechanism like MXML or XML.
+	 * 
+	 * @param definition the definition to process
+	 * @param additionalDecorators the decorators to process in addition to the ones added through the assemblers
+	 * @param builder the builder for the definition
+	 * @return the resulting definition (possibly the same instance that was passed to this method)
+	 */
+	protected function processDecorators (definition:ObjectDefinition, additionalDecorators:Array, builder:ObjectDefinitionBuilder) : void {
+		var decorators:Array = new Array();
+		if (_parent == null) {
+			_parent = definition;				
+			for each (var assembler:DecoratorAssembler in assemblers) {
+				decorators = decorators.concat(assembler.assemble(definition.type));
+			}
+			decorators = decorators.concat(additionalDecorators);
+		}
+		else {
+			decorators = additionalDecorators;
+		}
+		var errors:Array = new Array();
+		for each (var decorator:Object in decorators) {
+			try {
+				if (!legacyHandler.processDecorator(decorator, definition, this)) {
+					ObjectDefinitionDecorator(decorator).decorate(builder);
+				}
+			}
+			catch (e:Error) {
+				log.error("Error applying {0}: {1}", decorator, e);
+				errors.push(e);
+			}
+		}
+		if (errors.length > 0) {
+			throw new ObjectDefinitionError(definition, errors);
+		} 
+	}
 }
 }
 
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.dsl.core.ObjectDefinitionReplacer;
 import org.spicefactory.parsley.dsl.impl.ObjectDefinitionBuilderPart;
+import org.spicefactory.parsley.dsl.impl.ObjectDefinitionContext;
 
 class FunctionDelegateBuilderPart implements ObjectDefinitionBuilderPart {
 	
@@ -150,5 +216,42 @@ class FunctionDelegateBuilderPart implements ObjectDefinitionBuilderPart {
 	}
 	
 }
+
+
+class LegacyDecoratorHandler {
+	
+	
+	public function	processDecorator (object:Object, definition:ObjectDefinition, context:ObjectDefinitionContext) : Boolean {
+				
+		if (!(object is ObjectDefinitionDecorator)) {
+			return false;
+		}
+		
+		var decorator:ObjectDefinitionDecorator = ObjectDefinitionDecorator(object);
+		var finalDefinition:ObjectDefinition = decorator.decorate(definition, context.config.registry);
+		if (definition != finalDefinition) {
+			context.setDefinitionReplacer(new SimpleDefinitionReplacer(finalDefinition));
+		}
+		return true;
+	}
+	
+	
+}
+
+class SimpleDefinitionReplacer implements ObjectDefinitionReplacer {
+
+	private var replacement:ObjectDefinition;
+
+	function SimpleDefinitionReplacer (replacement:ObjectDefinition) {
+		this.replacement = replacement;
+	}
+
+	public function replace (definition:ObjectDefinition) : ObjectDefinition {
+		return replacement;
+	}
+	
+}
+ 
+
 
 

@@ -18,6 +18,7 @@ package org.spicefactory.parsley.dsl.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.dsl.core.ObjectDefinitionReplacer;
 
 /**
@@ -28,6 +29,13 @@ import org.spicefactory.parsley.dsl.core.ObjectDefinitionReplacer;
  */
 public interface ObjectDefinitionContext {
 	
+	
+	/**
+	 * The parent definition represents the first definition processed by this context.
+	 * In case of subsequent processing this definition should be used as the parent of new
+	 * definitions. Before the first definition has been processed, this property is null.
+	 */
+	function get parent () : ObjectDefinition;
 	
 	/**
 	 * The type of the class to be configured.
@@ -70,14 +78,16 @@ public interface ObjectDefinitionContext {
 
 	/**
 	 * Processes the specified definition, applying all builder parts added to this
-	 * context, all decorators assembled by this context and finally invoking
-	 * the definition replacer (if specified). If no replacer was specified
+	 * context, all decorators assembled by this context and the specified additional decorators 
+	 * and finally invoking the definition replacer (if specified). If no replacer was specified
 	 * this method usually should return the definition that was passed in.
 	 * 
 	 * @param target the target definition to process
+	 * @param additionalDecorators decorators to add to the ones extracted by the standard assemblers
+	 * @param builder the builder of the specified definition
 	 * @return the final definition to use
 	 */
-	function processDefinition (target:ObjectDefinition) : ObjectDefinition;
+	function processDefinition (target:ObjectDefinition, additionalDecorators:Array, builder:ObjectDefinitionBuilder) : ObjectDefinition;
 	
 	
 	
