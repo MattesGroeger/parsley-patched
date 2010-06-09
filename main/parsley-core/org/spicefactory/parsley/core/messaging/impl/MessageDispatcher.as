@@ -22,7 +22,7 @@ import org.spicefactory.parsley.core.scope.ScopeManager;
  * 
  * @author Jens Halm
  */
-public class MessageDispatcherFunctionReference {
+public class MessageDispatcher {
 	
 	
 	private var scopeManager:ScopeManager;
@@ -36,7 +36,7 @@ public class MessageDispatcherFunctionReference {
 	 * @param scopeManager the scope manager the message should be dispatched through
 	 * @param scope the scope the message should be dispatched to
 	 */
-	function MessageDispatcherFunctionReference (scopeManager:ScopeManager, scope:String = null) {
+	function MessageDispatcher (scopeManager:ScopeManager, scope:String = null) {
 		this.scopeManager = scopeManager;
 		this.scope = scope;
 	}

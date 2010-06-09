@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.dsl.core.impl {
 import org.spicefactory.parsley.tag.model.NestedObject;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
-import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
+import org.spicefactory.parsley.core.messaging.impl.MessageDispatcher;
 import org.spicefactory.parsley.processor.messaging.MessageDispatcherProcessor;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 import org.spicefactory.parsley.dsl.impl.ObjectProcessorBuilderPart;
@@ -97,7 +97,7 @@ public class DefaultPropertyBuilder implements PropertyBuilder {
 	 * @inheritDoc
 	 */
 	public function messageDispatcher (scope:String = null) : void {
-		var md:MessageDispatcherFunctionReference = new MessageDispatcherFunctionReference(context.config.context.scopeManager, scope);
+		var md:MessageDispatcher = new MessageDispatcher(context.config.context.scopeManager, scope);
 		context.addBuilderPart(new ObjectProcessorBuilderPart(MessageDispatcherProcessor.newFactory(property, md)));
 	}
 	

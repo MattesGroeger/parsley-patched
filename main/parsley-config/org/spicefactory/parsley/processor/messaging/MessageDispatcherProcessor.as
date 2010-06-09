@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.processor.messaging {
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
-import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
+import org.spicefactory.parsley.core.messaging.impl.MessageDispatcher;
 import org.spicefactory.parsley.core.registry.ObjectProcessor;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 import org.spicefactory.parsley.processor.util.ObjectProcessorFactories;
@@ -33,7 +33,7 @@ public class MessageDispatcherProcessor implements ObjectProcessor {
 	
 	private var target:ManagedObject;
 	private var property:Property;
-	private var dispatcher:MessageDispatcherFunctionReference;
+	private var dispatcher:MessageDispatcher;
 	
 	
 	/**
@@ -43,7 +43,7 @@ public class MessageDispatcherProcessor implements ObjectProcessor {
 	 * @param property the property to inject the dispatcher into
 	 * @param dispatcher the actual dispatcher object
 	 */
-	function MessageDispatcherProcessor (target:ManagedObject, property:Property, dispatcher:MessageDispatcherFunctionReference) {
+	function MessageDispatcherProcessor (target:ManagedObject, property:Property, dispatcher:MessageDispatcher) {
 		this.target = target;
 		this.property = property;
 		this.dispatcher = dispatcher;
@@ -73,7 +73,7 @@ public class MessageDispatcherProcessor implements ObjectProcessor {
 	 * @param dispatcher the actual dispatcher object
 	 * @return a new processor factory
 	 */
-	public static function newFactory (property:Property, dispatcher:MessageDispatcherFunctionReference) : ObjectProcessorFactory {
+	public static function newFactory (property:Property, dispatcher:MessageDispatcher) : ObjectProcessorFactory {
 		return ObjectProcessorFactories.newFactory(MessageDispatcherProcessor, [property, dispatcher]);
 	}
 	

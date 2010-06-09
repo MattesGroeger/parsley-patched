@@ -127,7 +127,7 @@ public class DefaultObjectDefinitionBuilder implements ObjectDefinitionBuilder {
 }
 }
 
-import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
+import org.spicefactory.parsley.core.messaging.impl.MessageDispatcher;
 import org.spicefactory.parsley.dsl.core.EventBuilder;
 import org.spicefactory.parsley.dsl.impl.ObjectDefinitionContext;
 import org.spicefactory.parsley.dsl.impl.ObjectProcessorBuilderPart;
@@ -144,7 +144,7 @@ class DefaultEventBuilder implements EventBuilder {
 	}
 
 	public function manage (scope:String = null) : void {
-		var dispatcher:Function = new MessageDispatcherFunctionReference(context.config.context.scopeManager, scope).dispatchMessage;
+		var dispatcher:Function = new MessageDispatcher(context.config.context.scopeManager, scope).dispatchMessage;
 		context.addBuilderPart(new ObjectProcessorBuilderPart(ManagedEventsProcessor.newFactory([event], dispatcher)));
 	}
 }

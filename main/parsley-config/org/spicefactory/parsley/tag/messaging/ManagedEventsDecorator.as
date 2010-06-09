@@ -18,7 +18,7 @@ package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.lib.reflect.metadata.EventInfo;
 import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.messaging.impl.MessageDispatcherFunctionReference;
+import org.spicefactory.parsley.core.messaging.impl.MessageDispatcher;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.processor.messaging.ManagedEventsProcessor;
 
@@ -53,7 +53,7 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
 	 * @inheritDoc
 	 */
 	public function decorate (builder:ObjectDefinitionBuilder) : void {
-		var dispatcher:Function = new MessageDispatcherFunctionReference(builder.config.context.scopeManager, scope).dispatchMessage;
+		var dispatcher:Function = new MessageDispatcher(builder.config.context.scopeManager, scope).dispatchMessage;
 		if (names == null) {
 			names = new Array();
 			var events:Array = builder.typeInfo.getMetadata(EventInfo);
