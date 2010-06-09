@@ -134,6 +134,7 @@ public class DefaultObjectDefinitionContext implements ObjectDefinitionContext {
 		for each (var part:ObjectDefinitionBuilderPart in builderParts) {
 			part.apply(target);
 		}
+		builderParts = new Array();
 	}
 	
 	private function applyDefinitionReplacer (target:ObjectDefinition) : ObjectDefinition {
