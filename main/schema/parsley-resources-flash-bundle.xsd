@@ -5,7 +5,7 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://www.spicefactory.org/parsley/resources/flash/bundle">
 
-    <xs:element name="resources">
+    <xs:element name="resource-bundle">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="resource" type="resourceType" minOccurs="0" maxOccurs="unbounded"/>
