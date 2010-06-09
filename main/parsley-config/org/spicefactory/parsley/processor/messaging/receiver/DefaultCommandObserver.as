@@ -63,7 +63,7 @@ public class DefaultCommandObserver extends AbstractMethodReceiver implements Co
 		var params:Array = targetMethod.parameters;
 		if (params.length > 2) {
 			throw new ContextError("Target " + targetMethod  
-				+ ": At most two parameters allowed for a MessageHandler.");
+				+ ": At most two parameters allowed for a Command result or error handler.");
 		}
 		if (params.length == 2) {
 			return getMessageTypeFromParameter(targetMethod, 1, explicitType);
