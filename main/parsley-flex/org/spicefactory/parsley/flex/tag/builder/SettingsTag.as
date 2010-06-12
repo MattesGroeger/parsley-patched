@@ -91,15 +91,14 @@ public class SettingsTag implements ContextBuilderProcessor {
 	 */
 	public function processBuilder (builder:CompositeContextBuilder) : void {
 		var registry:FactoryRegistry = (local) ? builder.factories : GlobalFactoryRegistry.instance;
-		var eventType:String = (stageBoundLifecycle) ? Event.REMOVED_FROM_STAGE : CUSTOM_REMOVED_EVENT;
-		registry.viewManager.componentRemovedEvent = eventType;
-		registry.viewManager.viewRootRemovedEvent = eventType;
-		registry.viewManager.autowireFilter.enabled = autowireViews;
+		registry.viewSettings.autoremoveComponents = stageBoundLifecycle;
+		registry.viewSettings.autoremoveViewRoots = stageBoundLifecycle;
+		registry.viewSettings.autowireComponents = autowireViews;
 		if (unhandledMessageErrors != null) {
-			registry.messageRouter.unhandledError = unhandledMessageErrors;
+			registry.messageSettings.unhandledError = unhandledMessageErrors;
 		}
 		if (globalErrorHandler != null) {
-			registry.messageRouter.addErrorHandler(new GlobalMessageErrorHandler(globalErrorHandler));
+			registry.messageSettings.addErrorHandler(new GlobalMessageErrorHandler(globalErrorHandler));
 		}
 	}
 }

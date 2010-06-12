@@ -43,7 +43,7 @@ public class AsyncTokenCommandSupport implements ContextBuilderProcessor {
 	 */
 	public static function initialize () : void {
 		if (initialized) return;
-		GlobalFactoryRegistry.instance.messageRouter.addCommandFactory(AsyncToken, new AsyncTokenCommandFactory());
+		GlobalFactoryRegistry.instance.messageSettings.commandFactories.addCommandFactory(AsyncToken, new AsyncTokenCommandFactory());
 		initialized = true;
 	}
 	

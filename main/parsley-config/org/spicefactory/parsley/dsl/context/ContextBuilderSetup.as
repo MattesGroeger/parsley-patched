@@ -95,8 +95,8 @@ public class ContextBuilderSetup {
 	 * @param local whether only the target Context or all Contexts should be affected
 	 * @return a builder that allows to specify messaging settings 
 	 */
-	public function messagingSettings (local:Boolean = false) : MessagingSettingsBuilder {
-		var part:MessagingSettingsBuilder = new MessagingSettingsBuilder(this, local);
+	public function messageSettings (local:Boolean = false) : MessageSettingsBuilder {
+		var part:MessageSettingsBuilder = new MessageSettingsBuilder(this, local);
 		addPart(part);
 		return part;
 	}

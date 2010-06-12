@@ -22,7 +22,7 @@ import org.spicefactory.parsley.config.DecoratorAssembler;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.messaging.impl.Selector;
-import org.spicefactory.parsley.core.view.metadata.RemovedEvent;
+import org.spicefactory.parsley.core.view.metadata.Autoremove;
 import org.spicefactory.parsley.tag.core.ObjectDecoratorMarker;
 import org.spicefactory.parsley.tag.inject.*;
 import org.spicefactory.parsley.tag.lifecycle.*;
@@ -76,7 +76,7 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 		PostConstructMethodDecorator,
 		PreDestroyMethodDecorator,
 
-		RemovedEvent,
+		Autoremove,
 
 		Selector,
 		Target,

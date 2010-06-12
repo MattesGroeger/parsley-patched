@@ -25,7 +25,7 @@ public class AsyncTokenCommandTest extends TestCase {
 	
 	
 	public function testWithResult () : void {
-		GlobalFactoryRegistry.instance.messageRouter.unhandledError = ErrorPolicy.RETHROW;
+		GlobalFactoryRegistry.instance.messageSettings.unhandledError = ErrorPolicy.RETHROW;
 		
 		var executor:ServiceExecutor = new ServiceExecutor();
 		observer = new ServiceObserver();

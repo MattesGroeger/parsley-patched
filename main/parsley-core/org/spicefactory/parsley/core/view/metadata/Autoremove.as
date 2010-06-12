@@ -16,25 +16,24 @@
  
 package org.spicefactory.parsley.core.view.metadata {
 
-[Metadata(name="RemovedEvent", types="class", multiple="false")]
+[Metadata(name="Autoremove", types="class", multiple="false")]
 /**
- * Represents a metadata tag that can be used to specify the event that initiates
- * the removal from the Context for an individual component.
- * If it is not specified explicitly the default is the event type specified
- * in <code>ViewManagerFactory.componentRemovedEvent</code> in the corresponding Context,
- * which in turn defaults to <code>Event.REMOVED_FROM_STAGE</code>.
+ * Represents a metadata tag that can be used to specify whether the component should 
+ * be removed from the Context when it is removed from stage.
+ * If not specified the value from
+ * <code>ViewSettings.autoremoveComponent</code> or <code>ViewSettings.autoremoveViewRoots</code> respectively will be used.
  * 
  * @author Jens Halm
  */
-public class RemovedEvent {
+public class Autoremove {
 	
 	
 	[DefaultProperty]
 	/**
-	 * The name of the event that signals that the component should be removed
-	 * from the Context.
+	 * Indicates whether the component should 
+ 	 * be removed from the Context when it is removed from stage.
 	 */
-	public var name:String;
+	public var value:Boolean = true;
 	
 	
 }

@@ -42,7 +42,7 @@ public class TaskCommandSupport implements ContextBuilderProcessor {
 	 */
 	public static function initialize () : void {
 		if (initialized) return;
-		GlobalFactoryRegistry.instance.messageRouter.addCommandFactory(Task, new TaskCommandFactory());
+		GlobalFactoryRegistry.instance.messageSettings.commandFactories.addCommandFactory(Task, new TaskCommandFactory());
 		initialized = true;
 	}
 	

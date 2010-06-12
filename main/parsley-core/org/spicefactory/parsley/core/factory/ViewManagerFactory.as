@@ -29,39 +29,28 @@ import flash.system.ApplicationDomain;
 public interface ViewManagerFactory {
 	
 	
-	/**
-	 * The filter responsible for selecting views that should be autowired to the Context.
-	 */
+	[Deprecated(replacement="ViewSettings.autowireFilter")]
 	function get autowireFilter () : ViewAutowireFilter;
 	
+	[Deprecated]
 	function set autowireFilter (value:ViewAutowireFilter) : void;
 	
-	/**
-	 * The event type that view roots dispatch to signal that they should no longer be managed
-	 * by this instance. The default is <code>Event.REMOVED_FROM_STAGE</code>.
-	 * The effect is the same as calling <code>removeViewRoot</code> for the view dispatching the event.
-	 * This event does not need to be a bubbling event.
-	 */
+	[Deprecated(replacement="ViewSettings.autoremoveViewRoots")]
 	function get viewRootRemovedEvent () : String;
 	
+	[Deprecated]
 	function set viewRootRemovedEvent (value:String) : void;
 
-	/**
-	 * The event type that view components dispatch to signal that they wish to be
-	 * removed from the Context. The default is <code>Event.REMOVED_FROM_STAGE</code>.
-	 * This event does not need to be a bubbling event.
-	 */
+	[Deprecated(replacement="ViewSettings.autoremoveComponents")]
 	function get componentRemovedEvent () : String;
 	
+	[Deprecated]
 	function set componentRemovedEvent (value:String) : void;
 
-	/**
-	 * The bubbling event type that view components dispatch to signal that they wish to be
-	 * added to the Context. The default is <code>ViewConfigurationEvent.CONFIGURE_VIEW</code>.
-	 * This event has to bubble so that the view roots managed by this instance can listen for it.
-	 */
+	[Deprecated]
 	function get componentAddedEvent () : String;
 	
+	[Deprecated]
 	function set componentAddedEvent (value:String) : void;
 	
 	/**
@@ -69,9 +58,10 @@ public interface ViewManagerFactory {
 	 * 
 	 * @param context the Context the new ViewManager will belong to
 	 * @param domain the domain to use for reflection
+	 * @param settings the settings to pass to the ViewManager
 	 * @return a new ViewManager instance
 	 */
-	function create (context:Context, domain:ApplicationDomain) : ViewManager;
+	function create (context:Context, domain:ApplicationDomain, settings:ViewSettings) : ViewManager;
 
 	
 }

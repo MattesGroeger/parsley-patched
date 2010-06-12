@@ -16,11 +16,10 @@
 
 package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.messaging.ErrorPolicy;
+import org.spicefactory.parsley.core.factory.MessageSettings;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
-import org.spicefactory.parsley.core.messaging.command.CommandFactoryRegistry;
 import org.spicefactory.parsley.core.messaging.command.CommandManager;
 import org.spicefactory.parsley.core.messaging.command.impl.DefaultCommandManager;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
@@ -44,15 +43,13 @@ public class DefaultMessageRouter implements MessageRouter {
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param commandFactories the registry to obtain CommandFactories from
-	 * @param errorHandlers error handlers to be added to the receiver registry
-	 * @param unhandledError the policy to apply for unhandled errors
+	 * @param settings the settings this router should use
 	 */
-	function DefaultMessageRouter (commandFactories:CommandFactoryRegistry, errorHandlers:Array, unhandledError:ErrorPolicy) {
+	function DefaultMessageRouter (settings:MessageSettings) {
 		_receivers = new DefaultMessageReceiverRegistry();
 		_commandManager = new DefaultCommandManager();
-		env = new DefaultMessagingEnvironment(_commandManager, commandFactories, unhandledError);
-		for each (var handler:MessageErrorHandler in errorHandlers) {
+		env = new DefaultMessagingEnvironment(_commandManager, settings.commandFactories, settings.unhandledError);
+		for each (var handler:MessageErrorHandler in settings.errorHandlers) {
 			_receivers.addErrorHandler(handler);
 		}
 	}
@@ -93,11 +90,11 @@ public class DefaultMessageRouter implements MessageRouter {
 }
 
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
-import org.spicefactory.parsley.core.messaging.impl.MessagingEnvironment;
 import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandFactory;
 import org.spicefactory.parsley.core.messaging.command.CommandFactoryRegistry;
 import org.spicefactory.parsley.core.messaging.command.impl.DefaultCommandManager;
+import org.spicefactory.parsley.core.messaging.impl.MessagingEnvironment;
 
 class DefaultMessagingEnvironment implements MessagingEnvironment {
 

@@ -44,7 +44,7 @@ public class CinnamonCommandSupport implements ContextBuilderProcessor {
 	 */
 	public static function initialize () : void {
 		if (initialized) return;
-		GlobalFactoryRegistry.instance.messageRouter.addCommandFactory(ServiceRequest, new CinnamonCommandFactory());
+		GlobalFactoryRegistry.instance.messageSettings.commandFactories.addCommandFactory(ServiceRequest, new CinnamonCommandFactory());
 		initialized = true;
 	}
 	

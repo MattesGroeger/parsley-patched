@@ -25,7 +25,7 @@ import org.spicefactory.parsley.core.messaging.ErrorPolicy;
  * 
  * @author Jens Halm
  */
-public class MessagingSettingsBuilder implements SetupPart {
+public class MessageSettingsBuilder implements SetupPart {
 	
 	
 	private var setup:ContextBuilderSetup;
@@ -38,7 +38,7 @@ public class MessagingSettingsBuilder implements SetupPart {
 	/**
 	 * @private
 	 */
-	function MessagingSettingsBuilder (setup:ContextBuilderSetup, local:Boolean) {
+	function MessageSettingsBuilder (setup:ContextBuilderSetup, local:Boolean) {
 		this.setup = setup;
 		this.local = local;
 	}
@@ -76,10 +76,10 @@ public class MessagingSettingsBuilder implements SetupPart {
 	public function apply (builder:CompositeContextBuilder) : void {
 		var registry:FactoryRegistry = (local) ? builder.factories : GlobalFactoryRegistry.instance;
 		if (errorPolicy != null) {
-			registry.messageRouter.unhandledError = errorPolicy;
+			registry.messageSettings.unhandledError = errorPolicy;
 		}
 		if (errorHandler != null) {
-			registry.messageRouter.addErrorHandler(new GlobalMessageErrorHandler(globalErrorHandler));
+			registry.messageSettings.addErrorHandler(new GlobalMessageErrorHandler(globalErrorHandler));
 		}
 	}
 	

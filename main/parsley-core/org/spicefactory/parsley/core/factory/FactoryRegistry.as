@@ -82,6 +82,16 @@ public interface FactoryRegistry {
 	function get messageRouter () : MessageRouterFactory;
 
 	function set messageRouter (value:MessageRouterFactory) : void;
+	
+	/**
+	 * The settings to pass to the factory for the MessageRouter.
+	 */
+	function get messageSettings () : MessageSettings;
+
+	/**
+	 * The settings to pass to the factory for the ViewManager.
+	 */
+	function get viewSettings () : ViewSettings;
 
 	
 }

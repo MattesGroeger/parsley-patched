@@ -31,7 +31,7 @@ public class CommandTestBase extends ContextTestBase {
 	internal static function init () : void {
 		if (factory == null) {
 			factory = new MockCommandFactory();
-			GlobalFactoryRegistry.instance.messageRouter.addCommandFactory(MockResult, factory);
+			GlobalFactoryRegistry.instance.messageSettings.commandFactories.addCommandFactory(MockResult, factory);
 		}
 	}
 	

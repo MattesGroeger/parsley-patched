@@ -126,7 +126,7 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	public function get viewManager () : ViewManager {
 		checkState();
 		if (_viewManager == null) {
-			_viewManager =	factories.viewManager.create(context, domain);
+			_viewManager =	factories.viewManager.create(context, domain, factories.viewSettings);
 		}
 		return _viewManager;
 	}

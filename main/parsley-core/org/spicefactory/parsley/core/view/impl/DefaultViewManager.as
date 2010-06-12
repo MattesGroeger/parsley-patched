@@ -29,12 +29,12 @@ import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.FastInjectEvent;
 import org.spicefactory.parsley.core.events.ViewAutowireEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
+import org.spicefactory.parsley.core.factory.ViewSettings;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.ViewAutowireMode;
 import org.spicefactory.parsley.core.view.ViewManager;
-import org.spicefactory.parsley.core.view.metadata.RemovedEvent;
+import org.spicefactory.parsley.core.view.metadata.Autoremove;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
@@ -56,13 +56,12 @@ public class DefaultViewManager implements ViewManager {
 	
 	private static const LEGACY_CONFIGURE_EVENT:String = "configureIOC";
 	
-	private var _viewRootRemovedEvent:String = Event.REMOVED_FROM_STAGE;
-	private var _componentRemovedEvent:String = Event.REMOVED_FROM_STAGE;
-	private var _componentAddedEvent:String = ViewConfigurationEvent.CONFIGURE_VIEW;
+	private var customRemovedEvent:String = "removeView";
+	private var explicitWireEvent:String = ViewConfigurationEvent.CONFIGURE_VIEW;
 
 	private var context:Context;
 	private var domain:ApplicationDomain;
-	private var autowireFilter:ViewAutowireFilter;
+	private var settings:ViewSettings;
 	private var viewRoots:Array = new Array();
 	private var configuredViews:Dictionary = new Dictionary();
 
@@ -97,12 +96,12 @@ public class DefaultViewManager implements ViewManager {
 	 * 
 	 * @param context the Context view components should be dynamically wired to
 	 * @param domain the ApplicationDomain to use for reflection
-	 * @param autowireFilter the filter to select view object applicable for autowiring
+	 * @param settings the settings this ViewManager should use
 	 */
-	function DefaultViewManager (context:Context, domain:ApplicationDomain, autowireFilter:ViewAutowireFilter) {
+	function DefaultViewManager (context:Context, domain:ApplicationDomain, settings:ViewSettings) {
 		this.context = context;
 		this.domain = domain;
-		this.autowireFilter = autowireFilter;
+		this.settings = settings;
 	}
 
 	
@@ -123,6 +122,14 @@ public class DefaultViewManager implements ViewManager {
 			context.removeEventListener(ContextEvent.INITIALIZED, handleCachedFastInjectEvents);
 			cachedFastInjectEvents = new Array();
 		}
+	}
+	
+	private function isAutoremove (target:Object, flag:Boolean) : Boolean {
+		if (!(target is DisplayObject)) return false;
+		var info:ClassInfo = ClassInfo.forInstance(target, domain);
+		return (info.hasMetadata(Autoremove)) 
+				? (info.getMetadata(Autoremove)[0] as Autoremove).value 
+				: flag; 
 	}
 	
 	/**
@@ -169,42 +176,37 @@ public class DefaultViewManager implements ViewManager {
 	}
 	
 	private function addListeners (viewRoot:DisplayObject) : void {
-		var info:ClassInfo = ClassInfo.forInstance(viewRoot, domain);
-		var removedEvent:String = 
-				(info.hasMetadata(RemovedEvent)) 
-				? (info.getMetadata(RemovedEvent)[0] as RemovedEvent).name
-				: viewRootRemovedEvent; 
-		if (removedEvent == Event.REMOVED_FROM_STAGE) {
+		if (isAutoremove(viewRoot, settings.autoremoveViewRoots)) {
 			stageEventFilter.addTarget(viewRoot, filteredViewRootRemoved, ignoredFilteredAddedToStage);
 		}
 		else {
-			viewRoot.addEventListener(removedEvent, viewRootRemoved);
+			viewRoot.addEventListener(customRemovedEvent, viewRootRemoved);
 		}
-		viewRoot.addEventListener(componentAddedEvent, handleConfigurationEvent);
+		viewRoot.addEventListener(explicitWireEvent, handleConfigurationEvent);
 		viewRoot.addEventListener(LEGACY_CONFIGURE_EVENT, handleConfigurationEvent);
 		viewRoot.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
 		viewRoot.addEventListener(FastInjectEvent.FAST_INJECT, handleFastInject);
-		if (autowireFilter.enabled) {
-			viewRoot.addEventListener(autowireFilter.eventType, prefilterView, true);
-			viewRoot.addEventListener(autowireFilter.eventType, prefilterView);
+		if (settings.autowireComponents) {
+			viewRoot.addEventListener(settings.autowireFilter.eventType, prefilterView, true);
+			viewRoot.addEventListener(settings.autowireFilter.eventType, prefilterView);
 			viewRoot.addEventListener(ViewAutowireEvent.AUTOWIRE, handleAutowireEvent);
 		}
 	}
 	
 	private function handleRemovedViewRoot (viewRoot:DisplayObject) : void {
-		if (viewRootRemovedEvent == Event.REMOVED_FROM_STAGE) {
+		if (isAutoremove(viewRoot, settings.autoremoveViewRoots)) {
 			stageEventFilter.removeTarget(viewRoot);
 		}
 		else {
-	 		viewRoot.removeEventListener(viewRootRemovedEvent, viewRootRemoved);
+	 		viewRoot.removeEventListener(customRemovedEvent, viewRootRemoved);
 		}
-		viewRoot.removeEventListener(componentAddedEvent, handleConfigurationEvent);
+		viewRoot.removeEventListener(explicitWireEvent, handleConfigurationEvent);
 		viewRoot.removeEventListener(LEGACY_CONFIGURE_EVENT, handleConfigurationEvent);
 		viewRoot.removeEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
 		viewRoot.removeEventListener(FastInjectEvent.FAST_INJECT, handleFastInject);
-		if (autowireFilter.enabled) {
-			viewRoot.removeEventListener(autowireFilter.eventType, prefilterView, true);
-			viewRoot.removeEventListener(autowireFilter.eventType, prefilterView);
+		if (settings.autowireComponents) {
+			viewRoot.removeEventListener(settings.autowireFilter.eventType, prefilterView, true);
+			viewRoot.removeEventListener(settings.autowireFilter.eventType, prefilterView);
 			viewRoot.removeEventListener(ViewAutowireEvent.AUTOWIRE, handleAutowireEvent);
 		}
 		delete globalViewRootRegistry[viewRoot];
@@ -230,7 +232,7 @@ public class DefaultViewManager implements ViewManager {
 			prefilterCachePurger.addDelegate(new Delegate(purgePrefilterCache));
 		}
 		var view:DisplayObject = event.target as DisplayObject;
-		if (autowireFilter.prefilter(view)) {
+		if (settings.autowireFilter.prefilter(view)) {
 			view.dispatchEvent(new ViewAutowireEvent());
 		}
 	}
@@ -257,7 +259,7 @@ public class DefaultViewManager implements ViewManager {
 	private function processAutowireEvent (event:Event) : void {
 		var view:DisplayObject = event.target as DisplayObject;
 		if (configuredViews[view] != undefined) return;
-		var mode:ViewAutowireMode = autowireFilter.filter(view);
+		var mode:ViewAutowireMode = settings.autowireFilter.filter(view);
 		if (mode == ViewAutowireMode.ALWAYS) {
 			configureView(view, getDefinition(view, view.name));
 		}
@@ -311,16 +313,11 @@ public class DefaultViewManager implements ViewManager {
 	protected function configureView (target:Object, definition:DynamicObjectDefinition) : void {
 		log.debug("Add object '{0}' to {1}", target, context);
 		if (target is IEventDispatcher) {
-			var info:ClassInfo = ClassInfo.forInstance(target, domain);
-			var removedEvent:String = 
-					(info.hasMetadata(RemovedEvent)) 
-					? (info.getMetadata(RemovedEvent)[0] as RemovedEvent).name
-					: componentRemovedEvent; 
-			if (removedEvent == Event.REMOVED_FROM_STAGE && target is DisplayObject) {
+			if (isAutoremove(target, settings.autoremoveComponents)) {
 				stageEventFilter.addTarget(target as DisplayObject, filteredComponentRemoved, ignoredFilteredAddedToStage);
 			}
 			else {
-				IEventDispatcher(target).addEventListener(removedEvent, componentRemoved);
+				IEventDispatcher(target).addEventListener(customRemovedEvent, componentRemoved);
 			}
 		}
 		var dynObject:DynamicObject = context.addDynamicObject(target, definition);
@@ -371,11 +368,11 @@ public class DefaultViewManager implements ViewManager {
 	
 	private function filteredComponentRemoved (view:IEventDispatcher) : void {
 		log.debug("Remove object '{0}' from {1}", view, context);
-		if (componentRemovedEvent == Event.REMOVED_FROM_STAGE && view is DisplayObject) {
+		if (isAutoremove(view, settings.autoremoveComponents)) {
 			stageEventFilter.removeTarget(view as DisplayObject);
 		}
 		else {
-			view.removeEventListener(componentRemovedEvent, componentRemoved);
+			view.removeEventListener(customRemovedEvent, componentRemoved);
 		}
 		var dynObject:DynamicObject = configuredViews[view];
 		if (dynObject == null) return;
@@ -423,39 +420,6 @@ public class DefaultViewManager implements ViewManager {
 		}
 	}
 	
-	
-	/**
-	 * @copy org.spicefactory.parsley.core.factory.ViewManagerFactory#viewRootRemovedEvent
-	 */
-	public function get viewRootRemovedEvent () : String {
-		return _viewRootRemovedEvent;
-	}
-	
-	public function set viewRootRemovedEvent (viewRootRemovedEvent:String) : void {
-		_viewRootRemovedEvent = viewRootRemovedEvent;
-	}
-	
-	/**
-	 * @copy org.spicefactory.parsley.core.factory.ViewManagerFactory#componentRemovedEvent
-	 */
-	public function get componentRemovedEvent () : String {
-		return _componentRemovedEvent;
-	}
-	
-	public function set componentRemovedEvent (componentRemovedEvent:String) : void {
-		_componentRemovedEvent = componentRemovedEvent;
-	}
-	
-	/**
-	 * @copy org.spicefactory.parsley.core.factory.ViewManagerFactory#componentAddedEvent
-	 */
-	public function get componentAddedEvent () : String {
-		return _componentAddedEvent;
-	}
-	
-	public function set componentAddedEvent (componentAddedEvent:String) : void {
-		_componentAddedEvent = componentAddedEvent;
-	}
 	
 	
 }

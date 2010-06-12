@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.view.impl {
 import org.spicefactory.lib.errors.AbstractMethodError;
+import org.spicefactory.parsley.core.factory.ViewSettings;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.ViewAutowireMode;
 
@@ -31,19 +32,27 @@ import flash.events.Event;
 public class AbstractViewAutowireFilter implements ViewAutowireFilter {
 	
 	
-	private var _enabled:Boolean = true;
 	private var _eventType:String = Event.ADDED_TO_STAGE;
+	private var settings:ViewSettings;
+	
+	
+	/**
+	 * @private
+	 */
+	function AbstractViewAutowireFilter (settings:ViewSettings) {
+		this.settings = settings;
+	}
 
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function get enabled () : Boolean {
-		return _enabled;
+		return settings.autowireComponents;
 	}
 	
 	public function set enabled (value:Boolean) : void {
-		_enabled = value;
+		settings.autowireComponents = value;
 	}
 	
 	/**

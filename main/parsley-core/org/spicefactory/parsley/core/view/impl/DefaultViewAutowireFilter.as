@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.view.impl {
+import org.spicefactory.parsley.core.factory.ViewSettings;
 import org.spicefactory.parsley.core.view.ViewAutowireMode;
 
 import flash.display.DisplayObject;
@@ -37,7 +38,8 @@ public class DefaultViewAutowireFilter extends AbstractViewAutowireFilter {
 	 * 
 	 * @param excludedTypes the types to exclude in the prefilter method
 	 */
-	function DefaultViewAutowireFilter (excludedTypes:RegExp = null) {
+	function DefaultViewAutowireFilter (settings:ViewSettings, excludedTypes:RegExp = null) {
+		super(settings);
 		if (excludedTypes) this.excludedTypes = excludedTypes;
 	}
 

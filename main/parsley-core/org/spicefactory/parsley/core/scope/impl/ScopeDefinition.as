@@ -73,7 +73,7 @@ public class ScopeDefinition {
 	 */
 	public function get lifecycleEventRouter () : MessageRouter {
 		if (_lifecycleEventRouter == null) {
-			_lifecycleEventRouter = factories.messageRouter.create();
+			_lifecycleEventRouter = factories.messageRouter.create(factories.messageSettings.unhandledError);
 		}
 		return _lifecycleEventRouter;
 	}
@@ -83,7 +83,7 @@ public class ScopeDefinition {
 	 */
 	public function get messageRouter () : MessageRouter {
 		if (_messageRouter == null) {
-			_messageRouter = factories.messageRouter.create();
+			_messageRouter = factories.messageRouter.create(factories.messageSettings.unhandledError);
 		}
 		return _messageRouter;
 	}

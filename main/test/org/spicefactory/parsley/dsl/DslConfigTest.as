@@ -1,12 +1,12 @@
 package org.spicefactory.parsley.dsl {
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import flexunit.framework.TestCase;
 
+import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 import org.spicefactory.parsley.core.factory.MessageRouterFactory;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.dsl.context.ContextBuilder;
 import org.spicefactory.parsley.testmodel.SimpleInjectionTarget;
 
@@ -23,7 +23,7 @@ public class DslConfigTest extends TestCase {
 				= new MessageRouterFactoryDecorator(delegate);
 		try {
 			ContextBuilder.newSetup()
-					.messagingSettings().unhandledError(ErrorPolicy.ABORT)
+					.messageSettings().unhandledError(ErrorPolicy.ABORT)
 					.factories(true).messageRouter(factory)
 					.newBuilder()
 					.build();		
@@ -61,8 +61,6 @@ public class DslConfigTest extends TestCase {
 				(targetInstance.fromConstructor !== targetInstance.fromProperty 
 				&& targetInstance.fromMethod !== targetInstance.fromProperty));	
 	}
-	
-	
 }
 }
 
@@ -91,9 +89,9 @@ class MessageRouterFactoryDecorator implements MessageRouterFactory {
 		delegate.addCommandFactory(type, factory);
 	}
 	
-	public function create () : MessageRouter {
+	public function create (unhandledError:ErrorPolicy) : MessageRouter {
 		invocationCount++;
-		return delegate.create();
+		return delegate.create(unhandledError);
 	}
 	
 	public function get unhandledError () : ErrorPolicy {

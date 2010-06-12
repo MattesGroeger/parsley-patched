@@ -35,6 +35,15 @@ public interface CommandFactoryRegistry {
 	 */
 	function getCommandFactory (returnType:Class) : CommandFactory;
 	
+	/**
+	 * Adds a factory that creates Command instances for all command methods
+	 * that have the specified return type.
+	 * 
+	 * @param returnType the return type of the command methods the specified factory is responsible for
+	 * @param factory the factory to add
+	 */
+	function addCommandFactory (returnType:Class, factory:CommandFactory) : void;
+	
 	
 }
 }

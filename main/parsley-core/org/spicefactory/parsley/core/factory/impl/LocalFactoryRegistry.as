@@ -15,15 +15,17 @@
  */
 
 package org.spicefactory.parsley.core.factory.impl {
-import org.spicefactory.parsley.core.factory.ScopeExtensionRegistry;
-import org.spicefactory.parsley.core.factory.ScopeManagerFactory;
 import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
 import org.spicefactory.parsley.core.factory.ContextFactory;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.factory.MessageRouterFactory;
+import org.spicefactory.parsley.core.factory.MessageSettings;
 import org.spicefactory.parsley.core.factory.ObjectDefinitionRegistryFactory;
 import org.spicefactory.parsley.core.factory.ObjectLifecycleManagerFactory;
+import org.spicefactory.parsley.core.factory.ScopeExtensionRegistry;
+import org.spicefactory.parsley.core.factory.ScopeManagerFactory;
 import org.spicefactory.parsley.core.factory.ViewManagerFactory;
+import org.spicefactory.parsley.core.factory.ViewSettings;
 
 /**
  * Local registry for all factories responsible for creating the individual services of the Parsley IOC kernel.
@@ -47,6 +49,8 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 	private var _scopeManager:ScopeManagerFactory;
 	private var _messageRouter:MessageRouterFactory;
 	private var _scopeExtensions:DefaultScopeExtensionRegistry = new DefaultScopeExtensionRegistry();
+	private var _messageSettings:DefaultMessageSettings = new DefaultMessageSettings();
+	private var _viewSettings:DefaultViewSettings = new DefaultViewSettings();
 	
 	private var parent:FactoryRegistry;
 	
@@ -60,6 +64,8 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 	public function activate (parent:FactoryRegistry) : void {
 		this.parent = parent;
 		_scopeExtensions.parent = parent.scopeExtensions;
+		_messageSettings.parent = parent.messageSettings;
+		_viewSettings.parent = parent.viewSettings;
 	}
 
 	
@@ -146,6 +152,21 @@ public class LocalFactoryRegistry implements FactoryRegistry {
 	public function get scopeExtensions () : ScopeExtensionRegistry {
 		return _scopeExtensions;
 	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get messageSettings () : MessageSettings {
+		return _messageSettings;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get viewSettings () : ViewSettings {
+		return _viewSettings;
+	}
+	
 	
 }
 }

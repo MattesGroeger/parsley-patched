@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
-import org.spicefactory.parsley.core.messaging.MessageRouter;
-import org.spicefactory.parsley.core.messaging.command.CommandFactory;
+import org.spicefactory.parsley.core.messaging.command.CommandFactoryRegistry;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 
 /**
@@ -25,27 +24,38 @@ import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
  * 
  * @author Jens Halm
  */
-public interface MessageRouterFactory {
+public interface MessageSettings {
+
 	
-	
-	[Deprecated(replacement="MessagingSettings.unhandledError")]
+	/**
+	 * The policy to apply for unhandled errors. An unhandled error
+	 * is an error thrown by a message handler where no matching error handler
+	 * was registered for.
+	 */
 	function get unhandledError () : ErrorPolicy;
 
 	function set unhandledError (policy:ErrorPolicy) : void;
 	
-	[Deprecated(replacement="MessagingSettings.addErrorHandler")]
+	/**
+	 * Adds an error handler that will be applied to all routers created by this factory.
+	 * 
+	 * @param target the error handler to add
+	 */
 	function addErrorHandler (target:MessageErrorHandler) : void;
-
-	[Deprecated(replacement="MessagingSettings.addCommandFactory")]
-	function addCommandFactory (type:Class, factory:CommandFactory) : void;
 	
 	/**
-	 * Creates a new MessageRouter instance.
-	 * 
-	 * @param unhandledError the policy to apply for unhandled errors
-	 * @return a new MessageRouter instance
+	 * All error handlers that were registered for these settings.
+	 * This Array is read-only, modifications do not have any effect on
+	 * the registered error handlers. Use <code>addErrorHandler</code> to
+	 * register a new handler.
 	 */
-	function create (unhandledError:ErrorPolicy) : MessageRouter;
+	function get errorHandlers () : Array;
+
+	/**
+	 * The registry for command factories.
+	 */
+	function get commandFactories () : CommandFactoryRegistry;
+	
 	
 	
 }

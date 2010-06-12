@@ -26,11 +26,7 @@ import flash.display.DisplayObject;
  */
 public interface ViewAutowireFilter {
 	
-	/**
-	 * Indicates whether autowiring of views is enabled.
-	 * The default is false which means that only views with an explicit <code>&lt;Configure&gt;<code> tag
-	 * will be wired to the Context.
-	 */
+	[Deprecated(replacement="ViewSettings.autowireComponents")]
 	function get enabled () : Boolean;
 	
 	function set enabled (value:Boolean) : void;

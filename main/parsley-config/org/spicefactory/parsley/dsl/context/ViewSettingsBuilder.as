@@ -15,12 +15,11 @@
  */
 
 package org.spicefactory.parsley.dsl.context {
+import org.spicefactory.lib.util.Flag;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
-
-import flash.events.Event;
 
 /**
  * Builder for settings related to view wiring.
@@ -132,34 +131,21 @@ public class ViewSettingsBuilder implements SetupPart {
 	public function apply (builder:CompositeContextBuilder) : void {
 		var registry:FactoryRegistry = (local) ? builder.factories : GlobalFactoryRegistry.instance;
 		if (_autowireFilter != null) {
-			registry.viewManager.autowireFilter = _autowireFilter;
+			registry.viewSettings.autowireFilter = _autowireFilter;
 		}
 		if (_autowireComponents != null) {
-			registry.viewManager.autowireFilter.enabled = _autowireComponents.value;
+			registry.viewSettings.autowireComponents = _autowireComponents.value;
 		}
 		if (_autoremoveComponents != null) {
-			registry.viewManager.componentRemovedEvent = getEvent(_autoremoveComponents);
+			registry.viewSettings.autoremoveComponents = _autoremoveComponents.value;
 		}
 		if (_autoremoveViewRoots != null) {
-			registry.viewManager.viewRootRemovedEvent = getEvent(_autoremoveViewRoots);
+			registry.viewSettings.autoremoveViewRoots = _autoremoveViewRoots.value;
 		}
-	}
-	
-	private function getEvent (flag:Flag) : String {
-		return (flag.value) ? Event.REMOVED_FROM_STAGE : "removeView";
 	}
 	
 	
 }
 }
 
-class Flag {
-	
-	public var value:Boolean;
-	
-	function Flag  (value:Boolean) {
-		this.value = value;
-	}
-	
-}
 

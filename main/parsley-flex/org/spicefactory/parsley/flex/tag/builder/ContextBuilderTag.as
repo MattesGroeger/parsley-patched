@@ -159,7 +159,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		}
 		super.initialized(document, id);
 		if (_context == null) {
-			autowireViewEventType = GlobalFactoryRegistry.instance.viewManager.autowireFilter.eventType;
+			autowireViewEventType = GlobalFactoryRegistry.instance.viewSettings.autowireFilter.eventType;
 			addViewRootListeners(DisplayObject(document));
 		}
 	}
@@ -243,7 +243,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		}
 		for each (var prefilterTarget:Object in cachedAutowirePrefilterTargets) {
 			var view:DisplayObject = DisplayObject(prefilterTarget);
-			var autowireFilter:ViewAutowireFilter = GlobalFactoryRegistry.instance.viewManager.autowireFilter;
+			var autowireFilter:ViewAutowireFilter = GlobalFactoryRegistry.instance.viewSettings.autowireFilter;
 			if (autowireFilter.prefilter(view)) {
 				view.dispatchEvent(new ViewAutowireEvent());
 			}
