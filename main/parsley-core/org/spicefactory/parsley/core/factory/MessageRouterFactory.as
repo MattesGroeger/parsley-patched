@@ -36,7 +36,7 @@ public interface MessageRouterFactory {
 	[Deprecated(replacement="MessagingSettings.addErrorHandler")]
 	function addErrorHandler (target:MessageErrorHandler) : void;
 
-	[Deprecated(replacement="MessagingSettings.addCommandFactory")]
+	[Deprecated(replacement="MessagingSettings.commandFactories.addCommandFactory")]
 	function addCommandFactory (type:Class, factory:CommandFactory) : void;
 	
 	/**
