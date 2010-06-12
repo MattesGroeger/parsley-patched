@@ -50,6 +50,7 @@
 	<component id="Instance" class="org.spicefactory.parsley.flex.tag.builder.InstanceTag"/>
 	<component id="Scope" class="org.spicefactory.parsley.flex.tag.builder.ScopeTag"/>
 	<component id="Settings" class="org.spicefactory.parsley.flex.tag.builder.SettingsTag"/>
+	<component id="ViewSettings" class="org.spicefactory.parsley.flex.tag.builder.ViewSettingsTag"/>
 </componentPackage>
 
 
