@@ -5,6 +5,7 @@ import org.spicefactory.lib.expr.ExpressionTest;
 import org.spicefactory.lib.logging.LoggingTest;
 import org.spicefactory.lib.reflect.ReflectionTestBase;
 import org.spicefactory.lib.task.TaskTest;
+import org.spicefactory.lib.xml.MetadataMapperTest;
 import org.spicefactory.lib.xml.PropertyMapperTest;
 
 public class SpicelibTestSuite {
@@ -17,6 +18,7 @@ public class SpicelibTestSuite {
 		suite.addTestSuite(TaskTest);
 		suite.addTestSuite(LoggingTest);
 		suite.addTestSuite(PropertyMapperTest);
+		suite.addTestSuite(MetadataMapperTest);
 		return suite;
 	}
 	

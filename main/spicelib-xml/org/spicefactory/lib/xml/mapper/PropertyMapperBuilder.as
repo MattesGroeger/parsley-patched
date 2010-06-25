@@ -38,6 +38,10 @@ import flash.utils.Dictionary;
  * Use the various <code>mapXXX</code> methods to create a mapper that maps properties of a class
  * to XML attributes, child elements or text nodes.</p>
  * 
+ * <p>This class is primarily intended for internal use. In most cases the most convenient way to create
+ * mappings is the use of the <code>XmlObjectMappings</code> class and its DSL to quickly set up mappings
+ * that support metadata configuration.</p>
+ * 
  * @author Jens Halm
  */
 public class PropertyMapperBuilder {
@@ -50,11 +54,11 @@ public class PropertyMapperBuilder {
 	public static var defaultNamingStrategy:NamingStrategy = new DefaultNamingStrategy();
 
 
-	private var namingStrategy:NamingStrategy;
+	private var _namingStrategy:NamingStrategy;
 	
 	private var _objectType:ClassInfo;
 	private var _elementName:QName;
-	
+
 	
 	private var _ignoreUnmappedAttributes:Boolean = false;
 	private var _ignoreUnmappedChildren:Boolean = false;
@@ -76,11 +80,11 @@ public class PropertyMapperBuilder {
 	 */
 	function PropertyMapperBuilder (objectType:Class, elementName:QName, namingStrategy:NamingStrategy = null,
 			domain:ApplicationDomain = null) {
-		this._objectType = ClassInfo.forClass(objectType, domain);
-		this._elementName = elementName;
-		this.namingStrategy = (namingStrategy != null) ? namingStrategy : defaultNamingStrategy;
+		_objectType = ClassInfo.forClass(objectType, domain);
+		_elementName = elementName;
+		_namingStrategy = (namingStrategy != null) ? namingStrategy : defaultNamingStrategy;
 	}
-	
+
 	
 	/**
 	 * The mapped object type.
@@ -94,6 +98,13 @@ public class PropertyMapperBuilder {
 	 */
 	public function get elementName () : QName {
 		return _elementName;
+	}	
+	
+	/**
+	 * The naming strategy to use for transforming property names to XML attribute and element names.
+	 */
+	public function get namingStrategy () : NamingStrategy {
+		return _namingStrategy;
 	}	
 
 	
@@ -120,10 +131,27 @@ public class PropertyMapperBuilder {
 		_ignoredProperties[propertyName] = true;
 	}
 	
-	private function isMappableProperty (property:Property) : Boolean {
+	/**
+	 * Checks whether the specified property can still be mapped.
+	 * Returns false if the specified property has already been mapped or if 
+	 * it has been added to the list of properties that should be ignored.
+	 * 
+	 * @param property the property to check
+	 * @return true if the specified property can still be mapped
+	 */
+	protected function isMappableProperty (property:Property) : Boolean {
 		return (property.writable 
 				&& propertyHandlerMap[property.name] == undefined 
 				&& _ignoredProperties[property.name] == undefined);
+	}
+	
+	/**
+	 * Updates the XML element name to apply to this mapping.
+	 * 
+	 * @param newName the new name to apply to this mapping
+	 */
+	protected function updateElementName (newName:QName) : void {
+		_elementName = newName;
 	}
 
 	/**

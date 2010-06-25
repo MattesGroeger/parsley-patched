@@ -326,14 +326,5 @@ public class PropertyMapperTest extends TestCase {
 	}
 
 
-	
-	public function testDictionary () : void {
-		var d:Dictionary = new Dictionary();
-		var b:Boolean = (d["foo"] != undefined);
-		var o:Object = new Object();
-		b = (d[o] != undefined);
-		var n:QName = new QName("", "foo");
-		b = (d[n] != undefined);
-	}
 }
 }

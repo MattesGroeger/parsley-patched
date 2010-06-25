@@ -34,7 +34,8 @@ public class DefaultNamingStrategy implements NamingStrategy {
 		for (var i:int = 0; i < actionScriptName.length; i++) {
 			var c:String = actionScriptName.charAt(i);
 			if (c >= "A" && c <= "Z") {
-				xmlName += "-" + c.toLowerCase();
+				if (i > 0) xmlName += "-";
+				xmlName += c.toLowerCase();
 			}
 			else {
 				xmlName += c;

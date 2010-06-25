@@ -3,8 +3,8 @@ package org.spicefactory.lib.xml.model {
 /**
  * @author Jens Halm
  */
-public class ChildA implements InterfaceA {
-	
+public class ChildC {
+
 	[Required]
 	public var name:String;
 	
