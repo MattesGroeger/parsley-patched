@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema elementFormDefault="qualified"
-    xmlns="http://www.spicefactory.org/parsley/logging/flex"
-    xmlns:tns="http://www.spicefactory.org/parsley/logging/flex"
+    xmlns="http://www.spicefactory.org/parsley/flex/logging"
+    xmlns:tns="http://www.spicefactory.org/parsley/flex/logging"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://www.spicefactory.org/parsley/logging/flex">
+    targetNamespace="http://www.spicefactory.org/parsley/flex/logging">
 
     <xs:element name="target">
         <xs:complexType>
