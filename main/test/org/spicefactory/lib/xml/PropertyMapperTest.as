@@ -1,8 +1,10 @@
 package org.spicefactory.lib.xml {
 import flexunit.framework.TestCase;
 
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.mapper.Choice;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
+import org.spicefactory.lib.xml.mapper.SimpleValueMapper;
 import org.spicefactory.lib.xml.model.ChildA;
 import org.spicefactory.lib.xml.model.ChildB;
 import org.spicefactory.lib.xml.model.ClassWithChild;
@@ -10,7 +12,6 @@ import org.spicefactory.lib.xml.model.ClassWithChildren;
 import org.spicefactory.lib.xml.model.SimpleClass;
 
 import flash.events.Event;
-import flash.utils.Dictionary;
 
 /**
  * @author Jens Halm
@@ -324,7 +325,19 @@ public class PropertyMapperTest extends TestCase {
 		assertTrue("Expected ChildA as child property", cwc.child != null);
 		assertEquals("Unexpected name Property", "foo", cwc.child.name);
 	}
-
-
+	
+	public function testSimpleMapper () : void {
+		var xml:XML = <tag>
+			<child>foo</child>
+		</tag>;
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
+		builder.mapToChildElement("stringProp", new SimpleValueMapper(ClassInfo.forClass(String), new QName("child")));
+		var mapper:XmlObjectMapper = builder.build();
+		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		var sc:SimpleClass = SimpleClass(obj);
+		assertEquals("Unexpected String Property", "foo", sc.stringProp);
+	}
+	
 }
 }
