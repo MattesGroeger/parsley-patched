@@ -16,11 +16,9 @@
 
 package org.spicefactory.lib.xml.mapper {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.xml.MappingError;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.lib.xml.XmlValidationError;
-import org.spicefactory.lib.xml.mapper.PropertyHandler;
 
 import flash.utils.Dictionary;
 
