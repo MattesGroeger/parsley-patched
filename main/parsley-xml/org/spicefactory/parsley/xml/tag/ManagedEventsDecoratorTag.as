@@ -18,6 +18,7 @@ package org.spicefactory.parsley.xml.tag {
 import org.spicefactory.lib.reflect.mapping.MappedProperty;
 import org.spicefactory.parsley.tag.messaging.ManagedEventsDecorator;
 
+[XmlMapping(elementName="managed-events")]
 /**
  * Represents the managed-events XML tag.
  * 
@@ -26,6 +27,7 @@ import org.spicefactory.parsley.tag.messaging.ManagedEventsDecorator;
 public class ManagedEventsDecoratorTag extends ManagedEventsDecorator {
 
 	
+	[Attribute("names")]
 	/**
 	 * The names of the events to manage as a single String concatenated with a ','.
 	 */

@@ -22,6 +22,7 @@ import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
 import org.spicefactory.parsley.tag.model.ObjectIdReference;
 import org.spicefactory.parsley.tag.model.ObjectTypeReference;
 
+[XmlMapping(elementName="object-ref")]
 /**
  * Represents a reference to another object in the container (either by id or by type) in MXML or XML configuration.
  * The <code>idRef</code> and <code>typeRef</code> properties are mutually exclusive.

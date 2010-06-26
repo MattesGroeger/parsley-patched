@@ -19,6 +19,7 @@ import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="CommandStatus", types="property", multiple="false")]
+[XmlMapping(elementName="command-status")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on properties that serve as a flag
  * for indicating whether any matching asynchronous command is currently active.

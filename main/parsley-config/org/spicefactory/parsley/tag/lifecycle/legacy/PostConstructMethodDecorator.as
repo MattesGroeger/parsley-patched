@@ -22,6 +22,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
 [Deprecated(replacement="InitMethodDecorator")]
 [Metadata(name="PostConstruct", types="method")]
+[XmlMapping(elementName="post-construct")]
 /**
  * @author Jens Halm
  */

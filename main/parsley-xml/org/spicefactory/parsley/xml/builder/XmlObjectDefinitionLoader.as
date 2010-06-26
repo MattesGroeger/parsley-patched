@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml.builder {
+import org.spicefactory.lib.xml.mapper.XmlObjectMappings;
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.expr.ExpressionContext;
 import org.spicefactory.lib.logging.LogContext;
@@ -71,9 +72,14 @@ public class XmlObjectDefinitionLoader extends EventDispatcher {
 	function XmlObjectDefinitionLoader (files:Array, expressionContext:ExpressionContext) {
 		this.files = files;
 		this.expressionContext = expressionContext;
-		var mapperFactory:XmlObjectDefinitionMapperFactory = new XmlObjectDefinitionMapperFactory();
-		variableMapper = mapperFactory.createVariableMapper();
-		includeMapper = mapperFactory.createIncludeMapper();
+		variableMapper = XmlObjectMappings
+			.forNamespace(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI)
+			.withRootElement(Variable)
+			.build();
+		includeMapper = XmlObjectMappings
+			.forNamespace(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI)
+			.withRootElement(Include)
+			.build();
 	}
 	
 	

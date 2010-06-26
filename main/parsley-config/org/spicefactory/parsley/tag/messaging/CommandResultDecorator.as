@@ -3,7 +3,7 @@ import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="CommandResult", types="method", multiple="true")]
-
+[XmlMapping(elementName="command-result")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on methods which wish to be invoked when
  * the result of a matching asynchronous command execution has been received.

@@ -19,6 +19,7 @@ import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="Init", types="method")]
+[XmlMapping(elementName="init")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked after
  * the object has been created and fully configured.

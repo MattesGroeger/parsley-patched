@@ -21,7 +21,7 @@ import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.parsley.config.RootConfigurationElement;
 
 [DefaultProperty("decorators")]
-
+[XmlMapping(elementName="object")]
 /**
  * Represents the root object tag for an object definition in MXML or XML configuration.
  * 
@@ -57,6 +57,7 @@ public class RootObjectTag implements RootConfigurationElement {
 	public var order:int = int.MAX_VALUE;
 
 	[ArrayElementType("org.spicefactory.parsley.tag.core.ObjectDecoratorMarker")]
+	[ChoiceId("decorators")]
 	/**
 	 * The ObjectDefinitionDecorator instances added to this definition.
 	 */

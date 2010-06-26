@@ -20,7 +20,6 @@ import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.impl.MessageDispatcher;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
-import org.spicefactory.parsley.processor.messaging.ManagedEventsProcessor;
 
 [Metadata(name="ManagedEvents", types="class", multiple="true")]
 /**
@@ -36,6 +35,7 @@ public class ManagedEventsDecorator implements ObjectDefinitionDecorator {
 
 
 	[DefaultProperty]
+	[Ignore]
 	/**
 	 * The event names/types of all events dispatched by the annotated class that should be managed by Parsley.
 	 */

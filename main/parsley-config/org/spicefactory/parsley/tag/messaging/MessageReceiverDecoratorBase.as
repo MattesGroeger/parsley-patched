@@ -36,6 +36,7 @@ public class MessageReceiverDecoratorBase {
 	 */
 	public var type:Class;
 
+	[Attribute]
 	/**
 	 * An optional selector value to be used in addition to selecting messages by type.
 	 * Will be checked against the value of the property in the message marked with <code>[Selector]</code>

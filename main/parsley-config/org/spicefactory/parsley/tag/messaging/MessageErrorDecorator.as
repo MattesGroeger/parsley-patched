@@ -19,6 +19,7 @@ import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="MessageError", types="method", multiple="true")]
+[XmlMapping(elementName="message-error")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on methods that want to handle errors that were thrown
  * by a regular message target or an interceptor.

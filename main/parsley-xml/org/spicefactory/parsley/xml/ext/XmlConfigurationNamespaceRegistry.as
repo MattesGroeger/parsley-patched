@@ -22,18 +22,9 @@ package org.spicefactory.parsley.xml.ext {
  */
 public class XmlConfigurationNamespaceRegistry {
 	
-	private static const namespaces:Array = new Array();	
-
 	public static function registerNamespace (uri:String) : XmlConfigurationNamespace {
-		var ns:XmlConfigurationNamespace = new XmlConfigurationNamespace(uri);
-		namespaces.push(ns);
-		return ns;
+		return new XmlConfigurationNamespace(uri);
 	}
-	
-	public static function getRegisteredNamespaces () : Array {
-		return namespaces.concat();
-	}
-	
 	
 }
 }

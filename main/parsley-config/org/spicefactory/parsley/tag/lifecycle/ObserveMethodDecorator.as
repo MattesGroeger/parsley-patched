@@ -21,6 +21,7 @@ import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="Observe", types="method", multiple="true")]
+[XmlMapping(elementName="observe")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked for
  * lifecycle events of other objects.
@@ -41,6 +42,7 @@ public class ObserveMethodDecorator implements ObjectDefinitionDecorator {
 	 */
 	public var scope:String = ScopeName.GLOBAL;
 	
+	[Attribute]
 	/**
 	 * The object lifecycle phase to listen for. Default is postInit.
 	 */

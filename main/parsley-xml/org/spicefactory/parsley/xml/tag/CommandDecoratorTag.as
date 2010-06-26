@@ -18,6 +18,7 @@ package org.spicefactory.parsley.xml.tag {
 import org.spicefactory.lib.reflect.mapping.MappedProperty;
 import org.spicefactory.parsley.tag.messaging.CommandDecorator;
 
+[XmlMapping(elementName="command")]
 /**
  * Represents the command XML tag.
  * 
@@ -26,6 +27,7 @@ import org.spicefactory.parsley.tag.messaging.CommandDecorator;
 public class CommandDecoratorTag extends CommandDecorator {
 
 	
+	[Attribute("message-properties")]
 	/**
 	 * The names of the properties of the message instance to be applied as method parameters on
 	 * the target handler method as a single String concatenated with a ','.

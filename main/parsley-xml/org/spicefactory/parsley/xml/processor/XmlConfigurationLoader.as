@@ -21,6 +21,7 @@ import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.XmlProcessorContext;
+import org.spicefactory.lib.xml.mapper.XmlObjectMappings;
 import org.spicefactory.parsley.xml.events.XmlFileEvent;
 import org.spicefactory.parsley.xml.events.XmlFileProgressEvent;
 import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
@@ -72,9 +73,14 @@ public class XmlConfigurationLoader extends EventDispatcher {
 	function XmlConfigurationLoader (files:Array, expressionContext:ExpressionContext) {
 		this.files = files;
 		this.expressionContext = expressionContext;
-		var mapperFactory:XmlObjectDefinitionMapperFactory = new XmlObjectDefinitionMapperFactory();
-		variableMapper = mapperFactory.createVariableMapper();
-		includeMapper = mapperFactory.createIncludeMapper();
+		variableMapper = XmlObjectMappings
+			.forNamespace(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI)
+			.withRootElement(Variable)
+			.build();
+		includeMapper = XmlObjectMappings
+			.forNamespace(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI)
+			.withRootElement(Include)
+			.build();
 	}
 	
 	

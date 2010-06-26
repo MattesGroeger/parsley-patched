@@ -17,10 +17,9 @@
 package org.spicefactory.parsley.tag.core {
 import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.parsley.config.RootConfigurationElement;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
 [DefaultProperty("decorators")]
-
+[XmlMapping(elementName="view")]
 /**
  * Represents the root view tag for an object definition in MXML or XML configuration.
  * 
@@ -39,6 +38,8 @@ public class ViewTag implements RootConfigurationElement {
 	 */
 	public var type:Class = Object;
 	
+	[ArrayElementType("org.spicefactory.parsley.tag.core.ObjectDecoratorMarker")]
+	[ChoiceId("decorators")]
 	/**
 	 * The ObjectDefinitionDecorator instances added to this definition.
 	 */

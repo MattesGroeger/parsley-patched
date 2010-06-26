@@ -35,7 +35,7 @@ public class XmlConfigurationNamespaceRegistry {
 
 	
 	/**
-	 * Registers a new XML configuration namespace for the specified URI.
+	 * Returns an XML configuration namespace for the specified URI.
 	 * The instance returned by this namespace can be used to configure the namespace,
 	 * adding XML-to-Object Mappers for the custom tags. The <code>XmlObjectMappings</code>
 	 * class offers the core configuration DSL for the Spicelib XML-Object-Mapper.
@@ -44,7 +44,7 @@ public class XmlConfigurationNamespaceRegistry {
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @return an instance that can be used to configure the namespace
 	 */
-	public static function registerNamespace (uri:String, domain:ApplicationDomain = null) : XmlObjectMappings {
+	public static function getNamespace (uri:String, domain:ApplicationDomain = null) : XmlObjectMappings {
 		if (namespaces[uri] == undefined) {
 			namespaces[uri] = new CustomNamespaceMappings(uri, domain);
 		}
@@ -56,7 +56,7 @@ public class XmlConfigurationNamespaceRegistry {
 	 * 
 	 * @return all custom XML configuration namespaces that have been added to the registry
 	 */
-	public static function getRegisteredNamespaces () : Array {
+	public static function getAllNamespaces () : Array {
 		var result:Array = new Array();
 		for each (var ns:XmlObjectMappings in namespaces) {
 			result.push(ns);
@@ -72,6 +72,7 @@ import org.spicefactory.lib.xml.mapper.XmlObjectMappings;
 import org.spicefactory.parsley.config.NestedConfigurationElement;
 import org.spicefactory.parsley.config.RootConfigurationElement;
 import org.spicefactory.parsley.tag.core.ObjectDecoratorMarker;
+import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 
 import flash.system.ApplicationDomain;
 
@@ -86,7 +87,7 @@ class CustomNamespaceMappings extends XmlObjectMappings {
 			var type:ClassInfo = mapper.objectType;
 			
 			if (type.isType(ObjectDecoratorMarker)) {
-				choiceId("decorators", type.getClass()); // TODO - use constants
+				choiceId(XmlObjectDefinitionMapperFactory.CHOICE_ID_DECORATORS, type.getClass());
 			}
 			
 			if (type.isType(RootConfigurationElement)) {
@@ -97,13 +98,12 @@ class CustomNamespaceMappings extends XmlObjectMappings {
 				choiceId("nestedElements", type.getClass());
 			}
 			
-			if (!type.isType(ObjectDecoratorMarker)) {
-				if (!type.isType(RootConfigurationElement)) {
-					choiceId("rootElements", type.getClass());
-				}
-				if (!type.isType(NestedConfigurationElement)) {
-					choiceId("nestedElements", type.getClass());
-				}
+			if (!type.isType(ObjectDecoratorMarker) 
+					&& !type.isType(RootConfigurationElement) 
+					&& !type.isType(NestedConfigurationElement)) {
+				/* tags mapped as literal values are allowed as root and nested elements */
+				choiceId("rootElements", type.getClass());
+				choiceId("nestedElements", type.getClass());
 			}
 		}
 	}

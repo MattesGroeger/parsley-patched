@@ -21,7 +21,7 @@ import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.tag.model.NestedObject;
 
 [DefaultProperty("decorators")]
-
+[XmlMapping(elementName="object")]
 /**
  * Tag that may be used for nested (inline) object definitions in MXML.
  * 
@@ -36,6 +36,7 @@ public class NestedObjectTag implements NestedConfigurationElement {
 	public var type:Class = Object;
 	
 	[ArrayElementType("org.spicefactory.parsley.tag.core.ObjectDecoratorMarker")]
+	[ChoiceId("decorators")]
 	/**
 	 * The ObjectDefinitionDecorator instances added to this definition.
 	 */

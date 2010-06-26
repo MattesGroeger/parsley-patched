@@ -19,6 +19,7 @@ import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="Destroy", types="method")]
+[XmlMapping(elementName="destroy")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on methods that should be invoked when the Context
  * that the object belongs to gets destroyed or when the object is removed from the Context.

@@ -21,7 +21,7 @@ import org.spicefactory.parsley.tag.model.ManagedArray;
 import org.spicefactory.parsley.tag.util.ConfigurationValueResolver;
 
 [DefaultProperty("values")]
-
+[XmlMapping(elementName="array")]
 /**
  * Represents an Array value. Can be used in MXML and XML configuration.
  * 
@@ -33,6 +33,7 @@ public class ArrayTag implements NestedConfigurationElement {
 	private static const valueResolver:ConfigurationValueResolver = new ConfigurationValueResolver(); 
 	
 	
+	[ChoiceId("nestedElements")]
 	/**
 	 * The elements of the Array.
 	 */

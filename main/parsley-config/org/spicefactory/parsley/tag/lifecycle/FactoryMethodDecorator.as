@@ -19,6 +19,7 @@ import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="Factory", types="method")]
+[XmlMapping(elementName="factory")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used to mark a method as a factory method.
  * 

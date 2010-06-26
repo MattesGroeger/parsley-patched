@@ -19,6 +19,7 @@ import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="MessageBinding", types="property", multiple="true")]
+[XmlMapping(elementName="message-binding")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on properties which wish to be bound to a property value
  * of a particular message type dispatched through Parsleys central message router.

@@ -60,6 +60,7 @@ public class MetadataMapperBuilder extends PropertyMapperBuilder {
 			namingStrategy:NamingStrategy = null, domain:ApplicationDomain = null) {
 		super(objectType, elementName, namingStrategy, domain);
 		this.choices = choices;		
+		processClassMetadataForName();
 	}
 	
 	/**
@@ -93,7 +94,7 @@ public class MetadataMapperBuilder extends PropertyMapperBuilder {
 	 * @private
 	 */
 	internal function processMetadata (simpleMappingType:SimpleMappingType) : void {
-		processClassMetadata();
+		processClassMetadataForOptions();
 		
 		for each (var property:Property in objectType.getProperties()) {
 			
@@ -105,7 +106,7 @@ public class MetadataMapperBuilder extends PropertyMapperBuilder {
 		}
 	}
 	
-	private function processClassMetadata () : void {
+	private function processClassMetadataForName () : void {
 		var metadata:Array = objectType.getMetadata(XmlMapping);
 		if (metadata.length > 0) {
 			var mapping:XmlMapping = metadata[0];
@@ -114,6 +115,13 @@ public class MetadataMapperBuilder extends PropertyMapperBuilder {
 				var uri:String = (mapping.elementUri) ? mapping.elementUri : elementName.uri;
 				updateElementName(new QName(uri, name));
 			}
+		}
+	}
+	
+	private function processClassMetadataForOptions () : void {
+		var metadata:Array = objectType.getMetadata(XmlMapping);
+		if (metadata.length > 0) {
+			var mapping:XmlMapping = metadata[0];
 			if (mapping.ignoreUnmappedAttributes) {
 				ignoreUnmappedAttributes();
 			}

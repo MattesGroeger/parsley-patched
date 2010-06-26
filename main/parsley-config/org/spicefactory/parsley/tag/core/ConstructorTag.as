@@ -20,6 +20,7 @@ import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.instantiator.ConstructorInstantiator;
 import org.spicefactory.parsley.tag.util.ConfigurationValueResolver;
 
+[XmlMapping(elementName="constructor-args")]
 /**
  * Represent the constructor arguments for an object definition. Can be used in MXML and XML configuration.
  * 

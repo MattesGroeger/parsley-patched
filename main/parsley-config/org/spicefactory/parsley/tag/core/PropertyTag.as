@@ -21,6 +21,7 @@ import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.tag.util.ConfigurationValueResolver;
 
 [DefaultProperty("value")]
+[XmlMapping(elementName="property")]
 /**
  * Represent the property value for an object definition. Can be used in MXML and XML configuration.
  * 
@@ -33,12 +34,14 @@ public class PropertyTag extends ObjectReferenceTag implements ObjectDefinitionD
 	 * The resolver for value declarations.
 	 */
 	protected static const valueResolver:ConfigurationValueResolver = new ConfigurationValueResolver(); 
-
+	
+	[ChoiceId("nestedElements")]
 	/**
 	 * The value of the property mapped as a child element.
 	 */
 	public var childValue:*;
 
+	[Attribute]
 	/**
 	 * The value of the property mapped as an attribute.
 	 */

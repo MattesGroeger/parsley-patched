@@ -19,6 +19,7 @@ import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="MessageDispatcher", types="property")]
+[XmlMapping(elementName="message-dispatcher")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on properties where a message dispatcher function
  * should be injected.

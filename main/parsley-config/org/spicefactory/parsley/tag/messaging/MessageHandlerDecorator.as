@@ -27,7 +27,7 @@ import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
  */
 public class MessageHandlerDecorator extends MessageReceiverDecoratorBase implements ObjectDefinitionDecorator {
 
-
+	[Ignore]
 	/**
 	 * Optional list of names of properties of the message that should be used as method parameters
 	 * instead passing the message itself as a parameter.

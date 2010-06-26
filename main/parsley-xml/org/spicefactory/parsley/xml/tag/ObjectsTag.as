@@ -24,6 +24,7 @@ package org.spicefactory.parsley.xml.tag {
 public class ObjectsTag {
 	
 	
+	[ChoiceId("rootElements")]
 	/**
 	 * The objects defined in the XML configuration file.
 	 */

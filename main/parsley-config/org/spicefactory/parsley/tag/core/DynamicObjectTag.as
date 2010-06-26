@@ -19,7 +19,7 @@ import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.parsley.config.RootConfigurationElement;
 
 [DefaultProperty("decorators")]
-
+[XmlMapping(elementName="dynamic-object")]
 /**
  * Represents the root tag for an dynamic object definition in MXML or XML configuration.
  * 
@@ -38,6 +38,8 @@ public class DynamicObjectTag implements RootConfigurationElement {
 	 */
 	public var type:Class = Object;
 	
+	[ArrayElementType("org.spicefactory.parsley.tag.core.ObjectDecoratorMarker")]
+	[ChoiceId("decorators")]
 	/**
 	 * The ObjectDefinitionDecorator instances added to this definition.
 	 */

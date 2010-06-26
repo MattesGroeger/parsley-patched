@@ -57,11 +57,13 @@ public class DynamicCommandTag implements RootConfigurationElement {
 	 */
 	public var messageType:Class;
 
+	[Attribute]
 	/**
 	 * @copy org.spicefactory.parsley.tag.messaging.AbstractMessageReceiverDecorator#selector
 	 */
 	public var selector:*;
 	
+	[Ignore]
 	/**
 	 * @copy org.spicefactory.parsley.tag.messaging.MessageHandlerDecorator#messageProperties
 	 */

@@ -20,6 +20,7 @@ import org.spicefactory.parsley.core.registry.AsyncInitConfig;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="AsyncInit", types="class")]
+[XmlMapping(elementName="async-init")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used to mark an object as being asynchronously initializing.
  * 

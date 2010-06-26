@@ -22,6 +22,7 @@ import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
 [Deprecated(replacement="DestroyMethodDecorator")]
 [Metadata(name="PreDestroy", types="method")]
+[XmlMapping(elementName="pre-destroy")]
 /**
  * @author Jens Halm
  */

@@ -19,6 +19,7 @@ import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="MessageInterceptor", types="method", multiple="true")]
+[XmlMapping(elementName="message-interceptor")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on methods that want to intercept messages of a particular type
  * dispatched through Parsleys central message router.

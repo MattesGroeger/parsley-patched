@@ -19,6 +19,7 @@ import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="ResourceBinding", types="property")]
+[XmlMapping(elementName="resource-binding")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used to bind a property value to a resource, updating
  * automatically when the ResourceManager updates.

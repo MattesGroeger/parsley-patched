@@ -19,7 +19,7 @@ import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="CommandError", types="method", multiple="true")]
-
+[XmlMapping(elementName="command-error")]
 /**
  * Represents a Metadata, MXML or XML tag that can be used on methods which wish to be invoked when
  * a matching asynchronous command execution finished with an error.
