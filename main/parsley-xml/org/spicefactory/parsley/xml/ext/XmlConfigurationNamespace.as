@@ -30,17 +30,11 @@ import org.spicefactory.parsley.xml.mapper.XmlObjectDefinitionMapperFactory;
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
+[Deprecated(replacement="XmlConfigurationNamespaceRegistry in package parsley.xml.mapper")]
 /**
- * Represent a single custom XML configuration namespace.
- * 
- * Allows to register XML-to-Object mappers for objects, definition factories and decorators.
- * You should not create instance of this class yourself, but use the static 
- * <code>XmlConfigurationNamespaceRegistry.registerNamespace()</code> method for creating such an instance.
- * 
  * @author Jens Halm
  */
 public class XmlConfigurationNamespace {
-	
 	
 	private var _uri:String;
 	
@@ -51,85 +45,40 @@ public class XmlConfigurationNamespace {
 	
 	private var decorators:Dictionary = new Dictionary();
 	
-	
-	/**
-	 * @private
-	 */
 	function XmlConfigurationNamespace (uri:String, namingStrategy:NamingStrategy = null, domain:ApplicationDomain = null) {
 		_uri = uri;
 		_namingStrategy = namingStrategy;
 		_domain = domain;
 	}
 
-	
-	/**
-	 * The namespace URI of this custom XML configuration namespace.
-	 */
 	public function get uri ():String {
 		return _uri;
 	}
 	
-	/**
-	 * Adds a custom mapper for an XML tag mapping directly to an object that should be added to the IOC Container.
-	 * 
-	 * @param mapper the mapper to add
-	 */
 	public function addCustomObjectMapper (mapper:XmlObjectMapper) : void {
 		validateFactory(mapper.objectType, mapper.elementName.localName);
 		checkNamespace(mapper);
 		factories[mapper.elementName.localName] = mapper;
 	}
 	
-	/**
-	 * Adds a custom mapper for an XML tag mapping to an ObjectDefinitionFactory instance that produces definitions
-	 * to be added to the IOC Container. 
-	 * 
-	 * @param mapper the mapper to add
-	 */
 	public function addCustomDefinitionFactoryMapper (mapper:XmlObjectMapper) : void {
 		validateFactory(mapper.objectType, mapper.elementName.localName, true);
 		checkNamespace(mapper);
 		factories[mapper.elementName.localName] = mapper;
 	}
 	
-	/**
-	 * Adds a custom mapper for an XML tag mapping to an ObjectDefinitionDecorator instance that modifies definitions
-	 * created by the parent tag. 
-	 * 
-	 * @param mapper the mapper to add
-	 */
 	public function addCustomDecoratorMapper (mapper:XmlObjectMapper) : void {
 		validateDecorator(mapper.objectType, mapper.elementName.localName);
 		checkNamespace(mapper);
 		decorators[mapper.elementName.localName] = mapper;
 	}
 
-	/**
-	 * Adds a default mapper for an XML tag mapping directly to an object that should be added to the IOC Container.
-	 * A default mapper simply maps the attributes of the element with the specified tag name to properties of
-	 * the specified Class with the same name.
-	 * 
-	 * @param type the class the XML element should be mapped to
-	 * @param tagName the name of the XML element to map
-	 */
 	public function addDefaultObjectMapper (type:Class, tagName:String) : void {
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, new QName(_uri, tagName), _namingStrategy, _domain);
 		builder.mapAllToAttributes();
 		addCustomObjectMapper(builder.build());
 	}
 	
-	/**
-	 * Adds a default mapper for an XML tag mapping to an ObjectDefinitionFactory instance that produces definitions
-	 * to be added to the IOC Container. 
-	 * A default mapper simply maps the attributes of the element with the specified tag name to properties of
-	 * the specified Class with the same name.
-	 * 
-	 * @param type the class the XML element should be mapped to
-	 * @param tagName the name of the XML element to map
-	 * @param decoratorArray the name of the property holding the decorators that were added as child elemens (or null if
-	 * you do not want to allow regular decorator child elements or if the tag extends DefaultObjectDefinitionFactory where the
-	 * decorator Array will be auto-detected)
-	 */	
 	public function addDefaultDefinitionFactoryMapper (type:Class, tagName:String, decoratorArray:String = null) : void {
 		var builder:PropertyMapperBuilder = newFactoryMapperBuilder(type, tagName, decoratorArray);
 		builder.mapAllToAttributes();
@@ -137,15 +86,6 @@ public class XmlConfigurationNamespace {
 		addCustomDefinitionFactoryMapper(builder.build());
 	}
 	
-	/**
-	 * Adds a default mapper for an XML tag mapping to an ObjectDefinitionDecorator instance that modifies definitions
-	 * created by the parent tag. 
-	 * A default mapper simply maps the attributes of the element with the specified tag name to properties of
-	 * the specified Class with the same name.
-	 * 
-	 * @param type the class the XML element should be mapped to
-	 * @param tagName the name of the XML element to map
-	 */
 	public function addDefaultDecoratorMapper (type:Class, tagName:String) : void {
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(type, new QName(_uri, tagName), _namingStrategy, _domain);
 		builder.mapAllToAttributes();
@@ -162,13 +102,6 @@ public class XmlConfigurationNamespace {
 		return builder;
 	}
 	
-	/**
-	 * Creates a builder for a mapper for an XML tag mapping directly to an object that should be added to the IOC Container.
-	 * 
-	 * @param type the class the XML element should be mapped to
-	 * @param tagName the name of the XML element to map
-	 * @return the builder that can be used to configure the mapper
-	 */
 	public function createObjectMapperBuilder (type:Class, tagName:String) : PropertyMapperBuilder {
 		var ci:ClassInfo = ClassInfo.forClass(type, _domain);
 		validateFactory(ci, tagName);
@@ -177,31 +110,12 @@ public class XmlConfigurationNamespace {
 		return builder;
 	}
 
-	/**
-	 * Creates a builder for a mapper for an XML tag mapping to an ObjectDefinitionFactory instance that produces definitions
-	 * to be added to the IOC Container. 
-	 * 
-	 * @param type the class the XML element should be mapped to
-	 * @param tagName the name of the XML element to map
-	 * @param decoratorArray the name of the property holding the decorators that were added as child elemens (or null if
-	 * you do not want to allow regular decorator child elements or if the tag extends DefaultObjectDefinitionFactory where the
-	 * decorator Array will be auto-detected)
-	 * @return the builder that can be used to configure the mapper
-	 */
 	public function createDefinitionFactoryMapperBuilder (type:Class, tagName:String, decoratorArray:String = null) : PropertyMapperBuilder {
 		var builder:PropertyMapperBuilder = newFactoryMapperBuilder(type, tagName, decoratorArray);
 		factories[tagName] = builder.build();
 		return builder;
 	}
 	
-	/**
-	 * Creates a builder for a mapper for an XML tag mapping to an ObjectDefinitionDecorator instance that modifies definitions
-	 * created by the parent tag. 
-	 * 
-	 * @param type the class the XML element should be mapped to
-	 * @param tagName the name of the XML element to map
-	 * @return the builder that can be used to configure the mapper
-	 */
 	public function createDecoratorMapperBuilder (type:Class, tagName:String) : PropertyMapperBuilder {
 		var ci:ClassInfo = ClassInfo.forClass(type, _domain);
 		validateDecorator(ci, tagName);
@@ -210,21 +124,10 @@ public class XmlConfigurationNamespace {
 		return builder;
 	}
 	
-	
-	/**
-	 * Returns all mappers for definition factories (and for objects) that have been added to this namespace.
-	 * 
-	 * @return all mappers for definition factories (and for objects) that have been added to this namespace
-	 */
 	public function getAllFactoryMappers () : Array {
 		return getAllMappers(factories);
 	}
 	
-	/**
-	 * Returns all mappers for definition decorators that have been added to this namespace.
-	 * 
-	 * @return all mappers for definition decorators that have been added to this namespace
-	 */
 	public function getAllDecoratorMappers () : Array {
 		return getAllMappers(decorators);
 	}

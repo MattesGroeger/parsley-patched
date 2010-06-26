@@ -73,6 +73,7 @@ public class XmlObjectMappings {
 	private var _defaultSimpleMappingType:SimpleMappingType = SimpleMappingType.ATTRIBUTE;
 	private var _defaultNamingStrategy:NamingStrategy = new DefaultNamingStrategy();
 	
+	private var mappers:Array = new Array();
 	private var mappersByType:Dictionary = new Dictionary();
 	private var metadataBuilders:Array = new Array();
 	private var _mergedMappings:Array = new Array();
@@ -242,18 +243,20 @@ public class XmlObjectMappings {
 					+ mapper.objectType.name + "has already been specified");
 		}
 		mappersByType[mapper.objectType.getClass()] = mapper;
+		mappers.push(mapper);
 	}
 	
 	
 	/**
 	 * @private
 	 */
-	internal function mergeInto (byType:Dictionary, choices:ChoiceRegistry) : void {
+	internal function mergeInto (byType:Dictionary, mappers:Array, choices:ChoiceRegistry) : void {
 		if (!rootMapper) {
 			build();
 		}
 		for each (var mapper:XmlObjectMapper in mappersByType) {
 			byType[mapper.objectType.getClass()] = mapper;
+			mappers.push(mapper);
 		}
 		this.choices.mergeInto(choices);
 	}
@@ -277,7 +280,7 @@ public class XmlObjectMappings {
 			}
 			
 			for each (var merged:XmlObjectMappings in _mergedMappings) {
-				merged.mergeInto(mappersByType, choices);
+				merged.mergeInto(mappersByType, mappers, choices);
 			}
 			
 			for each (var builder:MetadataMapperBuilder in metadataBuilders) {
@@ -285,12 +288,24 @@ public class XmlObjectMappings {
 			}
 			
 			choices.initialize(mappersByType);
+
+			postProcess(mappers);
 			
 			processed = true;
 		}
 		
 		return rootMapper;
 		
+	}
+	
+	/**
+	 * Hook for subclasses that wish to postprocess some of the mappings.
+	 * The default implementation does nothing.
+	 * 
+	 * @param mappers all mappers configured by this mappings group
+	 */
+	protected function postProcess (mappers:Array) : void {
+		/* do nothing */
 	}
 	
 	
