@@ -33,12 +33,13 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.utils.getQualifiedClassName;
 
+[XmlMapping(elementName="resource-bundle")]
+[AsyncInit]
 /**
  * Represent the resource-bundle XML tag.
  * 
  * @author Jens Halm
  */
-[AsyncInit]
 public class ResourceBundleTag extends EventDispatcher implements RootConfigurationElement {
 	
 	
@@ -80,7 +81,7 @@ public class ResourceBundleTag extends EventDispatcher implements RootConfigurat
 	public var ignoreCountry:Boolean = false;
 	
 	
-	[Inject]
+	[Inject][Ignore]
 	/**
 	 * The ResourceManager this bundle belongs to.
 	 */

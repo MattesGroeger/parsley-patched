@@ -18,13 +18,13 @@ package org.spicefactory.parsley.flash.resources.tag {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.flash.resources.Locale;
-import org.spicefactory.parsley.flash.resources.ResourceManager;
 import org.spicefactory.parsley.flash.resources.adapter.FlashResourceBindingAdapter;
 import org.spicefactory.parsley.flash.resources.impl.DefaultResourceManager;
 import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
 
 import flash.utils.getQualifiedClassName;
 
+[XmlMapping(elementName="resource-manager")]
 /**
  * Represent the resource-manager XML tag.
  * 
@@ -38,6 +38,7 @@ public class ResourceManagerTag {
 	 */
 	public var id:String;
 	
+	[ChoiceType("org.spicefactory.parsley.flash.resources.tag.LocaleTag")]
 	/**
 	 * The supported locales.
 	 */

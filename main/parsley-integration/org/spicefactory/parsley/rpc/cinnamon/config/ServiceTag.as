@@ -15,12 +15,11 @@
  */
 
 package org.spicefactory.parsley.rpc.cinnamon.config {
-import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.parsley.config.RootConfigurationElement;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
+[XmlMapping(elementName="service")]
 /**
  * Represents the Service MXML or XML tag, defining the configuration for a Cinnamon service.
  * 

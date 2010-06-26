@@ -15,11 +15,9 @@
  */
 
 package org.spicefactory.parsley.flash.logging {
+import org.spicefactory.parsley.xml.mapper.XmlConfigurationNamespaceRegistry;
 import org.spicefactory.lib.flash.logging.LogLevel;
 import org.spicefactory.lib.reflect.Converters;
-import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
-import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
-import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
 
 /**
  * Provides a static method to initalize the Flash Logging XML tag extension.
@@ -34,19 +32,21 @@ public class FlashLoggingXmlSupport {
 	 */
 	public static const FLASH_LOGGING_NAMESPACE:String = "http://www.spicefactory.org/parsley/flash/logging";
 	
+	private static var initialized:Boolean = false;
 	
 	/**
 	 * Initializes the Flash Logging XML tag extension.
 	 * Must be invoked before the <code>XmlContextBuilder</code> is used for the first time.
 	 */
 	public static function initialize () : void {
+		if (initialized) return;
 		Converters.addConverter(LogLevel, new LogLevelConverter());
-		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(FLASH_LOGGING_NAMESPACE);
-		var builder:PropertyMapperBuilder = ns.createObjectMapperBuilder(LogFactoryTag, "factory");
-		builder.createChildElementMapperBuilder("appenders", AppenderTag, new QName(FLASH_LOGGING_NAMESPACE, "appender")).mapAllToAttributes();
-		builder.createChildElementMapperBuilder("loggers", LoggerTag, new QName(FLASH_LOGGING_NAMESPACE, "logger")).mapAllToAttributes();
-		builder.mapAllToAttributes();
+		XmlConfigurationNamespaceRegistry
+			.getNamespace(FLASH_LOGGING_NAMESPACE)
+			.mappedClasses(LogFactoryTag, AppenderTag, LoggerTag);
+		initialized = true;
 	}
+	
 }
 }
 

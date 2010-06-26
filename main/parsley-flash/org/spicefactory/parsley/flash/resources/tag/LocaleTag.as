@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.flash.resources.tag {
 
+[XmlMapping(elementName="locale")]
 /**
  * Represents the locale XML tag.
  * 

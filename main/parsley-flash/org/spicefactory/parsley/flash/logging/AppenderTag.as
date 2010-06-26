@@ -20,6 +20,7 @@ import org.spicefactory.lib.flash.logging.LogLevel;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 
+[XmlMapping(elementName="appender")]
 /**
  * Represents the appender XML tag.
  * 
@@ -34,6 +35,7 @@ public class AppenderTag {
 	 */
 	public var ref:String;
 	
+	[Attribute]
 	/**
 	 * The threshold for the appender.
 	 */

@@ -23,6 +23,7 @@ import org.spicefactory.parsley.rpc.cinnamon.command.CinnamonCommandSupport;
 import org.spicefactory.pimento.config.PimentoConfig;
 import org.spicefactory.pimento.service.EntityManager;
 
+[XmlMapping(elementName="config")]
 /**
  * Represents the Config MXML or XML tag, defining the configuration for a Pimento EntityManager.
  * 

@@ -17,8 +17,7 @@
 package org.spicefactory.parsley.rpc.pimento.config {
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor;
-import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
-import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
+import org.spicefactory.parsley.xml.mapper.XmlConfigurationNamespaceRegistry;
 
 /**
  * Provides a static method to initalize the Pimento XML tag extension.
@@ -43,9 +42,9 @@ public class PimentoXmlSupport implements ContextBuilderProcessor {
 	 */
 	public static function initialize () : void {
 		if (initialized) return;
-		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(NAMESPACE_URI);
-		ns.addDefaultObjectMapper(ServiceTag, "service");
-		ns.addDefaultDefinitionFactoryMapper(ConfigTag, "config");
+		XmlConfigurationNamespaceRegistry
+			.getNamespace(NAMESPACE_URI)
+			.mappedClasses(ConfigTag, ServiceTag);
 		initialized = true;
 	}
 	

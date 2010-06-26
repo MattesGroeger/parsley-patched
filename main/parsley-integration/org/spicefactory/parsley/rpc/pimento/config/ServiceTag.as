@@ -17,10 +17,9 @@
 package org.spicefactory.parsley.rpc.pimento.config {
 import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.parsley.config.RootConfigurationElement;
-import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
+[XmlMapping(elementName="service")]
 /**
  * Represents the Service MXML or XML tag, defining the configuration for a Pimento managed Cinnamon service.
  * 

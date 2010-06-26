@@ -45,6 +45,7 @@ public class LogTargetTag {
 	 */
 	public var type:Class = TraceTarget;
 	
+	[ChildTextNode(name="filter")]
 	/**
 	 * The filters for this LogTarget.
 	 */

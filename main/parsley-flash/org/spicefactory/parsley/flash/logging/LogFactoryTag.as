@@ -24,6 +24,7 @@ import org.spicefactory.parsley.core.errors.ContextError;
 
 import flash.utils.getQualifiedClassName;
 
+[XmlMapping(elementName="factory")]
 /**
  * Represents the factory XML tag.
  * 
@@ -47,24 +48,26 @@ public class LogFactoryTag {
 	 */
 	public var context:Boolean = true;
 	
+	[Attribute]
 	/**
 	 * The root log level to be used for all loggers that don't have a level set explicitly.
 	 */
 	public var rootLevel:LogLevel = LogLevel.TRACE;
 	
-	
+	[ChoiceType("org.spicefactory.parsley.flash.logging.AppenderTag")]
 	/**
 	 * The appenders to add to the factory.
 	 */
 	public var appenders:Array;
 	
+	[ChoiceType("org.spicefactory.parsley.flash.logging.LoggerTag")]
 	/**
 	 * The loggers to add to the factory.
 	 */
 	public var loggers:Array;
 	
 	
-	[Inject]
+	[Inject][Ignore]
 	/**
 	 * The Context this tag belongs to.
 	 */

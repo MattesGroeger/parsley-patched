@@ -16,11 +16,9 @@
 
 package org.spicefactory.parsley.flex.logging {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor;
-import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespace;
-import org.spicefactory.parsley.xml.ext.XmlConfigurationNamespaceRegistry;
+import org.spicefactory.parsley.xml.mapper.XmlConfigurationNamespaceRegistry;
 
 /**
  * Provides a static method to initalize the Flex Logging XML tag extension.
@@ -45,12 +43,11 @@ public class FlexLoggingXmlSupport implements ContextBuilderProcessor {
 	 */
 	public static function initialize () : void {
 		if (initialized) return;
-		var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(NAMESPACE_URI);
-		var builder:PropertyMapperBuilder = ns.createObjectMapperBuilder(LogTargetTag, "target");
-		builder.mapToChildTextNode("filters", new QName(NAMESPACE_URI, "filter"));
-		builder.addPropertyHandler(new LogEventLevelAttributeHandler(
+		XmlConfigurationNamespaceRegistry
+			.getNamespace(NAMESPACE_URI)
+			.newMapperBuilder(LogTargetTag, new QName(NAMESPACE_URI, "target"))
+			.addPropertyHandler(new LogEventLevelAttributeHandler(
 				ClassInfo.forClass(LogTargetTag).getProperty("level"), new QName("", "level")));
-		builder.mapAllToAttributes();
 		initialized = true;
 	}
 
@@ -60,8 +57,6 @@ public class FlexLoggingXmlSupport implements ContextBuilderProcessor {
 	public function processBuilder (builder:CompositeContextBuilder) : void {
 		initialize();
 	}
-	
-	
 }
 }
 
@@ -74,15 +69,13 @@ import mx.logging.LogEventLevel;
 
 class LogEventLevelAttributeHandler extends AttributeHandler {
 	
-
-	// TODO - property should be passed as a name only	
 	function LogEventLevelAttributeHandler (property:Property, xmlName:QName) {
 		super(property, xmlName);
 	}
 	
 	protected override function getValueFromNode (node:XML, context:XmlProcessorContext) : * {
 		var value:String = super.getValueFromNode(node, context).toString().toUpperCase();
-		if (!(LogEventLevel[value] is int)) { // TODO - test
+		if (!(LogEventLevel[value] is int)) {
 			throw new ContextError("Illegal value for log event level: " + value);
 		}
 		return LogEventLevel[value];

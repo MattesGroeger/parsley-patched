@@ -15,13 +15,14 @@
  */
 
 package org.spicefactory.parsley.rpc.cinnamon.config {
-	import org.spicefactory.parsley.rpc.cinnamon.command.CinnamonCommandSupport;
 import org.spicefactory.cinnamon.service.NetConnectionServiceChannel;
 import org.spicefactory.cinnamon.service.ServiceChannel;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.rpc.cinnamon.command.CinnamonCommandSupport;
 
 import flash.utils.getQualifiedClassName;
 
+[XmlMapping(elementName="channel")]
 /**
  * Represents the Channel MXML or XML tag, defining the configuration for a Cinnamon ServiceChannel.
  * 
