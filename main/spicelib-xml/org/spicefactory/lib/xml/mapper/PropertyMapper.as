@@ -98,7 +98,8 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 	/**
 	 * @inheritDoc
 	 */
-	public override function mapToObject (element:XML, context:XmlProcessorContext) : Object {
+	public override function mapToObject (element:XML, context:XmlProcessorContext = null) : Object {
+		if (context == null) context = new XmlProcessorContext(null, objectType.applicationDomain);
 		try {
 			var targetInstance:Object = objectType.newInstance([]);
 			var hasErrors:Boolean = false;
@@ -186,7 +187,8 @@ public class PropertyMapper extends AbstractXmlObjectMapper implements XmlObject
 	/**
 	 * @inheritDoc
 	 */
-	public override function mapToXml (object:Object, context:XmlProcessorContext) : XML {
+	public override function mapToXml (object:Object, context:XmlProcessorContext = null) : XML {
+		if (context == null) context = new XmlProcessorContext(null, objectType.applicationDomain);
 		
 		var parentElement:XML = <{elementName.localName}/>;
 		if (elementName.uri != null && elementName.uri.length != 0) {

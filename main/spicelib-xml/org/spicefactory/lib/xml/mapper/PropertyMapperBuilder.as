@@ -440,7 +440,7 @@ public class PropertyMapperBuilder {
 	 * @return the mapper produced based on instructions given to this class
 	 */
 	public function build () : XmlObjectMapper {
-		return new PropertyMapperDelegate(this);
+		return new PropertyMapperDelegate(this, objectType.applicationDomain);
 	}
 	
 	/**

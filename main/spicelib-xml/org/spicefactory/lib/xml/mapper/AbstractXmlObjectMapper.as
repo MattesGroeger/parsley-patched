@@ -62,14 +62,14 @@ public class AbstractXmlObjectMapper implements XmlObjectMapper {
 	/**
 	 * @inheritDoc
 	 */
-	public function mapToObject (element:XML, context:XmlProcessorContext) : Object {
+	public function mapToObject (element:XML, context:XmlProcessorContext = null) : Object {
 		throw new AbstractMethodError();
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function mapToXml (object:Object, context:XmlProcessorContext) : XML {
+	public function mapToXml (object:Object, context:XmlProcessorContext = null) : XML {
 		throw new AbstractMethodError();
 	}
 	

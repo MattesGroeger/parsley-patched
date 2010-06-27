@@ -32,7 +32,7 @@ public class MetadataMapperTest extends TestCase {
 					.forUnqualifiedElements()
 						.withRootElement(SimpleClass)
 							.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
 		var sc:SimpleClass = SimpleClass(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -48,7 +48,7 @@ public class MetadataMapperTest extends TestCase {
 					.forUnqualifiedElements()
 						.withRootElement(SimpleClass)
 							.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
 		var sc:SimpleClass = SimpleClass(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -88,7 +88,7 @@ public class MetadataMapperTest extends TestCase {
 						.withRootElement(SimpleClass)
 							.defaultSimpleMappingType(SimpleMappingType.CHILD_TEXT_NODE)
 							.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
 		var sc:SimpleClass = SimpleClass(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -109,7 +109,7 @@ public class MetadataMapperTest extends TestCase {
 						.withRootElement(SimpleClass)
 							.defaultSimpleMappingType(SimpleMappingType.CHILD_TEXT_NODE)
 							.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
 		var sc:SimpleClass = SimpleClass(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -152,7 +152,7 @@ public class MetadataMapperTest extends TestCase {
 					.forUnqualifiedElements()
 						.withRootElement(ChildTextNodes)
 							.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is ChildTextNodes);
 		var sc:ChildTextNodes = ChildTextNodes(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -168,7 +168,7 @@ public class MetadataMapperTest extends TestCase {
 					.forUnqualifiedElements()
 						.withRootElement(MappedTextNode)
 							.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is MappedTextNode);
 		var sc:MappedTextNode = MappedTextNode(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -183,7 +183,7 @@ public class MetadataMapperTest extends TestCase {
 						.withRootElement(MappedAttribute)
 							.defaultSimpleMappingType(SimpleMappingType.CHILD_TEXT_NODE)
 							.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is MappedAttribute);
 		var sc:MappedAttribute = MappedAttribute(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -201,7 +201,7 @@ public class MetadataMapperTest extends TestCase {
 						.withRootElement(ClassWithChild)
 							.mappedClasses(ChildA)
 							.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of ClassWithChild", obj is ClassWithChild);
 		var cwc:ClassWithChild = ClassWithChild(obj);
 		assertEquals("Unexpected int Property", 7, cwc.intProp);
@@ -222,7 +222,7 @@ public class MetadataMapperTest extends TestCase {
 							.choiceId("foo", ChildA, ChildB)
 							.build();
 		
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of MappedIdChoice", obj is MappedIdChoice);
 		var cwc:MappedIdChoice = MappedIdChoice(obj);
 		assertEquals("Unexpected int Property", 7, cwc.intProp);
@@ -272,7 +272,7 @@ public class MetadataMapperTest extends TestCase {
 							.mappedClasses(ChildA, ChildB, ChildC)
 							.build();
 		
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		validateMappedTypeChoice(obj);
 	}
 	
@@ -313,7 +313,7 @@ public class MetadataMapperTest extends TestCase {
 		mappings.newMapperBuilder(ChildA, new QName("custom"));
 		var mapper:XmlObjectMapper = mappings.mappedClasses(ChildB, ChildC).build();
 		
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		validateMappedTypeChoice(obj);
 	}
 	
@@ -335,7 +335,7 @@ public class MetadataMapperTest extends TestCase {
 						.mappedClasses(ChildB, ChildC)
 						.build();
 		
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		validateMappedTypeChoice(obj);
 	}
 	
@@ -357,7 +357,7 @@ public class MetadataMapperTest extends TestCase {
 						.mergedMappings(mappings)
 						.build();
 		
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		validateMappedTypeChoice(obj);
 	}
 	
@@ -379,7 +379,7 @@ public class MetadataMapperTest extends TestCase {
 						.mergedMappings(mappings)
 						.build();
 		
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		validateMappedTypeChoice(obj);
 	}
 	
@@ -404,7 +404,7 @@ public class MetadataMapperTest extends TestCase {
 						.withRootElement(CustomName)
 						.build();
 		
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of CustomName", obj is CustomName);
 		var sc:CustomName = CustomName(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -419,7 +419,7 @@ public class MetadataMapperTest extends TestCase {
 						.withRootElement(UnmappedXml)
 						.build();
 		
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of UnmappedXml", obj is UnmappedXml);
 	}
 	

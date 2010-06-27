@@ -24,7 +24,7 @@ public class PropertyMapperTest extends TestCase {
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
 		var sc:SimpleClass = SimpleClass(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -38,7 +38,7 @@ public class PropertyMapperTest extends TestCase {
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
 		var sc:SimpleClass = SimpleClass(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -73,7 +73,7 @@ public class PropertyMapperTest extends TestCase {
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapAllToChildTextNodes();
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
 		var sc:SimpleClass = SimpleClass(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -91,7 +91,7 @@ public class PropertyMapperTest extends TestCase {
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapAllToChildTextNodes();
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
 		var sc:SimpleClass = SimpleClass(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -124,7 +124,7 @@ public class PropertyMapperTest extends TestCase {
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapToAttribute("stringProp");
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
 		var sc:SimpleClass = SimpleClass(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -140,7 +140,7 @@ public class PropertyMapperTest extends TestCase {
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapToChildTextNode("stringProp");
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
 		var sc:SimpleClass = SimpleClass(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -154,7 +154,7 @@ public class PropertyMapperTest extends TestCase {
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapToTextNode("stringProp");
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
 		var sc:SimpleClass = SimpleClass(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -169,7 +169,7 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapToTextNode("stringProp");
 		builder.mapToAttribute("intProp");
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
 		var sc:SimpleClass = SimpleClass(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);
@@ -186,7 +186,7 @@ public class PropertyMapperTest extends TestCase {
 		builder.createChildElementMapperBuilder("child").mapAllToAttributes();
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of ClassWithChild", obj is ClassWithChild);
 		var cwc:ClassWithChild = ClassWithChild(obj);
 		assertEquals("Unexpected int Property", 7, cwc.intProp);
@@ -204,7 +204,7 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapToChildElement("child", childBuilder.build());
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of ClassWithChild", obj is ClassWithChild);
 		var cwc:ClassWithChild = ClassWithChild(obj);
 		assertEquals("Unexpected int Property", 7, cwc.intProp);
@@ -221,7 +221,7 @@ public class PropertyMapperTest extends TestCase {
 		builder.createChildElementMapperBuilder("children", ChildA, new QName("child")).mapAllToAttributes();
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of ClassWithChildren", obj is ClassWithChildren);
 		var cwc:ClassWithChildren = ClassWithChildren(obj);
 		assertEquals("Unexpected int Property", 7, cwc.intProp);
@@ -246,7 +246,7 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapToChildElementChoice("children", choice);
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of ClassWithChildren", obj is ClassWithChildren);
 		var cwc:ClassWithChildren = ClassWithChildren(obj);
 		assertEquals("Unexpected int Property", 7, cwc.intProp);
@@ -318,7 +318,7 @@ public class PropertyMapperTest extends TestCase {
 		builder.createChildElementMapperBuilder("child", null, new QName("testuri", "child")).mapAllToAttributes();
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of ClassWithChild", obj is ClassWithChild);
 		var cwc:ClassWithChild = ClassWithChild(obj);
 		assertEquals("Unexpected int Property", 7, cwc.intProp);
@@ -333,7 +333,7 @@ public class PropertyMapperTest extends TestCase {
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapToChildElement("stringProp", new SimpleValueMapper(ClassInfo.forClass(String), new QName("child")));
 		var mapper:XmlObjectMapper = builder.build();
-		var obj:Object = mapper.mapToObject(xml, new XmlProcessorContext());
+		var obj:Object = mapper.mapToObject(xml);
 		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
 		var sc:SimpleClass = SimpleClass(obj);
 		assertEquals("Unexpected String Property", "foo", sc.stringProp);

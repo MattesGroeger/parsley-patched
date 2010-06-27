@@ -46,7 +46,8 @@ public class SimpleValueMapper extends AbstractXmlObjectMapper {
 	/**
 	 * @inheritDoc
 	 */
-	public override function mapToObject (element:XML, context:XmlProcessorContext) : Object {
+	public override function mapToObject (element:XML, context:XmlProcessorContext = null) : Object {
+		if (context == null) context = new XmlProcessorContext();
 		var xmlText:String = element.text()[0];
 		var value:* = context.expressionContext.createExpression(xmlText).value;
 		return (converter) ? converter.convert(value, context.applicationDomain) : value;
@@ -55,7 +56,8 @@ public class SimpleValueMapper extends AbstractXmlObjectMapper {
 	/**
 	 * @inheritDoc
 	 */
-	public override function mapToXml (object:Object, context:XmlProcessorContext) : XML {
+	public override function mapToXml (object:Object, context:XmlProcessorContext = null) : XML {
+		if (context == null) context = new XmlProcessorContext();
 		var element:XML = <{elementName.localName}/>;
 		if (elementName.uri != null && elementName.uri.length != 0) {
 			context.setNamespace(element, elementName.uri);

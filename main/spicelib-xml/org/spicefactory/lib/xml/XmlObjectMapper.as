@@ -49,7 +49,7 @@ public interface XmlObjectMapper {
 	 * @param context the processing context
 	 * @return a new object that maps to the specified XML element
 	 */
-	function mapToObject (element:XML, context:XmlProcessorContext) : Object;
+	function mapToObject (element:XML, context:XmlProcessorContext = null) : Object;
 
 	/**
 	 * Maps from object to XML. Should always return XML elements with the name the <code>elementName</code> property was set to.
@@ -58,7 +58,7 @@ public interface XmlObjectMapper {
 	 * @param context the processing context
 	 * @return a new XML element that maps to the specified object
 	 */
-	function mapToXml (object:Object, context:XmlProcessorContext) : XML;
+	function mapToXml (object:Object, context:XmlProcessorContext = null) : XML;
 	
 	
 }

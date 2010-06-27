@@ -159,11 +159,11 @@ class NullXmlObjectMapper extends AbstractXmlObjectMapper {
 		super(ClassInfo.forClass(Void), new QName(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI, "null"));
 	}
 	
-	public override function mapToObject (element:XML, context:XmlProcessorContext) : Object {
+	public override function mapToObject (element:XML, context:XmlProcessorContext = null) : Object {
 		return null;
 	}
 
-	public override function mapToXml (object:Object, context:XmlProcessorContext) : XML {
+	public override function mapToXml (object:Object, context:XmlProcessorContext = null) : XML {
 		return <null/>;
 	}
 	 
@@ -180,12 +180,12 @@ class StaticPropertyRefMapper extends AbstractXmlObjectMapper {
 		delegate = builder.build();
 	}
 	
-	public override function mapToObject (element:XML, context:XmlProcessorContext) : Object {
+	public override function mapToObject (element:XML, context:XmlProcessorContext = null) : Object {
 		var ref:StaticPropertyRef = delegate.mapToObject(element, context) as StaticPropertyRef;
 		return (ref != null) ? ref.resolve(context.applicationDomain) : null;
 	}
 
-	public override function mapToXml (object:Object, context:XmlProcessorContext) : XML {
+	public override function mapToXml (object:Object, context:XmlProcessorContext = null) : XML {
 		throw new IllegalOperationError("This mapper does not support mapping back to XML");
 	}	
 	
