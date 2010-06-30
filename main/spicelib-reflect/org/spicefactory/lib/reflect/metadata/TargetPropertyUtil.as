@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.spicefactory.lib.util {
+package org.spicefactory.lib.reflect.metadata {
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Member;
 import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.parsley.metadata.Target;
+
 
 import flash.utils.Dictionary;
 

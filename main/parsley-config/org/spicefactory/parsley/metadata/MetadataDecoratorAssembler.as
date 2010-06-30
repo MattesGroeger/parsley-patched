@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.metadata {
+	import org.spicefactory.lib.reflect.metadata.Target;
 import org.spicefactory.lib.reflect.*;
 import org.spicefactory.lib.reflect.converter.EnumerationConverter;
 import org.spicefactory.parsley.asconfig.metadata.*;

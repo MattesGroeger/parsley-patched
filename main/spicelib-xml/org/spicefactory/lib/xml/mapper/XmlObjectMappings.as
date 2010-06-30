@@ -18,6 +18,7 @@ package org.spicefactory.lib.xml.mapper {
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Metadata;
+import org.spicefactory.lib.reflect.metadata.Target;
 import org.spicefactory.lib.xml.DefaultNamingStrategy;
 import org.spicefactory.lib.xml.NamingStrategy;
 import org.spicefactory.lib.xml.XmlObjectMapper;
@@ -28,7 +29,6 @@ import org.spicefactory.lib.xml.mapper.metadata.ChoiceTypeDecorator;
 import org.spicefactory.lib.xml.mapper.metadata.IgnoreDecorator;
 import org.spicefactory.lib.xml.mapper.metadata.TextNodeDecorator;
 import org.spicefactory.lib.xml.mapper.metadata.XmlMapping;
-import org.spicefactory.parsley.metadata.Target;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;

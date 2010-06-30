@@ -16,7 +16,7 @@
 
 package org.spicefactory.lib.xml.mapper {
 import org.spicefactory.lib.xml.mapper.metadata.XmlMapping;
-import org.spicefactory.lib.util.TargetPropertyUtil;
+import org.spicefactory.lib.reflect.metadata.TargetPropertyUtil;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.xml.MappingError;
