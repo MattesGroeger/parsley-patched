@@ -103,6 +103,7 @@
 	<target name="compile_spicelib_flex">
 		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo,PostConstruct,Init" />
+			<arg line="-keep-as3-metadata+=Ignore,Attribute,TextNode,ChildTextNode,ChoiceId,ChoiceType,XmlMapping" />
 			<arg line="-o ${release.target.dir}/release/spicelib-flex-${version}.swc" />
 			<arg line="-el ${flex3.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex3.sdk}/frameworks/libs/flex.swc" />
@@ -121,6 +122,7 @@
 	<target name="compile_spicelib_flash">
 		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo,PostConstruct,Init" />
+			<arg line="-keep-as3-metadata+=Ignore,Attribute,TextNode,ChildTextNode,ChoiceId,ChoiceType,XmlMapping" />
 			<arg line="-o ${release.target.dir}/release/spicelib-flash-${version}.swc" />
 			<arg line="-el ${flex3.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex3.sdk}/frameworks/libs/flex.swc" />
@@ -163,7 +165,7 @@
 	
 	<target name="compile_spicelib_reflect">
 		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo" />
+			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo,Target" />
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
 			<arg line="-el ${flex3.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
@@ -184,6 +186,7 @@
 	
 	<target name="compile_spicelib_xml">
 		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
+			<arg line="-keep-as3-metadata+=Ignore,Attribute,TextNode,ChildTextNode,ChoiceId,ChoiceType,XmlMapping" />
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
 			<arg line="-el ${flex3.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
@@ -391,8 +394,6 @@
 			<arg value="IOC Container initialization based on XML configuration"/>
 			<arg line="-package org.spicefactory.parsley.xml.events"/>
 			<arg value="Events for XML configuration file loading"/>
-			<arg line="-package org.spicefactory.parsley.xml.ext"/>
-			<arg value="Support for custom XML configuration namespaces"/>
 			<arg line="-package org.spicefactory.parsley.xml.mapper"/>
 			<arg value="Xml-Object Mapper for XML configuration files"/>
 			<arg line="-package org.spicefactory.parsley.xml.processor"/>
@@ -437,6 +438,8 @@
 			<arg value="Default XML-to-Object Mapper Implementation"/>
 			<arg line="-package org.spicefactory.lib.xml.mapper.handler"/>
 			<arg value="Handlers responsible for mapping a single property to XML"/>
+			<arg line="-package org.spicefactory.lib.xml.mapper.metadata"/>
+			<arg value="Metadata Tags for XML-to-Object Mapping Configuration"/>
 			<arg line="-package org.spicefactory.lib.expr"/>
 			<arg value="Expression Framework API"/>
 			<arg line="-package org.spicefactory.lib.expr.impl"/>
@@ -578,8 +581,6 @@
 			<arg value="IOC Container initialization based on XML configuration"/>
 			<arg line="-package org.spicefactory.parsley.xml.events"/>
 			<arg value="Events for XML configuration file loading"/>
-			<arg line="-package org.spicefactory.parsley.xml.ext"/>
-			<arg value="Support for custom XML configuration namespaces"/>
 			<arg line="-package org.spicefactory.parsley.xml.mapper"/>
 			<arg value="Xml-Object Mapper for XML configuration files"/>
 			<arg line="-package org.spicefactory.parsley.xml.processor"/>
@@ -640,6 +641,8 @@
 			<arg value="Default XML-to-Object Mapper Implementation"/>
 			<arg line="-package org.spicefactory.lib.xml.mapper.handler"/>
 			<arg value="Handlers responsible for mapping a single property to XML"/>
+			<arg line="-package org.spicefactory.lib.xml.mapper.metadata"/>
+			<arg value="Metadata Tags for XML-to-Object Mapping Configuration"/>
 			<arg line="-package org.spicefactory.lib.expr"/>
 			<arg value="Expression Framework API"/>
 			<arg line="-package org.spicefactory.lib.expr.impl"/>
@@ -712,6 +715,8 @@
 			<arg value="Default XML-to-Object Mapper Implementation"/>
 			<arg line="-package org.spicefactory.lib.xml.mapper.handler"/>
 			<arg value="Handlers responsible for mapping a single property to XML"/>
+			<arg line="-package org.spicefactory.lib.xml.mapper.metadata"/>
+			<arg value="Metadata Tags for XML-to-Object Mapping Configuration"/>
 			<arg line="-package org.spicefactory.lib.expr"/>
 			<arg value="Expression Framework API"/>
 			<arg line="-package org.spicefactory.lib.expr.impl"/>
@@ -791,6 +796,16 @@
 		</copy>
 		
 		<!-- copy sample applications -->
+		<delete dir="${samples.base.dir}/ParsleyHelloWorld/libs"/>
+		<mkdir dir="${samples.base.dir}/ParsleyHelloWorld/libs"/>
+		<copy todir="${samples.base.dir}/ParsleyHelloWorld/libs">
+			<fileset dir="${release.target.dir}/release">
+				<include name="parsley-flex3*.swc/"/>
+				<include name="spicelib-flex*.swc"/>
+			</fileset>
+		</copy>
+		<delete file="${samples.base.dir}/ParsleyHelloWorld/HelloWorld.swf"/>
+		
 		<mkdir dir="${release.target.dir}/samples/helloworld"/>
 		<copy todir="${release.target.dir}/samples/helloworld">
 			<fileset dir="${samples.base.dir}/ParsleyHelloWorld">
