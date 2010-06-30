@@ -32,25 +32,21 @@ public interface ViewManagerFactory {
 	[Deprecated(replacement="ViewSettings.autowireFilter")]
 	function get autowireFilter () : ViewAutowireFilter;
 	
-	[Deprecated]
 	function set autowireFilter (value:ViewAutowireFilter) : void;
 	
 	[Deprecated(replacement="ViewSettings.autoremoveViewRoots")]
 	function get viewRootRemovedEvent () : String;
 	
-	[Deprecated]
 	function set viewRootRemovedEvent (value:String) : void;
 
 	[Deprecated(replacement="ViewSettings.autoremoveComponents")]
 	function get componentRemovedEvent () : String;
 	
-	[Deprecated]
 	function set componentRemovedEvent (value:String) : void;
 
 	[Deprecated]
 	function get componentAddedEvent () : String;
 	
-	[Deprecated]
 	function set componentAddedEvent (value:String) : void;
 	
 	/**
