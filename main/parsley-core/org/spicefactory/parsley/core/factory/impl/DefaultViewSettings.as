@@ -79,7 +79,7 @@ public class DefaultViewSettings implements ViewSettings {
 	public function get autowireComponents () : Boolean {
 		return (_autowireComponents) 
 				? _autowireComponents.value 
-				: ((_parent) ? _parent.autowireComponents : true);
+				: ((_parent) ? _parent.autowireComponents : false);
 	}
 	
 	/**
