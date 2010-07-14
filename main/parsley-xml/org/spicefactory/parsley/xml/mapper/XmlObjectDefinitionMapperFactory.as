@@ -21,6 +21,9 @@ import org.spicefactory.lib.reflect.types.Void;
 import org.spicefactory.lib.xml.XmlObjectMapper;
 import org.spicefactory.lib.xml.mapper.SimpleValueMapper;
 import org.spicefactory.lib.xml.mapper.XmlObjectMappings;
+import org.spicefactory.parsley.binding.decorator.PublishDecorator;
+import org.spicefactory.parsley.binding.decorator.PublishSubscribeDecorator;
+import org.spicefactory.parsley.binding.decorator.SubscribeDecorator;
 import org.spicefactory.parsley.tag.core.ArrayTag;
 import org.spicefactory.parsley.tag.core.ConstructorTag;
 import org.spicefactory.parsley.tag.core.DynamicObjectTag;
@@ -118,7 +121,8 @@ public class XmlObjectDefinitionMapperFactory {
 				    								MessageErrorDecorator, MessageDispatcherDecorator,
 				    								MessageHandlerDecoratorTag, CommandDecoratorTag,
 				    								CommandResultDecorator, CommandErrorDecorator, CommandStatusDecorator,
-				    								ManagedEventsDecoratorTag, ResourceBindingDecorator)
+				    								ManagedEventsDecoratorTag, ResourceBindingDecorator,
+				    								PublishDecorator, PublishSubscribeDecorator, SubscribeDecorator)
 				    .choiceId(CHOICE_ID_ROOT_ELEMENTS, RootObjectTag, DynamicObjectTag, DynamicCommandXmlTag, ViewTag)
 				    .choiceId(CHOICE_ID_NESTED_ELEMENTS, ArrayTag, ObjectReferenceTag, NestedObjectTag,
 				    								Void, Any, Boolean, Number, int, uint, String, Date, Class);

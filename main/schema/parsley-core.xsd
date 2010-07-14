@@ -51,6 +51,10 @@
             <xs:element name="command-error" type="commandErrorType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="command-status" type="commandStatusType" minOccurs="0" maxOccurs="unbounded"/>
 
+            <xs:element name="publish" type="publishType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="subscribe" type="subscribeType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="publish-subscribe" type="publishType" minOccurs="0" maxOccurs="unbounded"/>
+
             <xs:element name="resource-binding" type="resourceBindingType" minOccurs="0" maxOccurs="unbounded"/>
             
             <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
@@ -182,6 +186,20 @@
     	<xs:attributeGroup ref="messagingAttributes"/>
         <xs:attribute name="message-property" type="xs:token" use="required"/>
         <xs:attribute name="target-property" type="xs:token" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="publishType">
+    	<xs:attribute name="scope" type="xs:token" use="optional"/>
+    	<xs:attribute name="object-id" type="xs:token" use="optional"/>
+    	<xs:attribute name="property" type="xs:token" use="required"/>
+    	<xs:attribute name="change-event" type="xs:token" use="optional"/>
+    	<xs:attribute name="managed" type="xs:token" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="subscribeType">
+    	<xs:attribute name="scope" type="xs:token" use="optional"/>
+    	<xs:attribute name="object-id" type="xs:token" use="optional"/>
+    	<xs:attribute name="property" type="xs:token" use="required"/>
     </xs:complexType>
     
     <xs:complexType name="resourceBindingType">

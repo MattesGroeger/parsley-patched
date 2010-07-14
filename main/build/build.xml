@@ -3,7 +3,7 @@
 	
 	<property file="build.properties" />
 	
-	<property name="version" value="2.3.M2"/>
+	<property name="version" value="2.3.M3-SNAPSHOT"/>
 	<property name="pimento.version" value="1.1.0"/>
 	<property name="project.dir" value="${basedir}/.."/>
 	<property name="lib.dir" value="${project.dir}/lib"/>
@@ -23,8 +23,20 @@
 					token="FlexSupport.initialize();" value="//***FlexSupport.initialize();"/>
 		<replace file="${project.dir}/parsley-config/org/spicefactory/parsley/dsl/context/ContextBuilder.as" 
 					token="import org.spicefactory.parsley.flex.FlexSupport;" value="//***import org.spicefactory.parsley.flex.FlexSupport;"/>
+		
+		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/builder/impl/DefaultCompositeContextBuilder.as" 
+					token="BindingSupport" value="FlashBindingSupport"/>
+		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/builder/impl/DefaultCompositeContextBuilder.as" 
+					token="parsley.binding" value="parsley.flash.binding"/>
+		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
+					token="PublishDecorator" value="FlashPublishDecorator"/>
+		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
+					token="PublishSubscribeDecorator" value="FlashPublishSubscribeDecorator"/>
+		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
+					token="binding.decorator.Flash" value="flash.binding.Flash"/>
+		
 		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,RemovedEvent,Selector,Target,Internal,ObjectDefinition,DynamicObject" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,Publish,Subscribe,PublishSubscribe,ResourceBinding,RemovedEvent,Selector,Target,Internal,ObjectDefinition,DynamicObject" />
 			<arg line="-o ${release.target.dir}/release/parsley-flash-${version}.swc" />
 			<arg line="-el ${flex3.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex3.sdk}/frameworks/libs/flex.swc" />
@@ -33,7 +45,7 @@
 			<arg line="-el ${release.target.dir}/release/spicelib-flash-${version}.swc" />
 			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
 			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
-			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-config ${project.dir}/parsley-flash ${project.dir}/parsley-flex ${project.dir}/parsley-integration ${project.dir}/parsley-xml"/>
+			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-config ${project.dir}/parsley-flash ${project.dir}/parsley-flex ${project.dir}/parsley-extensions ${project.dir}/parsley-integration ${project.dir}/parsley-xml"/>
 			<arg line="-is ${project.dir}/parsley-core" />
 			<arg line="-is ${project.dir}/parsley-config" />
 			<arg line="-is ${project.dir}/parsley-flash" />
@@ -44,11 +56,22 @@
 		</exec>
 		<replace file="${project.dir}/parsley-config/org/spicefactory/parsley/dsl/context/ContextBuilder.as" 
 					token="//***" value=""/>
+		
+		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/builder/impl/DefaultCompositeContextBuilder.as" 
+					token="FlashBindingSupport" value="BindingSupport"/>
+		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/builder/impl/DefaultCompositeContextBuilder.as" 
+					token="parsley.flash.binding" value="parsley.binding"/>
+		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
+					token="FlashPublishDecorator" value="PublishDecorator"/>
+		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
+					token="FlashPublishSubscribeDecorator" value="PublishSubscribeDecorator"/>
+		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
+					token="flash.binding" value="binding.decorator"/>
 	</target>
 	
 	<target name="compile_parsley_flex3">
 		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,RemovedEvent,Selector,Target,Internal,ObjectDefinition,DynamicObject" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,Publish,Subscribe,PublishSubscribe,ResourceBinding,RemovedEvent,Selector,Target,Internal,ObjectDefinition,DynamicObject" />
 			<arg line="-o ${release.target.dir}/release/parsley-flex3-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
@@ -61,7 +84,7 @@
 			<arg line="-el ${release.target.dir}/release/spicelib-flex-${version}.swc" />
 			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
 			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
-			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-config ${project.dir}/parsley-flex ${project.dir}/parsley-integration ${project.dir}/parsley-xml"/>
+			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-config ${project.dir}/parsley-flex ${project.dir}/parsley-extensions ${project.dir}/parsley-integration ${project.dir}/parsley-xml"/>
 			<arg line="-include-namespaces=http://www.spicefactory.org/parsley,http://www.spicefactory.org/parsley/flex,http://www.spicefactory.org/parsley/pimento,http://www.spicefactory.org/parsley/cinnamon" />
 			<arg line="-is ${project.dir}/parsley-core" />
 			<arg line="-is ${project.dir}/parsley-xml" />
@@ -75,7 +98,7 @@
 		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
 					token="extends Flex3ModuleInfoBase" value="extends Flex4ModuleInfoBase"/>
 		<exec executable="${flex4.sdk}/bin/${compc}" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,ResourceBinding,RemovedEvent,Selector,Target,Internal,ObjectDefinition,DynamicObject" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,Publish,Subscribe,PublishSubscribe,ResourceBinding,RemovedEvent,Selector,Target,Internal,ObjectDefinition,DynamicObject" />
 			<arg line="-o ${release.target.dir}/release/parsley-flex4-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
@@ -88,7 +111,7 @@
 			<arg line="-el ${release.target.dir}/release/spicelib-flex-${version}.swc" />
 			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
 			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
-			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-config ${project.dir}/parsley-flex ${project.dir}/parsley-integration ${project.dir}/parsley-xml"/>
+			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-config ${project.dir}/parsley-flex ${project.dir}/parsley-extensions ${project.dir}/parsley-integration ${project.dir}/parsley-xml"/>
 			<arg line="-include-namespaces=http://www.spicefactory.org/parsley,http://www.spicefactory.org/parsley/flex,http://www.spicefactory.org/parsley/pimento,http://www.spicefactory.org/parsley/cinnamon" />
 			<arg line="-is ${project.dir}/parsley-core" />
 			<arg line="-is ${project.dir}/parsley-xml" />

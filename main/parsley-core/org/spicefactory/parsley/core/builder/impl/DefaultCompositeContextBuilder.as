@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.builder.impl {
+import org.spicefactory.parsley.binding.BindingSupport;
 import org.spicefactory.lib.events.CompoundErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
@@ -191,6 +192,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 			return _registry;
 		}
 		_factories.activate(GlobalFactoryRegistry.instance);
+		BindingSupport.initialize();
 		assembleScopeDefinitions();
 		createContext();
 		return _registry;

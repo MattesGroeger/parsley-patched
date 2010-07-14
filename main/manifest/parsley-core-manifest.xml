@@ -30,6 +30,10 @@
     <component id="CommandError" class="org.spicefactory.parsley.tag.messaging.CommandErrorDecorator"/>
     <component id="CommandStatus" class="org.spicefactory.parsley.tag.messaging.CommandStatusDecorator"/>
 
+    <component id="Publish" class="org.spicefactory.parsley.binding.decorator.PublishDecorator"/>
+    <component id="Subscribe" class="org.spicefactory.parsley.binding.decorator.SubscribeDecorator"/>
+    <component id="PublishSubscribe" class="org.spicefactory.parsley.binding.decorator.PublishSubscribeDecorator"/>
+
     <component id="ResourceBinding" class="org.spicefactory.parsley.tag.resources.ResourceBindingDecorator"/>
     
     <component id="Array" class="org.spicefactory.parsley.tag.core.ArrayTag"/>
