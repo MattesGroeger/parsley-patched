@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.impl {
+import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
@@ -109,6 +110,9 @@ public class MessageReceiverSelectionCache {
 	 * @return all receivers of a particular kind that match for the specified selector value
 	 */	
 	public function getReceivers (kind:MessageReceiverKind, selectorValue:*) : Array {
+		if (selectorMap == null) {
+			throw new IllegalStateError("This receiver cache has been disposed - the associated Context had been destroyed");
+		}
 		var receivers:Array = null;
 		if (selectorMap[kind] != undefined && selectorMap[kind][selectorValue] != undefined) {
 			return selectorMap[kind][selectorValue];
