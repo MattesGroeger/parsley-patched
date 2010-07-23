@@ -37,11 +37,11 @@ public interface MessageSettings {
 	function set unhandledError (policy:ErrorPolicy) : void;
 	
 	/**
-	 * Adds an error handler that will be applied to all routers created by this factory.
+	 * Adds an error handler that will be applied to all routers created with these settings.
 	 * 
-	 * @param target the error handler to add
+	 * @param handler the error handler to add
 	 */
-	function addErrorHandler (target:MessageErrorHandler) : void;
+	function addErrorHandler (handler:MessageErrorHandler) : void;
 	
 	/**
 	 * All error handlers that were registered for these settings.

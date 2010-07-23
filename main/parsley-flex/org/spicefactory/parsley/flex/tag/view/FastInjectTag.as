@@ -18,7 +18,7 @@ package org.spicefactory.parsley.flex.tag.view {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.events.FastInjectEvent;
-import org.spicefactory.parsley.core.view.impl.StageEventFilter;
+import org.spicefactory.parsley.core.view.util.StageEventFilter;
 import org.spicefactory.parsley.core.view.impl.ViewInjection;
 import org.spicefactory.parsley.flex.tag.ConfigurationTagBase;
 

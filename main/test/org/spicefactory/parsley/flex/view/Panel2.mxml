@@ -28,7 +28,7 @@
 			[Bindable]
 			public var model3:CoreModel;
          
-         	 //[Inject]
+         	 [Inject]
          	 public var context:Context;
          	
          	 private var window:TitleWindow;

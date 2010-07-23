@@ -15,10 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.factory.impl {
-import org.spicefactory.parsley.core.view.impl.DefaultViewAutowireFilter;
 import org.spicefactory.lib.util.Flag;
-import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.factory.ViewSettings;
+import org.spicefactory.parsley.core.view.ViewAutowireFilter;
+import org.spicefactory.parsley.core.view.impl.DefaultViewAutowireFilter;
 
 /**
  * Default implementation of the ViewSettings interface.
@@ -34,6 +34,7 @@ public class DefaultViewSettings implements ViewSettings {
 	private var _autoremoveComponents:Flag;
 	private var _autowireComponents:Flag;
 	private var _autowireFilter:ViewAutowireFilter;
+	private var _viewHandlers:Array = new Array();
 
 	
 	public function set parent (parent:ViewSettings) : void {
@@ -70,7 +71,7 @@ public class DefaultViewSettings implements ViewSettings {
 	 * @inheritDoc
 	 */
 	public function set autoremoveComponents (value:Boolean) : void {
-		_autoremoveViewRoots = new Flag(value);
+		_autoremoveComponents = new Flag(value);
 	}
 	
 	/**
@@ -86,7 +87,7 @@ public class DefaultViewSettings implements ViewSettings {
 	 * @inheritDoc
 	 */
 	public function set autowireComponents (value:Boolean) : void {
-		_autoremoveViewRoots = new Flag(value);
+		_autowireComponents = new Flag(value);
 	}
 	
 	/**
@@ -103,6 +104,24 @@ public class DefaultViewSettings implements ViewSettings {
 	 */
 	public function set autowireFilter (value:ViewAutowireFilter) : void {
 		_autowireFilter = value;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function addViewHandler (handler:Class) : void {
+		_viewHandlers.push(handler);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get viewHandlers () : Array {
+		var handlers:Array = _viewHandlers;
+		if (_parent) {
+			handlers = handlers.concat(_parent.viewHandlers);
+		}
+		return handlers;
 	}
 	
 	

@@ -184,6 +184,10 @@ public class GlobalFactoryRegistry implements FactoryRegistry {
 }
 }
 
+import org.spicefactory.parsley.core.view.handler.ViewConfigurationHandler;
+import org.spicefactory.parsley.core.view.handler.ViewAutowireHandler;
+import org.spicefactory.parsley.core.view.handler.ContextCreationHandler;
+import org.spicefactory.parsley.core.view.handler.FastInjectHandler;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
@@ -273,7 +277,8 @@ class DefaultViewManagerFactory implements ViewManagerFactory {
 	}
 
 	public function create (context:Context, domain:ApplicationDomain, settings:ViewSettings) : ViewManager {
-		return new DefaultViewManager(context, domain, settings);
+		var handlers:Array = [ContextCreationHandler, FastInjectHandler, ViewAutowireHandler, ViewConfigurationHandler];
+		return new DefaultViewManager(context, domain, settings, handlers);
 	}
 	
 	public function get viewRootRemovedEvent () : String {

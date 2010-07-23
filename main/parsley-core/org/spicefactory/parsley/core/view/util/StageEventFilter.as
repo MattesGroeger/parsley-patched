@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.view.impl {
+package org.spicefactory.parsley.core.view.util {
 import flash.events.IEventDispatcher;
 import flash.display.DisplayObject;
 import flash.events.Event;

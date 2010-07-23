@@ -44,6 +44,12 @@ public class ViewSettingsTag extends DefaultViewSettings implements ContextBuild
 	public var local:Boolean = false;
 	
 	/**
+	 * The type of a view handler to add to this Context. The class must implement the <code>ViewHandler</code> interface.
+	 * For specifying more than one view handler multiple ViewSettings tags can be used.
+	 */
+	public var viewHandler:Class;
+	
+	/**
 	 * @private
 	 */
 	public function processBuilder (builder:CompositeContextBuilder) : void {
@@ -53,6 +59,9 @@ public class ViewSettingsTag extends DefaultViewSettings implements ContextBuild
 		settings.autowireComponents = autowireComponents;
 		if (autowireFilter) {
 			settings.autowireFilter = autowireFilter;
+		}
+		if (viewHandler) {
+			settings.addViewHandler(viewHandler);
 		}
 	}
 	

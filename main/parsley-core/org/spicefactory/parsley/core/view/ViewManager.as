@@ -18,7 +18,7 @@ package org.spicefactory.parsley.core.view {
 import flash.display.DisplayObject;
 
 /**
- * A ViewManager is responsible for for dynamically wiring views to a Context.
+ * A ViewManager is responsible for dynamically wiring views to a Context and other view related tasks.
  * One or more view roots (any kind of DisplayObject) can be associated with a ViewManager.
  * The manager then listens for bubbling events dispatched by children of any of the view
  * roots to signal that they want to be added to a Context.
