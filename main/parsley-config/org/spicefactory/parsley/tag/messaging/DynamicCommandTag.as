@@ -107,6 +107,7 @@ public class DynamicCommandTag implements RootConfigurationElement {
 	public var error:String;
 	
 	[ArrayElementType("org.spicefactory.parsley.tag.core.ObjectDecoratorMarker")]
+	[ChoiceId("decorators")]
 	/**
 	 * @copy org.spicefactory.parsley.tag.core.RootObjectTag#decorators
 	 */
