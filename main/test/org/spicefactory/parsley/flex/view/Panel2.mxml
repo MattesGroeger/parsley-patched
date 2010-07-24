@@ -28,7 +28,7 @@
 			[Bindable]
 			public var model3:CoreModel;
          
-         	 [Inject]
+         	 //[Inject]
          	 public var context:Context;
          	
          	 private var window:TitleWindow;
@@ -62,6 +62,7 @@
 		>
 		<parsley:InjectTag objectId="object" property="model2"/>
 		<parsley:InjectTag type="{CoreModel}" property="model3"/>
+		<parsley:InjectTag type="{Context}" property="context"/>
 	</parsley:FastInjectTag>
 	
 	<mx:Text text="AA2"/>

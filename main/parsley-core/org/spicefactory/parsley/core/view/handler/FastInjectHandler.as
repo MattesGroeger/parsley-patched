@@ -84,7 +84,9 @@ public class FastInjectHandler implements ViewHandler {
 			}
 			var object:Object = (injection.objectId != null)
 					? context.getObject(injection.objectId)
-					: context.getObjectByType(injection.type);
+					: (injection.type != Context) 
+					? context.getObjectByType(injection.type)
+					: context;
 			target[injection.property] = object;
 		}
 	}
