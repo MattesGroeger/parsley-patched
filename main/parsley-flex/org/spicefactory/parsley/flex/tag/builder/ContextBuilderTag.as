@@ -18,9 +18,6 @@ package org.spicefactory.parsley.flex.tag.builder {
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.lib.util.DelayedDelegateChain;
-import org.spicefactory.lib.util.Delegate;
-import org.spicefactory.lib.util.DelegateChain;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
@@ -32,6 +29,7 @@ import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
+import org.spicefactory.parsley.core.view.handler.AutowirePrefilterCache;
 import org.spicefactory.parsley.core.view.handler.ContextLookupEvent;
 import org.spicefactory.parsley.flex.FlexSupport;
 import org.spicefactory.parsley.flex.processor.FlexConfigurationProcessor;
@@ -43,7 +41,6 @@ import flash.display.DisplayObject;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.system.ApplicationDomain;
-import flash.utils.Dictionary;
 
 /**
  * Dispatched when the Context built by this tag was fully initialized.
@@ -83,9 +80,6 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 
 	private static const log:Logger = LogContext.getLogger(ContextBuilderTag);
 	
-	private static var prefilteredEvents:Dictionary = new Dictionary();
-	private static var prefilterCachePurger:DelegateChain;
-
 
 	ResourceBindingProcessor.adapterClass = FlexResourceBindingAdapter;
 	
@@ -222,18 +216,8 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	}
 	
 	private function cacheAutowirePrefilterEvent (event:Event) : void {
-		if (prefilteredEvents[event]) return;
-		prefilteredEvents[event] = true;
-		if (prefilterCachePurger == null) {
-			prefilterCachePurger = new DelayedDelegateChain(1);
-			prefilterCachePurger.addDelegate(new Delegate(purgePrefilterCache));
-		}
+		if (!AutowirePrefilterCache.addEvent(event)) return;
 		cachedAutowirePrefilterTargets.push(event.target);
-	}
-	
-	private function purgePrefilterCache () : void {
-		prefilterCachePurger = null;
-		prefilteredEvents = new Dictionary();
 	}
 	
 	private function cacheAutowireViewEvent (event:Event) : void {

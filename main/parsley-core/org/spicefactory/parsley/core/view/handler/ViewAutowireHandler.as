@@ -15,9 +15,6 @@
  */
 
 package org.spicefactory.parsley.core.view.handler {
-import org.spicefactory.lib.util.DelayedDelegateChain;
-import org.spicefactory.lib.util.Delegate;
-import org.spicefactory.lib.util.DelegateChain;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ViewAutowireEvent;
 import org.spicefactory.parsley.core.factory.ViewSettings;
@@ -29,7 +26,6 @@ import org.spicefactory.parsley.core.view.util.ContextAwareEventHandler;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
-import flash.utils.Dictionary;
 
 /**
  * ViewHandler implementation that deals with autowiring views to the Context.
@@ -39,9 +35,6 @@ import flash.utils.Dictionary;
 public class ViewAutowireHandler implements ViewHandler {
 
 
-	private static var prefilteredEvents:Dictionary = new Dictionary();
-	private static var prefilterCachePurger:DelegateChain;
-	
 	private var context:Context;
 	private var configurator:ViewConfigurator;
 	private var settings:ViewSettings;
@@ -53,7 +46,6 @@ public class ViewAutowireHandler implements ViewHandler {
 	 * @inheritDoc
 	 */
 	public function init (context:Context, settings:ViewSettings, configurator:ViewConfigurator) : void {
-		trace("init autowire handler");
 		this.context = context;
 		this.settings = settings;
 		this.configurator = configurator;
@@ -71,7 +63,6 @@ public class ViewAutowireHandler implements ViewHandler {
 	 * @inheritDoc
 	 */
 	public function addViewRoot (view:DisplayObject) : void {
-		trace("addViewRoot autowire handler: " + settings.autowireComponents);
 		if (settings.autowireComponents) {
 			view.addEventListener(settings.autowireFilter.eventType, prefilterView, true);
 			view.addEventListener(settings.autowireFilter.eventType, prefilterView);
@@ -91,21 +82,11 @@ public class ViewAutowireHandler implements ViewHandler {
 	}
 	
 	private function prefilterView (event:Event) : void {
-		if (prefilteredEvents[event]) return;
-		prefilteredEvents[event] = true;
-		if (prefilterCachePurger == null) {
-			prefilterCachePurger = new DelayedDelegateChain(1);
-			prefilterCachePurger.addDelegate(new Delegate(purgePrefilterCache));
-		}
+		if (!AutowirePrefilterCache.addEvent(event)) return;
 		var view:DisplayObject = event.target as DisplayObject;
 		if (settings.autowireFilter.prefilter(view)) {
 			view.dispatchEvent(new ViewAutowireEvent());
 		}
-	}
-	
-	private function purgePrefilterCache () : void {
-		prefilterCachePurger = null;
-		prefilteredEvents = new Dictionary();
 	}
 	
 	private function handleAutowireEvent (event:Event) : void {
