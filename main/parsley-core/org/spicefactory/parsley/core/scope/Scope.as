@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.scope {
+	import org.spicefactory.parsley.core.lifecycle.LifecycleObserverRegistry;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.command.CommandManager;
 
@@ -47,8 +48,11 @@ public interface Scope {
 	function get commandManager () : CommandManager;
 	
 	/**
-	 * The registry for listeners that listen to lifecycle events of objects within this scope.
+	 * The registry for observers of lifecycle events dispatched by objects within this scope.
 	 */
+	function get lifecyleObservers () : LifecycleObserverRegistry; 
+	 
+	[Deprecated(replacement="lifecycleObservers")]
 	function get objectLifecycle () : ObjectLifecycleScope;
 	
 	/**

@@ -15,10 +15,12 @@
  */
 
 package org.spicefactory.parsley.core.scope.impl {
-import org.spicefactory.parsley.core.messaging.command.CommandManager;
+	import org.spicefactory.parsley.core.lifecycle.impl.DefaultLifecycleObserverRegistry;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
+import org.spicefactory.parsley.core.messaging.command.CommandManager;
+import org.spicefactory.parsley.core.lifecycle.LifecycleObserverRegistry;
 import org.spicefactory.parsley.core.scope.ObjectLifecycleScope;
 import org.spicefactory.parsley.core.scope.Scope;
 import org.spicefactory.parsley.core.scope.ScopeExtensions;
@@ -39,6 +41,7 @@ public class DefaultScope implements Scope {
 	private var domain:ApplicationDomain;
 	private var scopeDef:ScopeDefinition;
 	private var _objectLifecycle:ObjectLifecycleScope;
+	private var _lifecycleObservers:LifecycleObserverRegistry;
 	
 	
 	/**
@@ -53,6 +56,7 @@ public class DefaultScope implements Scope {
 		this.scopeDef = scopeDef;
 		this.domain = domain;
 		this._objectLifecycle = new DefaultObjectLifecycleScope(scopeDef.lifecycleEventRouter.receivers);
+		this._lifecycleObservers = new DefaultLifecycleObserverRegistry(scopeDef.lifecycleEventRouter.receivers);
 		
 		if (context.configured) {
 			activated = true;
@@ -130,6 +134,11 @@ public class DefaultScope implements Scope {
 	/**
 	 * @inheritDoc
 	 */
+	public function get lifecyleObservers () : LifecycleObserverRegistry {
+		return _lifecycleObservers;
+	}
+
+	[Deprecated(replacement="lifecycleObservers")]
 	public function get objectLifecycle () : ObjectLifecycleScope {
 		return _objectLifecycle;
 	}

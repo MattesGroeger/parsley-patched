@@ -78,7 +78,7 @@ public class ObserveMethodProcessorFactory implements ObjectProcessorFactory {
 		context.removeEventListener(ContextEvent.CONFIGURED, contextConfigured);
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		processor = new ObserveMethodProcessor(Provider.forDefinition(definition, context), method, phase, objectId, scope);
-		processor.createObserver();
+		processor.addObserver();
 	}
 	
 	private function contextDestroyed (event:Event) : void {
@@ -102,10 +102,12 @@ public class ObserveMethodProcessorFactory implements ObjectProcessorFactory {
 }
 }
 
+import org.spicefactory.parsley.core.lifecycle.LifecycleObserver;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.registry.ObjectProcessor;
 import org.spicefactory.parsley.core.scope.Scope;
+import org.spicefactory.parsley.processor.lifecycle.DefaultLifecycleObserver;
 
 class ObserveMethodProcessor implements ObjectProcessor {
 
@@ -117,7 +119,7 @@ class ObserveMethodProcessor implements ObjectProcessor {
 	private var objectId:String;
 	private var scope:Scope;
 	
-	private var processed:Boolean;
+	private var observer:LifecycleObserver;
 	
 	
 	function ObserveMethodProcessor (provider:ObjectProvider, method:String, phase:ObjectLifecycle, objectId:String, scope:Scope) {
@@ -130,20 +132,20 @@ class ObserveMethodProcessor implements ObjectProcessor {
 
 	
 	public function preInit () : void {
-		if (!processed) createObserver();
+		if (!observer) addObserver();
 	}
 	
 	public function postDestroy () : void {
-		if (processed) removeObserver();
+		if (observer) removeObserver();
 	}
 	
-	public function createObserver () : void {
-		scope.objectLifecycle.addProvider(provider, method, phase, objectId);
-		processed = true;
+	public function addObserver () : void {
+		observer = new DefaultLifecycleObserver(provider, method, phase, objectId);
+		scope.lifecyleObservers.addObserver(observer);
 	}
 	
 	public function removeObserver () : void {
-		scope.objectLifecycle.removeProvider(provider, method, phase, objectId);
+		scope.lifecyleObservers.removeObserver(observer);
 	}
 	
 	

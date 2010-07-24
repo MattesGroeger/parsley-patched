@@ -24,32 +24,17 @@ import org.spicefactory.parsley.core.scope.ObjectLifecycleScope;
 
 import flash.utils.Dictionary;
 
-/**
- * Default implementation of the ObjectLifecycleScope interface.
- * 
- * @author Jens Halm
- */
+[Deprecated(replacement="org.spicefactory.parsley.core.lifecycle.impl.DefaultLifecycleObserverRegistry")]
 public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
-
 
 	private var listeners:Dictionary = new Dictionary();
 	private var providers:Dictionary = new Dictionary();
 	private var receiverRegistry:MessageReceiverRegistry;
 	
-	
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param receiverRegistry the registry for the object lifecycle listeners
-	 */
 	function DefaultObjectLifecycleScope (receiverRegistry:MessageReceiverRegistry) {
 		this.receiverRegistry = receiverRegistry;
 	}
 
-
-	/**
-	 * @inheritDoc
-	 */
 	public function addListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void {
 		var selector:String = getSelector(event, id);
 		var target:MessageTarget = new ObjectLifecycleListener(type, selector, listener);
@@ -62,9 +47,6 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 		receiverRegistry.addTarget(target);
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function removeListener (type:Class, event:ObjectLifecycle, listener:Function, id:String = null) : void {
 		var targets:Array = listeners[listener];
 		if (targets == null) {
@@ -83,9 +65,6 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 		}
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function addProvider (provider:ObjectProvider, methodName:String, event:ObjectLifecycle, id:String = null) : void {
 		var selector:String = getSelector(event, id);
 		var target:MessageTarget = new ObjectLifecycleHandler(provider, methodName, selector);
@@ -98,9 +77,6 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 		receiverRegistry.addTarget(target);
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function removeProvider (provider:ObjectProvider, methodName:String, event:ObjectLifecycle, id:String = null) : void {
 		var targets:Array = providers[provider];
 		if (targets == null) {
@@ -119,10 +95,11 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 		}
 	}
 	
-	
 	private function getSelector (event:ObjectLifecycle, id:String = null) : String {
 		return (id == null) ? event.key : event.key + ":" + id;
 	}
+	
+	
 }
 }
 
