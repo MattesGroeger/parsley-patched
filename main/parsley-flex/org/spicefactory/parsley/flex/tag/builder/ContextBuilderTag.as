@@ -32,6 +32,7 @@ import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
+import org.spicefactory.parsley.core.view.handler.ContextLookupEvent;
 import org.spicefactory.parsley.flex.FlexSupport;
 import org.spicefactory.parsley.flex.processor.FlexConfigurationProcessor;
 import org.spicefactory.parsley.flex.resources.FlexResourceBindingAdapter;
@@ -130,6 +131,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	public var processors:Array;
 	
 	
+	private var cachedContextLookupEvents:Array = new Array();
 	private var cachedViewConfigEvents:Array = new Array();
 	private var cachedFastInjectEvents:Array = new Array();
 	private var cachedAutowireViewEvents:Array = new Array();
@@ -166,6 +168,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	
 	private function addViewRootListeners (view:DisplayObject) : void {
 		view.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, detectPrematureChildCreation);
+		view.addEventListener(ContextLookupEvent.LOOKUP, cacheContextLookupEvent);
 		view.addEventListener(ViewConfigurationEvent.CONFIGURE_VIEW, cacheViewConfigEvent);
 		view.addEventListener(autowireViewEventType, cacheAutowirePrefilterEvent);
 		view.addEventListener(autowireViewEventType, cacheAutowirePrefilterEvent, true);
@@ -176,6 +179,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	
 	private function removeViewRootListeners (view:DisplayObject) : void {
 		view.removeEventListener(ContextBuilderEvent.BUILD_CONTEXT, detectPrematureChildCreation);
+		view.removeEventListener(ContextLookupEvent.LOOKUP, cacheContextLookupEvent);
 		view.removeEventListener(ViewConfigurationEvent.CONFIGURE_VIEW, cacheViewConfigEvent);
 		view.removeEventListener(autowireViewEventType, cacheAutowirePrefilterEvent);
 		view.removeEventListener(autowireViewEventType, cacheAutowirePrefilterEvent, true);
@@ -205,6 +209,12 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		}
 	}
 	
+	private function cacheContextLookupEvent (event:ContextLookupEvent) : void {
+		event.stopImmediatePropagation();
+		cachedContextLookupEvents.push(event);
+		event.markAsProcessed();
+	}
+	
 	private function cacheFastInjectEvent (event:FastInjectEvent) : void {
 		event.stopImmediatePropagation();
 		cachedFastInjectEvents.push(event);
@@ -232,6 +242,9 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	}
 	
 	private function handleCachedEvents () : void {
+		for each (var lookupEvent:ContextLookupEvent in cachedContextLookupEvents) {
+			lookupEvent.context = _context;
+		}
 		for each (var viewEvent:Event in cachedViewConfigEvents) {
 			viewEvent.target.dispatchEvent(viewEvent.clone());
 		}
