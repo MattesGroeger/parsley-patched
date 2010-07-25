@@ -44,9 +44,9 @@ public class AbstractMethodReceiver extends AbstractObjectProviderReceiver {
 	function AbstractMethodReceiver (provider:ObjectProvider, methodName:String,  
 			messageType:Class = null, selector:* = undefined, order:int = int.MAX_VALUE) {
 		super(provider, messageType, selector, order);
-		_targetMethod = targetType.getMethod(methodName);
+		_targetMethod = provider.type.getMethod(methodName);
 		if (_targetMethod == null) {
-			throw new ContextError("Target instance of type " + targetType.name 
+			throw new ContextError("Target instance of type " + provider.type.name 
 					+ " does not contain a method with name " + methodName);
 		}
 	}
@@ -54,7 +54,7 @@ public class AbstractMethodReceiver extends AbstractObjectProviderReceiver {
 	/**
 	 * The method to invoke for matching messages.
 	 */
-	protected function get targetMethod () : Method {
+	public function get targetMethod () : Method {
 		return _targetMethod;
 	}
 	

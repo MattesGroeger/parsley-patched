@@ -31,8 +31,8 @@ import org.spicefactory.parsley.processor.util.MessageReceiverFactories;
 public class MessageBinding extends AbstractObjectProviderReceiver implements MessageTarget {
 	
 	
-	private var targetProperty:Property;
-	private var messageProperty:Property;
+	private var _targetProperty:Property;
+	private var _messageProperty:Property;
 	
 	
 	/**
@@ -48,31 +48,44 @@ public class MessageBinding extends AbstractObjectProviderReceiver implements Me
 	function MessageBinding (provider:ObjectProvider, targetPropertyName:String, 
 			messageType:ClassInfo, messagePropertyName:String, selector:* = undefined, order:int = int.MAX_VALUE) {
 		super(provider, messageType.getClass(), selector, order);
-		targetProperty = targetType.getProperty(targetPropertyName);
-		if (targetProperty == null) {
-			throw new ContextError("Target type " + targetType.name 
-					+ " does not contain a property with name " + targetProperty);	
+		_targetProperty = provider.type.getProperty(targetPropertyName);
+		if (_targetProperty == null) {
+			throw new ContextError("Target type " + provider.type.name 
+					+ " does not contain a property with name " + _targetProperty);	
 		}
-		else if (!targetProperty.writable) {
-			throw new ContextError("Target " + targetProperty + " is not writable");
+		else if (!_targetProperty.writable) {
+			throw new ContextError("Target " + _targetProperty + " is not writable");
 		}
-		messageProperty = messageType.getProperty(messagePropertyName);
-		if (messageProperty == null) {
+		_messageProperty = messageType.getProperty(messagePropertyName);
+		if (_messageProperty == null) {
 			throw new ContextError("Message type " + messageType.name 
-					+ " does not contain a property with name " + messageProperty);	
+					+ " does not contain a property with name " + _messageProperty);	
 		}
-		else if (!messageProperty.readable) {
-			throw new ContextError("Message " + messageProperty + " is not readable");
+		else if (!_messageProperty.readable) {
+			throw new ContextError("Message " + _messageProperty + " is not readable");
 		}		
 	}
 	
+	/**
+	 * The target property that should be bound.
+	 */
+	public function get targetProperty () : Property {
+		return _targetProperty;
+	}
 	
+	/**
+	 * The property of the message that should be bound to the target property.
+	 */
+	public function get messageProperty () : Property {
+		return _messageProperty;
+	}
+		
 	/**
 	 * @inheritDoc
 	 */
 	public function handleMessage (message:Object) : void {
 		var value:* = messageProperty.getValue(message);
-		targetProperty.setValue(targetInstance, value);
+		targetProperty.setValue(provider.instance, value);
 	}
 	
 	
@@ -95,6 +108,6 @@ public class MessageBinding extends AbstractObjectProviderReceiver implements Me
 				[targetPropertyName, messageType, messagePropertyName, selector, order]);
 	}
 	
-	
+
 }
 }

@@ -87,7 +87,7 @@ public class DefaultCommandObserver extends AbstractMethodReceiver implements Co
 		if (paramTypes.length == 2) {
 			params.push(command.message);
 		}
-		targetMethod.invoke(targetInstance, params);
+		targetMethod.invoke(provider.instance, params);
 	}
 	
 	/**

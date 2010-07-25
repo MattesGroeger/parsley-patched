@@ -37,7 +37,7 @@ public class CommandStatusFlag extends AbstractObjectProviderReceiver implements
 	
 	private var manager:CommandManager;
 	
-	private var property:Property;
+	private var _property:Property;
 	
 	private var _status:CommandStatus;
 	
@@ -56,26 +56,33 @@ public class CommandStatusFlag extends AbstractObjectProviderReceiver implements
 	function CommandStatusFlag (provider:ObjectProvider, propertyName:String, manager:CommandManager, 
 			status:CommandStatus, messageType:ClassInfo, selector:* = undefined, order:int = int.MAX_VALUE) {
 		super(provider, messageType.getClass(), selector, order);
-		property = targetType.getProperty(propertyName);
-		if (property == null) {
-			throw new ContextError("Target type " + targetType.name 
-					+ " does not contain a property with name " + property);	
+		_property = provider.type.getProperty(propertyName);
+		if (_property == null) {
+			throw new ContextError("Target type " + provider.type.name 
+					+ " does not contain a property with name " + _property);	
 		}
-		else if (!property.writable) {
-			throw new ContextError("Target " + property + " is not writable");
+		else if (!_property.writable) {
+			throw new ContextError("Target " + _property + " is not writable");
 		}
-		else if (property.type.getClass() != Boolean) {
-			throw new ContextError("Target " + property + " for CommandStatus must be of type Boolean");
+		else if (_property.type.getClass() != Boolean) {
+			throw new ContextError("Target " + _property + " for CommandStatus must be of type Boolean");
 		}
 		_status = status;
 		this.manager = manager;
+	}
+	
+	/**
+	 * The target property that should be bound.
+	 */
+	public function get property () : Property {
+		return _property;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function observeCommand (command:Command) : void {
-		property.setValue(targetInstance, manager.hasActiveCommands(messageType, selector));
+		property.setValue(provider.instance, manager.hasActiveCommands(messageType, selector));
 	}
 	
 	/**

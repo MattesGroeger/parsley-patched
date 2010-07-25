@@ -119,7 +119,7 @@ public class AbstractMessageHandler extends AbstractMethodReceiver {
 				params.push(value);
 			}
 		}
-		return targetMethod.invoke(targetInstance, params);
+		return targetMethod.invoke(provider.instance, params);
 	}
 	
 	

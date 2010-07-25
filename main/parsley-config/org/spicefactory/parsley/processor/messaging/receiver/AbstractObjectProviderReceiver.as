@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.processor.messaging.receiver {
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 
 /**
@@ -30,7 +29,7 @@ import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 public class AbstractObjectProviderReceiver extends AbstractMessageReceiver {
 	
 	
-	private var provider:ObjectProvider;
+	private var _provider:ObjectProvider;
 	
 	
 	/**
@@ -44,25 +43,18 @@ public class AbstractObjectProviderReceiver extends AbstractMessageReceiver {
 	function AbstractObjectProviderReceiver (provider:ObjectProvider, 
 			messageType:Class = null, selector:* = undefined, order:int = int.MAX_VALUE) {
 		super(messageType, selector, order);
-		this.provider = provider;
+		this._provider = provider;
 	}
-
+	
 	/**
-	 * The target instance that handles the messages.
-	 * Accessing this property may lead to initialization of the target instance in case
+	 * The provider for the actual instance handling the message.
+	 * Accessing the instance property of the provider may lead to initialization of the target instance in case
 	 * it is lazy-intializing.
 	 */
-	protected function get targetInstance () : Object {
-		return provider.instance;
+	public function get provider () : ObjectProvider {
+		return _provider;
 	}
-	
-	/**
-	 * The type of the instance handling the messages.
-	 */
-	protected function get targetType () : ClassInfo {
-		return provider.type;
-	}
-	
+
 	
 }
 }

@@ -55,7 +55,7 @@ public class DefaultMessageInterceptor extends AbstractMethodReceiver implements
 	 * @inheritDoc
 	 */
 	public function intercept (processor:MessageProcessor) : void {
-		targetMethod.invoke(targetInstance, [processor]);
+		targetMethod.invoke(provider.instance, [processor]);
 	}
 	
 	

@@ -94,7 +94,7 @@ public class DefaultMessageErrorHandler extends AbstractMethodReceiver implement
 	 */
 	public function handleError (processor:MessageProcessor, error:Error) : void {
 		var params:Array = (targetMethod.parameters.length == 2) ? [processor, error] : [processor];
-		targetMethod.invoke(targetInstance, params);
+		targetMethod.invoke(provider.instance, params);
 	}
 	
 	
