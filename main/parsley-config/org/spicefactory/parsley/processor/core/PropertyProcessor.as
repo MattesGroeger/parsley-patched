@@ -31,8 +31,8 @@ public class PropertyProcessor implements ObjectProcessor {
 	
 	
 	private var target:ManagedObject;
-	private var property:Property;
-	private var unresolvedValue:*;	
+	private var _property:Property;
+	private var _unresolvedValue:*;	
 	
 	
 	/**
@@ -44,10 +44,27 @@ public class PropertyProcessor implements ObjectProcessor {
 	 */
 	function PropertyProcessor (target:ManagedObject, property:Property, unresolvedValue:*) {
 		this.target = target;
-		this.property = property;
-		this.unresolvedValue = unresolvedValue;
+		this._property = property;
+		this._unresolvedValue = unresolvedValue;
 	}
 
+
+	/**
+	 * The property set by this processor.
+	 */
+	public function get property () : Property {
+		return _property;
+	}
+	
+	/**
+	 * The unresolved value of the property.
+	 * Unresolved means that for special objects like references to other
+	 * objects in the Context, this will be an instance of <code>ResolvableValue</code>
+	 * that merely represents the actual value.
+	 */
+	public function get unresolvedValue () : * {
+		return _unresolvedValue;
+	}
 	
 	/**
 	 * @inheritDoc

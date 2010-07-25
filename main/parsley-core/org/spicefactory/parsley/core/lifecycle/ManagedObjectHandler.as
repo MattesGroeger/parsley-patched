@@ -29,6 +29,12 @@ public interface ManagedObjectHandler {
 	 * The target object controlled by this handler.
 	 */
 	function get target () : ManagedObject;
+	
+	/**
+	 * The processors that configure the target object.
+	 * The Array does not get populated until the <code>configureObject</code> method is called.
+	 */
+	function get processors () : Array;
 
 	/**
 	 * Instantiates a new instance based on its ObjectDefinition.

@@ -31,8 +31,8 @@ public class MethodProcessor implements ObjectProcessor {
 	
 	
 	private var target:ManagedObject;
-	private var method:Method;
-	private var unresolvedParams:Array;	
+	private var _method:Method;
+	private var _unresolvedParams:Array;	
 	
 	
 	/**
@@ -44,11 +44,26 @@ public class MethodProcessor implements ObjectProcessor {
 	 */
 	function MethodProcessor (target:ManagedObject, method:Method, unresolvedParams:Array) {
 		this.target = target;
-		this.method = method;
-		this.unresolvedParams = unresolvedParams;
+		this._method = method;
+		this._unresolvedParams = unresolvedParams;
 	}
 
+	/**
+	 * The method invoked by this processor.
+	 */
+	public function get method () : Method {
+		return _method;
+	}
 	
+	/**
+	 * The unresolved parameters for the method invocation.
+	 * Unresolved means that for special objects like references to other
+	 * objects in the Context, this will be an instance of <code>ResolvableValue</code>
+	 * that merely represents the actual value.
+	 */
+	public function get unresolvedParams () : * {
+		return _unresolvedParams;
+	}
 	/**
 	 * @inheritDoc
 	 */

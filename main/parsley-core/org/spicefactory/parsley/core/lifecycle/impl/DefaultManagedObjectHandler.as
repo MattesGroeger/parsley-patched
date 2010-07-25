@@ -40,7 +40,7 @@ public class DefaultManagedObjectHandler implements ManagedObjectHandler {
 	private static const DESTROYED:String = "destroyed";
 	
 	
-	private var processors:Array = new Array();
+	private var _processors:Array = new Array();
 
 	private var _target:ManagedObjectImpl;
 	
@@ -69,6 +69,13 @@ public class DefaultManagedObjectHandler implements ManagedObjectHandler {
 			throw new ContextError("Target object has not been created yet");
 		}
 		return _target;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get processors () : Array {
+		return _processors;
 	}
 
 	/**
