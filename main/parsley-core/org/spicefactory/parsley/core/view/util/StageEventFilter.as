@@ -15,12 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.view.util {
-import flash.events.IEventDispatcher;
 import flash.display.DisplayObject;
-import flash.events.Event;
-import flash.events.TimerEvent;
 import flash.utils.Dictionary;
-import flash.utils.Timer;
 
 /**
  * Utility class for filtering stage events that were only caused by reparenting a DisplayObject.
@@ -30,45 +26,8 @@ import flash.utils.Timer;
 public class StageEventFilter {
 	
 	
+	private var handlers:Dictionary = new Dictionary();
 	
-	private static var timer:Timer;
-	
-	private var removedViews:Dictionary = new Dictionary();
-
-	private var removedHandlers:Dictionary = new Dictionary();
-	private var addedHandlers:Dictionary = new Dictionary();
-	
-	private var hasTimerListener:Boolean;
-	
-	
-	
-	private function checkTimer () : void {
-		if (timer == null) {
-			timer = new Timer(1, 1);
-			timer.addEventListener(TimerEvent.TIMER, clearTimer, false, 1);
-			timer.start();
-		}
-		if (!hasTimerListener) {
-			timer.addEventListener(TimerEvent.TIMER, handleTimer);
-			hasTimerListener = true;
-		}
-	}
-	
-	private static function clearTimer (event:Event) : void {
-		timer.removeEventListener(TimerEvent.TIMER, clearTimer);
-		timer = null;
-	}
-	
-	
-	private function handleTimer (event:Event) : void {
-		IEventDispatcher(event.target).removeEventListener(TimerEvent.TIMER, handleTimer);
-		hasTimerListener = false;
-		var handlerMap:Dictionary = removedViews;
-		removedViews = new Dictionary();
-		for (var key:Object in handlerMap) {
-			removedHandlers[key](key);
-		}
-	}
 	
 	/**
 	 * Adds a target to filter the stage events for. The specified handlers will only be invoked
@@ -82,11 +41,8 @@ public class StageEventFilter {
 	 * @param removedHandler the handler to invoke for all real removedFromStage events
 	 * @param addedHandler the handler to invoke for all real addedToStage events
 	 */
-	public function addTarget (view:DisplayObject, removedHandler:Function, addedHandler:Function) : void {
-		view.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
-		view.addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
-		removedHandlers[view] = removedHandler;
-		addedHandlers[view] = addedHandler;
+	public function addTarget (view:DisplayObject, removedHandler:Function, addedHandler:Function = null) : void {
+		handlers[view] = new ViewHandler(view, removedHandler, addedHandler);
 	}
 	
 	/**
@@ -95,27 +51,70 @@ public class StageEventFilter {
 	 * @param view the view to stop filtering stage events for
 	 */
 	public function removeTarget (view:DisplayObject) : void {
+		var handler:ViewHandler = handlers[view];
+		if (handler) {
+			handler.dispose();
+			delete handlers[view];
+		}
+	}
+	
+	
+}
+}
+
+import flash.display.DisplayObject;
+import flash.events.Event;
+
+class ViewHandler {
+	
+	
+	private var view:DisplayObject;
+	private var removedHandler:Function;
+	private var addedHandler:Function;
+	
+	private var removedInCurrentFrame:Boolean;
+	
+	
+	function ViewHandler (view:DisplayObject, removedHandler:Function, addedHandler:Function) {
+		this.view = view;
+		this.removedHandler = removedHandler;
+		this.addedHandler = addedHandler;
+		view.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
+		view.addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
+	}
+	
+	
+	public function dispose () : void {
 		view.removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
 		view.removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
-		delete removedHandlers[view];
-		delete addedHandlers[view];
-		delete removedViews[view];
+		view.removeEventListener(Event.ENTER_FRAME, enterFrame);
 	}
 	
 	private function addedToStage (event:Event) : void {
-		if (removedViews[event.target] != undefined) {
-			delete removedViews[event.target];
+		if (removedInCurrentFrame) {
+			resetFrame();
 		}
 		else {
-			addedHandlers[event.target](event.target);
+			addedHandler(view);
 		}
 	}
 	
 	private function removedFromStage (event:Event) : void {
-		removedViews[event.target] = true;
-		checkTimer();
+		removedInCurrentFrame = true;
+		view.addEventListener(Event.ENTER_FRAME, enterFrame);
+	}
+	
+	private function enterFrame (event:Event) : void {
+		resetFrame();
+		removedHandler(view);
+	}
+	
+	private function resetFrame () : void {
+		removedInCurrentFrame = false;
+		view.removeEventListener(Event.ENTER_FRAME, enterFrame);
 	}
 	
 	
 }
-}
+
+
