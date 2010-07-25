@@ -43,7 +43,9 @@ public class FunctionBase extends Member {
 		maxArgs = _parameters.length;
 	}
 	
-	
+	/**
+	 * @private
+	 */
 	internal static function parametersFromXml (xml:XML, owner:ClassInfo) : Array {
 		var params:Array = new Array();
 		for each (var paramTag:XML in xml.parameter) {
