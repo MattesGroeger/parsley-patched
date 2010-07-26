@@ -15,11 +15,11 @@
  */
 
 package org.spicefactory.parsley.core.context.impl {
-import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.collection.SimpleMap;
 import org.spicefactory.parsley.config.Configurations;
 import org.spicefactory.parsley.core.context.Context;
@@ -42,6 +42,7 @@ import org.spicefactory.parsley.core.view.ViewManager;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
+import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
@@ -422,6 +423,13 @@ public class DefaultContext extends EventDispatcher implements Context {
 		return _viewManager;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function get domain () : ApplicationDomain {
+		return _registry.domain;
+	}
+
 	/**
 	 * @inheritDoc
 	 */

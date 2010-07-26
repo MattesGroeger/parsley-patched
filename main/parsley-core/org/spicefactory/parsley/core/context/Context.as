@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.context {
+import flash.system.ApplicationDomain;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.scope.ScopeManager;
@@ -299,6 +300,11 @@ public interface Context extends IEventDispatcher {
 	 * The view manager used to dynamically wire view instances to this Context.
 	 */
 	function get viewManager () : ViewManager;
+	
+	/**
+	 * The ApplicationDomain used to reflect on instance of this Context.
+	 */
+	function get domain () : ApplicationDomain;
 	
 	[Deprecated(replacement="new methods for dynamic objects on the core Context interface")]
 	function createDynamicContext () : DynamicContext;
