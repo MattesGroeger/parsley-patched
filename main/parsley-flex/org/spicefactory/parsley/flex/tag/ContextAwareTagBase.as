@@ -110,6 +110,7 @@ public class ContextAwareTagBase extends ConfigurationTagBase {
 	}
 	
 	private function handleContextEvent (event:ContextEvent) : void {
+		context.removeEventListener(requiredEvent, handleContextEvent);
 		handleContext(context, view);
 	}
 	
