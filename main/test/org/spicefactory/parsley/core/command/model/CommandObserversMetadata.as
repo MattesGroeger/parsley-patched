@@ -12,6 +12,11 @@ public class CommandObserversMetadata extends CommandObservers {
 		super.noParam();
 	}
 	
+	[CommandComplete(selector="test1")]
+	public override function oneParamComplete (message:TestEvent) : void {
+		super.oneParamComplete(message);
+	}
+	
 	[CommandResult(type="org.spicefactory.parsley.core.messaging.TestEvent", selector="test1")]	
 	public override function oneParam (result:String) : void {
 		super.oneParam(result);

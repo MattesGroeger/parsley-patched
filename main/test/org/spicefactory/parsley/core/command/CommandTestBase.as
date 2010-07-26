@@ -61,6 +61,7 @@ public class CommandTestBase extends ContextTestBase {
 		assertEquals("Unexpected count for twoParamsMessage", 1, observers.twoParamsMessage.length);
 		assertEquals("Unexpected count for errorResult", 1, observers.errorResult.length);
 		assertEquals("Unexpected count for errorMessage", 1, observers.errorMessage.length);
+		assertEquals("Unexpected count for commandComplete", 1, observers.completeInvoked);
 		
 		assertEquals("Unexpected value for oneParamResult", "foo1", observers.oneParamResult[0]);
 		assertEquals("Unexpected value for twoParamsResult", "foo1", observers.twoParamsResult[0]);

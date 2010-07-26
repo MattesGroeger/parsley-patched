@@ -35,6 +35,7 @@ public class DefaultCommandObserver extends AbstractMethodReceiver implements Co
 	
 	
 	private var _status:CommandStatus;
+	private var maxParams:int;
 	
 	
 	/**
@@ -46,27 +47,29 @@ public class DefaultCommandObserver extends AbstractMethodReceiver implements Co
 	 * @param selector an optional selector value to be used for selecting matching message targets
 	 * @param messageType the type of the message or null if it should be autodetected by the parameter of the target method
 	 * @param order the execution order for this receiver
+	 * @param supportsResult whether a result parameter is supported in the handler method
 	 */
 	function DefaultCommandObserver (provider:ObjectProvider, methodName:String, status:CommandStatus, 
-			selector:* = undefined, messageType:ClassInfo = null, order:int = int.MAX_VALUE) {
-		super(provider, methodName, getMessageType(provider, methodName, messageType), selector, order);
+			selector:* = undefined, messageType:ClassInfo = null, order:int = int.MAX_VALUE, supportsResult:Boolean = true) {
+		super(provider, methodName, getMessageType(provider, methodName, messageType, supportsResult), selector, order);
 		_status = status;
 	}
 
 	private function getMessageType (provider:ObjectProvider, methodName:String, 
-			explicitType:ClassInfo) : Class {
+			explicitType:ClassInfo, supportsResult:Boolean) : Class {
+		maxParams = (supportsResult) ? 2 : 1;
 		var targetMethod:Method = provider.type.getMethod(methodName);
 		if (targetMethod == null) {
 			throw new ContextError("Target instance of type " + provider.type.name 
 					+ " does not contain a method with name " + methodName);
 		}
 		var params:Array = targetMethod.parameters;
-		if (params.length > 2) {
+		if (params.length > maxParams) {
 			throw new ContextError("Target " + targetMethod  
-				+ ": At most two parameters allowed for a Command result or error handler.");
+				+ ": At most " + maxParams + " parameter(s) allowed for this type of Command handler.");
 		}
-		if (params.length == 2) {
-			return getMessageTypeFromParameter(targetMethod, 1, explicitType);
+		if (params.length == maxParams) {
+			return getMessageTypeFromParameter(targetMethod, maxParams - 1, explicitType);
 		}
 		else if (explicitType != null) {
 			return explicitType.getClass();
@@ -80,11 +83,11 @@ public class DefaultCommandObserver extends AbstractMethodReceiver implements Co
 	public function observeCommand (command:Command) : void {
 		var paramTypes:Array = targetMethod.parameters;
 		var params:Array = new Array();
-		if (paramTypes.length >= 1) {
+		if (paramTypes.length >= 1 && maxParams == 2) {
 			var resultType:ClassInfo = Parameter(paramTypes[0]).type;
 			params.push(command.getResult(resultType));
 		}
-		if (paramTypes.length == 2) {
+		if (paramTypes.length == maxParams) {
 			params.push(command.message);
 		}
 		targetMethod.invoke(provider.instance, params);
@@ -108,12 +111,14 @@ public class DefaultCommandObserver extends AbstractMethodReceiver implements Co
 	 * @param selector an optional selector value to be used for selecting matching message targets
 	 * @param messageType the type of the message or null if it should be autodetected by the parameter of the target method
 	 * @param order the execution order for this receiver
+	 * @param supportsResult whether a result parameter is supported in the handler method
 	 * @return a new factory that creates DefaultCommandObserver instance
 	 */
 	public static function newFactory (methodName:String, status:CommandStatus, selector:* = undefined, 
-			messageType:ClassInfo = null, order:int = int.MAX_VALUE) : MessageReceiverFactory {
+			messageType:ClassInfo = null, order:int = int.MAX_VALUE, supportsResult:Boolean = true) : MessageReceiverFactory {
 				
-		return MessageReceiverFactories.newFactory(DefaultCommandObserver, [methodName, status, selector, messageType, order]);
+		return MessageReceiverFactories.newFactory(DefaultCommandObserver, 
+				[methodName, status, selector, messageType, order, supportsResult]);
 	}
 	
 	

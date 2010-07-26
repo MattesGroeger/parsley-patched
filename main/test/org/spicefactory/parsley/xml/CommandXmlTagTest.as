@@ -19,6 +19,7 @@ public class CommandXmlTagTest extends CommandTestBase {
 			<command-result method="noParam" type="org.spicefactory.parsley.core.messaging.TestEvent" selector="test1"/>
 			<command-result method="oneParam" type="org.spicefactory.parsley.core.messaging.TestEvent" selector="test1"/>
 			<command-result method="twoParams" selector="test1"/>
+			<command-complete method="oneParamComplete" selector="test1"/>
 			<command-error method="error" type="org.spicefactory.parsley.core.messaging.TestEvent" selector="test1"/>
 		</object> 
 		

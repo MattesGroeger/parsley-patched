@@ -19,6 +19,7 @@
 		<msg:CommandResultDecorator method="noParam" type="{TestEvent}" selector="test1"/>
 		<msg:CommandResultDecorator method="oneParam" type="{TestEvent}" selector="test1"/>
 		<msg:CommandResultDecorator method="twoParams" selector="test1"/>
+		<msg:CommandCompleteDecorator method="oneParamComplete" selector="test1"/>
 		<msg:CommandErrorDecorator method="error" type="{TestEvent}" selector="test1"/>
 	</flextag:MxmlRootObjectTag> 
 	

@@ -137,6 +137,15 @@ public interface MethodBuilder {
 	function commandResult () : MessageReceiverBuilder;
 	
 	/**
+	 * Configures this method as a command complete handler.
+	 * The builder returned by this method should be used to 
+	 * specify further options for the command complete handler.
+	 * 
+	 * @return a builder to specify the options for the command complete handler
+	 */
+	function commandComplete () : MessageReceiverBuilder;
+	
+	/**
 	 * Configures this method as a message error handler.
 	 * The builder returned by this method should be used to 
 	 * specify further options for the error handler.

@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml.mapper {
+import org.spicefactory.parsley.tag.messaging.CommandCompleteDecorator;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.types.Any;
 import org.spicefactory.lib.reflect.types.Void;
@@ -119,7 +120,7 @@ public class XmlObjectDefinitionMapperFactory {
 				    								PostConstructMethodDecorator, PreDestroyMethodDecorator,
 				    								MessageInterceptorDecorator, MessageBindingDecorator,
 				    								MessageErrorDecorator, MessageDispatcherDecorator,
-				    								MessageHandlerDecoratorTag, CommandDecoratorTag,
+				    								MessageHandlerDecoratorTag, CommandDecoratorTag, CommandCompleteDecorator,
 				    								CommandResultDecorator, CommandErrorDecorator, CommandStatusDecorator,
 				    								ManagedEventsDecoratorTag, ResourceBindingDecorator,
 				    								PublishDecorator, PublishSubscribeDecorator, SubscribeDecorator)

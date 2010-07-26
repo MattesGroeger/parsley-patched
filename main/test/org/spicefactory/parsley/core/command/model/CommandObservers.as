@@ -9,6 +9,8 @@ public class CommandObservers {
 	
 	public var noParamCalled:uint;
 
+	public var completeInvoked:uint;
+
 	public var oneParamResult:Array = new Array();
 
 	public var twoParamsResult:Array = new Array();
@@ -26,6 +28,10 @@ public class CommandObservers {
 	
 	public function oneParam (result:String) : void {
 		oneParamResult.push(result);
+	}
+	
+	public function oneParamComplete (message:TestEvent) : void {
+		completeInvoked++;
 	}
 	
 	public function twoParams (result:String, message:TestEvent) : void {

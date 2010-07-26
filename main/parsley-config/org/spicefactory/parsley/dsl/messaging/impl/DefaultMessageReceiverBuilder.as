@@ -136,6 +136,19 @@ public class DefaultMessageReceiverBuilder implements MessageReceiverBuilder, Ob
 		return new DefaultMessageReceiverBuilder(builderPart, info);
 	}
 	
+	/**	
+	 * Creates a new builder for a command complete handler.
+	 * 
+	 * @param target the method that handles the error
+	 * @param config the configuration for the associated registry
+	 * @return a new builder for a command error handler 
+	 */
+	public static function forCommandComplete (target:Method, config:Configuration) : DefaultMessageReceiverBuilder {
+		var info:MessageReceiverInfo = new MessageReceiverInfo(config);
+		var builderPart:ObjectDefinitionBuilderPart = new CommandResultBuilderPart(target, CommandStatus.COMPLETE, info, false);
+		return new DefaultMessageReceiverBuilder(builderPart, info);
+	}
+	
 	
 }
 }
@@ -179,17 +192,19 @@ class CommandResultBuilderPart implements ObjectDefinitionBuilderPart {
 	private var info:MessageReceiverInfo;
 	private var method:Method;
 	private var status:CommandStatus;
+	private var supportsResult:Boolean;
 	
-	function CommandResultBuilderPart (target:Method, status:CommandStatus, info:MessageReceiverInfo) {
+	function CommandResultBuilderPart (target:Method, status:CommandStatus, info:MessageReceiverInfo, supportsResult:Boolean = true) {
 		this.method = target;
 		this.info = info;
 		this.status = status;
+		this.supportsResult = supportsResult;
 	}
 
 	public function apply (target:ObjectDefinition) : void {
 		var messageType:ClassInfo = (info.type != null) ? ClassInfo.forClass(info.type, info.config.domain) : null;
 		var factory:MessageReceiverFactory 
-				= DefaultCommandObserver.newFactory(method.name, status, info.selector, messageType, info.order);
+				= DefaultCommandObserver.newFactory(method.name, status, info.selector, messageType, info.order, supportsResult);
 		target.addProcessorFactory(new MessageReceiverProcessorFactory(target, factory, info.config.context, info.scope));
 	}
 	
