@@ -100,6 +100,8 @@ public class DefaultManagedObjectHandler implements ManagedObjectHandler {
 	public function configureObject () : void {
 		checkState(CREATED);
 		state = CONFIGURED;
+		
+		ManagedObjectLookup.addManagedObject(target);
 
 	 	createProcessors();
 
@@ -124,6 +126,8 @@ public class DefaultManagedObjectHandler implements ManagedObjectHandler {
 	public function destroyObject () : void {
 		if (state != CONFIGURED) return;
 		state = DESTROYED;
+		
+		ManagedObjectLookup.removeManagedObject(target);
 		
 		try {
 			processLifecycle(ObjectLifecycle.PRE_DESTROY);

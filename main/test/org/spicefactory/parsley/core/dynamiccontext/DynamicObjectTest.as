@@ -1,4 +1,5 @@
 package org.spicefactory.parsley.core.dynamiccontext {
+import org.spicefactory.parsley.core.context.ContextUtil;
 import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
 import org.spicefactory.parsley.config.Configurations;
 import org.spicefactory.parsley.core.ContextTestBase;
@@ -51,6 +52,20 @@ public class DynamicObjectTest extends ContextTestBase {
 		assertFalse("Unexpected destroy method invocation", instance.dependency.destroyMethodCalled);
 		validateDynamicObject(dynObject, context);
 		assertTrue("Expected destroy method invocation", instance.dependency.destroyMethodCalled);
+	}
+	
+	public function testContextUtil () : void {
+		var context:Context = ActionScriptContextBuilder.build(DynamicConfig);
+		checkState(context);
+		var obj:AnnotatedDynamicTestObject = new AnnotatedDynamicTestObject();
+		assertFalse("Unexpected result for isManaged", ContextUtil.isManaged(obj));
+		assertNull("Expected null for Context lookup", ContextUtil.getContext(obj));
+		var dynObject:DynamicObject = context.addDynamicObject(obj);
+		assertTrue("Unexpected result for isManaged", ContextUtil.isManaged(obj));
+		assertEquals("Unexpected result for Context lookup", context, ContextUtil.getContext(obj));
+		dynObject.remove();
+		assertFalse("Unexpected result for isManaged", ContextUtil.isManaged(obj));
+		assertNull("Expected null for Context lookup", ContextUtil.getContext(obj));
 	}
 
 	private function validateDynamicObject (dynObject:DynamicObject, context:Context) : void {

@@ -12,6 +12,8 @@
 	
 	<mx:Script>
 		<![CDATA[
+			 import mx.controls.Alert;
+			 import org.spicefactory.parsley.core.context.ContextUtil;
 			 import org.spicefactory.parsley.testmodel.AnnotatedResourceBinding;
 			 import flash.events.Event;
 			 import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
@@ -39,6 +41,14 @@
          	 public var resourceBinding:AnnotatedResourceBinding;
          
          
+     		private function testContextLookup () : void {
+     			ContextUtil.findContextInView(this, contextFound);
+     		}
+     		
+     		private function contextFound (context:Context) : void {
+     			Alert.show("Context: " + context);
+     		}
+         
 	         private function showPopup () : void {
 	         	if (window == null) window = new SomeWindow();
 	         	context.viewManager.addViewRoot(window);
@@ -48,6 +58,7 @@
 	         private function hidePopup () : void {
 	         	PopUpManager.removePopUp(window);
 	         }
+     		
       ]]>
    </mx:Script>
    
@@ -82,6 +93,8 @@
 	<mx:Button label="Show Popup" click="showPopup();"/>
 
 	<mx:Button label="Hide Popup" click="hidePopup();"/>
+
+	<mx:Button label="Test Context Lookup" click="testContextLookup();"/>
 	
 	<view:NestedCanvas width="80%" left="20"/>
 
