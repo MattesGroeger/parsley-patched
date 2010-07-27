@@ -15,6 +15,7 @@
 >    
     <mx:Script>
         <![CDATA[
+        	import org.spicefactory.parsley.properties.util.PropertiesParser;
         	import org.spicefactory.parsley.flex.view.DslModel;
         	import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
         	import org.spicefactory.parsley.flex.view.RootConfig;
@@ -54,11 +55,27 @@
             	 
             	var model:DslModel = builder.context.getObjectByType(DslModel) as DslModel;
             	trace("dsl model: " + model.value);
+            	
+            	var parser:PropertiesParser = new PropertiesParser();
+            	var result:Object = parser.parse(propStr);
+            	for (var name:String in result) {
+            		trace("name: |" + name + "|");
+            		trace("value: |" + result[name] + "|");
+            	}
             }
  
         ]]>
     </mx:Script>    
     
+    <mx:String id="propStr">
+    	foo = bar
+    	
+    	bar=foo
+    	# a comment
+    	multi = this is for more \
+    	than just one line
+    	empty   =
+    </mx:String>
     
     <parsley:ContextBuilderTag id="builder" complete="checkContext();">
     	<parsley:ViewSettingsTag autowireComponents="true"/>

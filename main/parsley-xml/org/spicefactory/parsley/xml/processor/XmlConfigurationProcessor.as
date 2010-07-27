@@ -94,6 +94,7 @@ public class XmlConfigurationProcessor extends EventDispatcher implements AsyncC
 	 * @inheritDoc
 	 */
 	public function processConfiguration (registry:ObjectDefinitionRegistry) : void {
+		expressionContext.addVariableResolver(new PropertiesResolver(registry.properties));
 		this.config = Configurations.forRegistry(registry);
 		var mapperFactory:XmlObjectDefinitionMapperFactory = new XmlObjectDefinitionMapperFactory(registry.domain);
 		mapper = mapperFactory.createObjectDefinitionMapper();
@@ -210,4 +211,21 @@ public class XmlConfigurationProcessor extends EventDispatcher implements AsyncC
 		return description;
 	}
 }
+}
+
+import org.spicefactory.lib.expr.VariableResolver;
+import org.spicefactory.parsley.core.registry.ConfigurationProperties;
+
+class PropertiesResolver implements VariableResolver {
+	
+	private var props:ConfigurationProperties;
+	
+	function PropertiesResolver (props:ConfigurationProperties) {
+		this.props = props;
+	}
+
+	public function resolveVariable (variableName:String) : * {
+		return props.getValue(variableName);
+	}
+	
 }

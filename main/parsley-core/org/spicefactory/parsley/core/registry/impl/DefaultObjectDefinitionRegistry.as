@@ -24,6 +24,7 @@ import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
 import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.registry.ConfigurationProperties;
 import org.spicefactory.parsley.core.registry.builder.ObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.registry.builder.impl.DefaultObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.scope.ScopeManager;
@@ -44,6 +45,7 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	private var _decoratorAssemblers:Array;
 	private var _context:Context;
 	
+	private var _properties:ConfigurationProperties;
 	private var _builders:ObjectDefinitionBuilderFactory;
 	
 	private var _frozen:Boolean;
@@ -69,6 +71,7 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 		_context = context;
 		_decoratorAssemblers = decoratorAssemblers;
 		this.objectProviderFactory = objectProviderFactory;
+		_properties = new DefaultProperties();
 		_builders = new DefaultObjectDefinitionBuilderFactory(this);
 	}
 
@@ -78,6 +81,13 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	 */	
 	public function get domain () : ApplicationDomain {
 		return _domain;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */	
+	public function get properties () : ConfigurationProperties {
+		return _properties;
 	}
 	
 	/**
@@ -240,3 +250,26 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	
 }
 }
+
+import org.spicefactory.parsley.core.registry.ConfigurationProperties;
+
+import flash.utils.Dictionary;
+
+class DefaultProperties implements ConfigurationProperties {
+	
+	private var map:Dictionary = new Dictionary();
+
+	public function setValue (name:String, value:Object) : void {
+		map[name] = value;
+	}
+	
+	public function getValue (name:String) : Object {
+		return map[name];
+	}
+	
+	public function removeValue (name:String) : void {
+		delete map[name];
+	}
+	
+}
+

@@ -1,0 +1,8 @@
+<objects 
+	xmlns="http://www.spicefactory.org/parsley">
+	
+	<include filename="include.xml"/>
+	
+	<object id="dependency" type="${package}.InjectedDependency"/>
+	
+</objects>

@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.registry {
+
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.registry.builder.ObjectDefinitionBuilderFactory;
@@ -137,6 +138,11 @@ public interface ObjectDefinitionRegistry extends IEventDispatcher {
 	 * a reference to the Context for later use.
 	 */
 	function get context () : Context;
+	
+	/**
+	 * Properties that may be used to build or process ObjectDefinitions.
+	 */
+	function get properties () : ConfigurationProperties;
 	
 	
 

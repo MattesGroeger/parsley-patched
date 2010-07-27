@@ -1,10 +1,11 @@
 package org.spicefactory.parsley.xml {
-import org.spicefactory.parsley.dsl.context.ContextBuilder;
 import org.spicefactory.parsley.core.ContextTestBase;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.dsl.context.ContextBuilder;
 import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
+import org.spicefactory.parsley.properties.Properties;
 
 /**
  * @author Jens Halm
@@ -14,6 +15,17 @@ public class ExternalXmlConfigTest extends ContextTestBase {
 	
 	public function testExternalConfig () : void {
 		var context:Context = ContextBuilder.newBuilder().config(XmlConfig.forFile("test.xml")).build();
+		checkState(context, false, false);
+		var func:Function = addAsync(onContextComplete, 5000);
+		context.addEventListener(ContextEvent.INITIALIZED, func);
+	}	
+	
+	public function testExternalConfigWithProperties () : void {
+		var context:Context = ContextBuilder
+			.newBuilder()
+				.config(Properties.forFile("test2.properties"))
+				.config(XmlConfig.forFile("test2.xml"))
+				.build();
 		checkState(context, false, false);
 		var func:Function = addAsync(onContextComplete, 5000);
 		context.addEventListener(ContextEvent.INITIALIZED, func);
