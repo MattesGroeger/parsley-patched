@@ -26,6 +26,7 @@
     <component id="MessageConfirmation" class="org.spicefactory.parsley.tag.messaging.MessageConfirmationTag"/>
 
     <component id="Command" class="org.spicefactory.parsley.tag.messaging.CommandDecorator"/>
+    <component id="CommandComplete" class="org.spicefactory.parsley.tag.messaging.CommandCompleteDecorator"/>
     <component id="CommandResult" class="org.spicefactory.parsley.tag.messaging.CommandResultDecorator"/>
     <component id="CommandError" class="org.spicefactory.parsley.tag.messaging.CommandErrorDecorator"/>
     <component id="CommandStatus" class="org.spicefactory.parsley.tag.messaging.CommandStatusDecorator"/>
