@@ -12,6 +12,7 @@ public class ReflectionTestBase extends TestCase {
         suite.addTestSuite(MethodTest);
         suite.addTestSuite(ConstructorTest);
         suite.addTestSuite(PropertyTest);
+        suite.addTestSuite(DeclaredByTest);
         suite.addTestSuite(MetadataTest);
         return suite;
     }

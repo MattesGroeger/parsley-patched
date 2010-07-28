@@ -32,7 +32,7 @@ public class Constructor extends FunctionBase {
 	 * @private
 	 */
 	function Constructor (params:Array, metadata:MetadataCollection, owner:ClassInfo) {
-		super(owner.simpleName, params, owner, metadata);
+		super(owner.simpleName, params, owner, owner, metadata);
 	}
 	
 	

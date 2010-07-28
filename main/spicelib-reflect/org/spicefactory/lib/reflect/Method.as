@@ -35,9 +35,9 @@ public class Method	extends FunctionBase {
 	/**
 	 * @private
 	 */
-	function Method (name:String, returnType:ClassInfo, params:Array, 
+	function Method (name:String, returnType:ClassInfo, params:Array, declaredBy:String,
 			s:Boolean, metadata:MetadataCollection, owner:ClassInfo) {
-		super(name, params, owner, metadata);
+		super(name, params, declaredBy, owner, metadata);
 		this._returnType = returnType;
 		this._static = s;
 	}
@@ -49,7 +49,7 @@ public class Method	extends FunctionBase {
 		var params:Array = parametersFromXml(xml, owner);
 		var metadata:MetadataCollection = metadataFromXml(xml, Types.METHOD);
 		var type:ClassInfo = ClassInfo.resolve(xml.@returnType, owner.applicationDomain);
-		return new Method(xml.@name, type, params, isStatic, metadata, owner);
+		return new Method(xml.@name, type, params, xml.@declaredBy, isStatic, metadata, owner);
 	}
 	
 

@@ -26,16 +26,24 @@ public class Member extends MetadataAware {
 
 
 	private var _name:String;
+	private var _declaredByString:String;
+	private var _declaredBy:ClassInfo;
 	private var _owner:ClassInfo;
 
 
 	/**
 	 * @private
 	 */
-	function Member (name:String, owner:ClassInfo, metadata:MetadataCollection) {
+	function Member (name:String, declaredBy:Object, owner:ClassInfo, metadata:MetadataCollection) {
 		super(metadata);
 		_name = name;
 		_owner = owner;
+		if (declaredBy is ClassInfo) {
+			_declaredBy = declaredBy as ClassInfo;
+		}
+		else {
+			_declaredByString = declaredBy as String;
+		}
 	}
 	
 	/**
@@ -45,6 +53,18 @@ public class Member extends MetadataAware {
 	 */
 	public function get name () : String  {	
 		return _name; 
+	}
+	
+	/**
+	 * The type declaring this member. Will be null for <code>var</code> and <code>const</code> declarations
+	 * as the Flash Player does not provide this information for these member types. This property works for methods and property
+	 * getters and setters only.
+	 */
+	public function get declaredBy () : ClassInfo {
+		if (!_declaredBy && _declaredByString) {
+			_declaredBy = ClassInfo.resolve(_declaredByString, owner.applicationDomain);
+		}
+		return _declaredBy;
 	}
 	
 	/**

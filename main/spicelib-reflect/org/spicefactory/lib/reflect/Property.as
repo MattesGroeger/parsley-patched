@@ -37,9 +37,9 @@ public class Property extends Member {
 	/**
 	 * @private
 	 */
-	function Property (name:String, type:ClassInfo, readable:Boolean, writable:Boolean, s:Boolean, 
+	function Property (name:String, type:ClassInfo, declaredBy:String, readable:Boolean, writable:Boolean, s:Boolean, 
 			metadata:MetadataCollection, owner:ClassInfo) {
-		super(name, owner, metadata);
+		super(name, declaredBy, owner, metadata);
 		this._type = type;
 		this._readable = readable;
 		this._writable = writable;
@@ -53,28 +53,29 @@ public class Property extends Member {
 		var access:String = x.@access;
 		var readable:Boolean = (access != "writeonly");
 		var writable:Boolean = (access != "readonly");
-		return fromXML(x, readable, writable, isStatic, owner);
+		return fromXML(x, x.@declaredBy, readable, writable, isStatic, owner);
 	}
 	
 	/**
 	 * @private
 	 */
 	internal static function fromVariableXML (x:XML, isStatic:Boolean, owner:ClassInfo) : Property {
-		return fromXML(x, true, true, isStatic, owner);
+		return fromXML(x, null, true, true, isStatic, owner);
 	}
 	
 	/**
 	 * @private
 	 */
 	internal static function fromConstantXML (x:XML, isStatic:Boolean, owner:ClassInfo) : Property {
-		return fromXML(x, true, false, isStatic, owner);
+		return fromXML(x, null, true, false, isStatic, owner);
 	}
 	
-	private static function fromXML 
-			(x:XML, readable:Boolean, writable:Boolean, isStatic:Boolean, owner:ClassInfo) : Property {
+	private static function fromXML (x:XML, declaredBy:String, 
+			readable:Boolean, writable:Boolean, isStatic:Boolean, owner:ClassInfo) : Property {
+				
 		var type:ClassInfo = ClassInfo.resolve(x.@type, owner.applicationDomain);
 		var metadata:MetadataCollection = MetadataAware.metadataFromXml(x, Types.PROPERTY);
-		return new Property(x.@name, type, readable, writable, isStatic, metadata, owner); 		
+		return new Property(x.@name, type, declaredBy, readable, writable, isStatic, metadata, owner); 		
 	}
 	
 	

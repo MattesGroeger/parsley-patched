@@ -33,8 +33,8 @@ public class FunctionBase extends Member {
 	/**
 	 * @private
 	 */
-	function FunctionBase (name:String, params:Array, owner:ClassInfo, metadata:MetadataCollection) {
-		super(name, owner, metadata);
+	function FunctionBase (name:String, params:Array, declaredBy:Object, owner:ClassInfo, metadata:MetadataCollection) {
+		super(name, declaredBy, owner, metadata);
 		_parameters = params;
 		for each (var param:Parameter in _parameters) {
 			if (param.required) minArgs++;
