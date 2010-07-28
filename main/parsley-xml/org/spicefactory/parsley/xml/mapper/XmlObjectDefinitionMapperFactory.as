@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml.mapper {
+import org.spicefactory.parsley.tag.core.DynamicPropertyTag;
 import org.spicefactory.parsley.tag.messaging.CommandCompleteDecorator;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.types.Any;
@@ -115,7 +116,8 @@ public class XmlObjectDefinitionMapperFactory {
 					.customMapper(createSimpleValueMapper(String, "string"))
 					.customMapper(createSimpleValueMapper(Date, "date"))
 					.customMapper(createSimpleValueMapper(Class, "class"))
-				    .choiceId(CHOICE_ID_DECORATORS, ConstructorTag, PropertyTag, AsyncInitDecorator, FactoryMethodDecorator, 
+				    .choiceId(CHOICE_ID_DECORATORS, ConstructorTag, PropertyTag, DynamicPropertyTag, 
+				    								AsyncInitDecorator, FactoryMethodDecorator, 
 				    								InitMethodDecorator, DestroyMethodDecorator, ObserveMethodDecorator,
 				    								PostConstructMethodDecorator, PreDestroyMethodDecorator,
 				    								MessageInterceptorDecorator, MessageBindingDecorator,

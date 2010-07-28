@@ -4,6 +4,8 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 import org.spicefactory.parsley.flex.FlexContextBuilder;
 
+import flash.utils.Dictionary;
+
 /**
  * @author Jens Halm
  */
@@ -21,7 +23,6 @@ public class CoreMxmlTagTest extends ContextTestBase {
 		validateObject(obj);
 	}
 	
-	/* postponed for 2.3
 	public function testCoreTagsWithDynamicProperties () : void {
 		ArrayElement.instanceCount = 0;
 		var context:Context = FlexContextBuilder.build(DynamicPropertyConfig);
@@ -32,7 +33,6 @@ public class CoreMxmlTagTest extends ContextTestBase {
 				= getAndCheckObject(context, "object", Dictionary) as Dictionary;
 		validateObject(obj);
 	}
-	 */
 	
 	private function validateObject (obj:Object) : void {
 		assertEquals("Unexpected string property", "foo", obj.stringProp);
@@ -49,5 +49,7 @@ public class CoreMxmlTagTest extends ContextTestBase {
 		assertTrue("Unexpected Array element 4", arr[4] is ArrayElement);
 		assertEquals("Unexpected ArrayElement instance count", 1, ArrayElement.instanceCount);
 	}
+	
+	
 }
 }

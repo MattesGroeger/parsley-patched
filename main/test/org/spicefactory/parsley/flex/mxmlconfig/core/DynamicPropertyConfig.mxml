@@ -15,7 +15,6 @@
 	
 	<model:InjectedDependency id="dependency"/>
 	
-	<!--
 	<tag:MxmlRootObjectTag id="object" type="{Dictionary}">
 		<tag:DynamicPropertyTag name="stringProp" value="foo"/>
 		<tag:DynamicPropertyTag name="intProp" value="7"/>
@@ -31,6 +30,5 @@
 			</tag:ArrayTag>
 		</tag:DynamicPropertyTag>
 	</tag:MxmlRootObjectTag> 
-	-->
 	
 </mx:Object> 

@@ -32,6 +32,7 @@
         <xs:sequence>
             <xs:element name="constructor-args" type="arrayType" minOccurs="0"/>
             <xs:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="dynamic-property" type="dynamicPropertyType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="async-init" type="asyncInitType" minOccurs="0"/>
 	        
 	        <xs:element name="pre-destroy" type="methodType" minOccurs="0"/>
@@ -47,6 +48,7 @@
             <xs:element name="message-binding" type="messageBindingType" minOccurs="0" maxOccurs="unbounded"/>
 
             <xs:element name="command" type="commandType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="command-complete" type="commandResultType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="command-result" type="commandResultType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="command-error" type="commandErrorType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="command-status" type="commandStatusType" minOccurs="0" maxOccurs="unbounded"/>
@@ -119,6 +121,15 @@
     	</xs:sequence>
         <xs:attribute name="name" type="xs:token" use="required"/>
         <xs:attribute name="value" type="xs:token" use="optional"/>
+        <xs:attribute name="id-ref" type="xs:token" use="optional"/>
+        <xs:attribute name="type-ref" type="xs:token" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="dynamicPropertyType">
+    	<xs:sequence minOccurs="0">
+    		<xs:group ref="value"/>
+    	</xs:sequence>
+        <xs:attribute name="name" type="xs:token" use="required"/>
         <xs:attribute name="id-ref" type="xs:token" use="optional"/>
         <xs:attribute name="type-ref" type="xs:token" use="optional"/>
     </xs:complexType>

@@ -2,9 +2,9 @@ package org.spicefactory.parsley.xml {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
 import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
-import org.spicefactory.parsley.xml.XmlContextTestBase;
 
 import flash.events.Event;
+import flash.utils.Dictionary;
 
 /**
  * @author Jens Halm
@@ -42,6 +42,35 @@ public class CoreXmlTagTest extends XmlContextTestBase {
 		</object> 
 	</objects>; 
 	
+	public static const dynamicConfig:XML = <objects 
+		xmlns="http://www.spicefactory.org/parsley">
+		
+		<object id="dependency" type="org.spicefactory.parsley.core.decorator.injection.InjectedDependency"/>
+		
+		<object id="object" type="flash.utils.Dictionary">
+			<dynamic-property name="stringProp" value="foo"/>
+			<dynamic-property name="intProp"><int>7</int></dynamic-property>
+			<dynamic-property name="booleanProp"><boolean>true</boolean></dynamic-property>
+			<dynamic-property name="refProp" id-ref="dependency"/>
+			<dynamic-property name="arrayProp">
+				<array>
+					<string>AA</string>
+					<int>7</int>
+					<boolean>true</boolean>
+					<class>flash.events.Event</class>
+					<object type="org.spicefactory.parsley.xml.XmlModel">
+						<property name="prop" value="nested"/>
+					</object>
+					<static-property type="org.spicefactory.parsley.xml.XmlModel" property="STATIC_PROP"/>
+					<object-ref id-ref="dependency"/>
+					<object-ref type-ref="org.spicefactory.parsley.core.decorator.injection.InjectedDependency"/>
+					<null/>
+				</array>
+			</dynamic-property>
+		</object> 
+	</objects>; 
+	
+	
 	
 	
 	public function testCoreTags () : void {
@@ -51,6 +80,20 @@ public class CoreXmlTagTest extends XmlContextTestBase {
 		checkObjectIds(context, ["object"], CoreModel);	
 		var obj:CoreModel 
 				= getAndCheckObject(context, "object", CoreModel) as CoreModel;
+		validateObject(obj);
+	}		
+	
+	public function testCoreTagsWithDynamicProperties () : void {
+		var context:Context = getXmlContext(dynamicConfig);
+		checkState(context);
+		checkObjectIds(context, ["dependency"], InjectedDependency);	
+		checkObjectIds(context, ["object"], Dictionary);	
+		var obj:Dictionary 
+				= getAndCheckObject(context, "object", Dictionary) as Dictionary;
+		validateObject(obj);
+	}		
+		
+	private function validateObject (obj:Object) : void {
 		assertEquals("Unexpected string property", "foo", obj.stringProp);
 		assertEquals("Unexpected int property", 7, obj.intProp);
 		assertEquals("Unexpected boolean property", true, obj.booleanProp);

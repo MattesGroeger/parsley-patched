@@ -8,6 +8,7 @@
     
     <component id="ConstructorArgs" class="org.spicefactory.parsley.tag.core.ConstructorTag"/>
     <component id="Property" class="org.spicefactory.parsley.tag.core.PropertyTag"/>
+    <component id="DynamicProperty" class="org.spicefactory.parsley.tag.core.DynamicPropertyTag"/>
     
     <component id="AsyncInit" class="org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator"/>
     <component id="Factory" class="org.spicefactory.parsley.tag.lifecycle.FactoryMethodDecorator"/>
