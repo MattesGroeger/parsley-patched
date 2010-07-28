@@ -15,9 +15,9 @@
  */
 
 package org.spicefactory.parsley.metadata {
-	import org.spicefactory.lib.reflect.metadata.Target;
 import org.spicefactory.lib.reflect.*;
 import org.spicefactory.lib.reflect.converter.EnumerationConverter;
+import org.spicefactory.lib.reflect.metadata.Target;
 import org.spicefactory.parsley.asconfig.metadata.*;
 import org.spicefactory.parsley.config.DecoratorAssembler;
 import org.spicefactory.parsley.core.errors.ContextError;
@@ -48,6 +48,9 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 	private static var initialized:Boolean = false;
 	
 	private static const metadataClasses:Array = [
+	
+		ProcessSuperclass,
+		ProcessInterfaces,
 	
 		InjectConstructorDecorator,
 		InjectPropertyDecorator,
@@ -119,28 +122,50 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 	 */	
 	public function assemble (type:ClassInfo) : Array {
 		var decorators:Array = new Array();
-		extractMetadataDecorators(type, decorators);
-		for each (var property:Property in type.getProperties()) {
-			extractMetadataDecorators(property, decorators);
-		}
-		for each (var method:Method in type.getMethods()) {
-			extractMetadataDecorators(method, decorators);
-		}
+		var processed:ProcessedMembers = new ProcessedMembers();
+		doAssemble(type, decorators, processed);
 		return decorators;
 	}
+	
+	private function doAssemble (type:ClassInfo, decorators:Array, processed:ProcessedMembers, classLevelOnly:Boolean = false) : void {
+		extractMetadataDecorators(type, decorators);
+		if (!classLevelOnly) {
+			for each (var property:Property in type.getProperties()) {
+				extractFromMember(property, decorators, processed);
+			}
+			for each (var method:Method in type.getMethods()) {
+				extractFromMember(method, decorators, processed);
+			}
+		}
+		if (type.hasMetadata(ProcessSuperclass)) {
+			doAssemble(ClassInfo.forClass(type.getSuperClass(), type.applicationDomain), decorators, processed, true);
+		}
+		if (type.hasMetadata(ProcessInterfaces)) {
+			for each (var ifType:Class in type.getInterfaces()) {
+				doAssemble(ClassInfo.forClass(ifType, type.applicationDomain), decorators, processed);
+			}
+		}
+	}
+	
+	private function extractFromMember (member:Member, decorators:Array, processed:ProcessedMembers = null) : void {
+		if (processed.addMember(member)) {
+			extractMetadataDecorators(member, decorators); 
+		}
+	}
 
-	private static function extractMetadataDecorators (type:MetadataAware, decorators:Array) : void {
+	private function extractMetadataDecorators (type:MetadataAware, decorators:Array) : void {
 		for each (var metadata:Object in type.getAllMetadata()) {
 			if (metadata is ObjectDecoratorMarker) {
 				if (type is Member) {
 					setTargetProperty(type as Member, metadata);
 				}
 				decorators.push(metadata);
+				trace(" +");
 			}
 		}
 	}
 	
-	private static function setTargetProperty (member:Member, decorator:Object) : void {
+	private function setTargetProperty (member:Member, decorator:Object) : void {
 		var ci:ClassInfo = ClassInfo.forInstance(decorator);
 		var target:* = targetPropertyMap[ci.getClass()];
 		if (target == undefined) {
@@ -172,4 +197,22 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 		}					
 	}
 }
+}
+
+import org.spicefactory.lib.reflect.Member;
+import flash.utils.Dictionary;
+
+class ProcessedMembers {
+	
+	private var processed:Dictionary = new Dictionary();
+	
+	function addMember (member:Member) : Boolean {
+		var declared:String = (member.declaredBy == null) ? "" : member.declaredBy.name;
+		var key:String = declared + "#" + member.name;
+		trace("add key: " + key);
+		if (processed[key]) return false;
+		processed[key] = true;
+		return true;
+	}
+	
 }
