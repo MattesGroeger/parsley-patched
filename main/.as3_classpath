@@ -22,4 +22,5 @@
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-integration</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-config</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-extensions</AS3Classpath>
+<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/popup-flex3-1.7.swc</AS3Classpath>
 </AS3Classpath>

@@ -3,6 +3,7 @@
 	xmlns:parsley="org.spicefactory.parsley.flex.tag.view.*"
 	xmlns:view="org.spicefactory.parsley.flex.view.*"
 	xmlns:custom="org.spicefactory.parsley.flex.view.tag.*"
+	xmlns:popup="org.spicefactory.parsley.popup.*"
 	width="100%"
 	height="100%"
 	title="Panel2"
@@ -49,14 +50,23 @@
      			Alert.show("Context: " + context);
      		}
          
+         	
+         	[Bindable]
+         	private var popupOpen:Boolean;
+         
+         
 	         private function showPopup () : void {
+	         	/*
 	         	if (window == null) window = new SomeWindow();
 	         	context.viewManager.addViewRoot(window);
 	         	PopUpManager.addPopUp(window, this);
+	         	 */
+	         	popupOpen = true;
 	         }
 	         
 	         private function hidePopup () : void {
-	         	PopUpManager.removePopUp(window);
+	         	//PopUpManager.removePopUp(window);
+	         	popupOpen = false;
 	         }
      		
       ]]>
@@ -69,6 +79,10 @@
 	<parsley:FastInjectTag objectId="object" property="model2"/>
 	<parsley:FastInjectTag type="{CoreModel}" property="model3"/>
 	-->
+	
+	<popup:CairngormPopUpSupport open="{popupOpen}" center="true">
+		<view:SomeWindow/>
+	</popup:CairngormPopUpSupport>
 	
 	<parsley:FastInjectTag
 		injectionComplete="trace('+++ injectionComplete');"
