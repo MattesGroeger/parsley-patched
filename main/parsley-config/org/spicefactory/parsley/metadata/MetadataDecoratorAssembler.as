@@ -209,7 +209,6 @@ class ProcessedMembers {
 	function addMember (member:Member) : Boolean {
 		var declared:String = (member.declaredBy == null) ? "" : member.declaredBy.name;
 		var key:String = declared + "#" + member.name;
-		trace("add key: " + key);
 		if (processed[key]) return false;
 		processed[key] = true;
 		return true;
