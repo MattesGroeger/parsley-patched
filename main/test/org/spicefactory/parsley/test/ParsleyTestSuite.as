@@ -1,4 +1,5 @@
 package org.spicefactory.parsley.test {
+import org.spicefactory.parsley.core.properties.ConfigurationPropertiesTest;
 import flexunit.framework.TestSuite;
 
 import org.spicefactory.parsley.binding.BindingMetadataTest;
@@ -64,6 +65,7 @@ public class ParsleyTestSuite {
 		suite.addTestSuite(ActionScriptConfigurationTest);
 		suite.addTestSuite(RuntimeConfigurationTest);
 		suite.addTestSuite(DslConfigTest);
+		suite.addTestSuite(ConfigurationPropertiesTest);
 
 		suite.addTestSuite(InjectMetadataTagTest);
 

@@ -15,16 +15,16 @@
  */
 
 package org.spicefactory.parsley.asconfig.processor {
-import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
-import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.lib.util.ClassUtil;
+import org.spicefactory.parsley.asconfig.ConfigurationBase;
 import org.spicefactory.parsley.asconfig.metadata.DynamicObjectDefinitionMetadata;
 import org.spicefactory.parsley.asconfig.metadata.InternalProperty;
 import org.spicefactory.parsley.asconfig.metadata.ObjectDefinitionMetadata;
+import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.parsley.config.Configurations;
 import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.config.RootConfigurationElement;
@@ -34,6 +34,7 @@ import org.spicefactory.parsley.core.errors.ConfigurationUnitError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.tag.ResolvableConfigurationValue;
 import org.spicefactory.parsley.tag.RootConfigurationTag;
 
@@ -84,9 +85,19 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 		}
 	}
 	
-	private function processClass (configClass:Class, config:Configuration) : void {
+	/**
+	 * Processes a single configuration class.
+	 * 
+	 * @param configClass the configuration class to process
+	 * @param config the configuration associated with this processor
+	 */
+	protected function processClass (configClass:Class, config:Configuration) : void {
 		var ci:ClassInfo = ClassInfo.forClass(configClass, config.domain);
 		var configInstance:Object = new configClass();
+		
+		if (configInstance is ConfigurationBase) {
+			ConfigurationBase(configInstance).init(config.registry.properties);
+		}
 
 		var errors:Array = new Array();
 		for each (var property:Property in ci.getProperties()) {

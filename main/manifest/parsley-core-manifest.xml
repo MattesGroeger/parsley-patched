@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <componentPackage>
+    <component id="Objects" class="org.spicefactory.parsley.tag.core.MxmlObjectsTag"/>
     <component id="Object" class="org.spicefactory.parsley.tag.core.MxmlRootObjectTag"/>
     <component id="View" class="org.spicefactory.parsley.tag.core.MxmlViewTag"/>
     <component id="DynamicObject" class="org.spicefactory.parsley.tag.core.MxmlDynamicObjectTag"/>
