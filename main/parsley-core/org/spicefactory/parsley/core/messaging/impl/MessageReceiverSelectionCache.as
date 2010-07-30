@@ -15,7 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.messaging.impl {
-import org.spicefactory.lib.errors.IllegalStateError;
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.errors.ContextError;
@@ -30,6 +31,9 @@ import flash.utils.Dictionary;
  * @author Jens Halm
  */
 public class MessageReceiverSelectionCache {
+	
+	
+	private static const log:Logger = LogContext.getLogger(MessageReceiverSelectionCache);
 	
 	
 	private var _messageType:ClassInfo;
@@ -111,7 +115,9 @@ public class MessageReceiverSelectionCache {
 	 */	
 	public function getReceivers (kind:MessageReceiverKind, selectorValue:*) : Array {
 		if (selectorMap == null) {
-			throw new IllegalStateError("This receiver cache has been disposed - the associated Context had been destroyed");
+			log.info("ApplicationDomain for type " + _messageType.name 
+					+ " is no longer used, using empty list of message receivers");
+			return [];
 		}
 		var receivers:Array = null;
 		if (selectorMap[kind] != undefined && selectorMap[kind][selectorValue] != undefined) {
