@@ -55,7 +55,7 @@ public interface MethodBuilder {
 	function injectById (id:String) : MethodBuilder;
 	
 	/**
-	 * Adds a definition of an object to be created at runtime to the list of constructor arguments.
+	 * Adds a definition of an object to be created at runtime to the list of method parameters.
 	 * For each injection a new instance will be created from that definition.
 	 * 
 	 * @param definition the definition of the object
