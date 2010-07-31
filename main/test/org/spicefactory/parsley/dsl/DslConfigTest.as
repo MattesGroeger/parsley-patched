@@ -64,6 +64,7 @@ public class DslConfigTest extends TestCase {
 }
 }
 
+import org.spicefactory.parsley.core.factory.MessageSettings;
 import org.spicefactory.parsley.core.factory.MessageRouterFactory;
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
@@ -89,9 +90,9 @@ class MessageRouterFactoryDecorator implements MessageRouterFactory {
 		delegate.addCommandFactory(type, factory);
 	}
 	
-	public function create (unhandledError:ErrorPolicy) : MessageRouter {
+	public function create (settings:MessageSettings) : MessageRouter {
 		invocationCount++;
-		return delegate.create(unhandledError);
+		return delegate.create(settings);
 	}
 	
 	public function get unhandledError () : ErrorPolicy {

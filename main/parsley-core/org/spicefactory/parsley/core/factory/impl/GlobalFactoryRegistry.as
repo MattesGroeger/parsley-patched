@@ -337,6 +337,7 @@ class DefaultMessageRouterFactory implements MessageRouterFactory {
 	}
 
 	public function get unhandledError () : ErrorPolicy {
+		trace(" ++ DefaultMessageRouterFactory.get unhandledError");
 		return settings.unhandledError;
 	}
 
@@ -352,7 +353,7 @@ class DefaultMessageRouterFactory implements MessageRouterFactory {
 		settings.commandFactories.addCommandFactory(type, factory);
 	}
 
-	public function create (unhandledError:ErrorPolicy) : MessageRouter {
+	public function create (settings:MessageSettings) : MessageRouter {
 		return new DefaultMessageRouter(settings);
 	}
 	

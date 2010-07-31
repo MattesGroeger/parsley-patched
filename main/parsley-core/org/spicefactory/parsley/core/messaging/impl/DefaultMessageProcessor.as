@@ -104,12 +104,12 @@ public class DefaultMessageProcessor implements MessageProcessor {
 					// avoid the risk of endless loops
 					throw e;
 				}
-				handleError(e);
+				if (!handleError(e)) return;
 			}
 		} while (!async);
 	}
 	
-	private function handleError (e:Error) : void {
+	private function handleError (e:Error) : Boolean {
 		var handlers:Array = new Array();
 		var errorHandlers:Array = cache.getReceivers(MessageReceiverKind.ERROR_HANDLER, selector);
 		for each (var errorHandler:MessageErrorHandler in errorHandlers) {
@@ -122,22 +122,24 @@ public class DefaultMessageProcessor implements MessageProcessor {
 			currentError = e;
 			remainingProcessors.unshift(currentProcessor);
 			currentProcessor = new Processor(handlers, invokeErrorHandler, true, false);
+			return true;
 		}
 		else {
-			unhandledError(e);
+			return unhandledError(e);
 		}
 	}
 	
-	private function unhandledError (e:Error) : void {
+	private function unhandledError (e:Error) : Boolean {
 		if (env.unhandledError == ErrorPolicy.RETHROW) {
 			throw new MessageProcessorError("Error in message receiver", e);
 		}
 		else if (env.unhandledError == ErrorPolicy.ABORT) {
 			log.info("Unhandled error - abort message processor");
-			return;
+			return false;
 		}
 		else {
 			log.info("Unhandled error - continue message processing");
+			return true;
 		}
 	}
 	

@@ -42,10 +42,10 @@ public interface MessageRouterFactory {
 	/**
 	 * Creates a new MessageRouter instance.
 	 * 
-	 * @param unhandledError the policy to apply for unhandled errors
+	 * @param settings the settings for the router created by this factory
 	 * @return a new MessageRouter instance
 	 */
-	function create (unhandledError:ErrorPolicy) : MessageRouter;
+	function create (settings:MessageSettings) : MessageRouter;
 	
 	
 }

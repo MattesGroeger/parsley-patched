@@ -1,4 +1,5 @@
 package org.spicefactory.parsley.test {
+import org.spicefactory.parsley.core.messaging.ErrorPolicyTest;
 import org.spicefactory.parsley.core.decorator.metadata.MetadataInheritanceTest;
 import org.spicefactory.parsley.core.properties.ConfigurationPropertiesTest;
 import flexunit.framework.TestSuite;
@@ -96,6 +97,8 @@ public class ParsleyTestSuite {
 		suite.addTestSuite(CommandMetadataTagTest);
 		suite.addTestSuite(CommandMxmlTagTest);
 		suite.addTestSuite(CommandXmlTagTest);
+
+		suite.addTestSuite(ErrorPolicyTest);
 
 		suite.addTestSuite(TaskCommandTest);
 		suite.addTestSuite(SynchronousCommandTest);
