@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.metadata {
+import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.*;
 import org.spicefactory.lib.reflect.converter.EnumerationConverter;
 import org.spicefactory.lib.reflect.metadata.Target;
@@ -92,6 +93,8 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 		
 	];
 	
+	private static const replacements:Dictionary = new Dictionary();
+	
 	
 	/**
 	 * Initializes the metadata tag registrations for all builtin metadata tags.
@@ -103,12 +106,28 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 		initialized = true;
 		
 		for each (var metadataClass:Class in metadataClasses) {
-			Metadata.registerMetadataClass(metadataClass);
+			var typeToRegister:Class = (replacements[metadataClass] != null) ? replacements[metadataClass] : metadataClass;
+			Metadata.registerMetadataClass(typeToRegister);
 		}
 		
 		Converters.addConverter(ObjectLifecycle, new EnumerationConverter(ClassInfo.forClass(ObjectLifecycle)));
 	}
 	
+	/**
+	 * Replaces one of the framework's builtin metadata tags with a custom one.
+	 * Any previous replacements for the same type would get overwritten.
+	 * This method must be called before starting to create the first Context of the application.
+	 * 
+	 * @param builtinTag the builtin tag that should be replaced
+	 * @param replacement the actual replacement
+	 */
+	public static function replaceTag (builtinTag:Class, replacement:Class) : void {
+		if (initialized) {
+			throw new IllegalStateError("Builtin metadata tags have already been initialized");
+		}
+		replacements[builtinTag] = replacement;
+	}
+
 	/**
 	 * Creates a new instance.
 	 */
@@ -200,6 +219,7 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 }
 
 import org.spicefactory.lib.reflect.Member;
+
 import flash.utils.Dictionary;
 
 class ProcessedMembers {
