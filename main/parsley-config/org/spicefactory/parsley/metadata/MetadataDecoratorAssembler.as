@@ -179,7 +179,6 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 					setTargetProperty(type as Member, metadata);
 				}
 				decorators.push(metadata);
-				trace(" +");
 			}
 		}
 	}
