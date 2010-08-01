@@ -26,7 +26,7 @@ import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
  *     &lt;parsley:PropertiesFile file="bookstore.properties"/&gt;
  *     &lt;parsley:FlexConfig type="{BookStoreConfig}"/&gt;
  *     &lt;parsley:XmlConfig file="logging.xml"/&gt;
- * &lt;/parsley:CompositeContext&gt;</code></pre> 
+ * &lt;/parsley:ContextBuilder&gt;</code></pre> 
  * 
  * For the supported syntax see:
  * @see org.spicefactory.parsley.properties.util.PropertiesParser

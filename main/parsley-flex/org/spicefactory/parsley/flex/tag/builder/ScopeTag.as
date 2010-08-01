@@ -25,7 +25,7 @@ import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
  *     &lt;parsley:Scope name="window" inherited="true"/&gt;
  *     &lt;parsley:FlexConfig type="{BookStoreConfig}"/&gt;
  *     &lt;parsley:XmlConfig file="logging.xml"/&gt;
- * &lt;/parsley:CompositeContext&gt;</code></pre> 
+ * &lt;/parsley:ContextBuilder&gt;</code></pre> 
  * 
  * @author Jens Halm
  */

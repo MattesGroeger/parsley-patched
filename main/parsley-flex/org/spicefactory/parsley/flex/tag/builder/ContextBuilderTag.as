@@ -71,7 +71,7 @@ import flash.system.ApplicationDomain;
  *     &lt;parsley:XmlConfig file="logging.xml"/&gt;
  *     &lt;parsley:Scope name="window" inherited="true"/&gt;
  *     &lt;parsley:FlexLoggingXmlSupport/&gt;
- * &lt;/parsley:CompositeContext&gt;</code></pre> 
+ * &lt;/parsley:ContextBuilder&gt;</code></pre> 
  * 
  * @author Jens Halm
  */
