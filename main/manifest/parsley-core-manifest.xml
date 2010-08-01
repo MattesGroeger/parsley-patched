@@ -13,8 +13,6 @@
     
     <component id="AsyncInit" class="org.spicefactory.parsley.tag.lifecycle.AsyncInitDecorator"/>
     <component id="Factory" class="org.spicefactory.parsley.tag.lifecycle.FactoryMethodDecorator"/>
-    <component id="PostConstruct" class="org.spicefactory.parsley.tag.lifecycle.legacy.PostConstructMethodDecorator"/>
-    <component id="PreDestroy" class="org.spicefactory.parsley.tag.lifecycle.legacy.PreDestroyMethodDecorator"/>
     <component id="Init" class="org.spicefactory.parsley.tag.lifecycle.InitMethodDecorator"/>
     <component id="Destroy" class="org.spicefactory.parsley.tag.lifecycle.DestroyMethodDecorator"/>
     <component id="Observe" class="org.spicefactory.parsley.tag.lifecycle.ObserveMethodDecorator"/>
@@ -55,12 +53,22 @@
 	<component id="RuntimeConfig" class="org.spicefactory.parsley.flex.tag.builder.RuntimeConfigTag"/>
 	<component id="CustomConfig" class="org.spicefactory.parsley.flex.tag.builder.CustomConfigTag"/>
 	<component id="Instance" class="org.spicefactory.parsley.flex.tag.builder.InstanceTag"/>
+	
 	<component id="Scope" class="org.spicefactory.parsley.flex.tag.builder.ScopeTag"/>
-	<component id="Settings" class="org.spicefactory.parsley.flex.tag.builder.SettingsTag"/>
+	
 	<component id="MessageSettings" class="org.spicefactory.parsley.flex.tag.builder.MessageSettingsTag"/>
 	<component id="ViewSettings" class="org.spicefactory.parsley.flex.tag.builder.ViewSettingsTag"/>
 
+	<component id="PropertiesFile" class="org.spicefactory.parsley.flex.tag.builder.PropertiesFile"/>
+	<component id="PropertiesString" class="org.spicefactory.parsley.flex.tag.builder.PropertiesString"/>
+	<component id="PropertiesObject" class="org.spicefactory.parsley.flex.tag.builder.PropertiesObject"/>
+
 	<component id="PopUp" class="org.spicefactory.parsley.popup.CairngormPopUpSupport"/>
+	
+	<!-- deprecated tags -->
+	<component id="Settings" class="org.spicefactory.parsley.flex.tag.builder.SettingsTag"/>
+    <component id="PostConstruct" class="org.spicefactory.parsley.tag.lifecycle.legacy.PostConstructMethodDecorator"/>
+    <component id="PreDestroy" class="org.spicefactory.parsley.tag.lifecycle.legacy.PreDestroyMethodDecorator"/>
 </componentPackage>
 
 
