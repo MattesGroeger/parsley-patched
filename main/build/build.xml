@@ -45,6 +45,7 @@
 			<arg line="-el ${release.target.dir}/release/spicelib-flash-${version}.swc" />
 			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
 			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
+			<arg line="-el ${project.dir}/lib/popup-flex3-1.7.swc" />
 			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-config ${project.dir}/parsley-flash ${project.dir}/parsley-flex ${project.dir}/parsley-extensions ${project.dir}/parsley-integration ${project.dir}/parsley-xml"/>
 			<arg line="-is ${project.dir}/parsley-core" />
 			<arg line="-is ${project.dir}/parsley-config" />
@@ -84,8 +85,10 @@
 			<arg line="-el ${release.target.dir}/release/spicelib-flex-${version}.swc" />
 			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
 			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
+			<arg line="-el ${project.dir}/lib/popup-flex3-1.7.swc" />
 			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-config ${project.dir}/parsley-flex ${project.dir}/parsley-extensions ${project.dir}/parsley-integration ${project.dir}/parsley-xml"/>
 			<arg line="-include-namespaces=http://www.spicefactory.org/parsley,http://www.spicefactory.org/parsley/flex,http://www.spicefactory.org/parsley/pimento,http://www.spicefactory.org/parsley/cinnamon" />
+			<arg line="-include-file=design.xml,${project.dir}/parsley-flex/design.xml"/>
 			<arg line="-is ${project.dir}/parsley-core" />
 			<arg line="-is ${project.dir}/parsley-xml" />
 			<arg line="-include-classes ConfigurationClasses FlexSupportClasses IntegrationClasses" />
@@ -111,8 +114,10 @@
 			<arg line="-el ${release.target.dir}/release/spicelib-flex-${version}.swc" />
 			<arg line="-el ${project.dir}/lib/cinnamon-${pimento.version}.swc" />
 			<arg line="-el ${project.dir}/lib/pimento-${pimento.version}.swc" />
+			<arg line="-el ${project.dir}/lib/popup-1.7.swc" />
 			<arg line="-sp ${project.dir}/parsley-core ${project.dir}/parsley-config ${project.dir}/parsley-flex ${project.dir}/parsley-extensions ${project.dir}/parsley-integration ${project.dir}/parsley-xml"/>
 			<arg line="-include-namespaces=http://www.spicefactory.org/parsley,http://www.spicefactory.org/parsley/flex,http://www.spicefactory.org/parsley/pimento,http://www.spicefactory.org/parsley/cinnamon" />
+			<arg line="-include-file=design.xml,${project.dir}/parsley-flex/design.xml"/>
 			<arg line="-is ${project.dir}/parsley-core" />
 			<arg line="-is ${project.dir}/parsley-xml" />
 			<arg line="-include-classes ConfigurationClasses FlexSupportClasses IntegrationClasses" />
