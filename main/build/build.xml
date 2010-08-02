@@ -3,7 +3,7 @@
 	
 	<property file="build.properties" />
 	
-	<property name="version" value="2.3.0-SNAPSHOT"/>
+	<property name="version" value="2.3.0"/>
 	<property name="pimento.version" value="1.1.0"/>
 	<property name="project.dir" value="${basedir}/.."/>
 	<property name="lib.dir" value="${project.dir}/lib"/>
@@ -36,7 +36,7 @@
 					token="binding.decorator.Flash" value="flash.binding.Flash"/>
 		
 		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,Publish,Subscribe,PublishSubscribe,ResourceBinding,RemovedEvent,Selector,Target,Internal,ObjectDefinition,DynamicObject" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,Publish,Subscribe,PublishSubscribe,ResourceBinding,Selector,Target,Internal,ObjectDefinition,DynamicObject" />
 			<arg line="-o ${release.target.dir}/release/parsley-flash-${version}.swc" />
 			<arg line="-el ${flex3.sdk}/frameworks/libs/player/9/playerglobal.swc" />
 			<arg line="-el ${flex3.sdk}/frameworks/libs/flex.swc" />
@@ -71,7 +71,7 @@
 	
 	<target name="compile_parsley_flex3">
 		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,Publish,Subscribe,PublishSubscribe,ResourceBinding,RemovedEvent,Selector,Target,Internal,ObjectDefinition,DynamicObject" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,Publish,Subscribe,PublishSubscribe,ResourceBinding,Autoremove,Selector,Target,Internal,ObjectDefinition,DynamicObject" />
 			<arg line="-o ${release.target.dir}/release/parsley-flex3-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
@@ -98,7 +98,7 @@
 		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
 					token="extends Flex3ModuleInfoBase" value="extends Flex4ModuleInfoBase"/>
 		<exec executable="${flex4.sdk}/bin/${compc}" dir="${basedir}">
-			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,Publish,Subscribe,PublishSubscribe,ResourceBinding,RemovedEvent,Selector,Target,Internal,ObjectDefinition,DynamicObject" />
+			<arg line="-keep-as3-metadata+=Inject,InjectConstructor,Factory,PostConstruct,PreDestroy,Init,Destroy,Observe,AsyncInit,ManagedEvents,MessageDispatcher,MessageHandler,MessageBinding,MessageError,MessageInterceptor,Command,CommandResult,CommandError,CommandStatus,Publish,Subscribe,PublishSubscribe,ResourceBinding,Autoremove,Selector,Target,Internal,ObjectDefinition,DynamicObject" />
 			<arg line="-o ${release.target.dir}/release/parsley-flex4-${version}.swc" />
 			<arg line="-namespace http://www.spicefactory.org/parsley ${project.dir}/manifest/parsley-core-manifest.xml" />
 			<arg line="-namespace http://www.spicefactory.org/parsley/flex ${project.dir}/manifest/parsley-flex-manifest.xml" />
