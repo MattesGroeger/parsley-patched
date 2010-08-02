@@ -59,9 +59,9 @@
 	<component id="MessageSettings" class="org.spicefactory.parsley.flex.tag.builder.MessageSettingsTag"/>
 	<component id="ViewSettings" class="org.spicefactory.parsley.flex.tag.builder.ViewSettingsTag"/>
 
-	<component id="PropertiesFile" class="org.spicefactory.parsley.flex.tag.builder.PropertiesFile"/>
-	<component id="PropertiesString" class="org.spicefactory.parsley.flex.tag.builder.PropertiesString"/>
-	<component id="PropertiesObject" class="org.spicefactory.parsley.flex.tag.builder.PropertiesObject"/>
+	<component id="PropertiesFile" class="org.spicefactory.parsley.flex.tag.builder.PropertiesFileTag"/>
+	<component id="PropertiesString" class="org.spicefactory.parsley.flex.tag.builder.PropertiesStringTag"/>
+	<component id="PropertiesObject" class="org.spicefactory.parsley.flex.tag.builder.PropertiesObjectTag"/>
 
 	<component id="PopUp" class="org.spicefactory.parsley.popup.CairngormPopUpSupport"/>
 	
