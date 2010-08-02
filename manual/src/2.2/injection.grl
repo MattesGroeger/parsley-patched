@@ -1,0 +1,287 @@
+#sc1 injection_intro Dependency Injection #sc1
+
+#par Defining the dependencies of your classes is one of the core tasks when you configure
+the services and actions of your application. This chapter demonstrates the various options
+Parsley offers you for Dependency Injection. #par
+
+#par The preferred configuration style for dependencies is using AS3 Metadata tags. 
+Since the dependencies of a class are part of the core aspects of a class definition
+it makes sense to define dependencies right in the ActionScript class itself.
+It some cases you may still prefer to externalize dependency declarations, the corresponding options
+are described in the final section of this chapter #ref injection_tags #ref. #par
+  
+
+
+#sc2 injection_constructor Constructor Injection #sc2
+
+#par Many consider this to be the cleanest injection style in terms of encapsulation, since it allows
+you to create immutable classes. Since (unfortunately) the Flash Player currently ignores metadata tags
+placed on constructors you have to place a #cdi [InjectConstructor] #cdi tag on the class declaration to tell Parsley
+to perform Constructor Injection: #par
+
+#cdb
+package com.bookstore.actions {
+
+[InjectConstructor]
+class LoginAction {
+
+    private var service:LoginService;
+    private var manager:UserManager;
+
+    function LoginAction (service:LoginService, manager:UserManager = null) {
+        this.service = service;
+        this.manager = manager;    
+    }
+
+}
+}
+#cdb
+
+#par Note that in the example above the #cdi manager #cdi parameter is optional. Parsley reflects on this
+information and uses it as a hint whether the defined dependency is required or optional.
+So in this case the container will throw an error if it does not contain an object of type #cdi LoginService #cdi,
+but it will simply silently ignore the second parameter if the Context does not contain an object of type #cdi UserManager #cdi. #par
+
+#par Constructor injection selects the dependencies based on the parameter types. This means that it only works for dependencies
+where you know that the Context will always contain at most one object with a matching type. It is also good practice to use
+interfaces as parameter types so that you can switch implementations in the configuration without modifying the class. #par
+
+#par As explained in #ref config_mxml #ref you cannot use simple MXML tags for configuration if you want to use Constructor Injection
+since in that case the MXML compiler generates the object creation code and Parsley only gets hold of the object after
+it was instantiated to perform additional configuration. So instead of defining such a class like this: #par
+
+#cdb
+<mx:Object 
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:actions="com.bookstore.actions.*">
+    
+    <actions:LoginAction/>
+    
+</mx:Object> 
+#cdb
+
+#par you should simply declare it like this: #par
+
+#cdb
+<mx:Object 
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns="http://www.spicefactory.org/parsley">
+    
+    <mx:Script>
+        <![CDATA[
+            import com.bookstore.actions.*;        
+        ]]>
+    </mx:Script>
+
+   <Object type="{LoginAction}"/>
+    
+</mx:Object> 
+#cdb
+
+#par When using Parsley's #cdi Object #cdi tag it's the framework that is responsible for instantiating the object so that
+Constructor Injection can be performed. #par
+
+#par There are no restrictions when you are using XML configuration. #par
+
+#par Unfortunately there is a nasty bug in some Flash Player versions where reflection on constructor parameter types using
+#cdi describeType #cdi does not work properly (the Player always reports #cdi '*' #cdi as the type in these cases. 
+If you run into this bug the only workaround (unfortunately) is to create instances of these classes before you initialize
+Parsley: #par
+
+#cdb
+new LoginAction();
+new ShoppingCartAction();
+#cdb
+
+#par You can simply throw away these instances, just creating an instance "fixes" describe type for the parameter types of that class. #par
+
+
+
+#sc2 injection_method Method Injection #sc2
+
+#par Method Injection is similar to Constructor Injection. You can place #cdi [Inject] #cdi metadata tags on any number of methods: #par
+
+#cdb
+package com.bookstore.actions {
+
+class LoginAction {
+
+    private var service:LoginService;
+    private var manager:UserManager;
+
+    [Inject]
+    public function init (service:LoginService, manager:UserManager = null) : void {
+        this.service = service;
+        this.manager = manager;    
+    }
+
+}
+}
+#cdb
+
+#par As with Constructor Injection Parsley will recognize whether a method parameter is optional or not and
+accordingly treat the dependency as optional or required. The object to be injected will be selected by type, so you
+should make sure to include at most one object with a matching type into your configuration. For Method Injection
+there are no restrictions on MXML configuration, so in contrast to Constructor Injection you could also use 
+simple MXML tags for adding the objects to the container. #par
+
+  
+
+#sc2 injection_property_type Property Injection by Type #sc2
+
+#par This injection mechanism is simliar to Method Injection, but is performed for properties instead: #par
+
+#cdb
+package com.bookstore.actions {
+
+class LoginAction {
+
+    private var manager:UserManager;
+    
+    [Inject]
+    public var service:LoginService;
+    
+    [Inject(required="false")]
+    public function set manager (manager:UserManager) : void {
+        this.manager = manager;
+    }
+
+}
+}
+#cdb
+
+#par You can place the #cdi [Inject] #cdi tag on a var declaration or a setter function. For properties Parsley cannot
+detect whether the dependency is optional or not so you can explicitly set it with the #cdi required #cdi attribute.
+The default is #cdi true #cdi if the attribute is omitted. #par
+
+#par Like with Constructor or Method Injection shown above this mode select dependencies by type. So again you should
+make sure to include at most one object with a matching type into your configuration. #par
+
+
+
+#sc2 injection_property_id Property Injection by Id #sc2
+
+#par Instead of letting the container select the dependency by type you can alternatively explicitly set the id
+of the object to inject: #par
+
+#cdb
+[Inject(id="defaultLoginService")]
+public var service:LoginService;
+#cdb
+
+#par In this case Parsley will select the dependency by id so the configuration has to include an object
+with a corresponding id: #par
+
+#cdb
+<mx:Object 
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:actions="com.bookstore.services.*">
+    
+    <services:LoginServiceImpl id="defaultLoginService"/>
+    
+</mx:Object> 
+#cdb
+
+#par Often it's not the best idea to include configuration artifacts like ids into your class files.
+Inject metadata tags are usually more appropiate for injection by type like demonstrated in previous sections.
+If you have to set the id of a dependency explicitly it is often preferrable to externalize it to MXML or XML
+configuration like shown in the next section. #par
+
+
+
+#sc2 injection_tags Declaring Dependencies in MXML or XML #sc2
+
+#par Finally you can also declare dependencies in MXML or XML. #par
+
+#sub MXML example: #sub
+
+#cdb
+<mx:Object 
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns="http://www.spicefactory.org/parsley">
+    
+    <mx:Script>
+        <![CDATA[
+            import com.bookstore.actions.*;        
+            import com.bookstore.services.*;        
+        ]]>
+    </mx:Script>
+
+    <Object id="loginService" type="{LoginServiceImpl}">
+        <Property name="timeout" value="3000"/>
+    </Object>
+
+    <Object id="userManager" type="{UserManager}"/>
+   
+    <Object type="{LoginAction}">
+        <ConstructorArgs>
+            #hlt <ObjectRef idRef="userManager"/> #hlt
+        </ConstructorArgs>
+        <Property name="service" #hlt idRef="loginService" #hlt/>
+    </Object>
+    
+</mx:Object> 
+#cdb
+
+#sub XML example: #sub
+
+#cdb
+<objects
+    xmlns="http://www.spicefactory.org/parsley">
+    
+    <object id="loginService" type="com.bookstore.services.LoginServiceImpl">
+        <property name="timeout" value="3000"/>
+    </object>
+
+    <object id="userManager" type="com.bookstore.services.UserManager"/>
+   
+    <object type="com.bookstore.actions.LoginAction">
+        <constructor-args>
+            #hlt <object-ref id-ref="userManager"/> #hlt
+        </constructor-args>
+        <property name="service" #hlt id-ref="loginService" #hlt/>
+    </object>
+    
+</objects> 
+#cdb
+
+#par As you see MXML and XML configuration is almost identical except for some subtle notation differences
+(capitalized camel-case vs. lower case names with dashes). You can set dependencies for constructor arguments
+or properties. For constructor arguments you could even mix it with tags for simple properties: #par
+
+#cdb
+<constructor-args>
+    <object-ref id-ref="userManager"/>
+    <string>http://www.bookstore.com/services/</string>
+    <uint>3000</uint>
+</constructor-args>
+#cdb
+
+#par For properties you just use the #cdi id-ref #cdi attribute instead of the #cdi value #cdi attribute to point
+to another object definition. #par
+
+
+#sub Declaring dependencies inline #sub
+
+#par If a dependency is only needed by a single object you can alternatively declare it inline: #par
+
+#cdb
+<objects
+    xmlns="http://www.spicefactory.org/parsley">
+    
+    <object type="com.bookstore.actions.LoginAction">
+        <constructor-args>
+            #hlt <object type="com.bookstore.services.UserManager"/> #hlt
+        </constructor-args>
+        <property name="service">
+            #hlt <object type="com.bookstore.services.LoginServiceImpl">
+                <property name="timeout" value="3000"/>
+            </object> #hlt
+        </property>
+    </object>
+    
+</objects> 
+#cdb
+
+#par Note that you cannot set an id for an inline object definition. The MXML example would be analogous. #par
+

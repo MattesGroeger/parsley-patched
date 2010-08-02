@@ -1,0 +1,140 @@
+#sc1 modules_intro Using Flex Modules #sc1
+
+#par As described in #ref advanced_modular #ref Parsley allows you to build a hierarchy of modules that can be 
+dynamically loaded and unloaded. When using Flex Modules together with Parsley it is very like that many of the
+Modules will require their own configuration, integrated with the configuration of the main application and loaded
+and unloaded along with the Module itself. With Parsley you have two options for building this Module hierarchy: #par
+
+#lst
+#lse Write and load the Flex Modules like you would without Parsley and then use the Parsley API
+to explicitly connect parent and child Contexts when a Module gets loaded. This use case is desribed
+in #ref advanced_modular #ref. #lse
+
+#lse Write the Module extending from Parsleys #cdi ContextModule #cdi class and not from #cdi mx.modules.Module #cdi
+and then use Parsleys #cdi ModuleLoader #cdi Component for loading the Module instead of the regular Flex ModuleLoader.
+This approach is described in this chapter. #lse
+#lst
+
+
+
+#sc2 modules_write Writing Modules #sc2
+
+#par Writing a Parsley Context Module is only slightly different from writing a regular Flex Module.
+It basically involves two steps: #par
+
+#lst
+#lse Extend the Parsley #cdi ContextModule #cdi base class instead of #cdi mx.modules.Module. #cdi #lse
+#lse Declare the MXML configuration with the #cdi configClass #cdi property. #lse
+#lst
+
+#par An example MXML Module skeleton might look like this: #par
+
+#cdb
+#hlt <parsley:ContextModule #hlt     
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    #hlt xmlns:parsley="http://www.spicefactory.org/parsley/flex" #hlt
+    #hlt configClass="{ShoppinCartModuleConfig}" #hlt
+>    
+    <mx:Script>
+        <![CDATA[
+            import com.bookstore.config.ShoppinCartModuleConfig;
+        ]]>
+    </mx:Script>    
+    
+    [...]
+    
+</parsley:ContextModule> 
+#cdb
+
+#par The #cdi ShoppingCartModuleConfig #cdi we set as the #cdi configClass #cdi property is a MXML configuration 
+class that we would normally pass to #cdi FlexContextBuilder.build() #cdi. In this case Parsley is handling the
+Context creation process for us: #par
+
+#lst
+#lse When the Module is fully loaded (i.e. the #cdi ready #cdi event has fired) Parsley will create a Context
+based on the configuration class specified with the #cdi configClass #cdi property. #lse
+#lse It will connect this Context to the parent Context that you specified for the #cdi ModuleLoader #cdi
+(see the next section for details). #lse
+#lse When the Module gets unloaded the framework will automatically destroy the associated Context.
+See #ref advanced_lifecycle #ref for details. #lse
+#lst
+
+#par With the #cdi configClass #cdi property we cover the most common use case: each Module is associated
+with a single MXML configuration file. For more complex scenarios (multiple configuration classes or using XML
+configuration files) you can ignore the #cdi configClass #cdi property and overwrite the #cdi buildContext #cdi
+method of the #cdi ContextModule #cdi base class instead: #par
+
+#cdb
+#hlt <parsley:ContextModule #hlt     
+  xmlns:mx="http://www.adobe.com/2006/mxml"
+  #hlt xmlns:parsley="http://www.spicefactory.org/parsley/flex" #hlt
+>    
+
+ <mx:Script><![CDATA[
+  
+  import org.spicefactory.parsley.core.CompositeContextBuilder;
+  import org.spicefactory.parsley.flex.FlexContextBuilder;
+  import org.spicefactory.parsley.xml.XmlContextBuilder;
+
+  import flash.system.ApplicationDomain;
+            
+  import com.bookstore.config.ShoppinCartModuleConfig;
+    
+  #hlt public override function buildContext (parent:Context, domain:ApplicationDomain) : Context { #hlt
+      var builder:CompositeContextBuilder = new CompositeContextBuilder(parent, domain);
+      FlexContextBuilder.merge(ShoppinCartModuleConfig, builder);
+      XmlContextBuilder.merge("shoppingCart/logging.xml", builder);
+      return builder.build();
+  }
+  
+ ]]></mx:Script>    
+    
+</pm:ContextModule> 
+#cdb
+
+#par Make sure that you always use the parent Context instance and the ApplicationDomain passed to the
+overwritten method. In the example above we pass them to constructor of the #cdi CompositeContextBuilder #cdi. 
+Like with the previous example this method will be invoked by the framework as soon as the Module is
+fully loaded and initialized. #par
+
+
+
+#sc2 modules_load Loading Modules #sc2
+
+#par You can load Parsley Context Modules with the #cdi ModuleLoader #cdi provided by the framework: #par
+
+#cdb
+<mx:Panel 
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    #hlt xmlns:parsley="http://www.spicefactory.org/parsley/flex" #hlt
+    #hlt addedToStage="dispatchEvent(new Event('configureIOC', true));" #hlt
+    >
+    
+    <mx:Script>
+        <![CDATA[
+            import flash.events.Event;
+            import org.spicefactory.parsley.core.Context;
+            
+            [Bindable]
+            #hlt [Inject] #hlt
+            #hlt public var context:Context; #hlt    
+            
+        ]]>
+    </mx:Script>
+    
+    <mx:TabNavigator width="100%" height="100%">
+    	#hlt <parsley:ModuleLoader label="ShoppingCart" url="ShoppingCart.swf" parentContext="{context}"/> #hlt
+    	#hlt <parsley:ModuleLoader label="Catalog" url="Catalog.swf" parentContext="{context}"/> #hlt
+    </mx:TabNavigator>
+    
+</mx:Panel> 
+#cdb
+
+#par In this example we use the view wiring support as described in #ref view_intro #ref. This means that
+the Panel gets wired to the IOC Container. In this case we want it to inject the #cdi Context #cdi itself,
+so that we don't have to explicitly pass it around. We then set the #cdi Context #cdi that this
+Panel lives in to the #cdi parentContext #cdi property of the #cdi ModuleLoaders #cdi we are using.
+This way we are connecting the Module Contexts to the main application Context. #par
+
+
+

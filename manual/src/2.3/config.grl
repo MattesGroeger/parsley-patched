@@ -1,0 +1,865 @@
+#sc1 config_intro Configuration and Initialization #sc1
+
+#par Configuring and initializing the Parsley Framework usually consists of the following steps: #par
+
+#lst
+
+#lse Step 1: Telling the IOC Container which classes it should manage. 
+This can be done with MXML, XML files or in ActionScript. 
+All three mechanisms will be described in the following sections. #lse
+
+#lse Step 2: Configure the container services like Dependency Injection or Messaging for each individual class.
+This can be done with the mechanism you had chosen for step 1 (e.g. with MXML or XML configuration tags)
+or - in most cases - conveniently with AS3 Metadata Tags right within the classes themselves. #lse 
+
+#lse Step 3: Initialize the IOC Container (usually on application startup). 
+In Parsley 2 this is a one-liner in most cases. See the sections below for examples. #lse
+
+#lst
+
+
+
+#sc2 config_metadata Configuration with AS3 Metadata #sc2
+
+#par AS3 Metadata Tags can be used to configure services like Dependency Injection or Messaging.
+They can be placed on any class that is managed by Parsley. Features configured by metadata tags
+can be combined with configuration in XML or MXML. Almost every metadata tag has a corresponding
+MXML and XML configuration tag. #par
+
+#par The individual metadata tags and their attributes along with examples are described in
+the corresponding sections: #par
+
+#lst
+
+#lse #ref injection_intro #ref #lse
+
+#lse #ref messaging_intro #ref #lse
+
+#lse #ref lifecycle_factories #ref #lse
+
+#lse #ref lifecycle_async #ref #lse
+
+#lse #ref lifecycle_methods #ref #lse
+
+#lse #ref lifecycle_observer #ref #lse
+
+#lst
+
+
+#sub Metadata Inheritance #sub
+
+#par Judging from observations these are the rules the mxmlc compiler uses for deciding on metadata inheritance: #par
+
+#lst
+#lse A metadata tag on the class level is never inherited by subclasses. #lse
+#lse A metadata tag on a property or method that is not overridden in a subclass is always available when reflecting on the subclass. #lse
+#lse A metadata tag on an overridden property getter/setter or method is only inherited if the overriding method or property
+does not have any metadata itself. #lse
+#lst
+
+#par Per default Parsley does nothing on top of these inheritance rules. In particular it only processes the class that gets
+configured and not the entire inheritance tree. That would be impractical due to performance reasons, as reflection in current
+Flash Players is quite slow. This means that any metadata on class level for example would be lost in subclasses. 
+Since this might be undesirable in some cases where the class has a lot of verbose #cdi [ManagedEvents] #cdi declarations
+for example, the framework offers the option to explicitly request to process the superclass or the implemented interfaces
+of a particular class: #par
+
+#cdb
+[ProcessSuperclass][ProcessInterfaces]
+public class SomeClass {
+#cdb
+
+#par When using #cdi [ProcessSuperclass] #cdi only the immediate superclass will be processed, again for performance reasons.
+The superclass itself could also use this tag if you want the framework to move even higher in the inheritance tree.
+When the superclass gets processed its tags will be added to those available on the subclass. This means that when using
+this feature you cannot override a metadata tag from the superclass in the subclass, as both would be used in this case.
+If you want to override tags, you cannot use #cdi [ProcessSuperclass] #cdi. #par
+
+#par When using #cdi [ProcessInterfaces] #cdi all interfaces implemented by the class will be processed in addition
+to the class itself. #par  
+
+
+
+#sub Compiling custom metadata into SWFs #sub
+
+#par Unfortunately the mxmlc compiler has a pretty inconsistent behaviour when it comes to deciding whether custom metadata
+will be included in the SWF or not. If you use the Parsley and Spicelib SWCs to compile the main application you (or your tool) will
+likely specify the library with the #cdi -l #cdi option so that the library will be compiled into your SWF. In this case all the metadata tags
+used by Parsley and Spicelib will be included automatically. So for the main application SWF there is nothing you have to do unless
+you created custom configuration tags that you want to use as AS3 metadata. #par
+
+#par For compiling modules or other SWFs where you (or you tool) choose to use the #cdi -el #cdi option to specify the Parsley SWC
+it is different though. The framework classes will not be compiled into your SWF then (this is intended behaviour) and unfortunately
+the metadata tags won't either. And this is rather erratic behaviour, since for your intention to use the framework and thus its
+metadata configuration tags it shouldn't make a difference if you compile the frameworks classes into the SWF or not.
+So when using the #cdi -el #cdi option you have to explicitly specify the Parsley and Spicelib metadata tags.
+Those are quite a few (extracted from the Parsley Ant builds): #par
+
+#cdb
+<keep-as3-metadata name="Metadata" />
+<keep-as3-metadata name="DefaultProperty" />
+<keep-as3-metadata name="Required" />
+<keep-as3-metadata name="Event" />
+<keep-as3-metadata name="AssignableTo" />
+<keep-as3-metadata name="Inject" />
+<keep-as3-metadata name="InjectConstructor" />
+<keep-as3-metadata name="Publish" />
+<keep-as3-metadata name="Subscribe" />
+<keep-as3-metadata name="PublishSubscribe" />
+<keep-as3-metadata name="Factory" />
+<keep-as3-metadata name="Init" />
+<keep-as3-metadata name="Destroy" />
+<keep-as3-metadata name="Observe" />
+<keep-as3-metadata name="AsyncInit" />
+<keep-as3-metadata name="ManagedEvents" />
+<keep-as3-metadata name="MessageDispatcher" />
+<keep-as3-metadata name="MessageHandler" />
+<keep-as3-metadata name="MessageBinding" />
+<keep-as3-metadata name="MessageInterceptor" />
+<keep-as3-metadata name="MessageError" />
+<keep-as3-metadata name="Command" />
+<keep-as3-metadata name="CommandComplete" />
+<keep-as3-metadata name="CommandResult" />
+<keep-as3-metadata name="CommandError" />
+<keep-as3-metadata name="CommandStatus" />
+<keep-as3-metadata name="ResourceBinding" />
+<keep-as3-metadata name="Selector" />
+<keep-as3-metadata name="Target" />
+<keep-as3-metadata name="Autoremove" />
+<keep-as3-metadata name="Internal" />
+<keep-as3-metadata name="ObjectDefinition" />
+<keep-as3-metadata name="DynamicObject" />
+#cdb
+			
+#par Of course you can just pick the ones you are actually using. But then you have to remember to add new tags to the build
+whenever you introduce a new configuration tag into your application. #par
+
+#par In case the metadata tags did not get compiled into your SWF the symptoms are usually that several operations silently
+fail. For example injections will not performed then if you specified them with the #cdi [Inject] #cdi tag. When things silently
+fail this is usually a clear indication that some or all of the metadata tags are missing in the SWF. Because if there was some
+other type of problem, like an injection type where the framework does not find a matching object for in the container, Parsley
+will always throw an error. It will not silently fail unless you specified the dependency as optional. #par
+
+#par This section was added to this chapter as a few users already ran into this issue. #par
+
+
+
+#sc2 config_mxml MXML Configuration #sc2
+
+#par This is the only Parsley configuration mechanism that (obviously) can only be used in Flex Applications. 
+Everything else is available for Flex and Flash Applications. #par
+
+#par Let's assume you want to configure the following two classes: #par
+
+#cdb
+package com.bookstore.service {
+
+class LoginServiceImpl implements LoginService {
+
+    public var timeout:int;
+    
+    public function login (username:String, password:String) : void {
+        // execute service    
+    }
+    
+}
+}
+#cdb
+
+#cdb
+package com.bookstore.actions {
+
+class LoginAction {
+
+    [Inject]
+    public var service:LoginService
+    
+    [MessageHandler]
+    public function handleLoginEvent (event:LoginEvent) : void {
+           service.login(event.username, event.password); 
+    } 
+    
+}
+}
+#cdb
+
+#par As you see several features are already configured with metadata tags. 
+See #ref injection_intro #ref and #ref messaging_intro #ref for details on these features. #par
+
+#par We now have to tell
+the container to manage these classes and create the an MXML configuration file.
+These look different for Flex 3 and Flex 4: #par
+
+
+#sub Flex 4 MXML configuration class #sub
+
+#cdb
+<Objects 
+    xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:services="com.bookstore.services.*"
+    xmlns:actions="com.bookstore.actions.*"
+    xmlns="http://www.spicefactory.org/parsley"
+    >
+        
+    <services:LoginServiceImpl timeout="3000"/>
+
+    <actions:LoginAction/>
+    
+</Objects> 
+#cdb
+
+
+#sub Flex 3 MXML configuration class #sub
+
+#cdb
+<mx:Object 
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:services="com.bookstore.services.*"
+    xmlns:actions="com.bookstore.actions.*">
+    
+    <services:LoginServiceImpl timeout="3000"/>
+    
+    <actions:LoginAction/>
+    
+</mx:Object> 
+#cdb
+
+
+#par In addition to the metadata tags you can use these MXML tags
+for additional configuration, like the timeout value in the example above. 
+The Flex 4 example uses a special root tag from the Parsley namespace provided by the framework.
+It allows the use of properties within the configuration class. In Flex 3 you can simply use
+#cdi <mx:Object> #cdi as the root tag. The latter would work in Flex 4, too, but is not recommended. #par
+
+
+#sub Framework Initialization #sub
+
+#par Finally you have to initialize the container. Assuming you saved the configuration in BookstoreConfig.mxml,
+you can initialize it with: #par
+
+#cdb
+<parsley:ContextBuilder config="{BookStoreConfig}"/>
+#cdb
+
+#par In many applications the simple tag shown above could be the only direct dependency on the Parsley framework.
+To initialize the application you can use [Init] metadata tags on methods of classes that should execute 
+logic on application startup. See #ref lifecycle_methods #ref for details. #par
+
+#par In theory you could also directly interact with the Parsley Context: #par
+
+#cdb
+var context:Context = FlexContextBuilder.build(BookStoreConfig, this);
+var initializer:BookStoreInitializer 
+    = context.getObjectByType(BookStoreInitializer) as BookStoreInitializer;
+initializer.execute();
+#cdb
+
+#par But this kind of usage is not recommended. In normal application code there is usually no need to use the Parsley API
+directly. The API is primarily for extending the framework or for building custom frameworks on top of Parsley. #par
+
+
+#sub Context Description for Log Output #sub
+
+#par If you want to have control over the description for a particular Context in log statements, you
+can simply set it in the #cdi ContextBuilder #cdi tag: #par
+
+#cdb
+<parsley:ContextBuilder config="{MyConfig}" description="Main"/>
+#cdb
+
+#par The toString output for the Context will then be: #par
+
+#cdb
+[Context(Main)]
+#cdb
+
+#par If you do not set the description explicitly it will be generated from the names of the configuration
+artifacts the Context was configured with, and thus could eventually be quite long: #par
+
+#cdb
+[Context(FlexConfig{MainConfig,ServiceConfig},XmlConfig{logging.xml},RuntimeConfig{2 instance(s)})]
+#cdb
+
+
+
+#sub Using Parsleys MXML Tags #sub
+
+#par There is a variant of the MXML configuration mode shown above where you use special Parsley tags instead of 
+normal object tags: #par
+
+#cdb
+<Objects
+    xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns="http://www.spicefactory.org/parsley"
+    >
+    
+    <fx:Script>
+        <![CDATA[
+            import com.bookstore.services.*;        
+            import com.bookstore.actions.*;        
+        ]]>
+    </fx:Script>
+    
+    <Object type="{LoginServiceImpl}">
+        <Property name="timeout" value="3000"/>
+    </Object>
+    
+    <Object type="{LoginAction}"/>
+    
+</Objects> 
+#cdb 
+
+#par These special tags give you some additional features that are not available when using normal tags like in the first example.
+Both approaches have pros and cons: #par
+
+#sub Advantages of normal MXML tags: #sub
+
+#lst
+#lse Simple and straightforward to use. #lse
+#lse No knowledge of Parsley configuration tags necessary. #lse
+#lse Compiler checks for the types of the property values. #lse
+#lst
+
+#sub Advantages of Parsley MXML tags: #sub
+
+#lst
+#lse Allows Constructor Injection. Some consider this as the cleanest way of Dependency Injection in terms
+of encapsulation as you can create immutable classes this way. You cannot use Constructor Injection with normal tags
+since in that case the MXML compiler generates the object creation code and Parsley only gets hold of the object after
+it was instantiated to perform additional configuration. When using normal tags your classes are required to have
+a no-argument constructor. #lse
+
+#lse Allows to define an object to be lazy (#cdi <Object lazy="true" type="..."/> #cdi) which means that it won't be
+initialized and configured before the first time you use it. #lse
+
+#lse Allows to configure an object as a non-singleton (#cdi <Object singleton="false" type="..."/> #cdi). This means that
+every time this object gets fetched from the container or injected into another object, the container will create a new
+instance. #lse
+
+#lse Allows to use custom tags. Parsley 2 is easy to extend. You can create custom extensions with a single class that can
+then be used as custom metadata, MXML or XML. For examples see #ref extensions_intro #ref. #lse
+#lst
+
+
+
+#sc2 config_xml XML Configuration Files #sc2
+
+#par External XML files may be an adequate alternative to MXML if: #par
+
+#lst
+#lse Your configuration changes frequently and you want to avoid the additional compilation step. #lse
+#lse The configuration has to be edited by people without programming knowledge. #lse
+#lse You are not using Flex. #lse
+#lst
+
+#par Of course you may also chose to only externalize parts of your configuration to XML files and stick 
+with MXML for wiring your core services. See #ref config_combine #ref for details. #par
+
+#par Using the same two example classes as shown in the MXML section above, this is how the XML configuration file would
+look like: #par
+
+#cdb
+<objects 
+    xmlns="http://www.spicefactory.org/parsley"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.spicefactory.org/parsley 
+        http://www.spicefactory.org/parsley/schema/2.3/parsley-core.xsd"
+    >
+    <object type="com.bookstore.services.LoginServiceImpl">
+        <property name="timeout" value="3000"/>
+    </object>
+    
+    <object type="com.bookstore.services.LoginServiceImpl"/>
+</objects>
+#cdb
+
+#par In general XML configuration looks very similar like MXML configuration with Parsleys MXML tags. 
+Under the hood XML tags and MXML tags map to the same framework classes. The main difference is that
+we follow XML naming conventions, so the tags are not capitalized and attribute names use dashes
+and not camel case (e.g. target-property instead of targetProperty). #par
+
+#par Initialization is just a one liner, assuming you saved the file as #cdi config.xml #cdi: #par
+
+#cdb
+XmlContextBuilder.build("config.xml");
+#cdb 
+
+#par If you are using XML configuration in Flex you can alternatively use a tag for initialization: #par
+
+#cdb
+<parsley:ContextBuilder>
+    <parsley:XmlConfig file="config.xml"/>
+</parsley:ContextBuilder>
+#cdb
+
+
+
+#sub Compiling classes configured in XML #sub
+
+#par One thing you need to be aware of is that in contrast to MXML configuration the classes
+you use in the configuration file will not be compiled into your SWC or SWF if you don't use
+them explicitly in your code. This might happen quite often since it is good practice
+to program against interfaces and only declare the concrete implementation in the container
+configuration. #par
+ 
+#par There are basically three choices to solve this: #par
+
+#lst
+#lse Add a reference to these classes explicity in your code even though it is not needed. 
+Most developers consider this an ugly hack. #lse
+#lse If you want to use these classes as a library, compile them into an SWC (with #cdi compc #cdi
+you can include whole source folders into the SWC) and then include the whole SWC into your SWF
+with the #cdi -include-libraries #cdi option of the #cdi mxmlc #cdi compiler. #lse
+#lse You can alternatively include individual classes with the #cdi -includes #cdi option of
+the #cdi mxmlc #cdi compiler. #lse
+#lst  
+
+
+
+#sc2 config_runtime Runtime Configuration #sc2
+
+#par Added in version 2.2 this configuration mechanism allows to specify instances that should
+be part of the container at runtime: #par
+
+#cdb
+<parsley:ContextBuilder>
+    <parsley:FlexConfig type="{ServiceConfig}"/>
+    <parsley:FlexConfig type="{ControllerConfig}"/>
+    <parsley:XmlConfig file="logging.xml"/>
+    #hlt <parsley:RuntimeConfig instances="{[instance1, instance2]}"/> #hlt
+</parsley:ContextBuilder>
+#cdb
+
+#par If you need to specify id's then you could alternatively use nested child tags: #par
+
+#cdb
+<parsley:ContextBuilder>
+    <parsley:FlexConfig type="{ServiceConfig}"/>
+    <parsley:FlexConfig type="{ControllerConfig}"/>
+    <parsley:XmlConfig file="logging.xml"/>
+    <parsley:RuntimeConfig>
+        #hlt <parsley:Instance id="obj1" instance="{instance1}"/>    
+        <parsley:Instance id="obj2" instance="{instance2}"/>    
+        <parsley:Instance id="obj3" instance="{instance3}"/> #hlt    
+    </parsley:RuntimeConfig>
+</parsley:ContextBuilder>
+#cdb
+
+#par The difference between objects added with the RuntimeConfig tag and DynamicObjects added at a later
+time is that the former are actually root object definitions which are injectable into other objects since
+they are specified at Context construction time. #par
+
+#par You can even use the regular #cdi <Object> #cdi tags inline now: #par
+
+#cdb
+<parsley:ContextBuilder>
+    <parsley:FlexConfig type="{ServiceConfig}"/>
+    <parsley:FlexConfig type="{ControllerConfig}"/>
+    <parsley:XmlConfig file="logging.xml"/>
+    <parsley:RuntimeConfig>
+        <parsley:Instance id="obj1" instance="{instance1}"/>    
+        <parsley:Instance id="obj2" instance="{instance2}"/>    
+        #hlt <parsley:Object id="obj3" type="{LoginInterceptor}"/> 
+            <parsley:MessageInterceptor method="intercept" type="{LoginEvent}"/>
+        </parsley:Object> #hlt    
+    </parsley:RuntimeConfig>
+</parsley:ContextBuilder>
+#cdb
+
+#par You can also specify existing instances with the configuration DSL: #par
+
+#cdb
+ContextBuilder.newBuilder()
+    .config(FlexConfig.forClass(ServiceConfig))
+    .config(FlexConfig.forClass(ControllerConfig))
+    .config(XmlConfig.forFile("logging.xml"))
+    .object(instance1, "id1")
+    .object(instance2, "id2")
+    .build();
+#cdb
+
+
+#sc2 config_dsl Configuration DSL #sc2
+
+#par Added in version 2.3 this configuration option allows to specify most of the features you usually specify
+with tags (MXML, XML, Metadata) in code with a fluent syntax that allows to add logic to the configuration.
+The DSL spans multiple levels of configuration, it can be used to create an entire Context from scratch,
+but it can also be used to create object definitions in code and then combine those with the other
+configuration mechanisms. Since it is useful for many types of configuration tasks it is now also getting
+used by nearly all major extension points. Thus when building a custom metadata tag for example,
+you can use this convenient DSL for adding functionality to an object. #par
+
+#par You can refer to #ref extensions_intro #ref for use of the DSL in extensions. This chapter is about
+basic configuration tasks for applications, so will list a few relatively simple examples. #par
+
+#sub Creating an empty Context #sub
+
+#cdb
+var context:Context = ContextBuilder.newBuilder().build();
+#cdb
+
+#par May seem pointless, but you can still use this Context to dynamically add objects later. #par
+
+#sub Specifying configuration classes and files #sub 
+
+#cdb
+ContextBuilder.newBuilder()
+    .config(FlexConfig.forClass(BookStoreServices))
+    .config(FlexConfig.forClass(BookStoreActions))
+    .config(XmlConfig.forFile("logging.xml"))
+    .build();
+#cdb
+
+#sub Adding existing instances to a Context #sub 
+
+#cdb
+var instance1:Object = ...;
+var instance2:Object = ...;
+
+ContextBuilder.newBuilder()
+    .config(FlexConfig.forClass(MainConfig))
+    .object(instance1, "id1")
+    .object(instance2, "id2")
+    .build();
+#cdb
+
+#sub Specifying options for the ContextBuilder #sub 
+
+#cdb
+var viewRoot:DisplayObject = ...;
+var parent:Context = ...;
+
+ContextBuilder.newSetup()
+    .viewRoot(viewRoot)
+    .parent(parent)
+    .description("Root")
+    .scope("window")
+    .messageSettings()
+        .unhandledError(ErrorPolicy.RETHROW)
+    .viewSettings()
+        .autoremoveComponents(false)
+    .newBuilder()
+        .config(FlexConfig.forClass(RootConfig))
+        .config(XmlConfig.forFile("logging.xml"))
+        .build();
+#cdb
+
+#sub Creating object definitions programmatically #sub 
+
+#cdb
+var contextBuilder:ContextBuilder = ContextBuilder.newBuilder();
+
+var objectBuilder:ObjectDefinitionBuilder 
+        = contextBuilder.objectDefinition().forClass(SomeClass);
+
+objectBuilder
+    .property("dependency")
+        .injectByType();
+
+objectBuilder
+    .property("dispatcher")
+         .messageDispatcher();
+         
+objectBuilder
+    .method("handleLogin")
+        .messageHandler()
+            .type(LoginMessage)
+            .scope("local");
+            
+objectBuilder
+    .asDynamicObject()
+        .id("myObject")
+        .register();
+            
+contextBuilder
+    .config(FlexConfig.forClass(MainConfig))
+    .build();
+#cdb
+
+#par This is a bit more verbose, but still convenient. Note that calling register on the object builder 
+adds the definition to the Context, so it will be available in addition to all objects defined in the 
+MainConfig MXML configuration. #par
+
+#par So the above is fully equivalent to adding the following MXML declaration to MainConfig: #par
+
+#cdb
+<DynamicObject id="myObject" type="{SomeClass}">
+    <Property name="dependency" typeRef="{SomeOtherClass}"/>
+    <MessageDispatcher property="dispatcher"/>
+    <MessageHandler method="handleLogin" type="{LoginMessage}" scope="local"/>
+</DynamicObject>
+#cdb
+
+#par Which in turn is equivalent to using the #cdi [Inject] #cdi, #cdi [MessageDispatcher] #cdi and #cdi [MessageHandler] #cdi
+metadata tags in the class definition. #par
+
+
+
+#sc2 config_as3 ActionScript Configuration #sc2
+
+#par This configuration mechanism may seem unfamiliar if you only knew Flex IOC containers so far. It is somehow similar
+to Spring JavaConfig. It allows you to create the objects that should be managed by Parsley in code. The configuration
+classes are plain ActionScript, not talking to Parsely APIs, thus this mechanism is intended to be used in cases where
+you are able to configure the object solely with metadata tags. If you need to specify features like a message handler
+or an injection point programmatically, you should prefer the #ref config_dsl #ref. #par
+
+#par Let's again use the two classes from the MXML example and add them to the IOC Container: #par
+
+#cdb
+package com.bookstore.config {
+
+class BookStoreConfig {
+
+    public const action:LoginAction = new LoginAction();
+    
+    public function get service () : LoginServiceImpl {
+        var service:LoginServiceImpl = new LoginServiceImpl();
+        service.timeout = 3000;
+        return service;    
+    }
+
+}
+}
+#cdb
+
+#par Again we set the timeout property, this time with ActionScript. Note that it does not matter if you define
+the objects as a #cdi var #cdi, a #cdi const #cdi or an implicit getter function. The objects these properties
+hold will all be added to the IOC container. #par
+
+#par Of course intialization is again just a one liner: #par
+
+#cdb
+ActionScriptContextBuilder.build(BookStoreConfig);
+#cdb
+
+#par Or (in Flex) with an MXML tag: #par
+
+#cdb
+<parsley:ContextBuilder config="{BookStoreConfig}"/>
+#cdb
+
+#par This configuration mode allows you to add metadata: #par
+
+#cdb
+[ObjectDefinition(singleton="false")]
+public function get service () : LoginServiceImpl {
+    var service:LoginServiceImpl = new LoginServiceImpl();
+    service.timeout = 3000;
+    return service;    
+}
+#cdb
+
+#par In the example above the container would call the getter function each time this object is requested. 
+The default for the singleton property is #cdi true #cdi, so without any metadata tags Parsley would call this
+method only once and then cache the returned object internally and reuse the same instance for all subsequent injections. #par
+
+
+
+#sc2 config_combine Combining multiple Configuration mechanisms #sc2
+
+#par Although you may prefer to stick with a single configuration mechanism for most simple applications,
+you are not forced to do so. You can use any combination of the configuration styles presented in this chapter,
+and even create your own. #par
+
+#par First you may want to split configuration between multiple files/classes of the same configuration style: #par
+
+#cdb
+<parsley:ContextBuilder>
+    <parsley:FlexConfig type="{BookStoreServices}"/>
+    <parsley:FlexConfig type="{BookStoreActions}"/>
+</parsley:ContextBuilder>
+#cdb
+
+#cdb
+XmlContextBuilder.buildAll(["services.xml", "actions.xml"]);
+#cdb
+
+#cdb
+ActionScriptContextBuilder.buildAll([BookStoreServices, BookStoreActions]);
+#cdb
+
+#par But finally you can also mix them any way you want: #par
+
+#cdb
+<parsley:ContextBuilder>
+    <parsley:FlexConfig type="{BookStoreServices}"/>
+    <parsley:FlexConfig type="{BookStoreActions}"/>
+    <parsley:XmlConfig file="logging.xml"/>
+</parsley:ContextBuilder>
+#cdb
+
+#par or programmatically using the configuration DSL: #par
+
+#cdb
+ContextBuilder.newBuilder()
+    .config(FlexConfig.forClass(BookStoreServices))
+    .config(FlexConfig.forClass(BookStoreActions))
+    .config(XmlConfig.forFile("logging.xml"))
+    .build();
+#cdb
+
+#par In all these examples the final result is a single Parsley Context. For all the IOC Container features
+like Dependency Injection or Messaging it does not matter at all how you split object configuration between files
+and classes, the result is always the same as if they were configured in a single file. #par
+
+#par However for large and complex applications you may want to create modular Contexts, meaning that the multiple
+configuration artifacts are not merged into a single Context, so that they can be loaded and unloaded on demand.
+For modular applications you may want to read #ref modules_intro #ref. #par
+
+#par Finally if you want to create your own configuration mechanism and seamlessly integrate it with existing
+configuration styles, you can create implementations of the #cdi ConfigurationProcessor #cdi interface. 
+See #ref extensions_intro #ref for details. #par
+
+
+
+#sc2 config_properties Configuration Properties #sc2
+
+#par Since version 2.3 Parsley supports the use of properties, either loaded from external files at runtime or
+declared inline. #par
+
+
+#sub Supported Syntax #sub
+
+#par The supported syntax allows for key/value pairs delimited with #cdi '=' #cdi, multiline property values
+with #cdi '\' #cdi at the end of the line and comments with #cdi '#' #cdi at the beginning of the line: #par
+
+#cdb
+prop1 = value1
+prop2=value2
+
+#This is a comment which will be ignored
+prop2 = This is a property value that \
+spans more than just one line
+#cdb
+
+#par For the names of the properties there is a restriction though: Those have to be names which would also be valid
+AS3 property names. This means you cannot use #cdi '.' #cdi in property names like in Ant-style property files for 
+example. Instead you could use #cdi '_' #cdi as delimiter in long property names. #par
+
+#par Like shown in the sample above the use of spaces around the #cdi '=' #cdi delimiter does not make any difference
+as both property name and value will be trimmed. #par
+
+
+#sub Using Properties in MXML Configuration #sub
+
+#par Using properties in MXML configuration is only possible in Flex 4, since it requires the use of the new #cdi <Objects> #cdi
+root tag, which was only added for Flex 4: #par
+
+#cdb
+<Objects 
+    xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns="http://www.spicefactory.org/parsley"
+    >
+    
+    <fx:Script>
+        <![CDATA[
+            import com.mycompany.bookstore.BookstoreService;
+        ]]>
+    </fx:Script>
+    
+    <Object type="{BookstoreService}">
+        <Property name="serviceUrl" value="#hlt {properties.serviceUrl} #hlt"/>
+    </Object>
+    
+</Objects>
+#cdb
+
+
+#sub Using Properties in XML Configuration #sub
+
+#par In XML files the Ant-style syntax #cdi ${someProperty} #cdi can be used: #par
+
+#cdb
+<objects xmlns="http://www.spicefactory.org/parsley">
+    
+    <object type="com.mycompany.bookstore.BookstoreService">
+        <property name="serviceUrl" value="#hlt ${serviceUrl} #hlt"/>
+    </object>
+    
+</Objects>
+#cdb
+
+#par Here you don't need the #cdi properties. #cdi prefix like in MXML configuration. #par
+
+
+#sub External Property Files #sub
+
+#par If you want to load the properties at runtime you can use the #cdi PropertiesFile #cdi tag: #par
+
+#cdb
+<parsley:ContextBuilder>
+    #hlt <parsley:PropertiesFile file="bookstore.properties"/> #hlt
+    <parsley:FlexConfig type="{BookStoreConfig}"/>
+    <parsley:XmlConfig file="logging.xml"/>
+</parsley:ContextBuilder>
+#cdb
+
+#par Make sure you declare the property file before any configuration classes or files that use these properties, as the builder
+processes the child tags in the order they are specified. #par
+
+
+#sub Property Files compiled into the Application #sub
+
+#par Alternatively, if you want to maintain properties in a separate file, but prefer to compile them into
+the application rather than loading them at runtime, you can use the #cdi PropertiesString #cdi tag: #par
+
+#cdb
+<fx:String id="props" source="bookstore.properties"/>
+
+<parsley:ContextBuilder>
+    #hlt <parsley:PropertiesString source="{props}"/> #hlt
+    <parsley:FlexConfig type="{BookStoreConfig}"/>
+    <parsley:XmlConfig file="logging.xml"/>
+</parsley:ContextBuilder>
+#cdb
+
+
+#sub Inline Property Declarations #sub
+
+
+#par Finally you can also define properties directly within the builder tag (and of course can combine those
+with external properties). #par
+
+#cdb
+<parsley:ContextBuilder>
+    #hlt <parsley:PropertiesObject>
+        <fx:Object 
+            serviceUrl="http://www.company.com/services/" 
+            mediaPath="images"
+        />
+    </parsley:PropertiesObject> #hlt
+    <parsley:FlexConfig type="{BookStoreConfig}"/>
+    <parsley:XmlConfig file="logging.xml"/>
+</parsley:ContextBuilder>
+#cdb
+
+
+#sub Configuration DSL #sub
+
+#par If you don't use the MXML tags for building a Context, all the variants shown above are also available in 
+the configuration DSL: #par
+
+#cdb
+ContextBuilder
+    .newBuilder()
+        #hlt .config(Properties.forFile("bookstore.properties")) #hlt
+        .config(FlexConfig.forClass(BookStoreConfig))
+        .build()
+#cdb
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

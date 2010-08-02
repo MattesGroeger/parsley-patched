@@ -1,0 +1,73 @@
+#sc1 messaging_intro Command Spec #sc1
+
+#par For inclusion in version 2.2. #par
+
+
+
+#sc2 messaging Asynchronous Commands #sc2
+
+#par Commands are a variant of MessageHandlers that facilitate to deal with asynchronicity. #par
+
+  - same set of attributes, including new scope attribute
+
+
+* async handling via return value
+
+  void -> sync
+  
+  non-void, but actually returns null -> sync
+  
+  all others: map to registered CommandHandlerFactory
+  
+  no mapping found: if EventDispatcher wait for complete or error events
+  Command instance may return this
+  
+  
+* special lifecycle 
+
+  - if <CommandObject> tag is used
+  
+  - Commands may also execute on regular singletons
+  
+  
+* handling results
+
+  - [CommandResult]
+  
+    --> specify valid combinations of parameters
+    
+    --> allow on property?
+    
+  - [CommandFault] or [CommandError]
+  
+  - [CommandStatus]
+  
+  
+* implement custom CommandHandlers
+
+  - CommandHandlerFactory
+  
+    createHandler (message:Object, executor:Object, method:Method, returnValue:Object) : CommandHandler
+    
+    or:
+    
+    createHandler (returnValue:Object) : CommandHandler
+    
+    
+    
+  - CommandHandler
+  
+    [Event complete
+    [Event error
+    
+    function getResult (type:Class) : *;
+
+    function getError (type:Class) : *;
+    
+    
+  - Usage:
+  
+    GlobalFactoryRegistry.commandHandlers.addHandler/addFactory(returnType:Class, factory:CommandHandlerFactory) : void   
+  
+  
+  

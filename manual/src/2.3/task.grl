@@ -1,0 +1,211 @@
+#sc1 task_intro The Task Framework #sc1
+
+#par The Task Framework is a general abstraction for asynchronous operations. It allows nesting / grouping 
+of Tasks in #cdi TaskGroup #cdi instances for concurrent or sequential
+execution. #par
+
+
+
+
+#sc2 task_introduction Introduction #sc2
+
+#par In Flash or Flex applications there are usually a great number of asynchronous operations:
+Loading configuration files, loading SWFs or modules, loading images, loading and playing sounds,
+playing animations, invoking remote services and more. While each of these operations are quite
+easy to handle on their own, it can soon become quite messy if you have to combine lots of 
+these operations. This is because most of them come with their own set of events or callbacks
+that designate the completion of the task or an error condition. So chaining them together 
+for sequential execution for example requires to register numerous event listeners and usually
+the event listener method then has to deal with the flow of the application and start the 
+next operation. As soon as you have to add a new operation in the middle of the flow you
+have to modify an existing listener method and move the invocation of the next operation
+to the listener method of the added task. Several years ago we had a project with a very complex 
+application startup logic with dozens of operations, some of them optional, and it really became
+a maintenance nightmare. So the Task Framework was born. It was first created in AS2 and used
+as part of an inhouse framework for several years. #par
+
+#par The following example code gives you an impression of how an application startup logic 
+for example might look like when using the Task Framework: #par
+
+#cdb
+var group:TaskGroup = new SequentialTaskGroup("some description for log output");
+group.ignoreChildErrors = false;
+group.addTask(new XmlConfigurationLoaderTask("config.xml"));
+group.addTask(new SwfLoaderTask("graphics.swf"));
+if (Environment.userLoggedIn) {
+    group.addTask(new UserProfileRemoteServiceTask());
+}
+group.addTask(new IntroAnimationTask());
+group.addEventListener(TaskEvent.COMPLETE, onAppStartComplete);
+group.addEventListener(ErrorEvent.ERROR, onAppStartError);
+group.start();
+#cdb
+
+#par As you see, instead of dealing with events of the individual tasks, we only care for the
+events fired by the #cdi TaskGroup #cdi instance. It will fire its #cdi COMPLETE #cdi event
+when the final operation of the chain is complete. Alernatively it will fire an #cdi ERROR #cdi
+event if one of the child tasks dispatches an #cdi ERROR #cdi event and then stop its
+execution and discard the remaining tasks. We force this behaviour through setting the
+#cdi ignoreChildErrors #cdi property of the #cdi TaskGroup #cdi to false. Otherwise it would
+treat #cdi ERROR #cdi events of child tasks the same way as #cdi COMPLETE #cdi events. #par  
+
+#par All Task implementations that are added to the chain in the example above are not part of
+Spicelib, they are just contrived to illustrate the flow of actions with their class names.
+But future versions of Spicelib might add some builtin Task implementations for the most
+common asynchronous operations like loading files and images or playing sounds and animations.
+For an example of how to write your own Task implementation see
+#ref task_implement #ref. For more information on nesting and chaining tasks see
+#ref task_collection #ref. #par
+
+
+
+
+#sc2 task_events Task Events and States #sc2
+
+#par Each Task supports a set of events, some of them related to optional features: #par
+
+#tbl
+#tbr TaskEvent.START # Fires when the Task is started, either by application code calling
+the public #cdi start #cdi method or when a #cdi TaskGroup #cdi
+starts own of its child tasks in which case you do not manually start the child task. The
+internal state of the task changes from #cdi TaskState.INACTIVE #cdi to #cdi TaskState.ACTIVE #cdi. #tbr
+#tbr TaskEvent.COMPLETE # Fires when the Task is completed, usually when the custom Task implementation
+calls the protected #cdi complete #cdi method in the abstract #cdi Task #cdi superclass. The internal
+state of the task changes to #cdi TaskState.INACTIVE #cdi (for restartable tasks) or to
+#cdi TaskState.FINISHED #cdi for non-restartable tasks. #tbr
+#tbr TaskEvent.CANCEL # Fires when the Task is cancelled, usually through its public 
+#cdi cancel #cdi method. Can only occur if the #cdi cancelable #cdi property is set to true
+for that task. The internal
+state of the task changes to #cdi TaskState.INACTIVE #cdi (for restartable tasks) or to
+#cdi TaskState.FINISHED #cdi for non-restartable tasks. #tbr
+#tbr ErrorEvent.ERROR # Dispatched when an error occurred usually signalled by the custom Task
+implementation invoking the protected #cdi error #cdi method of the abstract #cdi Task #cdi
+superclass. The internal
+state of the task changes to #cdi TaskState.INACTIVE #cdi (for restartable tasks) or to
+#cdi TaskState.FINISHED #cdi for non-restartable tasks. #tbr
+#tbr TaskEvent.SUSPEND # Fires when a Task is suspended, usually through its public
+#cdi suspend #cdi method. Can only occur if the #cdi suspendable #cdi property is set to true
+for that task. The internal state of the task changes to #cdi TaskState.SUSPENDED #cdi. #tbr
+#tbr TaskEvent.RESUME # Fires when a Task is resumed, usually through its public
+#cdi resume #cdi method. Can only occur if the tasks state before the event was
+#cdi TaskState.SUSPENDED #cdi. 
+The internal state of the task switches back to #cdi TaskState.ACTIVE #cdi. #tbr
+#tbl
+
+#par The following state diagram shows the relationship between states and events: #par
+
+#img doc_img task_states.jpg #img
+
+
+
+
+#sc2 task_implement Implementing a custom Task #sc2
+
+#par To illustrate the steps required to implement a custom Task, we create a class
+that just loads and plays a sound. To keep the example simple the sound cannot be
+stopped or paused. This is the source for the example task: #par
+
+#cdb
+package example {
+	
+import flash.events.ErrorEvent;
+import flash.events.Event;
+import flash.events.IOErrorEvent;
+import flash.media.Sound;
+import flash.media.SoundChannel;
+import flash.net.URLRequest;
+	
+	
+public class SoundTask extends Task {
+	
+    private var filename:String;
+
+    function SoundTask (file:String) {
+        super();
+        filename = file;
+        setCancelable(false);
+        setSuspendable(false);
+        setSkippable(false);	
+    }
+	
+    protected override function doStart () : void {
+        var sound:Sound = new Sound();
+        sound.addEventListener(IOErrorEvent.IO_ERROR, onError);
+        sound.load(new URLRequest(filename));
+        var channel:SoundChannel = sound.play();	
+        channel.addEventListener(Event.SOUND_COMPLETE, onComplete);	
+    }
+	
+    private function onComplete (event:Event) : void {
+        complete();
+    }
+	
+    private function onError (event:ErrorEvent) : void {
+        error("Error playing sound file " + filename + ": " + event.text);
+    }
+	
+}
+
+}
+#cdb
+
+#par All Task implementations must extend the abstract #cdi Task #cdi class.
+In the constructor we first set some of the Task properties. Since we don't want to make
+this SoundTask cancelable or suspendable for now, we set those properties to false. #par
+
+#par Next we override the protected #cdi doStart #cdi method, which will be invoked when the task is started.
+In most cases you should not override the public #cdi start #cdi method, since this deals with
+a lot of additional internal stuff (i.e. state management). The same pattern applies to other
+methods and events too. If we wanted this task to be cancelable we would override the protected
+#cdi doCancel #cdi method and not the public #cdi cancel #cdi method. #par
+
+#par In our #cdi doStart #cdi
+implementation we set up the #cdi Sound #cdi and #cdi SoundChannel #cdi instances and add
+event listeners. We listen to the #cdi IOErrorEvent.IO_ERROR #cdi which will fire for error
+conditions like "file not found". In the listener method we invoke the protected #cdi error #cdi
+method which in turn leads to an #cdi ErrorEvent.ERROR #cdi to be fired. Likewise we register
+a listener for the #cdi Event.SOUND_COMPLETE #cdi and invoke the protected #cdi complete #cdi
+method in the listener method. This will then cause a #cdi TaskEvent.COMPLETE #cdi to be fired. #par
+
+#par As you see one of the main requirements when implementing tasks is to map custom events to
+the generic #cdi TaskEvents #cdi to unify the event model for asynchronous operations. The simple
+class shown above is all you need to prepare a sound playback operation to be part of a 
+#cdi TaskGroup #cdi. These classes are explained in the next section. #par
+
+
+
+
+#sc2 task_collection Using TaskGroups #sc2
+
+#par For your custom Task implementations to be really useful, they have to be part of a
+#cdi TaskGroup #cdi. A #cdi SequentialTaskGroup #cdi chains tasks for sequential execution and fires 
+its #cdi COMPLETE #cdi event
+when the final task has completed. A #cdi ConcurrentTaskGroup #cdi starts all child tasks concurrently and fires
+its #cdi COMPLETE #cdi event when all child tasks have completed. Both classes are subclasses of #cdi Task #cdi
+themselves (Composite Design Pattern), so they can be nested as well. This allows complex compositions
+of nested #cdi TaskGroups #cdi. #par
+
+#par The properties of #cdi TaskGroups #cdi like #cdi cancelable #cdi or #cdi suspendable #cdi
+are only true if the collection itself and all of its child tasks have the property set to true: #par
+
+#cdb
+var t:Task = new SoundTask("mySound.mp3"); // our example task is not cancelable
+var group:TaskGroup = new SequentialTaskGroup();
+group.addTask(t);
+group.cancelable = true;
+trace(group.cancelable); // output: false
+#cdb
+
+#par In the example above setting the cancelable property of the chain instance only sets its own
+internal cancelable flag to true, but the getter method also takes the property values of all
+children into account. #par
+
+#par Finally #cdi TaskGroups #cdi have a #cdi autoStart #cdi property. If this is set to true,
+an empty #cdi TaskGroup #cdi will start immediately when the first Task is added. This is useful
+for building execution queues where you want to avoid that a particular group of tasks runs concurrently
+but nevertheless want to start each of them as soon as possible. #par
+
+
+
+
+

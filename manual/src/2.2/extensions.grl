@@ -1,0 +1,774 @@
+#sc1 extensions_intro Extending the Framework #sc1
+
+#par All previous chapters demonstrated the Parsley feature set from the perspective of an application
+developer. But since Parsley provides such basic IOC capabilites like Dependency Injection or fully
+decoupled Messaging it is equally important that the framework is easy to extend. If you are going
+to build your own framwork, whether inhouse or Open Source, you wouldn't want to reinvent the wheel
+for these basic features and prefer to integrate with existing solutions. #par
+
+#par So extensibility is an area a lot of thought has been put into. And hopefully when starting
+to build your own extensions you will enjoy the huge number of available extensions points,
+the flexibility and the ease of use. One extension point where Parsley particularly shines
+is the #cdi ObjectDefinitionDecorator #cdi interface which allows you to write a single 
+extension class and use it as a custom Metadata, MXML or XML configuration tag! #par
+
+#par When browsing the Parsley code base you'll notice that almost everything in the internal API
+lives behind interfaces. This makes it easy to create your own implementations for a particular aspect
+of the framework and switch it while still using the default implementations for other internal services. #par
+
+
+
+#sc2 extensions_points Available Extension Points #sc2
+
+#par Let's start with a quick overview over the extensible parts of the framework. #par
+
+#sub Factories #sub
+
+#par That's the only feature we already covered in #ref lifecycle_factories #ref. Instead of 
+configuring an object directly you can configure a factory that produces the final target instance. #par
+
+#sub The #cdi ObjectDefinitionDecorator #cdi interface for creating custom configuration tags #sub
+
+#par Probably the most important extension point and the most powerful one. This interface allows you to
+create extensions that process custom configuration tags. And as already mentioned in the introduction,
+you can write them in a way that a single implementation can be used as a Metadata, MXML or XML tag.
+See #ref extensions_decorators #ref for details. #par
+
+#sub The #cdi RootConfigurationTag #cdi interface for creating tags that produce objects #sub
+
+#par These tags do not produce the target objects
+directly, but instead they produce #cdi ObjectDefinition #cdi instances which the container uses
+to produce the final object. This extension point may come in handy when you need a higher level
+of abstraction than provided by simple factories. See #ref extensions_factories #ref for details. 
+Alternatively you may even implement this interface for special kinds of root configuration tags
+that do not represent object definitions but rather perform some other initialization. #par
+
+#sub The #cdi FactoryRegistry #cdi #sub
+
+#par Finally all central services of the Parsley IOC kernel live behind interfaces and can be replaced.
+These are - amongst others - the #cdi ViewManager #cdi, the #cdi ScopeManager #cdi and the central
+#cdi Context #cdi interface. The mechanism is described in #ref extensions_kernel #ref. #par
+
+#sub The #cdi ConfigurationProcessor #cdi interface for creating custom configuration processors #sub
+
+#par Implementations of this interface process configuration artifacts and build the 
+#cdi ObjectDefinitionRegistry #cdi that the default #cdi Context #cdi implementation
+uses internally. Parsley contains builtin #cdi ConfigurationProcessors #cdi for processing
+MXML, XML or ActionScript configuration. You can easily create your own implementations
+and then combine them with the builtin ones using the #cdi CompositeContextBuilder #cdi. #par
+
+#par Examples for a custom builder would be configuration obtained from a property file, through
+a Socket connection or using a WebService call. Or it may be a builder that programmatically
+constructs part of the registry. See #ref extensions_builders #ref for details. #par
+
+
+
+#sc2 extensions_decorators Creating Custom Configuration Tags #sc2
+
+#par As this is the main extension point we will discuss it in greater detail and also provide an example implementation. #par
+
+
+
+#sc3 extensions_decorators_interface The ObjectDefinitionDecorator interface #sc3
+
+#par The interface is quite simple, it consists of a single method: #par
+
+#cdb
+public interface ObjectDefinitionDecorator {
+    
+    function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) 
+                                                                         : ObjectDefinition;
+    
+}
+#cdb
+
+#par The method will be invoked by the container for each configuration tag it encounters for
+an object that was added to the container. It doesn't matter whether it is a builtin configuration tag
+or a custom extension tag, or whether it is a metadata tag, an MXML or XML tag. As long as the tag
+is mapped to a class that implements this interface the container will invoke it for each tag on each object. #par
+
+#par The #cdi definition #cdi parameter it passes to the decorator is the #cdi ObjectDefinition #cdi that it 
+currently processes. In most custom tag implementations you will modify this definition, specifying constructor arguments,
+property values, object lifecycle listeners or instantiators. #par
+
+#par The second parameter is the #cdi ObjectDefinitionRegistry #cdi
+currently under construction. In most cases you'll just ignore this parameter, but under certain circumstances your custom
+tag may wish to create new definitions (in addition to the one it modifies) and add them to the registry. 
+Those additional definitions might describe collaborators that the modified definition will need to operate for example. 
+Of course you should check if this collaborator has been already added as the custom tag may be placed on multiple objects. #par
+
+#par Finally this method has to return an ObjectDefinition. In most cases this will be the same instance that was passed
+to the #cdi decorate #cdi method. But you are allowed to replace it with a completely new definition instance. Since 
+#cdi ObjectDefinition #cdi is an interface it may even be a custom definition implementation. But in such a case you should
+make sure that you copy the configuration artifacts already added to the definition as other tags may have already processed
+this definition. #par
+
+
+
+#sc3 extensions_decorators_builtin Builtin decorator implementations #sc3
+
+#par It might be interesting to know that we actually eat our own dog food. Every configuration tag that exists
+in Parsley implements this interface, whether it's the basic #cdi [Inject] #cdi tag or the #cdi [MessageHandler] #cdi tag 
+or anything else. So as a consequence you can not only add new configuration tags to Parsley, you could even replace
+the existing ones if you want to modify their behaviour. Furthermore you can use all the existing implementations as
+examples. You'll find the builtin tag implementations in the following packages: #par
+
+#lst
+#lse #cdi org.spicefactory.parsley.tag.inject #cdi: Tags for dependendency injection (#cdi [Inject] #cdi or
+#cdi [InjectConstructor] #cdi. #lse
+#lse #cdi org.spicefactory.parsley.tag.lifecycle #cdi: Tags for the object lifecycle (#cdi [AsyncInit] #cdi,
+#cdi [Init] #cdi, #cdi [Destroy] #cdi, #cdi [Factory] #cdi. #lse
+#lse #cdi org.spicefactory.parsley.tag.messaging #cdi: All builtin tags of the Messaging Framework like 
+#cdi [MessageHandler] #cdi or #cdi [ManagedEvents] #cdi. #lse
+#lse #cdi org.spicefactory.parsley.tag.resources #cdi: Contains the #cdi [ResourceBinding] #cdi tag. #lse
+#lst
+
+
+
+#sc3 extensions_decorators_example The Singleton Tag Example #sc3
+
+#par We will now implement a simple decorator extension. Let's first describe the use case for the extension:
+In all examples you have seen in the manual there were actually two choices how the container instantiates an 
+object: It either creates it with new, optionally performing Constructor Injection, or it encounters a method
+marked as #cdi [Factory] #cdi in which case it calls this method and uses the returned object. #par
+
+#par While this covers a great number of use cases you may come into a situation where you have to work with
+an existing class that was created using the Singleton pattern. In this case there would be a static property
+or static method that holds the singleton instance. The two mechanisms described above would not work in this
+scenario. #par
+
+#par In this chapter we will create an extension that you could use as a #cdi [Singleton] #cdi metadata tag above
+the class declaration or alternatively as a tag in MXML or XML configuration. We would even consider to add this
+to the Parsley release, but we are a bit reluctant as we don't want to advocate the use of the Singleton pattern.
+When using an IOC Container this pattern is obsolete and you can simply avoid all the potential problems associated 
+with it. If you think it should be added to the core, please let us know in the forum! #par
+
+
+
+#sc3 extensions_implementation Implementing the Singleton Tag #sc3
+
+#par This is the full implementation for the tag extension: #par
+
+#cdb
+package org.spicefactory.parsley.samples {
+
+import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.registry.ObjectDefinition;
+import org.spicefactory.parsley.registry.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.registry.ObjectDefinitionRegistry;
+
+
+[Metadata(types="class")]
+public class Singleton implements ObjectDefinitionDecorator {
+    
+    
+    public var property:String;
+    
+    public var method:String;
+
+
+
+    public function decorate (definition:ObjectDefinition, registry:ObjectDefinitionRegistry) 
+                                                                          : ObjectDefinition {
+        if (property != null && method != null) {
+            throw new ContextError("Only one of 'method' or 'property' may be specified for " 
+                    + definition);
+        }
+        if (property != null) {
+            var p:Property = definition.type.getStaticProperty(property);
+            if (p == null) {
+                throw new ContextError("Class " + definition.type.name 
+                        + " does not contain a property with name " + property);
+            }
+            if (!p.readable) {
+                throw new ContextError(p.toString() + " is not readable");
+            }
+            #hlt definition.instantiator = new SingletonPropertyInstantiator(p); #hlt
+        }
+        else {
+            if (method == null) method = "getInstance";
+            var m:Method = definition.type.getStaticMethod(method);
+            if (m == null) {
+                throw new ContextError("Class " + definition.type.name 
+                        + " does not contain a method with name " + method);
+            }
+            if (m.parameters.length > 0) {
+                throw new ContextError(m.toString() + " requires method parameters");
+            }            
+            #hlt definition.instantiator = new SingletonMethodInstantiator(m); #hlt
+        }
+    }
+}
+}
+
+import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.core.Context;
+import org.spicefactory.parsley.registry.ObjectInstantiator;
+
+class SingletonPropertyInstantiator implements ObjectInstantiator {
+    
+    private var property:Property;
+    
+    function SingletonPropertyInstantiator (p:Property) {
+        this.property = p;
+    }
+    
+    public function instantiate (context:Context) : Object {
+        return property.getValue(null);
+    }
+    
+}
+
+class SingletonMethodInstantiator implements ObjectInstantiator {
+    
+    private var method:Method;
+    
+    function SingletonMethodInstantiator (m:Method) {
+        this.method = m;
+    }
+    
+    public function instantiate (context:Context) : Object {
+        return method.invoke(null, []);
+    }
+    
+}
+#cdb
+
+#par Let's examine the implementation piece by piece. First we define two properties: #cdi method #cdi
+and #cdi property #cdi since we want to allow the class to provide the singleton either through a static
+method or a static property. The value for these properties will be set by the framework, automatically
+mapping the attributes of the tag to the properties. This would include type conversion if necessary
+(e.g. to #cdi int #cdi or to #cdi Class #cdi). Parsley will map the attributes from metadata tags,
+MXML and XML tags in a similar way, thus you only have to create a single extension implementation that
+can be used with all of these configuration mechanisms. #par
+
+#par The #cdi decorate #cdi method primarily consists of sanity checks. You should try to be conservative
+and check the validity of the configuration as early as possible. If you throw an Error the framework will
+catch it and continue processing other configurations, avoiding fail-fast behavious, so that it only
+throws a final Error with all collected Errors that any decorator had thrown. This way application
+developers can fix configuration errors in one go. #par
+
+#par The real work happens in the two lines highlighted in red: Here we modify the provided #cdi ObjectDefinition #cdi
+instance and set an #cdi ObjectInstantiator #cdi implementation. This tells the framework not to create the instance
+by simply using #cdi new #cdi, but to use the provided instantiator instead. Depending on whether a property name
+or method name was provided we create instances of a corresponding #cdi ObjectInstantiator #cdi implementation that
+we created as private classes within the same source file. #par
+
+#par We can reflect on the type of the class that we are about to configure through the #cdi type #cdi property
+of the #cdi definition #cdi passed to the #cdi decorate #cdi method. This property holds an instance of #cdi ClassInfo #cdi,
+a class from the Spicelib Reflection API. #par
+
+#par We now have completed the implementation. We finally have to tell the framework about it so that we can
+use it as a Metadata, MXML or XML tag. That's covered in the following three sections. #par
+
+
+#sc3 extensions_metadata Using it as a Metadata Tag #sc3
+
+#par The Parsley support for metadata configuration tags is built on top of the Spicelib Reflection API which
+offers the capability to map attributes of metadata tags to properties of classes, bringing AS3 metadata a bit closer
+to the type-safe nature of Java Annotations for example. See #ref reflection_metadata_mapping #ref in the Spicelib Manual
+for details. #par
+
+#par Making the custom tag available for Metadata configuration requires three steps: #par
+
+
+#sub 1. Add the #cdi [Metadata] #cdi tag to the class declaration: #sub
+
+#cdb
+[Metadata(types="class")]
+public class Singleton implements ObjectDefinitionDecorator {
+#cdb
+
+#par With the types attribute we specify on which declarations we want the tag to be processed. In this case
+we only allow it on the class declaration. Other tags may be placed on properties or methods as well.
+In case you wonder why we don't allow the tag to be put directly on the static method that provides the singleton:
+Parsley does not process metadata on static properties or static methods. #par
+
+
+#sub 2. Add the class to the Spicelib Metadata Support: #sub
+
+#cdb
+Metadata.registerMetadataClass(Singleton);
+#cdb
+
+#par This must happen before you create your first Parsley #cdi Context #cdi. #par
+
+
+#sub 3. Add the metadata tag to mxmlc or compc compiler arguments: #sub
+
+#cdb
+-keep-as3-metadata+=Singleton
+#cdb
+
+#par If you create a reusable library containing Parsley tag extensions it is recommended to compile the library into an SWC.
+In this case you no longer have to explicitly add the compiler flag for applications that use this SWC as they will be automatically
+included for all applications that use this SWC. In this case you only have to provide the compiler argument to compc when
+creating the SWC. #par
+
+#par After these three steps you can start using the tag on classes that you add to the IOC Container: #par
+
+#cdb
+[Singleton(method="getDefaultManager")]
+public class UserManager {
+#cdb
+
+
+#sub Metadata on Properties or Methods #sub
+
+#par In our example we create a metadata tag that can only be place on the class declaration. If you create
+tags for properties or methods there is one additional thing to consider: How you can determine the property
+or the method the tag was placed on. This is actually quite easy: Create a property of type String marked
+with the #cdi [Target] #cdi metadata tag: #par
+
+#cdb
+[Target]
+public var property:String;
+#cdb
+
+#par With that tag placed on the property the framework will automatically set the value of this property
+to the name of the property it was placed on. Of course only if it was used as a metadata tag. When using
+the same tag as an MXML or XML tag the user has to provide the value as an attribute of the tag: #par
+
+#cdb
+<MySpecialTag property="foo"/>
+#cdb 
+
+
+
+#sc3 extensions_mxml Using it as an MXML Tag #sc3 
+
+#par This is the easiest part. In fact there is nothing you need to do here. You can use the decorator class
+as an MXML tag in your Parsley configuration like any other AS3 class can be used in MXML: #par
+
+#cdb
+<Object id="userManager" type="{UserManager}"/>
+    <myprefix:Singleton method="getDefaultManager"/>
+</Object>
+#cdb
+
+#par Just map the package the decorator was created in to a prefix and use the tag like shown above
+within an object definition. If you create a set of reusable configuration tags living in separate packages it is recommended
+to create a manifest file for an MXML namespace for the tags. #par
+
+
+#sc3 extensions_xml Using it as an XML Tag #sc3 
+
+#par Finally you may also want to use this tag in external XML configuration files.
+For this purpose you have to create a custom configuration namespace and add any number of
+decorator tags: #par
+
+#cdb
+var uri:String = "http://www.bookstore.com/config";
+var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(uri);
+ns.addDefaultDecoratorMapper(Singleton, "singleton");
+// ... add other tags to the namespace
+#cdb
+
+#par The XML configuration support is built on top the Spicelib XML-to-Object-Mapper Module (see #ref xmlmapper_intro #ref for
+details). The #cdi addDefaultDecoratorMapper #cdi method creates a mapper for your tag that simply maps the attribute values
+of the tags to the property values of the specified class. For decorators this is sufficient in most cases. For more advanced
+stuff you could use the other #cdi addXXX #cdi methods of the #cdi XmlConfigurationNamespace #cdi class. #par
+
+#par You can then use tags from this namespace in XML configuration files: #par
+
+#cdb
+<objects 
+    xmlns="http://www.spicefactory.org/parsley" 
+    #hlt xmlns:bookstore="http://www.bookstore.com/config"> #hlt
+
+    <object id="userManager" type="com.bookstore.managers.UserManager"/>
+        #hlt <bookstore:singleton method="getDefaultManager"/> #hlt
+    </object>   
+</objects>
+#cdb
+    	
+
+#sc2 extensions_factories Creating Tags that produce Objects #sc2
+
+#par In our example extension we created in the previous sections we showed how to implement a custom tag that
+#str configures #str an object. Sometimes you may want to create tags that actually #str create #str objects
+and not only add a particular configuration artifact to an existing definition. #par
+
+#sc3 extensions_factories_plain Plain Object Factories #sc3
+
+#par In such a case the first thing you should consider is creating a plain factory, i.e. an object
+that contains a method annotated with #cdi [Factory] #cdi. This feature is described in #ref lifecycle_factories #ref.
+Such a class would be usable in MXML configuration out-of-the-box (just like any class can be used in MXML - see the
+examples in the referenced chapter).
+If you want to use it in XML configuration files you could create a custom configuration namespace
+that includes this factory in a simlilar way you did with the decorator tag in the previous section: #par
+
+#cdb
+var uri:String = "http://www.bookstore.com/config";
+var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(uri);
+ns.addDefaultObjectMapper(CategoryFactory, "category");
+// ... add other tags to the namespace
+#cdb
+
+#par You can then use the tag in a very similar way like you would use it in MXML. #par
+
+
+
+#sc3 extensions_factories_definitions The RootConfigurationTag interface #sc3
+
+#par In some cases such a plain factory might not be sufficient. For example the factory method
+must specify the exact return type so that the framework can reflect on the type produced by the factory: #par
+
+#cdb
+[Factory]
+public function createCategory () : #hlt Category #hlt {
+#cdb
+
+#par If the type has to be determined at runtime (when processing the configuration) this would not be 
+possible. In this case you can add one more level of indirection and not create a factory that creates
+#str objects #str but instead create a factory that produces #str object definitions #str. For that purpose you may implement
+the #cdi RootConfigurationTag #cdi interface: #par
+
+#cdb
+public interface RootConfigurationTag {
+	
+    function process (registry:ObjectDefinitionRegistry) : void;
+	
+}
+#cdb
+
+#par This method is invoked for tags that are placed on the top level of MXML or XML configuration files. #par
+
+#par An implementation of that interface may include a property that allows the user to specify the type
+(along with an arbitrary number of additional properties): #par
+
+#cdb
+public class Service implements RootConfigurationTag {
+
+    public var #hlt type #hlt:Class;
+    
+    // ... other properties automatically mapped from tag attributes
+    
+    public function process (registry:ObjectDefinitionRegistry) : void; {
+        var definition:RootObjectDefinition = registry.builders
+                .forRootDefinition(#hlt type #hlt)
+				.id(id)
+				.lazy(lazy)
+				.singleton(singleton)
+				.order(order)
+				.decorators(decorators)
+				.buildAndRegister();
+		/* All methods shown above are optional.
+           Now the definition already contains all artifacts 
+           produced by metadata tags on the class
+           But you may also do some custom processing with the definition */
+    }
+    
+}
+#cdb
+
+#par Now the type can be determined dynamically or provided by the user. It will be passed
+to the #cdi forRootDefinition #cdi methos. Using this tag also
+means that standard and custom metadata tags will be processed. We can then add any required
+custom logic for producing the final definition (setting property values, adding lifecycle
+listeners and so on). #par
+
+#sub Using the root tag in MXML #sub
+
+#par Like always the custom tag can be used in MXML without further setup: #par
+
+#cdb
+<mx:Object 
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:config="com.bookstore.config.*">
+    
+    <config:Service type="{MyCartService}"/>
+    
+    <!-- other object defintions -->
+        
+</mx:Object> 
+#cdb
+
+#par The nice thing about that use case is that although the user/application provides the type information
+which will be processed at runtime, the services produced by the factory are still 
+available for Dependency Injection by type in other objects: #par
+
+#cdb
+[Inject]
+public var service:CartService;
+#cdb
+
+#sub Using the root tag in XML #sub
+
+#par For XML files you have to add the factory to a custom XML configuration namespace like this: #par
+
+#cdb
+var uri:String = "http://www.bookstore.com/config";
+var ns:XmlConfigurationNamespace = XmlConfigurationNamespaceRegistry.registerNamespace(uri);
+ns.addDefaultFactoryMapper(Service, "service");
+// ... add other tags to the namespace
+#cdb
+
+#par You can then use it in XML files: #par
+
+#cdb
+<objects 
+    xmlns="http://www.spicefactory.org/parsley" 
+    xmlns:bookstore="http://www.bookstore.com/config">
+
+    <bookstore:service type="com.bookstore.service.MyCartService"/>
+</objects>
+#cdb
+
+
+
+#sc2 extensions_scope Scope-wide Managers #sc2
+
+#par In some cases you may want to create custom configuration tags that interact with some kind
+of central manager in a similar way like the builtin message receiver tags interact with the #cdi MessageReceiverRegistry #cdi
+for example. You can do this by registering a scope extension, either globally or (in rare cases) for a single Context only. #par
+
+#par First you have to create a factory that creates your scope-wide manager instances. It simply has to implement
+the #cdi ScopeExtensionFactory #cdi interface: #par
+
+#cdb
+interface ScopeExtensionFactory {
+
+    function create () : Object;
+    
+}
+#cdb
+
+#par You can then register this factory for a particular scope like this: #par
+
+#cdb
+var factory:ScopeExtensionFactory = ...;
+GlobalFactoryRegistry.instance.scopeExtensions.addExtension(factory, ScopeName.GLOBAL);
+#cdb
+
+#par In the example above the extension would then be available in the global scope. 
+A really powerful mechanism is registering an extenstion for all scopes, simply
+by omitting the scope parameter: #par
+
+#cdb
+var factory:ScopeExtensionFactory = ...;
+GlobalFactoryRegistry.instance.scopeExtensions.addExtension(factory);
+#cdb
+
+#par This way a new instance of your scope-wide manager will be created for each scope,
+the global scope, each local scope of each Context and each custom scope. This way you could
+even create custom configuration tags that offer a scope attribute in a similar way like
+the #cdi MessageHandler #cdi or #cdi MessageInterceptor #cdi tags. It is then up to the user
+to chose the scope this configuration option should be applied to. #par
+
+#par A sample snippet for an #cdi ObjectDefinitionDecorator #cdi might look like this: #par
+
+#cdb
+public class EnterScreenDecorator implements ObjectDefinitionDecorator {
+
+    public var scope:String = ScopeName.GLOBAL;
+    
+    [...]
+    
+    public function decorate (definition:ObjectDefinition, 
+                                        registry:ObjectDefinitionRegistry) : ObjectDefiniton {
+        var scope:Scope = registry.scopeManager.getScope(scope);
+        var navigationManager:NavigationManager 
+                = scope.extensions.byType(NavigationManager) as NavigationManager;
+        var navigationManager.doSomethingWithDefinition(definition);
+    }
+    
+}
+#cdb
+
+#par In the example above the default global scope could be overwritten by the user through the scope property.
+Of course your manager does not necessarily have to deal with definitions directly. You might also add
+lifecycle listeners to the definition and then pass the actual managed object to the manager after it was created. #par
+
+
+
+#sc2 extensions_init Initializing Extension Modules #sc2
+
+#par When you create a set of configuration tags and some scope managers that integrate with them,
+you may want to offer your users a simple one-liner as a means to activate that extension: #par
+
+#cdb
+NavigationSupport.initialize();
+#cdb
+
+#par If you also offer your tags in an XML variant built on top of the custom configuration namespace
+support in Parsley you may want to prefer to offer them with a separate initializer method. This
+way you would make sure that users who do not use XML configuration do not end up with the entire
+Spicelib XML-Object-Mapper framework compiled into their SWF. #par
+
+#cdb
+NavigationSupport.initialize();
+NavigationXmlSupport.initialize();
+#cdb
+
+#par In the example above XML support is activated explicitly in addition to the core extension module. #par
+
+#par For use in Flex applications you may prefer to implement the #cdi ContextBuilderProcessor #cdi interface
+instead, so that you can use that class as a child tag of a #cdi <ContextBuilder> #cdi tag: #par
+
+#cdb
+<parsley:ContextBuilder config="{MyConfig}">
+    <app:NavigationSupport/>
+</parsley:ContextBuilder>
+#cdb
+
+#par In the implementation of that initializer tag you then usually register all configuration tags
+and scope-wide extensions used by the module: #par
+
+#cdb
+public class NavigationSupportTag implements ContextBuilderProcessor {
+
+    public function processBuilder (builder:CompositeContextBuilder) : void {
+        Metadata.registerMetadataClass(EnterScreenDecorator);
+        Metadata.registerMetadataClass(ExitScreenDecorator);
+        var factory:ScopeExtensionFactory = new NavigationManagerFactory();
+        GlobalFactoryRegistry.instance.scopeExtensions.addExtension(factory);
+    
+        [...]
+    }
+}
+#cdb   
+
+
+
+#sc2 extensions_kernel Replacing IOC Kernel Services #sc2
+
+
+#par All central services of the IOC kernel live behind interfaces which can be replaced by custom implementations. 
+The replacement can be done globally or just for a single Context, in case you build a modular application with
+a hierarchy of multiple Contexts. #par
+
+#par In the following example the central #cdi ViewManager #cdi will be replaced globally by specifying
+a custom #cdi ViewManagerFactory #cdi: #par
+
+#cdb
+GlobalFactoryRegistry.instance.viewManager = new MyCustomViewManagerFactory();
+#cdb
+
+#par A dedicated factory interface exists for each of the seven kernel services. 
+You cannot specify the #cdi ViewManager #cdi instance directly, because a new instance will be created 
+for each new Context. If you want to replace the #cdi ViewManager #cdi for a single Context only,
+you can specify the factory on the #cdi CompositeContextBuilder #cdi: #par
+
+#cdb
+var viewRoot:DisplayObject = ...;
+var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder(viewRoot);
+#hlt builder.factories.viewManager = new MyCustomViewManagerFactory(); #hlt
+FlexContextBuilder.merge(BookStoreConfig, builder);
+builder.build();
+#cdb
+
+#par For reusable replacements to be used in Flex applications it is recommended to create a simple
+custom tag like shown in the preceding section that can then be used as a child tag in a #cdi ContextBuilder #cdi
+tag. #par
+
+
+#sub List of IOC Kernel Services #sub
+
+#tbl
+#tbr #cdi CompositeContextBuilder #cdi # Responsible for processing the configuration,
+creating ObjectDefinitions, and then building and initializing the #cdi Context #cdi. 
+May be fed with different types of #cdi ConfigurationProcessor #cdis, like the builtin
+ones for ActionScript, MXML or XML configuration. #tbr
+
+#tbr #cdi Context #cdi # This is the core interface of the framework, putting all the other
+pieces together and delegating most of the work to the other parts of the kernel listed below. 
+It allows you to pull objects out of the container or examine its contents. #tbr
+
+#tbr #cdi ObjectDefinitionRegistry #cdi # The registry for all ObjectDefinitions the #cdi Context #cdi
+will manage. #tbr
+
+#tbr #cdi ObjectLifecycleManager #cdi # Responsible for processing #cdi ObjectDefinitions #cdi, instantiating,
+configuring and disposing the actual instances described by those definitions. #tbr
+
+#tbr #cdi ScopeManager #cdi # Responsible for managing all scopes that are associated with a single Context. #tbr
+
+#tbr #cdi MessageRouter #cdi # The core interface of the Messaging Framework. #tbr
+
+#tbr #cdi ViewManager #cdi # Responsible for dynamically wiring views to the #cdi Context #cdi. #tbr
+#tbl
+
+#par All the services listed above can be replaced through the #cdi FactoryRegistry #cdi. #par
+
+
+
+#sc2 extensions_builders Custom Configuration Mechanisms #sc2
+
+#par Although Parsley is already quite flexible in how you configure objects with support for configuration
+with Metadata, MXML, XML or ActionScript, you may require even more freedom in how you create object
+definitions. You may want to process configuration loaded through Sockets or WebServices or simply programmatically
+create some object definitions. For this purpose you can implement the #cdi ConfigurationProcessor #cdi interface.
+The interface contains a single method: #par
+
+#cdb
+public interface ConfigurationProcessor {
+	
+    function processConfiguration (registry:ObjectDefinitionRegistry) : void;
+	
+}
+#cdb
+
+#par Your implementation of this interface may create any number of #cdi ObjectDefinition #cdi instances and
+add them to the registry provided by the framework. If you still want to process the metadata tags of the classes
+you add to the registry (in addition to your own logic of constructing definitions) you should use the 
+mechanism provided by the framework: #par
+
+#cdb
+var type:Class = AddToCartAction;
+var id:String = "addToCartAction";
+var definition:RootObjectDefinition = registry.builders
+        .forRootDefinition(type)
+        .id(id)
+        .buildAndRegister();
+/* Now the definition already contains all artifacts 
+   produced by metadata tags on the class */
+/* Now you may do some custom processing with the definition */
+#cdb
+
+#par Your custom builder can then be combined with any existing builder, using the #cdi CompositeContextBuilder #cdi: #par
+
+#cdb
+var viewRoot:DisplayObject = ...;
+var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder(viewRoot);
+FlexContextBuilder.merge(BookStoreConfig, builder);
+XmlContextBuilder.merge("logging.xml", builder);
+builder.addProcessor(new MyCustomConfigurationProcessor());
+builder.build();
+#cdb
+
+#par After the code above executed the objects defined with MXML and XML happily coexist with objects added
+through your custom builder in the same #cdi Context #cdi. #par
+
+#sub Asynchronous builders #sub
+
+#par If your builder operates asynchronously you have to implement the #cdi AsyncConfigurationProcessor #cdi
+interface instead (which extends the #cdi ConfigurationProcessor #cdi interface). This might be necessary
+if you obtain the configuration with some remote service call for example. The interface looks like this: #par
+
+#cdb
+[Event(name="complete", type="flash.events.Event")]
+
+[Event(name="error", type="flash.events.ErrorEvent")]
+
+public interface AsyncConfigurationProcessor 
+                                      extends ConfigurationProcessor, IEventDispatcher {
+	
+    function cancel () : void;
+	
+}
+#cdb
+
+#par First you must be prepared that your asynchronous builder may get cancelled (for example if the application
+destroys the associated #cdi Context #cdi before it was fully configured). Finally you have to throw either
+#cdi Event.COMPLETE #cdi or #cdi ErrorEvent.ERROR #cdi, depending on whether configuration suceeded or failed. #par
+
+
+
+
+
+
+

@@ -1,0 +1,357 @@
+#sc1 tutorial_intro Getting Started #sc1
+
+#par This chapter gives a very quick introduction on how to build an application with Parsley,
+linking to other parts of the manual for more detailed descriptions. Most of the explanations
+apply in the same way to building Flex or Flash Applications. Examples that only apply
+for Flex development will be pointed out accordingly. #par
+
+
+#sc2 tutorial_setup Adding the Framework SWCs #sc2
+
+#par To start working with Parsley you need to add several of its SWCs to your classpath first.
+Which ones you'll need depends on the feature set you'll be using and whether you'll be building
+a Flex or Flash Application. #par
+
+#par The quickest way to get started is to add the SWCs that contain the whole framework.
+You'll find them in the #cdi release #cdi folder of the download Zip. #par
+
+#sub Required SWCs for Flex Applications #sub
+
+#lst
+#lse #cdi parsley-complete-flex-${version}.swc #cdi #lse
+#lse #cdi spicelib-complete-flex3-${version}.swc #cdi (or #cdi -flex4- #cdi when using Flex 4) #lse
+#lst
+
+#sub Required SWCs for Flash Applications #sub
+
+#lst
+#lse #cdi parsley-complete-flash-${version}.swc #cdi #lse
+#lse #cdi spicelib-complete-flash-${version}.swc #cdi #lse
+#lst
+
+#sub Selecting individual Framework SWCs #sub
+
+#par If you want to explicitly select the framework modules that you are actually using to keep your
+classpatch clean, you can alternatively chose several of the module SWCs contained in the #cdi modules #cdi
+folder within the #cdi release #cdi folder. For that you'd need to know the content and the dependencies
+for those SWCs, which is described in #ref overview_modules #ref. #par
+
+
+
+#sc2 tutorial_dependencies Defining Object Dependencies #sc2
+
+#par This is probably the most frequently used feature of Parsley. Defining dependencies is a lot more convenient since 
+Parsley 2 where we introduced configuration with Metadata or MXML in addition to XML files. #par
+
+#sub Using the #cdi [Inject] #cdi metadata tag #sub
+
+#par You can use the tag on properties: #par
+
+#cdb
+[Inject]
+public var loginService:LoginService;
+#cdb
+
+#cdb
+[Inject]
+public function set loginService (service:LoginService) : void {
+#cdb
+
+#par Or you can use it on methods to declare multiple dependencies at once: #par
+
+#cdb
+[Inject]
+public function init (loginService:LoginService, cartService:CartService = null) : void {
+#cdb
+
+#par The nice thing in the example above is that Parsley will also reflect on the parameter types
+and treat optional parameters as optional dependencies. So in this example the container will throw an 
+Error if the #cdi LoginService #cdi is missing, but silently skip the #cdi CartService #cdi if it is
+not present in the container. #par
+
+#par Finally you can also use a similar tag (#cdi [InjectConstructor] #cdi) on the class declaration
+for constructor injection (as the Flex compiler ignores metadata on constructors): #par
+
+#cdb
+[InjectConstructor]
+public class LoginAction {
+
+    function LoginAction (loginService:LoginService, cartService:CartService = null) : void {
+#cdb
+
+#par Again the second (optional) parameter will treated as an optional dependency accordingly #par
+ 
+
+#sub Best Practices #sub
+
+#par In all the examples we showed in this section the dependencies will be selected by type,
+since Parsley will reflect on the property and method parameter types. To benefit from the decoupling
+that an IOC Container offers you should prefer to declare interface types at injection points.
+This way you can switch implementations in the configuration without touching the injection
+points of classes that need these services. #par
+
+#par Of course this only works when you add only a single object matching the type at the
+injection point to the container. If you have several implementation of the same interface
+you'd need to switch to injection by id instead which is only available for properties: #par
+
+#cdb
+[Inject(id="mainLoginService")]
+public var loginService:LoginService;
+#cdb
+
+#par The choice between property, method or constructor injection is up to you. Some prefer
+constructor injection as it enables better encapsulation, allowing you to create immutable classes.
+But constructor injection in Flex has some limitations, in particular if you assemble the objects
+with MXML configuration, see #ref injection_intro #ref for details. #par
+
+
+
+#sc2 tutorial_messaging Sending and Receiving Messages #sc2
+
+#par While Dependency Injection already allows some level of decoupling if you declare injection
+points with interface types, for some parts of the application you'll prefer even looser coupling,
+letting the parts of your application communicate through messages, without the sender and receiving
+objects having to know each other. #par
+
+#par If you build an application with the MVC architectural pattern for example, you'll probably
+create Mediator classes that transform low-level view events to application messages which
+will be dispatched through an application-wide messaging subsytem so that any action/controller
+can register for all message types it is interested in. #par
+
+#par For more details on this topic see #ref messaging_intro #ref and #ref mvc_intro #ref. #par
+
+#par With Parsley 2 you can configure the sending as well as the receiving side with metadata tags.
+The sending part may simply contain a #cdi [ManagedEvents] #cdi tag at the class declaration,
+listing which of the events this class dispatches should be managed: #par
+
+#cdb
+[Event(name="loginSuccess",type="com.bookstore.events.LoginEvent")]
+[Event(name="loginFailed",type="com.bookstore.events.LoginEvent")]
+[Event(name="stateChange",type="flash.events.Event")]
+#hlt [ManagedEvents("loginSuccess,loginFailure")] #hlt
+
+public class LoginServiceImpl #hlt extends EventDispatcher #hlt implements LoginService {
+
+    [...]
+    
+    private function handleLoginResult (user:User) : void {
+        #hlt dispatchEvent(new LoginEvent("loginSuccess", user)); #hlt
+    }
+    
+}
+#cdb 
+
+#par Here we tell the container that whenever this class dispatches an event of type #cdi loginSuccess #cdi or
+#cdi loginFailed #cdi we want the container to dispatch it to all registered handlers. Other events will be simply
+ignored, so this class still can dispatch low-level events which other objects that directly depend on this
+class may register regular listeners for. #par
+
+#par For the receiving side you can use the #cdi [MessageHandler] #cdi tag to signal interest in a particular
+message type, determined by the parameter type of the method: #par
+
+#cdb
+[MessageHandler]
+public function login (event:LoginEvent) : void {
+#cdb
+
+#par If you route several different message types of the same event class through the system you can additionally
+select by event type: #par
+
+#cdb
+[MessageHandler(selector="loginSuccess)]
+public function login (event:LoginEvent) : void {
+#cdb
+
+#par Like with Dependency Injection selecting the message receivers by type improves the robustness of the system
+as you don't have to take care of unique event type constants for the whole system. #par
+
+#par There are more tags for the receiving side like #cdi [MessageBinding] #cdi or #cdi [MessageInterceptor] #cdi.
+Those will be explained in #ref messaging_intro #ref. #par 
+
+#par Furhermore since the module is called Messaging and not Event System, you can use any class as a message, 
+not only classes extending #cdi flash.events.Event #cdi. For details see #ref messaging_injected_dispatchers #ref. #par
+
+
+
+#sc2 tutorial_assembling Assembling the Objects #sc2
+
+#par There are a lot more configuration options in addition to the tags for Dependency Injection and Messaging.
+But since those are the most common ones we'll now show you how you assemble these objects for the IOC Container. 
+After you added metadata tags to the classes you have to tell the container which objects it should manage. #par
+
+
+#sub Flex Applications #sub
+
+#par In Flex you might want to prefer MXML configuration. You can create a simple MXML class (using #cdi mx:Object #cdi
+as the root tag) and add all the classes you want to be managed by Parsley: #par
+
+#cdb
+<mx:Object 
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:services="com.bookstore.services.*"
+    xmlns:actions="com.bookstore.actions.*">
+    
+    <services:LoginServiceImpl timeout="3000"/>
+
+    <services:CartServiceImpl timeout="3000"/>
+    
+    <actions:LoginAction/>
+
+    <actions:AddToCartAction/>
+
+    <actions:DeleteCartAction/>
+    
+</mx:Object> 
+#cdb
+
+#par Of course you can also use this configuration file for setting additional property values. They will be combined
+with the processing of the metadata tags for all classes added to the container. #par
+
+#par In this example we didn't specify any id attributes. If you just use injection by type you don't need them.
+In case you use ids at injection points like in the last example of the section on injection you have to specify them
+here: #par
+
+#cdb
+<services:AdminLoginServiceImpl id="adminLogin" timeout="3000"/>
+<services:UserLoginServiceImpl id="userService" timeout="3000"/>
+#cdb
+
+#par You can then use those ids at injection points: #par
+
+#cdb
+[Inject(id="adminLogin")]
+public var adminLogin:LoginService;
+
+[Inject(id="userLogin")]
+public var userLogin:LoginService;
+#cdb
+
+#par But in general you should try to avoid injection by id and only use it where you work with multiple instances
+of the same type. #par
+
+
+#sub Flash Applications #sub
+
+#par In this case MXML is not available. So the preferred configuration mechanism is probably the use of XML files.
+Of course you can also use external XML files in Flex Applications if you don't want to compile the configuration
+into your application. #par
+
+#par An example XML configuration corresponding to the MXML example above would look like this: #par
+
+#cdb
+<objects 
+    xmlns="http://www.spicefactory.org/parsley"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.spicefactory.org/parsley 
+        http://www.spicefactory.org/parsley/schema/2.0/parsley-core.xsd"
+    >
+    
+    <object type="com.bookstore.services.LoginServiceImpl">
+        <property name="timeout" value="3000"/>
+    </object>
+    
+    <object type="com.bookstore.services.CartServiceImpl">
+        <property name="timeout" value="3000"/>
+    </object>
+    
+    <object type="com.bookstore.actions.LoginAction"/>
+
+    <object type="com.bookstore.actions.AddToCartAction"/>
+
+    <object type="com.bookstore.actions.DeleteCartAction"/>
+</objects>
+#cdb
+
+#par Like with the MXML example we don't specify an id for the object definitions. You can add it if required
+for injection by id. #par
+
+#par These are the most common options for assembling the objects. You'll find many more examples in #ref config_intro #ref. #par
+
+
+
+#sc2 tutorial_initialize Initializing the Framework #sc2
+
+#par Now that you configured your classes with metadata tags and assembled them in MXML or XML, it's finally
+time to intialize the whole thing. Fortunately in most cases this is a one liner. #par
+
+#par For the MXML configuration file we created, assuming that we called it #cdi BookStoreConfig.mxml #cdi,
+the one liner would look like this: #par
+
+#cdb
+FlexContextBuilder.build(BookStoreConfig, this);
+#cdb
+
+#par That's all there is to it. You should execute this line as early as possible, preferrably in the 
+#cdi preinitialize #cdi event of the root #cdi Application #cdi. This is important in case you also
+want to wire views defined in MXML into the IOC Container as described in #ref view_intro #ref. 
+The second parameter refers to a DisplayObject that you want to use as a root component for
+view wiring. When you place the above line into an MXML Component you'd want this component
+to be the root for all view wiring in most cases. But you can pass any DisplayObject to that
+method. #par
+
+#par For the XML example the line is different: #par
+
+#cdb
+XmlContextBuilder.build("config.xml");
+#cdb
+
+#par We covered the most common use cases here. There are a lot more options like splitting
+the configuration into multiple files or even using different configuration mechanisms like MXML and XML
+in the same application and merging them to a single context. This will be demonstrated in #ref config_combine #ref. #par
+
+#par For modular applications you wouldn't want to lump everything together into a single monolithic context and
+load all this stuff on application start. For building modular applications and loading and unloading configurations
+on demand see #ref modules_intro #ref. #par
+
+
+
+#sc2 tutorial_more Adding more Services #sc2
+
+#par Since this is the Getting Started section we only covered the most common use cases.
+But hopefully for simple applications it is sufficient to get you going.
+As you may have noticed already the manual is quite extensive and if you think you need
+a lot more options than covered in this chapter you should browse the remaining chapters. #par 
+
+#par If you just want to get an idea of the feature set Parsley offers you may want to start with
+#ref overview_features #ref. #par 
+
+#par The most interesting options not covered in this chapter are probably: #par
+
+#lst
+#lse #ref config_as3 #ref: You are not limited to configuration with Metadata, MXML or XML, there
+is even a forth option, which gives you additional flexibility. #lse
+
+#lse #ref messaging_interceptors #ref: An interesting alternative to the #cdi MessageHandlers #cdi covered
+in this chapter which even allows you to interfere with the message dispatching process (e.g. suspending
+and resuming or cancelling the message processing). #lse
+
+#lse #ref lifecycle_factories #ref: Instead of assembling the target objects itself you can also add
+factories to the IOC Container which create objects, which gives you additional flexibility on how
+objects are instantiated. #lse
+
+#lse #ref lifecycle_async #ref: Configuration option for asynchronously initializing objects (e.g. objects
+that need to load data before they can operate). In this case the container will defer the initialization
+of other objects until those configured to be asynchronous are ready. #lse
+
+#lse #ref view_intro #ref: We already mentioned this one briefly. Allows you to wire Flex Components defined
+in MXML to objects declared in the IOC Container. #lse
+
+#lse #ref modules_intro #ref: Associate configured services, actions, mediators and so on with a configuration Context
+that can be loaded and unloaded on demand. #lse
+
+#lse #ref resources_bindings #ref: For binding properties of managed objects to localized resources, updating them automatically
+when the localeChain changes. #lse
+
+#lse #ref extensions_decorators #ref: If you want to add your own Metadata, MXML or XML configuration tags.
+Useful for simplifying recurring configuration tasks or for creating frameworks on top of Parsley. #lse
+#lst
+
+
+
+
+ 
+
+
+
+
+

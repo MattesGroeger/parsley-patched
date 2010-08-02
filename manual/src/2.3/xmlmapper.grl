@@ -1,0 +1,622 @@
+#sc1 xmlmapper_intro XML to Object Mapper #sc1
+
+#par Since version 2.0 Spicelib contains a small but powerful and flexibel XML-to-Object Mapper.
+It allows you to map from XML to AS3 classes - in both directions. It comes with builtin mappers
+which cover the most common use cases like mapping properties of AS3 classes to XML attributes
+or child elements. But it is easily extensible to add your custom mappers for some of your XML
+elements and combine them with the builtin ones. In version 2.3 support for metadata configuration
+was added, leading to a significantly easier setup. #par
+
+
+
+#sc2 xmlmapper_example Usage Example #sc2 
+
+#par Let's start with a simple example. Consider this XML structure: #par
+
+#cdb
+<order>
+    <book 
+        isbn="0942407296" 
+        page-count="256"
+        title="Rain"
+        author="Karen Duve"
+    />
+    <book 
+        isbn="0953892201" 
+        page-count="272"
+        title="Perfume"
+        author="Patrick Suskind"
+        comment="Special Offer"
+    />    
+</order>
+#cdb
+
+#par Now we create two classes that this XML structure should map to: #par
+
+#cdb
+public class Order {
+
+    [ChoiceType("com.foo.Order")]
+    public var books:Array;
+    
+}
+#cdb
+
+#cdb
+public class Book {
+
+    [Required]
+    public var isbn:String;
+    
+    [Required]
+    public var pageCount:int;
+    
+    [Required]
+    public var title:String;
+    
+    [Required]
+    public var author:String;
+    
+    public var comment:String;
+    
+}
+#cdb
+
+#par It should be obvious how XML elements and attributes are supposed to map to these two classes and their properties.
+The only details that probably need a bit of explanation are the #cdi [Required] #cdi and #cdi [ChoiceType] #cdi metadata tags. 
+The former gives hint to the validator. So for the #cdi book #cdi element only the #cdi comment #cdi attribute is optional.
+If any of the other 4 attributes would be missing the mapping operation will fail. For more details see 
+#ref xmlmapper_validation #ref. #par
+
+#par The #cdi [ChoiceType] #cdi metadata tag lists the classes that are permitted as elements in the Array. All XML elements
+that map to the Order class or any subtype are valid child elements in this case. If this tag would be omitted, all tags
+would be allowed. For most mapping types there sensible defaults. For simple property types like String and int the default
+is to map them to XML attributes, the same way as if you would add the #cdi [Attribute] #cdi metadata tag to the property declaration. #par
+
+#par Next we create the mapper that is responsible for transforming this structure; #par
+
+#cdb
+var mapper:XmlObjectMapper = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Order)
+    .mappedClasses(Book)
+    .build();    
+#cdb
+
+#par Here we are using the DSL for the mapper setup introduced with version 2.3. First we specify that our elements
+are unqualified, support for namespaces is also included of course. Then we have to specify the root element of our
+mapping and finally all other mapped classes used in any nested tags (in this case only one - Book). Metadata will be processed
+on the specified classes to look for any custom mappings. #par
+
+
+#par The mapper we created is now ready to use. This is how we would map from XML to objects: #par
+
+#cdb
+var xml:XML = ...;
+var order:Order = mapper.mapToObject(xml) as Order;
+#cdb
+
+#par And this is how we'd map from objects to XML: #par
+
+#cdb
+var order:Order = ...;
+var xml:XML = mapper.mapToXml(order);
+#cdb
+
+
+
+#sc2 xmlmapper_config Metadata Configuration and Defaults #sc2
+
+#par Although the mappings support metadata configuration the most convenient way to set up your mappings is to rely on the
+defaults (configuration by convention). A third option to determine how a particular property should map to XML is programmatic
+setup. #par
+
+
+#sub Configuration Precedence #sub
+
+#par For each property of a class the mapper determines if and how it should be mapped by checking and applying configuration 
+options in the following order: #par
+
+#lst
+#lse #str Programmatic Setup: #str If a property has been configured programmatically, any metadata configuration for that property
+will be ignored. This way you could even use metadata to set the defaults and override it when needed. For details see
+#ref xmlmapper_programmatic #ref. #lse
+
+#lse #str Metadata Tags: #str If there is no programmatic setup the mapper will look for a metadata tag on that property to
+determine if and how the property should be mapped. The available tags will be presented in the following sections. #lse
+
+#lse #str Default Behaviour: #str When there is no programmatic setup and no metadata tag the default behaviours will be applied
+for a property, depending on its type, as listed below. #lse
+#lst
+
+
+#sub Default Behaviours #sub
+
+#par The default behaviour if no programmatic or metadata configuration was applied is as follows: #par
+
+#lst
+#lse #str Simple Property Types: #str For a property of type #cdi String #cdi, #cdi Number #cdi, #cdi int #cdi, #cdi uint #cdi,
+#cdi Boolean #cdi, #cdi Date #cdi, #cdi Class #cdi and #cdi ClassInfo #cdi, the default behaviour is to map to an XML attribute.
+You can also map other types to attributes, but those would require an explicit #cdi [Attribute] #cdi tag on the property (or
+corresponding programmatic setup). #lse
+
+#lse #str Other non-Array Types: #str Other types will be mapped as an association to other mapped classes (or in XML terminology 
+to a choice of child elements). The permitted types will be deduced from the type of the property. All XML elements 
+that map to that type (including subtypes) are allowed as a child element. If there is more than one matching child element
+the mapper will throw an Error. #lse
+
+#lse #str Array Types: #str These will also be mapped as an association, but will allow more than one matching child element,
+assembling all mapped objects into the Array property. In this case the permitted type for the elements of the Array cannot
+be deduced, so all mapped classes would be allowed. Therefor relying on defaults for Array properties is often not desirable.
+Instead the #cdi [ChoiceType} #cdi or #cdi [ChoiceId] #cdi tags may be used to explicitly specify the permitted types.
+See #ref xmlmapper_childelements #ref and #ref xmlmapper_choices #ref for examples. #lse
+#lst
+ 
+ 
+
+#sc2 xmlmapper_attributes Mapping Attributes #sc2
+
+#par Properties with a simple type like #cdi String #cdi, #cdi int #cdi, #cdi Boolean #cdi, #cdi Class #cdi or #cdi Date #cdi
+can be mapped to attributes: #par
+
+#cdb
+public class Song {
+
+    public var year:int;
+    public var title:String;
+    public var artist:String;
+    
+}
+#cdb
+
+#cdb
+<song
+    year="1989" 
+    title="Monkey Gone To Heaven"
+    artist="Pixies"
+/>
+#cdb
+
+#par Since mapping to XML attributes is the default for simple properties, no metadata configuration is required
+on the properties in this case. You can use the #cdi [Attribute] #cdi metadata tag whenever the property type
+is not one of the simple types automatically mapped to attributes (see #ref xmlmapper_config #ref) or when the
+name of the attribute does not match the property name: #par
+
+#cdb
+[Attribute("song-title")]
+public var title:String;
+#cdb
+
+#par Otherwise the setup for such a mapper is straightforward: #par
+
+#cdb
+var xml:XML = ...;
+var song:Song = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Song)
+    .build()
+    .mapToObject(xml) as Song;    
+#cdb
+
+
+#sc2 xmlmapper_childtextnodes Mapping Child Text Nodes #sc2
+
+#par Properties with a simple type like #cdi String #cdi, #cdi int #cdi, #cdi Boolean #cdi, #cdi Class #cdi or #cdi Date #cdi
+can also be mapped to child text nodes, a mechanism very similar to mapping to attributes: #par
+
+#cdb
+public class Song {
+
+    public var year:int;
+    public var title:String;
+    public var artist:String;
+    
+}
+#cdb
+
+#cdb
+<song>
+    <year>1989</year> 
+    <title>Monkey Gone To Heaven</title>
+    <artist>Pixies</artist>
+</song>
+#cdb
+
+#par The default for simple property types is to map them to XML attributes. Thus, for switching to text nodes in child elements
+you'd usually have to use explicit metadata configuration then: #par
+
+#cdb
+[ChildTextNode]
+public var year:int;
+#cdb
+
+#par But if all or most of your XML elements follow this pattern, you can also switch the default globally and
+thus avoid any metadata configuration: #par
+
+#cdb
+var xml:XML = ...;
+var song:Song = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Song)
+    #hlt .defaultSimpleMappingType(SimpleMappingType.CHILD_TEXT_NODE) #hlt
+    .build()
+    .mapToObject(xml) as Song;    
+#cdb
+
+
+#sc2 xmlmapper_textnodes Mapping Text Nodes #sc2
+
+#par This is different from mapping to child text nodes. It maps a property to the text node that belongs to the
+same element. Since this can only apply for a single property it is often combined with attribute mapping like
+in the following example: #par
+
+#cdb
+public class Song {
+
+    public var year:int;
+
+    public var artist:String;
+
+    [TextNode]
+    public var title:String;
+    
+}
+#cdb
+
+#cdb
+<song year="2000" artist="Goldfrapp">Felt Mountain</song>
+#cdb
+
+#par This is how the mapping for the example above would be initialized: #par
+
+#cdb
+var xml:XML = ...;
+var song:Song = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Song)
+    .build()
+    .mapToObject(xml) as Song;    
+#cdb
+
+
+
+#sc2 xmlmapper_childelements Mapping Child Elements #sc2
+
+#par Mapping to child elements allows you to build a hierarchy of nested mappers like shown in the usage example in the 
+beginning of this chapter. #par
+
+#cdb
+public class Album {
+
+    public var year:int;
+    public var title:String;
+    public var artist:String;
+    
+    [ChoiceType("com.foo.Song")]
+    public var songs:Array;
+    
+}
+
+public class Song {
+
+    public var duration:String;
+    public var title:String;
+    
+}
+#cdb
+
+#cdb
+<album year="2000" artist="Goldfrapp" title="Felt Mountain">
+    <song title="Lovely Head" duration="3:50"/>
+    <song title="Pilots" duration="4:30"/>
+    <song title="Deer Stop" duration="4:07"/>
+    <song title="Utopia" duration="4:18"/>
+</album>
+#cdb
+
+#par In this example the #cdi song #cdi child elements will be mapped into the #cdi songs #cdi property of
+the #cdi Album #cdi class. Again we could also use the defaults, but that would allow any tag to be nested
+inside the #cdi album #cdi tag. That's why we explicitly specify the permitted type (including subtypes) with
+the #cdi [ChoiceType] #cdi metadata tag. #par 
+
+#par This is how you would set up such a mapper: #par
+
+#cdb
+var xml:XML = ...;
+var album:Album = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Album)
+    .mappedClasses(Song)
+    .build()
+    .mapToObject(xml) as Album;    
+#cdb
+
+
+
+#sc2 xmlmapper_choices Mapping disjointed Choices #sc2
+
+#par In the preceding section we mapped to child elements through the use of the #cdi [ChoiceType] #cdi tag, which allows
+us to specify the permitted types for the elements of an Array in a polymorphic way. Sometimes though this is not sufficient
+if the permitted types for an Array are not part of a distinct type hierarchy. In such a case a choice with a string
+identifier can be used, so that you can explicitly specify which classes are permitted. #par
+
+#cdb
+public class Order {
+
+    [ChoiceId("products")]
+    public var products:Array;
+    
+}
+
+public class Album {
+
+    public var artist:String;
+    public var title:String;
+    public var duration:String;
+    
+}
+
+public class Book {
+
+    public var author:String;
+    public var title:String;
+    public var pageCount:String;  
+
+}
+#cdb
+
+#cdb
+<order>
+    <album artist="Goldfrapp" title="Felt Mountain"  duration="38:50"/>
+    <album artist="Unkle" title="Never, Never, Land"  duration="49:27"/>
+    <book author="Karen Duve" title"Rain" pageCount="256"/>
+    <book author="Judith Hermann" title"Summerhouse, Later" pageCount="224"/>
+</order>
+#cdb
+
+#par In the mapper setup we then have to list all classes that should be associated with that choice id: #par
+
+#cdb
+var xml:XML = ...;
+var order:Order = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Order)
+    #hlt .choidId("products", Album, Book) #hlt
+    .build()
+    .mapToObject(xml) as Order;    
+#cdb
+
+
+#sc2 xmlmapper_namespaces Working with Namespaces #sc2
+
+#par So far we only used unqualified XML elements in all examples to keep them simple. Therefor we always used
+#cdi XmlObjectMappings.forUnqualifiedElements() #cdi to start the mapper setup. But of course the mapper fully
+supports namespaces, too. If you only use a single namespace the overall setup is quite similar to that for
+unqualified elements. Consider the example from the preceding section, just adding a namespace to all elements: #par
+
+#cdb
+<order #hlt xmlns="http://www.mynamespace.com" #hlt>
+    <album artist="Goldfrapp" title="Felt Mountain"  duration="38:50"/>
+    <album artist="Unkle" title="Never, Never, Land"  duration="49:27"/>
+    <book author="Karen Duve" title"Rain" pageCount="256"/>
+    <book author="Judith Hermann" title"Summerhouse, Later" pageCount="224"/>
+</order>
+#cdb
+
+#par To set up the corresponding mapper we then have to explicitly specify the namespace: #par
+
+#cdb
+var xml:XML = ...;
+var order:Order = XmlObjectMappings
+    #hlt .forNamespace("http://www.mynamespace.com") #hlt
+    .withRootElement(Order)
+    .choidId("products", Album, Book)
+    .build()
+    .mapToObject(xml) as Order;    
+#cdb
+
+#par Finally, in some cases you may wish to work with multiple namespaces in the same document. Consider
+you'd want to add a separate namespace for software products to the example above: #par
+
+#cdb
+<order 
+    xmlns="http://www.mynamespace.com" 
+    #hlt xmlns:sf="http://www.mynamespace.com/software" #hlt>
+    <album artist="Goldfrapp" title="Felt Mountain"  duration="38:50"/>
+    <album artist="Unkle" title="Never, Never, Land"  duration="49:27"/>
+    <book author="Karen Duve" title"Rain" pageCount="256"/>
+    <book author="Judith Hermann" title"Summerhouse, Later" pageCount="224"/>
+    #hlt <sf:software product="PageDesigner" version="4.0"/> #hlt
+</order>
+#cdb
+
+#par For such a scenario we'd set up separate groups of mappings for each namespace and then
+merge them: #par
+
+#cdb
+var xml:XML = ...;
+var softwareNS:XmlObjectMappings = XmlOhjectMappings
+    #hlt .forNamespace("http://www.mynamespace.com/software") #hlt
+    .withoutRootElement()
+    .choiceId("products", Software);
+    
+var order:Order = XmlObjectMappings
+    .forNamespace("http://www.mynamespace.com")
+    .withRootElement(Order)
+    .choidId("products", Album, Book)
+    #hlt .mergedMappings(softwareNS) #hlt
+    .build()
+    .mapToObject(xml) as Order;    
+#cdb
+
+#par As you see such a merged namespace often does not need a root element and you also do not need to call
+#cdi build #cdi on the namespaces to be merged. You can also see that merging namespaces also means to merge
+all choices with the same id. This way the choice with the id #cdi products #cdi in our example can contain
+child elements from different namespaces. #par
+
+
+
+#sc2 xmlmapper_validation Validation #sc2
+
+#par Like shown in #ref xmlmapper_example #ref you can place #cdi [Required] #cdi metadata on properties so that the
+mapper throws an Error if the attribute or child element that the property is mapped to is not present in XML.
+This section provides some more detail on the exact semantics of this feature. #par
+
+#sub Validating single valued properties #sub
+
+#par When a property is single valued, either with a simple type that maps to an attribute or a text node
+or typed to a class that maps to a child element, the validation process includes the following checks: #par
+
+#lst
+#lse If the property is marked with the #cdi [Required] #cdi tag the mapper checks if the attribute, text node
+or child element is present in the mapped XML and throws an error if it is missing. Without the metadata tag
+the mapped XML element is considered optional. #lse
+
+#lse If the single valued property is mapped to a child element the mapper validates that there is at most
+a single occurence of that element and throws an Error if otherwise. #lse
+#lst
+
+
+#sub Validating Array properties #sub
+
+#par Array properties cannot be mapped to attributes (as multiple occurences of the same attribute in a single
+element are not possible). If they are mapped to child text nodes or child elements, the validation process
+includes the following checks: #par
+
+#lst
+#lse If the property is marked with the #cdi [Required] #cdi tag the mapper checks if the child text node
+or child element has at least a single occurence and throws an Error if otherwise. #lse
+
+#lse Without the #cdi [Required] #cdi tag any number of occurences for the child element (including 0)
+are permitted. #lse
+#lst 
+
+
+#sub Ignoring properties #sub
+
+#par Sometimes a class may contain properties that should not be mapped to XML. You can exclude individual
+properties from the mapping with the #cdi [Ignore] #cdi tag: #par
+
+#cdb
+[Ignore]
+public var somethingUnusual:String;
+#cdb
+
+#par Without this tag (and without any other mapping tag on that property) the mapper would create the 
+default mappings for that property. #par 
+
+
+#sub Ignoring xml elements and attributes #sub
+
+#par In some scenarios you may not be able to create strict mappings as the XML may contain child elements
+which are not relevant for the client side and should be ignored. To do that for a particular mapped class
+you can add the #cdi [XmlMapping] #cdi metadata to the class declaration: #par
+
+#cdb
+[XmlMapping(ignoreUnmappedAttributes="true", ignoreUnmappedChildElements="true")]
+public class Order {
+#cdb
+
+#par Without these settings any attribute or child element unknown to the mapper would lead to an Error. #par
+
+
+
+#sc2 xmlmapper_programmatic Programmatic Mapper Setup #sc2
+
+#par There may be edge cases where neither the default settings nor the available metadata tags provide
+the required behaviour for a particular property. In these cases you can mix the default behaviour
+with explicit programmatic setup: #par
+
+#cdb
+var xml:XML = ...;
+var mappings:XmlObjectMappings = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Order);
+#hlt mappings    
+    .newMapperBuilder(Album)
+        .mapToAttribute("title")
+        .mapToChildTextNode("artist"); #hlt
+var order:Order = mappings
+    .choidId("products", Album, Book)
+    .build()
+    .mapToObject(xml) as Order;    
+#cdb
+
+#par In the example above we set up the mapper for the Album class programmatically. The mapper will still 
+look for metadata or apply the default behaviour for all properties of the Album class that were not explicitly
+mapped. This would even allow to use metadata in the class and override it in specific scenarios through
+programmatic setup. #par
+
+
+#sc2 xmlmapper_tags Custom Mapping Tags #sc2
+
+#par Similarly like with the metadata tags for Parsley configuration, you can create additional mapping tags 
+in case the builtin ones are not sufficient. For this you'd simply have to implement the #cdi MetadataMapperDecorator #cdi
+interface: #par
+
+#cdb
+public interface MetadataMapperDecorator {
+
+    function decorate (builder:MetadataMapperBuilder) : void;
+	
+}
+#cdb
+
+#par For each metadata tag on any property of a mapped class the #cdi decorate #cdi method would be invoked.
+For full examples you may browse the existing implementations, as all builtin tags use this hook, too. They
+reside in the package #cdi org.spicefactory.lib.xml.mapper.metadata #cdi. #par
+
+#par Like with the Parsley metadata tags, make sure that they meet the following requirements: #par
+
+#lst
+#lse They must contain the #cdi [Metadata] #cdi tag on the class level. See the existing tags for examples. 
+For details on how mapping metadata to classes works in general you may wish to read #ref reflection_metadata_mapping #ref. #lse
+
+#lse You must call #cdi Metadata.registerMetadataClass(MyTag) #cdi for each of the implementations before you create
+the first mapper. #lse
+
+#lse Make sure that the metadata tag gets compile into the application, using the #cdi -keep-as3-metadata #cdi option. #lse
+#lst
+
+
+
+#sc2 xmlmapper_custom Creating Custom Mappers #sc2
+
+
+#par Finally there may even be a scenario where none of the available mapping types are sufficient. In this case
+you can create a custom mapper implementing the #cdi XmlObjectMapper #cdi element from scratch. #par
+
+#par The interface is quite simple: #par
+
+#cdb
+public interface XmlObjectMapper {
+	
+	function get objectType () : ClassInfo;
+
+	function get elementName () : QName;
+	
+	function mapToObject (element:XML, context:XmlProcessorContext) : Object;
+
+	function mapToXml (object:Object, context:XmlProcessorContext) : XML;
+	
+}
+#cdb
+
+#par It specifies the class and the XML element name that should be mapped and then two methods for mapping
+in both directions. In case you have a large and complex XML structure where you can use existing property
+mappers for most of the tags, but need a custom mapper for a single tag, you can combine the builtin 
+mappers with your custom one: #par
+
+#cdb
+var xml:XML = ...;
+var order:Order = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Order)
+    #hlt .customMapper(new MyCustomMapper()) #hlt
+    .choidId("products", Album, Book)
+    .build()
+    .mapToObject(xml) as Order;    
+#cdb
+
+
+

@@ -1,0 +1,229 @@
+#sc1 roadmap_intro Road Map #sc1
+
+#par After the major feature additions in 2.1 and 2.2 the next release will very likely not contain changes with 
+a comparable impact. #par
+  
+
+
+#sc2 roadmap_v23 Version 2.3 #sc2
+
+#par This version is not fully specified yet. Until work on this version starts the road map might still change due
+to user feedback. But these features are the initial plan. #par
+
+
+#sc3 roadmap_definition Revise the ObjectDefintion interface #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-352 Jira Ticket for Comments #url #par
+
+#par For anyone not familiar with the framework internals this may seem to be a somewhat esotoric
+explanation. You may skip to the next section in this case. #par
+
+#par The ObjectDefinition interface turned out to be not as generic as it could be. With some of its properties it offers
+access to very concrete features like asynchronous initialization or dependency injection. This could be generified
+in a way that these features are not implemented in the IOC kernel itself. Instead the definition only offers the
+necessary hooks that allow to plug in functionality that controls how an object is instantiated or configured. 
+With such a generalization even more core features could be easily replaced and would allow very specialized variants like
+a container that does not use reflection to configure its objects for example. In general this would lead to a 
+leaner kernel. #par
+
+#par The new ObjectDefinition interface would be reduced as follows: #par
+
+#cdb
+interface ObjectDefinition {
+
+	/* for root definitions this will hold id, lazy flag, 
+	   order attribute and so on. */
+    function get registrationInfo () : Object;
+
+    function get type () : ClassInfo;
+    
+    function get kind () : ObjectKind;  // SINGLETON, PROTOTYPE, DEPENDENT (nested), DYNAMIC
+
+    /* generic strategy which might hook into various phases
+       of the object lifecycle, with impls for performing dependency injection,
+       registering message receivers, etc. */
+    function addProcessor () : ObjectProcessor;
+    
+    /* responsible for instantiating or retrieving the instances for this definition,
+       impls may specify constructor args or delegate to a factory */
+    function get/set provider () : ObjectProvider;
+
+    /* always returns the same object for singletons, 
+       a new instance on each invocation otherwise */
+    function getObject () : ManagedObject;
+
+    /* for associating existing instances with a definition 
+       (e.g. dynamically wired views) */
+    function manageObject (instance:Object) : ManagedObject;
+	
+}
+#cdb
+
+#par This includes also the introduction of a new interface, #cdi ManagedObject #cdi, as currently
+strangely no type exists that represents one of the core actors in the system: a managed object
+with its concrete instance and its abstract definition. The new interface will close that gap and look like this: #par
+
+#cdb
+interface ManagedObject {
+
+    function get instance () : Object;
+
+    function get definition () : ObjectDefinition;
+    
+    function get configured () : Boolean;
+
+    function get initialized () : Boolean;
+
+    function get destroyed () : Boolean;
+    
+    /* called between PRE_CONFIGURE and PRE_INIT lifecycle events,
+       performs tasks like dependency injection */
+    function configure () : void;
+    
+    /* called between PRE_INIT and POST_INIT lifecycle events
+       performs tasks like invoking the [Init] method on the target instance */
+    function initialize () : void;
+
+    /* called between PRE_DESTROY and POST_DESTROY lifecycle events
+       performs tasks like invoking the [Destroy] method on the target instance */
+    function destroy () : void;
+
+}
+#cdb
+
+#par Since the #cdi ObjectDefinition #cdi is a core interface simply removing the existing
+methods and properties would basically break all existing custom extensions. So the plan
+is to just deprecate these methods and properties and keep them in the interface for
+some time. #par
+ 
+
+
+#sc3 roadmap_dsl Configuration DSL #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-353 Jira Ticket for Comments #url #par
+
+#par Some of this functionality is already available in small fragments, but it seems natural to expand
+this and remove the need to add cumbersome plumbing code to custom configuration tags or
+other types of extensions. Many tag implementations will actually only contain some very trivial logic
+with this new mechanism which will also be used by the builtin tags then. #par
+
+#par A sample might roughly look like this: #par
+
+#cdb
+var def:ObjectDefinition 
+    = Configurator
+    .forClass(MessageConfirmation)
+    .constructorArgs
+        .value(title)
+        .value(text)
+    .method("showAlert")
+        .messageInterceptor()
+            .type(type)
+            .selector(selector)
+    .method("configureRemoteObject")
+        .observe(RemoteObject)
+            .phase(ObjectLifecycle.PRE_INIT)
+            .scope(ScopeName.GLOBAL)
+    .property("contact")
+        .injectType(Contact)
+    .property("someBinding")
+        .messageBinding()
+            .type(ContactEvent)
+            .selector("save")
+            .property("bar")
+    .registerAsRootObject()
+        .id(id)
+        .order(17)
+        .singleton(false)
+    .build();
+#cdb
+
+#par Of course this example is contrived to show many aspects with a single sample. In real world scenarios
+you'd very likely only use a snall subset of these options in a custom tag implementation for example. #par
+
+
+
+#sc3 roadmap_xmlobjectmapper XML-Object-Mapper Configuration with Metadata #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-220 Jira Ticket for Comments #url #par
+
+#par This enhancement will make the definition of custom configuration tags easier. With MXML or Metadata it was
+already quite easy, since at most a single line of code was needed to register such a tag. With XML tags the use
+of the XML-Object Mapper from Spicelib is required and might involve the need to programmatically specify subtle
+details of how the new XML tag maps to the configuration class. #par
+
+#par The feature set as such will remain the same. The new mechanism will still be based on the existing
+#cdi PropertyMapperBuilder #cdi class, but the need to programmatically create such a builder will go away.
+First there will be sensible defaults. A property without metadata will automatically map to a corresponding
+XML attribute. You can then override the default for individual properties: #par
+
+#cdb
+public class Person {
+
+    [ChildTextNode]
+    public var name:String;
+    
+    [ChildElement]
+    public var address:Address;
+    
+}
+#cdb
+
+#par There will be a corresponding metadata tag for all the features currently available in the #cdi PropertyMapperBuilder #cdi. #par
+
+
+
+#sc3 roadmap_bindings Injecting Property Values #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-238 Jira Ticket for Comments #url #par
+
+#par This tag will allow to specify Flex Bindings or inject property values with Metadata. 
+This might be convenient for regular classes managed by the container, where you cannot create 
+bindings with MXML. You can then create unidirectional or bidirectional bindings between
+properties of two managed objects, or simply inject the property value as a one-off operation: #par
+
+#cdb
+[PropertyValue(objectId="env", property="timeout", binding="none|oneWay|twoWay")]
+public var defaultTimeout:uint;
+#cdb
+
+
+#sc3 roadmap_factories Injecting Factories #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-354 Jira Ticket for Comments #url #par
+
+#par A small addition to the existing injection feature which may come in handy for dealing with
+non-singleton objects that application classes have to create on demand: #par
+
+#cdb
+[Inject(type="com.foo.MyType")]
+public var factory:IFactory;
+#cdb
+
+#par This factory will create a new instance from the Parsley Context each time it gets invoked
+(if you configure the object with #cdi singleton="false" #cdi). #par
+
+
+
+#sc2 roadmap_unscheduled Unscheduled Features #sc2
+
+#par Parts of the road map definitely depend on user feedback. So if you are still missing something
+in the framework feel free to post on the forum. Many of the features that were added after the
+initial 2.0 release were actually based on concrete suggestions from users. So the short list below
+may grow quickly if you have some ideas. #par
+
+
+#sub Expanding the support for modular applications #sub
+
+#par In addition to the existing support for modular applications future version might support
+more complex scenarios like shared module dependencies or modules that transparently get loaded in response
+to messages. #par
+
+#sub Validation #sub
+
+#par The framework might add validation support based on metadata tags. This could facilitate the
+creation of custom extensions which would be validated by the framework before they are applied and
+could also be used on regular application objects configured in the container and validated
+before they are handed out to the application. #par
+
+

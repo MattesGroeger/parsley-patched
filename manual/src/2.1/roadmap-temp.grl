@@ -1,0 +1,19 @@
+
+#par The tag also comes with a few optional parameters which you'll rarely use. They'll be
+shown here for the sake of completeness: #par
+
+#cdb
+<parsley:ContextBuilder
+    config="{MyConfig}"
+    parent="{parentContext}"
+    domain="{myDomain}"
+    viewRoot="{someOtherComponent}"
+    complete="init();"
+    error="handleError(event);"
+/>
+#cdb
+
+#par The parent Context and ApplicationDomain can usually be determined automatically. If the Context
+hierarchy is attached to a view hierarchy, Parsley is able to magically connect these behind the scenes.
+The viewRoot usually is the document object the tag is placed in, but can alternatively be specified explicitly. 
+And finally inline event handlers can be specified. #par

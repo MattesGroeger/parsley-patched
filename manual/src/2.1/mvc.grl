@@ -1,0 +1,185 @@
+#sc1 mvc_intro Building MVC Architectures #sc1
+
+#par Parsley is different from several other Flex or Flash MVC Frameworks in that it does not provide
+very much explicit support for the various pieces of an MVC architecture. This was a side effect of
+our primary goal being to allow to design a fully decoupled architecture. Decoupled in a sense that
+not only the parts of your application are decoupled from each other, but also decoupled from the
+framework itself. For example providing base classes for controllers or mediators in the framework 
+that application classes have to extend is a bad
+idea if you want to support such a decoupled architecture. #par
+
+#par For that reason the Messaging Framework in Parsley which we already described in #ref messaging_intro #ref
+is pretty generic. It does not assume a particular programming style or architectural pattern.
+Nevertheless Parsley still falls into the same category as many other MVC Frameworks since
+the Messaging Framework #str can #str easily be used in a way that helps building
+an application based on the MVC architectural pattern. In this chapter we will provide
+some examples on how to use the Messaging Framework in such a context. #par
+
+
+
+#sc2 mvc_flow MVC Event Flow Example #sc2
+
+
+#par The following diagram shows an example flow for a particular use case (user adds
+item to shopping cart) in the context of a Parsley MVC application: #par
+
+#img doc_img mvc_flow.jpg #img
+
+#par Explanations for the numbered steps from the diagram: #par
+
+#lst
+
+#lse 1: The user clicks the "Add to cart" button. With Flex for example this will generate a low
+level UI event. #lse
+
+#lse 2: A Mediator instance (usually injected into the view) which handles communication between View and Controller 
+catches the event and transforms it into an application message possibly gathering any further
+information from the view and encapsulating this information in the message. 
+This message will then be dispatched through Parsleys #cdi MessageRouter #cdi #lse
+
+#lse 3: The #cdi MessageRouter #cdi will then process any MessageHandlers, MessageBindings or MessageInterceptors
+which were registered for this message type (usually with Metadata tags on methods or properties, alternatively
+in MXML or XML). #lse
+
+#lse 4: An action (controller) class with a registered MessageHandler will invoke a remote service method 
+(the service usually being injected), adding a result handler for the service result. #lse
+
+#lse 5: When the result is received from the server the result handler of the action will be invoked. #lse
+
+#lse 6: The action will now modify the model accordingly. #lse
+
+#lse 7: Finally the action will again dispatch an application message which signals the success
+of the operation and provides the result of the service call. #lse
+
+#lse 8: The Parsley #cdi MessageRouter #cdi will again process all registered objects that
+wish to deal with this message. #lse
+
+#lse 9: The Mediator which registered for this message processes it and updates the view 
+components accordingly.
+Alternatively, especially with Flex, the view may bind directly to the model and thus
+update automatically when the controller modifies the model. #lse
+
+#lst
+
+#par From the example above many core elements will have been setup and wired in a
+Parsley #cdi Context #cdi including the view as described in #ref view_intro #ref. 
+This usually includes all controller actions, their dependencies like remote services, 
+and the registration for particular messages in the #cdi MessageRouter #cdi. #par
+
+#par If you think this diagram smells like over-engineering, it merely serves as an example
+for a full blown MVC architecture of a large and complex application. In smaller and simpler
+applications you can of course simplify the design presented above. For example the Mediator
+may be omitted in simpler use cases where the view itself dispatches and receives application
+messages. #par
+
+
+
+#sc2 mvc_implementation Example Controller Implementation #sc2
+
+#par Finally we'll pick one of the pieces presented in the diagram above and show
+how the implementation and configuration of such an application part may look like.
+We'll chose the #cdi AddToCartAction #cdi that participates in steps 3 to 7 in the diagram. #par
+
+#cdb
+package com.bookstore.actions {
+
+import org.spicefactory.cinnamon.service.ErrorMessage;
+
+import flash.events.EventDispatcher;
+
+import com.bookstore.events.CartEvent;
+import com.bookstore.services.CartService;
+import com.bookstore.model.LineItem;
+
+[Event(name="addToCartSuccess",type="com.bookstore.events.CartEvent")]
+[Event(name="addToCartFailed",type="com.bookstore.events.CartEvent")]
+[ManagedEvents("addToCartSuccess,addToCartSuccess")]
+public class AddToCartAction extends EventDispatcher {
+
+
+    [Inject]
+    public var cartService:CartService;
+
+    
+    [MessageHandler(selector="addItemRequest")]
+    public function handleCartUpdate (event:CartEvent) : void {
+        cartService.addItem(event.item)
+            .addResultHandler(addItemResult)
+            .addErrorHandler(addItemError);
+    }
+    
+    private function addItemResult (item:LineItem) : void {
+        dispatchEvent(new CartEvent(CartEvent.ADD_ITEM_SUCCESS, item));
+    }
+    
+    private function addItemError (error:ErrorMessage) : void {
+        dispatchEvent(new CartEvent(CartEvent.ADD_ITEM_ERROR, null, error.message));
+    }
+    
+}
+
+} 
+#cdb
+
+#par We'll now examine the various parts of this class in detail. First there is a method
+marked as a MessageHandler: #par
+
+#cdb
+[MessageHandler(selector="addItemRequest")]
+public function handleCartUpdate (event:CartEvent) : void { 
+#cdb
+
+#par In this example we are using regular Flash Events as application messages, but you are not forced to do so
+as described in #ref messaging_dispatching #ref. #par
+
+#par The method parameter tells the framework that we are interested
+in #cdi CartEvents #cdi. MessageHandler selection happens based on message type, so in a large and complex application
+you won't run into problems having to maintain event type constants which are unique across the whole system. #par
+
+#par But since we are not interested in all CartEvents that get dispatched we specify a #cdi selector #cdi attribute
+which in case of Events points to the type property of the Event. In this case we are intereseted in CartEvents with
+the type #cdi addItemRequest #cdi which were dispatched by the View or a Mediator as a result of an UI event. #par
+
+#par In the body of that method we are using the injected #cdi CartService #cdi: #par
+
+#cdb
+[Inject]
+public var cartService:CartService;
+#cdb
+
+#par In this example we are using a remote service interface like those generated by Cinnamon Remoting as it
+simplifies the example. Of course you could also implement actions based on Flex Remoting, the Flex HTTPService or WebServices, 
+the principle how you handle this asynchronous operations would be the same. For details see #ref remoting_intro #ref. #par
+
+#par Finally there are the result and error handlers which transform the result (or error) received
+from the server into application messages: #par
+
+#cdb
+private function addItemResult (item:LineItem) : void {
+    dispatchEvent(new CartEvent(CartEvent.ADD_ITEM_SUCCESS, item));
+}
+    
+private function addItemError (error:ErrorMessage) : void {
+    dispatchEvent(new CartEvent(CartEvent.ADD_ITEM_ERROR, item, error.message));
+}
+#cdb
+
+#par To tell the framework that these are events which should be treated as application messages
+we configure them with metadata tags on the class declaration: #par
+
+#cdb
+[Event(name="addToCartSuccess",type="com.bookstore.events.CartEvent")]
+[Event(name="addToCartFailed",type="com.bookstore.events.CartEvent")]
+[ManagedEvents("addToCartSuccess,addToCartSuccess")]
+public class AddToCartAction extends EventDispatcher {
+#cdb
+
+#par The #cdi [Event] #cdi tag is the regular metadata tag used by AS3 classes and the #cdi [ManagedEvents] #cdi
+tag is a Parsley tag that specifies which of the events this class dispatches should be managed by the framework. 
+The details of this feature are described in #ref messaging_managed_events #ref. #par
+
+#par The implementations of the other parts of this example use case would look very similar. The Mediator for example
+would catch the UI events, transform them into application messages which again could be registered as ManagedEvents.
+The MessageHandlers of the Mediator would listen to the messages dispatched by the action and finally update the view. #par
+
+

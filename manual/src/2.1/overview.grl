@@ -1,0 +1,483 @@
+#sc1 overview_intro Overview #sc1
+
+#par Parsley is an Application Framework for Flex and Flash Applications built upon an IOC Container and
+Messaging Framework that can be used to create highly decoupled architectures. 
+It allows you to configure objects to be managed by the container with Metadata, MXML, XML or ActionScript
+and is easily extensible. #par
+
+#par While many other Application Frameworks for the Flash Platform are either a pure Flex Framework that cannot
+be used without the Flex SDK or are a classic Flash Framework without any deeper integration with Flex, Parsley
+is both. The core of the framework (the IOC Container and the Messaging Subsystem) does not depend on the
+Flex SDK at all, but there are several additional modules that are specifically designed for Flex, providing
+support for MXML Configuration, View Wiring and Flex Modules. #par
+
+
+#sc2 overview_features Features List #sc2
+
+#par This section gives a quick overview over the available features linking to the other chapters of the manual
+where appropiate. There is also a #ref tutorial_intro #ref chapter containing a few sample use cases for the impatient. #par
+
+
+#sub IOC Container #sub
+
+#par Parsley is a classic IOC Container. It provides support for Dependency Injection, Object Lifecycle Management
+and Messaging. The key differentiator is the scope of the framework: While still being as easy to use  
+as many smaller IOC frameworks for simple applications, it also provides many features which are essential for building
+large, complex and modular applications and numerous extension points. #par
+
+
+#sub Dependency Injection #sub
+
+#par The core feature of any IOC Container. Now with Parsley 2 dependencies can be conveniently declared using AS3 Metadata
+Tags (#cdi [Inject] #cdi) on properties, methods or constructors or alternatively with MXML or XML. 
+See #ref injection_intro #ref for details. #par
+
+
+#sub Messaging #sub
+
+#par Parsley contains a Messaging Framework that allows for objects to send and receive messages in a fully decoupled way.
+You can declare events on sending objects with the #cdi [ManagedEvents] #cdi tags, so that they will be routed through
+Parsley to all registered handlers. The receiving objects can declare interest in particular message types with several
+metadata tags like #cdi [MessageHandler] #cdi. Message selection happens based on the type (class) of the message and
+optionally based on additional selectors like event type, instead of being purely String based like regular event handlers.
+This eases development of large applications where you don't have to care for event type constants being unique for the
+whole system. Furthermore messaging can happen in different scopes, globally or just in a particular region (like
+an AIR window for example).
+See #ref messaging_intro #ref for details. #par
+
+
+#sub Object Lifecycle #sub
+
+#par #ref lifecycle_methods #ref: Objects can have methods marked with #cdi [Init] #cdi 
+(which will be invoked after the object has been instantiated and configured) or #cdi [Destroy] #cdi which will be 
+invoked when the container gets destroyed. #par
+ 
+#par #ref lifecycle_async #ref: Configuration option for asynchronously initializing objects (e.g. objects
+that need to load data before they can operate). In this case the container will defer the initialization
+of other objects until those configured to be asynchronous are ready. #par
+
+
+#sub Dynamic View Wiring #sub
+
+#par This module is particularly useful for Flex and solves the problem that you usually wouldn't want to declare
+Flex Components in IOC Container configuration files, but instead inside your MXML view hierarchy like always.
+Parsley 2 now allows to connect these components to the IOC Container on-the-fly when they are added to the stage.
+Also solves the more complicated issues with wiring components in Flex Popups or Native AIR Windows.
+See #ref view_intro #ref for details. #par
+
+
+#sub Support for Modular Applications #sub
+
+#par For modular applications it's essential that you can create configuration sub-contexts and dynamically load
+and undload them as needed. Seamlessly integrates with Flex Modules, but can also be used without.  
+See #ref modules_intro #ref for details. #par
+
+
+#sub Localization #sub
+
+#par Allows to bind properties to resources with the #cdi [ResourceBinding] #cdi tag. Integrates with the
+Flex ResourceManager for Flex Applications and contains its own Localization Module for Flash Applications.
+See #ref resources_intro #ref for details. #par
+
+
+#sub Extensibility #sub
+
+#par Parsley can serve as the base for building higher-level frameworks on top of. Or you may just want to create
+some additional configuration tags for use cases which are frequent for a particular application.
+Parsley is easy to extend. A single implementation of an extension interface can be used to create
+a custom configuration tag that can be used as a Metadata, MXML or XML tag.
+Furthermore basically all central services of the IOC kernel can be swapped out easily.
+See #ref extensions_intro #ref for details. #par
+
+
+
+#sc2 overview_whatsnew What's new in Parsley 2.1 #sc2
+
+#par This section just lists the parts of the manual which have been modified or added.
+It does not list sections which only saw minor modifications. #par
+
+#par #ref messaging_intro #ref #par
+
+#lst
+#lse #ref messaging_errorhandlers #ref (new) #lse
+#lse #ref messaging_scopes #ref (new) #lse
+#lse #ref messaging_api #ref (rewritten) #lse
+#lst
+
+#par #ref lifecycle_intro #ref #par
+
+#lst
+#lse Chapter renamed from #str Advanced IOC Container Features #str #lse
+#lse #ref modules_context #ref and #ref modules_lifecycle #ref (moved to chapter 8) #lse
+#lse #ref lifecycle_dynamic #ref (new) #lse
+#lst
+
+#par #ref view_intro #ref #par
+
+#lst
+#lse Chapter renamed from #str Flex Component Wiring #str #lse
+#lse #ref view_init #ref (rewritten) #lse
+#lse #ref view_popup #ref (new) #lse
+#lse #ref view_modules #ref (new) #lse
+#lst
+
+#par #ref modules_intro #ref #par
+
+#lst
+#lse Chapter renamed from #str Using Flex Modules #str #lse
+#lse #ref modules_context #ref (rewritten) #lse
+#lse #ref modules_lifecycle #ref (rewritten) #lse
+#lse #ref modules_flex #ref (new) #lse
+#lst
+
+#par #ref extensions_intro #ref #par
+
+#lst
+#lse #ref extensions_decorators_builtin #ref (modified) #lse
+#lse #ref extensions_scope #ref (new) #lse
+#lse #ref extensions_init #ref (new) #lse
+#lse #ref extensions_kernel #ref (new) #lse
+#lst
+
+#par #ref tagref_intro #ref #par
+
+#lst
+#lse #ref tagref_messaging_managed_events #ref (new scope attribute) #lse
+#lse #ref tagref_messaging_dispatcher #ref (new scope attribute) #lse
+#lse #ref tagref_messaging_handler #ref (new scope attribute) #lse
+#lse #ref tagref_messaging_binding #ref (new scope attribute) #lse
+#lse #ref tagref_messaging_interceptor #ref (new scope attribute) #lse
+#lse #ref tagref_messaging_error #ref (new tag) #lse
+#lse #ref tagref_lifecycle_asyncinit #ref (order attribute removed) #lse
+#lse #ref tagref_lifecycle_init #ref (old tag name PostConstruct deprecated) #lse
+#lse #ref tagref_lifecycle_destroy #ref (old tag name PreDestroy deprecated) #lse
+#lse #ref tagref_asconfig_definition #ref (new order attribute) #lse
+#lse #ref tagref_tags_object #ref (new order attribute) #lse
+#lse #ref tagref_tags_nestedobject #ref (new tag) #lse
+#lse #ref tagref_view_configure #ref (new target and repeat attributes) #lse
+#lse #str ContextModule #str (tag removed) #lse
+#lse #str ModuleLoader #str (tag removed) #lse
+#lst
+
+
+#sc2 overview_migrate Migrating from 2.0 to 2.1 #sc2
+
+#par This is a list of instructions how you adjust existing applications for the changes that are not backwards-compatible.
+Even for large and complex applications it should be no big deal. Many sections in this migration guide only affect
+you when you have built extensions for the framework like custom configuration tags. If you don't have a clue
+what a particular section is referring to, it is very likely that you can safely ignore it. #par
+
+
+#sub Adjust static entry point methods #sub
+
+#par For all Context instances you want to use view wiring with, you now have to add a second parameter
+specifying the view root for the Context: #par
+
+#cdb
+FlexContextBuilder.build(MyConfig, this);
+#cdb
+
+#par or: #par
+
+#cdb
+XmlContextBuilder.build("config.xml", this, parentContext);
+#cdb
+
+#par When building the Context from within a Component you can simply pass #cdi this #cdi to the builder in most cases. #par
+
+
+#sub Switch to addedToStage event for Context creation #sub
+
+#par The ContextBuilder now looks for parent Context and ApplicationDomain in the view hierarchy if you specify
+a view root for the builder. To be able to dispatch a bubbling event the specified view root must have been 
+added to the stage: #par
+
+#cdb
+<mx:Panel
+    addedToStage="FlexContextBuilder.build(MyConfig, this)"
+    ...
+>
+#cdb
+
+
+#sub CompositeContextBuilder is now an interface #sub
+
+#par Simply switch from #par
+
+#cdb
+var builder:CompositeContextBuilder = new CompositeContextBuilder();
+#cdb
+
+#par to #par
+
+#cdb
+var viewRoot:DisplayObject = ...;
+var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder(viewRoot);
+#cdb
+
+#par Of course using a view root is optional. #par
+
+
+#sub New MXML tag for inline object defintions #sub
+
+#par Simply switch from #par
+
+#cdb
+<Object type="{FooClass}">
+    <Property name="dependency">
+        <Object type="{BarClass}"/>
+    </Property>
+</Object>
+#cdb
+
+#par to #par
+
+#cdb
+<Object type="{FooClass}">
+    <Property name="dependency">
+        #hlt <NestedObject type="{BarClass}"/> #hlt
+    </Property>
+</Object>
+#cdb
+
+#par The new #cdi <NestedObject> #cdi tag was necessary since the framework has to distinguish them
+from root object definitons. The mxmlc compiler adds nested tags which contain bindings as a 
+public property to the class, so the framework could mix them up with root level tags causing
+additonal unwanted object registrations. This special tag is not required for XML configuration.
+You can continue to use the simple #cdi <object> #cdi tag for root and inline definitions. #par
+
+
+#sub Remove custom viewTrigger event types #sub
+
+#par Those are no longer needed and no longer supported (in case you used them at all). Such a custom event type could be specified
+for the static methods of the #cdi FlexContextBuilder #cdi and for the #cdi Configure #cdi tag: #par
+
+#cdb
+<parsley:Configure triggerEvent="myCustomEventType"/>
+#cdb
+
+#par Simply remove all references to custom event types. #par
+
+
+#sub Attach Flex Popups to the Context they belong to #sub
+
+#par Flex popups now require an extra step to explicitly attach them to the Context that components in that
+popup should be wired to: #par
+
+#cdb
+[Inject]
+public var context:Context;
+
+private function showPopup () : void {
+    var win:TitleWindow = new TitleWindow();
+    // set properties
+    context.viewManager.addViewRoot(win);
+    PopUpManager.addPopup(win, this);
+}
+#cdb
+
+
+#sub Attach native AIR windows to the Context they belong to #sub
+
+#par This is basically the same mechanism like how you now have to deal with Flex Popups: #par
+
+#cdb
+[Inject]
+public var context:Context;
+
+private function openWindow () : void {
+    var win:Window = new Window();
+    // set properties
+    context.viewManager.addViewRoot(win);
+    win.open();
+}
+#cdb
+
+
+#sub Remove Parsley's ContextModule and ModuleLoader tags #sub
+
+#par They are no longer needed. Simply replace them with the default #cdi mx:Module #cdi
+and #cdi mx:ModuleLoader #cdi components. There is no longer a need to specify the parent Context for a ModuleLoader, 
+it will be auto-detected in the view hierarchy. #par 
+
+#par 2.0 #par
+
+#cdb
+<parsley:ContextModule
+    configClass="{MyModuleConfig}"
+    ...
+>
+#cdb
+
+#par 2.1 #par
+
+#cdb
+<mx:Module
+    addedToStage="FlexContextBuilder.build(MyModuleConfig, this)"
+    ...
+>
+#cdb
+
+
+#sub Organize imports for Parsley's internal APIs #sub
+
+#par If you are talking to the internal API you simply have to organize most imports.
+There was a huge refactoring and cleaning up for the internal API and several packages
+and classes have been moved. If your IDE supports a project-wide "Organize imports"
+that's the fastest way to migrate. #par
+
+
+#sub Adjust any custom configuration tags for the Messaging Framework #sub
+
+#par If you talked to the #cdi MessageRouter #cdi API directly, in a custom configuration tag or elsewhere in your
+application code, you have to adjust the code for the new API. In 2.0 a MessageHandler registration looked like
+this: #par
+
+#cdb
+context.messageRouter.registerMessageHandler(target, "execute", MyMessage);
+#cdb
+
+#par In 2.1 there is now a convenient base class that handles a lot of low-level details for you.
+For example it registers a proxy for non-lazy singletons, so that it does not miss messages even
+if they are dispatched during Context initialization before the receiver is actually instantiated.
+Therefor it is recommended to simply overwrite the #cdi createReceiver #cdi and #cdi removeReceiver #cdi
+methods of the #cdi AbstractMessageReceiverDecorator #cdi base class and not implement the #cdi decorate #cdi
+method yourself. You can examine the builtin receiver tag implementations in the package
+#cdi org.spicefactory.parsley.tag.messaging #cdi if you want to see how the default messaging tags
+are implemented. For example the #cdi [MessageInterceptor] #cdi tag implementation looks like this: #par
+
+#cdb
+protected override function createReceiver 
+        (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
+    var ic:MessageInterceptor 
+            = new DefaultMessageInterceptor(provider, method, type, selector);
+    scopeManager.getScope(scope).messageReceivers.addInterceptor(ic);
+    return ic;
+}
+	
+protected override function removeReceiver 
+        (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
+    var ic:MessageInterceptor = MessageInterceptor(receiver);
+    scopeManager.getScope(scope).messageReceivers.removeInterceptor(ic);
+}
+#cdb
+
+#par In the #cdi createReceiver #cdi method you can see that the framework passes a prebuilt #cdi ObjectProvider #cdi
+instance to the method. This may either be a wrapper for an existing instance or a proxy
+where the instance is fetched from the Context in case a matching message is heard. #par
+
+
+#sub Change code that programmatically dispatches messages #sub
+
+#par This change is straightforward. Version 2.1 introduces scopes. Therefor the #cdi messageRouter #cdi property
+has been replaced by the new #cdi scopeManager #cdi property. #par
+
+#par 2.0 #par
+#cdb
+context.messageRouter.dispatchMessage(new MyMessage());
+#cdb
+
+#par 2.1 #par
+#cdb
+context.scopeManager.dispatchMessage(new MyMessage());
+#cdb
+
+#par The ScopeManager dispatches through all scopes available in that Context. This way the receivers can decide
+which scope they want to listen to. You can alternatively dispatch to a single scope only: #par
+
+#cdb
+context.scopeManager.getScope(ScopeName.LOCAL).dispatchMessage(new MyMessage());
+#cdb
+
+
+#sub Adjust configuration tags that register lifecycle listeners on an ObjectDefinition #sub
+
+#par The lifecycle mechanism has been expanded, there are now five events for the lifecycle of each
+object: #cdi preConfigure #cdi, #cdi preInit #cdi, #cdi postInit #cdi, #cdi preDestroy #cdi and
+#cdi postDestroy #cdi. Therefor the old #cdi ObjectLifecycleListener #cdi interface has been removed
+and you can register a function reference directly: #par
+
+#par 2.0 #par
+
+#cdb
+definition.lifecycleListeners.addLifecycleListener(this);
+#cdb
+
+#par 2.1 #par
+
+#cdb
+definition.objectLifecycle.addListener(ObjectLifecycle.PRE_INIT, preInit);
+#cdb
+
+#par In the example for 2.0 #cdi this #cdi would refer to a tag that additionally implements
+#cdi ObjectLifecycleListener #cdi. In the example for 2.1 #cdi preInit #cdi references a function.
+The signature for the function is the same as in 2.0, the framework passes the instance itself
+and the Context. But the method could now be private as it is no longer required to implement
+an interface. #par
+
+
+
+#sc2 overview_modules Parsley and Spicelib Module SWCs #sc2
+
+#par Parsley and the underlying Spicelib are very modular, so you are able to only select the SWCs actually
+required for your application. The #cdi release #cdi folder in the download contains SWCs for Parsley and
+Spicelib which combine all the modules into a single large SWC (for both frameworks one SWC for Flex and one for Flash). #par
+
+#par Alternatively the #cdi module #cdi folder contains smaller SWCs only containing a single framework module which can be 
+combined to add only the feature set required by your application to the classpath. To use these smaller module SWCs it's
+essential to know the dependencies and the content of each SWC. #par
+
+#par The following diagram shows the dependencies between the various SWCs. The names correspond to the names of the SWCs
+minus version number and suffix. Several optional dependencies were left out to keep the diagram clear. Most of them
+are obvious (e.g. several modules include custom XML configuration tags and in case you use those the module will also
+depend on parsley-xml). The Flex3 and Flex4 SWCs have been combined into a single Flex box for the diagram. #par
+
+#img doc_img parsley-spicelib-dependencies.jpg #img
+
+#par The following table summarizes the content for each of these SWCs: #par
+
+#tbl
+#tbr #cdi spicelib-core #cdi # Core utilities, errors and events. #tbr 
+#tbr #cdi spicelib-reflect #cdi # The Spicelib Reflection API. See #ref reflection_intro #ref for details. #tbr 
+#tbr #cdi spicelib-xml #cdi # The XML-to-Object Mapper. See #ref xmlmapper_intro #ref for details. #tbr 
+#tbr #cdi spicelib-task #cdi # The Task Framework for asynchronous operations. See #ref task_intro #ref for details. #tbr 
+#tbr #cdi spicelib-flash #cdi # The Flash Logging Framework. See #ref spicelib-logging_intro #ref for details. #tbr 
+#tbr #cdi parsley-core #cdi # The core IOC Container - Dependency Injection, Messaging, Configuration with Metadata or ActionScript. #tbr 
+#tbr #cdi parsley-flex #cdi # Flex Integration Features: #ref config_mxml #ref, #ref view_intro #ref, #ref modules_intro #ref. #tbr 
+#tbr #cdi parsley-xml #cdi # Support for configuration with XML files. See #ref config_xml #ref for details. #tbr 
+#tbr #cdi parsley-flash #cdi # Flash Integration Features: #ref resources_flash #ref, #ref logging_flash #ref. #tbr 
+#tbr #cdi parsley-pimento #cdi # Configuration Tags for Pimento and Cinnamon. See #ref remoting_pimento #ref and
+#ref remoting_cinnamon #ref. #tbr
+#tbl
+ 
+
+#sc2 overview_other_resources Other resources #sc2
+
+#par In addition to the material presented in this manual there are also some articles and sample applications
+available which have been created by other users. If you have created something that you want to see listed here
+just post a link in the #url /forum/ Forum #url. #par
+
+#lst 
+
+#lse #url http://coenraets.org/blog/2009/07/building-a-flex-application-with-the-parsley-framework/ Building a Flex Application with the Parsley Framework #url:
+Article and Sample Application created by Christophe Coenraets. The sample is a small Contact Management application. It can be run with a
+mock service implementation or with BlazeDS. #lse
+
+#lse #url http://joelhooks.com/2009/07/12/inversion-of-control-and-dependency-injection-in-flex-using-the-parsley-application-framework-part-1/ Inversion of Control and Dependency Injection in Flex using the Parsley Application Framework #url:
+Two-part article by Joel Hooks. #lse
+
+#lse #url http://blogs.adobe.com/tomsugden/2009/07/the_trend_towards_inversionofc.html The Trend Towards Inversion-of-Control Frameworks in Flex #url:
+Article written by Tom Sugden. Not focused solely on Parsley but nevertheless and interesting read. #lse
+
+#lse #url http://www.sitronnier.com/blog/parsley-2-basic-flex-example Basic Flex Example #url and 
+#url http://www.sitronnier.com/blog/parsley-2-basic-flash-example Basic Flash Sample #url: Two basic samples created by
+Laurent Sitronnier. Demonstrates the use of Parsley in Flex and Flash Applications side-by-side. #lse
+
+#lst
+
+
+
+
+
+
+ 

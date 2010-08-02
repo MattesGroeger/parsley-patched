@@ -1,0 +1,917 @@
+#sc1 roadmap_intro Road Map for Versions 2.1 to 2.3 #sc1
+
+#par This chapter gives a quick overview over all the planned changes for the upcoming releases.
+It is also meant as a basis for discussion. You'll find links to the individual Jira tickets in most
+sections. If you have a comment specific for a particular feature it is preferred that you comment directly
+in Jira. If you have some general comments or want to propose a feature not listed here you can also use
+#url http://www.spicefactory.org/forum/viewtopic.php?t=265 this thread in the forum #url that was created for feedback concerning the road map. #par
+
+#par The sequence of updates was arranged in a way that only the 2.1 release will contain changes which are
+not backwards-compatible. It is a bit unfortunate that such an update is necessary so shortly after the 2.0
+release. But the view wiring mechanism had limitations which can only be fixed in an elegant way through changing all the
+static entry points used to initialize a Context. After the 2.1 release Parsley should be consolidated so
+that subsequent versions come with enhancements and new features which are fully backwards-compatible except
+for eventual changes in the internal APIs. 
+But even with the 2.1 release at least none of your configuration files (MXML or XML) nor the metadata tags used
+for configuration are affected. #par
+  
+
+
+#sc2 roadmap_v21 Version 2.1 #sc2
+
+#par Work on this version will start in late August. A rough estimate for a release would be late September or
+early October. Some of the changes are rather subtle, so if you only used basic features of Parsley 2.0 in 
+small applications you may skip this section and look at the new features planned for the 2.2 release. #par
+
+
+#sc3 roadmap_viewmanager New view wiring mechanism #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-219 Jira Ticket for Comments #url #par
+
+#par Unfortunately the view wiring mechanism in version 2.0 had some limitations: It did not work well
+with Flex Popups, it did not work at all for native AIR windows and it could not be used in pure Flash
+applications. The next release will address all these issues at once. #par
+
+#par The major problem with the initial approach was to listen to bubbling events in the Flex SystemManager 
+to be notified whenever a component wants to get wired to the IOC container. Although this approach is used by
+many other Flex frameworks too, it has severe limitations. First native AIR windows come with their own SystemManager,
+so bubbling events in such a window will not be caught at all. Second when such an event arrives at the SystemManager
+level it is difficult to find out which Context it wants to get wired to in a multi-Context environment. The approach
+in version 2.0 to inspect the ApplicationDomain a component belongs to or to use custom trigger events was fragile 
+and difficult to understand and document. It was also slighty cumbersome to implement. #par
+
+#par So the new idea is to make it more explicit, to allow the application developer to connect a hierarchy of
+Context instances to a view hierarchy. To make this as convenient as possible, the static entry point methods
+will be changed. They will all get a new second parameter that allows to specify the root of the view hierarchy 
+the new Context should be connected to: #par
+
+#cdb
+public static function build (
+    configClass:Class, 
+    viewRoot:DisplayObject = null, 
+    parent:Context = null, 
+    domain:ApplicationDomain = null
+    ) : Context {
+#cdb
+
+#par The new parameter will be inserted at the second position. Although it is optional it is very likely that it
+will be used much more often than the other two optional parameters. In many cases you'll only use the first two,
+passing the component in which you build the Context as a view root: #par
+
+#cdb
+FlexContextBuilder.build(MyConfig, this);
+#cdb
+
+#par Now this somewhat unimpressive new parameter opens a lot of new doors: #par
+
+#lst
+#lse It is declared as a DisplayObject. No need to tie Parsley to the Flex API here, it will work the same way
+for UIComponents or plain Flash DisplayObjects. Thus the methods of the XmlContextBuilder will have the same new signature. #lse
+
+#lse It makes the parent parameter obsolete for many scenarios, because the ContextBuilder will dispatch a bubbling
+event before building the Context. If somewhere in the view hierarchy above the specified view root another Context
+was attached to a parent component, that Context will automatically be used as a parent for the new Context. 
+For rare edge cases the parent can still be specified manually. #lse
+
+#lse The default behaviour for a Context where a view root was specified is that the lifecycle of the Context is tied
+to the time the associated view is on the stage. So no need to manually destroy the Context when the intention is that
+all objects living in that Context are no longer needed when the component is removed from the stage. This is useful
+for many types of sub-Contexts like a Flex Popup, a Flex Module or an AIR window. #lse
+#lst
+
+#par Internally this mechanism will be handled by a ViewManager, which is a new core interface in the 2.1 release.
+The signature is quite simple: #par
+
+#cdb
+public interface ViewManager {
+
+    function addViewRoot (viewRoot:DisplayObject) : void; 
+
+    function removeViewRoot (viewRoot:DisplayObject) : void;
+    
+}
+#cdb
+
+#par Each Context instance will have its own ViewManager. It can be accessed through a new property in 
+the Context interface: #par
+
+#cdb
+    function get viewManager () : ViewManager;
+#cdb
+
+#par Access to that manager is needed because application developers will have to specify additional view roots
+to support Flex popups or native AIR windows. Those are view hierarchies which are disconnected from the view
+hierarchy below the main Application component. For the view root passed to the ContextBuilder methods the
+builder will call addViewRoot internally, but for popups and windows an extra step is required to tell the Context
+that there is an additional view hierarchy it should manage. For popups it would look like this: #par
+
+#cdb
+[Inject]
+public var context:Context;
+
+private function showPopup () : void {
+    var win:TitleWindow = new TitleWindow();
+    // set properties
+    context.viewManager.addViewRoot(win);
+    PopUpManager.addPopup(win, this);
+}
+#cdb
+
+#par For an AIR window the example would be analogous: #par
+
+#cdb
+[Inject]
+public var context:Context;
+
+private function openWindow () : void {
+    var win:Window = new Window();
+    // set properties
+    context.viewManager.addViewRoot(win);
+    win.open();
+}
+#cdb
+ 
+#par The #cdi removeViewRoot #cdi method of the ViewManager interface will not be called by application code directly
+in most cases, as the default implementation of the interface will automatically remove a view root when it is removed
+from the stage. When the final view root is removed from a ViewManager the Context is destroyed. Like with most core
+services this manager can be replaced by custom implementations if required. #par
+
+#par This was a long explanation, but although it may sound complicated this will in fact be a significant simplification 
+for modular applications and large Context hierarchies. It will also make the internal implementation much cleaner. 
+With the MXML tags for Context creation planned for version 2.2 even the specification of the view root will be implicit: #par
+
+#cdb
+<parsley:FlexContext configClass="{MyConfig}"/>
+#cdb
+
+#par The default view root will then be the document parameter passed to the #cdi initialize #cdi method 
+of the #cdi IMXMLObject #cdi. This is really the final simplification then, since at that point all other
+aspects which are relevant for Context building will have sensible defaults then or will be auto-detected
+by the framework, including the view root, the parent Context and the ApplicationDomain to use. #par
+
+#par Due to these changes the concept of custom #cdi viewTriggerEvents #cdi is no longer needed. The #cdi viewTriggerEvent #cdi
+parameter of the various #cdi FlexContextBuilder #cdi methods will be removed. Likewise the corresponding attribute of
+the #cdi <parsley:Configure> #cdi tag will also be removed. #par
+
+#par Finally there will still be an additional listener on the SystemManager level for Flex applications. But all this listener 
+will do in future versions is logging an error if it catches a bubbling Parsley event because this would indicate that some component
+was used outside of the view hierarchies known by the framework. #par
+
+
+
+
+#sc3 roadmap_modules Simplified Flex Module Support #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-223 Jira Ticket for Comments #url #par
+
+#par The support for Flex Modules can be simplified for version 2.1 in a way that it will be completely transparent for the 
+application developer. Thus the custom #cdi <parsley:ContextModule> #cdi and #cdi <parsley:ModuleLoader> #cdi components
+will be removed. They are no longer needed because the additional work they performed can now be taken over by other parts
+of the framework, in particular the new view wiring mechanism. The old module support helped with two things: #par
+
+#lst
+#lse You could specify the parent Context on the #cdi <parsley:ContextModule> #cdi tag. That parent would then be passed
+to the Context built by the module after it was loaded. That was convenient because within the module you wouldn't have
+easy access to the parent instance otherwise. But the new view wiring mechanism explained in the previous section also
+works for any module instance that you add to your view hierarchy. It would simply search for the parent within the 
+view hierarchy. A Context built within a module is no longer different than any other sub-Context attached to the
+view. #lse
+
+#lse The custom tags managed the ApplicationDomains for you. This is necessary because the Module might represent an
+ApplicationDomain boundary if it was loaded into a child domain and not into the domain of the application. Parsley
+has to know the domain to be able to reflect on classes loaded into sub-domains. This domain management tasks will
+still be performed in the new version. But the logic will be moved into a wrapper around the original Flex ModuleManager
+that will automatically be created when you initialize the first Context for your application. #lse
+#lst
+
+#par So the good news is that you can revert to using the original #cdi <mx:ModuleLoader> #cdi and #cdi <mx:Module> #cdi tags.
+As a side effect the Parsley integration now also works seamlessly when you use the Flex ModuleManager directly to load modules.
+Finally Parsley will no longer create a single Context for the whole module. A Context within a module will be treated like
+any other sub-Context, which means that when you attach it to a view root it will be destroyed when the view is removed
+from the stage. #par
+
+
+
+
+#sc3 roadmap_scopes Scopes for Messaging and Lifecycle Listeners #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-251 Jira Ticket for Comments #url #par
+
+#par In Parsley 2.0 every child Context simply shared the MessageRouter with its parent Context. 
+This way messages were always dispatched globally. An approach that may turn out to be too simplistic for large and modular applications
+where a loaded module, a window or a popup may wish to create its own local messaging context 
+while still being able to inject objects from the root Context or dispatching selected messages
+globally. The new scope feature now offers that flexibility, allowing to dispatch into a subset of Contexts only. #par
+
+#sub Global and Local Scopes #sub
+
+#par In the new default scope setup for Parsley 2.1 there will be a global scope that is created for each Context that does
+not have a parent (usually only the one root Context created at application startup) and then shared will all
+children of that Context (including grandchildren of course). Additionally each Context will create its own
+local scope which will not be shared with its children. The following diagram shows this default setup: #par
+
+#img doc_img scopes-default.jpg #img
+
+#par Since the global scope represents exactly the only option that was
+available in Parsley 2.0 it will always be the default scope for all configuration tags where no scope is 
+explicitly specified. This way existing configuration files and metadata tags on classes will still work the same way
+in the new version. #par
+
+#cdb
+[MessageHandler(selector="save")]
+public function save (event:ProductEvent) : void {
+#cdb
+
+#par The handler above listens to ProductEvents dispatched from any Context in the hierarchy. It listens to the global
+scope. #par
+
+#cdb
+[MessageHandler(selector="save", scope="local")]
+public function save (event:ProductEvent) : void {
+#cdb
+
+#par Now the handler only listens to events dispatched from the same Context. #par
+
+#par For the sending side the default behaviour is different. For any #cdi [ManagedEvents] #cdi tag
+where no scope is explicitly specified the message will be dispatched through all scopes available
+for that particular Context. This way the receiving side can decide which scope it wants to listen to,
+allowing global and local receivers for the same message instance.
+For cases where you even want to restrict the sending side to a single scope there will also be a new scope attribute
+for the #cdi [ManagedEvents] #cdi tag: #par
+
+#cdb
+[ManagedEvents("save,delete", scope="local")]
+#cdb
+
+#sub Custom Scopes #sub
+  
+#par Finally you can also create your own custom scope when neither global nor local messaging is the right choice.
+This may be the case when you create a large AIR window for example. The root window component may create a Context
+with the root application Context as a parent but then also a few child Contexts for parts within that window.
+If you then want to setup a messaging scope for that window only you need a scope that spans multiple Contexts but
+still is not global. With Parsley 2.1 you can create a scope setup like in the following example diagram: #par
+
+#img doc_img scopes-custom.jpg #img
+
+#par The window scope is a custom scope that exists side-by-side with the two default scopes. Now how do you 
+instruct the framework to create that scope? This has to be done for the root Context of the scope, 
+in this case the two root Contexts for the two window scopes. The scope can be added to the
+#cdi CompositeContextBuilder #cdi: #par
+
+#cdb
+var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
+builder.addScope("window", true);
+FlexContextBuilder.merge(MyWindowConfig, builder);
+builder.build();
+#cdb
+
+#par The first parameter for the #cdi addScope #cdi method is the name of the scope. It does not have to 
+be unique as long as you make sure that two scopes with the same name do never overlap. This is convenient
+as it allows to define a message handler for the window scope without having to think about which
+window instance it belongs to: #par
+
+#cdb
+[MessageHandler(selector="save", scope="window")]
+public function save (event:ProductEvent) : void {
+#cdb
+
+#par The second boolean parameter specifies whether the scope should be shared with child Contexts.
+So you can also create custom local scopes, although this is probably a rather unsual use case. #par
+
+#par When the new MXML tags for Context creation will be introduced in Parsley 2.2, scopes can also
+be conveniently specified directly on the tag: #par
+
+#cdb
+<parsley:FlexContext config="{MyConfig}">
+   <parsley:scopes>
+      <parsley:Scope name="window" inherited="true"/>
+   <parsley:scopes>
+</parsley:FlexContext>
+#cdb
+
+#sub Scope API #sub
+
+#par Finally the introduction of scopes makes significant changes of the internal APIs necessary.
+First the MessageRouter is now an internal API, not exposed to the application directly.
+Instead the #cdi messageRouter #cdi property on the #cdi Context #cdi interface will be replaced
+by a new #cdi scopeManager #cdi property: #par
+
+#cdb
+function get scopeManager () : ScopeManager;
+#cdb
+
+#par The #cdi ScopeManager #cdi interface is quite simple: #par
+
+#cdb
+function hasScope (name:String) : Boolean;
+	
+function getScope (name:String) : Scope;
+	
+function getAllScopes () : Array;
+	
+function dispatchMessage (message:Object, selector:* = undefined) : void;
+#cdb
+
+#par A #cdi ScopeManager #cdi is always associated with a particular Context and only "sees" the 
+scopes that the Context actually belongs to. The #cdi dispatchMessage #cdi method is a convenient shortcut
+which allows you to dispatch a message to all scopes managed by that instance. #par
+
+#par The #cdi Scope #cdi interface itself looks like this: #par
+
+#cdb
+function get name () : String;
+	
+function get inherited () : Boolean;
+	
+function get messageReceivers () : MessageReceiverRegistry;
+	
+function get objectLifecycle () : ObjectLifecycleScope;
+	
+function dispatchMessage (message:Object, selector:* = undefined) : void;
+#cdb
+
+#par The #cdi name #cdi and #cdi inherited #cdi properties correspond to the values you specify when 
+creating a scope. The #cdi MessageReceiverRegistry #cdi allows you to add receivers (handlers or 
+interceptors) for messages of that particular scope. This API is mostly used by configuration tags,
+but may also be used by application code. The #cdi ObjectLifecycleScope #cdi allows to add lifecycle
+listeners for a scope, a new feature in 2.1 which will be enhanced with a new set of custom tags
+in 2.2. In the following example you'd be notified whenever an object of type #cdi UserProfileController #cdi
+(or a subtype) gets created within the window scope: #par
+
+#cdb
+[PreInit(scope="window")]
+public function controllerInit (con:UserProfileController) : void {
+#cdb
+
+#par Again the default scope is #cdi global #cdi if not specified. Since these tags are introduced
+in 2.2, you have to register the listener programmatically in 2.1: #par
+
+#cdb
+var scope:Scope = context.scopeManager.getScope("window");
+scope.objectLifecycle.addListener(UserProfileController, ObjectLifecycle.PRE_INIT, 
+                                                                             controllerInit); 
+#cdb
+
+
+
+#sc3 roadmap_messagerouter Revised MessageRouter interface #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-192 Jira Ticket for Comments #url #par
+
+#par While it is easy in general to create custom configuration tags that can be used as MXML, XML or Metadata tags,
+it was not very easy to create a tag that registers a target for the Messaging Framework that behaves significantly different
+than the builtin ones. That is because the MessageRouter interface in version 2.0 closely matches the capabilities of the
+three builtin tags (#cdi MessageHandler #cdi, #cdi MessageBinding #cdi and #cdi MessageInterceptor #cdi): #par
+
+#cdb
+function registerMessageHandler (targetInstance:Object, targetMethod:String, 
+    messageType:Class = null, messageProperties:Array = null, selector:* = undefined, 
+    domain:ApplicationDomain = null) : MessageTarget;
+	
+function registerMessageBinding (targetInstance:Object, targetProperty:String, 
+    messageType:Class, messageProperty:String, selector:* = undefined, 
+    domain:ApplicationDomain = null) : MessageTarget;
+			
+function registerMessageInterceptor (targetInstance:Object, targetMethod:String, 
+    messageType:Class = null, selector:* = undefined, 
+    domain:ApplicationDomain = null) : MessageTarget;
+		
+function dispatchMessage (message:Object, domain:ApplicationDomain = null) : void;
+#cdb
+
+#par As you see each of the three tags had its corresponding register method in the interface. 
+The parameters largely correspond to the attributes of the configuration tag.
+In version 2.1 the interface will be simplified and generalized: #par
+
+#cdb
+public interface MessageRouter {
+
+    function get receivers () : MessageReceiverRegistry;
+	
+    function dispatchMessage (message:Object, domain:ApplicationDomain, 
+                                                              selector:* = undefined) : void;
+    
+}
+#cdb
+
+#par The #cdi MessageReceiverRegistry #cdi interface will look like this: #par
+
+#cdb
+public interface MessageReceiverRegistry {
+
+    function addTarget (target:MessageTarget) : void;
+
+    function removeTarget (target:MessageTarget) : void;
+	
+    function addInterceptor (target:MessageInterceptor) : void;
+
+    function removeInterceptor (target:MessageInterceptor) : void;
+	
+    function addErrorHandler (target:MessageErrorHandler) : void;
+
+    function removeErrorHandler (target:MessageErrorHandler) : void;
+    
+}
+#cdb
+
+#par There are now three categories of message receivers which behave differently.
+The #cdi MessageInterceptor #cdi existed in 2.0 already, but did not come with 
+a separate interface. The #cdi MessageTarget #cdi interface now bundles all
+regular receivers like #cdi MessageHandlers #cdi, #cdi MessageBindings #cdi
+or the new short-lived Command objects to be introduced in 2.2. Finally the #cdi MessageErrorHandler #cdi
+interface is new. It allows to declare error handlers for a particular type of message
+(and a particular type of Error if you want to differentiate them): #par
+
+#cdb
+[MessageError(type="com.bookstore.LoginEvent")]
+public function handleError (processor:MessageProcessor, error:Error) : void;
+#cdb
+
+#par The handler above will be invoked whenever a message handler for a
+message of type #cdi LoginEvent #cdi dispatched trough the global scope threw an Error. #par
+
+#par A custom configuration tag may now create a new implementation of those three interfaces or reuse
+the existing implementations (#cdi MessageHandler #cdi, #cdi MessageBinding #cdi and so on) and register it
+with the registry. The registry is exposed through the new #cdi Scope #cdi interface explained in the 
+previous section while the #cdi MessageRouter #cdi interface itself becomes an internal interface
+in 2.1. #par
+  
+
+
+#sc3 roadmap_extensions Easy declaration of framework extensions #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-231 Jira Ticket for Comments #url #par
+
+#par The fourth and final larger enhancement for version 2.1 will be adding new hooks to replace internal
+services. While the internal APIs were already quite clean in version 2.0 in that they were modularized
+and each internal service already lived behind an interface. But the problem was that the creation of the
+concrete instances largely happened somewhere deep within the Context building process, so even if you wrote
+a custom implementation of a core interface, there was no easy way to tell Parsley to use it. This will 
+now change. There will be a new global #cdi FactoryRegistry #cdi where you can specify replacements 
+for core services that should be applied to all Context instances built by the framework. Furthermore
+you can also define replacements for an individual Context by specifying the alternative implementation
+in the #cdi CompositeContextBuilder #cdi you use to create the Context. #par
+
+#par This is the list of interfaces you can specify custom implementations for: #par
+
+#lst
+#lse #cdi MessageRouter #cdi: The core interface of the Messaging Framework. Already discussed in a previous section. #lse
+
+#lse #cdi ViewManager #cdi: The manager for the new view wiring mechanism. Also discussed in a previous section. #lse
+
+#lse #cdi Context #cdi: You can also pick a custom implementation for the Context itself. #lse
+
+#lse #cdi ObjectLifecycleManager #cdi: This manager is reponsible for processing #cdi ObjectDefinitions #cdi to 
+instantiate, configure and destroy instances managed by the container. The name of the interface was #cdi ObjectFactory #cdi
+in version 2.0, but it will be renamed since the new name is a better match semantically for the task this service performs. #lse
+
+#lse #cdi ObjectDefinitionRegistry #cdi: The central registry for #cdi ObjectDefinitions #cdi. Probably the least likely
+candidate for replacements. #lse
+#lst
+
+#par As an example, a custom factory for a #cdi ViewManager #cdi can be specified like this: #par
+
+#cdb
+GlobalFactoryRegistry.getInstance().viewManager = new MyViewManagerFactory();
+#cdb
+
+#par For an individual Context you can specify a custom factory on the #cdi CompositeContextBuilder #cdi: #par
+
+#cdb
+var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
+builder.factories.viewManager = new MyViewManagerFactory();
+FlexContextBuilder.merge(MyConfig, builder);
+builder.build();
+#cdb
+
+#par You cannot use the static entry point short cuts in this case. But it is very likely that you install
+custom extensions globally in most cases anyway. #par
+
+
+
+#sc3 roadmap_other21 Other enhancements #sc3
+
+#par Additionally you'll find a few tickets for smaller enhancements planned for the 2.1 release in the
+#url http://opensource.powerflasher.com/jira/browse/PSL?report=com.atlassian.jira.plugin.system.project:roadmap-panel Jira Road Map #url.
+This emcompasses support for Flex 4, an Ant Build that also works on the Mac or enhancements for the initialization order for messaging
+in sub-Contexts and several more. #par
+
+
+
+#sc3 roadmap_migrating Migrating from 2.0 to 2.1 #sc3
+
+#par This is a list of instructions how you adjust existing applications for the changes that are not backwards-compatible.
+Even for large and complex applications it should be no big deal. Many sections in this migration guide only affect
+you when you have built extensions for the framework like custom configuration tags. If you don't have a clue
+what a particular section is referring to, it is very likely that you can safely ignore it. #par
+
+
+#sub Adjust static entry point methods #sub
+
+#par For all Context instances you want to use view wiring with, you now have to add a second parameter
+specifying the view root for the Context: #par
+
+#cdb
+FlexContextBuilder.build(MyConfig, this);
+#cdb
+
+#par or: #par
+
+#cdb
+XmlContextBuilder.build("config.xml", this, parentContext);
+#cdb
+
+#par When building the Context from within a Component you can simply pass #cdi this #cdi to the builder in most cases. #par
+
+
+#sub Switch to addedToStage event for Context creation #sub
+
+#par The ContextBuilder now looks for parent Context and ApplicationDomain in the view hierarchy if you specify
+a view root for the builder. To be able to dispatch a bubbling event the specified view root must have been 
+added to the stage: #par
+
+#cdb
+<mx:Panel
+    addedToStage="FlexContextBuilder.build(MyConfig, this)"
+    ...
+>
+#cdb
+
+
+
+#sub Remove custom viewTrigger event types #sub
+
+#par Those are no longer needed and no longer supported (in case you used them at all). Such a custom event type could be specified
+for the static methods of the #cdi FlexContextBuilder #cdi and for the #cdi Configure #cdi tag: #par
+
+#cdb
+<parsley:Configure triggerEvent="myCustomEventType"/>
+#cdb
+
+#par Simply remove all references to custom event types. #par
+
+
+#sub Attach Flex Popups to the Context they belong to #sub
+
+#par Flex popups now require an extra step to explicitly attach them to the Context that components in that
+popup should be wired to: #par
+
+#cdb
+[Inject]
+public var context:Context;
+
+private function showPopup () : void {
+    var win:TitleWindow = new TitleWindow();
+    // set properties
+    context.viewManager.addViewRoot(win);
+    PopUpManager.addPopup(win, this);
+}
+#cdb
+
+
+#sub Attach native AIR windows to the Context they belong to #sub
+
+#par This is basically the same mechanism like how you now have to deal with Flex Popups: #par
+
+#cdb
+[Inject]
+public var context:Context;
+
+private function openWindow () : void {
+    var win:Window = new Window();
+    // set properties
+    context.viewManager.addViewRoot(win);
+    win.open();
+}
+#cdb
+
+
+#sub Remove Parsley's ContextModule and ModuleLoader tags #sub
+
+#par They are no longer needed. Simply replace them with the default #cdi mx:Module #cdi
+and #cdi mx:ModuleLoader #cdi components. There is no longer a need to specify the parent Context for a ModuleLoader, 
+it will be auto-detected in the view hierarchy. #par 
+
+#par 2.0 #par
+
+#cdb
+<parsley:ContextModule
+    configClass="{MyModuleConfig}"
+    ...
+>
+#cdb
+
+#par 2.1 #par
+
+#cdb
+<mx:Module
+    addedToStage="FlexContextBuilder.build(MyModuleConfig, this)"
+    ...
+>
+#cdb
+
+
+#sub Organize imports for Parsley's internal APIs #sub
+
+#par If you are talking to the internal API you simply have to organize most imports.
+There was a huge refactoring and cleaning up for the internal API and several packages
+and classes have been moved. If your IDE supports a project-wide "Organize imports"
+that's the fastest way to migrate. #par
+
+
+#sub Adjust any custom configuration tags for the Messaging Framework #sub
+
+#par If you talked to the #cdi MessageRouter #cdi API directly, in a custom configuration tag or elsewhere in your
+application code, you have to adjust the code for the new API. In 2.0 a MessageHandler registration looked like
+this: #par
+
+#cdb
+context.messageRouter.registerMessageHandler(target, "execute", MyMessage);
+#cdb
+
+#par In 2.1 there is now a convenient base class that handles a lot of low-level details for you.
+For example it registers a proxy for non-lazy singletons, so that it does not miss messages even
+if they are dispatched during Context initialization before the receiver is actually instantiated.
+Therefor it is recommended to simply overwrite the #cdi createReceiver #cdi and #cdi removeReceiver #cdi
+methods of the #cdi AbstractMessageReceiverDecorator #cdi base class and not implement the #cdi decorate #cdi
+method yourself. You can examine the builtin receiver tag implementations in the package
+#cdi org.spicefactory.parsley.tag.messaging #cdi if you want to see how the default messaging tags
+are implemented. For example the #cdi [MessageInterceptor] #cdi tag implementation looks like this: #par
+
+#cdb
+protected override function createReceiver 
+        (provider:ObjectProvider, scopeManager:ScopeManager) : MessageReceiver {
+    var ic:MessageInterceptor 
+            = new DefaultMessageInterceptor(provider, method, type, selector);
+    scopeManager.getScope(scope).messageReceivers.addInterceptor(ic);
+    return ic;
+}
+	
+protected override function removeReceiver 
+        (receiver:MessageReceiver, scopeManager:ScopeManager) : void {
+    var ic:MessageInterceptor = MessageInterceptor(receiver);
+    scopeManager.getScope(scope).messageReceivers.removeInterceptor(ic);
+}
+#cdb
+
+#par In the #cdi createReceiver #cdi method you can see that the framework passes a prebuilt #cdi ObjectProvider #cdi
+instance to the method. This may either be a wrapper for an existing instance or a proxy
+where the instance is fetched from the Context in case a matching message is heard. #par
+
+
+#sub Change code that programmatically dispatches messages #sub
+
+#par This change is straightforward. Version 2.1 introduces scopes. Therefor the #cdi messageRouter #cdi property
+has been replaced by the new #cdi scopeManager #cdi property. #par
+
+#par 2.0 #par
+#cdb
+context.messageRouter.dispatchMessage(new MyMessage());
+#cdb
+
+#par 2.1 #par
+#cdb
+context.scopeManager.dispatchMessage(new MyMessage());
+#cdb
+
+#par The ScopeManager dispatches through all scopes available in that Context. This way the receivers can decide
+which scope they want to listen to. You can alternatively dispatch to a single scope only: #par
+
+#cdb
+context.scopeManager.getScope(ScopeName.LOCAL).dispatchMessage(new MyMessage());
+#cdb
+
+
+#sub Adjust configuration tags that register lifecycle listeners on an ObjectDefinition #sub
+
+#par The lifecycle mechanism has been expanded, there are now five events for the lifecycle of each
+object: #cdi preConfigure #cdi, #cdi preInit #cdi, #cdi postInit #cdi, #cdi preDestroy #cdi and
+#cdi postDestroy #cdi. Therefor the old #cdi ObjectLifecycleListener #cdi interface has been removed
+and you can register a function reference directly: #par
+
+#par 2.0 #par
+
+#cdb
+definition.lifecycleListeners.addLifecycleListener(this);
+#cdb
+
+#par 2.1 #par
+
+#cdb
+definition.objectLifecycle.addListener(ObjectLifecycle.PRE_INIT, preInit);
+#cdb
+
+#par In the example for 2.0 #cdi this #cdi would refer to a tag that additionally implements
+#cdi ObjectLifecycleListener #cdi. In the example for 2.1 #cdi preInit #cdi references a function.
+The signature for the function is the same as in 2.0, the framework passes the instance itself
+and the Context. But the method could now be private as it is no longer required to implement
+an interface. #par
+
+
+
+#sc2 roadmap_v22 Version 2.2 #sc2
+
+#par After the 2.1 consolidation release it is time to add some new features. For this release it is very likely
+that it will be fully backwards-compatible, so you can move to the new features gradually. #par
+
+
+#sc3 roadmap_contextcreation MXML Tags for Context Creation #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-234 Jira Ticket for Comments #url #par
+
+#par The new version will allow to create Context instances with MXML tags: #par
+
+#cdb
+<parsley:FlexContext config="{MyConfig}"/>
+#cdb
+
+#cdb
+<parsley:XmlContext config="config.xml"/>
+#cdb
+
+#cdb
+<parsley:CompositeContext>
+    <parsley:FlexConfig config="{ServiceConfig}"/>
+    <parsley:FlexConfig config="{ControllerConfig}"/>
+    <parsley:XmlConfig config="logging.xml"/>
+</parsley:CompositeContext>
+#cdb
+
+#par These tags will not introduce any new functionality. They are just syntactical sugar for all of you
+who prefer this declaration style over the old static entry point methods. Those will remain unchanged,
+they will be available as an alternative for Flex applications and are still needed for Flash applications. #par
+
+
+
+#sc3 roadmap_viewconfig View Configuration with MXML or XML #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-235 Jira Ticket for Comments #url #par
+
+#par This new feature is inspired by the configuration mechanism used in #url http://sourceforge.net/projects/flicc/ Flicc #url.
+It allows you to configure view components in MXML or XML and let the container apply the configuration to the view when it
+is wired to the Context. This is an optional feature. You can still configure view classes with Metadata exclusively like with
+previous versions. But the new MXML and XML support allows to define view configuration alongside your regular object configurations.
+It has the side effect that you can then define different configurations for individual instances of the same component.
+The configuration to apply to a wired component will be matched either by id or by type: #par
+
+#cdb
+<View id="myPanel" type="{MyPanel}">
+    <Property name="url" value="http://www.somewhere.com/"/>
+    <MessageHandler method="execute"/>
+</View>
+#cdb
+
+#par As you see it is basically the same syntax like for regular object configurations. But the use of the View tag instructs
+Parsley not to attempt to create instances of that class but instead wait until any matching component gets dynamically wired
+to the Context and then apply the configuration. #par
+
+#par If you specify an id, type and id have to match for a wired component. If you omit the id the component is only
+matched by type. #par
+
+
+
+#sc3 roadmap_commands Short-lived Command Objects #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-236 Jira Ticket for Comments #url #par
+
+#par This new feature allows the use of short-lived commands instead of regular message handlers defined in objects
+that are tied to the Context lifecycle. This makes it easier to use Parsley with a classic FrontController/Command
+approach. The new #cdi Command #cdi tag has the same attributes like the existing #cdi MessageHandler #cdi tag, but
+the mechanism behind this tag is significantly different: #par
+
+#cdb
+<Object id="myPanel" type="{MyCommandObject} singleton="false">
+    <Property name="url" value="http://www.somewhere.com/"/>
+    <Command method="execute"/>
+</Object>
+#cdb
+
+#par The lifecycle for an object configured as a Command is completely different. The creation of the object
+does not happen until a matching message is dispatched. Note that it is not declared as a singleton. 
+When the object is created for a command execution it is
+configured like any regular object, so it can have dependencies, it can declare managed events and so on.
+It becomes a container managed object just for the duration of the command execution. It will then immediately
+be removed from the Context. There is also a tag variant for aynschronously operating commands: #par
+
+#cdb
+<Object id="myPanel" type="{MyCommandObject} singleton="false">
+    <Property name="url" value="http://www.somewhere.com/"/>
+    <AsyncCommand method="execute"/>
+</Object>
+#cdb
+
+#par The use of this tag has the side effect that the command instance remains a container managed object until the
+task is performed. So it can listen for messages during execution (for example there might be application messages that would
+cause the command to stop its execution). It can also dispatch a message itself when it has completed its operation,
+since it is still part of the Context then. Such a command instance has to dispatch an event to signal that it has
+completed. The default is #cdi Event.COMPLETE #cdi like with the #cdi AsyncInit #cdi tag, but it can be overridden through
+an attribute of the #cdi AsyncCommand #cdi tag. Only after it has dispatched that event it will be
+removed from the Context. #par
+
+#par There is also a plan to add a new #cdi order #cdi attribute to the #cdi MessageHandler #cdi and #cdi Command #cdi
+tags so that you are able to define a fixed sequence of commands and handlers. The #cdi AsyncCommand #cdi tag might
+get a boolean #cdi block #cdi attribute to indicate that other handlers and command in the message target chain have
+to wait for the completion of that command. That would make it easier to declare a fixed sequence of commands that
+contains asynchronous operations. #par
+
+#par And finally, of course the new tags also exist as a Metadata variant: #par
+
+#cdb
+[Command(selector="deleteUser")]
+public function execute (event:DeleteUserEvent) : void {
+#cdb 
+
+
+
+#sc3 roadmap_lifecycle Observing the Lifecycle of other Objects #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-237 Jira Ticket for Comments #url #par
+
+#par This is a powerful new feature that opens some new doors for convenient ways to observe or modify other objects
+without the need to add something to their configuration. This might be particularly useful for short-lived objects
+like views or commands which might enter and leave the Context at any point in time and thus are not valid sources
+for regular injection points. By observing these instances you can still get hold of a reference to such a short-lived
+object. This feature works with the existing #cdi [PostConstruct] #cdi and #cdi [PreDestroy] #cdi tags.
+Until this version they were only used on methods without parameters: #par
+
+#cdb
+[PostConstruct]
+public function init () : void;
+#cdb
+
+#par In such a case the #cdi init #cdi method would have been called when the object where it was place on was fully
+configured. Now there is a new variant for this tag: #par
+
+#cdb
+[PostConstruct]
+public function enhance (panel:ShoppingCartPanel) : void;
+#cdb
+
+#par Now this method will be invoked whenever a new instance of #cdi ShoppingCartPanel #cdi (or any subclass) has
+been fully configured. Likewise with a #cdi [PreDestroy] #cdi method it will be invoked when any object with
+a matching type leaves the Context. This works globally, so you can also observe objects in sub- or super-Contexts. #par
+
+#par With this mechanism you simply plug in some new class that contains such a tag and suddenly existing classes
+can be enhanced without the need to touch their configuration. This is somewhat analogous to the existing
+#cdi [Factory] #cdi tag which can be used to customize the object instantiation. With this tag you can customize
+the object configuration after it has been instantiated. In both cases you do not even depend on the Parsley API
+in any way. #par
+
+
+
+
+#sc2 roadmap_v23 Version 2.3 #sc2
+
+#par This version is not fully specified yet. Until work on this version starts the road map might still change due
+to user feedback. But these two features are the initial plan. #par
+
+
+#sc3 roadmap_xmlobjectmapper XML-Object-Mapper Configuration with Metadata #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-220 Jira Ticket for Comments #url #par
+
+#par This enhancement will make the definition of custom configuration tags easier. With MXML or Metadata it was
+already quite easy, since at most a single line of code was needed to register such a tag. With XML tags the use
+of the XML-Object Mapper from Spicelib is required and might involve the need to programmatically specify subtle
+details of how the new XML tag maps to the configuration class. #par
+
+#par The feature set as such will remain the same. The new mechanism will still be based on the existing
+#cdi PropertyMapperBuilder #cdi class, but the need to programmatically create such a builder will go away.
+First there will be sensible defaults. A property without metadata will automatically map to a corresponding
+XML attribute. You can then override the default for individual properties: #par
+
+#cdb
+public class Person {
+
+    [ChildTextNode]
+    public var name:String;
+    
+    [ChildElement]
+    public var address:Address;
+    
+}
+#cdb
+
+#par There will be a corresponding metadata tag for all the features currently available in the #cdi PropertyMapperBuilder #cdi. #par
+
+
+
+#sc3 roadmap_bindings New Tag for Flex Bindings #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-238 Jira Ticket for Comments #url #par
+
+#par This tag will allow to specify Flex Bindings with Metadata. This might be convenient for regular classes managed by the
+container, where you cannot create bindings with MXML. You can then create unidirectional or bidirectional bindings between
+properties of two managed objects: #par
+
+#cdb
+[PropertyBinding(objectId="environment",property="defaultTimeout")]
+public var defaultTimeout:uint;
+#cdb
+
+#par The name #cdi PropertyBinding #cdi was chosen to distinguish this tag from the existing #cdi MessageBinding #cdi and
+#cdi ResourceBinding #cdi tags. #par
+
+
+
+

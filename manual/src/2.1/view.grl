@@ -1,0 +1,216 @@
+#sc1 view_intro Dynamic View Wiring #sc1
+
+#par So far all objects that "live" inside a Parsley Context have been defined with either MXML, XML or ActionScript as
+detailed in #ref config_intro #ref. For Flash Applications these mechanisms will usually be sufficient as it is very likely
+that you are able to conveniently define all managed objects in XML or ActionScript - including view elements.
+For Flex Applications this approach is not ideal since you'll prefer to declare your components in your MXML files
+within the component hierarchy and not in a separate Parsley Context MXML configuration class.
+So we'll need a different mechanism to connect these components defined within your MXML view definitions
+to objects declared with Parsley configuration files. The solution Parsley offers for this use case will be
+described in this chapter. #par
+
+
+#sc2 view_init Initializing View Wiring Support #sc2
+
+#par First you have to make sure that you pass a view root DisplayObject to every ContextBuilder method
+where you want the Context to be able to dynamically wire views. This was already demonstrated in several
+of the previous chapters. We'll just summarize the options again here: #par
+
+#par MXML configuration #par
+
+#cdb
+var viewRoot:DisplayObject = ...;
+FlexContextBuilder.build(BookStoreConfig, viewRoot);
+#cdb
+
+#par XML configuration #par
+
+#cdb
+var viewRoot:DisplayObject = ...;
+XmlContextBuilder.build("bookStoreConfig.xml", viewRoot);
+#cdb
+
+#par Multiple configuration styles #par
+
+#cdb
+var viewRoot:DisplayObject = ...;
+var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder(viewRoot);
+FlexContextBuilder.merge(BookStoreConfig, builder);
+XmlContextBuilder.merge("logging.xml", builder);
+builder.build();	
+#cdb
+
+
+
+#sc2 view_config Component Configuration #sc2
+
+#par To configure a Flex Component to take advantage of Parsley's IOC Container features the following steps are required: #par
+
+#lst
+#lse Configure the Component with Parsley Metadata Tags the same way you would configure any other object. #lse
+#lse Tell Parsley that this Component wants to be part of the IOC Container by firing a special configuration event. #lse
+#lst
+
+#par Let's illustrate this with a simple example: #par
+
+#cdb
+<mx:Panel 
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    #hlt addedToStage="dispatchEvent(new Event('configureView', true));" #hlt
+    >
+    
+    <mx:Script>
+        <![CDATA[
+            import com.bookstore.events.*;
+            import com.bookstore.model.*;
+            
+            [Bindable]
+            private var user:User;
+            
+            #hlt [Inject] #hlt
+            public var mediator:LoginMediator;    
+            
+            #hlt [MessageHandler] #hlt
+            public function handleLogin (event:LoginEvent) : void {
+                this.user = event.user;            
+            }
+        ]]>
+    </mx:Script>
+    
+    <mx:text text="Current User: {user.name}"/>
+    
+    <!-- some more components ... -->
+    
+</mx:Panel> 
+#cdb
+
+#par The metadata tags used in the example work the same way as for objects defined in Parsley configuration files.
+So your Flex Component can participate in the Parsley Messaging infrastructur and request injections of objects from
+the Context. To trigger the configuration of the Component we fire an event when it gets added to the stage.
+The event type has to be #cdi 'configureView' #cdi which Parsley registers a listener for on the every #cdi ViewManager #cdi. 
+Furthermore it must be a bubbling event, thus the second parameter is #cdi true #cdi. #par
+
+#par Note that in this example we did not follow the best practice to use a constant for the event type as it is our goal to keep the Flex
+Component free from imports of the Parsley API. So it will continue to work in other environments without Parsley.
+The event would simply be ignored then and the property values could be set directly in MXML instead of being injected
+by an IOC Container. You could of course define such a constant within your application classes. #par
+
+#par If you don't mind to couple your Component to the Parsley API the framework offers a special #cdi <Configure/> #cdi
+tag as an alternative: #par
+
+#cdb
+<mx:Panel 
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:parsley="http://www.spicefactory.org/parsley/flex"
+    >
+    
+    #hlt <parsley:Configure/> #hlt
+    
+    <!-- ... -->
+    
+</mx:Panel> 
+#cdb
+
+
+
+#sc2 view_lifecycle Component Lifecycle #sc2
+
+#par Due to the fact that Flex Components are connected to the IOC Container "on the fly" the lifecycle for Components
+is different than for objects defined directly in the container. This affects the #cdi [Init] #cdi and
+#cdi [Destroy] #cdi metadata tags. #par
+
+#sub Methods annotated with #cdi [Init] #cdi #sub
+
+#par For an object declared directly within a Parsley configuration file these methods get executed after the 
+container has instantiated and configured the object. For a Flex Component that is dynamically wired it
+will be invoked after the container caught the configuration event dispatched by the Component and after
+all injections have been processed. #par
+
+#sub Methods annotated with #cdi [Destroy] #cdi #sub
+
+#par For an object declared directly within a Parsley configuration file these methods only get executed after the 
+container has been destroyed with a call to #cdi Context.destroy() #cdi with the only exception of DynamicObjects
+which may be removed from the Context anytime.
+For a Flex Component that is dynamically wired the destroy method
+will be invoked after the Component has been removed from the stage. Of course that means that the same
+instance can have multiple invocations of its Init and Destroy methods in case it gets removed and re-added
+to the stage. #par
+
+#par You should also be aware of some strange side effects when using the Flex PopUpManager for example.
+In my tests I noticed that it has a strange way of initializing popups, often leading to a sequence
+of #cdi addedToStage #cdi and #cdi removedFromStage #cdi events. In this case injections might be processed twice. #par
+
+#par Finally you can switch this default behaviour if the lifecycle of the component should not depend
+on the time it spends on the stage. You can control this with properties of the #cdi ViewManagerFactory #cdi,
+either in the #cdi GlobalFactoryRegistry #cdi or for a single Context with #cdi CompositeContextBuilder.factories #cdi. #par
+
+
+
+#sc2 view_popup Flex Popups and Native AIR Windows #sc2
+
+#par For Flex Popups and Native AIR Windows some extra step is required to tell the framework about them.
+This is because those are views which are disconnected from the view
+hierarchy below the main Application component. A Flex Popup usually sits somewhere right below the SystemManager.
+A Native AIR Window even comes with its own SystemManager. So you have to connect both manually to 
+a Parsley #cdi ViewManager #cdi if you want to use view wiring in popups and windows. This is quite easy: #par
+
+#sub Flex Popup #sub
+
+#cdb
+[Inject]
+public var context:Context;
+
+private function showPopup () : void {
+    var win:TitleWindow = new TitleWindow();
+    // set properties
+    context.viewManager.addViewRoot(win);
+    PopUpManager.addPopUp(win, this);
+}
+#cdb
+
+#sub AIR Window #sub
+
+#cdb
+[Inject]
+public var context:Context;
+
+private function openWindow () : void {
+    var win:Window = new Window();
+    // set properties
+    context.viewManager.addViewRoot(win);
+    win.open();
+}
+#cdb
+
+#par The #cdi removeViewRoot #cdi method of the #cdi ViewManager #cdi interface will not be called by application code directly
+in most cases, as the default implementation of the interface will automatically remove a view root when it is removed
+from the stage. #par
+
+
+
+#sc2 view_modules View Wiring in Modular Applications #sc2
+
+#par The following diagram illustrates how view wiring works in a modular application and why it is important
+to manually connect Flex Popups and Native AIR Windows to a Context: #par
+
+#img doc_img view-wiring.jpg #img
+
+#par The Flex Components that contain a #cdi <Configure/> #cdi tag dispatch a bubbling event that gets caught
+by the next listener of a #cdi ViewManager #cdi in the hierarchy above that component. This way each component
+finds its matching Context, which is important because a component loaded into a module usually also needs
+access to the configuration of that module. If it would get wired to the root Context, it would only "see"
+the object in that Context. #par
+
+#par For Context C in the diagram you'll see that two view roots were connected to the Context: One for the root
+component of the loaded module and one for a popup opened by the module. It becomes apparent now why this
+manual connection to the popup is necessary: if a component somewhere below the popup would dispatch a bubbling
+event it will end up in the SystemManager and never reach the #cdi ViewManager #cdi sitting on the root module
+component if we would not place a second listener on the popup itself. #par
+
+#par Finally this mechanism also handles ApplicationDomains for us: The internal ModuleManager of the Parsley
+framework puts listeners on the root module component that catches bubbling events from #cdi ContextBuilders #cdi
+somewhere below and tells them the ApplicationDomain to use. #par
+
+
+
+

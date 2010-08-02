@@ -1,0 +1,88 @@
+#sc1 spicelib-overview_intro Spicelib Overview #sc1
+
+#par Spicelib is a small AS3 library that can be used in Flex or pure AS3 projects.
+This chapter will give a quick overview over its features. #par
+
+
+
+
+#sc2 spicelib-overview_purpose Purpose of the library #sc2
+
+#par The focus for Spicelib is on general utility modules for AS3
+development. Furthermore Spicelib serves as a support library for the other Spicefactory projects.
+So if you are using Parsley, Pimento or Cinnamon there are always Spicelib modules working
+under the hood. But still you may find it useful on its own. #par
+
+#par Work on some of the modules like Logging or the Task Framework
+had started in 2004 in AS2, so some modules have been used in production as an inhouse framework for
+several years now. #par
+
+
+
+
+#sc2 spicelib-overview_modules Spicelib Modules #sc2
+
+#par Spicelib consists of the following modules: #par
+
+#sub Reflection #sub
+
+#par The reflection module contains convenient classes to reflect on AS3 classes,
+methods and properties without the need for cumbersome parsing of XML output from 
+#cdi describeType #cdi. For more information see #ref reflection_intro #ref. #par
+
+#sub XML to Object Mapper #sub
+
+#par A small but powerful and flexibel XML-to-Object Mapper which allows you to map from XML 
+to AS3 classes - in both directions. It comes with builtin mappers
+which cover the most common use cases like mapping properties of AS3 classes to XML attributes
+or child elements, but can be easily extended. For more information see #ref xmlmapper_intro #ref. #par
+
+#sub Task Framework #sub
+
+#par General abstraction for asynchronous operations. Allows nesting / grouping of
+Tasks in #cdi TaskGroup #cdi instances for concurrent or sequential
+execution. For more information see #ref task_intro #ref. #par
+
+#sub Logging #sub
+
+#par The logging framework allows to log custom messages from application code and use 
+the configuration options to filter log output based on logger names (often corresponding
+to the name of the class containing the log statement) and log levels as a way to indicate
+the severity or importance of the log message. 
+For more information see #ref logging_intro #ref. #par 
+
+#sub Expressions #sub
+
+#par The expression framework offers a way to parse and interpret simple string expressions
+that contain variables that will be evaluated at runtime. In the example expression
+#cdi "The age of the child is ${child.age}" #cdi the dynamically evaluated part is
+#cdi child.age #cdi. Currently only simple variables and properties with pluggable
+resolvers are supported, no
+arithmetic or comparison operators. Since the feature set is quite basic, there is no
+section about this module in the Developer Manual. Please refer to the 
+#url /parsley/docs/2.0/api/spicelib/ Spicelib API (ASDoc) #url
+for more information. In Parsley the Expression Framework is used to allow the inclusion
+of variables in the XML configuration of an #cdi ApplicationContext #cdi. #par
+
+
+
+
+#sc2 spicelib-overview_swc Module SWCs #sc2
+
+#par Introduced with version 1.1.0 Spicelib comes with separate Module SWCs in addition
+to the full release SWC. The SWC in the release folder of the
+download contains all Spicelib modules, the modules subfolder contains SWCs for individual
+modules. So if you know that you are only using one or two of the Spicelib modules
+you can keep the classpath free from classes you don't need. The following table
+lists the required SWC for each of the modules. #par
+
+#tbl
+#tbr Reflection # spicelib-reflect-2.0.0.swc, spicelib-core-2.0.0.swc #tbr
+#tbr XML to Object Mapper # spicelib-xml-2.0.0.swc, spicelib-core-2.0.0.swc #tbr
+#tbr Task Framework # spicelib-task-2.0.0.swc, spicelib-core-2.0.0.swc #tbr
+#tbr Logging # spicelib-flash-2.0.0.swc, spicelib-core-2.0.0.swc #tbr
+#tbr Expressions # spicelib-expresssions-2.0.0.swc, spicelib-core-2.0.0.swc #tbr
+#tbl
+
+
+
