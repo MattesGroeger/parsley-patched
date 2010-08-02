@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application 
-	xmlns:mx="http://www.adobe.com/2006/mxml" 
+<s:Application 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:sf="http://www.spicefactory.org/parsley"
 	xmlns:hw="org.spicefactory.parsley.sample.helloworld.*"
-	layout="vertical" 
 	minWidth="1024" 
 	minHeight="768" 
 	viewSourceURL="srcview/index.html">
+	
+	<s:layout>
+		<s:VerticalLayout gap="10" paddingLeft="12" paddingRight="12" paddingBottom="12" paddingTop="12" verticalAlign="top"/>
+	</s:layout>
 	
 	<!--
 		This application is intended as a first introduction to Parsley. It 
@@ -20,7 +24,7 @@
 		5. Sending and receiving a message using the messaging framework.
 	-->
 	
-	<mx:Style source="styles.css"/>
+	<fx:Style source="styles.css"/>
 	
 	<!-- 
 		Parsley is initialized by building a "context" containing a number of 
@@ -31,15 +35,19 @@
 		MXML configuration file. Look inside the HelloWorldConfig file to see
 		how the managed objects are declared.
 	-->
-	<sf:ContextBuilder config="HelloWorldConfig"/>
+	<fx:Declarations>
+		
+		<sf:ContextBuilder config="HelloWorldConfig"/>
+		
+	</fx:Declarations>
 	
 	<!--
 		The two panels below are both managed by Parsley. Look at their source
 		to see how they're configured.
 	-->
-	<mx:HBox width="100%" height="100%">
+	<s:HGroup width="100%" height="98%">
 		<hw:SendPanel width="50%" height="100%"/>
 		<hw:ReceivePanel width="50%" height="100%"/>
-	</mx:HBox>
+	</s:HGroup>
 	
-</mx:Application>
+</s:Application>

@@ -1,7 +1,8 @@
 /* CSS file */
+@namespace "library://ns.adobe.com/flex/spark";
+
 global {
 	color: 	#a63f50;
-	theme-color: haloGreen;
 	font-size: 12;
 	disabled-color: #a63f50;
 	disabled-icon-color: #a63f50;
@@ -17,11 +18,7 @@ Application {
 }
 
 Panel {
-	padding-left: 12;
-	padding-right: 12;
-	padding-top: 12;
-	padding-bottom: 12;
-	border-color: #e9d3d5;
+	chrome-color: #e9d3d5;
 	border-alpha: 0.4;
 	background-alpha: 0.4;
 	background-color: #f9ebe8;
@@ -29,12 +26,8 @@ Panel {
 
 Button {
 	color: #116d40;
-	text-selected-color: #005d30;
-	text-roll-over-color: #005d30;
-	border-color: #116d40;
-	border-width: 1;
 	corner-radius: 0;
-	fill-colors: #cbdccb, #c2d3c2;
+	chrome-color: #cbdccb;
 }
 
 TextArea {

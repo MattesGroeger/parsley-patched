@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel 
-	xmlns:mx="http://www.adobe.com/2006/mxml" 
+<s:Panel 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:sf="http://www.spicefactory.org/parsley"
-	layout="vertical"
 	title="Send Panel" 
 	>
 	
-	<mx:Script>
+	<s:layout>
+		<s:VerticalLayout gap="10" paddingLeft="12" paddingRight="12" paddingBottom="12" paddingTop="12"/>
+	</s:layout>
+	
+	<fx:Script>
 		<![CDATA[
 			/** 
 			 * The [Inject] metadata tells Parsley to inject a dependency by 
@@ -16,7 +20,7 @@
 			[Bindable]
 			public var model:SendModel;
 		]]>
-	</mx:Script>
+	</fx:Script>
 	
 	<!-- 
 		The Configure tag tells Parsley to manage this view component. The view 
@@ -25,38 +29,34 @@
 		components that are configured in this way can use Parsley metadata such
 		as [Inject], [MessageHandler], [Init], etc.
 	-->
-	<sf:Configure/>
+	<fx:Declarations>
+		<sf:Configure/>
+	</fx:Declarations>
 	
 	<!--
 		These checkboxes should be ticked to indicate that Parsley has
 		successfully resolved dependencies and called an initialization method.
 	-->
-	<mx:CheckBox
-		label="Model injected?"
-		labelPlacement="left"
-		enabled="false"
-		selected="{ model != null }"/>
-	<mx:CheckBox
-		label="Model initialized?"
-		labelPlacement="left"
-		enabled="false"
-		selected="{ model.initialized }"/>
+	<s:Label
+		text="Model injected? { model != null }"/>
+	<s:Label
+		text="Model initialized? { model.initialized }"/>
 	
 	<!--
 		This button calls a method on the model that was injected by Parsley.
 		The module will use the messaging framework to send a message.
 	-->
-	<mx:Button 
+	<s:Button 
 		label="Click to send a &quot;Hello World!&quot; message" 
 		click="model.sayHello()"/>
 	
-	<mx:Spacer height="100%"/>
+	<s:Rect height="100%"/>
 	
 	<!--
 		This shows that Parsley has resoved a nested dependency. The model 
 		property of the view has been injected, and so has the sharedModel 
 		property of the model.
 	-->
-	<mx:Label text="{ model.sharedModel.slogan }"/>
+	<s:Label text="{ model.sharedModel.slogan }"/>
 
-</mx:Panel>
+</s:Panel>
