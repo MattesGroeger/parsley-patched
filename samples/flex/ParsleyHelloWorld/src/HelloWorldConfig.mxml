@@ -16,8 +16,12 @@
 		and [MessageDispatcher]. See their source for more details.
 	-->
 	
-	<hw:SendModel/>
-	<hw:ReceiveModel/>
-	<hw:SharedModel/>
+	<fx:Declarations>
+	
+		<hw:SendModel/>
+		<hw:ReceiveModel/>
+		<hw:SharedModel/>
+		
+	</fx:Declarations>
 	
 </Objects>
