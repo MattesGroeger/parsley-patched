@@ -20,6 +20,7 @@ import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.messaging.impl.MessageDispatcher;
 import org.spicefactory.parsley.core.registry.ObjectProcessor;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
+import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.processor.util.ObjectProcessorFactories;
 
 /**
@@ -41,12 +42,12 @@ public class MessageDispatcherProcessor implements ObjectProcessor {
 	 * 
 	 * @param target the target to listen to
 	 * @param property the property to inject the dispatcher into
-	 * @param dispatcher the actual dispatcher object
+	 * @param dispatcherFactory the factory to create a new dispatcher for each target instance
 	 */
-	function MessageDispatcherProcessor (target:ManagedObject, property:Property, dispatcher:MessageDispatcher) {
+	function MessageDispatcherProcessor (target:ManagedObject, property:Property, dispatcherFactory:MessageDispatcherFactory) {
 		this.target = target;
 		this.property = property;
-		this.dispatcher = dispatcher;
+		this.dispatcher = dispatcherFactory.createDispatcher();
 	}
 
 	
@@ -70,14 +71,35 @@ public class MessageDispatcherProcessor implements ObjectProcessor {
 	 * Creates a new processor factory.
 	 * 
 	 * @param property the property to inject the dispatcher into
-	 * @param dispatcher the actual dispatcher object
+	 * @param scopeManager the scope manager the message should be dispatched through
+	 * @param scope the scope the message should be dispatched to
 	 * @return a new processor factory
 	 */
-	public static function newFactory (property:Property, dispatcher:MessageDispatcher) : ObjectProcessorFactory {
-		return ObjectProcessorFactories.newFactory(MessageDispatcherProcessor, [property, dispatcher]);
+	public static function newFactory (property:Property, scopeManager:ScopeManager, scope:String = null) : ObjectProcessorFactory {
+		return ObjectProcessorFactories.newFactory(MessageDispatcherProcessor, [property, new MessageDispatcherFactory(scopeManager, scope)]);
 	}
 	
 	
 }
 }
+
+import org.spicefactory.parsley.core.messaging.impl.MessageDispatcher;
+import org.spicefactory.parsley.core.scope.ScopeManager;
+
+class MessageDispatcherFactory {
+	
+	private var scopeManager:ScopeManager;
+	private var scope:String;
+	
+	function MessageDispatcherFactory (scopeManager:ScopeManager, scope:String = null) {
+		this.scopeManager = scopeManager;
+		this.scope = scope;
+	}
+
+	public function createDispatcher () : MessageDispatcher {
+		return new MessageDispatcher(scopeManager, scope);
+	}
+	
+}
+
 

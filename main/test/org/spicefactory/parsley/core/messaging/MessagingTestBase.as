@@ -2,6 +2,7 @@ package org.spicefactory.parsley.core.messaging {
 import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.parsley.core.ContextTestBase;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.messaging.model.ErrorHandlers;
 import org.spicefactory.parsley.core.messaging.model.EventSource;
 import org.spicefactory.parsley.core.messaging.model.FaultyMessageHandlers;
@@ -151,6 +152,29 @@ public class MessagingTestBase extends ContextTestBase {
 		assertEquals("Unexpected count for event test2", 2, handlers.test2Count);
 		assertEquals("Unexpected sum value", 16, handlers.sum);
 	}
+	
+	public function testDispatcherInDynamicObject () : void {
+		var context:Context = messagingContext;
+		checkState(context);
+		checkObjectIds(context, ["testDispatcher"], TestMessageDispatcher);	
+		checkObjectIds(context, ["testMessageHandlers"], TestMessageHandlers);	
+		var handlers:TestMessageHandlers = context.getObject("testMessageHandlers") as TestMessageHandlers; 
+		
+		dispatchMessage(context);
+		dispatchMessage(context);
+		
+		assertEquals("Unexpected count for event test1", 4, handlers.test1Count);
+	}
+	
+	private function dispatchMessage (context:Context) : void {
+		var dynObject:DynamicObject = context.createDynamicObject("testDispatcher");
+		var dispatcher1:TestMessageDispatcher = dynObject.instance as TestMessageDispatcher;
+		var msg:TestMessage = new TestMessage();
+		msg.name = TestEvent.TEST1;
+		dispatcher1.dispatchMessage(msg);
+		dynObject.remove();
+	}
+	
 	
 	public function testUnregisterManagedEvents () : void {
 		var context:Context = messagingContext;

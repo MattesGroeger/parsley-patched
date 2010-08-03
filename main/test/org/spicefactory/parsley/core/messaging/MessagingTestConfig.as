@@ -25,6 +25,7 @@ public class MessagingTestConfig {
 		return new EventSourceMetadata();
 	}
 	
+	[DynamicObject]
 	public function get testDispatcher () : TestMessageDispatcherMetadata {
 		return new TestMessageDispatcherMetadata();
 	}

@@ -15,23 +15,22 @@
  */
 
 package org.spicefactory.parsley.dsl.core.impl {
-import org.spicefactory.parsley.tag.model.NestedObject;
-import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
-import org.spicefactory.parsley.core.messaging.impl.MessageDispatcher;
-import org.spicefactory.parsley.processor.messaging.MessageDispatcherProcessor;
-import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
-import org.spicefactory.parsley.dsl.impl.ObjectProcessorBuilderPart;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
+import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
 import org.spicefactory.parsley.dsl.core.PropertyBuilder;
 import org.spicefactory.parsley.dsl.impl.ObjectDefinitionContext;
+import org.spicefactory.parsley.dsl.impl.ObjectProcessorBuilderPart;
 import org.spicefactory.parsley.dsl.messaging.MessageBindingBuilder;
 import org.spicefactory.parsley.dsl.messaging.MessageReceiverBuilder;
 import org.spicefactory.parsley.dsl.messaging.impl.DefaultMessageBindingBuilder;
 import org.spicefactory.parsley.dsl.messaging.impl.DefaultMessageReceiverBuilder;
 import org.spicefactory.parsley.dsl.messaging.impl.MessageReceiverInfo;
 import org.spicefactory.parsley.processor.core.PropertyProcessor;
+import org.spicefactory.parsley.processor.messaging.MessageDispatcherProcessor;
 import org.spicefactory.parsley.processor.resources.ResourceBindingProcessor;
+import org.spicefactory.parsley.tag.model.NestedObject;
 import org.spicefactory.parsley.tag.model.ObjectIdReference;
 import org.spicefactory.parsley.tag.model.ObjectTypeReference;
 
@@ -97,8 +96,8 @@ public class DefaultPropertyBuilder implements PropertyBuilder {
 	 * @inheritDoc
 	 */
 	public function messageDispatcher (scope:String = null) : void {
-		var md:MessageDispatcher = new MessageDispatcher(context.config.context.scopeManager, scope);
-		context.addBuilderPart(new ObjectProcessorBuilderPart(MessageDispatcherProcessor.newFactory(property, md)));
+		context.addBuilderPart(new ObjectProcessorBuilderPart(MessageDispatcherProcessor
+				.newFactory(property, context.config.context.scopeManager, scope)));
 	}
 	
 	/**
