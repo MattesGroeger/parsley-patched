@@ -508,12 +508,12 @@ default mappings for that property. #par
 
 #sub Ignoring xml elements and attributes #sub
 
-#par In some scenarios you may not be able to create strict mappings as the XML may contain child elements
+#par In some scenarios you may not be able to create strict mappings as the XML may contain child elements or attributes
 which are not relevant for the client side and should be ignored. To do that for a particular mapped class
 you can add the #cdi [XmlMapping] #cdi metadata to the class declaration: #par
 
 #cdb
-[XmlMapping(ignoreUnmappedAttributes="true", ignoreUnmappedChildElements="true")]
+[XmlMapping(ignoreUnmappedAttributes="true", ignoreUnmappedChildren="true")]
 public class Order {
 #cdb
 
