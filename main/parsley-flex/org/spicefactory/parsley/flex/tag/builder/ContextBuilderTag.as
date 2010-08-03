@@ -280,13 +280,13 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 			
 			var factory:ContextBuilderFactory = GlobalFactoryRegistry.instance.contextBuilder;
 			var builder:CompositeContextBuilder = factory.create(viewRoot, parent, domain, description);
-			if (config != null) {
-				builder.addProcessor(new FlexConfigurationProcessor([config]));
-			}
 			if (processors != null) {
 				for each (var processor:ContextBuilderProcessor in processors) {
 					processor.processBuilder(builder);
 				}
+			}
+			if (config != null) {
+				builder.addProcessor(new FlexConfigurationProcessor([config]));
 			}
 			_context = builder.build();
 			dispatchEvent(new Event("contextCreated"));
