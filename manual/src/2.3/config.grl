@@ -187,11 +187,7 @@ class LoginAction {
 See #ref injection_intro #ref and #ref messaging_intro #ref for details on these features. #par
 
 #par We now have to tell
-the container to manage these classes and create the an MXML configuration file.
-These look different for Flex 3 and Flex 4: #par
-
-
-#sub Flex 4 MXML configuration class #sub
+the container to manage these classes and create the an MXML configuration file. #par
 
 #cdb
 <Objects 
@@ -201,35 +197,25 @@ These look different for Flex 3 and Flex 4: #par
     xmlns="http://www.spicefactory.org/parsley"
     >
         
-    <services:LoginServiceImpl timeout="3000"/>
+    <fx:Declarations>
+    
+        <services:LoginServiceImpl timeout="3000"/>
 
-    <actions:LoginAction/>
+        <actions:LoginAction/>
+        
+    </fx:Declarations>
     
 </Objects> 
 #cdb
 
 
-#sub Flex 3 MXML configuration class #sub
-
-#cdb
-<mx:Object 
-    xmlns:mx="http://www.adobe.com/2006/mxml"
-    xmlns:services="com.bookstore.services.*"
-    xmlns:actions="com.bookstore.actions.*">
-    
-    <services:LoginServiceImpl timeout="3000"/>
-    
-    <actions:LoginAction/>
-    
-</mx:Object> 
-#cdb
-
-
 #par In addition to the metadata tags you can use these MXML tags
 for additional configuration, like the timeout value in the example above. 
-The Flex 4 example uses a special root tag from the Parsley namespace provided by the framework.
-It allows the use of properties within the configuration class. In Flex 3 you can simply use
-#cdi <mx:Object> #cdi as the root tag. The latter would work in Flex 4, too, but is not recommended. #par
+The example uses a special root tag from the Parsley namespace provided by the framework.
+It allows the use of properties within the configuration class. Earlier versions simply
+used #cdi fx:Object #cdi as a root tag which is still supported, but does not allow
+the use of external properties. #par
+
 
 
 #sub Framework Initialization #sub
@@ -300,11 +286,15 @@ normal object tags: #par
         ]]>
     </fx:Script>
     
-    <Object type="{LoginServiceImpl}">
-        <Property name="timeout" value="3000"/>
-    </Object>
+    <fx:Declarations>
     
-    <Object type="{LoginAction}"/>
+        <Object type="{LoginServiceImpl}">
+            <Property name="timeout" value="3000"/>
+        </Object>
+    
+        <Object type="{LoginAction}"/>
+        
+    </fx:Declarations>
     
 </Objects> 
 #cdb 
@@ -742,8 +732,8 @@ as both property name and value will be trimmed. #par
 
 #sub Using Properties in MXML Configuration #sub
 
-#par Using properties in MXML configuration is only possible in Flex 4, since it requires the use of the new #cdi <Objects> #cdi
-root tag, which was only added for Flex 4: #par
+#par Using properties in MXML configuration requires the use of the new #cdi <Objects> #cdi
+root tag, which was added in version 2.3: #par
 
 #cdb
 <Objects 
@@ -757,9 +747,13 @@ root tag, which was only added for Flex 4: #par
         ]]>
     </fx:Script>
     
-    <Object type="{BookstoreService}">
-        <Property name="serviceUrl" value="#hlt {properties.serviceUrl} #hlt"/>
-    </Object>
+    <fx:Declarations>
+    
+        <Object type="{BookstoreService}">
+            <Property name="serviceUrl" value="#hlt {properties.serviceUrl} #hlt"/>
+        </Object>
+    
+    </fx:Declarations>
     
 </Objects>
 #cdb

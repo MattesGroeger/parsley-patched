@@ -203,15 +203,19 @@ from the Parsley namespace as the root tag) and add all the classes you want to 
     xmlns:services="com.bookstore.services.*"
     xmlns:actions="com.bookstore.actions.*">
     
-    <services:LoginServiceImpl timeout="3000"/>
-
-    <services:CartServiceImpl timeout="3000"/>
+    <fx:Declarations>
     
-    <actions:LoginAction/>
+        <services:LoginServiceImpl timeout="3000"/>
 
-    <actions:AddToCartAction/>
+        <services:CartServiceImpl timeout="3000"/>
+    
+        <actions:LoginAction/>
 
-    <actions:DeleteCartAction/>
+        <actions:AddToCartAction/>
+
+        <actions:DeleteCartAction/>
+        
+    </fx:Declarations>
     
 </Objects> 
 #cdb

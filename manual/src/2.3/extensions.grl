@@ -473,9 +473,14 @@ listeners and so on). #par
     xmlns="http://www.spicefactory.org/parsley"
     xmlns:config="com.bookstore.config.*">
     
-    <config:Service type="{MyCartService}"/>
     
-    <!-- other object defintions -->
+    <fx:Declarations>
+    
+        <config:Service type="{MyCartService}"/>
+    
+        <!-- other object defintions -->
+        
+    </fx:Declarations>
         
 </Objects> 
 #cdb

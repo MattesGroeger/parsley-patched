@@ -56,7 +56,11 @@ it was instantiated to perform additional configuration. So instead of defining 
     xmlns="http://www.spicefactory.org/parsley"
     xmlns:actions="com.bookstore.actions.*">
     
-    <actions:LoginAction/>
+    <fx:Declarations>
+        
+        <actions:LoginAction/>
+    
+    </fx:Declarations>
     
 </Objects> 
 #cdb
@@ -74,7 +78,11 @@ it was instantiated to perform additional configuration. So instead of defining 
         ]]>
     </fx:Script>
 
-   <Object type="{LoginAction}"/>
+    <fx:Declarations>
+        
+        <Object type="{LoginAction}"/>
+        
+    </fx:Declarations>
     
 </Objects> 
 #cdb
@@ -179,8 +187,12 @@ with a corresponding id: #par
     xmlns="http://www.spicefactory.org/parsley"
     xmlns:actions="com.bookstore.services.*">
     
-    <services:LoginServiceImpl id="defaultLoginService"/>
+    <fx:Declarations>
     
+        <services:LoginServiceImpl id="defaultLoginService"/>
+        
+    </fx:Declarations>
+        
 </Objects> 
 #cdb
 
@@ -208,19 +220,23 @@ configuration like shown in the next section. #par
             import com.bookstore.services.*;        
         ]]>
     </fx:Script>
+    
+    <fx:Declarations>
 
-    <Object id="loginService" type="{LoginServiceImpl}">
-        <Property name="timeout" value="3000"/>
-    </Object>
+        <Object id="loginService" type="{LoginServiceImpl}">
+            <Property name="timeout" value="3000"/>
+        </Object>
 
-    <Object id="userManager" type="{UserManager}"/>
+        <Object id="userManager" type="{UserManager}"/>
    
-    <Object type="{LoginAction}">
-        <ConstructorArgs>
-            #hlt <ObjectRef idRef="userManager"/> #hlt
-        </ConstructorArgs>
-        <Property name="service" #hlt idRef="loginService" #hlt/>
-    </Object>
+        <Object type="{LoginAction}">
+            <ConstructorArgs>
+                #hlt <ObjectRef idRef="userManager"/> #hlt
+            </ConstructorArgs>
+            <Property name="service" #hlt idRef="loginService" #hlt/>
+        </Object>
+    
+    </fx:Declarations>
     
 </Objects> 
 #cdb

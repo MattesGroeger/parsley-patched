@@ -34,13 +34,17 @@ class CategoryFactory {
     xmlns="http://www.spicefactory.org/parsley"
     xmlns:model="com.bookstore.model.*">
     
-    <model:BookManager/>
+    <fx:Declarations>
     
-    <model:CategoryFactory id="historyCategory" categoryName="history"/>
+        <model:BookManager/>
+    
+        <model:CategoryFactory id="historyCategory" categoryName="history"/>
 
-    <model:CategoryFactory id="politicsCategory" categoryName="politics"/>
+        <model:CategoryFactory id="politicsCategory" categoryName="politics"/>
 
-    <model:CategoryFactory id="artsCategory" categoryName="arts"/>
+        <model:CategoryFactory id="artsCategory" categoryName="arts"/>
+        
+    </fx:Declarations>
         
 </Objects> 
 #cdb

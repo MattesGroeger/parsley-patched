@@ -31,13 +31,17 @@ for RemoteObjects with other Parsley configuration tags: #par
     xmlns:fx="http://ns.adobe.com/mxml/2009"
     xmlns="http://www.spicefactory.org/parsley">
 
-    <fx:RemoteObject 
-        id="loginService" 
-        destination="loginService" 
-        showBusyCursor="true"
-    />
+    <fx:Declarations>
+		
+        <fx:RemoteObject 
+            id="loginService" 
+            destination="loginService" 
+            showBusyCursor="true"
+        />
 
-    <!-- other object definitions -->
+        <!-- other object definitions -->
+        
+    </fx:Declarations>
     
 </Objects> 
 #cdb
@@ -86,20 +90,24 @@ both the RemoteObjects and the delegates in Parsley MXML: #par
             import com.bookstore.services.*;
         ]]>
     </fx:Script>
-     
-    <fx:RemoteObject 
-        id="loginService" 
-        destination="loginService" 
-        showBusyCursor="true"
-    />
+    
+    <fx:Declarations>
+    
+        <fx:RemoteObject 
+            id="loginService" 
+            destination="loginService" 
+            showBusyCursor="true"
+        />
 
-	<Object id="loginDelegate" type="{LoginDelegate}">
-	    <ConstructorArgs>
-	        <ObjectRef idRef="loginService"/>
-	    </ConstructorArgs>
-	</Object>
+	    <Object id="loginDelegate" type="{LoginDelegate}">
+	        <ConstructorArgs>
+	            <ObjectRef idRef="loginService"/>
+	        </ConstructorArgs>
+	    </Object>
        
-    <!-- other objects -->
+        <!-- other objects -->
+        
+    </fx:Declarations>
     
 </Objects> 
 #cdb
@@ -134,12 +142,16 @@ the Pimento configuration and custom services. #par
     xmlns="http://www.spicefactory.org/parsley"
     xmlns:pimento="http://www.spicefactory.org/parsley/pimento">
     
-    <pimento:Config
-        url="http://localhost:8080/test/service/"
-        timeout="3000"
-    />
+    <fx:Declarations>
     
-    <!-- other objects -->
+        <pimento:Config
+            url="http://localhost:8080/test/service/"
+            timeout="3000"
+        />
+    
+        <!-- other objects -->
+        
+    </fx:Declarations>
     
 </Objects> 
 #cdb
@@ -221,21 +233,25 @@ the channel and services. #par
             import com.bookstore.services.*;
         ]]>
     </fx:Script>
-        
-    <cinnamon:Channel
-        url="http://localhost:8080/test/service/"
-        timeout="3000"
-    />
-    <cinnamon:Service
-        name="loginService"
-        type="{LoginServiceImpl}"
-    />
-    <cinnamon:Service
-        name="cartService"
-        type="{CartServiceImpl}"
-    />
     
-    <!-- other objects -->
+    <fx:Declarations>
+        
+        <cinnamon:Channel
+            url="http://localhost:8080/test/service/"
+            timeout="3000"
+        />
+        <cinnamon:Service
+            name="loginService"
+            type="{LoginServiceImpl}"
+        />
+        <cinnamon:Service
+            name="cartService"
+            type="{CartServiceImpl}"
+        />
+    
+        <!-- other objects -->
+        
+    </fx:Declarations>
     
 </Objects> 
 #cdb
