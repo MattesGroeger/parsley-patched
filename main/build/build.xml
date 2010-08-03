@@ -815,6 +815,7 @@
 				 <include name="parsley-flex/**/*"/>
 				 <include name="parsley-xml/**/*"/>
 				 <include name="parsley-flash/**/*"/>
+				 <include name="parsley-extensions/**/*"/>
 				 <include name="parsley-integration/**/*"/>
 				 <include name="test/**/*"/>
 			</fileset>
