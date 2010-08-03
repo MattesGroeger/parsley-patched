@@ -17,7 +17,6 @@
 package org.spicefactory.parsley.tag.core {
 import org.spicefactory.parsley.asconfig.ConfigurationBase;
 
-[DefaultProperty("objects")]
 /**
  * Represents the root objects tag of an MXML configuration file.
  * 
@@ -25,11 +24,6 @@ import org.spicefactory.parsley.asconfig.ConfigurationBase;
  */
 public class MxmlObjectsTag extends ConfigurationBase {
 	
-	
-	/**
-	 * The objects defined in the MXML configuration file.
-	 */
-	public var objects:Array;
 	
 	[Bindable]
 	/**
