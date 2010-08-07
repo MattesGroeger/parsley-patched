@@ -32,10 +32,23 @@
             	TitleWindow; PopUpManager; Module;
             }
             
-            public var model:Object;
+            private var _model:Object;
+            
+            public function get model () : Object {
+            	return _model;
+            }
+            
+            public function set model (value:Object) : void {
+            	trace(".... model set");
+            	_model = value;
+            }
             
             private function test (event:String) : void {
             	trace(event + "-" + ModuleManagerGlobals.managerSingleton);
+            }
+            
+            private function afterInjections () : void {
+            	trace(".... after injections");
             }
             
             private function checkContext () : void {
@@ -108,7 +121,7 @@
         <mx:level>0</mx:level>
     </mx:TraceTarget>
 
-    <parsleyview:FastInjectTag type="{CoreModel}" property="model"/>
+    <parsleyview:FastInjectTag type="{CoreModel}" property="model" injectionComplete="afterInjections();"/>
 	
     <mx:ApplicationControlBar dock="true">
 		<mx:Button label="Unload module" click="{module.unloadModule();}"/>   

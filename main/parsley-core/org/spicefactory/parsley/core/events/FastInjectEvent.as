@@ -15,6 +15,7 @@
  */
  
 package org.spicefactory.parsley.core.events {
+import org.spicefactory.lib.errors.IllegalStateError;
 import flash.events.Event;
 
 /**
@@ -37,17 +38,21 @@ public class FastInjectEvent extends Event {
 	
 	private var _injections:Array;
 	
-	private var _processed:Boolean;
+	private var _received:Boolean;
+	private var _complete:Boolean;
 	
+	private var callback:Function;
 	
 	/**
 	 * Creates a new event instance.
 	 * 
 	 * @param injections list of injections to perform
+	 * @param callback the callback to invoke when injections have been performed
 	 */
-	public function FastInjectEvent (injections:Array) {
+	public function FastInjectEvent (injections:Array, callback:Function) {
 		super(FAST_INJECT, true);
 		_injections = injections;
+		this.callback = callback;
 	}		
 	
 	/**
@@ -58,24 +63,33 @@ public class FastInjectEvent extends Event {
 	}
 	
 	/**
-	 * Indicates whether this event instance has already been processed by a Context.
+	 * Indicates whether this event instance has already been received by a Context.
 	 */
-	public function get processed () : Boolean {
-		return _processed;
+	public function get received () : Boolean {
+		return _received;
 	}
 	
 	/**
-	 * Marks this event instance as processed by a corresponding Context.
+	 * Marks this event instance as received by a corresponding Context.
 	 */
-	public function markAsProcessed () : void {
-		_processed = true;
+	public function markAsReceived () : void {
+		_received = true;
+	}
+	
+	/**
+	 * Invoked when all injections specified by this event have been performed.
+	 */
+	public function complete () : void {
+		if (_complete) throw new IllegalStateError("Complete has already been called");
+		_complete = true;
+		callback();
 	}
 	
 	/**
 	 * @private
 	 */
 	public override function clone () : Event {
-		return new FastInjectEvent(injections);
+		return new FastInjectEvent(injections, callback);
 	}	
 		
 		

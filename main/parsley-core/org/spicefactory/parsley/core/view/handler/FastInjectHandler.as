@@ -71,7 +71,7 @@ public class FastInjectHandler implements ViewHandler {
 	private function handleFastInject (event:FastInjectEvent) : void {
 		event.stopImmediatePropagation();
 		if (context.destroyed) return;
-		event.markAsProcessed();
+		event.markAsReceived();
 		eventHandler.handleEvent(event);
 	}
 	
@@ -89,6 +89,7 @@ public class FastInjectHandler implements ViewHandler {
 					: context;
 			target[injection.property] = object;
 		}
+		event.complete();
 	}
 	
 	

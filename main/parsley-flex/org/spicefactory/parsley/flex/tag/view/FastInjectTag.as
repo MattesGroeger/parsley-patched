@@ -106,16 +106,14 @@ public class FastInjectTag extends ConfigurationTagBase {
 	public var injections:Array = [];
 	
 	
+	private var view:DisplayObject;
+	
+	
 	/**
 	 * @private
 	 */
 	protected override function executeAction (view:DisplayObject) : void { 
-		if (processInjections(view)) {
-			processEvents(view);
-		}
-	}
-	
-	private function processInjections (view:DisplayObject) : Boolean {
+		this.view = view;
 		var viewInjections:Array = new Array();
 		if (property != null) {
 			viewInjections.push(new ViewInjection(property, type, objectId));
@@ -123,14 +121,16 @@ public class FastInjectTag extends ConfigurationTagBase {
 		for each (var injectTag:InjectTag in injections) {
 			viewInjections.push(new ViewInjection(injectTag.property, injectTag.type, injectTag.objectId));
 		}
-		var event:FastInjectEvent = new FastInjectEvent(viewInjections);
+		var event:FastInjectEvent = new FastInjectEvent(viewInjections, completeHandler);
 		view.dispatchEvent(event);
-		if (!event.processed) {
+		if (!event.received) {
 			log.warn("FastInject tag could not be processed for target " + view + " and property " + property
 					+ ": no Context found in view hierarchy");
-			return false;
 		}
-		return true;
+	}
+
+	private function completeHandler () : void {
+		processEvents(view);
 	}
 		
 	private function processEvents (view:DisplayObject) : void {

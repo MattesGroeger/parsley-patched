@@ -212,7 +212,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	private function cacheFastInjectEvent (event:FastInjectEvent) : void {
 		event.stopImmediatePropagation();
 		cachedFastInjectEvents.push(event);
-		event.markAsProcessed();
+		event.markAsReceived();
 	}
 	
 	private function cacheAutowirePrefilterEvent (event:Event) : void {
