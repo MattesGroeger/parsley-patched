@@ -11,9 +11,10 @@ public class MockResultTask extends ResultTask {
 	private var synchronous:Boolean;
 
 
-	function MockResultTask (result:*, synchronous:Boolean = false) {
+	function MockResultTask (result:*, synchronous:Boolean = false, restartable:Boolean = false) {
 		_result = result;
-		this.synchronous = synchronous;		
+		this.synchronous = synchronous;
+		setRestartable(restartable);		
 	}
 	
 	

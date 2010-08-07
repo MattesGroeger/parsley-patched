@@ -49,6 +49,32 @@ public class TaskCommandTest extends TestCase {
 		assertEquals("Unexpected error message", "The error", observer.errorEvent.text);
 	}
 	
+	public function testRestartableTask () : void {
+		TaskCommandSupport.initialize();
+		var executor:TaskExecutor = new TaskExecutor();
+		executor.keepTask = true;
+		var observer:TaskObserver = new TaskObserver();
+		var context:Context = RuntimeContextBuilder.build([executor, observer]);
+		
+		context.scopeManager.dispatchMessage(new TestEvent("test1", "foo", 0));
+		var task:MockResultTask = executor.lastTask;
+		assertNotNull("Expected ResultTask instance", task);
+		task.finishWithResult();
+		assertNotNull("Expected ResultTask instance", observer.resultTask);
+		assertNotNull("Expected TaskEvent instance", observer.resultEvent);
+		assertNotNull("Expected String result instance", observer.resultString);
+		assertEquals("Unexpected result value", "foo", observer.resultString);
+		
+		context.scopeManager.dispatchMessage(new TestEvent("test1", "foo", 0));
+		task = executor.lastTask;
+		assertNotNull("Expected ResultTask instance", task);
+		task.finishWithResult();
+		assertNotNull("Expected ResultTask instance", observer.resultTask);
+		assertNotNull("Expected TaskEvent instance", observer.resultEvent);
+		assertNotNull("Expected String result instance", observer.resultString);
+		assertEquals("Unexpected result value", "foo", observer.resultString);
+	}
+	
 	private var observer:TaskObserver;
 	
 	public function testSynchronousTask () : void {

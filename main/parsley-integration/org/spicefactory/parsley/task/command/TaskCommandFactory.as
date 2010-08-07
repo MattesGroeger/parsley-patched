@@ -40,6 +40,7 @@ public class TaskCommandFactory implements CommandFactory {
 }
 }
 
+import flash.events.IEventDispatcher;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.task.ResultTask;
 import org.spicefactory.lib.task.Task;
@@ -55,9 +56,9 @@ class TaskCommand extends AbstractCommand {
 
 	function TaskCommand (task:Task, message:Object, selector:*) {
 		super(task, message, selector);
-		task.addEventListener(TaskEvent.COMPLETE, complete);
+		task.addEventListener(TaskEvent.COMPLETE, taskComplete);
 		task.addEventListener(TaskEvent.CANCEL, taskCanceled);
-		task.addEventListener(ErrorEvent.ERROR, error);
+		task.addEventListener(ErrorEvent.ERROR, taskError);
 		if (task.state == TaskState.INACTIVE) {
 			task.start();
 		}
@@ -65,7 +66,24 @@ class TaskCommand extends AbstractCommand {
 	}
 	
 	protected function taskCanceled (event:TaskEvent) : void {
+		removeEventListeners(event.target as IEventDispatcher);
 		cancel();
+	}
+	
+	private function taskComplete (event:TaskEvent) : void {
+		removeEventListeners(event.target as IEventDispatcher);
+		complete(event);
+	}
+	
+	private function taskError (event:ErrorEvent) : void {
+		removeEventListeners(event.target as IEventDispatcher);
+		error(event);
+	}
+	
+	private function removeEventListeners (task:IEventDispatcher) : void {
+		task.removeEventListener(TaskEvent.COMPLETE, taskComplete);
+		task.removeEventListener(TaskEvent.CANCEL, taskCanceled);
+		task.removeEventListener(ErrorEvent.ERROR, taskError);
 	}
 	
 	protected override function selectResultValue (result:*, targetType:ClassInfo) : * {
