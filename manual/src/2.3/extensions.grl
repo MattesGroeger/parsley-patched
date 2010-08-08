@@ -235,7 +235,8 @@ public class ManagedEventsProcessor implements ObjectProcessor {
         }
     }
     
-    public static function newFactory (names:Array, dispatcher:Function) : ObjectProcessorFactory {
+    public static function newFactory (names:Array, 
+                                       dispatcher:Function) : ObjectProcessorFactory {
         var params:Array = [names, dispatcher];
         return ObjectProcessorFactories.newFactory(ManagedEventsProcessor, params);
     }
