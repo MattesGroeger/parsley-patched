@@ -544,8 +544,8 @@ If you checkout the Parsley project from SVN you can find the manifest files for
     <component id="Object" class="com.foo.ObjectTag"/>
     <component id="View" class="com.foo.ViewTag"/>
     <component id="DynamicObject" class="com.foo.DynamicObjectTag"/>
-    <component id="NestedObject" class="NestedObjectTag"/>
-    <component id="DynamicCommand" class="DynamicCommandTag"/>
+    <component id="NestedObject" class="com.foo.NestedObjectTag"/>
+    <component id="DynamicCommand" class="com.foo.DynamicCommandTag"/>
 </componentPackage>
 #cdb
 
