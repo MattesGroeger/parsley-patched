@@ -451,7 +451,7 @@ For instruction on how to use the DSL see #ref extensions_definitions #ref. #par
 
 #par This interface is similar to #cdi RootConfigurationElement #cdi, but comes with a subtle difference: In contrast to
 the root tag which basically can perform any kind of processing, this tag has to represent exactly one value. The reason
-is that such a tag is only used in place where a value is expected. For child tags of the #cdi <Array> #cdi tag for example
+is that such a tag is only used in places where a value is expected. For child tags of the #cdi <Array> #cdi tag for example
 it is expected that each child tag represents an element of that Array. Therefor the interface is slightly different: #par
 
 #cdb
@@ -462,11 +462,11 @@ public interface NestedConfigurationElement {
 } 
 #cdb
 
-#par The #cdi resolve #cdi method must return a value. This is interpreted as the actual value that the tag represents.
+#par The #cdi resolve #cdi method must return a value. This is interpreted as the actual value the tag represents.
 But there can be one more level of indirection: The returned value can represent something which needs to be resolved
-at the time the value is applied to the instanc it belongs to. This applies for the #cdi <ObjectRef> #cdi tag for
+at the time the value is applied to the instance it belongs to. This applies for the #cdi <ObjectRef> #cdi tag for
 example. That tag has to resolve an id value or an object type at the time the target object is configured.
-Such a return value must implement #cdi ResolvableValue #cdi interface. For examples you may examine
+Such a return value must implement the #cdi ResolvableValue #cdi interface. For examples you may examine
 the #cdi NestedObjectTag #cdi or #cdi ObjectReferenceTag #cdi classes. #par 
 
 
