@@ -164,12 +164,16 @@ public class NavigateTo implements ObjectDefinitionDecorator {
 }
 #cdb
 
-#par The #cdi [Metadata] #cdi tag is required to configure the metadata tag, it is explained in #ref extensions_metadata_register #ref.
-The #cdi [DefaultProperty] #cdi tag marks a property that can be used without attribute name. Without that tag you'd need to always
-explicitly specify the attribute name, so the example from above would read: #cdi [NavigateTo(target="addUserForm")] #cdi.
-The #cdi [Target] #cdi attribute tells the framework that this is the property that holds the name of the member of the class
-(property or method). For metadata to be placed on the class level this is not required of course. Finally we've added the
-#cdi scope #cdi property to allow for handlers only interested in navigation events for a particular scope. #par
+#par The #cdi [Metadata] #cdi tag is required to configure the metadata tag, it is explained in #ref extensions_metadata_register #ref. #par
+
+#par The #cdi [DefaultProperty] #cdi tag marks a property that can be used without attribute name. Without that tag you'd need to always
+explicitly specify the attribute name, so the example from above would read: #cdi [NavigateTo(target="addUserForm")] #cdi. #par
+
+#par The #cdi [Target] #cdi attribute tells the framework that this is the property that holds the name of the member of the class
+(property or method). For metadata to be placed on the class level this is not required of course. #par
+
+#par The
+#cdi scope #cdi property allows to define handlers only interested in navigation events for a particular scope. #par
 
 #par Finally we use these property values in registering a regular #cdi MessageHandler #cdi through the #cdi ObjectDefinitionBuilder #cdi.
 We are passing the scope value, using the global scope as the default in case the attribute is omitted. The name of the navigation 
@@ -199,15 +203,33 @@ public interface ObjectProcessor {
 #cdi [Init] #cdi method will be invoked (in case it has one). Likewise the #cdi postDestroy #cdi method will be invoked
 when the object was removed from the Context. #par
 
-#par The important thing to consider is that there is a 1:N mapping between a decorator and a processor. When you implement
+
+#sub The 1:N Relationship between Decorators and Processors #sub
+
+#par Understanding this concept is important before implementing your first #cdi ObjectProcessor #cdi. 
+There is a 1:N relationship between a decorator and a processor. When you implement
 the #cdi ObjectDefinitionDecorator #cdi tag like shown in preceding sections, it will be invoked once for a particular
-definition in your Context. If it is a definition created by an #cdi <Object> #cdi tag for example which represents a
+definition in your Context. If it is a definition created by an #cdi <Object> #cdi tag or any other tag which represents a
 singleton, then the decorator will also map to only one processor. But for other types of objects, like those declared
-with #cdi <DynamicObject> #cdi or #cdi <DynamicCommand> #cdi multiple instances will be created from a single definition.
+with #cdi <DynamicObject> #cdi or #cdi <DynamicCommand> #cdi multiple instances may be created from a single definition.
 In this case one decorator maps to multiple processors, as a new processor gets created for each new instance. #par
 
-#par Due to this 1:N mapping you also need a factory that creates a new processor for each new instance. That sounds
-more complicated than it actually is, so let's look at an example, the implementation for the builtin #cdi [ManagedEvents] #cdi
+#par This mechanism has the advantage that you can keep state that only
+applies to a single target instance inside the processor. This greatly simplifies a lot of common tasks performed by processors
+as most processors need to unregister some configuration artifact in the #cdi postDestroy #cdi method which they
+created and applied in the #cdi preInit #cdi method.
+This simplification is the major reason why version 2.3 introduced the distinction between decorators and processors
+and the 1:N relationship between them. Before that many custom tags that had been built were broken as they did not
+deal with the fact that one decorator may be applied to multiple instances, often ending up with patterns where
+the configuration of the second object overwrote the internal state kept for the first object, thus introducing bugs
+that were hard to track down by application developers. #par
+
+
+#sub Example: The ManagedEventsProcessor #sub
+
+#par Due to this 1:N relationship you also need a factory that creates a new processor for each new instance created for
+a particular definition. That sounds more complicated than it actually is, so let's look at an example, 
+the implementation for the builtin #cdi [ManagedEvents] #cdi
 tag, albeit somewhat simplified for the sake of brevity. #par
 
 #cdb
@@ -245,7 +267,9 @@ public class ManagedEventsProcessor implements ObjectProcessor {
 #cdb
 
 #par The #cdi preInit #cdi and #cdi postDestroy #cdi methods simply loop through the event names and add the listeners
-when the object gets created and remove them once the object gets removed from the Context. Then there is a static
+when the object gets created and remove them once the object gets removed from the Context. #par
+
+#par Then there is a static
 #cdi newFactory #cdi method that can be used to create a factory for this processor. This is a pattern that is not
 required, but recommended, as it is quite straightforward and all the builtin processors use this pattern, too. 
 If you use the #cdi ObjectProcessorFactories #cdi utility function like above (again not required but convenient),
@@ -254,14 +278,6 @@ The utility function expects the class of the processor it should create and any
 to the constructor. But as you see the actual constructor has one additional parameter which is of type
 #cdi ManagedEvent #cdi. The utility function will always pass the actual target instance as the first
 parameter, followed but the ones you specified. #par
-
-#par Since there is a distinct processor instance for each configured target instance, you can keep state that only
-applies to a single target inside the processor, which greatly simplifies a lot of common tasks performed by processors. 
-This simplification is the major reason why version 2.3 introduced the distinction between decorators and processors
-and the 1:N relationship between them. Before that many custom tags that had been built were broken as they did not
-deal with the fact that one decorator may be applied to multiple instances, often ending up with patterns where
-the configuration of the second object overwrote the internal state kept for the first object, thus introducing bugs
-that were hard to track down by application developers. #par
 
 #par Finally, in the corresponding decorator, you need to add the processor to the definition: #par
 
