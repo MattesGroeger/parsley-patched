@@ -137,8 +137,7 @@ listed here. This list will further grow before the final 2.3 release. #par
 #par #ref extensions_intro #ref #par
 
 #lst
-#lse #ref extensions_decorators_interface #ref (rewritten) #lse
-#lse Many other parts have been adapted to demonstrate the use of the new configuration DSL #lse
+#lse The entire chapter has been rewritten. Restructured, more content and adapted for the new configuration DSL. #lse
 #lst
 
 #par #ref tagref_intro #ref #par

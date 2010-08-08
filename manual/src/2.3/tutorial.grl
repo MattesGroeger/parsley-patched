@@ -355,7 +355,8 @@ that can be loaded and unloaded on demand. #lse
 #lse #ref resources_bindings #ref: For binding properties of managed objects to localized resources, updating them automatically
 when the localeChain changes. #lse
 
-#lse #ref extensions_decorators #ref: If you want to add your own Metadata, MXML or XML configuration tags.
+#lse #ref extensions_intro #ref: If you want to add your own Metadata, MXML or XML configuration tags or use
+some of the other available extension points.
 Useful for simplifying recurring configuration tasks or for creating frameworks on top of Parsley. #lse
 #lst
 

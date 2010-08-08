@@ -503,37 +503,9 @@ the Spicelib Task Framework, so a command can also declare #cdi Task #cdi as the
 type. #par
 
 #par As you might expect these are only the three builtin options. You can extend the 
-framework easily through creating your own CommandFactories. You can have a look at
-the #cdi AsyncTokenCommandFactory #cdi for example to see how easy it is to create
-new command types. The interface is quite simple: #par
+framework easily through creating your own CommandFactories. For details see
+#ref extensions_commands #ref. #par
 
-#cdb
-public interface CommandFactory {
-
-	function createCommand (returnValue:Object, 
-			message:Object, selector:* = undefined) : Command;
-	
-}
-#cdb
-
-#par The method takes the value returned by the method that executed the command (e.g. #cdi AsyncToken #cdi)
-and the message and selector that triggered the command. It has to return an instance of #cdi Command #cdi,
-in most cases creating a subclass of #cdi AbstractCommand #cdi to avoid any boilerplate code.
-The factory implementation finally has to be registered: #par
-
-#cdb
-GlobalFactoryRegistry.instance.messageRouter
-        .addCommandFactory(MyReturnType, new MyCommandFactory());
-#cdb
-
-#par The signature for the #cdi addCommandFactory #cdi method is as follows: #par
-
-#cdb
-function addCommandFactory (type:Class, factory:CommandFactory) : void;
-#cdb
-
-#par It has to specify the return type of the command methods it wants to manage and then
-the factory instance itself. #par
 
 
 
