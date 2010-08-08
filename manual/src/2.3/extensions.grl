@@ -959,7 +959,7 @@ var config:Configuration = ...;
 var ci:ClassInfo = ClassInfo.forClass(SomeClass, #hlt config.domain #hlt);
 #cdb
 
-#par Without passing the domain the tag may not work propertly in modules loaded into child ApplicationDomains. #par
+#par Without passing the domain the tag may not work properly in modules loaded into child ApplicationDomains. #par
 
 
 
