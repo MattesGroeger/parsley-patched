@@ -51,7 +51,9 @@ public class DefaultViewManager implements ViewManager {
 	private var settings:ViewSettings;
 	
 	private var handlers:Array;
-	private var viewRoots:Array = new Array();
+	
+	private var viewRoots:Dictionary = new Dictionary();
+	private var viewRootCount:int = 0;
 	
 	private var configurator:ViewConfigurator;
 
@@ -90,10 +92,11 @@ public class DefaultViewManager implements ViewManager {
 
 	private function contextDestroyed (event:ContextEvent) : void {
 		context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		for each (var view:DisplayObject in viewRoots) {
+		for each (var view:ViewRoot in viewRoots) {
 			handleRemovedViewRoot(view);	
 		}
-		viewRoots = new Array();
+		viewRoots = new Dictionary();
+		viewRootCount = 0;
 		for each (var handler:ViewHandler in handlers) {
 			handler.destroy();
 		}
@@ -103,7 +106,7 @@ public class DefaultViewManager implements ViewManager {
 	 * @inheritDoc
 	 */
 	public function addViewRoot (view:DisplayObject) : void {
-		if (viewRoots.indexOf(view) >= 0) return;
+		if (viewRoots[view]) return;
 		log.info("Add view root: {0}/{1}", view.name, getQualifiedClassName(view));
 		if (globalViewRootRegistry[view] != undefined) {
 			// we do not allow two view managers on the same view, but we allow switching them
@@ -113,14 +116,16 @@ public class DefaultViewManager implements ViewManager {
 		}
 		globalViewRootRegistry[view] = this;
 		
-		if (configurator.isAutoremove(view, settings.autoremoveViewRoots)) {
+		var autoremove:Boolean = configurator.isAutoremove(view, settings.autoremoveViewRoots);
+		if (autoremove) {
 			stageEventFilter.addTarget(view, filteredViewRootRemoved, ignoredFilteredAddedToStage);
 		}
 		else {
 			view.addEventListener(customRemovedEvent, viewRootRemoved);
 		}
 		
-		viewRoots.push(view);
+		viewRoots[view] = new ViewRoot(view, autoremove);
+		viewRootCount++;
 		
 		for each (var handler:ViewHandler in handlers) {
 			handler.addViewRoot(view);
@@ -140,36 +145,48 @@ public class DefaultViewManager implements ViewManager {
 	 * @inheritDoc
 	 */
 	public function removeViewRoot (view:DisplayObject) : void {
-		var index:int = viewRoots.indexOf(view);
-		if (index > -1) {
-			log.info("Remove view root: {0}/{1}", view.name, getQualifiedClassName(view));
-	 		handleRemovedViewRoot(view);
-			viewRoots.splice(index, 1);
-			if (viewRoots.length == 0) {
+		var viewRoot:ViewRoot = viewRoots[view];
+		if (viewRoot) {
+			log.info("Remove view root: {0}/{1}", viewRoot.view.name, getQualifiedClassName(viewRoot.view));
+	 		handleRemovedViewRoot(viewRoot);
+			delete viewRoots[view];
+			viewRootCount--;
+			if (viewRootCount == 0) {
 				log.info("Last view root removed from ViewManager - Destroy Context");
 				context.destroy();
 			}
 		}
 	}
 	
-	private function handleRemovedViewRoot (viewRoot:DisplayObject) : void {
+	private function handleRemovedViewRoot (viewRoot:ViewRoot) : void {
 		for each (var handler:ViewHandler in handlers) {
-			handler.removeViewRoot(viewRoot);
+			handler.removeViewRoot(viewRoot.view);
 		}
 			
-		if (configurator.isAutoremove(viewRoot, settings.autoremoveViewRoots)) {
-			stageEventFilter.removeTarget(viewRoot);
+		if (viewRoot.autoremove) {
+			stageEventFilter.removeTarget(viewRoot.view);
 		}
 		else {
-	 		viewRoot.removeEventListener(customRemovedEvent, viewRootRemoved);
+	 		viewRoot.view.removeEventListener(customRemovedEvent, viewRootRemoved);
 		}
-		delete globalViewRootRegistry[viewRoot];
+		delete globalViewRootRegistry[viewRoot.view];
 	}
 	
 	private function ignoredFilteredAddedToStage (view:IEventDispatcher) : void {
 		/* do nothing */
 	}
-	
-	
 }
+}
+
+import flash.display.DisplayObject;
+
+class ViewRoot {
+	
+	public var view:DisplayObject;
+	public var autoremove:Boolean;
+	
+	function ViewRoot (view:DisplayObject, autoremove:Boolean) {
+		this.view = view;
+		this.autoremove = autoremove;
+	}
 }

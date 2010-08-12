@@ -92,8 +92,10 @@ public class DefaultViewConfigurator implements ViewConfigurator {
 	 */
 	public function configure (target:Object, definition:DynamicObjectDefinition = null) : void {
 		log.debug("Add object '{0}' to {1}", target, context);
+		var autoremove:Boolean = false;
 		if (target is IEventDispatcher) {
-			if (isAutoremove(target, settings.autoremoveComponents)) {
+			autoremove = isAutoremove(target, settings.autoremoveComponents);
+			if (autoremove) {
 				stageEventFilter.addTarget(target as DisplayObject, filteredComponentRemoved, ignoredFilteredAddedToStage);
 			}
 			else {
@@ -101,9 +103,9 @@ public class DefaultViewConfigurator implements ViewConfigurator {
 			}
 		}
 		var dynObject:DynamicObject = context.addDynamicObject(target, definition);
-		configuredViews[target] = dynObject;
+		configuredViews[target] = new ManagedView(dynObject, autoremove);
 	}
-	
+
 	/**
 	 * @inheritDoc
 	 */
@@ -151,22 +153,34 @@ public class DefaultViewConfigurator implements ViewConfigurator {
 	
 	private function filteredComponentRemoved (view:IEventDispatcher) : void {
 		log.debug("Remove object '{0}' from {1}", view, context);
-		if (isAutoremove(view, settings.autoremoveComponents)) {
+		var managedView:ManagedView = configuredViews[view];
+		if (managedView == null) return;
+		if (managedView.autoremove) {
 			stageEventFilter.removeTarget(view as DisplayObject);
 		}
 		else {
 			view.removeEventListener(customRemovedEvent, componentRemoved);
 		}
-		var dynObject:DynamicObject = configuredViews[view];
-		if (dynObject == null) return;
+		
 		delete configuredViews[view];
-		dynObject.remove();
+		managedView.dynamicObject.remove();
 	}
 	
 	private function ignoredFilteredAddedToStage (view:IEventDispatcher) : void {
 		/* do nothing */
 	}
-	
-
 }
+}
+
+import org.spicefactory.parsley.core.context.DynamicObject;
+
+class ManagedView {
+	
+	public var dynamicObject:DynamicObject;
+	public var autoremove:Boolean;
+	
+	function ManagedView (dynamicObject:DynamicObject, autoremove:Boolean) {
+		this.dynamicObject = dynamicObject;
+		this.autoremove = autoremove;
+	}
 }

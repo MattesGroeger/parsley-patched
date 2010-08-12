@@ -60,7 +60,7 @@ public class ReflectionCacheManager {
 			domainPurgeHandlers[domain] = new DelegateChain();
 		}
 		contextMap[context] = domain;
-		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
+		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, -100);
 	}
 
 	private static function contextDestroyed (event:ContextEvent) : void {

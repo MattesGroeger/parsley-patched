@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.lib.reflect.cache {
+import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.reflect.ClassInfo;
 
 import flash.system.ApplicationDomain;
@@ -33,8 +34,9 @@ public class DefaultReflectionCache implements ReflectionCache {
 	private var _active:Boolean = true;
 	
 	
-	private function getDomain (domain:ApplicationDomain) : ApplicationDomain {
-		return (domain == null) ? ClassInfo.currentDomain : domain;
+	private function getDomainCache (domain:ApplicationDomain) : DomainCache {
+		if (domain == null) domain = ClassInfo.currentDomain;
+		return cache[domain] as DomainCache;
 	}
 	
 	/**
@@ -42,47 +44,50 @@ public class DefaultReflectionCache implements ReflectionCache {
 	 */
 	public function addClass (type:ClassInfo, domain:ApplicationDomain = null) : void {
 		if (!active) return;
-		domain = getDomain(domain);
-		var domainCache:Dictionary = cache[domain];
+		var domainCache:DomainCache = getDomainCache(domain);
 		if (domainCache == null) {
-			domainCache = new Dictionary();
+			domainCache = new DomainCache();
 			cache[domain] = domainCache;
 		}
-		domainCache[type.getClass()] = type;
+		domainCache.addClass(type);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function getClass (type:Class, domain:ApplicationDomain = null) : ClassInfo {
-		domain = getDomain(domain);
-		var domainCache:Dictionary = cache[domain];
-		return (domainCache == null) ? null : domainCache[type] as ClassInfo;
+		var domainCache:DomainCache = getDomainCache(domain);
+		return (domainCache == null) ? null : domainCache.getClass(type);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function purgeClass (type:Class, domain:ApplicationDomain = null) : void {
-		domain = getDomain(domain);
-		var domainCache:Dictionary = cache[domain];
-		if (domainCache == null) {
-			return;
+		var domainCache:DomainCache = getDomainCache(domain);
+		if (domainCache != null) {
+			domainCache.purgeClass(type);
 		}
-		delete domainCache[type];
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function purgeDomain (domain:ApplicationDomain) : void {
-		delete cache[domain];
+		var domainCache:DomainCache = getDomainCache(domain);
+		if (domainCache != null) {
+			domainCache.purgeAll();
+			delete cache[domain];
+		}
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function purgeAll () : void {
+		for each (var domainCache:DomainCache in cache) {
+			domainCache.purgeAll();
+		}
 		cache = new Dictionary();	
 	}
 	
@@ -99,7 +104,53 @@ public class DefaultReflectionCache implements ReflectionCache {
 	public function set active (value:Boolean) : void {
 		_active = value;
 	}
-	
-	
 }
+}
+
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.reflect.cache.DefaultReflectionCache;
+
+import flash.utils.Dictionary;
+
+class DomainCache {
+	
+	private static const log:Logger = LogContext.getLogger(DefaultReflectionCache);
+	
+	private static var nextDomainNo:int = 1;
+	
+	private var name:String;
+	private var cache:Dictionary = new Dictionary();
+	
+	function DomainCache () {
+		name = "[Domain " + nextDomainNo++ + "]";
+	}
+	
+	public function addClass (type:ClassInfo) : void {
+		if (log.isDebugEnabled() && getClass(type.getClass()) == null) {
+			log.debug("Add {0} to cache for {1}", type.name, name);
+		}
+		cache[type.getClass()] = type;
+	}
+	
+	public function getClass (type:Class) : ClassInfo {
+		return cache[type] as ClassInfo;
+	}
+	
+	public function purgeClass (type:Class) : void {
+		if (log.isDebugEnabled() && getClass(type) == null) {
+			log.debug("Purge {0} from cache for {1}", getClass(type).name, name);
+		}
+		delete cache[type];
+	}
+	
+	public function purgeAll () : void {
+		if (log.isDebugEnabled()) {
+			log.debug("Purge all classes from cache for {0}", name);
+		}
+		cache = new Dictionary();
+	}
+	
+	
 }
