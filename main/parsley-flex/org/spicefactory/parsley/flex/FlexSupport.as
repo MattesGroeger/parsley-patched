@@ -46,6 +46,7 @@ public class FlexSupport {
 	public static function initialize () : void {
 		if (initialized) return;
 		log.info("Initialize Flex Support");
+		initialized = true;
 		if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
 		FlexModuleSupport.initialize();
 		AsyncTokenCommandSupport.initialize();
