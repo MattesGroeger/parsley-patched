@@ -96,8 +96,9 @@ public class CairngormPopUpSupport extends PopUpWrapper {
 	 * @private
 	 */    
     protected override function popUpClosed () : void {
-    	super.popUpClosed();
+    	var popup:IFlexDisplayObject = super.getPopUp();
         context.viewManager.removeViewRoot(DisplayObject(popup));
+    	super.popUpClosed();
 	}
 	
 	
