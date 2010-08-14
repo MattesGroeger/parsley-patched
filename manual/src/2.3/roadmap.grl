@@ -237,25 +237,201 @@ in Flash applications. #par
 
 
 
-#sc2 roadmap_unscheduled Unscheduled Features #sc2
+#sc2 roadmap_v24 Version 2.4 #sc2
 
-#par Parts of the road map definitely depend on user feedback. So if you are still missing something
-in the framework feel free to post on the forum. Many of the features that were added after the
-initial 2.0 release were actually based on concrete suggestions from users. So the short list below
-may grow quickly if you have some ideas. #par
+#par The road map for the next version is not fully specified yet. 
+Since it largely depends on user feedback, feel free to post on the forum if you are still missing something
+in the framework. #par
 
 
-#sub Expanding the support for modular applications #sub
 
-#par In addition to the existing support for modular applications future version might support
-more complex scenarios like shared module dependencies or modules that transparently get loaded in response
-to messages. #par
+#sc3 roadmap_message_interceptors Redesign Message Interceptors #sc3
 
-#sub Validation #sub
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-465 Jira Ticket for Comments #url #par
 
-#par The framework might add validation support based on metadata tags. This could facilitate the
-creation of custom extensions which would be validated by the framework before they are applied and
-could also be used on regular application objects configured in the container and validated
-before they are handed out to the application. #par
+#sub Motivation #sub
+
+#par The changes in this area are primarily motivated by feedback from users who had difficulties to apply
+the concept of message interception like it is designed today to their use cases. These were in particular: #par
+
+#lst
+#lse A user who wanted to cancel message processing based on the type of Fault returned by a service and prevent
+any further CommandError handlers from getting invoked. This is currently not possible, since each MessageInterceptor
+gets invoked in one phase of message processing only, which is before any regular target (like MessageHandlers or Commands)
+gets invoked. This restriction is not necessary and it is possible to allow suspension or cancellation of message processors
+at any point in time. #lse
+
+#lse The current interception mechanism is unfortunate for tooling. Whenever the processor enters an interceptor, it is left
+in an indetermined state. It is unclear if the interceptor will ever call proceed or whether this message gets discarded.
+So any debugging or monitoring tool visualizing pending messages would need to include all processors that stopped
+in an interceptor. If the interceptor opens a confirmation dialog for example, nothing will happen when the user clicks cancel.
+A redesigned API would require explicit suspension, leaving the options to either call resume or cancel later, and only
+messages which are indeed still pending from the perspective of application logic appear in the list of pending messages. #lse
+#lst
+
+
+#sub Specification #sub
+
+#par The MessageProcessor interface would be redesigned. #par
+
+#par Deprecated methods: #par
+
+#cdb
+function proceed () : void;
+#cdb
+
+#par New methods and properties: #par
+
+#cdb
+function suspend () : void;
+
+function resume () : void;
+
+function cancel () : void;
+
+function get state () : MessageState; // active, cancelled, suspended
+
+function get scope () : Scope;
+
+function get senderContext () : Context;
+#cdb
+
+#par Apart from the changes outlined above the #cdi [MessageInterceptor] #cdi tag would be deprecated. It would still
+be supported in version 2.4 for backwards compatibility. In Parsley 3.0 all deprecations will then be removed. #par
+
+#par Instead all other existing message receivers would be enhanced to allow for an additional, optional parameter
+of type #cdi MessageProcessor #cdi: #par
+
+#cdb
+[MessageHandler]
+public function handleMessage (msg:MyMessage, processor:MessageProcessor) : void
+
+[CommandResult]
+public function afterLogin (result:User, msg:LoginMessage, processor:MessageProcessor) : void
+#cdb
+
+#par The above are just two examples. Every message receiver based on a method would be affected.
+Message receivers where the message is handled by a property (e.g. #cdi [CommandStatus] #cdi or #cdi [MessageBinding] #cdi
+cannot support these new capabilities of course. #par
+
+#par The behaviour for the deprecated MessageInterceptor would remain the same for backwards compatibility. That means
+the state of the processor would always be suspended at the time it enters the interceptor method. For all the other
+enhanced message receiver types it would be different: even if they do specify the optional MessageProcessor parameter,
+message processing will automatically continue after leaving the method unless #cdi suspend #cdi has been called
+on the processor. That prevents the unfortunate indetermined state of the processor. #par
+
+#par Finally these changes also allow the #cdi MessageInterceptor #cdi interface to be deprecated. Somewhat unrelated
+the #cdi CommandTarget #cdi interface could be deprecated, too, when the existing #cdi MessageTarget #cdi interface
+would be enhanced with capabilities to create a new Command. This would leave us with only three core #cdi MessageReceiver #cdi
+sub-interfaces: #cdi MessageTarget #cdi, #cdi MessageErrorHandler #cdi and #cdi CommandObserver #cdi. #par
+
+
+ 
+#sc3 roadmap_message_routing Routing Messages between Contexts #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-506 Jira Ticket for Comments #url #par
+
+#par #ref messaging_scopes #ref already offers a great level of flexibility. But even a custom scope is always a continuous
+group of Contexts. Sometimes a message must be routed from one particular part of the application to another.
+This new feature would allow to create messages that contain properties with metadata that marks the property
+as one containing routing information. Furthermore this mechanism could allow for lazy creation of message target Contexts.
+If the target does not exist already, a pluggable strategy would create it first before routing the messages. These strategies
+could deal with loading a module, opening a popup, creating an AIR window, or creating a new tab for a navigator. #par
+
+#par This functionality shares some concepts with the existing Cairngorm 3 Module Library, but would not be limited
+to dealing with modules only. #par
+
+
+
+#sc3 roadmap_message_adapters Messaging Adapters #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-507 Jira Ticket for Comments #url #par
+
+#par Messaging currently only deals with messages with a origin and destination within the realm of Parsley
+managed objects. There are other types of messaging infrastructure typically seen in Flex applications where
+it might be convenient to transparently integrate them with Parsley's existing configuration options for messaging.
+These might include Consumers, Producers, binary sockets or LocalConnections, amongst others. An adapter for a Consumer
+would allow to receive remote messages in a regular #cdi [MessageHandler] #cdi for example. #par
+
+
+
+#sc3 roadmap_shared_modules Shared Module Dependencies #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-508 Jira Ticket for Comments #url #par
+
+#par In addition to the existing support for modular applications the next version might support
+more complex scenarios like shared module dependencies that will be lazily loaded on demand. 
+No details have been specified yet, so if have a particular use case that is not well supported currently
+feel free to post on the forum. #par
+
+
+
+#sc3 roadmap_task_commands Easier Setup for Tasks as Commands #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-362 Jira Ticket for Comments #url #par
+
+#par Often a Task based DynamicCommand does not do much more in the execution method than creating a Task instance, passing some
+data from the message to the Task and returning it. This could be simplified through dedicated tags
+for declaring Task based commands: #par
+
+#cdb
+<TaskCommand type="{MyCustomTask}" messageType="{LoginMessage}" />
+
+<TaskGroupCommand messageType="{LoginMessage}">
+    <NestedObject type="{LoginTask}"/>
+    <ObjectRef idRef="loadPreferencesTask"/>
+    <ObjectRef typeRef="{StartPresentationTask}"/>
+</TaskGroupCommand>
+#cdb
+
+#par Two new tags would be introduced, one for declaring a single Task and one for a group of Tasks to be run sequentially or
+concurrently. When declaring a group all the regular tags for defining objects or references would be permitted as child tags. #par
+
+#par Metadata could be used to inject the message itself into the Task: #par
+
+#cdb
+[TriggerMessage]
+public var msg:LoginMessage;
+#cdb
+
+#par Or alternatively just a single property of the message which is particularly useful for TaskGroups where 
+each individual Task might only be interested in one aspect of the message: #par
+
+#cdb
+[TriggerMessage("username")]
+public var username:String;
+#cdb
+
+#par Finally there might be existing Tasks where it's not possible to add metadata. Special child tags for declaring
+the Task might allow to specifiy the property of the message to inject and the property of the Task as the injection 
+target: #par
+
+#cdb
+<TaskGroupCommand messageType="{LoginMessage}">
+    <Task type="{LoginTask}" messageProperty="username" injectionTarget="username"/>
+    <Task type="{LoadPreferencesTask}" injectionTarget="message"/>
+</TaskGroupCommand>
+#cdb
+
+#par When #cdi messageProperty #cdi is not specified the entire message instance will be injected. #par
+
+#par In cases where a message needs data retrieved by one of the preceding tasks, a recommended pattern could be
+to pass data in the message instance itself. #par
+
+
+
+#sc3 roadmap_testing Testing Utilities #sc3
+
+#par #url http://opensource.powerflasher.com/jira/browse/PSL-453 Jira Ticket for Comments #url #par
+
+#par The UnitTests for Spicelib and Parsley already contain a bunch of classes that help with common tasks when
+testing classes which are normally managed by Parsley. That may be a mock function to inject into a property
+which usually holds a MessageDispatcher and now does nothing but counting the number of dispatched messages and
+their types and selectors. These classes are currently hidden in the internal TestSuites and not available
+in a SWC to use in application tests. These utilities should be polished and expanded and then released
+as a separate #cdi parsley-test-2.4.0.swc #cdi. #par
+
+
+
 
 
