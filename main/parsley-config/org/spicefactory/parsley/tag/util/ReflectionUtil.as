@@ -68,7 +68,7 @@ public class ReflectionUtil {
 		if (readableRequired && !property.readable) {
 			throw new IllegalArgumentError("" + property + " is not readable");
 		}
-		if (readableRequired && !property.writable) {
+		if (writableRequired && !property.writable) {
 			throw new IllegalArgumentError("" + property + " is not writable");
 		}
 		return property;		
