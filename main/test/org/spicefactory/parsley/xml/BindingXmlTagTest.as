@@ -1,5 +1,6 @@
 package org.spicefactory.parsley.xml {
 import org.spicefactory.parsley.binding.BindingTestBase;
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 
 /**
@@ -10,6 +11,10 @@ public class BindingXmlTagTest extends BindingTestBase {
 	
 	protected override function get bindingContext () : Context {
 		return XmlContextTestBase.getXmlContext(config);
+	}
+	
+	protected override function addConfig (builder:CompositeContextBuilder) : void {
+		builder.addProcessor(XmlConfig.forInstance(config));
 	}
 	
 	public static const config:XML = <objects 
@@ -29,6 +34,10 @@ public class BindingXmlTagTest extends BindingTestBase {
 		
 		<dynamic-object id="publishManaged" type="org.spicefactory.parsley.binding.model.CatHolder">
 			<publish property="value" managed="true" scope="local"/>
+		</dynamic-object> 
+		
+		<dynamic-object id="publishPersistent" type="org.spicefactory.parsley.binding.model.StringHolder">
+			<publish-subscribe persistent="true" property="value" scope="local" object-id="test"/>
 		</dynamic-object> 
 		
 		<dynamic-object id="subscribe" type="org.spicefactory.parsley.binding.model.CatHolder">

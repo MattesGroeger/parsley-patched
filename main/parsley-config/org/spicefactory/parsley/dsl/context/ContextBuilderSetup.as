@@ -137,8 +137,8 @@ public class ContextBuilderSetup {
 	 * @param domain the ApplicationDomain to use for reflection
 	 * @return this builder instance for method chaining 
 	 */
-	public function scope (scope:String, inherited:Boolean = true) : ContextBuilderSetup {
-		scopes.push(new Scope(scope, inherited));
+	public function scope (scope:String, inherited:Boolean = true, uuid:String = null) : ContextBuilderSetup {
+		scopes.push(new Scope(scope, inherited, uuid));
 		return this;
 	}
 	
@@ -150,7 +150,7 @@ public class ContextBuilderSetup {
 	public function newBuilder () : ContextBuilder {
 		var builder:DefaultCompositeContextBuilder = new DefaultCompositeContextBuilder(_viewRoot, _parent, _domain, _description);
 		for each (var scope:Scope in scopes) {
-			builder.addScope(scope.name, scope.inherited);
+			builder.addScope(scope.name, scope.inherited, scope.uuid);
 		}
 		for each (var part:SetupPart in parts) {
 			part.apply(builder);
@@ -170,10 +170,12 @@ class Scope {
 
 	public var name:String;
 	public var inherited:Boolean;
+	public var uuid:String;
 	
-	function Scope (name:String, inherited:Boolean) {
+	function Scope (name:String, inherited:Boolean, uuid:String) {
 		this.name = name;
 		this.inherited = inherited;
+		this.uuid = uuid;
 	}
 	
 }

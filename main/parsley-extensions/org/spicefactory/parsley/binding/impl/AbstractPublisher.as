@@ -1,6 +1,21 @@
+/*
+ * Copyright 2010 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 package org.spicefactory.parsley.binding.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
 
@@ -17,6 +32,7 @@ public class AbstractPublisher extends EventDispatcher {
 	
 	private var _type:ClassInfo;
 	private var _id:String;
+	private var _unique:Boolean;
 
 	private var currentObject:DynamicObject;
 	private var context:Context;
@@ -37,10 +53,12 @@ public class AbstractPublisher extends EventDispatcher {
 	 * @param id the id the value is published with
 	 * @param context the corresponding Context in case the published object should be managed
 	 */
-	function AbstractPublisher (property:Property, type:ClassInfo = null, id:String = null, context:Context = null) {
+	function AbstractPublisher (type:ClassInfo, id:String = null, 
+			unique:Boolean = false, context:Context = null) {
 		this.context = context;
-		_type = (type == null) ? property.type : type;
-		_id = id;		
+		_type = type;
+		_id = id;	
+		_unique = unique;	
 		this.context = context;
 	}
 	
@@ -56,6 +74,13 @@ public class AbstractPublisher extends EventDispatcher {
 	 */
 	public function get id () : String {
 		return _id;
+	}
+	
+	/**
+	 * @copy org.spicefactory.parsley.binding.Publisher#unique
+	 */
+	public function get unique () : Boolean {
+		return _unique;
 	}
 	
 	/**

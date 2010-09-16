@@ -9,12 +9,20 @@ import org.spicefactory.parsley.binding.model.CatPublishMetadata;
 import org.spicefactory.parsley.binding.model.CatSubscribeIdMetadata;
 import org.spicefactory.parsley.binding.model.CatSubscribeLocalMetadata;
 import org.spicefactory.parsley.binding.model.CatSubscribeMetadata;
+import org.spicefactory.parsley.binding.model.StringPublishPersistentMetadata;
 import org.spicefactory.parsley.core.ContextTestBase;
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.ContextUtil;
+import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.scope.ScopeName;
+import org.spicefactory.parsley.core.scope.ScopeRegistry;
+import org.spicefactory.parsley.core.scope.impl.DefaultScopeRegistry;
 import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
+import org.spicefactory.parsley.runtime.processor.RuntimeConfigurationProcessor;
 
 /**
  * @author Jens Halm
@@ -41,12 +49,45 @@ public class BindingMetadataTest extends ContextTestBase {
 		var cat2:Cat = new Cat();
 		pub1.value = cat1;
 		assertEquals("Unexpected subsciber value", cat1, sub.value);
-		assertEquals("Unexpected subsciber value", cat1, pub1.value);
-		assertEquals("Unexpected subsciber value", cat1, pub2.value);
+		assertEquals("Unexpected publisher value", cat1, pub1.value);
+		assertEquals("Unexpected publisher value", cat1, pub2.value);
 		pub2.value = cat2;
 		assertEquals("Unexpected subsciber value", cat2, sub.value);
-		assertEquals("Unexpected subsciber value", cat2, pub1.value);
-		assertEquals("Unexpected subsciber value", cat2, pub2.value);
+		assertEquals("Unexpected publisher value", cat2, pub1.value);
+		assertEquals("Unexpected publisher value", cat2, pub2.value);
+	}
+	
+	public function testPublishSubscribeLifecycle() : void {
+		var pub1:CatPubSubMetadata = new CatPubSubMetadata();
+		var pub2:CatPubSubMetadata = new CatPubSubMetadata();
+		var sub:CatSubscribeMetadata = new CatSubscribeMetadata();
+		var context:Context = RuntimeContextBuilder.build([sub]);
+		assertNull("Unexpected subsciber value", sub.value);
+		var cat1:Cat = new Cat();
+		var cat2:Cat = new Cat();
+		pub1.value = cat1;
+		var dyn1:DynamicObject = context.addDynamicObject(pub1);
+		assertEquals("Unexpected subsciber value", cat1, sub.value);
+		assertEquals("Unexpected publisher value", cat1, pub1.value);
+		assertEquals("Unexpected publisher value", null, pub2.value);
+		pub2.value = cat2;
+		var dyn2:DynamicObject = context.addDynamicObject(pub2);
+		assertEquals("Unexpected subsciber value", cat1, sub.value);
+		assertEquals("Unexpected publisher value", cat1, pub1.value);
+		assertEquals("Unexpected publisher value", cat1, pub2.value);
+		pub2.value = cat2;
+		assertEquals("Unexpected subsciber value", cat2, sub.value);
+		assertEquals("Unexpected publisher value", cat2, pub1.value);
+		assertEquals("Unexpected publisher value", cat2, pub2.value);
+		dyn1.remove();
+		assertEquals("Unexpected subsciber value", cat2, sub.value);
+		assertEquals("Unexpected publisher value", null, pub1.value);
+		assertEquals("Unexpected publisher value", cat2, pub2.value);
+		dyn2.remove();
+		assertEquals("Unexpected subsciber value", null, sub.value);
+		assertEquals("Unexpected publisher value", null, pub1.value);
+		assertEquals("Unexpected publisher value", null, pub2.value);
+		
 	}
 	
 	public function testTwoPublish () : void {
@@ -137,6 +178,39 @@ public class BindingMetadataTest extends ContextTestBase {
 		assertEquals("Unexpected removed object", cat2, removed[0]);
 	}
 	
-	
+	public function testPublishPersistent () : void {
+		var reg:ScopeRegistry = ContextUtil.globalScopeRegistry;
+		DefaultScopeRegistry(reg).reset();
+		DictionaryPersistenceService.reset();
+		DictionaryPersistenceService.putStoredValue("local0", String, "test", "A");
+		
+		var pub1:StringPublishPersistentMetadata = new StringPublishPersistentMetadata();
+		var pub2:StringPublishPersistentMetadata = new StringPublishPersistentMetadata();
+		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
+		builder.factories.scopeExtensions.addExtension(new TestPersistenceManagerFactory());
+		var rcp:RuntimeConfigurationProcessor = new RuntimeConfigurationProcessor();
+		rcp.addInstance(pub1);
+		rcp.addInstance(pub2);
+		builder.addProcessor(rcp);
+		var context:Context = builder.build();
+		assertEquals("Unexpected persisted value", "A", DictionaryPersistenceService.getStoredValue("local0", String, "test"));
+		pub1.value = "B";
+		assertEquals("Unexpected subscriber value", "B", pub2.value);
+		assertEquals("Unexpected change count", 1, DictionaryPersistenceService.changeCount);
+		assertEquals("Unexpected persisted value", "B", DictionaryPersistenceService.getStoredValue("local0", String, "test"));
+		context.destroy();
+		assertEquals("Unexpected change count", 1, DictionaryPersistenceService.changeCount);
+		assertEquals("Unexpected persisted value", "B", DictionaryPersistenceService.getStoredValue("local0", String, "test"));
+	}
 }
+}
+
+import org.spicefactory.parsley.binding.DictionaryPersistenceService;
+import org.spicefactory.parsley.core.factory.ScopeExtensionFactory;
+
+class TestPersistenceManagerFactory implements ScopeExtensionFactory {
+
+	public function create() : Object {
+		return new DictionaryPersistenceService();
+	}
 }

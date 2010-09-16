@@ -4,6 +4,7 @@
 	xmlns:flextag="org.spicefactory.parsley.tag.core.*">
 	<mx:Script>
 		<![CDATA[
+			import org.spicefactory.parsley.binding.model.StringHolder;
 			import org.spicefactory.parsley.binding.model.AnimalHolder;
 			import org.spicefactory.parsley.binding.model.CatHolder;
 		]]>
@@ -23,6 +24,10 @@
 	
 	<flextag:MxmlDynamicObjectTag id="publishManaged" type="{CatHolder}">
 		<binding:PublishDecorator property="value" managed="true" scope="local"/>
+	</flextag:MxmlDynamicObjectTag> 
+	
+	<flextag:MxmlDynamicObjectTag id="publishPersistent" type="{StringHolder}">
+		<binding:PublishSubscribeDecorator persistent="true" property="value" scope="local" objectId="test"/>
 	</flextag:MxmlDynamicObjectTag> 
 	
 	<flextag:MxmlDynamicObjectTag id="subscribe" type="{CatHolder}">

@@ -37,6 +37,11 @@ public class ScopeTag implements ContextBuilderProcessor {
 	public var name:String;
 	
 	/**
+	 * @copy org.spicefactory.parsley.core.scope.Scope#uid
+	 */
+	public var uuid:String;
+	
+	/**
 	 * Indicates whether child Contexts should inherit this scope.
 	 */
 	public var inherited:Boolean;
@@ -45,7 +50,7 @@ public class ScopeTag implements ContextBuilderProcessor {
 	 * @private
 	 */
 	public function processBuilder (builder:CompositeContextBuilder) : void {
-		builder.addScope(name, inherited);
+		builder.addScope(name, inherited, uuid);
 	}
 	
 }

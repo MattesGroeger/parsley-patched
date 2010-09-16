@@ -15,17 +15,18 @@
  */
 
 package org.spicefactory.parsley.core.builder.impl {
-import org.spicefactory.parsley.binding.BindingSupport;
 import org.spicefactory.lib.events.CompoundErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.binding.BindingSupport;
 import org.spicefactory.parsley.core.builder.AsyncConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.ContextUtil;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
@@ -97,6 +98,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		}
 		this.parent = (parent != null) ? parent : (event != null) ? event.parent : null;
 		this.domain = (domain != null) ? domain : (event != null && event.domain != null) ? event.domain : ClassInfo.currentDomain;
+		if (event) event.processScopes(this);
 		this.description = description;
 	}
 
@@ -116,8 +118,8 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	/**
 	 * @inheritDoc
 	 */
-	public function addScope (name:String, inherited:Boolean) : void {
-		scopes.addScope(createScopeDefinition(name, inherited));
+	public function addScope (name:String, inherited:Boolean = true, uuid:String = null) : void {
+		scopes.addScope(createScopeDefinition(name, inherited, uuid));
 	}
 
 	/**
@@ -139,9 +141,12 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		}
 	}
 	
-	private function createScopeDefinition (name:String, inherited:Boolean) : ScopeDefinition {
+	private function createScopeDefinition (name:String, inherited:Boolean, uuid:String = null) : ScopeDefinition {
 		var extensions:ScopeExtensions = factories.scopeExtensions.getExtensions(name);
-		return new ScopeDefinition(name, inherited, factories, extensions);
+		if (!uuid) {
+			uuid = ContextUtil.globalScopeRegistry.nextUuidForName(name);
+		}
+		return new ScopeDefinition(name, inherited, uuid, factories, extensions);
 	}
 	
 	private function createContext () : void {

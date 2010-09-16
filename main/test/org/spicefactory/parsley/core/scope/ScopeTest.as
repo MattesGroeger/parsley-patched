@@ -1,8 +1,11 @@
 package org.spicefactory.parsley.core.scope {
 import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.ContextUtil;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
+import org.spicefactory.parsley.core.scope.impl.DefaultScopeRegistry;
+import org.spicefactory.parsley.dsl.context.ContextBuilder;
 import org.spicefactory.parsley.xml.XmlContextTestBase;
 
 import mx.containers.Box;
@@ -16,6 +19,9 @@ import flash.events.EventDispatcher;
  * @author Jens Halm
  */
 public class ScopeTest extends XmlContextTestBase {
+	
+	
+	private static const CUSTOM_SCOPE:String = "custom";
 	
 	
 	public function testLocalMessages () : void {
@@ -108,6 +114,67 @@ public class ScopeTest extends XmlContextTestBase {
 		assertNotNull("Expected extension in global scope", globalExtension);
 		assertNotNull("Expected extension in local scope", localExtension);
 		assertFalse("Expected two distinct extensions", (globalExtension == localExtension));
+	}
+	
+	public function testScopeRegistry () : void {
+		var reg:ScopeRegistry = ContextUtil.globalScopeRegistry;
+		DefaultScopeRegistry(reg).reset();
+		validateScopes(0, 0, 0);
+		
+		var root1:Context = ContextBuilder.newBuilder().build();
+		validateScopes(1, 1, 0);
+		validateUuids("global0", "local0");
+		
+		var child1:Context = ContextBuilder.newSetup().parent(root1).scope(CUSTOM_SCOPE).newBuilder().build();
+		validateScopes(1, 2, 1);
+		validateUuids("global0", "local0", "local1", "custom0");
+		
+		var child2:Context = ContextBuilder.newSetup().parent(root1).scope(CUSTOM_SCOPE, true, "foo").newBuilder().build();
+		validateScopes(1, 3, 2);
+		validateUuids("global0", "local0", "local1", "local2", "custom0", "foo");
+		
+		var grandChild:Context = ContextBuilder.newSetup().parent(child1).newBuilder().build();
+		validateScopes(1, 4, 2);
+		validateUuids("global0", "local0", "local1", "local2", "local3", "custom0", "foo");
+		
+		var root2:Context = ContextBuilder.newBuilder().build();
+		validateScopes(2, 5, 2);
+		validateUuids("global0", "global1", "local0", "local1", "local2", "local3", "local4", "custom0", "foo");
+		
+		child1.destroy();
+		validateScopes(2, 3, 1);
+		validateUuids("global0", "global1", "local0", "local2", "local4", "foo");
+		validateUuidsRemoved("local1", "local3", "custom0");
+		
+		root1.destroy();
+		validateScopes(1, 1, 0);
+		validateUuids("global1", "local4");
+		validateUuidsRemoved("global0", "local0", "local1", "local2", "local3", "custom0", "foo");
+		
+		root2.destroy();
+		validateScopes(0, 0, 0);
+		validateUuidsRemoved("global0", "global1", "local0", "local1", "local2", "local3", "local4", "custom0", "foo");
+	}
+	
+	private function validateScopes (global:int, local:int, custom:int) : void {
+		var reg:ScopeRegistry = ContextUtil.globalScopeRegistry;
+		assertEquals("Unexpected number of global scopes", global, reg.getScopesByName(ScopeName.GLOBAL).length);
+		assertEquals("Unexpected number of local scopes", local, reg.getScopesByName(ScopeName.LOCAL).length);
+		assertEquals("Unexpected number of custom scopes", custom, reg.getScopesByName(CUSTOM_SCOPE).length);
+	}
+	
+	private function validateUuids (...uuids) : void {
+		var reg:ScopeRegistry = ContextUtil.globalScopeRegistry;
+		for each (var uuid:String in uuids) {
+			assertNotNull("Expected scope with uuid " + uuid, reg.getScopeById(uuid));
+		}
+	}
+	
+	private function validateUuidsRemoved (...uuids) : void {
+		var reg:ScopeRegistry = ContextUtil.globalScopeRegistry;
+		for each (var uuid:String in uuids) {
+			assertNull("Expected scope with uuid to be removed " + uuid, reg.getScopeById(uuid));
+		}
 	}
 }
 }

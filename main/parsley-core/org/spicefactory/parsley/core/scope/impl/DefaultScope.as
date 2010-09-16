@@ -113,8 +113,22 @@ public class DefaultScope implements Scope {
 	/**
 	 * @inheritDoc
 	 */
+	public function get uuid () : String {
+		return scopeDef.uuid;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
 	public function get inherited () : Boolean {
 		return scopeDef.inherited;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get rootContext () : Context {
+		return scopeDef.rootContext;
 	}
 	
 	/**

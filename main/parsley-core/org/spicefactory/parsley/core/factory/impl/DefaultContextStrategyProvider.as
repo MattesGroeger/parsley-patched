@@ -15,6 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.factory.impl {
+import org.spicefactory.parsley.core.scope.impl.DefaultScopeRegistry;
+import org.spicefactory.parsley.core.scope.ScopeRegistry;
+import org.spicefactory.parsley.core.scope.Scope;
+import org.spicefactory.parsley.core.scope.impl.ScopeDefinition;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
@@ -47,6 +51,8 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	private var context:Context;
 	private var providerFactory:ObjectProviderFactory;
 	
+	private static const _scopeRegistry:DefaultScopeRegistry = new DefaultScopeRegistry();
+	
 
 	/**
 	 * Creates a new instance.
@@ -71,6 +77,7 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 	public function init (context:Context, providerFactory:ObjectProviderFactory) : void {
 		this.context = context;
 		this.providerFactory = providerFactory;
+		initScopeDefinitions();
 	}
 	
 	/**
@@ -116,6 +123,7 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 		checkState();
 		if (_scopeManager == null) {
 			_scopeManager =	factories.scopeManager.create(context, scopeDefs, domain);
+			registerScopes();
 		}
 		return _scopeManager;
 	}
@@ -148,6 +156,29 @@ public class DefaultContextStrategyProvider implements ContextStrategyProvider {
 		if (context == null) {
 			throw new IllegalStateError("Provider has not been initialized yet");
 		}
+	}
+	
+	private function initScopeDefinitions () : void {
+		for each (var scopeDef:ScopeDefinition in scopeDefs) {
+			if (!scopeDef.rootContext) {
+				scopeDef.rootContext = context;
+			}
+		}
+	}
+	
+	private function registerScopes () : void {
+		for each (var scope:Scope in _scopeManager.getAllScopes()) {
+			if (scope.rootContext == context) {
+				_scopeRegistry.addScope(scope);
+			}
+		}
+	}
+	
+	/**
+	 * @private
+	 */
+	public static function get scopeRegistry () : ScopeRegistry {
+		return _scopeRegistry;
 	}
 	
 	

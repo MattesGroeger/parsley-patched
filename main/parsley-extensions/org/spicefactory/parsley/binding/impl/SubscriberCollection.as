@@ -1,3 +1,19 @@
+/*
+ * Copyright 2010 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 package org.spicefactory.parsley.binding.impl {
 import flash.events.Event;
 import org.spicefactory.lib.errors.IllegalArgumentError;
@@ -108,7 +124,7 @@ public class SubscriberCollection {
 	 */
 	public function removePublisher (publisher:Publisher) : void {
 		publisher.removeEventListener(Event.CHANGE, publisherChanged);
-		subscribers.remove(publisher.id, publisher);
+		publishers.remove(publisher.id, publisher);
 		if (publishers.getSize(publisher.id) == 0) {
 			setCurrentValue(publisher.id, undefined);
 		}
@@ -122,7 +138,9 @@ public class SubscriberCollection {
 	 */
 	public function addSubscriber (subscriber:Subscriber) : void {
 		subscribers.put(subscriber.id, subscriber);
-		subscriber.update(currentValue[subscriber.id]);
+		if (!(subscriber is Publisher) || publishers.getSize(subscriber.id) > 0) {
+			subscriber.update(currentValue[subscriber.id]);
+		}
 	}
 
 	/**

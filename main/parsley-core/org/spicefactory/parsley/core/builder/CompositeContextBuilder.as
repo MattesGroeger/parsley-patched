@@ -59,8 +59,9 @@ public interface CompositeContextBuilder {
 	 * 
 	 * @param name the name of the scope
 	 * @param inherited whether child Contexts should inherit this scope
+	 * @param uuid the unique id of this scope
 	 */
-	function addScope (name:String, inherited:Boolean) : void;
+	function addScope (name:String, inherited:Boolean = true, uuid:String = null) : void;
 	
 	/**
 	 * The factories to be used by this builder.

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2010 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 package org.spicefactory.parsley.binding.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
@@ -9,11 +25,8 @@ import org.spicefactory.parsley.binding.Subscriber;
  * 
  * @author Jens Halm
  */
-public class PropertySubscriber implements Subscriber {
+public class PropertySubscriber extends AbstractSubscriber implements Subscriber {
 
-	
-	private var _type:ClassInfo;
-	private var _id:String;
 	
 	private var target:Object;
 	private var property:Property;
@@ -28,26 +41,10 @@ public class PropertySubscriber implements Subscriber {
 	 * @param id the id the value is published with
 	 */
 	function PropertySubscriber (target:Object, property:Property, type:ClassInfo = null, id:String = null) {
+		super(type ? type : property.type, id);
 		this.target = target;
 		this.property = property;
-		_type = (type == null) ? property.type : type;
-		_id = id;
 	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function get type () : ClassInfo {
-		return _type;
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function get id () : String {
-		return _id;
-	}
-	
 	
 	/**
 	 * @inheritDoc

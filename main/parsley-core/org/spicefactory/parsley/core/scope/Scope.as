@@ -15,12 +15,13 @@
  */
 
 package org.spicefactory.parsley.core.scope {
+	import org.spicefactory.parsley.core.context.Context;
 	import org.spicefactory.parsley.core.lifecycle.LifecycleObserverRegistry;
-import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
-import org.spicefactory.parsley.core.messaging.command.CommandManager;
+	import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
+	import org.spicefactory.parsley.core.messaging.command.CommandManager;
 
-/**
- * Represents a single scope.
+	/**
+	 * Represents a single scope.
  * 
  * @author Jens Halm
  */
@@ -33,9 +34,24 @@ public interface Scope {
 	function get name () : String;
 	
 	/**
+	 * The unique id of this scope. 
+	 * In small or mid-size projects an id is often not needed, the framework will autogenerate
+	 * the id in these cases and it can simply be ignored. In a big modular application there may
+	 * be the need to address one particular scope within the system and the scheme of ids assigned
+	 * to the scopes is often application-specific. The uid may be used to identify persistent published
+	 * values or to explicitly route messages.
+	 */
+	function get uuid () : String;
+	
+	/**
 	 * Indicates whether this scope will be inherited by child Contexts.
 	 */
 	function get inherited () : Boolean;
+	
+	/**
+	 * The root Context of this scope.
+	 */
+	function get rootContext () : Context;
 	
 	/**
 	 * The registry for receivers of application messages dispatched through this scope.

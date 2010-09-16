@@ -15,6 +15,7 @@
  */
  
 package org.spicefactory.parsley.core.events {
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.context.Context;
 
@@ -42,6 +43,7 @@ public class ContextBuilderEvent extends Event {
 	
 	private var _domain:ApplicationDomain;
 	private var _parent:Context;
+	private var _scopes:Array = new Array();
 	
 	
 	/**
@@ -63,6 +65,24 @@ public class ContextBuilderEvent extends Event {
 			throw new IllegalStateError("ApplicationDomain has already been set for this event");
 		}
 		_domain = domain;
+	}
+	
+	/**
+	 * @copy org.spicefactory.parsley.core.builder.CompositeContextBuilder#addScope()
+	 */
+	public function addScope (name:String, inherited:Boolean = true, uuid:String = null) : void {
+		_scopes.push(new Scope(name, inherited, uuid));
+	}
+	
+	/**
+	 * Adds the scopes specified for this event to the builder.
+	 * 
+	 * @param builder the builder to add the scopes to
+	 */
+	public function processScopes (builder:CompositeContextBuilder) : void {
+		for each (var s:Scope in _scopes) {
+			builder.addScope(s.name, s.inherited, s.uuid);
+		}
 	}
 	
 	/**
@@ -92,4 +112,18 @@ public class ContextBuilderEvent extends Event {
 	
 	
 }
+}
+
+class Scope {
+	
+	public var name:String;
+	public var inherited:Boolean;
+	public var uuid:String;
+	
+	function Scope (name:String, inherited:Boolean, uuid:String) {
+		this.name = name;
+		this.inherited = inherited;
+		this.uuid = uuid;
+	}
+	
 }

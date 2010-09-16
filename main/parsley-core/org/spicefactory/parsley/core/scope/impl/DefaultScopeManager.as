@@ -70,7 +70,7 @@ public class DefaultScopeManager implements ScopeManager {
 	 */
 	public function getAllScopes () : Array {
 		var scopes:Array = new Array();
-		for each (var scope:Scope in scopes) {
+		for each (var scope:Scope in this.scopes) {
 			scopes.push(scope);
 		}
 		return scopes;

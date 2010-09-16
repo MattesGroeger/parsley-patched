@@ -15,10 +15,12 @@
  */
 
 package org.spicefactory.parsley.core.context {
-import org.spicefactory.parsley.core.lifecycle.ManagedObject;
-import org.spicefactory.parsley.core.lifecycle.impl.ManagedObjectLookup;
+import org.spicefactory.parsley.core.factory.impl.DefaultContextStrategyProvider;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
+import org.spicefactory.parsley.core.lifecycle.impl.ManagedObjectLookup;
+import org.spicefactory.parsley.core.scope.ScopeRegistry;
 import org.spicefactory.parsley.core.view.handler.ContextLookupEvent;
 
 import flash.display.DisplayObject;
@@ -101,6 +103,13 @@ public class ContextUtil {
 			callback(context);
 		};
 		context.addEventListener(event, f);	
+	}
+	
+	/**
+	 * The global registry for all registered scopes.
+	 */
+	public static function get globalScopeRegistry () : ScopeRegistry {
+		return DefaultContextStrategyProvider.scopeRegistry;
 	}
 
 

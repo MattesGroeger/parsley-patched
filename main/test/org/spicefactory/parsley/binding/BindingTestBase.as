@@ -3,12 +3,16 @@ import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.parsley.binding.model.AnimalHolder;
 import org.spicefactory.parsley.binding.model.Cat;
 import org.spicefactory.parsley.binding.model.CatHolder;
+import org.spicefactory.parsley.binding.model.StringHolder;
 import org.spicefactory.parsley.core.ContextTestBase;
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.ContextUtil;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.scope.ScopeName;
-
-import flash.utils.getQualifiedClassName;
+import org.spicefactory.parsley.core.scope.ScopeRegistry;
+import org.spicefactory.parsley.core.scope.impl.DefaultScopeRegistry;
 
 /**
  * @author Jens Halm
@@ -26,6 +30,10 @@ public class BindingTestBase extends ContextTestBase {
 	}
 	
 	protected function get bindingContext () : Context {
+		throw new AbstractMethodError();
+	}
+	
+	protected function addConfig (builder:CompositeContextBuilder) : void {
 		throw new AbstractMethodError();
 	}
 	
@@ -137,6 +145,37 @@ public class BindingTestBase extends ContextTestBase {
 		assertEquals("Unexpected removed object", cat2, removed[0]);
 	}
 	
-	
+	public function testPublishPersistent () : void {
+		var reg:ScopeRegistry = ContextUtil.globalScopeRegistry;
+		DefaultScopeRegistry(reg).reset();
+		DictionaryPersistenceService.reset();
+		DictionaryPersistenceService.putStoredValue("local0", String, "test", "A");
+		
+		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
+		builder.factories.scopeExtensions.addExtension(new TestPersistenceManagerFactory());
+		addConfig(builder);
+		var context:Context = builder.build();
+		
+		var pub1:StringHolder = context.getObject("publishPersistent") as StringHolder;
+		var pub2:StringHolder = context.getObject("publishPersistent") as StringHolder;
+		assertEquals("Unexpected persisted value", "A", DictionaryPersistenceService.getStoredValue("local0", String, "test"));
+		pub1.value = "B";
+		assertEquals("Unexpected subscriber value", "B", pub2.value);
+		assertEquals("Unexpected change count", 1, DictionaryPersistenceService.changeCount);
+		assertEquals("Unexpected persisted value", "B", DictionaryPersistenceService.getStoredValue("local0", String, "test"));
+		context.destroy();
+		assertEquals("Unexpected change count", 1, DictionaryPersistenceService.changeCount);
+		assertEquals("Unexpected persisted value", "B", DictionaryPersistenceService.getStoredValue("local0", String, "test"));
+	}
 }
+}
+
+import org.spicefactory.parsley.binding.DictionaryPersistenceService;
+import org.spicefactory.parsley.core.factory.ScopeExtensionFactory;
+
+class TestPersistenceManagerFactory implements ScopeExtensionFactory {
+
+	public function create() : Object {
+		return new DictionaryPersistenceService();
+	}
 }

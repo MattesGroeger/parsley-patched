@@ -37,7 +37,7 @@ public class FlashPropertyPublisher extends AbstractPublisher implements Publish
 	 */
 	function FlashPropertyPublisher (target:Object, property:Property, changeEvent:String, type:ClassInfo = null, id:String = null,
 			context:Context = null) {
-		super(property, type, id, context);
+		super(type ? type : property.type, id, false, context);
 		this.target = target;
 		this.property = property;
 		this.changeEvent = changeEvent;

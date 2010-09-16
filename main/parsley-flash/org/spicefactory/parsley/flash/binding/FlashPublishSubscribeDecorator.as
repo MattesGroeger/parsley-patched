@@ -1,7 +1,9 @@
 package org.spicefactory.parsley.flash.binding {
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.binding.processor.PersistentPublisherProcessor;
 import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
+import org.spicefactory.parsley.core.scope.Scope;
 import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.tag.util.ReflectionUtil;
@@ -50,6 +52,12 @@ public class FlashPublishSubscribeDecorator implements ObjectDefinitionDecorator
 	 */
     public var managed:Boolean;
     
+    /**
+     * Indicates whether the value published by this property should be persisted.
+     * The actual persistence mechanism is pluggable, the default implementation
+     * persists to a local SharedObject.
+     */
+    public var persistent:Boolean;
     
 	
 	/**
@@ -60,6 +68,11 @@ public class FlashPublishSubscribeDecorator implements ObjectDefinitionDecorator
 			throw new IllegalStateError("changeEvent must be specified");
 		}
 		var p:Property = ReflectionUtil.getProperty(property, builder.typeInfo, true, true);
+		if (persistent) {
+			var s:Scope = builder.config.context.scopeManager.getScope(scope);
+			builder.lifecycle().processorFactory(PersistentPublisherProcessor.newFactory(p, s, objectId));
+		}
+		
 		builder.lifecycle().processorFactory(FlashPublisherProcessor.newFactory(p, changeEvent, scope, objectId, managed, true));
 	}
 	

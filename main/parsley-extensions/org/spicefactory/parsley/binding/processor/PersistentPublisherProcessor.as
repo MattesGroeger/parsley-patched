@@ -17,28 +17,27 @@
 package org.spicefactory.parsley.binding.processor {
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.binding.BindingManager;
-import org.spicefactory.parsley.binding.Publisher;
-import org.spicefactory.parsley.binding.impl.PropertyPublisher;
-import org.spicefactory.parsley.binding.impl.SubscribingPropertyPublisher;
-import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.binding.PersistenceManager;
+import org.spicefactory.parsley.binding.impl.PersistentPublisher;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.registry.ObjectProcessor;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
+import org.spicefactory.parsley.core.scope.Scope;
+import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.processor.util.ObjectProcessorFactories;
 
 /**
- * Processes a single property holding a a value that
- * should be published to matching subscribers.
+ * Processes the persistence aspect of a published value.
  * It makes sure that the publisher is registered with the corresponding
  * BindingManager of the target scope during the lifetime of a managed object.
  * 
  * @author Jens Halm
  */
-public class PublisherProcessor implements ObjectProcessor {
+public class PersistentPublisherProcessor implements ObjectProcessor {
 
 
 	private var target:ManagedObject;
-	private var publisher:Publisher;
+	private var publisher:PersistentPublisher;
 	private var manager:BindingManager;
 
 	
@@ -49,18 +48,22 @@ public class PublisherProcessor implements ObjectProcessor {
 	 * @param property the target property that holds the published value
 	 * @param scope the scope the property value is published to
 	 * @param id the id the value is published with
-	 * @param managed whether the published object should be added to the Context while being published
-	 * @param subscribe whether the publisher should also act as a subscriber
 	 */
-	function PublisherProcessor (target:ManagedObject, property:Property, scope:String, id:String = null,
-			managed:Boolean = false, subscribe:Boolean = false) {
+	function PersistentPublisherProcessor (target:ManagedObject, property:Property, scope:Scope, id:String = null) {
 		this.target = target;
-		var context:Context = (managed) ? target.context : null;
-		this.publisher = (subscribe)
-				? new SubscribingPropertyPublisher(target.instance, property, property.type, id, context)
-				: new PropertyPublisher(target.instance, property, property.type, id, context);
-		this.manager = target.context.scopeManager.getScope(scope)
-				.extensions.byType(BindingManager) as BindingManager;
+		this.publisher = new PersistentPublisher(getPersistenceManager(scope), scope.uuid, property.type, id); 
+		this.manager = scope.extensions.byType(BindingManager) as BindingManager;
+	}
+	
+	private function getPersistenceManager (scope:Scope) : PersistenceManager {
+		try {
+			return scope.extensions.byType(PersistenceManager) as PersistenceManager;
+		}
+		catch (e:Error) {
+			/* fall through */
+		}
+		return scope.rootContext.scopeManager.getScope(ScopeName.GLOBAL)
+				.extensions.byType(PersistenceManager) as PersistenceManager;
 	}
 	
 	
@@ -75,6 +78,7 @@ public class PublisherProcessor implements ObjectProcessor {
 	 * @inheritDoc
 	 */
 	public function postDestroy () : void {
+		publisher.disableSubscriber();
 		manager.removePublisher(publisher);
 	}
 	
@@ -85,13 +89,10 @@ public class PublisherProcessor implements ObjectProcessor {
 	 * @param property the target property that holds the published value
 	 * @param scope the scope the property value is published to
 	 * @param id the id the value is published with
-	 * @param managed whether the published object should be added to the Context while being published
-	 * @param subscribe whether the publisher should also act as a subscriber
 	 * @return a new processor factory 
 	 */
-	public static function newFactory (property:Property, scope:String, id:String = null, 
-			managed:Boolean = false, subscribe:Boolean = false) : ObjectProcessorFactory {
-		return ObjectProcessorFactories.newFactory(PublisherProcessor, [property, scope, id, managed, subscribe]);
+	public static function newFactory (property:Property, scope:Scope, id:String = null) : ObjectProcessorFactory {
+		return ObjectProcessorFactories.newFactory(PersistentPublisherProcessor, [property, scope, id]);
 	}
 	
 	
