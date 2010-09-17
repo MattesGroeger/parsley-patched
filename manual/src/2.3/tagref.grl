@@ -1314,7 +1314,7 @@ following files: #cdi messages/tooltips_en_US.xml #cdi, #cdi messages/tooltips_e
 #tbr #cdi type #cdi # optional # The type (class) of the #cdi ResourceBundle #cdi, defaults to #cdi DefaultResourceBundle #cdi which
 is usually sufficient. #tbr
 
-#tbr #cdi loaderFactory #cdi # optional # The type (class) of the #cdi BundleLoaderFactory #cdi, 
+#tbr #cdi loader-factory #cdi # optional # The type (class) of the #cdi BundleLoaderFactory #cdi, 
 responsible for loading the bundle files. Defaults to #cdi DefaultResourceBundle #cdi which
 is usually sufficient. #tbr
 #tbr #cdi localized #cdi # optional # Boolean attribute (defaults to #cdi true #cdi). If set to false the framework will only load 
