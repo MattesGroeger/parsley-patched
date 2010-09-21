@@ -17,6 +17,8 @@
 package org.spicefactory.parsley.tag.core {
 import org.spicefactory.parsley.asconfig.ConfigurationBase;
 
+import mx.utils.ObjectProxy;
+
 /**
  * Represents the root objects tag of an MXML configuration file.
  * 
@@ -30,7 +32,7 @@ public class MxmlObjectsTag extends ConfigurationBase {
 	 * @inheritDoc
 	 */
 	protected override function get properties () : Object {
-		return super.properties;
+		return new ObjectProxy(super.properties);
 	}
 	
 	protected override function set properties (value:Object) : void {
