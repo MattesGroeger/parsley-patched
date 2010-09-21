@@ -64,6 +64,7 @@ public class FlexModuleSupport {
 }
 }
 
+import flash.events.EventDispatcher;
 import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.logging.LogContext;
@@ -113,7 +114,8 @@ class DomainInfo {
 	
 }
 
-class ModuleInfoBase {
+class ModuleInfoBase extends EventDispatcher {
+	
 	protected function getDomain (applicationDomain:ApplicationDomain) : ApplicationDomain {
 		throw new AbstractMethodError();
 	}
@@ -162,13 +164,29 @@ class ModuleInfoProxy extends Flex3ModuleInfoBase implements IModuleInfo {
 	function ModuleInfoProxy (module:IModuleInfo, domain:DomainInfo) {
 		this.module = module;
 		this.domain = domain;
+		
+		module.addEventListener(ModuleEvent.SETUP, moduleEventHandler, false, 0, true);
+        module.addEventListener(ModuleEvent.PROGRESS, moduleEventHandler, false, 0, true);
+        module.addEventListener(ModuleEvent.READY, moduleEventHandler, false, 0, true);
+        module.addEventListener(ModuleEvent.ERROR, moduleEventHandler, false, 0, true);
+        module.addEventListener(ModuleEvent.UNLOAD, moduleEventHandler, false, 0, true);
 	}
+	
+	private function moduleEventHandler (event:ModuleEvent) : void {
+        dispatchEvent(event);
+    }
 	
 	private function moduleUnloaded (event:Event) : void {
 		var module:IModuleInfo = event.target as IModuleInfo;
 		module.removeEventListener(ModuleEvent.UNLOAD, moduleUnloaded);
 		log.info("Unload Module with URL " + module.url);
 		domain.current = null;
+		
+		module.removeEventListener(ModuleEvent.SETUP, moduleEventHandler);
+        module.removeEventListener(ModuleEvent.PROGRESS, moduleEventHandler);
+        module.removeEventListener(ModuleEvent.READY, moduleEventHandler);
+        module.removeEventListener(ModuleEvent.ERROR, moduleEventHandler);
+        module.removeEventListener(ModuleEvent.UNLOAD, moduleEventHandler);
 	}
 	
 	private function unloadBeforeLoad (event:Event) : void {
@@ -252,27 +270,6 @@ class ModuleInfoProxy extends Flex3ModuleInfoBase implements IModuleInfo {
 		return module.url;
 	}
 	
-	
-	public function dispatchEvent (event:Event) : Boolean {
-		return module.dispatchEvent(event);
-	}
-	
-	public function hasEventListener (type:String) : Boolean {
-		return module.hasEventListener(type);
-	}
-	
-	public function willTrigger (type:String) : Boolean {
-		return module.willTrigger(type);
-	}
-	
-	public function addEventListener (type:String, listener:Function, useCapture:Boolean = false, 
-			priority:int = 0, useWeakReference:Boolean = false) : void {
-		module.addEventListener(type, listener, useCapture, priority, useWeakReference);
-	}
-
-	public function removeEventListener (type:String, listener:Function, useCapture:Boolean = false) : void {
-		module.removeEventListener(type, listener, useCapture);
-	}
 	
 }
 
