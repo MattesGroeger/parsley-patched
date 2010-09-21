@@ -36,7 +36,7 @@ was added, leading to a significantly easier setup. #par
 #cdb
 public class Order {
 
-    [ChoiceType("com.foo.Order")]
+    [ChoiceType("com.foo.Book")]
     public var books:Array;
     
 }
@@ -69,8 +69,8 @@ If any of the other 4 attributes would be missing the mapping operation will fai
 #ref xmlmapper_validation #ref. #par
 
 #par The #cdi [ChoiceType] #cdi metadata tag lists the classes that are permitted as elements in the Array. All XML elements
-that map to the Order class or any subtype are valid child elements in this case. If this tag would be omitted, all tags
-would be allowed. For most mapping types there sensible defaults. For simple property types like String and int the default
+that map to the Book class or any subtype are valid child elements in this case. If this tag would be omitted, all tags
+would be allowed. For most mapping types there are sensible defaults. For simple property types like String and int the default
 is to map them to XML attributes, the same way as if you would add the #cdi [Attribute] #cdi metadata tag to the property declaration. #par
 
 #par Next we create the mapper that is responsible for transforming this structure; #par
