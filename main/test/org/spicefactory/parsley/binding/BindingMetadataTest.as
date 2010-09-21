@@ -2,10 +2,12 @@ package org.spicefactory.parsley.binding {
 import org.spicefactory.parsley.binding.model.AnimalSubscribeMetadata;
 import org.spicefactory.parsley.binding.model.Cat;
 import org.spicefactory.parsley.binding.model.CatPubSubMetadata;
+import org.spicefactory.parsley.binding.model.CatPublishCustomMetadata;
 import org.spicefactory.parsley.binding.model.CatPublishIdMetadata;
 import org.spicefactory.parsley.binding.model.CatPublishLocalMetadata;
 import org.spicefactory.parsley.binding.model.CatPublishManagedMetadata;
 import org.spicefactory.parsley.binding.model.CatPublishMetadata;
+import org.spicefactory.parsley.binding.model.CatSubscribeCustomMetadata;
 import org.spicefactory.parsley.binding.model.CatSubscribeIdMetadata;
 import org.spicefactory.parsley.binding.model.CatSubscribeLocalMetadata;
 import org.spicefactory.parsley.binding.model.CatSubscribeMetadata;
@@ -21,6 +23,7 @@ import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.core.scope.ScopeRegistry;
 import org.spicefactory.parsley.core.scope.impl.DefaultScopeRegistry;
+import org.spicefactory.parsley.dsl.context.ContextBuilder;
 import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
 import org.spicefactory.parsley.runtime.processor.RuntimeConfigurationProcessor;
 
@@ -130,7 +133,7 @@ public class BindingMetadataTest extends ContextTestBase {
 		assertNotNull("Expected non-null subsciber value", sub.value);
 	}
 	
-	public function testScope () : void {
+	public function testLocalScope () : void {
 		var pub:CatPublishLocalMetadata = new CatPublishLocalMetadata();
 		var sub:CatSubscribeMetadata = new CatSubscribeMetadata();
 		var subLocal:CatSubscribeLocalMetadata = new CatSubscribeLocalMetadata();
@@ -140,6 +143,24 @@ public class BindingMetadataTest extends ContextTestBase {
 		pub.value = new Cat();
 		assertNull("Unexpected subsciber value", sub.value);
 		assertNotNull("Expected non-null subsciber value", subLocal.value);
+	}
+	
+	public function testCustomScope () : void {
+		var pub:CatPublishCustomMetadata = new CatPublishCustomMetadata();
+		var sub:CatSubscribeMetadata = new CatSubscribeMetadata();
+		var subCustom:CatSubscribeCustomMetadata = new CatSubscribeCustomMetadata();
+		ContextBuilder.newSetup()
+			.scope("custom")
+			.newBuilder()
+				.object(pub)
+				.object(sub)
+				.object(subCustom)
+				.build();
+		assertNull("Unexpected subsciber value", sub.value);
+		assertNull("Unexpected subsciber value", subCustom.value);
+		pub.value = new Cat();
+		assertNull("Unexpected subsciber value", sub.value);
+		assertNotNull("Expected non-null subsciber value", subCustom.value);
 	}
 	
 	public function testContextDestruction () : void {

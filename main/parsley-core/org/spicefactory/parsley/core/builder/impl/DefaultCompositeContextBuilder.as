@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.builder.impl {
+import org.spicefactory.lib.util.Delegate;
+import org.spicefactory.lib.util.DelegateChain;
 import org.spicefactory.lib.events.CompoundErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
@@ -66,6 +68,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	private var parent:Context;
 	private var domain:ApplicationDomain;
 	
+	private var customScopes:DelegateChain = new DelegateChain();
 	private var scopes:ScopeCollection = new ScopeCollection();
 	private var processors:Array = new Array();
 	private var currentProcessor:Object;
@@ -119,6 +122,10 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 * @inheritDoc
 	 */
 	public function addScope (name:String, inherited:Boolean = true, uuid:String = null) : void {
+		customScopes.addDelegate(new Delegate(addCustomScope, [name, inherited, uuid]));
+	}
+	
+	private function addCustomScope (name:String, inherited:Boolean, uuid:String) : void {
 		scopes.addScope(createScopeDefinition(name, inherited, uuid));
 	}
 
@@ -139,8 +146,9 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 				scopes.addScope(inheritedScope);
 			}
 		}
+		customScopes.invoke();
 	}
-	
+
 	private function createScopeDefinition (name:String, inherited:Boolean, uuid:String = null) : ScopeDefinition {
 		var extensions:ScopeExtensions = factories.scopeExtensions.getExtensions(name);
 		if (!uuid) {
@@ -355,3 +363,5 @@ class ScopeCollection {
 	}
 	
 }
+
+
