@@ -3,7 +3,7 @@
 	
 	<property file="build.properties" />
 	
-	<property name="version" value="2.3.1-SNAPSHOT"/>
+	<property name="version" value="2.3.1"/>
 	<property name="pimento.version" value="1.1.0"/>
 	<property name="project.dir" value="${basedir}/.."/>
 	<property name="lib.dir" value="${project.dir}/lib"/>
@@ -789,14 +789,14 @@
 	<target name="release_zip" description="Create Release Zip">
 		
 		<!-- create directories -->
-		<delete dir="${release.target.dir}"/>
+		<!-- <delete dir="${release.target.dir}"/>
 		<mkdir dir="${release.target.dir}"/>
 
 		<mkdir dir="${release.target.dir}/src"/>
-		<mkdir dir="${release.target.dir}/lib"/>
+		<mkdir dir="${release.target.dir}/lib"/>-->
 		
 		<!-- build all swcs -->
-		<antcall target="compile_all"/>
+		<!-- <antcall target="compile_all"/>-->
 		
 		<!-- copy license -->
 		<copy todir="${release.target.dir}">
@@ -827,14 +827,14 @@
 		</copy>
 		
 		<!-- copy sample applications -->
-		<delete dir="${samples.base.dir}/ParsleyHelloWorld/libs"/>
+		<!--<delete dir="${samples.base.dir}/ParsleyHelloWorld/libs"/>
 		<mkdir dir="${samples.base.dir}/ParsleyHelloWorld/libs"/>
 		<copy todir="${samples.base.dir}/ParsleyHelloWorld/libs">
 			<fileset dir="${release.target.dir}/release">
 				<include name="parsley-flex3*.swc/"/>
 				<include name="spicelib-flex*.swc"/>
 			</fileset>
-		</copy>
+		</copy>-->
 		<delete file="${samples.base.dir}/ParsleyHelloWorld/HelloWorld.swf"/>
 		
 		<mkdir dir="${release.target.dir}/samples/helloworld"/>
@@ -842,6 +842,8 @@
 			<fileset dir="${samples.base.dir}/ParsleyHelloWorld">
 				<exclude name="bin-debug/"/>
 				<exclude name="bin-release/"/>
+				<exclude name=".as3_classpath"/>
+				<exclude name=".settings/"/>
 			</fileset>
 		</copy>
 		
