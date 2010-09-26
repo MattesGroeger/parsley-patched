@@ -322,7 +322,7 @@ a no-argument constructor. #lse
 #lse Allows to define an object to be lazy (#cdi <Object lazy="true" type="..."/> #cdi) which means that it won't be
 initialized and configured before the first time you use it. #lse
 
-#lse Allows to configure an object as a non-singleton (#cdi <Object singleton="false" type="..."/> #cdi). This means that
+#lse Allows to configure an object as a DynamicObject/non-singleton (#cdi <DynamicObject type="..."/> #cdi). This means that
 every time this object gets fetched from the container or injected into another object, the container will create a new
 instance. #lse
 
