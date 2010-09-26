@@ -314,8 +314,7 @@ public function dispose () : void {
 all injections have been processed. #par
 
 #par The methods marked with #cdi [Destroy] #cdi get invoked after the Context instance they belong to has been
-destroyed with #cdi Context.destroy() #cdi or when the object was removed from the Context. 
-See #ref lifecycle_methods #ref for details. #par
+destroyed with #cdi Context.destroy() #cdi or when the object was removed from the Context. #par
 
 #par For Flex Components declared in regular MXML files and wired to the Context as described in #ref view_intro #ref
 the lifecycle is different: For those objects the methods get invoked whenever the object is added to or removed from the
