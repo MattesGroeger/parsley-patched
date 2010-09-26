@@ -94,7 +94,7 @@ class ViewHandler {
 		if (removedInCurrentFrame) {
 			resetFrame();
 		}
-		else {
+		else if (addedHandler != null) {
 			addedHandler(view);
 		}
 	}
