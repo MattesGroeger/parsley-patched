@@ -114,6 +114,9 @@ public class ClassInfo extends MetadataAware {
 			return forName(getQualifiedClassName(instance), domain);
 		}
 		var C:Class = instance.constructor as Class;
+		if (C == null) {
+			return forName(getQualifiedClassName(instance), domain);
+		}
 		return getClassInfo(C, getDomain(domain));
 	}
 	
