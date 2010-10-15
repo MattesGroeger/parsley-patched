@@ -66,11 +66,11 @@ Other objects (or the same instance) can then listen for the results: #par
 
 #cdb
 [CommandResult]
-private function loginResult (user:User, trigger:LoginEvent) : void {
+public function loginResult (user:User, trigger:LoginEvent) : void {
     [...]
 }
 [CommandError]
-private function loginFault (fault:FaultEvent, trigger:LoginEvent) : void {
+public function loginFault (fault:FaultEvent, trigger:LoginEvent) : void {
     [...]
 }
 #cdb
