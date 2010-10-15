@@ -43,6 +43,7 @@
 	        <xs:element name="factory" type="methodType" minOccurs="0"/>
             
             <xs:element name="managed-events" type="managedEventsType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="message-dispatcher" type="messageDispatcherType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="message-handler" type="messageHandlerType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="message-interceptor" type="messageInterceptorType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="message-binding" type="messageBindingType" minOccurs="0" maxOccurs="unbounded"/>
@@ -152,6 +153,11 @@
     
     <xs:complexType name="managedEventsType">
         <xs:attribute name="names" type="xs:token" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="messageDispatcherType">
+        <xs:attribute name="property" type="xs:token" use="required"/>
+        <xs:attribute name="scope" type="xs:token" use="optional"/>
     </xs:complexType>
     
     <xs:attributeGroup name="messagingAttributes">
