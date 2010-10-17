@@ -131,7 +131,7 @@ public class MyView extends Sprite {
     }
     
     private function configure () : void {
-	    dispatchEvent(new Event("configureView", true));
+        dispatchEvent(new Event("configureView", true));
     }
     
     /* ... */
