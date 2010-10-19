@@ -132,18 +132,23 @@ public class DefaultViewConfigurator implements ViewConfigurator {
 	
 	private function getDefinitionByType (configTarget:Object) : DynamicObjectDefinition {
 		var type:Class = ClassInfo.forInstance(configTarget, domain).getClass();
-		var count:int = context.getObjectCount(type);
-		if (count == 0) {
-			return null;
+		
+		var ids:Array = context.getObjectIds(type);
+		var def:DynamicObjectDefinition = null;
+		
+		for each (var id:String in ids) {
+			var candidate:ObjectDefinition = context.getDefinition(id);
+			if (candidate is DynamicObjectDefinition && configTarget is candidate.type.getClass()) {
+				if (def == null) {
+					def = candidate as DynamicObjectDefinition; 
+				}
+				else {
+					throw new ContextError("More than one view definition for type " 
+							+ type + " was registered");
+				}
+			}
 		}
-		else if (count > 1) {
-			throw new ContextError("More than one view definition for type " 
-					+ getQualifiedClassName(configTarget) + " was registered");
-		}
-		else {
-			var def:ObjectDefinition = context.getDefinitionByType(type);
-			return (def is DynamicObjectDefinition) ? def as DynamicObjectDefinition : null;
-		}
+		return def;
 	}
 
 	private function componentRemoved (event:Event) : void {
