@@ -100,7 +100,7 @@ public class AbstractPropertyHandler implements PropertyHandler {
 	 */
 	protected function validateValueCount (count:int) : void {
 		if (count == 0 && _required) {
-			throw new XmlValidationError("No element mapping to required " + property);
+			throw new XmlValidationError("Missing required " + nodeKind + " mapping to " + property);
 		}
 		if (count > 1 && _singleValue) {
 			throw new XmlValidationError("At most one element allowed to map to " + property);
