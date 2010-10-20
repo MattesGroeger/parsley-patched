@@ -224,8 +224,7 @@ a multi-Context environment and for automatic wiring there is the additional dif
 each component should be wired to. This is now done based on their placement in the view hierarchy. A component
 is wired to the nearest Context in the hierarchy above the component. #par
 
-#par Since this feature is quite new and not battle-tested yet, it has to be explicitly activated in the current
-version: #par
+#par Autowiring has to be explicitly activated: #par
 
 #par MXML #par
 
@@ -291,7 +290,13 @@ public class MyAutowireFilter extends DefaultViewAutowireFilter {
 #par And finally install that filter like this: #par
 
 #cdb
-GlobalFactoryRegistry.instance.viewManager.autowireFilter = new MyAutowireFilter();
+<parsley:ContextBuilder>
+    <parsley:ViewSettings 
+        autowireComponents="true" 
+        autowireFilter="{new MyAutowireFilter()}"
+    />
+    <parsley:FlexConfig type="{MyConfig}"/>
+</parsley:ContextBuilder>
 #cdb
 
 
