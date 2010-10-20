@@ -38,7 +38,7 @@ public class DefaultViewAutowireFilter extends AbstractViewAutowireFilter {
 	 * 
 	 * @param excludedTypes the types to exclude in the prefilter method
 	 */
-	function DefaultViewAutowireFilter (settings:ViewSettings, excludedTypes:RegExp = null) {
+	function DefaultViewAutowireFilter (settings:ViewSettings = null, excludedTypes:RegExp = null) {
 		super(settings);
 		if (excludedTypes) this.excludedTypes = excludedTypes;
 	}
