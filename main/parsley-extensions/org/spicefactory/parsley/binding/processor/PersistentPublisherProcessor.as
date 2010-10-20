@@ -56,14 +56,13 @@ public class PersistentPublisherProcessor implements ObjectProcessor {
 	}
 	
 	private function getPersistenceManager (scope:Scope) : PersistenceManager {
-		try {
+		if (scope.extensions.hasType(PersistenceManager)) {
 			return scope.extensions.byType(PersistenceManager) as PersistenceManager;
 		}
-		catch (e:Error) {
-			/* fall through */
-		}
-		return scope.rootContext.scopeManager.getScope(ScopeName.GLOBAL)
+		else {
+			return scope.rootContext.scopeManager.getScope(ScopeName.GLOBAL)
 				.extensions.byType(PersistenceManager) as PersistenceManager;
+		}
 	}
 	
 	

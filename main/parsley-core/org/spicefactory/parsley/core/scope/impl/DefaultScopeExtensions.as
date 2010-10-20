@@ -61,16 +61,7 @@ public class DefaultScopeExtensions implements ScopeExtensions {
 	 * @inheritDoc
 	 */
 	public function byType (type:Class) : Object {
-		var result:Object = null;
-		for each (var ext:Object in allExt) {
-			if (ext is type) {
-				if (result != null) {
-					throw new ContextError("More than one scope extension registered for type " 
-							+ getQualifiedClassName(type));
-				}
-				result = ext; 
-			}
-		}
+		var result:Object = findByType(type);
 		if (result == null) {
 			if (parent != null) {
 				return parent.byType(type);
@@ -81,6 +72,28 @@ public class DefaultScopeExtensions implements ScopeExtensions {
 			}
 		}
 		return result;
+	}
+	
+	private function findByType (type:Class) : Object {
+		var result:Object = null;
+		for each (var ext:Object in allExt) {
+			if (ext is type) {
+				if (result != null) {
+					throw new ContextError("More than one scope extension registered for type " 
+							+ getQualifiedClassName(type));
+				}
+				result = ext; 
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function hasType (type:Class) : Boolean {
+		var result:Object = findByType(type);
+		return (result != null) || (parent != null && parent.hasType(type));
 	}
 	
 	/**
@@ -94,6 +107,13 @@ public class DefaultScopeExtensions implements ScopeExtensions {
 			return parent.byId(id);
 		}
 		throw new ContextError("No scope extension registered with id " + id);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function hasId (id:String) : Boolean {
+		return (extById[id] != undefined) || (parent != null && parent.hasId(id));
 	}
 	
 	
