@@ -526,7 +526,7 @@ public class ClassInfo extends MetadataAware {
 	 */
 	public function isType (c:Class) : Boolean {
 		init();
-		if (type == c) return true;
+		if (type == c || Object == c) return true;
 		for each (var sc:Class in superClasses) {
 			if (sc == c) return true;
 		}

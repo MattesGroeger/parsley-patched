@@ -1,7 +1,4 @@
 package org.spicefactory.parsley.test {
-import org.spicefactory.parsley.core.messaging.ErrorPolicyTest;
-import org.spicefactory.parsley.core.decorator.metadata.MetadataInheritanceTest;
-import org.spicefactory.parsley.core.properties.ConfigurationPropertiesTest;
 import flexunit.framework.TestSuite;
 
 import org.spicefactory.parsley.binding.BindingMetadataTest;
@@ -10,6 +7,7 @@ import org.spicefactory.parsley.core.builder.RuntimeConfigurationTest;
 import org.spicefactory.parsley.core.command.CommandMetadataTagTest;
 import org.spicefactory.parsley.core.command.sync.SynchronousCommandTest;
 import org.spicefactory.parsley.core.command.task.TaskCommandTest;
+import org.spicefactory.parsley.core.context.ContextTest;
 import org.spicefactory.parsley.core.decorator.asyncinit.AsyncInitMetadataTagTest;
 import org.spicefactory.parsley.core.decorator.factory.FactoryMetadataTagTest;
 import org.spicefactory.parsley.core.decorator.injection.InjectMetadataTagTest;
@@ -18,11 +16,14 @@ import org.spicefactory.parsley.core.decorator.injection.OptionalConstructorInje
 import org.spicefactory.parsley.core.decorator.injection.RequiredConstructorInjection;
 import org.spicefactory.parsley.core.decorator.lifecycle.LifecycleMetadataTagTest;
 import org.spicefactory.parsley.core.decorator.lifecycle.ObserveMetadataTagTest;
+import org.spicefactory.parsley.core.decorator.metadata.MetadataInheritanceTest;
 import org.spicefactory.parsley.core.dynamiccontext.DynamicObjectTest;
 import org.spicefactory.parsley.core.dynamiccontext.LegacyDynamicContextTest;
+import org.spicefactory.parsley.core.messaging.ErrorPolicyTest;
 import org.spicefactory.parsley.core.messaging.LazyMessagingMetadataTagTest;
 import org.spicefactory.parsley.core.messaging.MessagingMetadataTagTest;
 import org.spicefactory.parsley.core.messaging.proxy.MessageProxyTest;
+import org.spicefactory.parsley.core.properties.ConfigurationPropertiesTest;
 import org.spicefactory.parsley.core.scope.ScopeTest;
 import org.spicefactory.parsley.dsl.DslConfigTest;
 import org.spicefactory.parsley.flash.logging.FlashLoggingXmlTagTest;
@@ -64,6 +65,7 @@ public class ParsleyTestSuite {
 		
 		var suite:TestSuite = new TestSuite();
 		
+		suite.addTestSuite(ContextTest);
 		suite.addTestSuite(ActionScriptConfigurationTest);
 		suite.addTestSuite(RuntimeConfigurationTest);
 		suite.addTestSuite(DslConfigTest);
