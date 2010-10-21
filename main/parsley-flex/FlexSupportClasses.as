@@ -15,6 +15,7 @@
  */
 
 package {
+import org.spicefactory.parsley.flex.tag.ContextAwareTagBase;
 import org.spicefactory.parsley.flex.FlexConfig;
 import org.spicefactory.parsley.flex.FlexContextBuilder;
 import org.spicefactory.parsley.flex.FlexSupport;
@@ -36,6 +37,7 @@ public class FlexSupportClasses {
 	FlexResourceBindingAdapter;
 	FlexContextBuilder;
 	FlexConfig;
+	ContextAwareTagBase;
 	
 }
 }
