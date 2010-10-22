@@ -1170,6 +1170,79 @@ custom tag like shown in #ref extensions_init #ref that can then be used as a ch
 tag. #par
 
 
+#sub Decorating IOC Kernel Services #sub
+
+#par For most scenarios it is recommended not to create a replacement from scratch but instead decorate an existing service.
+There are two reasons why you should prefer a decorator. First, in most cases you want to add or modify a certain aspect
+of a core service and not implement it with a totally different behavior. Second, there might be 3rd party frameworks or 
+extensions that in turn want to replace or decorate a core service, which would fail if those were full replacements,
+as one replacement would overwrite the other. With a decorated service there is no limitation on the number of decorators
+you wrap around the original service. #par
+
+#par This is how you would write a very simple decorator that simply logs whenever a view root is added or removed
+from the Context. (This is a contrived example as Parsley does that anyway, it's just to demonstrate the principle.) #par 
+
+#cdb
+package {
+
+// [imports...]
+
+public class LoggingViewManagerFactory implements ViewManagerFactory {
+
+    private var delegateFactory:ViewManagerFactory;
+    
+    function LoggingViewManagerFactory (delegate:ViewManagerFactory) {
+        this.delegateFactory = delegate;
+    }
+    
+    public function create (context:Context, domain:ApplicationDomain, 
+                            settings:ViewSettings) : ViewManager {
+                                
+        var delegate:ViewManager = delegateFactory.create(context, domain, settings);
+        return new LoggingViewManager(delegate);
+    }
+    
+    /* deprecated methods omitted, in Parsley 2.x they still must be implemented */
+    
+}
+}
+
+// [imports...]
+
+class LoggingViewManager implements ViewManager {
+    
+    private static const log:ILogger = Log.getLogger("com.foo.LoggingViewManager");
+    
+    private var delegate:ViewManager;
+    
+    function LoggingViewManager (delegate:ViewManager) {
+        this.delegate = delegate;
+    }
+
+    public function addViewRoot (view:DisplayObject) : void {
+        log.info("Adding view root " + view.name);
+        delegate.addViewRoot(view);
+    }
+
+    public function removeViewRoot (view:DisplayObject) : void {
+        log.info("Removing view root " + view.name);
+        delegate.removeViewRoot(view);
+    }
+    
+}
+#cdb
+
+#par As you can see we are simply wrapping the #cdi ViewManager #cdi and the #cdi ViewManagerFactory #cdi.
+You can then apply this factory globally like this: #par
+
+#cdb
+GlobalFactoryRegistry.instance.viewManager
+    = new LoggingViewManagerFactory(GlobalFactoryRegistry.instance.viewManager);
+#cdb
+
+#par The next section gives you an overview over all services that can be replaced or decorated. #par
+
+
 #sub List of IOC Kernel Services #sub
 
 #tbl
