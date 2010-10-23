@@ -151,6 +151,38 @@ be deduced, so all mapped classes would be allowed. Therefor relying on defaults
 Instead the #cdi [ChoiceType} #cdi or #cdi [ChoiceId] #cdi tags may be used to explicitly specify the permitted types.
 See #ref xmlmapper_childelements #ref and #ref xmlmapper_choices #ref for examples. #lse
 #lst
+
+
+#sub Naming Conventions #sub
+
+#par As you can see in our first example in this chapter, we were mapping the #cdi pageCount #cdi property
+to the #cdi page-count #cdi XML attribute. Per default the mapper always translates camel-case ActionScript names
+into dash notation which is more common in XML. So using #cdi pageCount #cdi as the attribute name in XML would
+actually give you an error. #par
+
+#par This is just the default behavior though and you can easily apply your own naming strategy: #par
+
+#cdb
+var mapper:XmlObjectMapper = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Order)
+    #hlt .defaultNamingStrategy(new MyNamingStrategy()); #hlt
+    .mappedClasses(Book)
+    .build();    
+#cdb 
+
+#par #cdi NamingStrategy #cdi is a trivial interface with just a single method that translates an ActionScript
+name to an XML name. #par
+
+#par The NamingStrategy is useful to change the convention globally. But you can also explicitly specify the name
+for a single element or attribute. See the following section on #ref xmlmapper_attributes #ref for an example
+on how to do that for a property that maps to an XML attribute. If you want to specify the matching XML element
+name for a class name, you can do that with the #cdi XmlMapping #cdi tag: #par
+
+#cdb
+[XmlMapping(elementName="product")]
+public class ProductModel 
+#cdb
  
  
 
@@ -381,7 +413,7 @@ var xml:XML = ...;
 var order:Order = XmlObjectMappings
     .forUnqualifiedElements()
     .withRootElement(Order)
-    #hlt .choidId("products", Album, Book) #hlt
+    #hlt .choiceId("products", Album, Book) #hlt
     .build()
     .mapToObject(xml) as Order;    
 #cdb
@@ -410,7 +442,7 @@ var xml:XML = ...;
 var order:Order = XmlObjectMappings
     #hlt .forNamespace("http://www.mynamespace.com") #hlt
     .withRootElement(Order)
-    .choidId("products", Album, Book)
+    .choiceId("products", Album, Book)
     .build()
     .mapToObject(xml) as Order;    
 #cdb
