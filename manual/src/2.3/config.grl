@@ -331,6 +331,28 @@ then be used as custom metadata, MXML or XML. For examples see #ref extensions_i
 #lst
 
 
+#sub Dynamic Objects #sub
+
+#par Apart from the #cdi <Object> #cdi tag already introduced you could alternatively use the #cdi <DynamicObject> #cdi tag.
+It allows the same type of child tags as the #cdi <Object> #cdi tag: #par
+
+#cdb
+<DynamicObject type="{LoginServiceImpl}">
+    <Property name="timeout" value="3000"/>
+</DynamicObject>
+#cdb
+
+#par In contrast to the #cdi <Object> #cdi which just creates one instance and reuses it for subsequent injection requests,
+this tag creates a new instance for each request. So each object or view depending on this service would get its own instance.
+The lifecycle of such a dynamic object gets synchronized with the object it is injected into. So when the target object gets
+removed from the Context, the injected dynamic object will also get removed, since it was specifically created for that one target
+and is no longer needed. #par
+
+#par In addition for serving as a source for injections, such a dynamic object can also be created programmatically based on 
+the MXML configuration and then disposed by the application at any point in time. Details for programmatic access can be
+found in #ref lifecycle_dynamic #ref. #par
+
+
 
 #sc2 config_xml XML Configuration Files #sc2
 
