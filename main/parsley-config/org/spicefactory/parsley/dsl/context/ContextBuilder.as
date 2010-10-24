@@ -1,14 +1,3 @@
-package org.spicefactory.parsley.dsl.context {
-import org.spicefactory.parsley.config.Configuration;
-import org.spicefactory.parsley.config.Configurations;
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
-import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
-import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.dsl.ObjectDefinitionBuilderFactory;
-import org.spicefactory.parsley.flex.FlexSupport;
-import org.spicefactory.parsley.runtime.processor.RuntimeConfigurationProcessor;
-
 /*
  * Copyright 2010 the original author or authors.
  *
@@ -25,6 +14,16 @@ import org.spicefactory.parsley.runtime.processor.RuntimeConfigurationProcessor;
  * limitations under the License.
  */
 
+package org.spicefactory.parsley.dsl.context {
+import org.spicefactory.parsley.config.Configuration;
+import org.spicefactory.parsley.config.Configurations;
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
+import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.dsl.ObjectDefinitionBuilderFactory;
+import org.spicefactory.parsley.flex.FlexSupport;
+import org.spicefactory.parsley.runtime.processor.RuntimeConfigurationProcessor;
 
 /**
  * A ContextBuilder offers the option to create a new Context programmatically using the convenient
