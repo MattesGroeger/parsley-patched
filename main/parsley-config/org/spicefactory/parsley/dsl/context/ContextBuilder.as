@@ -19,7 +19,6 @@ import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.parsley.config.Configurations;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
-import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.flex.FlexSupport;
@@ -86,7 +85,7 @@ public class ContextBuilder {
 	/**
 	 * @private
 	 */
-	function ContextBuilder (builder:DefaultCompositeContextBuilder) {
+	function ContextBuilder (builder:CompositeContextBuilder) {
 		this._config = Configurations.forRegistry(builder.prepareRegistry());
 		this.builder = builder;
 		FlexSupport.initialize();

@@ -189,16 +189,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	}
 	
 	/**
-	 * Builds the registry and Context for this builder without
-	 * invoking the ConfigurationProcessors.
-	 * After this method has been called, changes to the
-	 * factories or adding further scopes does not have any
-	 * effect on this Context.
-	 * But the associated registry can still be modified and 
-	 * further ConfigurationProcessor can also be added to this builder
-	 * until the <code>build</code> method is called.
-	 *
-	 * @return the registry used by this builder or null if this builder does not use a registry
+	 * @inheritDoc
 	 */
 	public function prepareRegistry () : ObjectDefinitionRegistry {
 		if (_registry != null) {

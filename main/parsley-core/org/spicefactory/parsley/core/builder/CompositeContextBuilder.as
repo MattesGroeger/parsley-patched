@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.core.builder {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
 /**
  * Responsible for building Context instances using one or more ObjectDefinitionBuilder instances.
@@ -70,6 +71,20 @@ public interface CompositeContextBuilder {
 	 */
 	function get factories () : FactoryRegistry;
 	
+	/**
+	 * Builds the registry and Context for this builder without
+	 * invoking the ConfigurationProcessors.
+	 * After this method has been called, changes to the
+	 * factories or adding further scopes does not have any
+	 * effect on this builder.
+	 * But the associated registry can still be modified and 
+	 * further ConfigurationProcessors can also be added to this builder
+	 * until the <code>build</code> method is called.
+	 *
+	 * @return the registry used by this builder or null if this builder does not use a registry
+	 */
+	function prepareRegistry () : ObjectDefinitionRegistry; 
+	 
 	/**
 	 * Builds the Context, using all definition builders that were added with the addBuilder method.
 	 * The returned Context instance may not be fully initialized if it requires asynchronous operations.

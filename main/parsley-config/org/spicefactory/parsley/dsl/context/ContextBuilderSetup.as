@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.dsl.context {
+import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
+import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 
@@ -164,7 +166,8 @@ public class ContextBuilderSetup {
 	 * @return a new ContextBuilder based on the settings of this setup instance
 	 */
 	public function newBuilder () : ContextBuilder {
-		var builder:DefaultCompositeContextBuilder = new DefaultCompositeContextBuilder(_viewRoot, _parent, _domain, _description);
+		var builder:CompositeContextBuilder 
+				= GlobalFactoryRegistry.instance.contextBuilder.create(_viewRoot, _parent, _domain, _description);
 		for each (var scope:Scope in scopes) {
 			builder.addScope(scope.name, scope.inherited, scope.uuid);
 		}
