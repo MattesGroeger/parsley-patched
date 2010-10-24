@@ -117,6 +117,22 @@ public class ContextBuilderSetup {
 	}
 	
 	/**
+	 * Allows to register global or local scope extensions.
+	 * When the local flag is set to true, only the one Context created by this builder will 
+	 * be affected, when set to false or omitted all Contexts created after this value has
+	 * been set will be affected.
+	 * 
+	 * @param local whether only the target Context or all Contexts should be affected
+	 * @param scope the scope the extension should be created for (all scopes if omitted)
+	 * @return a builder that allows to register scope extensions
+	 */
+	public function scopeExtensions (local:Boolean = false, scope:String = null) : ScopeExtensionsBuilder {
+		var part:ScopeExtensionsBuilder = new ScopeExtensionsBuilder(this, local, scope);
+		addPart(part);
+		return part;
+	}
+	
+	/**
 	 * Allows to specify global or local factories for the IOC kernel services.
 	 * When the local flag is set to true, only the one Context created by this builder will 
 	 * be affected, when set to false or omitted all Contexts created after this value has

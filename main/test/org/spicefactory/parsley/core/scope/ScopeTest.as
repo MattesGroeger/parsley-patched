@@ -1,4 +1,5 @@
 package org.spicefactory.parsley.core.scope {
+import org.spicefactory.parsley.asconfig.ActionScriptConfig;
 import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.ContextUtil;
@@ -105,8 +106,13 @@ public class ScopeTest extends XmlContextTestBase {
 	}
 
 	public function testExtensions () : void {
-		GlobalFactoryRegistry.instance.scopeExtensions.addExtension(new ScopeTestExtensionFactory());		
-		var context:Context = ActionScriptContextBuilder.build(ScopeMessagingTestConfig);
+		var context:Context = ContextBuilder
+		.newSetup()
+			.scopeExtensions(true).factory(new ScopeTestExtensionFactory())
+			.newBuilder()
+				.config(ActionScriptConfig.forClass(ScopeMessagingTestConfig))
+				.build();
+		
 		var localExtension:ScopeTestExtension
 				= context.scopeManager.getScope(ScopeName.LOCAL).extensions.byType(ScopeTestExtension) as ScopeTestExtension;
 		var globalExtension:ScopeTestExtension

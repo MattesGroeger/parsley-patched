@@ -207,13 +207,15 @@ public class BindingMetadataTest extends ContextTestBase {
 		
 		var pub1:StringPublishPersistentMetadata = new StringPublishPersistentMetadata();
 		var pub2:StringPublishPersistentMetadata = new StringPublishPersistentMetadata();
-		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
-		builder.factories.scopeExtensions.addExtension(new TestPersistenceManagerFactory());
-		var rcp:RuntimeConfigurationProcessor = new RuntimeConfigurationProcessor();
-		rcp.addInstance(pub1);
-		rcp.addInstance(pub2);
-		builder.addProcessor(rcp);
-		var context:Context = builder.build();
+		
+		var context:Context = ContextBuilder
+			.newSetup()
+				.scopeExtensions(true).factory(new TestPersistenceManagerFactory())
+				.newBuilder()
+					.object(pub1)
+					.object(pub2)
+					.build();
+		
 		assertEquals("Unexpected persisted value", "A", DictionaryPersistenceService.getStoredValue("local0", String, "test"));
 		pub1.value = "B";
 		assertEquals("Unexpected subscriber value", "B", pub2.value);
