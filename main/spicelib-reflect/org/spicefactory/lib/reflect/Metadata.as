@@ -61,7 +61,7 @@ public class Metadata {
 		var name:String = xml.@name;
 		var args:Object = new Object();
 		for each (var argTag:XML in xml.arg) {
-			args[argTag.@key] = argTag.@value;
+			args[argTag.@key] = argTag.@value.toString();
 		} 
 		return new Metadata(name, args, type);
 	}
