@@ -33,7 +33,6 @@ import flash.events.Event;
 import flash.events.IEventDispatcher;
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
-import flash.utils.getQualifiedClassName;
 
 /**
  * Default implementation of the ViewConfigurator interface.
@@ -79,8 +78,9 @@ public class DefaultViewConfigurator implements ViewConfigurator {
 	/**
 	 * @inheritDoc
 	 */
-	public function isAutoremove (target:Object, defaultMode:Boolean) : Boolean {
+	public function isAutoremove (target:Object, defaultMode:Boolean, useMetadata:Boolean = true) : Boolean {
 		if (!(target is DisplayObject)) return false;
+		if (!useMetadata) return defaultMode;
 		var info:ClassInfo = ClassInfo.forInstance(target, domain);
 		return (info.hasMetadata(Autoremove)) 
 				? (info.getMetadata(Autoremove)[0] as Autoremove).value 

@@ -116,7 +116,7 @@ public class DefaultViewManager implements ViewManager {
 		}
 		globalViewRootRegistry[view] = this;
 		
-		var autoremove:Boolean = configurator.isAutoremove(view, settings.autoremoveViewRoots);
+		var autoremove:Boolean = configurator.isAutoremove(view, settings.autoremoveViewRoots, false);
 		if (autoremove) {
 			stageEventFilter.addTarget(view, filteredViewRootRemoved, ignoredFilteredAddedToStage);
 		}

@@ -36,14 +36,15 @@ public interface ViewConfigurator {
 	 * Indicates whether the specified target instance should be automatically removed
 	 * from the Context when it gets removed from the stage.
 	 * The implementation should look up the <code>[Autoremove]</code> metadata tag on the 
-	 * provided view instance.
+	 * provided view instance if the <code>useMetadata</code> parameter is true.
 	 * 
 	 * @param target the instance to determine the autoremove mode for
 	 * @param defaultMode the default to return in case the target does not provide a value itself
+	 * @param useMetadata whether to look up the Autoremove metadata tag on the specified instance
 	 * @return true if the specified target instance should be automatically removed
 	 * from the Context when it gets removed from the stage
 	 */
-	function isAutoremove (target:Object, defaultMode:Boolean) : Boolean;
+	function isAutoremove (target:Object, defaultMode:Boolean, useMetadata:Boolean = true) : Boolean;
 	
 	/**
 	 * Indicates whether the specified target instance is already wired to the Context.
