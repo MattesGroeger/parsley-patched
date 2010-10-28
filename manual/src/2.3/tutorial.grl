@@ -328,8 +328,8 @@ a lot more options than covered in this chapter you should browse the remaining 
 #par The most interesting options not covered in this chapter are probably: #par
 
 #lst
-#lse #ref config_as3 #ref: You are not limited to configuration with Metadata, MXML or XML, there
-is even a forth option, which gives you additional flexibility. #lse
+#lse #ref config_dsl #ref and #ref config_as3 #ref: You are not limited to configuration with Metadata, MXML or XML, there
+are two more options, which give you additional flexibility. #lse
 
 #lse #ref messaging_interceptors #ref: An interesting alternative to the #cdi MessageHandlers #cdi covered
 in this chapter which even allows you to interfere with the message dispatching process (e.g. suspending
