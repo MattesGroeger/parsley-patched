@@ -1,0 +1,75 @@
+<project name="Spicelib Module SWCs"> 
+
+	
+	<property file="build.properties" />
+	
+	<property name="version" value="2.3.2-SNAPSHOT"/>
+	<property name="project.dir" value="${basedir}/.."/>
+	<property name="release.target.dir" value="${project.dir}/release/parsley-${version}"/>
+
+	
+	<target name="spicelib_core">
+		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
+			<arg line="-o ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-el ${flex3.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${flex3.sdk}/frameworks/libs/flex.swc" />
+			<arg line="-el ${flex3.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-sp ${project.dir}/spicelib-core" />
+			<arg line="-is ${project.dir}/spicelib-core" />
+		</exec>
+	</target>
+	
+	<target name="spicelib_flash_support">
+		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
+			<arg line="-keep-as3-metadata+=PostConstruct,Init" />
+			<arg line="-o ${release.target.dir}/release/modules/spicelib-flash-support-${version}.swc" />
+			<arg line="-el ${flex3.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-sp ${project.dir}/spicelib-flash" />
+			<arg line="-is ${project.dir}/spicelib-flash" />
+		</exec>
+	</target>
+	
+	<target name="spicelib_reflect">
+		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
+			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo,Target" />
+			<arg line="-o ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
+			<arg line="-el ${flex3.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-sp ${project.dir}/spicelib-reflect" />
+			<arg line="-is ${project.dir}/spicelib-reflect" />
+		</exec>
+	</target>
+	
+	<target name="spicelib_task">
+		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
+			<arg line="-o ${release.target.dir}/release/modules/spicelib-task-${version}.swc" />
+			<arg line="-el ${flex3.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-sp ${project.dir}/spicelib-task" />
+			<arg line="-is ${project.dir}/spicelib-task" />
+		</exec>
+	</target>
+	
+	<target name="spicelib_xml">
+		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
+			<arg line="-keep-as3-metadata+=Ignore,Attribute,TextNode,ChildTextNode,ChoiceId,ChoiceType,XmlMapping" />
+			<arg line="-o ${release.target.dir}/release/modules/spicelib-xml-${version}.swc" />
+			<arg line="-el ${flex3.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
+			<arg line="-el ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
+			<arg line="-sp ${project.dir}/spicelib-xml ${project.dir}/spicelib-expressions" />
+			<arg line="-is ${project.dir}/spicelib-xml" />
+			<arg line="-is ${project.dir}/spicelib-expressions" />
+		</exec>
+	</target>
+	
+	<target name="all_spicelib_modules">
+		<antcall target="spicelib_core"/>
+		<antcall target="spicelib_reflect"/>
+		<antcall target="spicelib_xml"/>
+		<antcall target="spicelib_task"/>
+		<antcall target="spicelib_flash_support"/>
+	</target>
+	
+</project>

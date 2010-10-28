@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<flex-config>
+	<compiler>
+	
+		<source-path>
+      		<path-element>${project}/parsley-core</path-element>
+      		<path-element>${project}/parsley-config</path-element>
+      		<path-element>${project}/parsley-flex</path-element>
+      		<path-element>${project}/parsley-extensions</path-element>
+      		<path-element>${project}/parsley-integration</path-element>
+      		<path-element>${project}/parsley-xml</path-element>
+    	</source-path>
+		
+		<external-library-path>
+			<path-element>${flexlib}/libs/player/${player}/playerglobal.swc</path-element>
+			<path-element>${flexlib}/libs/flex.swc</path-element>
+			<path-element>${flexlib}/libs/framework.swc</path-element>
+			<path-element>${flexlib}/libs/rpc.swc</path-element>
+			
+			<path-element>${release}/spicelib-flex-${version}.swc</path-element>
+			
+			<path-element>${project}/lib/pimento-1.1.0.swc</path-element>
+			<path-element>${project}/lib/cinnamon-1.1.0.swc</path-element>
+			<path-element>${project}/lib/${popup}-1.7.swc</path-element>
+		</external-library-path>
+		
+		<namespaces>
+		
+	      	<namespace>
+	        	<uri>http://www.spicefactory.org/parsley</uri>
+	        	<manifest>${project}/manifest/parsley-core-manifest.xml</manifest>
+	      	</namespace>
+	      	
+	      	<namespace>
+	        	<uri>http://www.spicefactory.org/parsley/flex</uri>
+	        	<manifest>${project}/manifest/parsley-flex-manifest.xml</manifest>
+	      	</namespace>
+	      	
+	      	<namespace>
+	        	<uri>http://www.spicefactory.org/parsley/pimento</uri>
+	        	<manifest>${project}/manifest/parsley-pimento-manifest.xml</manifest>
+	      	</namespace>
+	      	
+	      	<namespace>
+	        	<uri>http://www.spicefactory.org/parsley/cinnamon</uri>
+	        	<manifest>${project}/manifest/parsley-cinnamon-manifest.xml</manifest>
+	      	</namespace>
+	      	
+	    </namespaces>
+	    
+	    <verbose-stacktraces>true</verbose-stacktraces>
+	    <debug>true</debug>
+	    
+	</compiler>
+	
+	<include-sources>
+  		<path-element>${project}/parsley-core</path-element>
+  		<path-element>${project}/parsley-xml</path-element>
+  	</include-sources>
+  	    
+	<include-namespaces>
+    	<uri>http://www.spicefactory.org/parsley</uri>
+    	<uri>http://www.spicefactory.org/parsley/flex</uri>
+    	<uri>http://www.spicefactory.org/parsley/pimento</uri>
+    	<uri>http://www.spicefactory.org/parsley/cinnamon</uri>
+  	</include-namespaces>
+  	
+  	<include-classes>
+	    <class>ConfigurationClasses</class>
+	    <class>FlexSupportClasses</class>
+	    <class>IntegrationClasses</class>
+  	</include-classes>
+  	
+  	<include-file>
+  		<name>design.xml</name>
+  		<path>${project}/parsley-flex/design.xml</path>
+  	</include-file>
+  	
+  	<output>${release}/parsley-${classifier}-${version}.swc</output>
+	    
+	    
+</flex-config>

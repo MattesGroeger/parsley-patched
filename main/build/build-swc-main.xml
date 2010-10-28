@@ -1,0 +1,129 @@
+<project name="Parsley Spicelib Main SWCs"> 
+
+	
+	<property file="build.properties" />
+	
+	<property name="version" value="2.3.2-SNAPSHOT"/>
+	<property name="project.dir" value="${basedir}/.."/>
+	<property name="release.target.dir" value="${project.dir}/release/parsley-${version}"/>
+
+
+	<target name="spicelib_flex">
+		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
+							
+			<arg line="-load-config+=config/spicelib-metadata.xml" />
+			<arg line="-load-config+=config/spicelib-flex.xml" />
+
+			<arg line="+release=${release.target.dir}/release" />
+			<arg line="+project=${project.dir}" />
+			<arg line="+version=${version}" />
+			
+		</exec>
+	</target>
+	
+	<target name="spicelib_flash">
+		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
+					
+			<arg line="-load-config+=config/spicelib-metadata.xml" />
+			<arg line="-load-config+=config/spicelib-flash.xml" />
+
+			<arg line="+release=${release.target.dir}/release" />
+			<arg line="+project=${project.dir}" />
+			<arg line="+version=${version}" />
+			
+		</exec>
+	</target>
+
+	<target name="parsley_flex4">
+		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
+				token="extends Flex3ModuleInfoBase" value="extends Flex4ModuleInfoBase"/>
+		
+		<exec executable="${flex4.sdk}/bin/${compc}" dir="${basedir}">
+			
+			<arg line="-load-config+=config/spicelib-metadata.xml" />
+			<arg line="-load-config+=config/parsley-metadata.xml" />
+			<arg line="-load-config+=config/parsley-flex.xml" />
+
+			<arg line="+release=${release.target.dir}/release" />
+			<arg line="+project=${project.dir}" />
+			<arg line="+version=${version}" />
+			<arg line="+popup=popup" />
+			<arg line="+classifier=flex4" />
+			<arg line="+player=10.0" />
+			
+		</exec>
+		
+		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
+				token="extends Flex4ModuleInfoBase" value="extends Flex3ModuleInfoBase"/>
+	</target>
+	
+	<target name="parsley_flex3">
+		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
+			
+			<arg line="-load-config+=config/spicelib-metadata.xml" />
+			<arg line="-load-config+=config/parsley-metadata.xml" />
+			<arg line="-load-config+=config/parsley-flex.xml" />
+
+			<arg line="+release=${release.target.dir}/release" />
+			<arg line="+project=${project.dir}" />
+			<arg line="+version=${version}" />
+			<arg line="+popup=popup-flex3" />
+			<arg line="+classifier=flex3" />
+			<arg line="+player=9" />
+			
+		</exec>
+	</target>
+	
+	<target name="parsley_flash">
+		<replace file="${project.dir}/parsley-config/org/spicefactory/parsley/dsl/context/ContextBuilder.as" 
+					token="FlexSupport.initialize();" value="//***FlexSupport.initialize();"/>
+		<replace file="${project.dir}/parsley-config/org/spicefactory/parsley/dsl/context/ContextBuilder.as" 
+					token="import org.spicefactory.parsley.flex.FlexSupport;" value="//***import org.spicefactory.parsley.flex.FlexSupport;"/>
+		
+		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/builder/impl/DefaultCompositeContextBuilder.as" 
+					token="BindingSupport" value="FlashBindingSupport"/>
+		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/builder/impl/DefaultCompositeContextBuilder.as" 
+					token="parsley.binding" value="parsley.flash.binding"/>
+		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
+					token="PublishDecorator" value="FlashPublishDecorator"/>
+		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
+					token="PublishSubscribeDecorator" value="FlashPublishSubscribeDecorator"/>
+		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
+					token="binding.decorator.Flash" value="flash.binding.Flash"/>
+		
+		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
+			
+			<arg line="-load-config+=config/spicelib-metadata.xml" />
+			<arg line="-load-config+=config/parsley-metadata.xml" />
+			<arg line="-load-config+=config/parsley-flash.xml" />
+
+			<arg line="+release=${release.target.dir}/release" />
+			<arg line="+project=${project.dir}" />
+			<arg line="+version=${version}" />
+			
+		</exec>
+				
+		<replace file="${project.dir}/parsley-config/org/spicefactory/parsley/dsl/context/ContextBuilder.as" 
+					token="//***" value=""/>
+		
+		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/builder/impl/DefaultCompositeContextBuilder.as" 
+					token="FlashBindingSupport" value="BindingSupport"/>
+		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/builder/impl/DefaultCompositeContextBuilder.as" 
+					token="parsley.flash.binding" value="parsley.binding"/>
+		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
+					token="FlashPublishDecorator" value="PublishDecorator"/>
+		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
+					token="FlashPublishSubscribeDecorator" value="PublishSubscribeDecorator"/>
+		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
+					token="flash.binding" value="binding.decorator"/>
+	</target>
+	
+	<target name="all_parsley_spicelib">
+		<antcall target="spicelib_flex"/>
+		<antcall target="spicelib_flash"/>
+		<antcall target="parsley_flex4"/>
+		<antcall target="parsley_flex3"/>
+		<antcall target="parsley_flash"/>
+	</target>
+
+</project>

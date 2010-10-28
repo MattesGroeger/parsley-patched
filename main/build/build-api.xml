@@ -1,0 +1,72 @@
+<project name="Parsley Spicelib API"> 
+
+	
+	<property file="build.properties" />
+	
+	<property name="version" value="2.3.2-SNAPSHOT"/>
+	<property name="pimento.version" value="1.1.0"/>
+	<property name="project.dir" value="${basedir}/.."/>
+	<property name="release.target.dir" value="${project.dir}/release/parsley-${version}"/>
+
+	<target name="parsley_spicelib_flex">
+		<delete dir="${project.dir}/release/api/parsley-flex"/>
+		<mkdir dir="${project.dir}/release/api/parsley-flex"/>
+		<exec executable="${flex3.sdk}/bin/asdoc.exe" dir="${project.dir}" spawn="no">
+			<arg line="-source-path spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml parsley-core parsley-config parsley-flex parsley-xml parsley-extensions parsley-integration"/>
+			<arg line="-doc-sources spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml parsley-core parsley-config parsley-flex parsley-xml parsley-extensions parsley-integration"/>
+			<arg line="-library-path ${project.dir}/lib/cinnamon-${pimento.version}.swc"/>
+			<arg line="-library-path ${project.dir}/lib/pimento-${pimento.version}.swc"/>
+			<arg line="-library-path ${project.dir}/lib/popup-flex3-1.7.swc" />
+			<arg line="-library-path ${flex3.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-library-path ${flex3.sdk}/frameworks/libs/rpc.swc" />
+			<arg line="-left-frameset-width 250"/>
+			<arg line="-main-title"/>
+			<arg value="Parsley - Spicelib - Flex API"/>
+			<arg line="-window-title"/>
+			<arg value="Parsley - Spicelib - Flex API"/>
+			<arg line="-output release/api/parsley-flex"/>
+		</exec>
+	</target>
+	
+	<target name="parsley_spicelib_flash">
+		<delete dir="${project.dir}/release/api/parsley-flash"/>
+		<mkdir dir="${project.dir}/release/api/parsley-flash"/>
+		<exec executable="${flex3.sdk}/bin/asdoc.exe" dir="${project.dir}" spawn="no">
+			<arg line="-source-path spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml spicelib-flash parsley-core parsley-config parsley-flash parsley-flex parsley-xml parsley-extensions parsley-integration"/>
+			<arg line="-doc-sources spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml spicelib-flash parsley-core parsley-config parsley-flash parsley-xml parsley-extensions parsley-integration"/>
+			<arg line="-library-path ${project.dir}/lib/cinnamon-${pimento.version}.swc"/>
+			<arg line="-library-path ${project.dir}/lib/pimento-${pimento.version}.swc"/>
+			<arg line="-library-path ${project.dir}/lib/popup-flex3-1.7.swc" />
+			<arg line="-library-path ${flex3.sdk}/frameworks/libs/framework.swc" />
+			<arg line="-library-path ${flex3.sdk}/frameworks/libs/rpc.swc" />
+			<arg line="-left-frameset-width 250"/>
+			<arg line="-main-title"/>
+			<arg value="Parsley - Spicelib - Flash API"/>
+			<arg line="-window-title"/>
+			<arg value="Parsley - Spicelib - Flash API"/>
+			<arg line="-output release/api/parsley-flash"/>
+		</exec>
+	</target>
+	
+	<target name="spicelib">
+		<delete dir="${project.dir}/release/api/spicelib"/>
+		<mkdir dir="${project.dir}/release/api/spicelib"/>
+		<exec executable="${flex3.sdk}/bin/asdoc.exe" dir="${project.dir}" spawn="no">
+			<arg line="-source-path spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml spicelib-flash"/>
+			<arg line="-doc-sources spicelib-core spicelib-expressions spicelib-reflect spicelib-task spicelib-xml spicelib-flash"/>
+			<arg line="-left-frameset-width 250"/>
+			<arg line="-main-title"/>
+			<arg value="Spicelib API"/>
+			<arg line="-window-title"/>
+			<arg value="Spicelib API"/>
+			<arg line="-output release/api/spicelib"/>
+		</exec>
+	</target>
+	
+	<target name="api_all" description="Create Public and Full Client API">
+		<antcall target="api_parsley_spicelib_flex"/>
+		<antcall target="api_parsley_spicelib_flash"/>
+		<antcall target="api_spicelib"/>
+	</target>
+
+</project>

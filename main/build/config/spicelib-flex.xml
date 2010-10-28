@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<flex-config>
+	<compiler>
+	
+		<source-path>
+      		<path-element>${project}/spicelib-core</path-element>
+	  		<path-element>${project}/spicelib-expressions</path-element>
+	  		<path-element>${project}/spicelib-reflect</path-element>
+	  		<path-element>${project}/spicelib-task</path-element>
+	  		<path-element>${project}/spicelib-xml</path-element>
+    	</source-path>
+		
+		<external-library-path>
+			<path-element>${flexlib}/libs/player/9/playerglobal.swc</path-element>
+			<path-element>${flexlib}/libs/flex.swc</path-element>
+			<path-element>${flexlib}/libs/framework.swc</path-element>
+			<path-element>${flexlib}/libs/rpc.swc</path-element>
+			<path-element>${flexlib}/libs/utilities.swc</path-element>
+		</external-library-path>
+		
+	    <verbose-stacktraces>true</verbose-stacktraces>
+	    <debug>true</debug>
+	    
+	</compiler>
+	
+	<include-sources>
+  		<path-element>${project}/spicelib-core</path-element>
+  		<path-element>${project}/spicelib-expressions</path-element>
+  		<path-element>${project}/spicelib-reflect</path-element>
+  		<path-element>${project}/spicelib-task</path-element>
+  		<path-element>${project}/spicelib-xml</path-element>
+  	</include-sources>
+  	    
+  	<output>${release}/spicelib-flex-${version}.swc</output>
+	    
+</flex-config>

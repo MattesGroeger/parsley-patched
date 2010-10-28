@@ -1,0 +1,101 @@
+<project name="Parsley Release Zip"> 
+
+	
+	<property file="build.properties" />
+	
+	<property name="version" value="2.3.2-SNAPSHOT"/>
+	<property name="project.dir" value="${basedir}/.."/>
+	<property name="release.target.dir" value="${project.dir}/release/parsley-${version}"/>
+
+	
+	<target name="create_release" description="Create Release Zip">
+			
+		<antcall target="clean"/>
+		<antcall target="compile_all"/>
+		<antcall target="copy_files"/>
+		<!--<antcall target="copy_samples"/>-->
+		<antcall target="create_zip"/>
+		
+	</target>
+	
+	
+	<target name="clean">
+		<delete dir="${release.target.dir}"/>
+		<mkdir dir="${release.target.dir}"/>
+
+		<mkdir dir="${release.target.dir}/src"/>
+		<mkdir dir="${release.target.dir}/lib"/>
+		<mkdir dir="${release.target.dir}/samples/helloworld"/>
+	</target>
+	
+	
+	<target name="compile_all">
+		<ant
+			dir="${project.dir}/build"
+			antfile="${project.dir}/build/build-swc-main.xml"
+			target="all_parsley_spicelib"
+		/>
+		<ant
+			dir="${project.dir}/build"
+			antfile="${project.dir}/build/build-swc-modules.xml"
+			target="all_spicelib_modules"
+		/>
+	</target>
+	
+	
+	<target name="copy_files">
+		<copy todir="${release.target.dir}">
+			<fileset dir="${project.dir}" includes="license.txt"/>
+		</copy>
+		<copy todir="${release.target.dir}/src">
+			<fileset dir="${project.dir}">
+				 <include name="spicelib-core/**/*"/>
+				 <include name="spicelib-reflect/**/*"/>
+				 <include name="spicelib-expressions/**/*"/>
+				 <include name="spicelib-task/**/*"/>
+				 <include name="spicelib-flash/**/*"/>
+				 <include name="spicelib-xml/**/*"/>
+				 <include name="parsley-core/**/*"/>
+				 <include name="parsley-config/**/*"/>
+				 <include name="parsley-flex/**/*"/>
+				 <include name="parsley-xml/**/*"/>
+				 <include name="parsley-flash/**/*"/>
+				 <include name="parsley-extensions/**/*"/>
+				 <include name="parsley-integration/**/*"/>
+				 <include name="test/**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${release.target.dir}/lib">
+			<fileset dir="${project.dir}/lib" includes="*.swc"/>
+		</copy>
+	</target>
+	
+	
+	<target name="copy_samples">
+		<!--<delete dir="${samples.base.dir}/ParsleyHelloWorld/libs"/>
+		<mkdir dir="${samples.base.dir}/ParsleyHelloWorld/libs"/>
+		<copy todir="${samples.base.dir}/ParsleyHelloWorld/libs">
+			<fileset dir="${release.target.dir}/release">
+				<include name="parsley-flex3*.swc/"/>
+				<include name="spicelib-flex*.swc"/>
+			</fileset>
+		</copy>-->
+		<delete file="${samples.base.dir}/ParsleyHelloWorld/HelloWorld.swf"/>
+		
+		<copy todir="${release.target.dir}/samples/helloworld">
+			<fileset dir="${samples.base.dir}/ParsleyHelloWorld">
+				<exclude name="bin-debug/"/>
+				<exclude name="bin-release/"/>
+				<exclude name=".as3_classpath"/>
+				<exclude name=".settings/"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	
+	<target name="create_zip">
+		<zip basedir="${release.target.dir}" zipfile="${release.target.dir}/../parsley-${version}.zip"/>
+	</target>
+
+	
+</project>

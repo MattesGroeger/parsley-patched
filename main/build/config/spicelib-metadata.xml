@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<flex-config>
+	<compiler>
+		
+		<keep-as3-metadata append="true">
+			<name>DefaultProperty</name>
+			<name>Metadata</name>
+			<name>Required</name>
+			<name>Event</name>
+			<name>AssignableTo</name>
+			<name>PostConstruct</name>
+			<name>Init</name>
+			<name>Ignore</name>
+			<name>Attribute</name>
+			<name>TextNode</name>
+			<name>ChildTextNode</name>
+			<name>ChoiceId</name>
+			<name>ChoiceType</name>
+			<name>XmlMapping</name>
+		</keep-as3-metadata>
+		
+	</compiler>
+</flex-config>

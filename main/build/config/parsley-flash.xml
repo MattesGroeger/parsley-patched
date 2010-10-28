@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<flex-config>
+	<compiler>
+	
+		<source-path>
+      		<path-element>${project}/parsley-core</path-element>
+      		<path-element>${project}/parsley-config</path-element>
+      		<path-element>${project}/parsley-flash</path-element>
+      		<path-element>${project}/parsley-flex</path-element>
+      		<path-element>${project}/parsley-extensions</path-element>
+      		<path-element>${project}/parsley-integration</path-element>
+      		<path-element>${project}/parsley-xml</path-element>
+    	</source-path>
+		
+		<external-library-path>
+			<path-element>${flexlib}/libs/player/9/playerglobal.swc</path-element>
+			<path-element>${flexlib}/libs/flex.swc</path-element>
+			<path-element>${flexlib}/libs/framework.swc</path-element>
+			<path-element>${flexlib}/libs/rpc.swc</path-element>
+			
+			<path-element>${release}/spicelib-flash-${version}.swc</path-element>
+			
+			<path-element>${project}/lib/pimento-1.1.0.swc</path-element>
+			<path-element>${project}/lib/cinnamon-1.1.0.swc</path-element>
+			<path-element>${project}/lib/popup-flex3-1.7.swc</path-element>
+		</external-library-path>
+		
+	    <verbose-stacktraces>true</verbose-stacktraces>
+	    <debug>true</debug>
+	    
+	</compiler>
+	
+	<include-sources>
+  		<path-element>${project}/parsley-core</path-element>
+  		<path-element>${project}/parsley-config</path-element>
+  		<path-element>${project}/parsley-flash</path-element>
+  		<path-element>${project}/parsley-xml</path-element>
+  		<path-element>${project}/parsley-integration</path-element>
+  	</include-sources>
+  	    
+  	<output>${release}/parsley-flash-${version}.swc</output>
+	    
+</flex-config>
