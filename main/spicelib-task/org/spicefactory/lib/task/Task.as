@@ -186,6 +186,18 @@ public class Task extends EventDispatcher {
 	}
 	
 	/**
+	 * The root TaskGroup in case this Task is nested in one or more TaskGroups.
+	 * If this Task is not nested then this property points to the Task itself.
+	 */
+	public function get root () : Task {
+		var current:Task = this;
+		while (current.parent != null) {
+			current = current.parent;
+		}
+		return current;
+	}
+	
+	/**
 	 * @private
 	 */
 	internal function setParent (p : TaskGroup) : void {

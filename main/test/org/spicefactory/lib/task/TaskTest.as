@@ -446,6 +446,17 @@ public class TaskTest extends TestCase {
 		validate(Task(tg));
 		assertEquals("Unexpected result property", "foo", tg.data.test);
 	}
+	
+	public function testRootProperty () : void {
+		var t:ResultTask = new SimpleResultTask("test");
+		assertEquals("Unexpected value for root property", t, t.root);
+		var tg1:TaskGroup = new SequentialTaskGroup();
+		tg1.addTask(t);
+		assertEquals("Unexpected value for root property", tg1, t.root);
+		var tg2:TaskGroup = new SequentialTaskGroup();
+		tg2.addTask(tg1);
+		assertEquals("Unexpected value for root property", tg2, t.root);
+	}
 
 	
 	private function onTestIllegalRestart (event:Event) : void {
