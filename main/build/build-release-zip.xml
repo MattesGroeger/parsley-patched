@@ -68,6 +68,9 @@
 		<copy todir="${release.target.dir}/lib">
 			<fileset dir="${project.dir}/lib" includes="*.swc"/>
 		</copy>
+		<copy todir="${release.target.dir}">
+			<fileset dir="${project.dir}" includes="build/**/*"/>
+		</copy>
 	</target>
 	
 	
