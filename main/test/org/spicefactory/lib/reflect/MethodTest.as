@@ -1,79 +1,77 @@
 package org.spicefactory.lib.reflect {
-import flexunit.framework.TestCase;
 
-import org.spicefactory.lib.reflect.errors.ConversionError;
-import org.spicefactory.lib.reflect.errors.MethodInvocationError;
+import org.hamcrest.collection.arrayWithSize;
+import org.hamcrest.object.equalTo;
+import org.flexunit.assertThat;
 import org.spicefactory.lib.reflect.model.ClassB;
 import org.spicefactory.lib.reflect.model.ClassD;
 
-public class MethodTest extends TestCase {
+public class MethodTest {
 	
 	
 	private var classBInfo:ClassInfo;
 	
 	
-	public override function setUp () : void {
-		super.setUp();
+	[Before]
+	public function setUp () : void {
 		classBInfo = ClassInfo.forClass(ClassB);
 	}
 	
 	
-	public function testMethodWithOptionalParam () : void {
+	[Test]
+	public function methodWithOptionalParam () : void {
 		var m:Method = classBInfo.getMethod("methodWithOptionalParam");
 		var target:ClassB = new ClassB("foo");
 		var returnValue:* = m.invoke(target, ["bar", 27]);
-		assertEquals("Unexpected return value", true, returnValue);
+		assertThat(returnValue, equalTo(true));
 	}
 	
-	public function testMethodWithoutOptionalParam () : void {
+	[Test]
+	public function methodWithoutOptionalParam () : void {
 		var m:Method = classBInfo.getMethod("methodWithOptionalParam");
 		var target:ClassB = new ClassB("foo");
 		var returnValue:* = m.invoke(target, ["bar"]);
-		assertEquals("Unexpected return value", false, returnValue);
+		assertThat(returnValue, equalTo(false));
 	}
 	
-	public function testMethodWithVarArgs () : void {
+	[Test]
+	public function methodWithVarArgs () : void {
 		var ci:ClassInfo = ClassInfo.forClass(ClassD);
 		var m:Method = ci.getMethod("withVarArgs");
-		assertEquals("Unexpected parameter count", 1, m.parameters.length);
-		var result:int = m.invoke(new ClassD(), ["foo", 0, 0, 0]);
-		assertEquals("Unexpected return value", 3, result);
+		assertThat(m.parameters, arrayWithSize(1));
+		var returnValue:int = m.invoke(new ClassD(), ["foo", 0, 0, 0]);
+		assertThat(returnValue, equalTo(3));
 	}
 	
-	public function testMethodWithUntypedParam () : void {
+	[Test]
+	public function methodWithUntypedParam () : void {
 		var ci:ClassInfo = ClassInfo.forClass(ClassD);
 		var m:Method = ci.getMethod("withUntypedParam");
-		var result:* = m.invoke(new ClassD(), ["foo"]);
-		assertEquals("Unexpected return value", "foo", result);		
+		var returnValue:* = m.invoke(new ClassD(), ["foo"]);
+		assertThat(returnValue, equalTo("foo"));
 	}
 	
-	public function testStaticMethodInvocation () : void {
+	[Test]
+	public function staticMethodInvocation () : void {
 		var m:Method = classBInfo.getStaticMethod("staticMethod");
 		m.invoke(null, [false]);
-		assertEquals("Unexpected invocationCount", 1, ClassB.getStaticMethodCounter());
+		assertThat(ClassB.getStaticMethodCounter(), equalTo(1));
 	}
 	
-	public function testIllegalParameterCount () : void {
-		try {
-			var m:Method = classBInfo.getMethod("methodWithOptionalParam");
-			var target:ClassB = new ClassB("foo");
-			m.invoke(target, ["bar", 15, 15]);
-		} catch (e:MethodInvocationError) {
-			return;
-		}
-		fail("Expected MethodInvocationError");
+	[Test(expects="org.spicefactory.lib.reflect.errors.MethodInvocationError")]
+	public function illegalParameterCount () : void {
+		var m:Method = classBInfo.getMethod("methodWithOptionalParam");
+		var target:ClassB = new ClassB("foo");
+		m.invoke(target, ["bar", 15, 15]);
 	}
 	
-	public function testIllegalParameterType () : void {
-		try {
-			var m:Method = classBInfo.getMethod("methodWithOptionalParam");
-			var target:ClassB = new ClassB("foo");
-			m.invoke(target, ["bar", "illegal"]);
-		} catch (e:ConversionError) {
-			return;
-		}
-		fail("Expected ConversionError");
+	[Test(expects="org.spicefactory.lib.reflect.errors.ConversionError")]
+	public function illegalParameterType () : void {
+		var m:Method = classBInfo.getMethod("methodWithOptionalParam");
+		var target:ClassB = new ClassB("foo");
+		m.invoke(target, ["bar", "illegal"]);
 	}
+	
 	
 }
 

@@ -1,4 +1,8 @@
 package org.spicefactory.lib.reflect {
+import org.hamcrest.object.sameInstance;
+import org.hamcrest.number.closeTo;
+import org.flexunit.assertThat;
+import org.hamcrest.object.strictlyEqualTo;
 import org.spicefactory.lib.reflect.converter.BooleanConverter;
 import org.spicefactory.lib.reflect.converter.ClassConverter;
 import org.spicefactory.lib.reflect.converter.ClassInfoConverter;
@@ -7,173 +11,156 @@ import org.spicefactory.lib.reflect.converter.IntConverter;
 import org.spicefactory.lib.reflect.converter.NumberConverter;
 import org.spicefactory.lib.reflect.converter.StringConverter;
 import org.spicefactory.lib.reflect.converter.UintConverter;
-import org.spicefactory.lib.reflect.errors.ConversionError;
 import org.spicefactory.lib.reflect.model.ClassC;
 
 import flash.system.ApplicationDomain;
 
-public class ConverterTest extends ReflectionTestBase {
+public class ConverterTest {
 	
-	
-	public override function setUp () : void {
-		super.setUp();
+
+	[Before]	
+	public function setUp () : void {
 		new ClassInfo("String", String, ApplicationDomain.currentDomain); // circumwent Flash Player describeType bug
 		ClassInfo.cache.purgeAll();
 	}
 	
 
-	public function testInt () : void {
-		assertEquals("Unexcpected result", 345, IntConverter.INSTANCE.convert("345"));
+	[Test]
+	public function convertInt () : void {
+		assertThat(IntConverter.INSTANCE.convert("345"), strictlyEqualTo(345));
 	}
 	
-	public function testIllegalInt () : void {
-		try {
-			IntConverter.INSTANCE.convert("5a");
-		} catch (e:ConversionError) {
-			return;
-		}
-		fail("Expected ConversionError");
+	[Test(expects="org.spicefactory.lib.reflect.errors.ConversionError")]
+	public function convertIllegalInt () : void {
+		IntConverter.INSTANCE.convert("5a");
 	}
 	
-	public function testUint () : void {
-		assertEquals("Unexcpected result", 345, UintConverter.INSTANCE.convert("345"));
+	[Test]
+	public function convertUint () : void {
+		assertThat(UintConverter.INSTANCE.convert("345"), strictlyEqualTo(345));
 	}
 	
-	public function testFloatToUint () : void {
-		assertEquals("Unexcpected result", 7, UintConverter.INSTANCE.convert("7.8"));
+	[Test]
+	public function convertFloatToUint () : void {
+		assertThat(UintConverter.INSTANCE.convert("7.8"), strictlyEqualTo(7));
 	}
 	
-	public function testNegativeToUint () : void {
-		assertEquals("Unexcpected result", 4294967273, UintConverter.INSTANCE.convert("-23"));
+	[Test]
+	public function convertNegativeToUint () : void {
+		assertThat(UintConverter.INSTANCE.convert("-23"), strictlyEqualTo(4294967273));
 	}
 	
-	public function testIllegalUint () : void {
-		try {
-			UintConverter.INSTANCE.convert("5 5");
-		} catch (e:ConversionError) {
-			return;
-		}
-		fail("Expected ConversionError");
+	[Test(expects="org.spicefactory.lib.reflect.errors.ConversionError")]
+	public function convertIllegalUint () : void {
+		UintConverter.INSTANCE.convert("5 5");
 	}
 	
-	public function testNumber () : void {
-		assertEquals("Unexcpected result", 345, NumberConverter.INSTANCE.convert("345"));
+	[Test]
+	public function convertNumber () : void {
+		assertThat(NumberConverter.INSTANCE.convert("345"), strictlyEqualTo(345));
 	}	
 	
-	public function testFloatNumber () : void {
-		var result:Number = NumberConverter.INSTANCE.convert("7.8");
-		if (Math.abs(result - 7.8) > 0.01) {
-			fail("Unexpected result, expected <7.8> - got <" + result + ">");
-		}
+	[Test]
+	public function convertFloatNumber () : void {
+		assertThat(NumberConverter.INSTANCE.convert("7.8"), closeTo(7.8, 0.01));
 	}
 	
-	public function testIllegalNumber () : void {
-		try {
-			NumberConverter.INSTANCE.convert("a5");
-		} catch (e:ConversionError) {
-			return;
-		}
-		fail("Expected ConversionError");
+	[Test(expects="org.spicefactory.lib.reflect.errors.ConversionError")]
+	public function convertIllegalNumber () : void {
+		NumberConverter.INSTANCE.convert("a5");
 	}	
 	
-	public function testBooleanTrue () : void {
-		assertEquals("Unexcpected result", true, BooleanConverter.INSTANCE.convert("true"));
+	[Test]
+	public function convertBooleanTrue () : void {
+		assertThat(BooleanConverter.INSTANCE.convert("true"), strictlyEqualTo(true));
 	}
 	
-	public function testBooleanFalse () : void {
-		assertEquals("Unexcpected result", false, BooleanConverter.INSTANCE.convert("false"));
+	[Test]
+	public function convertBooleanFalse () : void {
+		assertThat(BooleanConverter.INSTANCE.convert("false"), strictlyEqualTo(false));
 	}
 	
-	public function testIllegalBoolean () : void {
-		try {
-			BooleanConverter.INSTANCE.convert("hallo");
-		} catch (e:ConversionError) {
-			return;
-		}
-		fail("Expected ConversionError");
+	[Test(expects="org.spicefactory.lib.reflect.errors.ConversionError")]
+	public function convertIllegalBoolean () : void {
+		BooleanConverter.INSTANCE.convert("hallo");
 	}
 	
-	public function testString () : void {
+	[Test]
+	public function convertString () : void {
 		var d:Date = new Date();
 		var ds:String = d.toString();
-		assertEquals("Unexcpected result", ds, StringConverter.INSTANCE.convert(d));
+		assertThat(StringConverter.INSTANCE.convert(d), strictlyEqualTo(ds));
 	}
 	
-	public function testDate () : void {
+	[Test]
+	public function convertDate () : void {
 		var s:String = "2002-12-11";
 		var d:Date = DateConverter.INSTANCE.convert(s);
-		assertEquals("Unexpected year", 2002, d.fullYear);
-		assertEquals("Unexpected month", 11, d.month);
-		assertEquals("Unexpected day", 11, d.date);
-		assertEquals("Unexpected hour", 0, d.hours);
-		assertEquals("Unexpected minute", 0, d.minutes);
-		assertEquals("Unexpected second", 0, d.seconds);
+		assertThat(d.fullYear, strictlyEqualTo(2002));
+		assertThat(d.month, strictlyEqualTo(11));
+		assertThat(d.date, strictlyEqualTo(11));
+		assertThat(d.hours, strictlyEqualTo(0));
+		assertThat(d.minutes, strictlyEqualTo(0));
+		assertThat(d.seconds, strictlyEqualTo(0));
 	}
 	
-	public function testDateTime () : void {
+	[Test]
+	public function convertDateTime () : void {
 		var s:String = "2002-12-11 13:17:24";
 		var d:Date = DateConverter.INSTANCE.convert(s);
-		assertEquals("Unexpected year", 2002, d.fullYear);
-		assertEquals("Unexpected month", 11, d.month);
-		assertEquals("Unexpected day", 11, d.date);
-		assertEquals("Unexpected hour", 13, d.hours);
-		assertEquals("Unexpected minute", 17, d.minutes);
-		assertEquals("Unexpected second", 24, d.seconds);
+		assertThat(d.fullYear, strictlyEqualTo(2002));
+		assertThat(d.month, strictlyEqualTo(11));
+		assertThat(d.date, strictlyEqualTo(11));
+		assertThat(d.hours, strictlyEqualTo(13));
+		assertThat(d.minutes, strictlyEqualTo(17));
+		assertThat(d.seconds, strictlyEqualTo(24));
 	}
 	
-	public function testTime () : void {
+	[Test]
+	public function convertTime () : void {
 		var time:Number = new Date(2002, 11, 11, 13, 17, 24).time;
 		var d:Date = DateConverter.INSTANCE.convert(time);
-		assertEquals("Unexpected year", 2002, d.fullYear);
-		assertEquals("Unexpected month", 11, d.month);
-		assertEquals("Unexpected day", 11, d.date);
-		assertEquals("Unexpected hour", 13, d.hours);
-		assertEquals("Unexpected minute", 17, d.minutes);
-		assertEquals("Unexpected second", 24, d.seconds);
+		assertThat(d.fullYear, strictlyEqualTo(2002));
+		assertThat(d.month, strictlyEqualTo(11));
+		assertThat(d.date, strictlyEqualTo(11));
+		assertThat(d.hours, strictlyEqualTo(13));
+		assertThat(d.minutes, strictlyEqualTo(17));
+		assertThat(d.seconds, strictlyEqualTo(24));
 	}
 	
-	public function testIllegalDate () : void {
-		try {
-			DateConverter.INSTANCE.convert("2009-12-12-15 23,12");
-		} catch (e:ConversionError) {
-			return;
-		}
-		fail("Expected ConversionError");
+	[Test(expects="org.spicefactory.lib.reflect.errors.ConversionError")]
+	public function convertIllegalDate () : void {
+		DateConverter.INSTANCE.convert("2009-12-12-15 23,12");
 	}
 	
-	public function testClass () : void {
-		assertEquals("Unexcpected result", Property, ClassConverter.INSTANCE.convert("org.spicefactory.lib.reflect.Property"));
+	[Test]
+	public function convertClass () : void {
+		assertThat(ClassConverter.INSTANCE.convert("org.spicefactory.lib.reflect.Property"), sameInstance(Property));
 	}
 	
-	public function testIllegalClass () : void {
-		try {
-			ClassConverter.INSTANCE.convert("org.spicefactory.lib.reflect.Broperty");
-		} catch (e:ConversionError) {
-			return;
-		}
-		fail("Expected ConversionError");
+	[Test(expects="org.spicefactory.lib.reflect.errors.ConversionError")]
+	public function convertIllegalClass () : void {
+		ClassConverter.INSTANCE.convert("org.spicefactory.lib.reflect.Broperty");
 	}
 	
-	public function testClassInfo () : void {
+	[Test]
+	public function convertClassInfo () : void {
 		var ci:ClassInfo = new ClassInfoConverter().convert("org.spicefactory.lib.reflect.Property");
-		assertEquals("Unexcpected result", Property, ci.getClass());
+		assertThat(ci.getClass(), sameInstance(Property));
 	}
 	
-	public function testClassInfoWithRequiredType () : void {
+	[Test]
+	public function convertClassInfoWithRequiredType () : void {
 		var requiredType:ClassInfo = ClassInfo.forClass(ClassC);
 		var conv:Converter = new ClassInfoConverter(requiredType);
 		var ci:ClassInfo = conv.convert("org.spicefactory.lib.reflect.model.ClassC");
-		assertEquals("Unexcpected result", ClassC, ci.getClass());
+		assertThat(ci.getClass(), sameInstance(ClassC));
 	}
 	
-	public function testClassInfoNotOfRequiredType () : void {
-		try {
-			var requiredType:ClassInfo = ClassInfo.forClass(Property);
-			new ClassInfoConverter(requiredType).convert("org.spicefactory.lib.reflect.Converter");
-		} catch (e:ConversionError) {
-			return;
-		}
-		fail("Expected ConversionError");
+	[Test(expects="org.spicefactory.lib.reflect.errors.ConversionError")]
+	public function convertClassInfoNotOfRequiredType () : void {
+		var requiredType:ClassInfo = ClassInfo.forClass(Property);
+		new ClassInfoConverter(requiredType).convert("org.spicefactory.lib.reflect.Converter");
 	}
 	
 	

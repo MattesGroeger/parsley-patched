@@ -1,4 +1,8 @@
 package org.spicefactory.lib.task {
+import org.hamcrest.object.sameInstance;
+import org.hamcrest.object.equalTo;
+import org.flexunit.assertThat;
+import org.flexunit.async.Async;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.utils.Dictionary;
@@ -8,9 +12,8 @@ import org.spicefactory.lib.task.events.TaskEvent;
 import org.spicefactory.lib.task.ResultTask;
 import org.spicefactory.lib.util.Delegate;
 
-import flexunit.framework.TestCase;
 
-public class TaskTest extends TestCase {
+public class TaskTest {
 
 
 	private var eventCounter:EventCounter;
@@ -27,105 +30,120 @@ public class TaskTest extends TestCase {
 		this.expectedState = expectedState;
 		if (listener == null) listener = onTestComplete;
 		var tt:TimerTask = new TimerTask(150, cancelable, restartable, suspendable, skippable, timeout);
-		tt.addEventListener(eventType, addAsync(listener, 500));
+		tt.addEventListener(eventType, Async.asyncHandler(this, listener, 500));
 		eventCounter = new EventCounter(tt);
 		tt.start();
 		return tt;
 	}
 	
 	private function startSequential (tasks:Array, eventType:String, expectedState:TaskState,
-			listener:Function = null, timeout:uint = 0) : TaskGroup {
-		return startGroup(new SequentialTaskGroup(), tasks, eventType, expectedState, listener, timeout);
+			listener:Function = null, timeout:uint = 0, async:Boolean = true) : TaskGroup {
+		return startGroup(new SequentialTaskGroup(), tasks, eventType, expectedState, listener, timeout, async);
 	}
 	
 	private function startConcurrent (tasks:Array, eventType:String, expectedState:TaskState,
-			listener:Function = null, timeout:uint = 0) : TaskGroup {
-		return startGroup(new ConcurrentTaskGroup(), tasks, eventType, expectedState, listener, timeout);
+			listener:Function = null, timeout:uint = 0, async:Boolean = true) : TaskGroup {
+		return startGroup(new ConcurrentTaskGroup(), tasks, eventType, expectedState, listener, timeout, async);
 	}
 	
 	private function startGroup (tg:TaskGroup, tasks:Array, eventType:String, expectedState:TaskState,
-			listener:Function = null, timeout:uint = 0) : TaskGroup {
+			listener:Function = null, timeout:uint = 0, async:Boolean = true) : TaskGroup {
 		for each (var t:Task in tasks) {
 			tg.addTask(t);
 		}
 		this.expectedState = expectedState;
-		if (listener == null) listener = onTestComplete;
-		tg.addEventListener(eventType, addAsync(listener, 500));
+		if (async) {
+			if (listener == null) listener = onTestComplete;
+			tg.addEventListener(eventType, Async.asyncHandler(this, listener, 500));
+		}
 		eventCounter = new EventCounter(tg);
 		tg.timeout = timeout;
 		tg.start();
 		return tg;
 	}
 
-	
-	public function testCompleteRestartable () : void {
+	[Test(async)]
+	public function completeRestartable () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		startTask(TaskEvent.COMPLETE, TaskState.INACTIVE, null, true, true);
 	}
 	
-	public function testCompleteNonRestartable () : void {
+	[Test(async)]
+	public function completeNonRestartable () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		startTask(TaskEvent.COMPLETE, TaskState.FINISHED, null, true, false);
 	}
 	
-	public function testIllegalRestart () : void {
+	[Test(async)]
+	public function illegalRestart () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		startTask(TaskEvent.COMPLETE, TaskState.FINISHED, onTestIllegalRestart, true, false);
 	}
 	
-	public function testCancel () : void {
+	[Test(async)]
+	public function cancel () : void {
 		expectedEvents = new Result(1, 0, 1, 0, 0, 0);
 		var t:Task = startTask(TaskEvent.CANCEL, TaskState.INACTIVE, null, true, true);
 		t.cancel();
 	}
 	
-	public function testIllegalCancel () : void {
+	[Test(async)]
+	public function illegalCancel () : void {
 		expectedEvents = new Result(1, 0, 0, 0, 0, 0);
 		startTask(TaskEvent.START, TaskState.ACTIVE, onTestIllegalCancel, false, true);
 	}
 	
-	public function testSuspendResume () : void {
+	[Test(async)]
+	public function suspendResume () : void {
 		expectedEvents = new Result(1, 0, 0, 0, 1, 1);
 		var t:Task = startTask(TaskEvent.RESUME, TaskState.ACTIVE, null, true, true, true);
-		assertTrue("Task should be suspendable", t.suspendable);		
-		assertTrue("Task could not be suspended", t.suspend());		
-		assertTrue("Task could not be resumed", t.resume());		
+		assertThat(t.suspendable, equalTo(true));	
+		assertThat(t.suspend(), equalTo(true));	
+		assertThat(t.resume(), equalTo(true));	
 	}
 	
-	public function testError () : void {
+	[Test(async)]
+	public function error () : void {
 		expectedEvents = new Result(1, 0, 0, 1, 0, 0);
 		var t:TimerTask = startTask(ErrorEvent.ERROR, TaskState.FINISHED, null);
 		t.dispatchError("Expected Error");		
 	}
 	
-	public function testSkip () : void {
+	[Test(async)]
+	public function skip () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var t:Task = startTask(TaskEvent.COMPLETE, TaskState.INACTIVE, null, true, true);
 		t.skip();
 	}
 	
-	public function testIllegalSkip () : void {
+	[Test(async)]
+	public function illegalSkip () : void {
 		expectedEvents = new Result(1, 0, 0, 0, 0, 0);
 		startTask(TaskEvent.START, TaskState.ACTIVE, onTestIllegalSkip);
 	}
 	
-	public function testTimeout () : void {
+	[Test(async)]
+	public function timeout () : void {
 		expectedEvents = new Result(1, 0, 0, 1, 0, 0);
 		startTask(ErrorEvent.ERROR, TaskState.FINISHED, null, false, false, false, false, 80);	
 	}
 	
-	
-	public function testEmptySequentialComplete () : void {
+	[Test]
+	public function emptySequentialComplete () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
-		startSequential([], TaskEvent.COMPLETE, TaskState.INACTIVE);
+		var tg:TaskGroup = startSequential([], TaskEvent.COMPLETE, TaskState.INACTIVE, null, 0, false);
+		validate(tg);
 	}
 	
-	public function testEmptyConcurrentComplete () : void {
+	[Test]
+	public function emptyConcurrentComplete () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
-		startConcurrent([], TaskEvent.COMPLETE, TaskState.INACTIVE);
+		var tg:TaskGroup = startConcurrent([], TaskEvent.COMPLETE, TaskState.INACTIVE, null, 0, false);
+		validate(tg);
 	}
 	
-	public function testSequentialComplete () : void {
+	[Test(async)]
+	public function sequentialComplete () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150);
 		var tt2:TimerTask = new TimerTask(150);
@@ -133,7 +151,8 @@ public class TaskTest extends TestCase {
 		startSequential([tt1, tt2], TaskEvent.COMPLETE, TaskState.FINISHED);
 	}
 	
-	public function testConcurrentComplete () : void {
+	[Test(async)]
+	public function concurrentComplete () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150);
 		var tt2:TimerTask = new TimerTask(150);
@@ -141,80 +160,90 @@ public class TaskTest extends TestCase {
 		startConcurrent([tt1, tt2], TaskEvent.COMPLETE, TaskState.FINISHED);
 	}
 	
-	public function testRestartableSequentialComplete () : void {
+	[Test(async)]
+	public function restartableSequentialComplete () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150, false, true);
 		var tt2:TimerTask = new TimerTask(150, false, true);
 		startSequential([tt1, tt2], TaskEvent.COMPLETE, TaskState.INACTIVE);
 	}
 	
-	public function testCancelSequential () : void {
+	[Test(async)]
+	public function cancelSequential () : void {
 		expectedEvents = new Result(1, 0, 1, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150, true);
 		var tt2:TimerTask = new TimerTask(150, true);
 		var tg:TaskGroup = startSequential([tt1, tt2], TaskEvent.CANCEL, TaskState.FINISHED);
 		tg.cancel();
-		assertEquals("Unexpected state for child 1", TaskState.FINISHED, tt1.state);
-		assertEquals("Unexpected state for child 2", TaskState.INACTIVE, tt2.state);
+		assertThat(tt1.state, equalTo(TaskState.FINISHED));
+		assertThat(tt2.state, equalTo(TaskState.INACTIVE));	
 	}
 	
-	public function testCancelConcurrent () : void {
+	[Test(async)]
+	public function cancelConcurrent () : void {
 		expectedEvents = new Result(1, 0, 1, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150, true);
 		var tt2:TimerTask = new TimerTask(150, true);
 		var tg:TaskGroup = startConcurrent([tt1, tt2], TaskEvent.CANCEL, TaskState.FINISHED);
 		tg.cancel();
-		assertEquals("Unexpected state for child 1", TaskState.FINISHED, tt1.state);
-		assertEquals("Unexpected state for child 2", TaskState.FINISHED, tt2.state);
+		assertThat(tt1.state, equalTo(TaskState.FINISHED));
+		assertThat(tt2.state, equalTo(TaskState.FINISHED));	
 	}
 	
-	public function testIllegalCancelSequential () : void {
+	[Test(async)]
+	public function illegalCancelSequential () : void {
 		expectedEvents = new Result(1, 0, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150);
 		var tt2:TimerTask = new TimerTask(150);
 		startSequential([tt1, tt2], TaskEvent.START, TaskState.ACTIVE, onTestIllegalCancel);
 	}
 	
-	public function testIllegalCancelConcurrent () : void {
+	[Test(async)]
+	public function illegalCancelConcurrent () : void {
 		expectedEvents = new Result(1, 0, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150);
 		var tt2:TimerTask = new TimerTask(150);
 		startConcurrent([tt1, tt2], TaskEvent.START, TaskState.ACTIVE, onTestIllegalCancel);
 	}
 	
-	public function testSuspendResumeSequential () : void {
+	[Test(async)]
+	public function suspendResumeSequential () : void {
 		expectedEvents = new Result(1, 0, 0, 0, 1, 1);
 		var tt1:TimerTask = new TimerTask(150, false, false, true);
 		var tt2:TimerTask = new TimerTask(150, false, false, true);
 		var tg:TaskGroup = startSequential([tt1, tt2], TaskEvent.RESUME, 
 				TaskState.ACTIVE);
-		assertTrue("TaskGroup should be suspendable", tg.suspendable);
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);		
-		assertEquals("Unexpected state of child Task", TaskState.INACTIVE, tt2.state);		
-		assertTrue("TaskGroup could not be suspended", tg.suspend());	
-		assertEquals("Unexpected state of child Task", TaskState.SUSPENDED, tt1.state);	
-		assertTrue("TaskGroup could not be resumed", tg.resume());		
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);	
+		assertThat(tg.suspendable, equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.INACTIVE));	
+		assertThat(tg.suspend(), equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.SUSPENDED));
+		assertThat(tt2.state, equalTo(TaskState.INACTIVE));			
+		assertThat(tg.resume(), equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.INACTIVE));			
 	}
 	
-	public function testSuspendResumeConcurrent () : void {
+	[Test(async)]
+	public function suspendResumeConcurrent () : void {
 		expectedEvents = new Result(1, 0, 0, 0, 1, 1);
 		var tt1:TimerTask = new TimerTask(150, false, false, true);
 		var tt2:TimerTask = new TimerTask(150, false, false, true);
 		var tg:TaskGroup = startConcurrent([tt1, tt2], TaskEvent.RESUME, 
 				TaskState.ACTIVE);
-		assertTrue("TaskGroup should be suspendable", tg.suspendable);
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);		
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt2.state);		
-		assertTrue("TaskGroup could not be suspended", tg.suspend());	
-		assertEquals("Unexpected state of child Task", TaskState.SUSPENDED, tt1.state);	
-		assertEquals("Unexpected state of child Task", TaskState.SUSPENDED, tt2.state);	
-		assertTrue("TaskGroup could not be resumed", tg.resume());		
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);	
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt2.state);	
+		assertThat(tg.suspendable, equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.ACTIVE));	
+		assertThat(tg.suspend(), equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.SUSPENDED));
+		assertThat(tt2.state, equalTo(TaskState.SUSPENDED));			
+		assertThat(tg.resume(), equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.ACTIVE));	
 	}
 	
-	public function testErrorSequential () : void {
+	[Test(async)]
+	public function errorSequential () : void {
 		expectedEvents = new Result(1, 0, 0, 1, 0, 0);
 		var tt1:TimerTask = new TimerTask(150);
 		var tt2:TimerTask = new TimerTask(150);
@@ -222,7 +251,8 @@ public class TaskTest extends TestCase {
 		tt1.dispatchError("Expected Error");
 	}
 	
-	public function testErrorConcurrent () : void {
+	[Test(async)]
+	public function errorConcurrent () : void {
 		expectedEvents = new Result(1, 0, 0, 1, 0, 0);
 		var tt1:TimerTask = new TimerTask(150);
 		var tt2:TimerTask = new TimerTask(150);
@@ -230,77 +260,86 @@ public class TaskTest extends TestCase {
 		tt1.dispatchError("Expected Error");
 	}
 	
-	public function testSkipSequential () : void {
+	[Test(async)]
+	public function skipSequential () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150, false, false, false, true);
 		var tt2:TimerTask = new TimerTask(150, false, false, false, true);
 		var tg:TaskGroup = startSequential([tt1, tt2], TaskEvent.COMPLETE, 
 				TaskState.FINISHED);
-		assertTrue("TaskGroup should be skippable", tg.skippable);
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);		
-		assertEquals("Unexpected state of child Task", TaskState.INACTIVE, tt2.state);		
-		assertTrue("TaskGroup could not be suspended", tg.skip());	
-		assertEquals("Unexpected state of child Task", TaskState.FINISHED, tt1.state);	
-		assertEquals("Unexpected state of child Task", TaskState.INACTIVE, tt2.state);		
+		assertThat(tg.skippable, equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.INACTIVE));	
+		assertThat(tg.skip(), equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.FINISHED));
+		assertThat(tt2.state, equalTo(TaskState.INACTIVE));			
 	}
 	
-	public function testSkipConcurrent () : void {
+	[Test(async)]
+	public function skipConcurrent () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150, false, false, false, true);
 		var tt2:TimerTask = new TimerTask(150, false, false, false, true);
 		var tg:TaskGroup = startConcurrent([tt1, tt2], TaskEvent.COMPLETE, 
 				TaskState.FINISHED);
-		assertTrue("TaskGroup should be skippable", tg.skippable);
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);		
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt2.state);		
-		assertTrue("TaskGroup could not be suspended", tg.skip());	
-		assertEquals("Unexpected state of child Task", TaskState.FINISHED, tt1.state);	
-		assertEquals("Unexpected state of child Task", TaskState.FINISHED, tt2.state);		
+		assertThat(tg.skippable, equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.ACTIVE));	
+		assertThat(tg.skip(), equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.FINISHED));
+		assertThat(tt2.state, equalTo(TaskState.FINISHED));		
 	}
 	
-	public function testIllegalSkipSequential () : void {
+	[Test(async)]
+	public function illegalSkipSequential () : void {
 		expectedEvents = new Result(1, 0, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150);
 		var tt2:TimerTask = new TimerTask(150);
 		startSequential([tt1, tt2], TaskEvent.START, TaskState.ACTIVE, onTestIllegalSkip);
 	}
 	
-	public function testIllegalSkipConcurrent () : void {
+	[Test(async)]
+	public function illegalSkipConcurrent () : void {
 		expectedEvents = new Result(1, 0, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150);
 		var tt2:TimerTask = new TimerTask(150);
 		startConcurrent([tt1, tt2], TaskEvent.START, TaskState.ACTIVE, onTestIllegalSkip);
 	}
 	
-	public function testTimeoutSequential () : void {
+	[Test(async)]
+	public function timeoutSequential () : void {
 		expectedEvents = new Result(1, 0, 0, 1, 0, 0);
 		var tt1:TimerTask = new TimerTask(150, false, false, false, false, 80);
 		var tt2:TimerTask = new TimerTask(150);
 		startSequential([tt1, tt2], ErrorEvent.ERROR, TaskState.FINISHED);
 	}
 	
-	public function testTimeoutConcurrent () : void {
+	[Test(async)]
+	public function timeoutConcurrent () : void {
 		expectedEvents = new Result(1, 0, 0, 1, 0, 0);
 		var tt1:TimerTask = new TimerTask(150, false, false, false, false, 80);
 		var tt2:TimerTask = new TimerTask(150);
 		startConcurrent([tt1, tt2], ErrorEvent.ERROR, TaskState.FINISHED);
 	}
 	
-	public function testParentTimeoutSequential () : void {
+	[Test(async)]
+	public function parentTimeoutSequential () : void {
 		expectedEvents = new Result(1, 0, 0, 1, 0, 0);
 		var tt1:TimerTask = new TimerTask(1000, true);
 		var tt2:TimerTask = new TimerTask(150, true);
 		startSequential([tt1, tt2], ErrorEvent.ERROR, TaskState.FINISHED, null, 200);
 	}
 	
-	public function testParentTimeoutConcurrent () : void {
+	[Test(async)]
+	public function parentTimeoutConcurrent () : void {
 		expectedEvents = new Result(1, 0, 0, 1, 0, 0);
 		var tt1:TimerTask = new TimerTask(1000, true);
 		var tt2:TimerTask = new TimerTask(150, true);
 		startConcurrent([tt1, tt2], ErrorEvent.ERROR, TaskState.FINISHED, null, 200);
 	}
 		
-	public function testIgnoreTimeoutSequential () : void {
+	[Test(async)]
+	public function ignoreTimeoutSequential () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150, false, false, false, false, 80);
 		var tt2:TimerTask = new TimerTask(150);
@@ -309,7 +348,8 @@ public class TaskTest extends TestCase {
 		tg.ignoreChildErrors = true;
 	}
 	
-	public function testIgnoreTimeoutConcurrent () : void {
+	[Test(async)]
+	public function ignoreTimeoutConcurrent () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150, false, false, false, false, 80);
 		var tt2:TimerTask = new TimerTask(150);
@@ -318,49 +358,53 @@ public class TaskTest extends TestCase {
 		tg.ignoreChildErrors = true;
 	}
 	
-	public function testTaskGroupContext () : void {
+	[Test(async)]
+	public function taskGroupData () : void {
 		var outerGroup:TaskGroup = new SequentialTaskGroup();
 		var innerGroup:TaskGroup = new ConcurrentTaskGroup();
 		var task:Task = new TimerTask(100);
 		innerGroup.addTask(task);
 		outerGroup.addTask(innerGroup);
 		outerGroup.data = 7;
-		assertEquals("Unexpected context value", 7, outerGroup.data);
-		assertEquals("Unexpected context value", 7, innerGroup.data);
-		assertEquals("Unexpected context value", 7, task.data);
+		assertThat(outerGroup.data, equalTo(7));
+		assertThat(innerGroup.data, equalTo(7));
+		assertThat(task.data, equalTo(7));
 		innerGroup.data = "foo";
-		assertEquals("Unexpected context value", 7, outerGroup.data);
-		assertEquals("Unexpected context value", "foo", innerGroup.data);
-		assertEquals("Unexpected context value", "foo", task.data);	
+		assertThat(outerGroup.data, equalTo(7));
+		assertThat(innerGroup.data, equalTo("foo"));
+		assertThat(task.data, equalTo("foo"));
 		task.data = true;	
-		assertEquals("Unexpected context value", 7, outerGroup.data);
-		assertEquals("Unexpected context value", "foo", innerGroup.data);
-		assertEquals("Unexpected context value", true, task.data);	
+		assertThat(outerGroup.data, equalTo(7));
+		assertThat(innerGroup.data, equalTo("foo"));
+		assertThat(task.data, equalTo(true));
 	}
 	
-	public function testAddTaskToRunningConcurrent () : void {
+	[Test(async)]
+	public function addTaskToRunningConcurrent () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150);
 		var tt2:TimerTask = new TimerTask(150);
 		var tg:TaskGroup = startConcurrent([tt1], TaskEvent.COMPLETE, 
 				TaskState.FINISHED);
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);		
-		assertEquals("Unexpected state of child Task", TaskState.INACTIVE, tt2.state);		
-		assertTrue("Task could not be added to TaskGroup", tg.addTask(tt2));	
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);	
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt2.state);		 				
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.INACTIVE));			
+		assertThat(tg.addTask(tt2), equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.ACTIVE));	
 	}
 	
-	public function testAddTaskWhileDoStartExecutes () : void {
+	[Test]
+	public function addTaskWhileDoStartExecutes () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var tg:TaskGroup = new ConcurrentTaskGroup();
 		var tAdded:Task = new NonRestartableCommandTask(new Delegate(childTask2));
 		var t:Task = new NonRestartableCommandTask(new Delegate(childTask1, [tg, tAdded]));
 		var t2:Task = new NonRestartableCommandTask(new Delegate(childTask2));
-		startGroup(tg, [t, t2], TaskEvent.COMPLETE, TaskState.FINISHED);
-		assertEquals("Unexpected state of child Task", TaskState.FINISHED, t.state);		
-		assertEquals("Unexpected state of child Task", TaskState.FINISHED, t2.state);		
-		assertEquals("Unexpected state of dynamically added child Task", TaskState.FINISHED, tAdded.state);		
+		startGroup(tg, [t, t2], TaskEvent.COMPLETE, TaskState.FINISHED, null, 0, false);
+		validate(tg);
+		assertThat(t.state, equalTo(TaskState.FINISHED));
+		assertThat(t2.state, equalTo(TaskState.FINISHED));
+		assertThat(tAdded.state, equalTo(TaskState.FINISHED));
 	}
 	
 	private function childTask1 (group:TaskGroup, t:Task) : void {
@@ -369,72 +413,78 @@ public class TaskTest extends TestCase {
 
 	private function childTask2 () : void {  } 
 	
-	public function testRemoveTaskFromRunningConcurrent () : void {
+	[Test(async)]
+	public function removeTaskFromRunningConcurrent () : void {
 		expectedEvents = new Result(1, 0, 1, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150, true);
 		var tt2:TimerTask = new TimerTask(150, true);
 		var tg:TaskGroup = startConcurrent([tt1, tt2], TaskEvent.CANCEL, 
 				TaskState.FINISHED);
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);		
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt2.state);		
-		assertTrue("Task could not be removed from TaskGroup", tg.removeTask(tt2));	
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);	
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt2.state);
-		assertTrue("TaskGroup could not be canceled", tg.cancel());		
-		assertEquals("Unexpected state of child Task", TaskState.FINISHED, tt1.state);	
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt2.state);	
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.ACTIVE));			
+		assertThat(tg.removeTask(tt2), equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.ACTIVE));	
+		assertThat(tg.cancel(), equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.FINISHED));
+		assertThat(tt2.state, equalTo(TaskState.ACTIVE));		
 	}
 	
-	public function testRemoveTaskFromRunningSequential () : void {
+	[Test(async)]
+	public function removeTaskFromRunningSequential () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150);
 		var tt2:TimerTask = new TimerTask(150);
 		var tg:TaskGroup = startSequential([tt1, tt2], TaskEvent.COMPLETE, 
 				TaskState.FINISHED);	
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);		
-		assertEquals("Unexpected state of child Task", TaskState.INACTIVE, tt2.state);	
-		assertTrue("Task could not be removed from TaskGroup", tg.removeTask(tt1));	
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);	
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt2.state);		
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.INACTIVE));
+		assertThat(tg.removeTask(tt1), equalTo(true));
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.ACTIVE));	
 	}
 	
-	public function testRemoveAllTasksFromRunningConcurrent () : void {
+	[Test(async)]
+	public function removeAllTasksFromRunningConcurrent () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150, true);
 		var tt2:TimerTask = new TimerTask(150, true);
 		var tg:TaskGroup = startConcurrent([tt1, tt2], TaskEvent.COMPLETE, 
 				TaskState.INACTIVE);
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);		
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt2.state);		
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.ACTIVE));	
 		tg.removeAllTasks();	
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);	
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt2.state);
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.ACTIVE));
 	}
 	
-	public function testRemoveAllTasksFromRunningSequential () : void {
+	[Test(async)]
+	public function removeAllTasksFromRunningSequential () : void {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		var tt1:TimerTask = new TimerTask(150, true);
 		var tt2:TimerTask = new TimerTask(150, true);
 		var tg:TaskGroup = startSequential([tt1, tt2], TaskEvent.COMPLETE, 
 				TaskState.INACTIVE);
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);		
-		assertEquals("Unexpected state of child Task", TaskState.INACTIVE, tt2.state);		
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.INACTIVE));	
 		tg.removeAllTasks();	
-		assertEquals("Unexpected state of child Task", TaskState.ACTIVE, tt1.state);	
-		assertEquals("Unexpected state of child Task", TaskState.INACTIVE, tt2.state);
+		assertThat(tt1.state, equalTo(TaskState.ACTIVE));
+		assertThat(tt2.state, equalTo(TaskState.INACTIVE));
 	}
 	
-	public function testResultTask () : void {
+	[Test]
+	public function resultTask () : void {
 		var t:ResultTask = new SimpleResultTask();
 		eventCounter = new EventCounter(t);
 		expectedState = TaskState.INACTIVE;
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		t.start();
 		validate(Task(t));
-		assertEquals("Unexpected result property", "foo", t.result);
+		assertThat(t.result, equalTo("foo"));
 	}
 	
-	public function testResultTaskWithContextProperty () : void {
+	[Test]
+	public function resultTaskWithContextProperty () : void {
 		var t:ResultTask = new SimpleResultTask("test");
 		var tg:TaskGroup = new SequentialTaskGroup();
 		tg.data = new Dictionary();
@@ -444,53 +494,52 @@ public class TaskTest extends TestCase {
 		expectedEvents = new Result(1, 1, 0, 0, 0, 0);
 		tg.start();
 		validate(Task(tg));
-		assertEquals("Unexpected result property", "foo", tg.data.test);
+		assertThat(tg.data.test, equalTo("foo"));
 	}
 	
-	public function testRootProperty () : void {
+	[Test]
+	public function rootProperty () : void {
 		var t:ResultTask = new SimpleResultTask("test");
-		assertEquals("Unexpected value for root property", t, t.root);
+		assertThat(t.root, sameInstance(t));
 		var tg1:TaskGroup = new SequentialTaskGroup();
 		tg1.addTask(t);
-		assertEquals("Unexpected value for root property", tg1, t.root);
+		assertThat(t.root, sameInstance(tg1));
 		var tg2:TaskGroup = new SequentialTaskGroup();
 		tg2.addTask(tg1);
-		assertEquals("Unexpected value for root property", tg2, t.root);
-	}
-
-	
-	private function onTestIllegalRestart (event:Event) : void {
-		validate(Task(event.target));
-		assertFalse("Task should not be restartable", Task(event.target).start());
+		assertThat(t.root, sameInstance(tg2));
 	}
 	
-	private function onTestIllegalCancel (event:Event) : void {
+	private function onTestIllegalRestart (event:Event, data:Object = null) : void {
 		validate(Task(event.target));
-		assertFalse("Task should not be cancelable", Task(event.target).cancel());
+		assertThat(Task(event.target).start(), equalTo(false));
 	}
 	
-	private function onTestIllegalSkip (event:Event) : void {
+	private function onTestIllegalCancel (event:Event, data:Object = null) : void {
 		validate(Task(event.target));
-		assertFalse("Task should not be skippable", Task(event.target).skip());
+		assertThat(Task(event.target).cancel(), equalTo(false));
+	}
+	
+	private function onTestIllegalSkip (event:Event, data:Object = null) : void {
+		validate(Task(event.target));
+		assertThat(Task(event.target).skip(), equalTo(false));
 	}
 			
 	
-	private function onTestComplete (event:Event) : void {
+	private function onTestComplete (event:Event, data:Object = null) : void {
 		validate(Task(event.target));
 	}
 	
 	
 	private function validate (t:Task) : void {
-		assertEquals("Unexpected state of Task", expectedState, t.state);
+		assertThat(t.state, equalTo(expectedState)); 		
 		var r:Result = expectedEvents;
-		assertEquals("Unexpected count of START events", r.start, eventCounter.getCount(TaskEvent.START)); 		
-		assertEquals("Unexpected count of COMPLETE events", r.complete, eventCounter.getCount(TaskEvent.COMPLETE)); 		
-		assertEquals("Unexpected count of CANCEL events", r.cancel, eventCounter.getCount(TaskEvent.CANCEL)); 		
-		assertEquals("Unexpected count of ERROR events", r.error, eventCounter.getCount(ErrorEvent.ERROR)); 		
-		assertEquals("Unexpected count of SUSPEND events", r.suspend, eventCounter.getCount(TaskEvent.SUSPEND)); 		
-		assertEquals("Unexpected count of RESUME events", r.resume, eventCounter.getCount(TaskEvent.RESUME)); 		
+		assertThat("Unexpected count of START events", eventCounter.getCount(TaskEvent.START), equalTo(r.start)); 		
+		assertThat("Unexpected count of COMPLETE events", eventCounter.getCount(TaskEvent.COMPLETE), equalTo(r.complete)); 		
+		assertThat("Unexpected count of CANCEL events", eventCounter.getCount(TaskEvent.CANCEL), equalTo(r.cancel)); 		
+		assertThat("Unexpected count of ERROR events", eventCounter.getCount(ErrorEvent.ERROR), equalTo(r.error)); 		
+		assertThat("Unexpected count of SUSPEND events", eventCounter.getCount(TaskEvent.SUSPEND), equalTo(r.suspend)); 		
+		assertThat("Unexpected count of RESUME events", eventCounter.getCount(TaskEvent.RESUME), equalTo(r.resume)); 		
 	}
-
 
 
 }

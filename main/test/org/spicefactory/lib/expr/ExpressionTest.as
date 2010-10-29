@@ -1,110 +1,110 @@
 package org.spicefactory.lib.expr {
+import org.hamcrest.object.nullValue;
+import org.hamcrest.object.equalTo;
+import org.flexunit.assertThat;
 import org.spicefactory.lib.expr.impl.DefaultExpressionContext;
 import org.spicefactory.lib.expr.impl.DefaultVariableResolver;
-import org.spicefactory.lib.expr.impl.IllegalExpressionError;
 import org.spicefactory.lib.expr.impl.ValueExpression;
 import org.spicefactory.lib.reflect.model.ClassB;
 
-import flexunit.framework.TestCase;	
-
-public class ExpressionTest extends TestCase {
+public class ExpressionTest {
 	
 	
 	private var context:ExpressionContext;
 	
 	
-	public override function setUp () : void {
-		super.setUp();
+	[Before]
+	public function setUp () : void {
 		context = new DefaultExpressionContext();
 	}
 	
 	
-	public function testLiteralExpression () : void {
+	[Test]
+	public function literalExpression () : void {
 		var ex:Expression = context.createExpression("literal");
-		assertEquals("Unexpected expression value", "literal", ex.value);
+		assertThat("literal", equalTo(ex.value));
 	}
 	
-	public function testEscapedExpression () : void {
+	[Test]
+	public function escapedExpression () : void {
 		var ex:Expression = context.createExpression("$\\{escaped}");
-		assertEquals("Unexpected expression value", "${escaped}", ex.value);
+		assertThat(ex.value, equalTo("${escaped}"));
 	}
 	
-	public function testSimpleValueExpression () : void {
+	[Test]
+	public function simpleValueExpression () : void {
 		context.setVariable("foo", 42);
 		var ex:Expression = context.createExpression("${foo}");
-		assertEquals("Unexpected expression value", 42, ex.value);
+		assertThat(ex.value, equalTo(42));
 	}
 	
-	public function testSimpleProperty () : void {
+	[Test]
+	public function simpleProperty () : void {
 		var classB:ClassB = new ClassB("foo");
 		classB.readWriteProperty = "xyz";
 		context.setVariable("classB", classB);
 		var ex:Expression = context.createExpression("${classB.readWriteProperty}");
-		assertEquals("Unexpected expression value", "xyz", ex.value);
+		assertThat(ex.value, equalTo("xyz"));
 	}
 	
-	public function testUnresolvableExpression () : void {
-		var ex:Expression = context.createExpression("${foo}");
-		try {
-			ex.value;
-		}
-		catch (e:IllegalExpressionError) {
-			/* expected */
-			return;
-		}
-		fail("Expected IllegalExpressionError");
+	[Test(expects="org.spicefactory.lib.expr.impl.IllegalExpressionError")]
+	public function unresolvableExpression () : void {
+		context.createExpression("${foo}").value;
 	}
 	
-	public function testChainedVariableResolver () : void {
+	[Test]
+	public function chainedVariableResolver () : void {
 		var vr:DefaultVariableResolver = new DefaultVariableResolver();
 		vr.setVariable("foo", 1);
 		context.setVariable("bar", 2);
 		context.addVariableResolver(vr);
 		var ex1:Expression = context.createExpression("${foo}");
 		var ex2:Expression = context.createExpression("${bar}");
-		assertEquals("Unexpected expression value", 1, ex1.value);
-		assertEquals("Unexpected expression value", 2, ex2.value);
+		assertThat(ex1.value, equalTo(1));
+		assertThat(ex2.value, equalTo(2));
 	}
 	
-	public function testCompositeExpression () : void {
+	[Test]
+	public function compositeExpression () : void {
 		context.setVariable("foo", 42);
 		var ex:Expression = context.createExpression("The Meaning of Life is ${foo}");
-		assertEquals("Unexpected expression value", "The Meaning of Life is 42", ex.value);
+		assertThat(ex.value, equalTo("The Meaning of Life is 42"));
 	}
 	
-	public function testIllegalInt () : void {
-		try {
-			context.createExpression("Illegal ${expression");
-		} catch (e:IllegalExpressionError) {
-			return;
-		}
-		fail("Expected IllegalExpressionError");
+	[Test(expects="org.spicefactory.lib.expr.impl.IllegalExpressionError")]
+	public function illegalInt () : void {
+		context.createExpression("Illegal ${expression");
 	}
 	
-	public function testDefaultValue () : void {
+	[Test]
+	public function defaultValue () : void {
 		var ve:Expression = ValueExpression(context.createExpression("${foo|'bar'}"));
-		assertEquals("Unexpected default value", "bar", ve.value);
+		assertThat(ve.value, equalTo("bar"));
 	}
 	
-	public function testNullDefaultValue () : void {
+	[Test]
+	public function nullDefaultValue () : void {
 		var ve:ValueExpression = ValueExpression(context.createExpression("${foo|null}"));
-		assertNull("Expected null default value", ve.defaultValue);
+		assertThat(ve.defaultValue, nullValue());
 	}
 	
-	public function testStringDefaultValue () : void {
+	[Test]
+	public function stringDefaultValue () : void {
 		var ve:ValueExpression = ValueExpression(context.createExpression("${foo|'bar'}"));
-		assertEquals("Unexpected default value", "bar", ve.defaultValue);
+		assertThat(ve.defaultValue, equalTo("bar"));
 	}
 	
-	public function testNumberDefaultValue () : void {
+	[Test]
+	public function numberDefaultValue () : void {
 		var ve:ValueExpression = ValueExpression(context.createExpression("${foo|23}"));
-		assertEquals("Unexpected default value", 23, ve.defaultValue);
+		assertThat(ve.defaultValue, equalTo(23));
 	}
 	
-	public function testExpressionDefaultValue () : void {
+	[Test]
+	public function expressionDefaultValue () : void {
 		context.setVariable("bar", true);
 		var ve:ValueExpression = ValueExpression(context.createExpression("${foo|bar}"));
-		assertEquals("Unexpected default value", true, ValueExpression(ve.defaultValue).value);
+		assertThat(ValueExpression(ve.defaultValue).value, equalTo(true));
 	}
 	
 	

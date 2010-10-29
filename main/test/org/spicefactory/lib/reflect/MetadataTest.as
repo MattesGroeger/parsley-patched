@@ -1,7 +1,8 @@
 package org.spicefactory.lib.reflect {
-import org.spicefactory.lib.reflect.mapping.ValidationError;
-
-import flexunit.framework.TestCase;
+import org.hamcrest.core.isA;
+import org.hamcrest.collection.arrayWithSize;
+import org.hamcrest.object.equalTo;
+import org.flexunit.assertThat;
 
 import org.spicefactory.lib.reflect.metadata.EventInfo;
 import org.spicefactory.lib.reflect.model.ClassC;
@@ -13,14 +14,14 @@ import org.spicefactory.lib.reflect.model.TestMetadata3;
 
 import flash.display.Sprite;
 
-public class MetadataTest extends TestCase {
+public class MetadataTest {
 	
 	
-	private var classCInfo:ClassInfo;
+	private static var classCInfo:ClassInfo;
 	
 	
-	public override function setUp () : void {
-		super.setUp();
+	[BeforeClass]
+	public static function setUp () : void {
 		new ClassC(""); // needed to avoid Flash Player bug that does report '*' as type for
 		                // all constructor parameters if the class was not instantiated at least once.
 		Metadata.registerMetadataClass(TestMetadata1);
@@ -30,9 +31,10 @@ public class MetadataTest extends TestCase {
 	}
 	
 	
-	public function testClassMetadata () : void {
+	[Test]
+	public function classMetadata () : void {
 		var meta:Array = classCInfo.getMetadata(EventInfo);
-		assertEquals("Unexpected number of metadata tags", 3, meta.length);
+		assertThat(meta, arrayWithSize(3));
 		meta.sortOn("name");
 		checkEventInfo(meta[0], "start", "TaskEvent");
 		checkEventInfo(meta[1], "start2", "");
@@ -40,167 +42,171 @@ public class MetadataTest extends TestCase {
 	}
 	
 	private function checkEventInfo (meta:*, expectedName:String, expectedType:String) : void {
-		assertTrue("Unexpected type for metadata", meta is EventInfo);
+		assertThat(meta, isA(EventInfo));
 		var ei:EventInfo = EventInfo(meta);
-		assertEquals("Unexpected value for name property", expectedName, ei.name);
-		assertEquals("Unexpected value for type property", expectedType, ei.type);
+		assertThat(ei.name, equalTo(expectedName));
+		assertThat(ei.type, equalTo(expectedType));
 	}
 	
-	public function testVarMetadata () : void {
+	[Test]
+	public function varMetadata () : void {
 		var p:Property = classCInfo.getProperty("optionalProperty");
 		var meta:Array = p.getMetadata("TestMetadata");
-		assertEquals("Unexpected number of metadata tags", 1, meta.length);
-		assertTrue("Unexpected type for metadata", meta[0] is Metadata);
+		assertThat(meta, arrayWithSize(1));
+		assertThat(meta[0], isA(Metadata));
 	}
 	
-	public function testConstMetadata () : void {
+	[Test]
+	public function constMetadata () : void {
 		var p:Property = classCInfo.getProperty("aConst");
 		var meta:Array = p.getMetadata("TestMetadata");
-		assertEquals("Unexpected number of metadata tags", 1, meta.length);
-		assertTrue("Unexpected type for metadata", meta[0] is Metadata);
+		assertThat(meta, arrayWithSize(1));
+		assertThat(meta[0], isA(Metadata));
 	}
 	
-	public function testMappedPropertyMetadata () : void {
+	[Test]
+	public function mappedPropertyMetadata () : void {
 		var p:Property = classCInfo.getProperty("requiredProperty");
 		var meta:Array = p.getMetadata(TestMetadata1);
-		assertEquals("Unexpected number of metadata tags", 1, meta.length);
-		assertTrue("Unexpected type for metadata", meta[0] is TestMetadata1);
+		assertThat(meta, arrayWithSize(1));
+		assertThat(meta[0], isA(TestMetadata1));
 		var mapped:TestMetadata1 = TestMetadata1(meta[0]);
-		assertEquals("Unexpected value for metadata property", "A", mapped.stringProp);
-		assertEquals("Unexpected value for metadata property", 5, mapped.intProp);		
+		assertThat(mapped.stringProp, equalTo("A"));
+		assertThat(mapped.intProp, equalTo(5));
 	}
 	
-	public function testMappedInterfaceMethodMetadata () : void {
+	[Test]
+	public function mappedInterfaceMethodMetadata () : void {
 		var interfaceInfo:ClassInfo = ClassInfo.forClass(InterfaceB);
 		var m:Method = interfaceInfo.getMethod("method");
 		var meta:Array = m.getMetadata(TestMetadata1);
-		assertEquals("Unexpected number of metadata tags", 1, meta.length);
-		assertTrue("Unexpected type for metadata", meta[0] is TestMetadata1);
+		assertThat(meta, arrayWithSize(1));
+		assertThat(meta[0], isA(TestMetadata1));
 		var mapped:TestMetadata1 = TestMetadata1(meta[0]);
-		assertEquals("Unexpected value for metadata property", "A", mapped.stringProp);
-		assertEquals("Unexpected value for metadata property", 1, mapped.intProp);	
+		assertThat(mapped.stringProp, equalTo("A"));
+		assertThat(mapped.intProp, equalTo(1));
 	}
 	
-	public function testMappedInterfaceTypeMetadata () : void {
+	[Test]
+	public function mappedInterfaceTypeMetadata () : void {
 		var interfaceInfo:ClassInfo = ClassInfo.forClass(InterfaceB);
 		var meta:Array = interfaceInfo.getMetadata(TestMetadata1);
-		assertEquals("Unexpected number of metadata tags", 1, meta.length);
-		assertTrue("Unexpected type for metadata", meta[0] is TestMetadata1);
+		assertThat(meta, arrayWithSize(1));
+		assertThat(meta[0], isA(TestMetadata1));
 		var mapped:TestMetadata1 = TestMetadata1(meta[0]);
-		assertEquals("Unexpected value for metadata property", "A", mapped.stringProp);
-		assertEquals("Unexpected value for metadata property", 1, mapped.intProp);	
+		assertThat(mapped.stringProp, equalTo("A"));
+		assertThat(mapped.intProp, equalTo(1));
 	}
 
-	public function testMappedDefaultProperty () : void {
+	[Test]
+	public function mappedDefaultProperty () : void {
 		var p:Property = classCInfo.getProperty("testDefaultValue");
 		var meta:Array = p.getMetadata(TestMetadata1);
-		assertEquals("Unexpected number of metadata tags", 1, meta.length);
-		assertTrue("Unexpected type for metadata", meta[0] is TestMetadata1);
+		assertThat(meta, arrayWithSize(1));
+		assertThat(meta[0], isA(TestMetadata1));
 		var mapped:TestMetadata1 = TestMetadata1(meta[0]);
-		assertEquals("Unexpected value for metadata property", "defaultValue", mapped.stringProp);
-		assertEquals("Unexpected value for metadata property", 0, mapped.intProp);		
+		assertThat(mapped.stringProp, equalTo("defaultValue"));
+		assertThat(mapped.intProp, equalTo(0));
 	}
 
-	public function testMethodMetadata () : void {
+	[Test]
+	public function methodMetadata () : void {
 		var method:Method = classCInfo.getMethod("methodWithMetadata");
 		var meta:Array = method.getMetadata("TestMetadata");
-		assertEquals("Unexpected number of metadata tags", 2, meta.length);
-		assertTrue("Unexpected type for metadata", meta[0] is Metadata);
-		assertTrue("Unexpected type for metadata", meta[1] is Metadata);
+		assertThat(meta, arrayWithSize(2));
+		assertThat(meta[0], isA(Metadata));
+		assertThat(meta[1], isA(Metadata));
 		meta.sort(function (item1:Metadata, item2:Metadata) : int { 
 			return (item1.getDefaultArgument() > item2.getDefaultArgument()) ? -1 : 1;
 		});
 		var m:Metadata = Metadata(meta[0]);
-		assertEquals("Unexpected value for metadata property", "someValue", m.getArgument(""));
-		assertEquals("Unexpected value for default property", "someValue", m.getDefaultArgument());
+		assertThat(m.getArgument(""), equalTo("someValue"));
+		assertThat(m.getDefaultArgument(), equalTo("someValue"));
 		m = Metadata(meta[1]);
-		assertEquals("Unexpected value for metadata property", "someOtherValue", m.getArgument(""));
-		assertEquals("Unexpected value for default property", "someOtherValue", m.getDefaultArgument());
+		assertThat(m.getArgument(""), equalTo("someOtherValue"));
+		assertThat(m.getDefaultArgument(), equalTo("someOtherValue"));
 	}
 	
-	public function testDuplicateMappedMetadata () : void {
+	[Test]
+	public function duplicateMappedMetadata () : void {
 		var method:Method = classCInfo.getMethod("methodWithMappedMetadata");
 		var meta:Array = method.getMetadata(TestMetadata1);
-		assertEquals("Unexpected number of metadata tags", 2, meta.length);
-		assertTrue("Unexpected type for metadata", meta[0] is TestMetadata1);
-		assertTrue("Unexpected type for metadata", meta[1] is TestMetadata1);
+		assertThat(meta, arrayWithSize(2));
+		assertThat(meta[0], isA(TestMetadata1));
+		assertThat(meta[1], isA(TestMetadata1));
 		meta.sortOn("stringProp");
 		var mapped:TestMetadata1 = TestMetadata1(meta[0]);
-		assertEquals("Unexpected value for metadata property", "A", mapped.stringProp);
-		assertEquals("Unexpected value for metadata property", 1, mapped.intProp);	
+		assertThat(mapped.stringProp, equalTo("A"));
+		assertThat(mapped.intProp, equalTo(1));
 		mapped = TestMetadata1(meta[1]);
-		assertEquals("Unexpected value for metadata property", "B", mapped.stringProp);
-		assertEquals("Unexpected value for metadata property", 2, mapped.intProp);		
+		assertThat(mapped.stringProp, equalTo("B"));
+		assertThat(mapped.intProp, equalTo(2));
 	}
 	
-	public function testHasMetadataMethod () : void {
+	[Test]
+	public function hasMetadataMethod () : void {
 		var method:Method = classCInfo.getMethod("methodWithMappedMetadata");
-		var check:Boolean = method.hasMetadata(TestMetadata1);
-		assertTrue("Unexpected result for hasMetadata check", check);
+		assertThat(method.hasMetadata(TestMetadata1), equalTo(true));
 	}
 	
-	public function testMetadataWithRestrictedMetadata () : void {
+	[Test]
+	public function metadataWithRestrictedMetadata () : void {
 		// Metadata only mapped for properties and methods
 		var method:Method = classCInfo.getMethod("methodWithRestrictedMetadata");
 		var meta:Array = method.getMetadata(TestMetadata2);
-		assertEquals("Unexpected number of metadata tags", 1, meta.length);
-		assertTrue("Unexpected type for metadata", meta[0] is TestMetadata2);
+		assertThat(meta, arrayWithSize(1));
+		assertThat(meta[0], isA(TestMetadata2));
 		var mapped:TestMetadata2 = TestMetadata2(meta[0]);
-		assertTrue("Expected Array as default property value", (mapped.arrayProp is Array));
+		assertThat(mapped.arrayProp, isA(Array));
 		var a:Array = mapped.arrayProp as Array;
-		assertEquals("Unexpected Array length", 2, a.length);
-		assertEquals("Unexpected Array element", "a", a[0]);
-		assertEquals("Unexpected Array element", "b", a[1]);
+		assertThat(a, arrayWithSize(2));
+		assertThat(a[0], equalTo("a"));
+		assertThat(a[1], equalTo("b"));
 		
 		meta = classCInfo.getMetadata(TestMetadata2);
-		assertEquals("Expected no mapped metadata tags", 0, meta.length);
+		assertThat(meta, arrayWithSize(0));
 		meta = classCInfo.getMetadata("TestMetadata2");
-		assertEquals("Unexpected number of metadata tags", 1, meta.length);
-		assertTrue("Unexpected type for metadata", meta[0] is Metadata);
+		assertThat(meta, arrayWithSize(1));
+		assertThat(meta[0], isA(Metadata));
 		var metadata:Metadata = Metadata(meta[0]);
 		// Without mapping no Array conversion should occur
-		assertEquals("Unexpected default property value", "a,b", metadata.getDefaultArgument());
+		assertThat(metadata.getDefaultArgument(), equalTo("a,b"));
 	}
 	
-	public function testAssignableToAndRequired () : void {
+	[Test]
+	public function assignableToAndRequired () : void {
 		var meta:TestMetadata3 = getMetadata3Tag("valid");
-		assertEquals("Unexpected type property", Sprite, meta.type);
-		assertEquals("Unexpected count property", 5, meta.count);
+		assertThat(meta.type, equalTo(Sprite));
+		assertThat(meta.count, equalTo(5));
 	}
-
-	public function testMissingRequiredValue () : void {
-		expectError("invalid1");
+	
+	[Test(expects="org.spicefactory.lib.reflect.mapping.ValidationError")]
+	public function missingRequiredValue () : void {
+		getMetadata3Tag("invalid1");
 	}
 		
-	public function testIllegalClassValue () : void {
-		expectError("invalid2");
+	[Test(expects="org.spicefactory.lib.reflect.mapping.ValidationError")]
+	public function illegalClassValue () : void {
+		getMetadata3Tag("invalid2");
 	}
 	
-	public function testIllegalMultipleOccurrences () : void {
-		expectError("invalid3");
+	[Test(expects="org.spicefactory.lib.reflect.mapping.ValidationError")]
+	public function illegalMultipleOccurrences () : void {
+		getMetadata3Tag("invalid3");
 	}
 	
-	public function testValidationTurnedOff () : void {
+	[Test]
+	public function validationTurnedOff () : void {
 		var meta:TestMetadata3 = getMetadata3Tag("invalid1", false);
-		assertEquals("Unexpected type property", Sprite, meta.type);
-		assertEquals("Unexpected count property", 0, meta.count);
+		assertThat(meta.type, equalTo(Sprite));
+		assertThat(meta.count, equalTo(0));
 	}
 
 	
 	private function getMetadata3Tag (propName:String, validate:Boolean = true) : TestMetadata3 {
 		var meta:Array = ClassInfo.forClass(ClassE).getProperty(propName).getMetadata(TestMetadata3, validate);
-		assertEquals("Unexpected number of metadata tags", 1, meta.length);
+		assertThat(meta, arrayWithSize(1));
 		return meta[0] as TestMetadata3;
-	}
-	
-	private function expectError (propName:String) : void {
-		try {
-			getMetadata3Tag(propName);
-		} 
-		catch (e:ValidationError) {
-			return;
-		}
-		fail("Expected Error");
 	}
 	
 	

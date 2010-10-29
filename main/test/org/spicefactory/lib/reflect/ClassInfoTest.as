@@ -1,5 +1,13 @@
 package org.spicefactory.lib.reflect {
-import org.spicefactory.lib.errors.IllegalStateError;
+import flash.utils.Proxy;
+import org.hamcrest.core.isA;
+import org.flexunit.asserts.fail;
+import org.flexunit.async.Async;
+import org.hamcrest.object.notNullValue;
+import org.hamcrest.collection.arrayWithSize;
+import org.hamcrest.object.sameInstance;
+import org.flexunit.assertThat;
+import org.hamcrest.object.equalTo;
 import org.spicefactory.lib.reflect.model.ClassB;
 import org.spicefactory.lib.reflect.model.InterfaceA;
 import org.spicefactory.lib.reflect.model.InternalSubclass;
@@ -18,19 +26,20 @@ import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
 import flash.utils.getQualifiedClassName;
 
-public class ClassInfoTest extends ReflectionTestBase {
+public class ClassInfoTest {
 	
 	
-	public function testModel () : void {
+	[Test]
+	public function basicModel () : void {
 		var ci:ClassInfo = ClassInfo.forClass(ClassB);
 		// TODO - check inconsistencies with ::
-		assertEquals("Unexpected class name", "org.spicefactory.lib.reflect.model::ClassB", ci.name);
-		assertEquals("Unexpected class", ClassB, ci.getClass());
-		assertFalse("Test Class is not an interface", ci.isInterface());
-		assertEquals("Unexpected number of properties", 8, ci.getProperties().length);
-		assertEquals("Unexpected number of static properties", 2, ci.getStaticProperties().length);
-		assertEquals("Unexpected number of methods", 3, ci.getMethods().length);
-		assertEquals("Unexpected number of static methods", 2, ci.getStaticMethods().length);
+		assertThat(ci.name, equalTo("org.spicefactory.lib.reflect.model::ClassB"));
+		assertThat(ci.getClass(), sameInstance(ClassB));
+		assertThat(ci.isInterface(), equalTo(false));
+		assertThat(ci.getProperties(), arrayWithSize(8));
+		assertThat(ci.getStaticProperties(), arrayWithSize(2));
+		assertThat(ci.getMethods(), arrayWithSize(3));
+		assertThat(ci.getStaticMethods(), arrayWithSize(2));
 		checkProperty(ci, "stringVar", String, false, true, true);
 		checkProperty(ci, "booleanVar", Boolean, false, true, true);
 		checkProperty(ci, "uintVar", uint, false, true, false );
@@ -49,122 +58,127 @@ public class ClassInfoTest extends ReflectionTestBase {
 		checkMethod(ci, "staticMethod", Void, [new Parameter(ClassInfo.forClass(Boolean), true)], true);
 	}
 	
-	public function testInterface () : void {
+	[Test]
+	public function checkInterface () : void {
 		var ci:ClassInfo = ClassInfo.forClass(InterfaceA);
-		assertTrue("Expected Interface", ci.isInterface());
+		assertThat(ci.isInterface(), equalTo(true));
 	}
 	
-	public function testInternalSuperclass () : void {
+	[Test]
+	public function internalSuperclass () : void {
 		var ci:ClassInfo = ClassInfo.forClass(InternalSubclass);
 		var type:Class = ci.getSuperClass();
-		assertEquals("Expected private superclass", Private, type);
-		assertEquals("Expected Object base class", Object, ci.getSuperClasses()[1]);
+		assertThat(ci.getSuperClass(), sameInstance(Private));
+		assertThat(ci.getSuperClasses()[1], sameInstance(Object));
 	}
 	
 	
 	private function checkProperty (ci:ClassInfo, name:String, type:Class,
 			isStatic:Boolean, readable:Boolean, writable:Boolean) : void {
 		var p:Property = (!isStatic) ? ci.getProperty(name) : ci.getStaticProperty(name);
-		assertNotNull("Expected Property instance with name " + name, p);			
-		assertEquals("Unexpected name", name, p.name);
-		assertEquals("Unexpected type", type, p.type.getClass());
-		assertEquals("Unexpected static flag", isStatic, p.isStatic);
-		assertEquals("Unexpected readable flag", readable, p.readable);
-		assertEquals("Unexpected writable flag", writable, p.writable);
+		assertThat(p, notNullValue());
+		assertThat(p.name, equalTo(name));
+		assertThat(p.type.getClass(), sameInstance(type));
+		assertThat(p.isStatic, equalTo(isStatic));
+		assertThat(p.readable, equalTo(readable));
+		assertThat(p.writable, equalTo(writable));
 	}
 	
 	private function checkMethod (ci:ClassInfo, name:String,
 			returnType:Class, params:Array, isStatic:Boolean) : void {
-		var m:Method = (!isStatic) ? ci.getMethod(name) : ci.getStaticMethod(name);			
-		assertNotNull("Expected Method instance with name " + name, m);			
-		assertEquals("Unexpected name", name, m.name);
-		assertEquals("Unexpected static flag", isStatic, m.isStatic);
-		assertEquals("Unexpected return type", returnType, m.returnType.getClass());
+		var m:Method = (!isStatic) ? ci.getMethod(name) : ci.getStaticMethod(name);		
+		assertThat(m, notNullValue());
+		assertThat(m.name, equalTo(name));
+		assertThat(m.returnType.getClass(), sameInstance(returnType));
+		assertThat(m.isStatic, equalTo(isStatic));
 		var actualParams:Array = m.parameters;
-		assertEquals("Unexpected parameter count", params.length, actualParams.length);
+		assertThat(m.parameters, arrayWithSize(params.length));
 		var i:uint = 0;
 		for each (var expectedParam:Parameter in params) {
 			var actualParam:Parameter = actualParams[i++] as Parameter;
-			assertEquals("Unexpected parameter type at index " + i, expectedParam.type, actualParam.type); 
-			assertEquals("Unexpected required flag at index " + i, expectedParam.required, actualParam.required); 
+			assertThat(actualParam.type.getClass(), sameInstance(expectedParam.type.getClass()));
+			assertThat(actualParam.required, equalTo(expectedParam.required));
 		}				
 	}
 	
 	
-	public function testCache () : void {
+	[Test]
+	public function cache () : void {
 		var ci1:ClassInfo = ClassInfo.forClass(ClassB);
 		var ci2:ClassInfo = ClassInfo.forClass(ClassB);
-		assertEquals("Expected cached ClassInfo instance", ci1, ci2);
+		assertThat(ci2, sameInstance(ci1));
 	}
 	
-	public function testCacheWithName () : void {
+	[Test]
+	public function cacheWithName () : void {
 		var name:String = getQualifiedClassName(ClassB);
 		var ci1:ClassInfo = ClassInfo.forName(name);
 		var ci2:ClassInfo = ClassInfo.forName(name);
-		assertEquals("Expected cached ClassInfo instance", ci1, ci2);
+		assertThat(ci2, sameInstance(ci1));
 	}
 	
-	public function testNewInstance () : void {
+	[Test]
+	public function newInstance () : void {
 		var ci:ClassInfo = ClassInfo.forClass(ClassB);
 		var classB:ClassB = ci.newInstance(["test"]) as ClassB;
-		assertEquals("Unexpected property value", "test", classB.readOnlyProperty);
+		assertThat(classB.readOnlyProperty, equalTo("test"));
 	}
 	
-	public function testNewInstanceForInterface () : void {
+	[Test(expects="org.spicefactory.lib.errors.IllegalStateError")]
+	public function newInstanceForInterface () : void {
 		var ci:ClassInfo = ClassInfo.forClass(InterfaceA);
-		try {
-			ci.newInstance([]);
-		} catch (e:IllegalStateError) {
-			return;
-		}
-		fail("Expected IllegalStateError");
+		ci.newInstance([]);
 	}
 	
-	public function testApplicationDomain () : void {
-		assertFalse("Unexpected definition in current domain",
-				ApplicationDomain.currentDomain.hasDefinition("org.spicefactory.lib.reflect.domain.ClassInChildDomain"));
+	[Test(async)]
+	public function applicationDomain () : void {
+		assertThat(ApplicationDomain.currentDomain.hasDefinition("org.spicefactory.lib.reflect.domain.ClassInChildDomain"), 
+				equalTo(false));
 		var loader:Loader = new Loader();
 		loader.load(new URLRequest("domain.swf"));
-		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, addAsync(onTestApplicationDomain, 3000));
+		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, Async.asyncHandler(this, onTestApplicationDomain, 3000));
 	}
 	
-	private function onTestApplicationDomain (event:Event) : void {
+	private function onTestApplicationDomain (event:Event, data:Object = null) : void {
 		var loaderInfo:LoaderInfo = LoaderInfo(event.target);
 		var className:String = "org.spicefactory.lib.reflect.domain.ClassInChildDomain";
 		try {
 			ClassInfo.forName(className);
 		}
 		catch (e:Error) {
-			assertTrue("Expected ReferenceError", (e is ReferenceError));
+			assertThat(e, isA(ReferenceError));
 			// Now try with the child domain
 			var ci:ClassInfo = ClassInfo.forName(className, loaderInfo.applicationDomain);
-			assertEquals("Unexpected superclass", Sprite, ci.getSuperClass());
+			assertThat(ci.getSuperClass(), sameInstance(Sprite));
 			return;
 		}
 		fail("Expected error in attempt to load class from parent domain");
 	}
 	
-	public function testProxy () : void {
+	[Test]
+	public function proxy () : void {
 		var o:Object = new TestProxy();
 		var ci:ClassInfo = ClassInfo.forInstance(o);
-		assertEquals("Unexpected simple name", "TestProxy", ci.simpleName);
-		assertEquals("Unexpected superclass", "flash.utils::Proxy", getQualifiedClassName(ci.getSuperClass()));
+		assertThat(ci.simpleName, equalTo("TestProxy"));
+		assertThat(ci.getSuperClass(), sameInstance(Proxy));
 	}
 	
-	public function testArrayCollection () : void {
+	[Test]
+	public function arrayCollection () : void {
 		var o:Object = new ArrayCollection();
 		var ci:ClassInfo = ClassInfo.forInstance(o);
-		assertEquals("Unexpected simple name", "ArrayCollection", ci.simpleName);
+		assertThat(ci.simpleName, equalTo("ArrayCollection"));
 	}
 	
-	public function testNumbers () : void {
+	[Test]
+	public function numbers () : void {
 		var n1:Number = 3.45;
 		var n2:int = -4;
 		var n3:uint = 4;
 		
-		assertEquals("Unexpected class name", "Number", ClassInfo.forInstance(n1).name);		
-		assertEquals("Unexpected class name", "int", ClassInfo.forInstance(n2).name);		
-		assertEquals("Unexpected class name", "int", ClassInfo.forInstance(n3).name);
+		assertThat(ClassInfo.forInstance(n1).name, equalTo("Number"));
+		assertThat(ClassInfo.forInstance(n2).name, equalTo("int"));
+		assertThat(ClassInfo.forInstance(n3).name, equalTo("int"));
 	}
 	
 	

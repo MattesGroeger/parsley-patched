@@ -1,20 +1,19 @@
 package org.spicefactory.lib.reflect {
-import org.spicefactory.lib.reflect.errors.ConversionError;
-import org.spicefactory.lib.reflect.errors.MethodInvocationError;
+import org.hamcrest.assertThat;
+import org.hamcrest.object.equalTo;
+import org.hamcrest.object.notNullValue;
 import org.spicefactory.lib.reflect.model.ClassC;
 import org.spicefactory.lib.reflect.model.TestMetadata1;
 import org.spicefactory.lib.reflect.model.TestMetadata2;
 
-import flexunit.framework.TestCase;
-
-public class ConstructorTest extends TestCase {
+public class ConstructorTest {
 	
 	
-	private var classCInfo:ClassInfo;
+	private static var classCInfo:ClassInfo;
 	
 	
-	public override function setUp () : void {
-		super.setUp();
+	[BeforeClass]
+	public static function setUp () : void {
 		new ClassC(""); // needed to avoid Flash Player bug that does report '*' as type for
 		                // all constructor parameters if the class was not instantiated at least once.
 		Metadata.registerMetadataClass(TestMetadata1);
@@ -23,38 +22,32 @@ public class ConstructorTest extends TestCase {
 	}
 	
 	
-	public function testConstructorWithOptionalParam () : void {
+	[Test]
+	public function constructorWithOptionalParam () : void {
 		var c:Constructor = classCInfo.getConstructor();
 		var i:ClassC = ClassC(c.newInstance(["bar", 27]));
-		assertNotNull("Expected instance of ClassC", i);
-		assertEquals("Unexpected value for required parameter", "bar", i.requiredProperty);
-		assertEquals("Unexpected value for optional parameter", 27, i.optionalProperty);
+		assertThat(i, notNullValue());
+		assertThat(i.requiredProperty, equalTo("bar"));
+		assertThat(i.optionalProperty, equalTo(27));
 	}
 	
-	public function testConstructorWithoutOptionalParam () : void {
+	[Test]
+	public function constructorWithoutOptionalParam () : void {
 		var c:Constructor = classCInfo.getConstructor();
 		var i:ClassC = ClassC(c.newInstance(["bar"]));
-		assertNotNull("Expected instance of ClassC", i);
-		assertEquals("Unexpected value for required parameter", "bar", i.requiredProperty);
-		assertEquals("Unexpected value for optional parameter", 0, i.optionalProperty);
+		assertThat(i, notNullValue());
+		assertThat(i.requiredProperty, equalTo("bar"));
+		assertThat(i.optionalProperty, equalTo(0));
 	}
 	
-	public function testIllegalParameterCount () : void {
-		try {
-			classCInfo.getConstructor().newInstance(["bar", 15, 15]);
-		} catch (e:MethodInvocationError) {
-			return;
-		}
-		fail("Expected MethodInvocationError");
+	[Test(expects="org.spicefactory.lib.reflect.errors.MethodInvocationError")]
+	public function illegalParameterCount () : void {
+		classCInfo.getConstructor().newInstance(["bar", 15, 15]);
 	}
 	
-	public function testIllegalParameterType () : void {
-		try {
-			classCInfo.getConstructor().newInstance(["bar", "foo"]);
-		} catch (e:ConversionError) {
-			return;
-		}
-		fail("Expected ConversionError");
+	[Test(expects="org.spicefactory.lib.reflect.errors.ConversionError")]
+	public function illegalParameterType () : void {
+		classCInfo.getConstructor().newInstance(["bar", "foo"]);
 	}
 	
 	

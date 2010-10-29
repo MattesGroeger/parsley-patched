@@ -1,6 +1,10 @@
 package org.spicefactory.lib.xml {
-import flexunit.framework.TestCase;
 
+import org.hamcrest.object.notNullValue;
+import org.hamcrest.collection.arrayWithSize;
+import org.hamcrest.object.nullValue;
+import org.flexunit.asserts.fail;
+import org.hamcrest.core.isA;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.xml.mapper.Choice;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
@@ -10,44 +14,49 @@ import org.spicefactory.lib.xml.model.ChildB;
 import org.spicefactory.lib.xml.model.ClassWithChild;
 import org.spicefactory.lib.xml.model.ClassWithChildren;
 import org.spicefactory.lib.xml.model.SimpleClass;
+import org.hamcrest.object.equalTo;
+import org.flexunit.assertThat;
 
 import flash.events.Event;
 
 /**
  * @author Jens Halm
  */
-public class PropertyMapperTest extends TestCase {
+public class PropertyMapperTest {
 	
 	
-	public function testAttributeMapper () : void {
+	[Test]
+	public function attributeMapper () : void {
 		var xml:XML = <tag boolean-prop="true" string-prop="foo" int-prop="7" class-prop="flash.events.Event"/>;
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		assertThat(obj, isA(SimpleClass));
 		var sc:SimpleClass = SimpleClass(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 7, sc.intProp);
-		assertEquals("Unexpected Boolean Property", true, sc.booleanProp);
-		assertEquals("Unexpected Class Property", Event, sc.classProp);
+		assertThat(sc.stringProp, equalTo("foo"));
+		assertThat(sc.intProp, equalTo(7));
+		assertThat(sc.booleanProp, equalTo(true));
+		assertThat(sc.classProp, equalTo(Event));
 	}
 	
-	public function testAttributeMapperWithMissingOptionalAttr () : void {
+	[Test]
+	public function attributeMapperWithMissingOptionalAttr () : void {
 		var xml:XML = <tag boolean-prop="true" string-prop="foo" int-prop="7"/>;
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		assertThat(obj, isA(SimpleClass));
 		var sc:SimpleClass = SimpleClass(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 7, sc.intProp);
-		assertEquals("Unexpected Boolean Property", true, sc.booleanProp);
-		assertEquals("Unexpected Class Property", null, sc.classProp);
+		assertThat(sc.stringProp, equalTo("foo"));
+		assertThat(sc.intProp, equalTo(7));
+		assertThat(sc.booleanProp, equalTo(true));
+		assertThat(sc.classProp, nullValue());
 	}
 	
-	public function testAttributeMapperWithMissingRequiredAttr () : void {
+	[Test]
+	public function attributeMapperWithMissingRequiredAttr () : void {
 		var xml:XML = <tag boolean-prop="true" int-prop="7"/>;
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapAllToAttributes();
@@ -56,14 +65,15 @@ public class PropertyMapperTest extends TestCase {
 		try {
 			mapper.mapToObject(xml, context);
 		} catch (e:MappingError) {
-			assertTrue("Expected context with errors", context.hasErrors());
-			assertEquals("Unexpected number of errors", 1, context.errors.length);
+			assertThat(context.hasErrors(), equalTo(true));
+			assertThat(context.errors, arrayWithSize(1));
 			return;
 		}
 		fail("Expected mapping error");
 	}
 	
-	public function testTextNodeMapper () : void {
+	[Test]
+	public function textNodeMapper () : void {
 		var xml:XML = <tag>
 			<string-prop>foo</string-prop>
 			<int-prop>7</int-prop>
@@ -74,15 +84,16 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapAllToChildTextNodes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		assertThat(obj, isA(SimpleClass));
 		var sc:SimpleClass = SimpleClass(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 7, sc.intProp);
-		assertEquals("Unexpected Boolean Property", true, sc.booleanProp);
-		assertEquals("Unexpected Class Property", Event, sc.classProp);
+		assertThat(sc.stringProp, equalTo("foo"));
+		assertThat(sc.intProp, equalTo(7));
+		assertThat(sc.booleanProp, equalTo(true));
+		assertThat(sc.classProp, equalTo(Event));
 	}
 	
-	public function testTextNodeMapperWithMissingOptionalNode () : void {
+	[Test]
+	public function textNodeMapperWithMissingOptionalNode () : void {
 		var xml:XML = <tag>
 			<string-prop>foo</string-prop>
 			<int-prop>7</int-prop>
@@ -92,15 +103,16 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapAllToChildTextNodes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		assertThat(obj, isA(SimpleClass));
 		var sc:SimpleClass = SimpleClass(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 7, sc.intProp);
-		assertEquals("Unexpected Boolean Property", true, sc.booleanProp);
-		assertEquals("Unexpected Class Property", null, sc.classProp);
+		assertThat(sc.stringProp, equalTo("foo"));
+		assertThat(sc.intProp, equalTo(7));
+		assertThat(sc.booleanProp, equalTo(true));
+		assertThat(sc.classProp, nullValue());
 	}
 	
-	public function testTextNodeMapperWithMissingRequiredNode () : void {
+	[Test]
+	public function textNodeMapperWithMissingRequiredNode () : void {
 		var xml:XML = <tag>
 			<int-prop>7</int-prop>
 			<boolean-prop>true</boolean-prop>
@@ -112,28 +124,30 @@ public class PropertyMapperTest extends TestCase {
 		try {
 			mapper.mapToObject(xml, context);
 		} catch (e:MappingError) {
-			assertTrue("Expected context with errors", context.hasErrors());
-			assertEquals("Unexpected number of errors", 1, context.errors.length);
+			assertThat(context.hasErrors(), equalTo(true));
+			assertThat(context.errors, arrayWithSize(1));
 			return;
 		}
 		fail("Expected mapping error");
 	}
 	
-	public function testMapSingleAttribute () : void {
+	[Test]
+	public function mapSingleAttribute () : void {
 		var xml:XML = <tag string-prop="foo"/>;
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapToAttribute("stringProp");
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		assertThat(obj, isA(SimpleClass));
 		var sc:SimpleClass = SimpleClass(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 0, sc.intProp);
-		assertEquals("Unexpected Boolean Property", false, sc.booleanProp);
-		assertEquals("Unexpected Class Property", null, sc.classProp);
+		assertThat(sc.stringProp, equalTo("foo"));
+		assertThat(sc.intProp, equalTo(0));
+		assertThat(sc.booleanProp, equalTo(false));
+		assertThat(sc.classProp, nullValue());
 	}
 	
-	public function testMapSingleChildTextNode () : void {
+	[Test]
+	public function mapSingleChildTextNode () : void {
 		var xml:XML = <tag>
 			<string-prop>foo</string-prop>
 		</tag>;
@@ -141,44 +155,47 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapToChildTextNode("stringProp");
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		assertThat(obj, isA(SimpleClass));
 		var sc:SimpleClass = SimpleClass(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 0, sc.intProp);
-		assertEquals("Unexpected Boolean Property", false, sc.booleanProp);
-		assertEquals("Unexpected Class Property", null, sc.classProp);
+		assertThat(sc.stringProp, equalTo("foo"));
+		assertThat(sc.intProp, equalTo(0));
+		assertThat(sc.booleanProp, equalTo(false));
+		assertThat(sc.classProp, nullValue());
 	}
 	
-	public function testMapSingleTextNode () : void {
+	[Test]
+	public function mapSingleTextNode () : void {
 		var xml:XML = <tag>foo</tag>;
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapToTextNode("stringProp");
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		assertThat(obj, isA(SimpleClass));
 		var sc:SimpleClass = SimpleClass(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 0, sc.intProp);
-		assertEquals("Unexpected Boolean Property", false, sc.booleanProp);
-		assertEquals("Unexpected Class Property", null, sc.classProp);
+		assertThat(sc.stringProp, equalTo("foo"));
+		assertThat(sc.intProp, equalTo(0));
+		assertThat(sc.booleanProp, equalTo(false));
+		assertThat(sc.classProp, nullValue());
 	}
 	
-	public function testMapTextNodeAndAttribute () : void {
+	[Test]
+	public function mapTextNodeAndAttribute () : void {
 		var xml:XML = <tag int-prop="7">foo</tag>;
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(SimpleClass, new QName("tag"));
 		builder.mapToTextNode("stringProp");
 		builder.mapToAttribute("intProp");
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		assertThat(obj, isA(SimpleClass));
 		var sc:SimpleClass = SimpleClass(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 7, sc.intProp);
-		assertEquals("Unexpected Boolean Property", false, sc.booleanProp);
-		assertEquals("Unexpected Class Property", null, sc.classProp);
+		assertThat(sc.stringProp, equalTo("foo"));
+		assertThat(sc.intProp, equalTo(7));
+		assertThat(sc.booleanProp, equalTo(false));
+		assertThat(sc.classProp, nullValue());
 	}
 	
-	public function testMapSingleChildElement () : void {
+	[Test]
+	public function mapSingleChildElement () : void {
 		var xml:XML = <tag int-prop="7">
 			<child name="foo"/>
 		</tag>;
@@ -187,14 +204,15 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of ClassWithChild", obj is ClassWithChild);
+		assertThat(obj, isA(ClassWithChild));
 		var cwc:ClassWithChild = ClassWithChild(obj);
-		assertEquals("Unexpected int Property", 7, cwc.intProp);
-		assertTrue("Expected ChildA as child property", cwc.child != null);
-		assertEquals("Unexpected name Property", "foo", cwc.child.name);
+		assertThat(cwc.intProp, equalTo(7));
+		assertThat(cwc.child, notNullValue());
+		assertThat(cwc.child.name, equalTo("foo"));
 	}
 	
-	public function testMapSingleChildElementExplicit () : void {
+	[Test]
+	public function mapSingleChildElementExplicit () : void {
 		var xml:XML = <tag int-prop="7">
 			<child name="foo"/>
 		</tag>;
@@ -205,14 +223,15 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of ClassWithChild", obj is ClassWithChild);
+		assertThat(obj, isA(ClassWithChild));
 		var cwc:ClassWithChild = ClassWithChild(obj);
-		assertEquals("Unexpected int Property", 7, cwc.intProp);
-		assertTrue("Expected ChildA as child property", cwc.child != null);
-		assertEquals("Unexpected name Property", "foo", cwc.child.name);
+		assertThat(cwc.intProp, equalTo(7));
+		assertThat(cwc.child, notNullValue());
+		assertThat(cwc.child.name, equalTo("foo"));
 	}
 	
-	public function testMapChildElementArray () : void {
+	[Test]
+	public function mapChildElementArray () : void {
 		var xml:XML = <tag int-prop="7">
 			<child name="A"/>
 			<child name="B"/>
@@ -222,15 +241,17 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of ClassWithChildren", obj is ClassWithChildren);
+		assertThat(obj, isA(ClassWithChildren));
 		var cwc:ClassWithChildren = ClassWithChildren(obj);
-		assertEquals("Unexpected int Property", 7, cwc.intProp);
-		assertTrue("Expected Array as children property", cwc.children != null);
-		assertEquals("Unexpected name Property", "A", cwc.children[0].name);
-		assertEquals("Unexpected name Property", "B", cwc.children[1].name);
+		assertThat(cwc.intProp, equalTo(7));
+		assertThat(cwc.children, notNullValue());
+		assertThat(cwc.children, arrayWithSize(2));
+		assertThat(cwc.children[0].name, equalTo("A"));
+		assertThat(cwc.children[1].name, equalTo("B"));
 	}
 	
-	public function testMapChildElementChoice () : void {
+	[Test]
+	public function mapChildElementChoice () : void {
 		var xml:XML = <tag int-prop="7">
 			<child-a name="A"/>
 			<child-b name="B"/>
@@ -247,18 +268,19 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of ClassWithChildren", obj is ClassWithChildren);
+		assertThat(obj, isA(ClassWithChildren));
 		var cwc:ClassWithChildren = ClassWithChildren(obj);
-		assertEquals("Unexpected int Property", 7, cwc.intProp);
-		assertTrue("Expected Array as children property", cwc.children != null);
-		assertEquals("Unxpected length of children Array", 2, cwc.children.length);
-		assertTrue("Unexpected child type", cwc.children[0] is ChildA);
-		assertTrue("Unexpected child type", cwc.children[1] is ChildB);
-		assertEquals("Unexpected name Property", "A", cwc.children[0].name);
-		assertEquals("Unexpected name Property", "B", cwc.children[1].name);
+		assertThat(cwc.intProp, equalTo(7));
+		assertThat(cwc.children, notNullValue());
+		assertThat(cwc.children, arrayWithSize(2));
+		assertThat(cwc.children[0], isA(ChildA));
+		assertThat(cwc.children[1], isA(ChildB));
+		assertThat(cwc.children[0].name, equalTo("A"));
+		assertThat(cwc.children[1].name, equalTo("B"));
 	}
 	
-	public function testMissingRequiredChildren () : void {
+	[Test]
+	public function missingRequiredChildren () : void {
 		var xml:XML = <tag int-prop="7"/>;
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChildren, new QName("tag"));
 		builder.createChildElementMapperBuilder("children", ChildA, new QName("child")).mapAllToAttributes();
@@ -268,14 +290,15 @@ public class PropertyMapperTest extends TestCase {
 		try {
 			mapper.mapToObject(xml, context);
 		} catch (e:MappingError) {
-			assertTrue("Expected context with errors", context.hasErrors());
-			assertEquals("Unexpected number of errors", 1, context.errors.length);
+			assertThat(context.hasErrors(), equalTo(true));
+			assertThat(context.errors, arrayWithSize(1));
 			return;
 		}
 		fail("Expected mapping error");
 	}
 	
-	public function testMissingRequiredChild () : void {
+	[Test]
+	public function missingRequiredChild () : void {
 		var xml:XML = <tag int-prop="7"/>;
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChild, new QName("tag"));
 		builder.createChildElementMapperBuilder("child").mapAllToAttributes();
@@ -285,14 +308,15 @@ public class PropertyMapperTest extends TestCase {
 		try {
 			mapper.mapToObject(xml, context);
 		} catch (e:MappingError) {
-			assertTrue("Expected context with errors", context.hasErrors());
-			assertEquals("Unexpected number of errors", 1, context.errors.length);
+			assertThat(context.hasErrors(), equalTo(true));
+			assertThat(context.errors, arrayWithSize(1));
 			return;
 		}
 		fail("Expected mapping error");
 	}
 	
-	public function testTwoErrors () : void {
+	[Test]
+	public function twoErrors () : void {
 		var xml:XML = <tag><child/></tag>;
 		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(ClassWithChild, new QName("tag"));
 		builder.createChildElementMapperBuilder("child").mapAllToAttributes();
@@ -302,15 +326,16 @@ public class PropertyMapperTest extends TestCase {
 		try {
 			mapper.mapToObject(xml, context);
 		} catch (e:MappingError) {
-			assertTrue("Expected context with errors", context.hasErrors());
-			assertEquals("Unexpected number of errors", 2, e.causes.length);
-			assertEquals("Unexpected number of errors", 2, context.errors.length);
+			assertThat(context.hasErrors(), equalTo(true));
+			assertThat(e.causes, arrayWithSize(2));
+			assertThat(context.errors, arrayWithSize(2));
 			return;
 		}
 		fail("Expected mapping error");
 	}
 	
-	public function testNamespace () : void {
+	[Test]
+	public function xmlNamespace () : void {
 		var xml:XML = <tag int-prop="7" xmlns:ns="testuri">
 			<ns:child name="foo"/>
 		</tag>;
@@ -319,14 +344,15 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapAllToAttributes();
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of ClassWithChild", obj is ClassWithChild);
+		assertThat(obj, isA(ClassWithChild));
 		var cwc:ClassWithChild = ClassWithChild(obj);
-		assertEquals("Unexpected int Property", 7, cwc.intProp);
-		assertTrue("Expected ChildA as child property", cwc.child != null);
-		assertEquals("Unexpected name Property", "foo", cwc.child.name);
+		assertThat(cwc.intProp, equalTo(7));
+		assertThat(cwc.child, notNullValue());
+		assertThat(cwc.child.name, equalTo("foo"));
 	}
 	
-	public function testSimpleMapper () : void {
+	[Test]
+	public function simpleMapper () : void {
 		var xml:XML = <tag>
 			<child>foo</child>
 		</tag>;
@@ -334,9 +360,9 @@ public class PropertyMapperTest extends TestCase {
 		builder.mapToChildElement("stringProp", new SimpleValueMapper(ClassInfo.forClass(String), new QName("child")));
 		var mapper:XmlObjectMapper = builder.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		assertThat(obj, isA(SimpleClass));
 		var sc:SimpleClass = SimpleClass(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
+		assertThat(sc.stringProp, equalTo("foo"));
 	}
 	
 }

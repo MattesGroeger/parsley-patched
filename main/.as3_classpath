@@ -1,26 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">playerglobal.swc</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">flex.swc</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">framework.swc</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">rpc.swc</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">utilities.swc</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">test</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/flexunit.swc</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-xml</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-flex</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-core</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-core</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-expressions</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-reflect</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-task</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-xml</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-flash</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-flash</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/cinnamon-1.1.0.swc</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/pimento-1.1.0.swc</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-integration</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-config</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-extensions</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/popup-flex3-1.7.swc</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">test</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/flexunit.swc</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-xml</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-flex</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-core</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-core</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-expressions</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-reflect</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-task</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-xml</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-flash</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">spicelib-flash</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/cinnamon-1.1.0.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/pimento-1.1.0.swc</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-integration</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-config</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">parsley-extensions</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/popup-flex3-1.7.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/flexunit-4.0.0.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/flexunit-uilistener-4.0.0.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/hamcrest-1.0.2.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">playerglobal.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">flex.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">framework.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">rpc.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">utilities.swc</AS3Classpath>
 </AS3Classpath>

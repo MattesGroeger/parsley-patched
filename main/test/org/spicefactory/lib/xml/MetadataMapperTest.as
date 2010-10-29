@@ -1,6 +1,12 @@
 package org.spicefactory.lib.xml {
-import flexunit.framework.TestCase;
 
+import org.hamcrest.object.notNullValue;
+import org.hamcrest.collection.arrayWithSize;
+import org.flexunit.asserts.fail;
+import org.hamcrest.object.nullValue;
+import org.hamcrest.object.equalTo;
+import org.hamcrest.core.isA;
+import org.flexunit.assertThat;
 import org.spicefactory.lib.xml.mapper.PropertyMapperBuilder;
 import org.spicefactory.lib.xml.mapper.SimpleMappingType;
 import org.spicefactory.lib.xml.mapper.XmlObjectMappings;
@@ -22,10 +28,11 @@ import flash.events.Event;
 /**
  * @author Jens Halm
  */
-public class MetadataMapperTest extends TestCase {
+public class MetadataMapperTest {
 	
 	
-	public function testAttributeMapper () : void {
+	[Test]
+	public function attributeMapper () : void {
 		var xml:XML = <tag boolean-prop="true" string-prop="foo" int-prop="7" class-prop="flash.events.Event"/>;
 		var mapper:XmlObjectMapper 
 				= XmlObjectMappings
@@ -33,15 +40,16 @@ public class MetadataMapperTest extends TestCase {
 						.withRootElement(SimpleClass)
 							.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		assertThat(obj, isA(SimpleClass));
 		var sc:SimpleClass = SimpleClass(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 7, sc.intProp);
-		assertEquals("Unexpected Boolean Property", true, sc.booleanProp);
-		assertEquals("Unexpected Class Property", Event, sc.classProp);
+		assertThat(sc.stringProp, equalTo("foo"));
+		assertThat(sc.intProp, equalTo(7));
+		assertThat(sc.booleanProp, equalTo(true));
+		assertThat(sc.classProp, equalTo(Event));
 	}
 	
-	public function testAttributeMapperWithMissingOptionalAttr () : void {
+	[Test]
+	public function attributeMapperWithMissingOptionalAttr () : void {
 		var xml:XML = <tag boolean-prop="true" string-prop="foo" int-prop="7"/>;
 		var mapper:XmlObjectMapper 
 				= XmlObjectMappings
@@ -49,15 +57,16 @@ public class MetadataMapperTest extends TestCase {
 						.withRootElement(SimpleClass)
 							.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		assertThat(obj, isA(SimpleClass));
 		var sc:SimpleClass = SimpleClass(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 7, sc.intProp);
-		assertEquals("Unexpected Boolean Property", true, sc.booleanProp);
-		assertEquals("Unexpected Class Property", null, sc.classProp);
+		assertThat(sc.stringProp, equalTo("foo"));
+		assertThat(sc.intProp, equalTo(7));
+		assertThat(sc.booleanProp, equalTo(true));
+		assertThat(sc.classProp, nullValue());
 	}
 	
-	public function testAttributeMapperWithMissingRequiredAttr () : void {
+	[Test]
+	public function attributeMapperWithMissingRequiredAttr () : void {
 		var xml:XML = <tag boolean-prop="true" int-prop="7"/>;
 		var mapper:XmlObjectMapper 
 				= XmlObjectMappings
@@ -68,14 +77,15 @@ public class MetadataMapperTest extends TestCase {
 		try {
 			mapper.mapToObject(xml, context);
 		} catch (e:MappingError) {
-			assertTrue("Expected context with errors", context.hasErrors());
-			assertEquals("Unexpected number of errors", 1, context.errors.length);
+			assertThat(context.hasErrors(), equalTo(true));
+			assertThat(context.errors, arrayWithSize(1));
 			return;
 		}
 		fail("Expected mapping error");
 	}
 	
-	public function testTextNodeMapper () : void {
+	[Test]
+	public function textNodeMapper () : void {
 		var xml:XML = <tag>
 			<string-prop>foo</string-prop>
 			<int-prop>7</int-prop>
@@ -89,15 +99,16 @@ public class MetadataMapperTest extends TestCase {
 							.defaultSimpleMappingType(SimpleMappingType.CHILD_TEXT_NODE)
 							.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		assertThat(obj, isA(SimpleClass));
 		var sc:SimpleClass = SimpleClass(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 7, sc.intProp);
-		assertEquals("Unexpected Boolean Property", true, sc.booleanProp);
-		assertEquals("Unexpected Class Property", Event, sc.classProp);
+		assertThat(sc.stringProp, equalTo("foo"));
+		assertThat(sc.intProp, equalTo(7));
+		assertThat(sc.booleanProp, equalTo(true));
+		assertThat(sc.classProp, equalTo(Event));
 	}
 	
-	public function testTextNodeMapperWithMissingOptionalNode () : void {
+	[Test]
+	public function textNodeMapperWithMissingOptionalNode () : void {
 		var xml:XML = <tag>
 			<string-prop>foo</string-prop>
 			<int-prop>7</int-prop>
@@ -110,15 +121,16 @@ public class MetadataMapperTest extends TestCase {
 							.defaultSimpleMappingType(SimpleMappingType.CHILD_TEXT_NODE)
 							.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is SimpleClass);
+		assertThat(obj, isA(SimpleClass));
 		var sc:SimpleClass = SimpleClass(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 7, sc.intProp);
-		assertEquals("Unexpected Boolean Property", true, sc.booleanProp);
-		assertEquals("Unexpected Class Property", null, sc.classProp);
+		assertThat(sc.stringProp, equalTo("foo"));
+		assertThat(sc.intProp, equalTo(7));
+		assertThat(sc.booleanProp, equalTo(true));
+		assertThat(sc.classProp, nullValue());
 	}
 	
-	public function testTextNodeMapperWithMissingRequiredNode () : void {
+	[Test]
+	public function textNodeMapperWithMissingRequiredNode () : void {
 		var xml:XML = <tag>
 			<int-prop>7</int-prop>
 			<boolean-prop>true</boolean-prop>
@@ -133,14 +145,15 @@ public class MetadataMapperTest extends TestCase {
 		try {
 			mapper.mapToObject(xml, context);
 		} catch (e:MappingError) {
-			assertTrue("Expected context with errors", context.hasErrors());
-			assertEquals("Unexpected number of errors", 1, context.errors.length);
+			assertThat(context.hasErrors(), equalTo(true));
+			assertThat(context.errors, arrayWithSize(1));
 			return;
 		}
 		fail("Expected mapping error");
 	}
 	
-	public function testTextNodeMapperWithMetadata () : void {
+	[Test]
+	public function textNodeMapperWithMetadata () : void {
 		var xml:XML = <tag>
 			<string-prop>foo</string-prop>
 			<int-prop>7</int-prop>
@@ -153,15 +166,16 @@ public class MetadataMapperTest extends TestCase {
 						.withRootElement(ChildTextNodes)
 							.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is ChildTextNodes);
+		assertThat(obj, isA(ChildTextNodes));
 		var sc:ChildTextNodes = ChildTextNodes(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 7, sc.intProp);
-		assertEquals("Unexpected Boolean Property", true, sc.booleanProp);
-		assertEquals("Unexpected Class Property", Event, sc.classProp);
+		assertThat(sc.stringProp, equalTo("foo"));
+		assertThat(sc.intProp, equalTo(7));
+		assertThat(sc.booleanProp, equalTo(true));
+		assertThat(sc.classProp, equalTo(Event));
 	}
 	
-	public function testMapTextNodeAndAttribute () : void {
+	[Test]
+	public function mapTextNodeAndAttribute () : void {
 		var xml:XML = <tag int-prop="7">foo</tag>;
 		var mapper:XmlObjectMapper 
 				= XmlObjectMappings
@@ -169,13 +183,14 @@ public class MetadataMapperTest extends TestCase {
 						.withRootElement(MappedTextNode)
 							.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is MappedTextNode);
-		var sc:MappedTextNode = MappedTextNode(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected int Property", 7, sc.intProp);
+		assertThat(obj, isA(MappedTextNode));
+		var mapped:MappedTextNode = MappedTextNode(obj);
+		assertThat(mapped.stringProp, equalTo("foo"));
+		assertThat(mapped.intProp, equalTo(7));
 	}
 	
-	public function testMapAttributeAndIgnoredProperty () : void {
+	[Test]
+	public function mapAttributeAndIgnoredProperty () : void {
 		var xml:XML = <tag string-prop="foo"><boolean-prop>true</boolean-prop></tag>;
 		var mapper:XmlObjectMapper 
 				= XmlObjectMappings
@@ -184,14 +199,15 @@ public class MetadataMapperTest extends TestCase {
 							.defaultSimpleMappingType(SimpleMappingType.CHILD_TEXT_NODE)
 							.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of SimpleClass", obj is MappedAttribute);
-		var sc:MappedAttribute = MappedAttribute(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
-		assertEquals("Unexpected Boolean Property", true, sc.booleanProp);
-		assertEquals("Unexpected int Property", 0, sc.intProp);
+		assertThat(obj, isA(MappedAttribute));
+		var mapped:MappedAttribute = MappedAttribute(obj);
+		assertThat(mapped.stringProp, equalTo("foo"));
+		assertThat(mapped.booleanProp, equalTo(true));
+		assertThat(mapped.intProp, equalTo(0));
 	}
 	
-	public function testMapSingleChildElement () : void {
+	[Test]
+	public function mapSingleChildElement () : void {
 		var xml:XML = <tag int-prop="7">
 			<child-a name="foo"/>
 		</tag>;
@@ -202,14 +218,15 @@ public class MetadataMapperTest extends TestCase {
 							.mappedClasses(ChildA)
 							.build();
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of ClassWithChild", obj is ClassWithChild);
+		assertThat(obj, isA(ClassWithChild));
 		var cwc:ClassWithChild = ClassWithChild(obj);
-		assertEquals("Unexpected int Property", 7, cwc.intProp);
-		assertTrue("Expected ChildA as child property", cwc.child != null);
-		assertEquals("Unexpected name Property", "foo", cwc.child.name);
+		assertThat(cwc.intProp, equalTo(7));
+		assertThat(cwc.child, notNullValue());
+		assertThat(cwc.child.name, equalTo("foo"));
 	}
 	
-	public function testIdChoice () : void {
+	[Test]
+	public function idChoice () : void {
 		var xml:XML = <tag int-prop="7">
 			<child-a name="A"/>
 			<child-b name="B"/>
@@ -223,18 +240,19 @@ public class MetadataMapperTest extends TestCase {
 							.build();
 		
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of MappedIdChoice", obj is MappedIdChoice);
-		var cwc:MappedIdChoice = MappedIdChoice(obj);
-		assertEquals("Unexpected int Property", 7, cwc.intProp);
-		assertTrue("Expected Array as children property", cwc.children != null);
-		assertEquals("Unxpected length of children Array", 2, cwc.children.length);
-		assertTrue("Unexpected child type", cwc.children[0] is ChildA);
-		assertTrue("Unexpected child type", cwc.children[1] is ChildB);
-		assertEquals("Unexpected name Property", "A", ChildA(cwc.children[0]).name);
-		assertEquals("Unexpected name Property", "B", ChildB(cwc.children[1]).name);
+		assertThat(obj, isA(MappedIdChoice));
+		var mapped:MappedIdChoice = MappedIdChoice(obj);
+		assertThat(mapped.intProp, equalTo(7));
+		assertThat(mapped.children, notNullValue());
+		assertThat(mapped.children, arrayWithSize(2));
+		assertThat(mapped.children[0], isA(ChildA));
+		assertThat(mapped.children[1], isA(ChildB));
+		assertThat(mapped.children[0].name, equalTo("A"));
+		assertThat(mapped.children[1].name, equalTo("B"));
 	}
 	
-	public function testIdChoiceWithIllegalChild () : void {
+	[Test]
+	public function idChoiceWithIllegalChild () : void {
 		var xml:XML = <tag int-prop="7">
 			<child-a name="A"/>
 			<child-b name="B"/>
@@ -252,14 +270,15 @@ public class MetadataMapperTest extends TestCase {
 		try {
 			mapper.mapToObject(xml, context);
 		} catch (e:MappingError) {
-			assertTrue("Expected context with errors", context.hasErrors());
-			assertEquals("Unexpected number of errors", 1, context.errors.length);
+			assertThat(context.hasErrors(), equalTo(true));
+			assertThat(context.errors, arrayWithSize(1));
 			return;
 		}
 		fail("Expected mapping error");
 	}
 	
-	public function testTypeChoice () : void {
+	[Test]
+	public function typeChoice () : void {
 		var xml:XML = <tag int-prop="7">
 			<child-a name="A"/>
 			<child-b name="B"/>
@@ -276,7 +295,8 @@ public class MetadataMapperTest extends TestCase {
 		validateMappedTypeChoice(obj);
 	}
 	
-	public function testTypeChoiceWithIllegalChild () : void {
+	[Test]
+	public function typeChoiceWithIllegalChild () : void {
 		var xml:XML = <tag int-prop="7">
 			<child-a name="A"/>
 			<child-b name="B"/>
@@ -293,14 +313,15 @@ public class MetadataMapperTest extends TestCase {
 		try {
 			mapper.mapToObject(xml, context);
 		} catch (e:MappingError) {
-			assertTrue("Expected context with errors", context.hasErrors());
-			assertEquals("Unexpected number of errors", 1, context.errors.length);
+			assertThat(context.hasErrors(), equalTo(true));
+			assertThat(context.errors, arrayWithSize(1));
 			return;
 		}
 		fail("Expected mapping error");
 	}
 	
-	public function testCustomBuilder () : void {
+	[Test]
+	public function customBuilder () : void {
 		var xml:XML = <tag int-prop="7">
 			<custom name="A"/>
 			<child-b name="B"/>
@@ -317,7 +338,8 @@ public class MetadataMapperTest extends TestCase {
 		validateMappedTypeChoice(obj);
 	}
 	
-	public function testCustomMapper () : void {
+	[Test]
+	public function customMapper () : void {
 		var xml:XML = <tag int-prop="7">
 			<custom name="A"/>
 			<child-b name="B"/>
@@ -339,7 +361,8 @@ public class MetadataMapperTest extends TestCase {
 		validateMappedTypeChoice(obj);
 	}
 	
-	public function testMergedMappings () : void {
+	[Test]
+	public function mergedMappings () : void {
 		var xml:XML = <tag int-prop="7">
 			<child-a name="A"/>
 			<child-b name="B"/>
@@ -361,7 +384,8 @@ public class MetadataMapperTest extends TestCase {
 		validateMappedTypeChoice(obj);
 	}
 	
-	public function testNamespace () : void {
+	[Test]
+	public function xmlNamespace () : void {
 		var xml:XML = <tag int-prop="7" xmlns:ns="testuri">
 			<ns:child-a name="A"/>
 			<ns:child-b name="B"/>
@@ -384,18 +408,19 @@ public class MetadataMapperTest extends TestCase {
 	}
 	
 	private function validateMappedTypeChoice (obj:Object) : void {
-		assertTrue("Expected instance of MappedIdChoice", obj is MappedTypeChoice);
-		var mtc:MappedTypeChoice = MappedTypeChoice(obj);
-		assertEquals("Unexpected int Property", 7, mtc.intProp);
-		assertTrue("Expected Array as children property", mtc.children != null);
-		assertEquals("Unxpected length of children Array", 2, mtc.children.length);
-		assertTrue("Unexpected child type", mtc.children[0] is ChildA);
-		assertTrue("Unexpected child type", mtc.children[1] is ChildB);
-		assertEquals("Unexpected name Property", "A", ChildA(mtc.children[0]).name);
-		assertEquals("Unexpected name Property", "B", ChildB(mtc.children[1]).name);
+		assertThat(obj, isA(MappedTypeChoice));
+		var mapped:MappedTypeChoice = MappedTypeChoice(obj);
+		assertThat(mapped.intProp, equalTo(7));
+		assertThat(mapped.children, notNullValue());
+		assertThat(mapped.children, arrayWithSize(2));
+		assertThat(mapped.children[0], isA(ChildA));
+		assertThat(mapped.children[1], isA(ChildB));
+		assertThat(ChildA(mapped.children[0]).name, equalTo("A"));
+		assertThat(ChildB(mapped.children[1]).name, equalTo("B"));
 	}
 	
-	public function testCustomName () : void {
+	[Test]
+	public function customName () : void {
 		var xml:XML = <custom string-prop="foo"/>;
 		
 		var mapper:XmlObjectMapper 
@@ -405,12 +430,13 @@ public class MetadataMapperTest extends TestCase {
 						.build();
 		
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of CustomName", obj is CustomName);
+		assertThat(obj, isA(CustomName));
 		var sc:CustomName = CustomName(obj);
-		assertEquals("Unexpected String Property", "foo", sc.stringProp);
+		assertThat(sc.stringProp, equalTo("foo"));
 	}
 	
-	public function testIgnoreUnmappedXml () : void {
+	[Test]
+	public function ignoreUnmappedXml () : void {
 		var xml:XML = <ignore-unmapped-xml unmapped="foo"><unmapped/></ignore-unmapped-xml>;
 		
 		var mapper:XmlObjectMapper 
@@ -420,7 +446,7 @@ public class MetadataMapperTest extends TestCase {
 						.build();
 		
 		var obj:Object = mapper.mapToObject(xml);
-		assertTrue("Expected instance of UnmappedXml", obj is UnmappedXml);
+		assertThat(obj, isA(UnmappedXml));
 	}
 	
 	 

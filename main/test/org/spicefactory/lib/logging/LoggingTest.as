@@ -1,17 +1,17 @@
 package org.spicefactory.lib.logging {
-import flexunit.framework.TestCase;
 
+import org.hamcrest.object.equalTo;
+import org.flexunit.assertThat;
 import org.spicefactory.lib.flash.logging.FlashLogFactory;
 import org.spicefactory.lib.flash.logging.LogLevel;
 import org.spicefactory.lib.flash.logging.impl.DefaultLogFactory;
 import org.spicefactory.lib.logging.LogCounterAppender;	
 
-public class LoggingTest extends TestCase {
+public class LoggingTest {
 	
 	
-	
-	public override function setUp () : void {
-		super.setUp();
+	[Before]
+	public function setUp () : void {
 		var factory:FlashLogFactory = new DefaultLogFactory();
 		factory.setRootLogLevel(LogLevel.TRACE);
 		factory.refresh();
@@ -19,14 +19,15 @@ public class LoggingTest extends TestCase {
 	}
 	
 	
-	
-	public function testSingleAppender () : void {
+	[Test]
+	public function singleAppender () : void {
 		var counter:LogCounterAppender = new LogCounterAppender();
 		FlashLogFactory(LogContext.factory).addAppender(counter);
 		logAllLevels(counter);
 	}
 	
-	public function testTwoAppenders () : void {
+	[Test]
+	public function twoAppenders () : void {
 		var counter1:LogCounterAppender = new LogCounterAppender();
 		var counter2:LogCounterAppender = new LogCounterAppender();
 		counter2.threshold = LogLevel.WARN;
@@ -43,12 +44,13 @@ public class LoggingTest extends TestCase {
 		assertLogCount(counter2, "log.fatal", 1);			
 	}
 	
-	public function testSwitchContextFactory () : void {
+	[Test]
+	public function switchContextFactory () : void {
 		var counter:LogCounterAppender = new LogCounterAppender();
 		FlashLogFactory(LogContext.factory).addAppender(counter);
 		var logger:Logger = LogContext.getLogger("foo");
 		log(logger);
-		assertEquals("Unexpected log count", 6, counter.getCount("foo"));
+		assertThat(counter.getCount("foo"), equalTo(6));
 		
 		var counter2:LogCounterAppender = new LogCounterAppender();
 		var factory:FlashLogFactory = new DefaultLogFactory();
@@ -58,24 +60,26 @@ public class LoggingTest extends TestCase {
 		factory.refresh();
 		LogContext.factory = factory;
 		log(logger);
-		assertEquals("Unexpected log count", 2, counter2.getCount("foo"));
+		assertThat(counter2.getCount("foo"), equalTo(2));
 	}
 	
-	public function testClassInstanceAsLoggerName () : void {
+	[Test]
+	public function classInstanceAsLoggerName () : void {
 		var counter:LogCounterAppender = new LogCounterAppender();
 		FlashLogFactory(LogContext.factory).addAppender(counter);
 		var logger:Logger = LogContext.getLogger(LoggingTest);
 		log(logger);
-		assertEquals("Unexpected log count", 6, counter.getCount("org.spicefactory.lib.logging::LoggingTest"));
+		assertThat(counter.getCount("org.spicefactory.lib.logging::LoggingTest"), equalTo(6));
 	}
 	
-	public function testLogMessageParameters () : void {
+	[Test]
+	public function logMessageParameters () : void {
 		var app:CachingAppender = new CachingAppender();
 		FlashLogFactory(LogContext.factory).addAppender(app);
 		var logger:Logger = LogContext.getLogger(LoggingTest);
 		logger.warn("AA {0} BB{1}CC", "foo", 27);
-		assertEquals("Unexpected log count", 1, app.getCount("org.spicefactory.lib.logging::LoggingTest"));
-		assertEquals("Unexpected log message", "AA foo BB27CC", app.getCache("org.spicefactory.lib.logging::LoggingTest")[0]);
+		assertThat(app.getCount("org.spicefactory.lib.logging::LoggingTest"), equalTo(1));
+		assertThat(app.getCache("org.spicefactory.lib.logging::LoggingTest")[0], equalTo("AA foo BB27CC"));
 	}
 	
 	private function basicLoggerTest (counter:LogCounterAppender, 
@@ -85,11 +89,11 @@ public class LoggingTest extends TestCase {
 			FlashLogFactory(LogContext.factory).refresh();
 		}	
 		log(LogContext.getLogger(name));
-		assertEquals("Unexpected log count - logger: " + name, count, counter.getCount(name));
+		assertLogCount(counter, name, count);
 	}
 	
 	private function assertLogCount (counter:LogCounterAppender, name:String, count:uint) : void {
-		assertEquals("Unexpected log count - logger: " + name, count, counter.getCount(name));
+		assertThat(counter.getCount(name), equalTo(count));
 	}
 	
 	private function logAllLevels (counter:LogCounterAppender) : void {
