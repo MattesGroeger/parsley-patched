@@ -10,8 +10,8 @@ import org.spicefactory.parsley.flash.resources.ResourceManager;
 import org.spicefactory.parsley.flash.resources.events.LocaleSwitchEvent;
 import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
 import org.spicefactory.parsley.flash.resources.tag.FlashResourceXmlSupport;
-import org.spicefactory.parsley.testmodel.AnnotatedResourceBinding;
-import org.spicefactory.parsley.testmodel.SecondResourceBinding;
+import org.spicefactory.parsley.integration.resources.model.AnnotatedResourceBinding;
+import org.spicefactory.parsley.integration.resources.model.SecondResourceBinding;
 import org.spicefactory.parsley.util.ContextTestUtil;
 import org.spicefactory.parsley.util.XmlContextUtil;
 import org.spicefactory.parsley.util.contextInState;
@@ -101,8 +101,8 @@ public class FlashResourcesTest {
 	            <res:locale language="fr" country="FR"/>
 	        </res:resource-manager>
 	        <res:resource-bundle id="test" basename="testBundle" localized="true" ignore-country="true"/>
-	        <object id="binding" type="org.spicefactory.parsley.testmodel.AnnotatedResourceBinding"/>
-	        <object id="binding2" type="org.spicefactory.parsley.testmodel.SecondResourceBinding"/>
+	        <object id="binding" type="org.spicefactory.parsley.integration.resources.model.AnnotatedResourceBinding"/>
+	        <object id="binding2" type="org.spicefactory.parsley.integration.resources.model.SecondResourceBinding"/>
     	</objects>;  
     	prepareContext(xml, onTestResourceBinding);	
 	}

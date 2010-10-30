@@ -1,4 +1,4 @@
-package org.spicefactory.parsley.testmodel {
+package org.spicefactory.parsley.integration.resources.model {
 
 /**
  * @author Jens Halm
