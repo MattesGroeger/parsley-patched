@@ -6,7 +6,7 @@
 	xmlns:parsley="org.spicefactory.parsley.flex.tag.builder.*"
 	xmlns:parsleyview="org.spicefactory.parsley.flex.tag.view.*"
 	xmlns:core="org.spicefactory.parsley.tag.core.*"
-	xmlns:builder="org.spicefactory.parsley.core.builder.*"
+	xmlns:model="org.spicefactory.parsley.testmodel.*"
 	layout="absolute"
     addedToStage="test('addedToStage');"
     preinitialize="test('preinitialize');"
@@ -15,16 +15,16 @@
 >    
     <mx:Script>
         <![CDATA[
+        	import org.spicefactory.parsley.messaging.messages.TestEvent;
+        	import org.spicefactory.parsley.testmodel.CoreModel;
+        	import org.spicefactory.parsley.testmodel.SimpleClass;
         	import org.spicefactory.parsley.properties.util.PropertiesParser;
         	import org.spicefactory.parsley.flex.view.DslModel;
-        	import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
         	import org.spicefactory.parsley.flex.view.RootConfig;
-        	import org.spicefactory.parsley.core.builder.SimpleClass;
         	import mx.containers.TitleWindow;
         	import mx.modules.Module;
         	import mx.managers.PopUpManager;
         	import mx.modules.ModuleManagerGlobals;
-        	import org.spicefactory.parsley.core.messaging.TestEvent;	
         	
         	private const simpleInstance:SimpleClass = new SimpleClass();
         	
@@ -98,9 +98,9 @@
    		<parsley:RuntimeConfigTag>
 			<parsley:InstanceTag instance="{simpleInstance}" id="testId1"/>  		
 			<core:MxmlRootObjectTag type="{SimpleClass}" id="testId2"/>
-			<builder:SimpleClass id="testId3"/>
+			<model:SimpleClass id="testId3"/>
 			<parsley:InstanceTag id="testId4">
-				<builder:SimpleClass/>
+				<model:SimpleClass/>
 			</parsley:InstanceTag>
    		</parsley:RuntimeConfigTag>
    		<parsley:CustomConfigTag>

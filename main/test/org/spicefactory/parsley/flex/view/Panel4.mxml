@@ -12,8 +12,8 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import org.spicefactory.parsley.testmodel.CoreModel;
 			import flash.events.Event;
-			import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
 			import org.spicefactory.parsley.testmodel.AnnotatedResourceBinding;
 			import mx.resources.ResourceManager;
 			

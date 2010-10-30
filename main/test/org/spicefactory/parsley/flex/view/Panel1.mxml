@@ -8,11 +8,10 @@
 	
 	<mx:Script>
 		<![CDATA[
-			import flash.events.Event;
-			import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
+			import org.spicefactory.parsley.messaging.messages.TestEvent;
+			import org.spicefactory.parsley.testmodel.CoreModel;
 			import org.spicefactory.parsley.testmodel.AnnotatedResourceBinding;
 			import mx.resources.ResourceManager;
-			import org.spicefactory.parsley.core.messaging.TestEvent;	
 			
 			[Inject]
 			[Bindable]

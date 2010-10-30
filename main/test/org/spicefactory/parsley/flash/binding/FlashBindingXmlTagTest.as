@@ -1,7 +1,7 @@
 package org.spicefactory.parsley.flash.binding {
 import org.spicefactory.parsley.binding.BindingTestBase;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.xml.XmlContextTestBase;
+import org.spicefactory.parsley.util.XmlContextUtil;
 
 /**
  * @author Jens Halm
@@ -12,7 +12,7 @@ public class FlashBindingXmlTagTest extends BindingTestBase {
 	protected override function get bindingContext () : Context {
 		FlashCat;
 		FlashAnimal;
-		return XmlContextTestBase.getXmlContext(config);
+		return XmlContextUtil.newContext(config);
 	}
 	
 	public static const config:XML = <objects 

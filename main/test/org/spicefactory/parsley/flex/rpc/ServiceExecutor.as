@@ -1,5 +1,5 @@
 package org.spicefactory.parsley.flex.rpc {
-import org.spicefactory.parsley.core.messaging.TestEvent;
+import org.spicefactory.parsley.messaging.messages.TestEvent;
 
 import mx.rpc.AsyncToken;
 import mx.rpc.remoting.RemoteObject;

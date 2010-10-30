@@ -19,7 +19,6 @@
         	import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
         	import org.spicefactory.parsley.flex.view.EmptyConfig;
         	import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
-        	import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
         	import mx.containers.TitleWindow;
         	import mx.modules.Module;
         	import mx.managers.PopUpManager;

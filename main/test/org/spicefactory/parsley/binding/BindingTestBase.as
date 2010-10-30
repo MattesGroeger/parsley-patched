@@ -1,10 +1,14 @@
 package org.spicefactory.parsley.binding {
+import org.flexunit.assertThat;
+import org.hamcrest.collection.array;
+import org.hamcrest.object.equalTo;
+import org.hamcrest.object.nullValue;
+import org.hamcrest.object.sameInstance;
 import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.parsley.binding.model.AnimalHolder;
 import org.spicefactory.parsley.binding.model.Cat;
 import org.spicefactory.parsley.binding.model.CatHolder;
 import org.spicefactory.parsley.binding.model.StringHolder;
-import org.spicefactory.parsley.core.ContextTestBase;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
@@ -17,16 +21,15 @@ import org.spicefactory.parsley.core.scope.impl.DefaultScopeRegistry;
 /**
  * @author Jens Halm
  */
-public class BindingTestBase extends ContextTestBase {
-	
+public class BindingTestBase {
 	
 	
 	private var context:Context;
 	
 	
-	public override function setUp () : void {
+	[Before]
+	public function createContext () : void {
 		context = bindingContext;
-		checkState(context);
 	}
 	
 	protected function get bindingContext () : Context {
@@ -38,90 +41,92 @@ public class BindingTestBase extends ContextTestBase {
 	}
 	
 	
-	public function testPublish () : void {
+	[Test]
+	public function publish () : void {
 		var pub:CatHolder = context.getObject("publish") as CatHolder;
 		var sub:CatHolder = context.getObject("subscribe") as CatHolder;
-		assertNull("Unexpected subsciber value", sub.value);
+		assertThat(sub.value, nullValue());
 		pub.value = new Cat();
-		assertNotNull("Expected non-null subsciber value", sub.value);
+		assertThat(sub.value, sameInstance(pub.value));
 	}
 	
-	public function testPublishSubscribe() : void {
+	[Test]
+	public function publishSubscribe () : void {
 		var pub1:CatHolder = context.getObject("pubsub") as CatHolder;
 		var pub2:CatHolder = context.getObject("pubsub") as CatHolder;
 		var sub:CatHolder = context.getObject("subscribe") as CatHolder;
-		assertNull("Unexpected subsciber value", sub.value);
+		assertThat(sub.value, nullValue());
 		var cat1:Cat = new Cat();
 		var cat2:Cat = new Cat();
 		pub1.value = cat1;
-		assertEquals("Unexpected subsciber value", cat1, sub.value);
-		assertEquals("Unexpected subsciber value", cat1, pub1.value);
-		assertEquals("Unexpected subsciber value", cat1, pub2.value);
+		assertThat(sub.value, sameInstance(cat1));
+		assertThat(pub1.value, sameInstance(cat1));
+		assertThat(pub2.value, sameInstance(cat1));
 		pub2.value = cat2;
-		assertEquals("Unexpected subsciber value", cat2, sub.value);
-		assertEquals("Unexpected subsciber value", cat2, pub1.value);
-		assertEquals("Unexpected subsciber value", cat2, pub2.value);
+		assertThat(sub.value, sameInstance(cat2));
+		assertThat(pub1.value, sameInstance(cat2));
+		assertThat(pub2.value, sameInstance(cat2));
 	}
 	
-	public function testTwoPublish () : void {
+	[Test(expects="Error")]
+	public function conflictingPublishers () : void {
 		context.getObject("publish");
 		context.getObject("subscribe");
-		try {
-			context.getObject("publish");
-		}
-		catch (e:Error) {
-			return;
-		}
-		fail("Expected Error due two conflicting publishers");
+		context.getObject("publish");
 	}
 	
-	public function testPublishId () : void {
+	[Test]
+	public function publishId () : void {
 		var pub:CatHolder = context.getObject("publish") as CatHolder;
 		var pubId:CatHolder = context.getObject("publishId") as CatHolder;
 		var sub:CatHolder = context.getObject("subscribe") as CatHolder;
 		var subId:CatHolder = context.getObject("subscribeId") as CatHolder;
-		assertNull("Unexpected subsciber value", sub.value);
-		assertNull("Unexpected subsciber value", subId.value);
+		assertThat(sub.value, nullValue());
+		assertThat(subId.value, nullValue());
 		var cat1:Cat = new Cat();
 		var cat2:Cat = new Cat();
 		pub.value = cat1;
-		assertEquals("Unexpected subsciber value", cat1, sub.value);
-		assertNull("Unexpected subsciber value", subId.value);
+		assertThat(sub.value, sameInstance(cat1));
+		assertThat(subId.value, nullValue());
 		pubId.value = cat2;
-		assertEquals("Unexpected subsciber value", cat1, sub.value);
-		assertEquals("Unexpected subsciber value", cat2, subId.value);
+		assertThat(sub.value, sameInstance(cat1));
+		assertThat(subId.value, sameInstance(cat2));
 	}
 	
-	public function testPublishPolymorphically () : void {
+	[Test]
+	public function publishPolymorphically () : void {
 		var pub:CatHolder = context.getObject("publish") as CatHolder;
 		var sub:AnimalHolder = context.getObject("animalSubscribe") as AnimalHolder;
-		assertNull("Unexpected subsciber value", sub.value);
+		assertThat(sub.value, nullValue());
 		pub.value = new Cat();
-		assertNotNull("Expected non-null subsciber value", sub.value);
+		assertThat(sub.value, sameInstance(pub.value));
 	}
 	
-	public function testScope () : void {
+	[Test]
+	public function localScope () : void {
 		var pub:CatHolder = context.getObject("publishLocal") as CatHolder;
 		var sub:CatHolder = context.getObject("subscribe") as CatHolder;
 		var subLocal:CatHolder = context.getObject("subscribeLocal") as CatHolder;
-		assertNull("Unexpected subsciber value", sub.value);
-		assertNull("Unexpected subsciber value", subLocal.value);
+		assertThat(sub.value, nullValue());
+		assertThat(subLocal.value, nullValue());
 		pub.value = new Cat();
-		assertNull("Unexpected subsciber value", sub.value);
-		assertNotNull("Expected non-null subsciber value", subLocal.value);
+		assertThat(sub.value, nullValue());
+		assertThat(subLocal.value, sameInstance(pub.value));
 	}
 	
-	public function testContextDestruction () : void {
+	[Test]
+	public function contextDestruction () : void {
 		var pub:CatHolder = context.getObject("publish") as CatHolder;
 		var sub:CatHolder = context.getObject("subscribe") as CatHolder;
-		assertNull("Unexpected subsciber value", sub.value);
+		assertThat(sub.value, nullValue());
 		pub.value = new Cat();
-		assertNotNull("Expected non-null subsciber value", sub.value);
+		assertThat(sub.value, sameInstance(pub.value));
 		context.destroy();
-		assertNull("Unexpected subsciber value", sub.value);
+		assertThat(sub.value, nullValue());
 	}
 	
-	public function testPublishManaged () : void {
+	[Test]
+	public function publishManaged () : void {
 		var pub:CatHolder = context.getObject("publish") as CatHolder;
 		var pubMgd:CatHolder = context.getObject("publishManaged") as CatHolder;
 		var added:Array = new Array();
@@ -138,14 +143,13 @@ public class BindingTestBase extends ContextTestBase {
 		var cat2:Cat = new Cat();
 		pub.value = cat1;
 		pubMgd.value = cat2;
-		assertEquals("Expected exactly one managed object", 1, added.length);
-		assertEquals("Unexpected managed object", cat2, added[0]);
+		assertThat(added, array(cat2));
 		pubMgd.value = null;
-		assertEquals("Expected exactly one removed object", 1, removed.length);
-		assertEquals("Unexpected removed object", cat2, removed[0]);
+		assertThat(removed, array(cat2));
 	}
 	
-	public function testPublishPersistent () : void {
+	[Test]
+	public function publishPersistent () : void {
 		var reg:ScopeRegistry = ContextUtil.globalScopeRegistry;
 		DefaultScopeRegistry(reg).reset();
 		DictionaryPersistenceService.reset();
@@ -158,14 +162,14 @@ public class BindingTestBase extends ContextTestBase {
 		
 		var pub1:StringHolder = context.getObject("publishPersistent") as StringHolder;
 		var pub2:StringHolder = context.getObject("publishPersistent") as StringHolder;
-		assertEquals("Unexpected persisted value", "A", DictionaryPersistenceService.getStoredValue("local0", String, "test"));
+		assertThat(DictionaryPersistenceService.getStoredValue("local0", String, "test"), equalTo("A"));
 		pub1.value = "B";
-		assertEquals("Unexpected subscriber value", "B", pub2.value);
-		assertEquals("Unexpected change count", 1, DictionaryPersistenceService.changeCount);
-		assertEquals("Unexpected persisted value", "B", DictionaryPersistenceService.getStoredValue("local0", String, "test"));
+		assertThat(pub2.value, equalTo("B"));
+		assertThat(DictionaryPersistenceService.changeCount, equalTo(1));
+		assertThat(DictionaryPersistenceService.getStoredValue("local0", String, "test"), equalTo("B"));
 		context.destroy();
-		assertEquals("Unexpected change count", 1, DictionaryPersistenceService.changeCount);
-		assertEquals("Unexpected persisted value", "B", DictionaryPersistenceService.getStoredValue("local0", String, "test"));
+		assertThat(DictionaryPersistenceService.changeCount, equalTo(1));
+		assertThat(DictionaryPersistenceService.getStoredValue("local0", String, "test"), equalTo("B"));
 	}
 }
 }

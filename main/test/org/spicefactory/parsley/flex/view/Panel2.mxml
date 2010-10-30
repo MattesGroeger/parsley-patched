@@ -13,11 +13,11 @@
 	
 	<mx:Script>
 		<![CDATA[
+			 import org.spicefactory.parsley.testmodel.CoreModel;
 			 import mx.controls.Alert;
 			 import org.spicefactory.parsley.core.context.ContextUtil;
 			 import org.spicefactory.parsley.testmodel.AnnotatedResourceBinding;
 			 import flash.events.Event;
-			 import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
 	         import org.spicefactory.parsley.flex.FlexContextBuilder;
 	         import org.spicefactory.parsley.core.context.Context;
 	         import mx.containers.Panel;

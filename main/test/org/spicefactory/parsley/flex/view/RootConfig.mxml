@@ -3,15 +3,15 @@
 	xmlns:tag="org.spicefactory.parsley.tag.core.*"
 	xmlns:test="org.spicefactory.parsley.testmodel.*"
 	xmlns:msg="org.spicefactory.parsley.tag.messaging.*"
-	xmlns:model="org.spicefactory.parsley.core.decorator.injection.*">
+	xmlns:model="org.spicefactory.parsley.coretag.inject.model.*">
 	
 	<mx:Script>
 		<![CDATA[
-			import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;		
+			import org.spicefactory.parsley.messaging.messages.TestEvent;
+			import org.spicefactory.parsley.testmodel.CoreModel;
 			import org.spicefactory.parsley.flex.view.Panel2;		
 			import org.spicefactory.parsley.flex.view.Panel3;		
 			import org.spicefactory.parsley.flex.view.Panel3;		
-			import org.spicefactory.parsley.core.messaging.TestEvent;		
 		]]>
 	</mx:Script>
 	

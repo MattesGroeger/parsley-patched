@@ -7,7 +7,7 @@
 	
 	<mx:Script>
 		<![CDATA[
-			import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;		
+			import org.spicefactory.parsley.testmodel.CoreModel;
 			import org.spicefactory.parsley.flex.view.Panel3;
 			import org.spicefactory.parsley.flex.view.module.model.*;		
 			import flash.events.Event;

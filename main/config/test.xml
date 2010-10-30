@@ -3,7 +3,7 @@
 	
 	<include filename="include.xml"/>
 	
-	<variable name="package" value="org.spicefactory.parsley.core.decorator.injection"/>
+	<variable name="package" value="org.spicefactory.parsley.coretag.inject.model"/>
 	
 	<object id="dependency" type="${package}.InjectedDependency"/>
 	

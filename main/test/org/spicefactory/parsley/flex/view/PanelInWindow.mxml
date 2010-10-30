@@ -13,7 +13,7 @@
 	<mx:Script>
       <![CDATA[
       
-      		import org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel;
+      		import org.spicefactory.parsley.testmodel.CoreModel;
          
          	[Inject]
 			[Bindable]

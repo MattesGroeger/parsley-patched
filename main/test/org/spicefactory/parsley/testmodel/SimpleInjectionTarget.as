@@ -1,5 +1,5 @@
 package org.spicefactory.parsley.testmodel {
-import org.spicefactory.parsley.core.decorator.injection.InjectedDependency;
+import org.spicefactory.parsley.coretag.inject.model.InjectedDependency;
 
 /**
  * @author Jens Halm

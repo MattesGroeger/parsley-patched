@@ -4,7 +4,7 @@ import flexunit.framework.TestCase;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
-import org.spicefactory.parsley.core.messaging.TestEvent;
+import org.spicefactory.parsley.messaging.messages.TestEvent;
 import org.spicefactory.parsley.dsl.context.ContextBuilder;
 import org.spicefactory.parsley.flex.FlexConfig;
 

@@ -1,7 +1,7 @@
 <objects 
 	xmlns="http://www.spicefactory.org/parsley">
 	
-	<object id="object" type="org.spicefactory.parsley.flex.mxmlconfig.core.CoreModel">
+	<object id="object" type="org.spicefactory.parsley.testmodel.CoreModel">
 		<constructor-args>
 			<string>foo</string>
 			<int>7</int>
