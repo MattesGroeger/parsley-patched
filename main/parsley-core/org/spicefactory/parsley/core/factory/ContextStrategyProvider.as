@@ -70,9 +70,7 @@ public interface ContextStrategyProvider {
 	 */
 	function get viewManager () : ViewManager;
 	
-	/**
-	 * Creates a strategy provider for a dynamic child Context of the Context associated with this provider.
-	 */
+	[Deprecated]
 	function createDynamicProvider () : ContextStrategyProvider;
 	
 	
