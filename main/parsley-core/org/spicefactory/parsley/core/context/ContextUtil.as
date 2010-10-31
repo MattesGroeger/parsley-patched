@@ -44,7 +44,7 @@ public class ContextUtil {
 	}
 
 	/**
-	 * Returns the Context manages the specified instance or null if the
+	 * Returns the Context that manages the specified instance or null if the
 	 * object is not managed by any Context currently.
 	 * 
 	 * @param instance the object to return the corresponding Context for
