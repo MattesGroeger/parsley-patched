@@ -43,6 +43,7 @@ public class DefaultMessageRouter implements MessageRouter {
 	private var _commandManager:DefaultCommandManager;
 	
 	private var env:MessagingEnvironment;
+	private var isLifecylceEventRouter:Boolean;
 	
 	
 	/**
@@ -50,9 +51,10 @@ public class DefaultMessageRouter implements MessageRouter {
 	 * 
 	 * @param settings the settings this router should use
 	 */
-	function DefaultMessageRouter (settings:MessageSettings) {
+	function DefaultMessageRouter (settings:MessageSettings, isLifecylceEventRouter:Boolean) {
 		_receivers = new DefaultMessageReceiverRegistry();
 		_commandManager = new DefaultCommandManager();
+		this.isLifecylceEventRouter = isLifecylceEventRouter;
 		env = new DefaultMessagingEnvironment(_commandManager, settings.commandFactories, settings.unhandledError);
 		for each (var handler:MessageErrorHandler in settings.errorHandlers) {
 			_receivers.addErrorHandler(handler);
@@ -69,8 +71,7 @@ public class DefaultMessageRouter implements MessageRouter {
 		var cache:MessageReceiverSelectionCache = _receivers.getSelectionCache(messageType);
 		var actualSelector:* = (selector == undefined) ? cache.getSelectorValue(message) : selector;
 		if (!cache.hasFirstLevelTargets(actualSelector)) {
-			if (log.isDebugEnabled()) {
-				// TODO - need to find a way to filter Object lifecycle messages first
+			if (!isLifecylceEventRouter && log.isDebugEnabled()) {
 				//log.debug("Discarding message '{0}': no matching receiver", message);
 			}
 			return;

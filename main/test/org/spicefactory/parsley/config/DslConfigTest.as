@@ -96,11 +96,11 @@ class MessageRouterFactoryDecorator implements MessageRouterFactory {
 		delegate.addCommandFactory(type, factory);
 	}
 	
-	public function create (settings:MessageSettings) : MessageRouter {
+	public function create (settings:MessageSettings, isLifecycleEventRouter:Boolean) : MessageRouter {
 		invocationCount++;
-		return delegate.create(settings);
+		return delegate.create(settings, isLifecycleEventRouter);
 	}
-	
+
 	public function get unhandledError () : ErrorPolicy {
 		return delegate.unhandledError;
 	}

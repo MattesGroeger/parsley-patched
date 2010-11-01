@@ -353,8 +353,8 @@ class DefaultMessageRouterFactory implements MessageRouterFactory {
 		settings.commandFactories.addCommandFactory(type, factory);
 	}
 
-	public function create (settings:MessageSettings) : MessageRouter {
-		return new DefaultMessageRouter(settings);
+	public function create (settings:MessageSettings, isLifecylceEventRouter:Boolean) : MessageRouter {
+		return new DefaultMessageRouter(settings, isLifecylceEventRouter);
 	}
 	
 	

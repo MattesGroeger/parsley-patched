@@ -43,9 +43,10 @@ public interface MessageRouterFactory {
 	 * Creates a new MessageRouter instance.
 	 * 
 	 * @param settings the settings for the router created by this factory
+	 * @param isLifecycleEventRouter whether this router handles object lifecycle events or regular application events
 	 * @return a new MessageRouter instance
 	 */
-	function create (settings:MessageSettings) : MessageRouter;
+	function create (settings:MessageSettings, isLifecylceEventRouter:Boolean) : MessageRouter;
 	
 	
 }
