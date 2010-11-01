@@ -160,6 +160,9 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	private function createContext () : void {
 		var provider:ContextStrategyProvider = createContextStrategyProvider(domain, scopes.getAll());
 		context = _factories.context.create(provider, parent);
+		if (log.isInfoEnabled()) {
+			log.info("Creating Context " + context + ((parent) ? " with parent " + parent : " without parent"));
+		}
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		ContextRegistry.addContext(context, scopes.getInherited());
 		ReflectionCacheManager.addDomain(context, domain);

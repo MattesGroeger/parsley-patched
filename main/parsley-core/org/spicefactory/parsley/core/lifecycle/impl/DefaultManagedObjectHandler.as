@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.lifecycle.impl {
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
@@ -33,6 +35,8 @@ import org.spicefactory.parsley.core.registry.definition.PropertyValue;
  */
 public class DefaultManagedObjectHandler implements ManagedObjectHandler {
 	
+	
+	private static const log:Logger = LogContext.getLogger(DefaultManagedObjectHandler);
 	
 	private static const PREPARED:String = "prepared";
 	private static const CREATED:String = "created";
@@ -101,6 +105,11 @@ public class DefaultManagedObjectHandler implements ManagedObjectHandler {
 		checkState(CREATED);
 		state = CONFIGURED;
 		
+		if (log.isInfoEnabled()) {
+			log.info("Configure managed object with {0} and {1} processor(s)", 
+					target.definition, target.definition.processorFactories.length);
+		}
+		
 		ManagedObjectLookup.addManagedObject(target);
 
 	 	createProcessors();
@@ -127,6 +136,10 @@ public class DefaultManagedObjectHandler implements ManagedObjectHandler {
 		if (state != CONFIGURED) return;
 		state = DESTROYED;
 		
+		if (log.isInfoEnabled()) {
+			log.info("Destroy managed object with {0}", target.definition);
+		}
+		
 		ManagedObjectLookup.removeManagedObject(target);
 		
 		try {
@@ -148,6 +161,9 @@ public class DefaultManagedObjectHandler implements ManagedObjectHandler {
 	 */
 	protected function invokePreInitMethods () : void {
 		for each (var processor:ObjectProcessor in processors) {
+			if (log.isDebugEnabled()) {
+				log.debug("Applying {0} to managed object with {1}", processor, target.definition);
+			}
 			processor.preInit();
 		}
 	}

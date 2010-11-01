@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.messaging.impl {
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.factory.MessageSettings;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
@@ -32,6 +34,9 @@ import flash.system.ApplicationDomain;
  * @author Jens Halm
  */
 public class DefaultMessageRouter implements MessageRouter {
+	
+	
+	private static const log:Logger = LogContext.getLogger(DefaultMessageRouter);
 	
 	
 	private var _receivers:DefaultMessageReceiverRegistry;
@@ -64,6 +69,10 @@ public class DefaultMessageRouter implements MessageRouter {
 		var cache:MessageReceiverSelectionCache = _receivers.getSelectionCache(messageType);
 		var actualSelector:* = (selector == undefined) ? cache.getSelectorValue(message) : selector;
 		if (!cache.hasFirstLevelTargets(actualSelector)) {
+			if (log.isDebugEnabled()) {
+				// TODO - need to find a way to filter Object lifecycle messages first
+				//log.debug("Discarding message '{0}': no matching receiver", message);
+			}
 			return;
 		}
 		var processor:MessageProcessor 

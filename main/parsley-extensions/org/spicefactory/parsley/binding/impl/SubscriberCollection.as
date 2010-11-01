@@ -15,6 +15,8 @@
  */
  
 package org.spicefactory.parsley.binding.impl {
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import flash.events.Event;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -30,6 +32,9 @@ import flash.utils.Dictionary;
  * @author Jens Halm
  */
 public class SubscriberCollection {
+	
+	
+	private static const log:Logger = LogContext.getLogger(SubscriberCollection);
 	
 	
 	private var _type:ClassInfo;
@@ -94,6 +99,9 @@ public class SubscriberCollection {
 	}
 	
 	private function processPublisherValue (publisher:Publisher) : void {
+		if (log.isInfoEnabled()) {
+			log.info("Updated value for {0}", publisher);
+		}
 		setCurrentValue(publisher.id, publisher.currentValue);	
 	}
 		

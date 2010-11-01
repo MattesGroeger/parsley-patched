@@ -260,7 +260,7 @@ public class AbstractObjectDefinition implements ObjectDefinition {
 	 * @private
 	 */
 	public function toString () : String {
-		return "ObjectDefinition for Class " + _type.name;
+		return "[ObjectDefinition(type = " + _type.name + ", id = " + _id + ")]";
 	}
 	
 	

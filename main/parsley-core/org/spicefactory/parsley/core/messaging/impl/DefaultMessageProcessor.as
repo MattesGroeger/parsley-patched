@@ -78,6 +78,11 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		this.command = command;
 		this.status = (status != null) ? status : (command != null) ? command.status : null;
 		rewind();
+		if (!status && log.isInfoEnabled()) {
+			var cnt:int = currentProcessor.receiverCount;
+			if (remainingProcessors.length) cnt += Processor(remainingProcessors[0]).receiverCount;
+			log.info("Dispatching message '{0}' to {1} receiver(s)", message, cnt);
+		}
 	}
 	
 
@@ -117,7 +122,9 @@ public class DefaultMessageProcessor implements MessageProcessor {
 				handlers.push(errorHandler);
 			}
 		}
-		log.info("Select " + handlers.length + " out of " + errorHandlers.length + " error handlers");
+		if (log.isInfoEnabled()) {
+			log.info("Select " + handlers.length + " out of " + errorHandlers.length + " error handlers");
+		}
 		if (handlers.length > 0) {
 			currentError = e;
 			remainingProcessors.unshift(currentProcessor);
@@ -178,7 +185,13 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	}
 	
 	private function handleCommand (command:Command, status:CommandStatus = null) : void {	
-		var processor:MessageProcessor = new DefaultMessageProcessor(message, messageType, cache, selector, env, command, status);
+		var processor:DefaultMessageProcessor 
+				= new DefaultMessageProcessor(message, messageType, cache, selector, env, command, status);
+		// TODO - optimize: skip when no matching observer
+		if (log.isInfoEnabled()) {
+			log.info("Dispatching message '{0}' for command status '{1}' to {2} observer(s)", 
+				message, status, processor.currentProcessor.receiverCount);
+		}
 		processor.proceed();
 	}
 	
@@ -246,6 +259,10 @@ class Processor {
 		return (receivers.length > currentIndex);
 	}
 	
+	internal function get receiverCount () : uint {
+		return receivers.length;
+	}
+
 	internal function rewind () : void {
 		currentIndex = 0;
 	}

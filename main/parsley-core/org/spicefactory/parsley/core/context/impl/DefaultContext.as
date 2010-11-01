@@ -62,8 +62,6 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private static const log:Logger = LogContext.getLogger(DefaultContext);
 
 	
-	private var strategyProvider:ContextStrategyProvider;
-	
 	private var _registry:ObjectDefinitionRegistry;
 	private var _lifecycleManager:ObjectLifecycleManager;
 	private var _scopeManager:ScopeManager;
@@ -81,6 +79,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private var description:String;
 	
 	/* deprecated */
+	private var strategyProvider:ContextStrategyProvider;
 	private var objectProviderFactory:ContextObjectProviderFactory;
 
 	
@@ -402,6 +401,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 		removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		if (_configured) {
 			_lifecycleManager.destroyAll();
+		}
+		if (log.isInfoEnabled()) {
+			log.info("Destroyed Context {0}", this);
 		}
 		_configured = false;
 		_initialized = false;

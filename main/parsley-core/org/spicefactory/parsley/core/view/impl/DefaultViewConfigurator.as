@@ -91,7 +91,7 @@ public class DefaultViewConfigurator implements ViewConfigurator {
 	 * @inheritDoc
 	 */
 	public function configure (target:Object, definition:DynamicObjectDefinition = null) : void {
-		log.debug("Add object '{0}' to {1}", target, context);
+		log.debug("Add view '{0}' to {1}", target, context);
 		var autoremove:Boolean = false;
 		if (target is IEventDispatcher) {
 			autoremove = isAutoremove(target, settings.autoremoveComponents);
@@ -157,7 +157,7 @@ public class DefaultViewConfigurator implements ViewConfigurator {
 	}
 	
 	private function filteredComponentRemoved (view:IEventDispatcher) : void {
-		log.debug("Remove object '{0}' from {1}", view, context);
+		log.debug("Remove view '{0}' from {1}", view, context);
 		var managedView:ManagedView = configuredViews[view];
 		if (managedView == null) return;
 		if (managedView.autoremove) {
