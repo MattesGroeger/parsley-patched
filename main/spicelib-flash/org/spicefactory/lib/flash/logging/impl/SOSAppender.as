@@ -113,7 +113,12 @@ public class SOSAppender extends AbstractAppender {
 	private function handleError (message:String) : void {
 		// do not log to avoid loops
 		trace(message);
-		socket.close();
+		try {
+			socket.close();
+		}
+		catch (e:Error) {
+			trace("Error closing socket: " + e.message);
+		}
 		socket = null;
 		cache = null;		
 	}
@@ -140,7 +145,7 @@ public class SOSAppender extends AbstractAppender {
 			return;
 		}
 		var message:String = formatLogMessage(event);
-		socket.send(message);
+		send(message);
 	}
 	
 	/**
@@ -176,7 +181,16 @@ public class SOSAppender extends AbstractAppender {
 	 * @param command the command to send to SOS
 	 */					
 	public function sendCommand (command:String) : void {
-		if (ready) socket.send("!SOS" + command);
+		if (ready) send("!SOS" + command);
+	}
+	
+	private function send (str:String) : void {
+		try {
+			socket.send(str);
+		}
+		catch (e:Error) {
+			trace("Error sending " + str + ": " + e.message);
+		}
 	}
 
 
