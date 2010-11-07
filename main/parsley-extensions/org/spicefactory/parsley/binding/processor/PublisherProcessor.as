@@ -94,6 +94,13 @@ public class PublisherProcessor implements ObjectProcessor {
 		return ObjectProcessorFactories.newFactory(PublisherProcessor, [property, scope, id, managed, subscribe]);
 	}
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return (publisher as Object).toString();
+	}
+	
 	
 }
 }

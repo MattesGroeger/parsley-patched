@@ -47,7 +47,7 @@ public class SubscribingFlashPropertyPublisher extends FlashPropertyPublisher im
 			enabled = true;
 		}
 	}
-
+	
 
 }
 }

@@ -81,6 +81,13 @@ public class ObjectTypeReference implements ResolvableValue {
 		}
 	}
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "{Injection(type=" + type.name + ")}";
+	}	
+	
 	
 }
 

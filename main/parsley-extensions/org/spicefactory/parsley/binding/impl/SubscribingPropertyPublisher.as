@@ -63,6 +63,13 @@ public class SubscribingPropertyPublisher extends PropertyPublisher implements S
 			enabled = true;
 		}
 	}
+	
+	/**
+	 * @private
+	 */
+	public override function toString () : String {
+		return super.toString() + " with matching [Subscriber]";
+	}
 
 
 }

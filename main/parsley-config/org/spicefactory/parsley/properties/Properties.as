@@ -89,4 +89,8 @@ class PropertiesProcessor implements ConfigurationProcessor {
 		}
 	}
 	
+	public function toString () : String {
+		return "Properties{<runtime>}";
+	}
+	
 }

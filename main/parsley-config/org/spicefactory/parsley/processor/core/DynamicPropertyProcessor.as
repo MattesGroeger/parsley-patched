@@ -85,6 +85,14 @@ public class DynamicPropertyProcessor implements ObjectProcessor {
 	
 	
 	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "[DynamicProperty(name=" + property + ",value=" + unresolvedValue + ")]";
+	}	
+	
+	
+	/**
 	 * Creates a new processor factory.
 	 * 
 	 * @param property the name of the property to set

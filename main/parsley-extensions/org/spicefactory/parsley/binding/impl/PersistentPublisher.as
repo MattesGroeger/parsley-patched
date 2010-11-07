@@ -83,6 +83,15 @@ public class PersistentPublisher extends AbstractPublisher implements Publisher,
 			enabled = true;
 		}
 	}
+	
+	
+	/**
+	 * @private
+	 */
+	public override function toString () : String {
+		return "[PersistentPublishSubscribe(scopeUuid=" + scopeId + ",type=" + type.name 
+				+ ((id) ? ",id=" + id : "") + ")]";
+	}
 
 }
 }

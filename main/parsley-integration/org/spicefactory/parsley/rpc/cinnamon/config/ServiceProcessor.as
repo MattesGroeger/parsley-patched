@@ -91,6 +91,13 @@ public class ServiceProcessor implements ObjectProcessor {
 		return ObjectProcessorFactories.newFactory(ServiceProcessor, [name, channel, timeout]);
 	}
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "[CinnamonService(name=" + name + ")]";
+	}
+	
 	
 }
 

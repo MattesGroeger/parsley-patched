@@ -85,6 +85,14 @@ public class MethodProcessor implements ObjectProcessor {
 	
 	
 	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "[MethodInvocation(method=" + method.name + ",parameters=" + unresolvedParams.join(",") + ")]";
+	}	
+	
+	
+	/**
 	 * Creates a new processor factory.
 	 * 
 	 * @param method the method to invoke

@@ -80,6 +80,13 @@ public class FlashPublisherProcessor implements ObjectProcessor {
 		return ObjectProcessorFactories.newFactory(FlashPublisherProcessor, [property, changeEvent, scope, id, managed, subscribe]);
 	}
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return (publisher as Object).toString();
+	}
+	
 	
 }
 }

@@ -86,6 +86,13 @@ public class PropertiesFileProcessor extends EventDispatcher implements AsyncCon
         dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, message));
     }
     
+    /**
+	 * @private
+	 */
+	public override function toString () : String {
+		return "Properties{" + file + "}";
+	}
+    
     
 }
 }

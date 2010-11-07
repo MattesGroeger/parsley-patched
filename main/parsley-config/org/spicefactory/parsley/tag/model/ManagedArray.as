@@ -37,5 +37,13 @@ public dynamic class ManagedArray extends Array implements ResolvableValue {
 	}
 	
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "{ManagedArray(length=" + this.length + ")}";
+	}	
+	
+	
 }
 }

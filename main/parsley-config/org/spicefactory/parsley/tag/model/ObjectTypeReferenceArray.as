@@ -49,6 +49,14 @@ public class ObjectTypeReferenceArray implements ResolvableValue {
 	}
 	
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "{ArrayInjection(type=" + type.name + ")}";
+	}	
+	
+	
 }
 
 }

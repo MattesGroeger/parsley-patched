@@ -86,6 +86,14 @@ public class PropertyProcessor implements ObjectProcessor {
 	
 	
 	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "[Property(name=" + property + ",value=" + unresolvedValue + ")]";
+	}	
+	
+	
+	/**
 	 * Creates a new processor factory.
 	 * 
 	 * @param property the property to set

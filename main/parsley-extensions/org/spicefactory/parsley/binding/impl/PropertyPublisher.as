@@ -90,8 +90,8 @@ public class PropertyPublisher extends AbstractPublisher implements Publisher {
 	 * @private
 	 */
 	public override function toString () : String {
-		return "[Publisher(type = " + type.name + ((id) ? ", id = " + id : "") 
-				+ ", current value = " + currentValue + ")]";
+		return "[Publisher(property=" + propertyName + ",type=" + type.name 
+				+ ((id) ? ",id=" + id : "") + ")]";
 	}
 	
 	

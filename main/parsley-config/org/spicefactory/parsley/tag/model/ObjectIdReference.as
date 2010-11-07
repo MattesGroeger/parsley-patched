@@ -70,6 +70,14 @@ public class ObjectIdReference implements ResolvableValue {
 	}
 	
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "{Injection(id=" + id + ")}";
+	}	
+	
+	
 }
 
 }

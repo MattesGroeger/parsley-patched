@@ -147,6 +147,14 @@ class ObserveMethodProcessor implements ObjectProcessor {
 	public function removeObserver () : void {
 		scope.lifecyleObservers.removeObserver(observer);
 	}
+
+	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "[ObserveMethod(method=" + method + ")]";
+	}	
 	
 	
 }

@@ -53,6 +53,14 @@ public class PropertySubscriber extends AbstractSubscriber implements Subscriber
 		property.setValue(target, newValue);
 	}
 	
+	/**
+	 * @private
+	 */
+	public override function toString () : String {
+		return "[Subscriber(property=" + property.name + ",type=" + type.name 
+				+ ((id) ? ",id=" + id : "") + ")]";
+	}
+	
 	
 }
 }

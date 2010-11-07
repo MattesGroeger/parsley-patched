@@ -47,6 +47,14 @@ public class NestedObject implements ResolvableValue {
 	}
 	
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "{NestedObject(type=" + definition.type + ")}";
+	}	
+	
+	
 }
 
 }

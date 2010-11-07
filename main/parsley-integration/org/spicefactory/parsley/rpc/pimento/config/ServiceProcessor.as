@@ -92,6 +92,13 @@ public class ServiceProcessor implements ObjectProcessor {
 		return ObjectProcessorFactories.newFactory(ServiceProcessor, [name, config, timeout]);
 	}
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "[PimentoService(name=" + name + ")]";
+	}
+	
 	
 }
 

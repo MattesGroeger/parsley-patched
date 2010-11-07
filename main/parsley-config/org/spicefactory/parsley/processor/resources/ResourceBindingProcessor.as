@@ -120,6 +120,13 @@ public class ResourceBindingProcessor implements ObjectProcessor {
 		return ObjectProcessorFactories.newFactory(ResourceBindingProcessor, [property, key, bundle]);
 	}
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "[ResourceBinding(property=" + property.name + ",key=" + key + ",bundle=" + bundle + ")]";
+	}
+	
 	
 }
 

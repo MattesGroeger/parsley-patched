@@ -259,6 +259,13 @@ class CommandStatusValue implements ResolvableValue {
 		return manager.hasActiveCommands(messageType, selector);
 	}
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "{CommandStatus}";
+	}	
+	
 }
 
 

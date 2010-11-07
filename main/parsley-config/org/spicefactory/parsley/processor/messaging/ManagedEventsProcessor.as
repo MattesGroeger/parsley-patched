@@ -68,6 +68,12 @@ public class ManagedEventsProcessor implements ObjectProcessor {
 		}
 	}
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "[ManagedEvents(names=" + names.join(",") + ")]";
+	}	
 	
 	/**
 	 * Creates a new processor factory.

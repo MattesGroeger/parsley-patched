@@ -81,6 +81,13 @@ public class SubscriberProcessor implements ObjectProcessor {
 		return ObjectProcessorFactories.newFactory(SubscriberProcessor, [property, scope, id]);
 	}
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return (subscriber as Object).toString();
+	}
+	
 	
 }
 }

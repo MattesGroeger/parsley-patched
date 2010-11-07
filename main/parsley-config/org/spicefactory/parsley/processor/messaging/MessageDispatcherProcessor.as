@@ -68,6 +68,14 @@ public class MessageDispatcherProcessor implements ObjectProcessor {
 	
 	
 	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "[MessageDispatcher(property=" + property.name + ")]";
+	}	
+	
+	
+	/**
 	 * Creates a new processor factory.
 	 * 
 	 * @param property the property to inject the dispatcher into

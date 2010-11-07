@@ -182,6 +182,13 @@ class MessageReceiverProcessor implements ObjectProcessor {
 		receiver = null;
 	}
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return "[MessageReceiver(scope=" + scope.name + ")]";
+	}	
+	
 	
 }
 

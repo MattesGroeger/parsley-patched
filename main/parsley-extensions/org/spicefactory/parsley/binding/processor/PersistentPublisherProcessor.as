@@ -81,6 +81,13 @@ public class PersistentPublisherProcessor implements ObjectProcessor {
 		manager.removePublisher(publisher);
 	}
 	
+	/**
+	 * @private
+	 */
+	public function toString () : String {
+		return publisher.toString();
+	}
+	
 	
 	/**
 	 * Creates a new processor factory.
