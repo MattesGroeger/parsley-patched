@@ -93,47 +93,37 @@ it is different though. The framework classes will not be compiled into your SWF
 the metadata tags won't either. And this is rather erratic behaviour, since for your intention to use the framework and thus its
 metadata configuration tags it shouldn't make a difference if you compile the frameworks classes into the SWF or not.
 So when using the #cdi -el #cdi option you have to explicitly specify the Parsley and Spicelib metadata tags.
-Those are quite a few (extracted from the Parsley Ant builds): #par
+You can do that with adding
+all Spicelib and Parsley metadata tags that you use to the compiler options, either to the #cdi -keep-as3-metadata #cdi
+flag directly or to a configuration file that you then specify with the #cdi -load-config+= #cdi option: #par
 
 #cdb
-<keep-as3-metadata name="Metadata" />
-<keep-as3-metadata name="DefaultProperty" />
-<keep-as3-metadata name="Required" />
-<keep-as3-metadata name="Event" />
-<keep-as3-metadata name="AssignableTo" />
-<keep-as3-metadata name="Inject" />
-<keep-as3-metadata name="InjectConstructor" />
-<keep-as3-metadata name="Publish" />
-<keep-as3-metadata name="Subscribe" />
-<keep-as3-metadata name="PublishSubscribe" />
-<keep-as3-metadata name="Factory" />
-<keep-as3-metadata name="Init" />
-<keep-as3-metadata name="Destroy" />
-<keep-as3-metadata name="Observe" />
-<keep-as3-metadata name="AsyncInit" />
-<keep-as3-metadata name="ManagedEvents" />
-<keep-as3-metadata name="MessageDispatcher" />
-<keep-as3-metadata name="MessageHandler" />
-<keep-as3-metadata name="MessageBinding" />
-<keep-as3-metadata name="MessageInterceptor" />
-<keep-as3-metadata name="MessageError" />
-<keep-as3-metadata name="Command" />
-<keep-as3-metadata name="CommandComplete" />
-<keep-as3-metadata name="CommandResult" />
-<keep-as3-metadata name="CommandError" />
-<keep-as3-metadata name="CommandStatus" />
-<keep-as3-metadata name="ResourceBinding" />
-<keep-as3-metadata name="Selector" />
-<keep-as3-metadata name="Target" />
-<keep-as3-metadata name="Autoremove" />
-<keep-as3-metadata name="Internal" />
-<keep-as3-metadata name="ObjectDefinition" />
-<keep-as3-metadata name="DynamicObject" />
+<flex-config>
+    <compiler>
+        <keep-as3-metadata append="true">
+            <name>Inject</name>
+            <name>Init</name>
+            <name>Destroy</name>
+            <name>Observe</name>
+            <name>MessageDispatcher</name>
+            <name>MessageHandler</name>
+            <name>CommandResult</name>
+            <name>CommandComplete</name>
+            <name>CommandError</name>
+            <name>Publish</name>
+            <name>Subscribe</name>
+            <name>PublishSubscribe</name>
+		</keep-as3-metadata>
+		
+	</compiler>
+</flex-config>
 #cdb
+
+#par The above is just a subset of the tags available in Parsley. You should either combine exactly the ones
+you are using in your application or directly pass the files #cdi spicelib-metadata.xml #cdi and #cdi parsley-metadata.xml #cdi
+to the #cdi -load-config+= #cdi option. You find those inside the #cdi build/config #cdi folder in the download or the project
+you checked out from Subversion. #par
 			
-#par Of course you can just pick the ones you are actually using. But then you have to remember to add new tags to the build
-whenever you introduce a new configuration tag into your application. #par
-
 #par In case the metadata tags did not get compiled into your SWF the symptoms are usually that several operations silently
 fail. For example injections will not performed then if you specified them with the #cdi [Inject] #cdi tag. When things silently
 fail this is usually a clear indication that some or all of the metadata tags are missing in the SWF. Because if there was some
