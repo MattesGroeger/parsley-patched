@@ -1,0 +1,311 @@
+#sc1 troubleshooting_intro Troubleshooting Guide #sc1
+
+#par This chapter aims to summarize some of the more common error scenarios. It was compiled based
+on questions asked on the forum and will most likely grow over time. It would be nice if you'd follow the guidelines in this chapter
+and do some investigation yourself before you post on the forum in case you run into any kind of problem. 
+Please start with #ref troubleshooting_logging #ref, as logging should be turned on in all debugging 
+scenarios, and then jump to the section which applies to your problem. #par
+
+
+#sc2 troubleshooting_logging Configure Logging #sc2
+
+#par Some services in Parsley and also Flex Bindings in general do not rethrow errors. Thus you'd be completely tapping
+in the dark for some sorts of errors if logging is not turned on. For debugging Parsley applications it's usually sufficient
+to set a filter for #cdi org.spicefactory.parsley.* #cdi and avoid the logs from the underlying Spicelib, as the reflection cache
+emits some pretty verbose logs which would distract from the things you'd be interested in. #par
+
+#par Log output from Parsley covers things like Contexts getting created or destroyed, objects getting configured or removed from the Context,
+messages getting dispatched or views getting wired. #par
+
+#par The logging setup is usually done in the top level application class. It differs depending on the environment: #par
+
+#sub Flex 4 #sub
+
+#cdb
+<fx:Declarations>
+    <s:TraceTarget 
+        includeCategory="true" 
+        includeLevel="true" 
+        includeTime="true"
+        level="{LogEventLevel.DEBUG}"
+        >
+        <s:filters>
+            <fx:String>org.spicefactory.parsley.*</fx:String>
+        </s:filters>
+    </s:TraceTarget>
+</fx:Declarations>
+#cdb
+
+#sub Flex 3 #sub
+
+#cdb
+<mx:TraceTarget 
+    includeCategory="true" 
+    includeLevel="true" 
+    includeTime="true"
+    level="{LogEventLevel.DEBUG}"
+    >
+    <mx:filters>
+        <mx:String>org.spicefactory.parsley.*</mx:String>
+    </mx:filters>
+</mx:TraceTarget>
+#cdb
+
+#sub Flash #sub
+
+#par For Flash it is recommended to use XML configuration files as described in #ref logging_flash #ref.
+If you want to use other configuration mechanisms for the rest of the application, you can still combine
+the XML for the logging setup with the other configuration artifacts: #par
+
+#cdb
+FlashLoggingXmlSupport.initialize();
+ContextBuilder
+    .newBuilder()
+    .config(XmlConfig.forFile("logging.xml"))
+    .config(ActionScriptConfig.forClass(MyApplicationConfig))
+    .build();
+#cdb
+
+
+
+#sc2 troubleshooting_silent Silent Failure #sc2
+
+#par Even after you have configured logging as described in the preceding section, you still might run into a situation
+where an expected action is not performed while the logging output remains completely silent about it. Since Parsley generally
+logs all errors this usually hints at a problem where the framework does not even attempt to perform the desired action.
+This is usually caused by some sort of configuration error. The following sections list the most common scenarios that
+lead to silent failure: #par
+
+
+#sub The object is not managed #sub
+
+#par Some developers new to the concept of IOC containers simply add metadata like #cdi [Inject] #cdi to a class and then create
+an instance with #cdi new #cdi and are suprised that nothing happens. Such an instance is not known to the framework and thus
+will never get configured. Another common error is to add the class to a Parsley configuration file or class as required and then
+create an instance with #cdi new #cdi. This is a similar problem: Now you have two instances of the same class, but the one you
+created with #cdi new #cdi is not managed by the framework. #par
+
+#par If you are not familiar with the concept of managed objects, please read #ref lifecycle_managed #ref first. #par
+
+#par If you are not sure whether the object you are working with is managed, you can use the framework API to find out: #par
+
+#cdb
+var obj:SomeClass = ...; // the object that does not work
+trace("managed? " + ContextUtil.isManaged(obj));
+#cdb
+
+#par Apart from that you'll also find logs for all objects that are getting added or removed from a Context. They look like this: #par
+
+#cdb
+21:09:07.967 [INFO] org.spicefactory.parsley.core.lifecycle.impl.DefaultManagedObjectHandler 
+    Configure managed object with [ObjectDefinition(type = com.foo::MyClass, id = someId)] 
+    and 2 processor(s)
+#cdb
+
+
+#sub Metadata not compiled into the SWF or SWC #sub
+
+#par Another very common error. The mxmlc compiler of the Flex SDK has a confusingly inconsistent behavior when it comes to compiling
+metadata into SWFs. The outcome is different whether you merge Parsley into the code or whether you specify it as an external library.
+As a consequence it usually works in the top level application without additional configuration steps, but then fails when used
+in a Flex Module for example. #par
+
+#par To find out whether metadata has actually been compiled into your application, you can trace the reflection output of the
+Flash Player for that class: #par
+
+#cdb
+var obj:SomeClass = ...; // the object that does not work
+trace(describeType(obj));
+#cdb
+
+#par Here you can see whether the metadata is present on the property or method where you expect it.
+For Flex Modules or RSLs the metadata usually has to be specified explicitly. For detailed instructions
+see #ref config_metadata #ref, specifically the section titled #str Compiling custom metadata into SWFs #str. #par
+
+
+#sub Metadata on private or protected members #sub
+
+#par The Reflection facility in the Flash Player will only consider metadata on public members. This is not a limitation
+of the Parsley framework, it's the way the Flash Player works. Thus the following will simply be ignored, you won't get
+any error messages: #par
+
+#cdb
+[Inject]
+private var service:RemoteObject;
+#cdb
+
+
+#sub Typos in metadata #sub
+
+#par Although this is pretty obvious it's worth mentioning it as this also leads to silent failure. When you misspell an
+attribute on a Parsley metadata tag the framework will throw an Error, but if you misspell the tag name itself it will
+simply get ignored. #par
+
+
+#sub Timing issues with object initialization #sub
+
+#par Also a pretty common scenario. The dependency injection does get performed in this case, just not at the time the
+developer expects it. The most extreme example is trying to access the value of a variable marked with [Inject] in the
+constructor of an object. It should be pretty obvious that it is virtually impossible that the injection has already happened at
+this point. #par
+
+#par Somewhat less obvious but still very common is to use a Flex component event like #cdi addedToStage #cdi or 
+#cdi creationComplete #cdi and then access an expected injected value in the event handler. Please don't do this!
+There are lots of reasons not to use #cdi addedToStage #cdi for component initalization, some of them are not even related to 
+Parsley. For the full story, please read #ref view_lifecycle #ref and specifically the section titled 
+#str Be careful with Component Initialization Logic #str. #par
+
+#par As a very short excerpt of that section, a safe place to put some initialization logic 
+is a method marked with #cdi [Init] #cdi. This will only be invoked after all injections have been performed: #par
+
+#cdb
+[Inject]
+public var service1:SomeService;
+
+[Inject]
+public var service2:SomeOtherService;
+
+[Init]
+public function init () : void {
+    // here it is guaranteed that service1 and service2 have been set already
+}
+#cdb
+
+
+#sc2 troubleshooting_modules Problems with View Wiring #sc2
+
+#par For wiring components it's important to understand the lifecycle of Flex components in relation to Parsley 
+object management. One problem with misplaced initialization logic (that does not only affect views) has already 
+been described in the preceding section under #str Timing issues with object initialization #str. 
+This section lists some of the most frequent issues purely related to wiring views. #par
+
+
+#sub Errors when re-adding a view to the stage #sub
+
+#par The default behavior for a wired view (no matter whether you are using view autowiring or the #cdi <Configure> #cdi tag)
+is to remove the view from the Context once the view is removed from the stage. This is the most convenient option as this is
+what is required in many scenarios where views are not developed for reuse. But when you do reuse a view and are not aware 
+of this behavior you will encounter unexpected behavior. Dependencies like presentation models might get injected for a second
+time for example, causing the view to lose its internal state. #par
+
+#par Fortunately there are ways to prevent this, as this is just the default behavior. For more details see
+#ref view_lifecycle #ref, preferrably including the section #str Beware of Memory Leaks #str as changing the
+default behavior might indeed solve your problem, but at the same time introduce leaks if not done correctly. #par
+
+#par If the #str <ContextBuilder> #str tag itself is placed into a view, you might even encounter the situation where
+the entire Context gets destroyed when you remove the view from the stage. Again this is only the default that can 
+be switched off like explained in #ref view_lifecycle #ref. #par
+
+
+#sub Problems with popups and AIR windows #sub
+
+#par When wiring views in popups or AIR windows some additional steps need to be performed as these types of components
+are not placed into the normal view hierarchy below the root Application component. The basics are explained in
+#ref view_popup #ref. If you follow these instructions and still run into problems, they might be caused by one
+of the following issues: #par
+
+#lst
+#lse #str You get errors claiming that dependencies could not be found. #str This might happen even if you connected the popup or window 
+to a Parsley Context, if it is not to the right one. In a multi-Context application
+it is important that you connect the window to the Context where dependencies should be fetched from. While each 
+Context shares dependencies with its parent, the opposite is not true. So if you connect your window to the root Context
+for example, any dependencies defined in any child Context will not be seen. #lse
+
+#lse #str You get reflection errors claiming that some class cannot be found in a particular ApplicationDomain. #str
+This is a very similar issue: when you work with modules and windows it is particularly important to connect the window
+to the right Context. If the window shell is defined in the application and the window content will then be a module
+loaded into that window, it is fully sufficient to connect the window to the root Context as long as the loaded module
+will then define its own Context internally. But if the window or popup
+is launched from within a module that was already loaded, you must make sure to connect the window to the Context defined
+in the module. See the next section for further common error scenarios around working with modules. #lse
+#lst
+
+
+#sc2 troubleshooting_modules Problems with Modules #sc2
+
+#par Applications that load modules are usually also multi-Context applications, as each module normally creates at least
+one internal Context within the module. Errors when working with modules usually occur when the Contexts in the various layers
+do not "connect" correctly or when a view is wired to the wrong Context. This often comes as a surprise as there is a lot of
+magic happening under the hood when you load a module and/or create a child Context. Parsley usually connects them automatically,
+creating a Context hierarchy that matches the view hierarchy the Contexts were created in. This way any child Context does always
+automatically share all dependencies from a parent Context. In some scenarios this magic does not work, most often due to a configuration
+issues. In very rare cases it might even be necessary to specify the parent Context and/or ApplicationDomain manually, which can
+be done through attributes of the #cdi <ContextBuilder> #cdi tag for example. #par
+
+
+#sub Reflection Errors ("Specified ApplicationDomain does not contain the class MyClass") #sub  
+
+#par This can only happen when you load modules into child ApplicationDomains. Reflection errors usually have one of
+the following two causes: #par
+
+#lst
+#lse #str The module does not declare its own Context internally. #str When you want to wire views from within a module that
+was loaded into a child ApplicationDomain, the module must create its own Context. This is because every Context uses
+exactly one ApplicationDomain for reflection internally. If you only want to wire views and otherwise do not want to 
+declare any models or services in the module Context, you can simply add an empty #cdi <ContextBuilder/> #cdi tag
+to the root module component. #lse
+
+#lse #str The module is loaded too early. #str For the automatic detection of the required ApplicationDomain it is important
+that the initialization of the first (root) Parsley Context starts before you load the first module. Otherwise it might happen
+that the framework passes the wrong ApplicationDomain to the module Context. Loading too early might happen if you use
+an #cdi <mx:ModuleLoader> #cdi with a hard-coded url attribute in a component that gets initialized on application startup or
+through other early programmatic loading of modules. This is a limitation of the current version (2.3) and will very likely
+no longer apply for Parsley 2.4. #lse
+
+#lse #str The view is wired to the wrong Context. #str This might happen even when the module does create its own Context
+and that Context has the right ApplicationDomain for reflection. The last possible cause is then that the view did not
+get wired to the module Context, but only to the root application Context. The views connect through bubbling events
+to the nearest Context and this normally works as expected. There are only a few scenarios that might cause problems
+(see #str Problems with popups and AIR windows #str for an example). #lse
+#lst
+
+
+#sub Missing Dependencies #sub
+
+#par If you see errors that a specific dependency cannot be found, although you are sure that you declared it in a
+Context configuration file, then it is very likely that the view got wired to the wrong Context. See
+#str Problems with popups and AIR windows #str for a common error scenario. #par
+
+#par Examining the log output also helps in this case, as it allows you to easily find out which Context connected to which
+parent and which view got wired to which Context. For an example lets assume that you create the root application Context
+using #cdi MyRootConfig #cdi as the MXML configuration class and then #cdi MyModuleConfig #cdi as the configuration for the
+module. Inside the module you have a view of type #cdi MyWindow #cdi that needs to get wired. If all goes well you should
+find these three entries in the log output (intertwined with other logs): #par
+
+#cdb
+22:18:54.953 [INFO] org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder 
+Creating Context [Context(FlexConfig{MyRootConfig})] without parent
+
+[...]
+
+22:19:01.270 [INFO] org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder 
+Creating Context [Context(FlexConfig{MyModuleConfig})] 
+with parent [Context(FlexConfig{MyRootConfig})]
+
+[...]
+
+22:19:01.544 [DEBUG] org.spicefactory.parsley.core.view.impl.DefaultViewConfigurator 
+Add view 'My_Module.ApplicationSkin2._AppSkin_Group1.contentGroup.TestModule23.TestPanel25' 
+to [Context(FlexConfig{MyModuleConfig})]
+#cdb
+
+#par Here you can examine that the module Context found its parent (the root ApplicationContext) and the
+view TestPanel got wired to the module Context and not to the root Context. #par
+
+#par Note that you have to use Parsley 2.3.2 or newer to see the complete log output as shown above. #par
+
+#par You can also improve the readability of the logs when you set the #cdi description #cdi attribute
+explicitly in the ContextBuilder: #par
+
+#cdb
+<parsley:ContextBuilder config="{MyRootConfig}" description="root"/>
+#cdb
+
+#par This would turn the output #cdi [Context(FlexConfig{MyRootConfig})] #cdi into just 
+#cdi [Context(root)] #cdi. This does not make such a big difference if you use only one configuration class,
+but if you use multiple ones the default description would list them all. #par
+
+
+
+
+
