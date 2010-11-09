@@ -192,7 +192,7 @@ time for example, causing the view to lose its internal state. #par
 #ref view_lifecycle #ref, preferrably including the section #str Beware of Memory Leaks #str as changing the
 default behavior might indeed solve your problem, but at the same time introduce leaks if not done correctly. #par
 
-#par If the #str <ContextBuilder> #str tag itself is placed into a view, you might even encounter the situation where
+#par If the #cdi <ContextBuilder> #cdi tag itself is placed into a view, you might even encounter the situation where
 the entire Context gets destroyed when you remove the view from the stage. Again this is only the default that can 
 be switched off like explained in #ref view_lifecycle #ref. #par
 
@@ -285,12 +285,12 @@ with parent [Context(FlexConfig{MyRootConfig})]
 [...]
 
 22:19:01.544 [DEBUG] org.spicefactory.parsley.core.view.impl.DefaultViewConfigurator 
-Add view 'My_Module.ApplicationSkin2._AppSkin_Group1.contentGroup.TestModule23.TestPanel25' 
+Add view 'My_Module.ApplicationSkin2._AppSkin_Group1.contentGroup.TestModule23.MyWindow25' 
 to [Context(FlexConfig{MyModuleConfig})]
 #cdb
 
 #par Here you can examine that the module Context found its parent (the root ApplicationContext) and the
-view TestPanel got wired to the module Context and not to the root Context. #par
+view MyWindow got wired to the module Context and not to the root Context. #par
 
 #par Note that you have to use Parsley 2.3.2 or newer to see the complete log output as shown above. #par
 
