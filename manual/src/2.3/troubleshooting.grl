@@ -256,7 +256,8 @@ no longer apply for Parsley 2.4. #lse
 and that Context has the right ApplicationDomain for reflection. The last possible cause is then that the view did not
 get wired to the module Context, but only to the root application Context. The views connect through bubbling events
 to the nearest Context and this normally works as expected. There are only a few scenarios that might cause problems
-(see #str Problems with popups and AIR windows #str for an example). #lse
+(see #str Problems with popups and AIR windows #str for an example). You can use the log output as demonstrated in 
+the next section to verify whether the view gets wired to the right Context. #lse
 #lst
 
 
