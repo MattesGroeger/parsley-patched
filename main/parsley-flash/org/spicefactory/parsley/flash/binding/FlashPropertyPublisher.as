@@ -74,7 +74,7 @@ public class FlashPropertyPublisher extends AbstractPublisher implements Publish
 	/**
 	 * @private
 	 */
-	public function toString () : String {
+	public override function toString () : String {
 		return "[Publisher(property=" + property.name + ")]";
 	}
 	
