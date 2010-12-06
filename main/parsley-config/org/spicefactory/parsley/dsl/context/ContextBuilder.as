@@ -17,8 +17,8 @@
 package org.spicefactory.parsley.dsl.context {
 import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.parsley.config.Configurations;
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
+import org.spicefactory.parsley.core.bootstrap.BootstrapProcessor;
+import org.spicefactory.parsley.core.bootstrap.ConfigurationProcessor;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.flex.FlexSupport;
@@ -77,17 +77,16 @@ public class ContextBuilder {
 	}
 
 	
-	private var builder:CompositeContextBuilder;
+	private var processor:BootstrapProcessor;
 	private var runtimeConfig:RuntimeConfigurationProcessor;
-	private var _config:Configuration;
+	private var dslConfig:Configuration;
 	
 	
 	/**
 	 * @private
 	 */
-	function ContextBuilder (builder:CompositeContextBuilder) {
-		this._config = Configurations.forRegistry(builder.prepareRegistry());
-		this.builder = builder;
+	function ContextBuilder (processor:BootstrapProcessor) {
+		this.processor = processor;
 		FlexSupport.initialize();
 	}
 	
@@ -102,7 +101,7 @@ public class ContextBuilder {
 	 * @return this builder instance for method chaining
 	 */
 	public function config (processor:ConfigurationProcessor) : ContextBuilder {
-		builder.addProcessor(processor);
+		this.processor.addProcessor(processor);
 		return this;
 	}
 	
@@ -119,7 +118,7 @@ public class ContextBuilder {
 	public function object (instance:Object, id:String = null) : ContextBuilder {
 		if (!runtimeConfig) {
 			runtimeConfig = new RuntimeConfigurationProcessor();
-			builder.addProcessor(runtimeConfig);
+			processor.addProcessor(runtimeConfig);
 		}
 		runtimeConfig.addInstance(instance, id);
 		return this;
@@ -136,7 +135,10 @@ public class ContextBuilder {
 	 * @return the factory that can be used to programmatically create new object definitions
 	 */
 	public function objectDefinition () : ObjectDefinitionBuilderFactory {
-		return _config.builders;
+		if (!dslConfig) {
+			dslConfig = Configurations.forRegistry(processor.info.registry);
+		}
+		return dslConfig.builders;
 	}
 	
 	/**
@@ -146,7 +148,7 @@ public class ContextBuilder {
 	 * @return the final Context instance
 	 */
 	public function build () : Context {
-		return builder.build();
+		return processor.process();
 	}
 	
 	

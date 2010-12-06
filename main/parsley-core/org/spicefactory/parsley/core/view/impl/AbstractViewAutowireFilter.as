@@ -18,7 +18,7 @@ package org.spicefactory.parsley.core.view.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.errors.AbstractMethodError;
-import org.spicefactory.parsley.core.factory.ViewSettings;
+import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.ViewAutowireMode;
 

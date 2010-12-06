@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.properties.Properties;
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 
 /**
  * MXML tag for declaring a String containing properties.
@@ -40,7 +40,7 @@ import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
  * 
  * @author Jens Halm
  */
-public class PropertiesStringTag implements ContextBuilderProcessor {
+public class PropertiesStringTag implements BootstrapConfigProcessor {
 
 
 	/**
@@ -53,8 +53,8 @@ public class PropertiesStringTag implements ContextBuilderProcessor {
 	/**
 	 * @private
 	 */
-	public function processBuilder (builder:CompositeContextBuilder) : void {
-		builder.addProcessor(Properties.forString(source));
+	public function processConfig (config:BootstrapConfig) : void {
+		config.addProcessor(Properties.forString(source));
 	}
 	
 	

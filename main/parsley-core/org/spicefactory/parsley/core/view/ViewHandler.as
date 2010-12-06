@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.core.view {
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.factory.ViewSettings;
+
 
 import flash.display.DisplayObject;
 

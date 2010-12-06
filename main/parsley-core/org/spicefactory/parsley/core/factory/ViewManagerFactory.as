@@ -15,50 +15,26 @@
  */
 
 package org.spicefactory.parsley.core.factory {
-import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
-import org.spicefactory.parsley.core.view.ViewManager;
 
-import flash.system.ApplicationDomain;
-
-/**
- * Factory responsible for creating ViewManager instances.
- * 
- * @author Jens Halm
- */
+[Deprecated(replacement="BootstrapConfig.viewSettings or ViewSettings MXML tag")]
 public interface ViewManagerFactory {
 	
-	
-	[Deprecated(replacement="ViewSettings.autowireFilter")]
 	function get autowireFilter () : ViewAutowireFilter;
 	
 	function set autowireFilter (value:ViewAutowireFilter) : void;
 	
-	[Deprecated(replacement="ViewSettings.autoremoveViewRoots")]
 	function get viewRootRemovedEvent () : String;
 	
 	function set viewRootRemovedEvent (value:String) : void;
 
-	[Deprecated(replacement="ViewSettings.autoremoveComponents")]
 	function get componentRemovedEvent () : String;
 	
 	function set componentRemovedEvent (value:String) : void;
 
-	[Deprecated]
 	function get componentAddedEvent () : String;
 	
 	function set componentAddedEvent (value:String) : void;
-	
-	/**
-	 * Creates a new ViewManager instance.
-	 * 
-	 * @param context the Context the new ViewManager will belong to
-	 * @param domain the domain to use for reflection
-	 * @param settings the settings to pass to the ViewManager
-	 * @return a new ViewManager instance
-	 */
-	function create (context:Context, domain:ApplicationDomain, settings:ViewSettings) : ViewManager;
-
 	
 }
 }

@@ -15,13 +15,11 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.factory.FactoryRegistry;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 
 [Deprecated(replacement="ViewSettings and MessageSettings")]
-public class SettingsTag implements ContextBuilderProcessor {
+public class SettingsTag implements BootstrapConfigProcessor {
 	
 	public var stageBoundLifecycle:Boolean = true;
 	
@@ -33,16 +31,15 @@ public class SettingsTag implements ContextBuilderProcessor {
 	
 	public var local:Boolean = false;
 	
-	public function processBuilder (builder:CompositeContextBuilder) : void {
-		var registry:FactoryRegistry = (local) ? builder.factories : GlobalFactoryRegistry.instance;
-		registry.viewSettings.autoremoveComponents = stageBoundLifecycle;
-		registry.viewSettings.autoremoveViewRoots = stageBoundLifecycle;
-		registry.viewSettings.autowireComponents = autowireViews;
+	public function processConfig (config:BootstrapConfig) : void {
+		config.viewSettings.autoremoveComponents = stageBoundLifecycle;
+		config.viewSettings.autoremoveViewRoots = stageBoundLifecycle;
+		config.viewSettings.autowireComponents = autowireViews;
 		if (unhandledMessageErrors != null) {
-			registry.messageSettings.unhandledError = unhandledMessageErrors;
+			config.messageSettings.unhandledError = unhandledMessageErrors;
 		}
 		if (globalErrorHandler != null) {
-			registry.messageSettings.addErrorHandler(new GlobalMessageErrorHandler(globalErrorHandler));
+			config.messageSettings.addErrorHandler(new GlobalMessageErrorHandler(globalErrorHandler));
 		}
 	}
 }

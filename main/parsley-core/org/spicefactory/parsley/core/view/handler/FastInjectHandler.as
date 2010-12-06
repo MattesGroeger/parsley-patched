@@ -18,7 +18,7 @@ package org.spicefactory.parsley.core.view.handler {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.FastInjectEvent;
-import org.spicefactory.parsley.core.factory.ViewSettings;
+import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.view.ViewConfigurator;
 import org.spicefactory.parsley.core.view.ViewHandler;
 import org.spicefactory.parsley.core.view.impl.ViewInjection;

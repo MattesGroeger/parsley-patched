@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.xml.processor.XmlConfigurationProcessor;
 
 /**
@@ -30,7 +30,7 @@ import org.spicefactory.parsley.xml.processor.XmlConfigurationProcessor;
  * 
  * @author Jens Halm
  */
-public class XmlConfigTag implements ContextBuilderProcessor {
+public class XmlConfigTag implements BootstrapConfigProcessor {
 	
 	
 	/**
@@ -42,8 +42,8 @@ public class XmlConfigTag implements ContextBuilderProcessor {
 	/**
 	 * @private
 	 */
-	public function processBuilder (builder:CompositeContextBuilder) : void {
-		builder.addProcessor(new XmlConfigurationProcessor([file]));
+	public function processConfig (config:BootstrapConfig) : void {
+		config.addProcessor(new XmlConfigurationProcessor([file]));
 	}
 	
 	

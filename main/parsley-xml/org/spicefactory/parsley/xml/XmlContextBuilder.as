@@ -16,9 +16,10 @@
 
 package org.spicefactory.parsley.xml {
 import org.spicefactory.lib.expr.ExpressionContext;
+import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.core.bootstrap.BootstrapManager;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.xml.processor.XmlConfigurationProcessor;
 
 import flash.display.DisplayObject;
@@ -67,9 +68,12 @@ public class XmlContextBuilder {
 	 */	
 	public static function buildAll (filenames:Array, viewRoot:DisplayObject = null, parent:Context = null, 
 			domain:ApplicationDomain = null, expressionContext:ExpressionContext = null) : Context {
-		var builder:CompositeContextBuilder = GlobalFactoryRegistry.instance.contextBuilder.create(viewRoot, parent, domain);
-		mergeAll(filenames, builder);
-		return builder.build();
+		var manager:BootstrapManager = BootstrapDefaults.config.services.bootstrapManager.newInstance() as BootstrapManager;
+		manager.config.viewRoot = viewRoot;
+		manager.config.parent = parent;
+		manager.config.domain = domain;
+		manager.config.addProcessor(new XmlConfigurationProcessor(filenames, expressionContext));
+		return manager.createProcessor().process();
 	}
 	
 	[Deprecated(replacement="ContextBuilder DSL")]

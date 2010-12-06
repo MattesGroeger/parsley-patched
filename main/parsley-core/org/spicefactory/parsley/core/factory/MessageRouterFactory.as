@@ -16,38 +16,19 @@
 
 package org.spicefactory.parsley.core.factory {
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
-import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.messaging.command.CommandFactory;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 
-/**
- * Factory responsible for creating MessageRouter instances.
- * 
- * @author Jens Halm
- */
+[Deprecated(replacement="BootstrapConfig.messageSettings or MessageSettings MXML tag")]
 public interface MessageRouterFactory {
 	
-	
-	[Deprecated(replacement="MessagingSettings.unhandledError")]
 	function get unhandledError () : ErrorPolicy;
 
 	function set unhandledError (policy:ErrorPolicy) : void;
 	
-	[Deprecated(replacement="MessagingSettings.addErrorHandler")]
 	function addErrorHandler (target:MessageErrorHandler) : void;
 
-	[Deprecated(replacement="MessagingSettings.commandFactories.addCommandFactory")]
 	function addCommandFactory (type:Class, factory:CommandFactory) : void;
-	
-	/**
-	 * Creates a new MessageRouter instance.
-	 * 
-	 * @param settings the settings for the router created by this factory
-	 * @param isLifecycleEventRouter whether this router handles object lifecycle events or regular application events
-	 * @return a new MessageRouter instance
-	 */
-	function create (settings:MessageSettings, isLifecylceEventRouter:Boolean) : MessageRouter;
-	
 	
 }
 }

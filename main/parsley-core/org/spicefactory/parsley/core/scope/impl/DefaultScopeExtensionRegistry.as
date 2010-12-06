@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.factory.impl {
-import org.spicefactory.parsley.core.factory.ScopeExtensionFactory;
-import org.spicefactory.parsley.core.factory.ScopeExtensionRegistry;
+package org.spicefactory.parsley.core.scope.impl {
+import org.spicefactory.parsley.core.bootstrap.impl.ServiceFactory;
+import org.spicefactory.parsley.core.scope.ScopeExtensionRegistry;
 import org.spicefactory.parsley.core.scope.ScopeExtensions;
-import org.spicefactory.parsley.core.scope.impl.DefaultScopeExtensions;
 
 import flash.utils.Dictionary;
 
@@ -45,7 +44,7 @@ public class DefaultScopeExtensionRegistry implements ScopeExtensionRegistry {
 	/**
 	 * @inheritDoc
 	 */
-	public function addExtension (factory:ScopeExtensionFactory, scope:String = null, id:String = null) : void {
+	public function addExtension (type:Class, params:Array = null, scope:String = null, id:String = null) : void {
 		var registry:Registry;
 		if (scope == null) {
 			registry = allScopes;
@@ -57,7 +56,7 @@ public class DefaultScopeExtensionRegistry implements ScopeExtensionRegistry {
 		else {
 			registry = Registry(scopes[scope]);
 		}
-		registry.addExtension(factory, id);
+		registry.addExtension(new ServiceFactory(type, params), id);
 	}
 	
 	/**
@@ -75,20 +74,19 @@ public class DefaultScopeExtensionRegistry implements ScopeExtensionRegistry {
 	}
 	
 	private function addExtensions (registry:Registry, ext:DefaultScopeExtensions) : void {
-		for each (var factory:ScopeExtensionFactory in registry.withoutId) {
-			ext.addExtension(factory.create());
+		for each (var factory:ServiceFactory in registry.withoutId) {
+			ext.addExtension(factory.newInstance());
 		}
 		for (var id:String in registry.byId) {
-			var idFactory:ScopeExtensionFactory = ScopeExtensionFactory(registry.byId[id]);
-			ext.addExtension(idFactory.create(), id);
+			var idFactory:ServiceFactory = ServiceFactory(registry.byId[id]);
+			ext.addExtension(idFactory.newInstance(), id);
 		}
 	}
-	
 }
 }
 
+import org.spicefactory.parsley.core.bootstrap.impl.ServiceFactory;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.factory.ScopeExtensionFactory;
 
 import flash.utils.Dictionary;
 
@@ -97,7 +95,7 @@ class Registry {
 	internal var byId:Dictionary = new Dictionary();
 	internal var withoutId:Array = new Array();
 
-	public function addExtension (factory:ScopeExtensionFactory, id:String) : void {
+	public function addExtension (factory:ServiceFactory, id:String) : void {
 		if (id != null) {
 			if (byId[id] != undefined) {
 				throw new ContextError("Duplicate id for scope extension: " + id);

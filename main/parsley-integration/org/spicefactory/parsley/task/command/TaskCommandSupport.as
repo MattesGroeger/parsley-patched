@@ -16,9 +16,9 @@
 
 package org.spicefactory.parsley.task.command {
 import org.spicefactory.lib.task.Task;
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
-import org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
+import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.flex.tag.builder.BootstrapConfigProcessor;
 
 /**
  * Provides a static method to initalize the support for command methods that
@@ -29,7 +29,7 @@ import org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor;
  * 
  * @author Jens Halm
  */
-public class TaskCommandSupport implements ContextBuilderProcessor {
+public class TaskCommandSupport implements BootstrapConfigProcessor {
 
 	
 	private static var initialized:Boolean = false;
@@ -42,14 +42,14 @@ public class TaskCommandSupport implements ContextBuilderProcessor {
 	 */
 	public static function initialize () : void {
 		if (initialized) return;
-		GlobalFactoryRegistry.instance.messageSettings.commandFactories.addCommandFactory(Task, new TaskCommandFactory());
+		BootstrapDefaults.config.messageSettings.commandFactories.addCommandFactory(Task, new TaskCommandFactory());
 		initialized = true;
 	}
 	
 	/**
 	 * @private
 	 */
-	public function processBuilder (builder:CompositeContextBuilder) : void {
+	public function processConfig (config:BootstrapConfig) : void {
 		initialize();
 	}
 	

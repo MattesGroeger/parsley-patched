@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.factory {
-import org.spicefactory.parsley.core.view.ViewAutowireFilter;
+package org.spicefactory.parsley.core.view {
+
 import org.spicefactory.parsley.core.view.ViewHandler;
 
 /**
@@ -73,8 +73,9 @@ public interface ViewSettings {
 	 * a no-arg constructor.
 	 * 
 	 * @param handler the type of view handler to add
+	 * @param params the parameters to pass to the constructor of the view handler
 	 */
-	function addViewHandler (handler:Class) : void;
+	function addViewHandler (handler:Class, ...params) : void;
 	
 	/**
 	 * All view handlers that were registered for these settings.

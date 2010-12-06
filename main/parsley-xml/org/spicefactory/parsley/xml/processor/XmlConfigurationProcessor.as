@@ -27,7 +27,7 @@ import org.spicefactory.lib.xml.XmlProcessorContext;
 import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.parsley.config.Configurations;
 import org.spicefactory.parsley.config.RootConfigurationElement;
-import org.spicefactory.parsley.core.builder.AsyncConfigurationProcessor;
+import org.spicefactory.parsley.core.bootstrap.AsyncConfigurationProcessor;
 import org.spicefactory.parsley.core.errors.ConfigurationUnitError;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;

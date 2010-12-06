@@ -15,9 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.factory.MessageSettings;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 
 /**
@@ -33,7 +31,7 @@ import org.spicefactory.parsley.core.messaging.ErrorPolicy;
  * @author Jens Halm
  */
 
-public class MessageSettingsTag implements ContextBuilderProcessor {
+public class MessageSettingsTag implements BootstrapConfigProcessor {
 	
 	
 	/**
@@ -50,25 +48,21 @@ public class MessageSettingsTag implements ContextBuilderProcessor {
 	 */
 	public var unhandledErrors:ErrorPolicy;
 	
-	/**
-	 * Indicates whether the settings in this tag should only applied
-	 * to the Context built by the corresponding ContextBuilder tag.
-	 * If set to false (the default) these settings will be applied globally,
-	 * but not to Context instances that were already built.
-	 */
+	[Deprecated]
 	public var local:Boolean = false;
 	
 	
 	/**
 	 * @private
 	 */
-	public function processBuilder (builder:CompositeContextBuilder) : void {
-		var settings:MessageSettings = (local) ? builder.factories.messageSettings : GlobalFactoryRegistry.instance.messageSettings;
+	public function processConfig (config:BootstrapConfig) : void {
+		/* var settings:MessageSettings = (local) 
+				? builder.factories.messageSettings : GlobalFactoryRegistry.instance.messageSettings; */
 		if (unhandledErrors != null) {
-			settings.unhandledError = unhandledErrors;
+			config.messageSettings.unhandledError = unhandledErrors;
 		}
 		if (errorHandler != null) {
-			settings.addErrorHandler(new GlobalMessageErrorHandler(errorHandler));
+			config.messageSettings.addErrorHandler(new GlobalMessageErrorHandler(errorHandler));
 		}
 	}
 }

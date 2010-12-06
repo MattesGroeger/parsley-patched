@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 
 /**
  * MXML tag for declaring a custom scope that should be added to the Context. 
@@ -29,7 +29,7 @@ import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
  * 
  * @author Jens Halm
  */
-public class ScopeTag implements ContextBuilderProcessor {
+public class ScopeTag implements BootstrapConfigProcessor {
 	
 	/**
 	 * The name of the scope.
@@ -49,8 +49,8 @@ public class ScopeTag implements ContextBuilderProcessor {
 	/**
 	 * @private
 	 */
-	public function processBuilder (builder:CompositeContextBuilder) : void {
-		builder.addScope(name, inherited, uuid);
+	public function processConfig (config:BootstrapConfig) : void {
+		config.addScope(name, inherited, uuid);
 	}
 	
 }

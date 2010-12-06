@@ -15,11 +15,11 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
-import org.spicefactory.parsley.config.Configurations;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
+import org.spicefactory.parsley.config.Configurations;
 import org.spicefactory.parsley.config.RootConfigurationElement;
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionFactory;
@@ -51,7 +51,7 @@ import org.spicefactory.parsley.tag.RootConfigurationTag;
  * 
  * @author Jens Halm
  */
-public class RuntimeConfigTag implements ContextBuilderProcessor, ConfigurationProcessor {
+public class RuntimeConfigTag implements BootstrapConfigProcessor, ConfigurationProcessor {
 	
 	/**
 	 * The configuration artifacts to add to the Context.
@@ -65,8 +65,8 @@ public class RuntimeConfigTag implements ContextBuilderProcessor, ConfigurationP
 	/**
 	 * @inheritDoc
 	 */
-	public function processBuilder (builder:CompositeContextBuilder) : void {
-		builder.addProcessor(this);
+	public function processConfig (config:BootstrapConfig) : void {
+		config.addProcessor(this);
 	}
 
 	public function processConfiguration (registry:ObjectDefinitionRegistry) : void {

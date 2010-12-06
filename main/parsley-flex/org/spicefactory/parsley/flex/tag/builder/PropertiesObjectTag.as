@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.properties.Properties;
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 
 /**
  * MXML tag for declaring a properties represented by name/value pairs of a generic AS3 object.
@@ -33,7 +33,7 @@ import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
  * 
  * @author Jens Halm
  */
-public class PropertiesObjectTag implements ContextBuilderProcessor {
+public class PropertiesObjectTag implements BootstrapConfigProcessor {
 
 
 	/**
@@ -46,8 +46,8 @@ public class PropertiesObjectTag implements ContextBuilderProcessor {
 	/**
 	 * @private
 	 */
-	public function processBuilder (builder:CompositeContextBuilder) : void {
-		builder.addProcessor(Properties.forObject(ref));
+	public function processConfig (config:BootstrapConfig) : void {
+		config.addProcessor(Properties.forObject(ref));
 	}
 	
 	

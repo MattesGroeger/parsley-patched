@@ -124,7 +124,7 @@ public class ScopeTest {
 	public function extensions () : void {
 		var context:Context = ContextBuilder
 		.newSetup()
-			.scopeExtensions(true).factory(new ScopeTestExtensionFactory())
+			.scopeExtensions().addExtension(ScopeTestExtension)
 			.newBuilder()
 				.config(ActionScriptConfig.forClass(ScopeMessagingTestConfig))
 				.build();
@@ -199,22 +199,12 @@ public class ScopeTest {
 			assertThat(reg.getScopeById(uuid), nullValue());
 		}
 	}
-	
-	
 }
 }
 
-import org.spicefactory.parsley.context.scope.ScopeTestExtension;
-import org.spicefactory.parsley.core.factory.ScopeExtensionFactory;
 import org.spicefactory.parsley.util.MessageCounter;
 
 import mx.containers.Box;
-
-class ScopeTestExtensionFactory implements ScopeExtensionFactory {
-	public function create ():Object {
-		return new ScopeTestExtension();
-	}
-}
 
 class LifecycleEventCounter extends MessageCounter {
 	public function globalListener (instance:Box) : void {

@@ -212,7 +212,7 @@ public class BindingMetadataTagTest {
 		
 		var context:Context = ContextBuilder
 			.newSetup()
-				.scopeExtensions(true).factory(new TestPersistenceManagerFactory())
+				.scopeExtensions().addExtension(DictionaryPersistenceService)
 				.newBuilder()
 					.object(pub1)
 					.object(pub2)
@@ -228,14 +228,4 @@ public class BindingMetadataTagTest {
 		assertThat(DictionaryPersistenceService.getStoredValue("local0", String, "test"), equalTo("B"));
 	}
 }
-}
-
-import org.spicefactory.parsley.binding.DictionaryPersistenceService;
-import org.spicefactory.parsley.core.factory.ScopeExtensionFactory;
-
-class TestPersistenceManagerFactory implements ScopeExtensionFactory {
-
-	public function create() : Object {
-		return new DictionaryPersistenceService();
-	}
 }

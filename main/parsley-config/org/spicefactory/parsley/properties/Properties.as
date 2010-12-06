@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.properties {
-import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
+import org.spicefactory.parsley.core.bootstrap.ConfigurationProcessor;
 import org.spicefactory.parsley.properties.processor.PropertiesFileProcessor;
 import org.spicefactory.parsley.properties.util.PropertiesParser;
 
@@ -67,8 +67,6 @@ public class Properties {
 	public static function forObject (object:Object) : ConfigurationProcessor {
 		return new PropertiesProcessor(object);
 	}
-	
-	
 }
 }
 

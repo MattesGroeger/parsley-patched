@@ -1,13 +1,10 @@
 package org.spicefactory.parsley.config {
-import org.hamcrest.object.sameInstance;
-import org.hamcrest.core.not;
-import org.hamcrest.core.isA;
 import org.hamcrest.assertThat;
+import org.hamcrest.core.isA;
+import org.hamcrest.core.not;
 import org.hamcrest.object.equalTo;
+import org.hamcrest.object.sameInstance;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.factory.MessageRouterFactory;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
-import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.coretag.inject.model.InjectedDependency;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
@@ -21,23 +18,16 @@ public class DslConfigTest {
 	
 	
 	[Test]
-	public function factoryReplacement () : void {
-		var delegate:MessageRouterFactory = GlobalFactoryRegistry.instance.messageRouter;
-		var originalErrorPolicy:ErrorPolicy = delegate.unhandledError;
-		var factory:MessageRouterFactoryDecorator 
-				= new MessageRouterFactoryDecorator(delegate);
-		try {
-			ContextBuilder.newSetup()
-					.messageSettings().unhandledError(ErrorPolicy.ABORT)
-					.factories(true).messageRouter(factory)
-					.newBuilder()
-					.build();	
-			assertThat(factory.invocationCount, equalTo(2));
-			assertThat(delegate.unhandledError, equalTo(ErrorPolicy.ABORT));	
-		}
-		finally {
-			delegate.unhandledError = originalErrorPolicy;
-		}
+	public function messageRouterDelegate () : void {
+		MessageRouterDecorator.initCount = 0;
+		MessageRouterDecorator.messageCount = 0;
+		var context:Context = ContextBuilder.newSetup()
+				.services(true).messageRouter().addDecorator(MessageRouterDecorator)
+				.newBuilder()
+				.build();	
+		context.scopeManager.dispatchMessage(Object);
+		assertThat(MessageRouterDecorator.initCount, equalTo(4));
+		assertThat(MessageRouterDecorator.messageCount, equalTo(2));
 	}
 	
 	[Test]
@@ -65,49 +55,43 @@ public class DslConfigTest {
 		assertThat(targetInstance.fromConstructor, not(sameInstance(targetInstance.fromProperty)));
 		assertThat(targetInstance.fromConstructor, not(sameInstance(targetInstance.fromMethod)));
 	}
-	
-	
 }
 }
 
-import org.spicefactory.parsley.core.factory.MessageRouterFactory;
-import org.spicefactory.parsley.core.factory.MessageSettings;
-import org.spicefactory.parsley.core.messaging.ErrorPolicy;
+import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
-import org.spicefactory.parsley.core.messaging.command.CommandFactory;
-import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
+import org.spicefactory.parsley.core.messaging.MessageSettings;
+import org.spicefactory.parsley.core.messaging.command.CommandManager;
 
-class MessageRouterFactoryDecorator implements MessageRouterFactory {
+import flash.system.ApplicationDomain;
+
+class MessageRouterDecorator implements MessageRouter {
 	
-	public var invocationCount:int;
+	public static var initCount:int;
+	public static var messageCount:int;
 	
-	private var delegate:MessageRouterFactory;
+	private var delegate:MessageRouter;
 	
 	
-	function MessageRouterFactoryDecorator (delegate:MessageRouterFactory) {
+	function MessageRouterDecorator (delegate:MessageRouter) {
 		this.delegate = delegate;
 	}
-
-	public function addErrorHandler (target:MessageErrorHandler) : void {
-		delegate.addErrorHandler(target);
-	}
-
-	public function addCommandFactory (type:Class, factory:CommandFactory) : void {
-		delegate.addCommandFactory(type, factory);
+	
+	public function init (settings:MessageSettings, isLifecylceEventRouter:Boolean) : void {
+		initCount++;
 	}
 	
-	public function create (settings:MessageSettings, isLifecycleEventRouter:Boolean) : MessageRouter {
-		invocationCount++;
-		return delegate.create(settings, isLifecycleEventRouter);
-	}
-
-	public function get unhandledError () : ErrorPolicy {
-		return delegate.unhandledError;
-	}
-
-	public function set unhandledError (policy:ErrorPolicy) : void {
-		delegate.unhandledError = policy;
+	public function dispatchMessage (message:Object, domain:ApplicationDomain, selector:* = undefined) : void {
+		messageCount++;
+		delegate.dispatchMessage(message, domain);
 	}
 	
+	public function get receivers () : MessageReceiverRegistry {
+		return delegate.receivers;
+	}
+	
+	public function get commandManager() : CommandManager {
+		return delegate.commandManager;
+	}
 	
 }

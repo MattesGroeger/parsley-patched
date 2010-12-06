@@ -16,9 +16,7 @@
 
 package org.spicefactory.parsley.dsl.context {
 import org.spicefactory.lib.util.Flag;
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.factory.FactoryRegistry;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 
 /**
@@ -30,7 +28,6 @@ public class ViewSettingsBuilder implements SetupPart {
 	
 	
 	private var setup:ContextBuilderSetup;
-	private var local:Boolean;
 	
 	private var _autowireFilter:ViewAutowireFilter;
 	private var _autowireComponents:Flag;
@@ -41,9 +38,8 @@ public class ViewSettingsBuilder implements SetupPart {
 	/**
 	 * @private
 	 */
-	function ViewSettingsBuilder (setup:ContextBuilderSetup, local:Boolean) {
+	function ViewSettingsBuilder (setup:ContextBuilderSetup) {
 		this.setup = setup;
-		this.local = local;
 	}
 
 	
@@ -128,19 +124,18 @@ public class ViewSettingsBuilder implements SetupPart {
 	/**
 	 * @private
 	 */
-	public function apply (builder:CompositeContextBuilder) : void {
-		var registry:FactoryRegistry = (local) ? builder.factories : GlobalFactoryRegistry.instance;
+	public function apply (config:BootstrapConfig) : void {
 		if (_autowireFilter != null) {
-			registry.viewSettings.autowireFilter = _autowireFilter;
+			config.viewSettings.autowireFilter = _autowireFilter;
 		}
 		if (_autowireComponents != null) {
-			registry.viewSettings.autowireComponents = _autowireComponents.value;
+			config.viewSettings.autowireComponents = _autowireComponents.value;
 		}
 		if (_autoremoveComponents != null) {
-			registry.viewSettings.autoremoveComponents = _autoremoveComponents.value;
+			config.viewSettings.autoremoveComponents = _autoremoveComponents.value;
 		}
 		if (_autoremoveViewRoots != null) {
-			registry.viewSettings.autoremoveViewRoots = _autoremoveViewRoots.value;
+			config.viewSettings.autoremoveViewRoots = _autoremoveViewRoots.value;
 		}
 	}
 	

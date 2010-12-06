@@ -15,14 +15,13 @@
  */
 
 package org.spicefactory.parsley.core.context.impl {
+import org.spicefactory.parsley.core.bootstrap.BootstrapInfo;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.SingletonObjectDefinition;
@@ -38,8 +37,8 @@ public class DefaultDynamicContext extends ChildContext implements DynamicContex
 	
 	private var objects:Dictionary = new Dictionary();
 	
-	public function DefaultDynamicContext (provider:ContextStrategyProvider, parent:Context) {
-		super(provider, parent);
+	public override function init (info:BootstrapInfo) : void {
+		super.init(info);
 		addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		registry.freeze();
 	}

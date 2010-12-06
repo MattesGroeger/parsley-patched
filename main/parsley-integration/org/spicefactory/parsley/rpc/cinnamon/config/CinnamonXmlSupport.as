@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.rpc.cinnamon.config {
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
+import org.spicefactory.parsley.flex.tag.builder.BootstrapConfigProcessor;
 import org.spicefactory.parsley.xml.mapper.XmlConfigurationNamespaceRegistry;
 
 /**
@@ -25,7 +25,7 @@ import org.spicefactory.parsley.xml.mapper.XmlConfigurationNamespaceRegistry;
  * 
  * @author Jens Halm
  */
-public class CinnamonXmlSupport implements ContextBuilderProcessor {
+public class CinnamonXmlSupport implements BootstrapConfigProcessor {
 	
 	
 	/**
@@ -51,7 +51,7 @@ public class CinnamonXmlSupport implements ContextBuilderProcessor {
 	/**
 	 * @private
 	 */
-	public function processBuilder (builder:CompositeContextBuilder) : void {
+	public function processConfig (config:BootstrapConfig) : void {
 		initialize();
 	}
 	

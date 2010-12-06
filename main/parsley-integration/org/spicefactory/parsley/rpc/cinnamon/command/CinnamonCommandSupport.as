@@ -16,9 +16,9 @@
 
 package org.spicefactory.parsley.rpc.cinnamon.command {
 import org.spicefactory.cinnamon.service.ServiceRequest;
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
-import org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
+import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.flex.tag.builder.BootstrapConfigProcessor;
 
 /**
  * Provides a static method to initalize the support for command methods that
@@ -31,7 +31,7 @@ import org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor;
  * 
  * @author Jens Halm
  */
-public class CinnamonCommandSupport implements ContextBuilderProcessor {
+public class CinnamonCommandSupport implements BootstrapConfigProcessor {
 
 	
 	private static var initialized:Boolean = false;
@@ -44,14 +44,14 @@ public class CinnamonCommandSupport implements ContextBuilderProcessor {
 	 */
 	public static function initialize () : void {
 		if (initialized) return;
-		GlobalFactoryRegistry.instance.messageSettings.commandFactories.addCommandFactory(ServiceRequest, new CinnamonCommandFactory());
+		BootstrapDefaults.config.messageSettings.commandFactories.addCommandFactory(ServiceRequest, new CinnamonCommandFactory());
 		initialized = true;
 	}
 	
 	/**
 	 * @private
 	 */
-	public function processBuilder (builder:CompositeContextBuilder) : void {
+	public function processConfig (config:BootstrapConfig) : void {
 		initialize();
 	}
 	

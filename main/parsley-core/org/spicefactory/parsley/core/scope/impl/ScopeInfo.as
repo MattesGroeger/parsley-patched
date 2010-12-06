@@ -15,23 +15,25 @@
  */
 
 package org.spicefactory.parsley.core.scope.impl {
-	import org.spicefactory.lib.errors.IllegalStateError;
-	import org.spicefactory.parsley.core.context.Context;
-	import org.spicefactory.parsley.core.factory.FactoryRegistry;
-	import org.spicefactory.parsley.core.messaging.MessageRouter;
-	import org.spicefactory.parsley.core.scope.ScopeExtensions;
+import org.spicefactory.lib.errors.IllegalStateError;
+import org.spicefactory.parsley.core.bootstrap.ServiceRegistry;
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.messaging.MessageSettings;
+import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.scope.ScopeExtensions;
 
-	/**
-	 * Definition for a single scope. Instances of this class
+/**
+ * Holds the definition and collaborators like MessageRouters for a single scope. Instances of this class
  * will be shared by all ScopeManagers of all Context instances that
  * a scope is associated with.
  * 
  * @author Jens Halm
  */
-public class ScopeDefinition {
+public class ScopeInfo {
 	
 	
-	private var factories:FactoryRegistry;
+	private var services:ServiceRegistry;
+	private var settings:MessageSettings;
 	
 	private var _name:String;
 	private var _uuid:String;
@@ -52,11 +54,13 @@ public class ScopeDefinition {
 	 * @param factories the factories to obtain the internal MessageRouters for this scope from
 	 * @param extensions the extensions registered for this scope
 	 */
-	function ScopeDefinition (name:String, inherited:Boolean, uuid:String, factories:FactoryRegistry, extensions:ScopeExtensions) {
+	function ScopeInfo (name:String, inherited:Boolean, uuid:String, 
+			services:ServiceRegistry, settings:MessageSettings, extensions:ScopeExtensions) {
 		_name = name;
 		_uuid = uuid;
 		_inherited = inherited;
-		this.factories = factories;
+		this.services = services;
+		this.settings = settings;
 		this._extensions = extensions;
 	}
 
@@ -101,7 +105,8 @@ public class ScopeDefinition {
 	 */
 	public function get lifecycleEventRouter () : MessageRouter {
 		if (_lifecycleEventRouter == null) {
-			_lifecycleEventRouter = factories.messageRouter.create(factories.messageSettings, true);
+			_lifecycleEventRouter = services.messageRouter.newInstance() as MessageRouter;
+			_lifecycleEventRouter.init(settings, true);
 		}
 		return _lifecycleEventRouter;
 	}
@@ -111,7 +116,8 @@ public class ScopeDefinition {
 	 */
 	public function get messageRouter () : MessageRouter {
 		if (_messageRouter == null) {
-			_messageRouter = factories.messageRouter.create(factories.messageSettings, false);
+			_messageRouter = services.messageRouter.newInstance() as MessageRouter;
+			_messageRouter.init(settings, false);
 		}
 		return _messageRouter;
 	}
@@ -122,6 +128,7 @@ public class ScopeDefinition {
 	public function get extensions () : ScopeExtensions {
 		return _extensions;
 	}
+	
 	
 }
 }

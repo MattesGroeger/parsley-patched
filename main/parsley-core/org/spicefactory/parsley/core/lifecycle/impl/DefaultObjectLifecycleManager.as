@@ -16,12 +16,14 @@
 
 package org.spicefactory.parsley.core.lifecycle.impl {
 import org.spicefactory.lib.util.ArrayUtil;
+import org.spicefactory.parsley.core.bootstrap.BootstrapInfo;
+import org.spicefactory.parsley.core.bootstrap.InitializingService;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.lifecycle.ManagedObjectHandler;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
-import org.spicefactory.parsley.core.scope.impl.ScopeDefinition;
+import org.spicefactory.parsley.core.scope.impl.ScopeInfo;
 
 import flash.system.ApplicationDomain;
 
@@ -30,7 +32,7 @@ import flash.system.ApplicationDomain;
  * 
  * @author Jens Halm
  */
-public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
+public class DefaultObjectLifecycleManager implements ObjectLifecycleManager, InitializingService {
 	
 	
 	private var handlers:Array = new Array();
@@ -42,15 +44,18 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 
 	/**
 	 * Creates a new instance.
-	 * 
-	 * @param domain the ApplicationDomain to use for reflection
-	 * @param scopes the ScopeDefinitions for dispatching lifecycle events
 	 */
-	function DefaultObjectLifecycleManager (domain:ApplicationDomain, scopes:Array) {
-		this.domain = domain;
-		this.scopes = scopes;		
+	function DefaultObjectLifecycleManager () {
+		
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function init (info:BootstrapInfo) : void {
+		this.domain = info.domain;
+		this.scopes = info.scopes;
+	}
 
 	/**
 	 * @inheritDoc
@@ -65,7 +70,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager {
 	 * @private
 	 */	
 	internal function processObservers (instance:Object, event:ObjectLifecycle, id:String = null) : void {
-		for each (var scope:ScopeDefinition in scopes) {
+		for each (var scope:ScopeInfo in scopes) {
 			scope.lifecycleEventRouter.dispatchMessage(instance, domain, event.key);
 			if (id != null) {
 				scope.lifecycleEventRouter.dispatchMessage(instance, domain, event.key + ":" + id);				

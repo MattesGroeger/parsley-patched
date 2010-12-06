@@ -16,7 +16,8 @@
 
 package org.spicefactory.parsley.core.scope.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
-import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.bootstrap.BootstrapInfo;
+import org.spicefactory.parsley.core.bootstrap.InitializingService;
 import org.spicefactory.parsley.core.scope.Scope;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 
@@ -28,7 +29,7 @@ import flash.utils.Dictionary;
  * 
  * @author Jens Halm
  */
-public class DefaultScopeManager implements ScopeManager {
+public class DefaultScopeManager implements ScopeManager, InitializingService {
 	
 	
 	private var scopes:Dictionary = new Dictionary();
@@ -37,16 +38,20 @@ public class DefaultScopeManager implements ScopeManager {
 	
 	/**
 	 * Creates a new instance.
-	 * 
-	 * @param scopes the scopes this instance should manage
 	 */
-	function DefaultScopeManager (context:Context, scopeDefs:Array, domain:ApplicationDomain) {
-		for each (var scopeDef:ScopeDefinition in scopeDefs) {
-			scopes[scopeDef.name] = new DefaultScope(context, scopeDef, domain);
-		}
-		this.domain = domain;
+	function DefaultScopeManager () {
+		
 	}
 	
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function init (info:BootstrapInfo) : void {
+		for each (var scope:ScopeInfo in info.scopes) {
+			scopes[scope.name] = new DefaultScope(info.context, scope, domain);
+		}
+	}
 	
 	/**
 	 * @inheritDoc

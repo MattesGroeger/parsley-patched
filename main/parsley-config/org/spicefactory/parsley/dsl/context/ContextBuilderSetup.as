@@ -15,9 +15,9 @@
  */
 
 package org.spicefactory.parsley.dsl.context {
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
+import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.core.bootstrap.BootstrapManager;
 import org.spicefactory.parsley.core.context.Context;
 
 import flash.display.DisplayObject;
@@ -89,62 +89,50 @@ public class ContextBuilderSetup {
 	}
 	
 	/**
-	 * Allows to specify global or local messaging settings.
-	 * When the local flag is set to true, only the one Context created by this builder will 
-	 * be affected, when set to false or omitted all Contexts created after this value has
-	 * been set will be affected.
+	 * Allows to specify messaging settings.
 	 * 
-	 * @param local whether only the target Context or all Contexts should be affected
+	 * @param local this parameter is deprecated and has no effect
 	 * @return a builder that allows to specify messaging settings 
 	 */
 	public function messageSettings (local:Boolean = false) : MessageSettingsBuilder {
-		var part:MessageSettingsBuilder = new MessageSettingsBuilder(this, local);
+		var part:MessageSettingsBuilder = new MessageSettingsBuilder(this);
 		addPart(part);
 		return part;
 	}
 	
 	/**
-	 * Allows to specify global or local settings for view wiring.
-	 * When the local flag is set to true, only the one Context created by this builder will 
-	 * be affected, when set to false or omitted all Contexts created after this value has
-	 * been set will be affected.
+	 * Allows to specify settings for view wiring.
 	 * 
-	 * @param local whether only the target Context or all Contexts should be affected
+	 * @param local this parameter is deprecated and has no effect
 	 * @return a builder that allows to specify settings for view wiring 
 	 */
 	public function viewSettings (local:Boolean = false) : ViewSettingsBuilder {
-		var part:ViewSettingsBuilder = new ViewSettingsBuilder(this, local);
+		var part:ViewSettingsBuilder = new ViewSettingsBuilder(this);
 		addPart(part);
 		return part;
 	}
 	
 	/**
-	 * Allows to register global or local scope extensions.
-	 * When the local flag is set to true, only the one Context created by this builder will 
-	 * be affected, when set to false or omitted all Contexts created after this value has
-	 * been set will be affected.
+	 * Allows to register scope extensions.
 	 * 
-	 * @param local whether only the target Context or all Contexts should be affected
+	 * @param local this parameter is deprecated and has no effect
 	 * @param scope the scope the extension should be created for (all scopes if omitted)
 	 * @return a builder that allows to register scope extensions
 	 */
 	public function scopeExtensions (local:Boolean = false, scope:String = null) : ScopeExtensionsBuilder {
-		var part:ScopeExtensionsBuilder = new ScopeExtensionsBuilder(this, local, scope);
+		var part:ScopeExtensionsBuilder = new ScopeExtensionsBuilder(this, scope);
 		addPart(part);
 		return part;
 	}
 	
 	/**
-	 * Allows to specify global or local factories for the IOC kernel services.
-	 * When the local flag is set to true, only the one Context created by this builder will 
-	 * be affected, when set to false or omitted all Contexts created after this value has
-	 * been set will be affected.
+	 * Allows to specify implementations or decorators for the IOC kernel services.
 	 * 
-	 * @param local whether only the target Context or all Contexts should be affected
+	 * @param local this parameter is deprecated and has no effect
 	 * @return a builder that allows to specify factories for the IOC kernel services 
 	 */
-	public function factories (local:Boolean = false) : FactoryRegistryBuilder {
-		var part:FactoryRegistryBuilder = new FactoryRegistryBuilder(this, local);
+	public function services (local:Boolean = false) : ServiceRegistryBuilder {
+		var part:ServiceRegistryBuilder = new ServiceRegistryBuilder(this);
 		addPart(part);
 		return part;
 	}
@@ -166,15 +154,20 @@ public class ContextBuilderSetup {
 	 * @return a new ContextBuilder based on the settings of this setup instance
 	 */
 	public function newBuilder () : ContextBuilder {
-		var builder:CompositeContextBuilder 
-				= GlobalFactoryRegistry.instance.contextBuilder.create(_viewRoot, _parent, _domain, _description);
+		
+		var manager:BootstrapManager = BootstrapDefaults.config.services.bootstrapManager.newInstance() as BootstrapManager;
+		var config:BootstrapConfig = manager.config;
+		config.viewRoot = _viewRoot;
+		config.parent = _parent;
+		config.domain = _domain;
+		config.description = _description;
 		for each (var scope:Scope in scopes) {
-			builder.addScope(scope.name, scope.inherited, scope.uuid);
+			config.addScope(scope.name, scope.inherited, scope.uuid);
 		}
 		for each (var part:SetupPart in parts) {
-			part.apply(builder);
+			part.apply(config);
 		}
-		return new ContextBuilder(builder);
+		return new ContextBuilder(manager.createProcessor());
 	}
 	
 	private function addPart (part:SetupPart) : void {

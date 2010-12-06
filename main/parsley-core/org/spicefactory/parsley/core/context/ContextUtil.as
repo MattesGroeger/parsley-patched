@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.context {
-import org.spicefactory.parsley.core.factory.impl.DefaultContextStrategyProvider;
 import org.spicefactory.lib.errors.IllegalStateError;
+import org.spicefactory.parsley.core.bootstrap.impl.DefaultBootstrapInfo;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.lifecycle.impl.ManagedObjectLookup;
@@ -109,7 +109,7 @@ public class ContextUtil {
 	 * The global registry for all registered scopes.
 	 */
 	public static function get globalScopeRegistry () : ScopeRegistry {
-		return DefaultContextStrategyProvider.scopeRegistry;
+		return DefaultBootstrapInfo.scopeRegistry;
 	}
 
 

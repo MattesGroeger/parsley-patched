@@ -15,9 +15,9 @@
  */
 
 package org.spicefactory.parsley.rpc.flex.command {
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
-import org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
+import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.flex.tag.builder.BootstrapConfigProcessor;
 
 import mx.rpc.AsyncToken;
 
@@ -27,7 +27,7 @@ import mx.rpc.AsyncToken;
  * 
  * @author Jens Halm
  */
-public class AsyncTokenCommandSupport implements ContextBuilderProcessor {
+public class AsyncTokenCommandSupport implements BootstrapConfigProcessor {
 
 	
 	private static var initialized:Boolean = false;
@@ -43,14 +43,14 @@ public class AsyncTokenCommandSupport implements ContextBuilderProcessor {
 	 */
 	public static function initialize () : void {
 		if (initialized) return;
-		GlobalFactoryRegistry.instance.messageSettings.commandFactories.addCommandFactory(AsyncToken, new AsyncTokenCommandFactory());
+		BootstrapDefaults.config.messageSettings.commandFactories.addCommandFactory(AsyncToken, new AsyncTokenCommandFactory());
 		initialized = true;
 	}
 	
 	/**
 	 * @private
 	 */
-	public function processBuilder (builder:CompositeContextBuilder) : void {
+	public function processConfig (config:BootstrapConfig) : void {
 		initialize();
 	}
 	

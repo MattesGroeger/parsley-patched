@@ -15,9 +15,7 @@
  */
 
 package org.spicefactory.parsley.dsl.context {
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.factory.FactoryRegistry;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 
 /**
@@ -29,7 +27,6 @@ public class MessageSettingsBuilder implements SetupPart {
 	
 	
 	private var setup:ContextBuilderSetup;
-	private var local:Boolean;
 	
 	private var errorPolicy:ErrorPolicy;
 	private var errorHandler:Function;
@@ -38,9 +35,8 @@ public class MessageSettingsBuilder implements SetupPart {
 	/**
 	 * @private
 	 */
-	function MessageSettingsBuilder (setup:ContextBuilderSetup, local:Boolean) {
+	function MessageSettingsBuilder (setup:ContextBuilderSetup) {
 		this.setup = setup;
-		this.local = local;
 	}
 
 	
@@ -73,17 +69,14 @@ public class MessageSettingsBuilder implements SetupPart {
 	/**
 	 * @private
 	 */
-	public function apply (builder:CompositeContextBuilder) : void {
-		var registry:FactoryRegistry = (local) ? builder.factories : GlobalFactoryRegistry.instance;
+	public function apply (config:BootstrapConfig) : void {
 		if (errorPolicy != null) {
-			registry.messageSettings.unhandledError = errorPolicy;
+			config.messageSettings.unhandledError = errorPolicy;
 		}
 		if (errorHandler != null) {
-			registry.messageSettings.addErrorHandler(new GlobalMessageErrorHandler(globalErrorHandler));
+			config.messageSettings.addErrorHandler(new GlobalMessageErrorHandler(globalErrorHandler));
 		}
 	}
-	
-	
 }
 }
 

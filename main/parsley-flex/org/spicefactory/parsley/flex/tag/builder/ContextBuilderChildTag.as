@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,14 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.factory {
-import org.spicefactory.parsley.core.context.Context;
+package org.spicefactory.parsley.flex.tag.builder {
 
 /**
- * Factory responsible for creating Context instances.
+ * Temporary marker interface for the legacy ContextBuilderProcessor and the new BootstrapConfigProcessor
+ * interfaces, just for validation in MXML editors.
  * 
  * @author Jens Halm
  */
-public interface ContextFactory {
-	
-	
-	/**
-	 * Creates a new Context instance.
-	 * 
-	 * @param provider the provider to pull collaborators from
-	 * @param parent the parent of the Context to be created
-	 * @return a new Context instance
-	 */
-	function create (provider:ContextStrategyProvider, parent:Context = null) : Context;
-	
-	
+public interface ContextBuilderChildTag {
 }
 }

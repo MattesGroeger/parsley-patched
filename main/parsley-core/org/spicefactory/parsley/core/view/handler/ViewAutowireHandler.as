@@ -17,7 +17,7 @@
 package org.spicefactory.parsley.core.view.handler {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ViewAutowireEvent;
-import org.spicefactory.parsley.core.factory.ViewSettings;
+import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.view.ViewAutowireMode;
 import org.spicefactory.parsley.core.view.ViewConfigurator;

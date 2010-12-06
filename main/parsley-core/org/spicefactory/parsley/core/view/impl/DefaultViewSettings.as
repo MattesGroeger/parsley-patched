@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.factory.impl {
+package org.spicefactory.parsley.core.view.impl {
+import org.spicefactory.parsley.core.view.ViewHandler;
+import org.spicefactory.parsley.core.bootstrap.impl.ServiceFactory;
 import org.spicefactory.lib.util.Flag;
-import org.spicefactory.parsley.core.factory.ViewSettings;
+import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
-import org.spicefactory.parsley.core.view.impl.DefaultViewAutowireFilter;
+
 
 /**
  * Default implementation of the ViewSettings interface.
@@ -109,8 +111,8 @@ public class DefaultViewSettings implements ViewSettings {
 	/**
 	 * @inheritDoc
 	 */
-	public function addViewHandler (handler:Class) : void {
-		_viewHandlers.push(handler);
+	public function addViewHandler (handler:Class, ...params) : void {
+		_viewHandlers.push(new ServiceFactory(handler, params, ViewHandler));
 	}
 	
 	/**

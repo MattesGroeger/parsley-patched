@@ -16,9 +16,10 @@
 
 package org.spicefactory.parsley.asconfig {
 import org.spicefactory.parsley.asconfig.processor.ActionScriptConfigurationProcessor;
+import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.core.bootstrap.BootstrapManager;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 
 import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
@@ -64,9 +65,12 @@ public class ActionScriptContextBuilder {
 	 */
 	public static function buildAll (configClasses:Array, viewRoot:DisplayObject = null, 
 			parent:Context = null, domain:ApplicationDomain = null) : Context {
-		var builder:CompositeContextBuilder = GlobalFactoryRegistry.instance.contextBuilder.create(viewRoot, parent, domain);
-		mergeAll(configClasses, builder);
-		return builder.build();
+		var manager:BootstrapManager = BootstrapDefaults.config.services.bootstrapManager.newInstance() as BootstrapManager;
+		manager.config.viewRoot = viewRoot;
+		manager.config.parent = parent;
+		manager.config.domain = domain;
+		manager.config.addProcessor(new ActionScriptConfigurationProcessor(configClasses));
+		return manager.createProcessor().process();
 	}
 	
 	[Deprecated(replacement="ContextBuilder DSL")]

@@ -15,12 +15,15 @@
  */
  
 package org.spicefactory.parsley.binding {
-import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.lib.reflect.Metadata;
 import org.spicefactory.parsley.binding.decorator.PublishDecorator;
 import org.spicefactory.parsley.binding.decorator.PublishSubscribeDecorator;
 import org.spicefactory.parsley.binding.decorator.SubscribeDecorator;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
+import org.spicefactory.parsley.binding.impl.DefaultBindingManager;
+import org.spicefactory.parsley.binding.impl.LocalPersistenceManager;
+import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.core.scope.ScopeExtensionRegistry;
+import org.spicefactory.parsley.core.scope.ScopeName;
 
 /**
  * Provides a static method to initalize the decoupled binding facility.
@@ -51,36 +54,15 @@ public class BindingSupport {
 		Metadata.registerMetadataClass(PublishDecorator);
 		Metadata.registerMetadataClass(PublishSubscribeDecorator);
 		
-		GlobalFactoryRegistry.instance.scopeExtensions.addExtension(new BindingManagerFactory());
-		try {
-			GlobalFactoryRegistry.instance.scopeExtensions.getExtensions(ScopeName.GLOBAL).byType(PersistenceManager);
-		}
-		catch (e:Error) {
+		var scopeExtensions:ScopeExtensionRegistry = BootstrapDefaults.config.scopeExtensions;
+		
+		scopeExtensions.addExtension(DefaultBindingManager);
+		if (!scopeExtensions.getExtensions(ScopeName.GLOBAL).hasType(PersistenceManager)) {
 			// only install default if no other manager is found:
-			GlobalFactoryRegistry.instance.scopeExtensions.addExtension(new PersistenceManagerFactory());
+			scopeExtensions.addExtension(LocalPersistenceManager);
 		}
 		
 		initialized = true;
 	}
 }
-}
-
-import org.spicefactory.parsley.binding.impl.LocalPersistenceManager;
-import org.spicefactory.parsley.binding.impl.DefaultBindingManager;
-import org.spicefactory.parsley.core.factory.ScopeExtensionFactory;
-
-class BindingManagerFactory implements ScopeExtensionFactory {
-
-	public function create () : Object {
-		return new DefaultBindingManager();
-	}
-	
-}
-
-class PersistenceManagerFactory implements ScopeExtensionFactory {
-
-	public function create () : Object {
-		return new LocalPersistenceManager();
-	}
-	
 }

@@ -1,12 +1,12 @@
 package org.spicefactory.parsley.config {
-import org.hamcrest.core.isA;
-import org.hamcrest.object.sameInstance;
-import org.hamcrest.object.equalTo;
 import org.hamcrest.assertThat;
+import org.hamcrest.core.isA;
+import org.hamcrest.object.equalTo;
+import org.hamcrest.object.sameInstance;
 import org.spicefactory.parsley.context.dynobjects.model.AnnotatedDynamicTestObject;
 import org.spicefactory.parsley.context.dynobjects.model.DynamicTestDependency;
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
+import org.spicefactory.parsley.core.bootstrap.BootstrapManager;
+import org.spicefactory.parsley.core.bootstrap.impl.DefaultBootstrapManager;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.dsl.context.ContextBuilder;
 import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
@@ -52,11 +52,11 @@ public class RuntimeConfigTest {
 	[Test]
 	public function objectWithId () : void {
 		var obj:ClassWithSimpleProperties = new ClassWithSimpleProperties();
-		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
+		var manager:BootstrapManager = new DefaultBootstrapManager();
 		var processor:RuntimeConfigurationProcessor = new RuntimeConfigurationProcessor();
 		processor.addInstance(obj, "THE ID");
-		builder.addProcessor(processor);
-		var context:Context = builder.build();
+		manager.config.addProcessor(processor);
+		var context:Context = manager.createProcessor().process();
 		assertThat(context, contextInState());
 		assertThat(context.getObjectCount(), equalTo(1));		
 		assertThat(context.getObjectCount(Object), equalTo(1));		
@@ -80,11 +80,11 @@ public class RuntimeConfigTest {
 	[Test]
 	public function lazyClass () : void {
 		SimpleClass.instanceCounter = 0;
-		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
+		var manager:BootstrapManager = new DefaultBootstrapManager();
 		var processor:RuntimeConfigurationProcessor = new RuntimeConfigurationProcessor();
 		processor.addClass(SimpleClass, null, true, true);
-		builder.addProcessor(processor);
-		var context:Context = builder.build();
+		manager.config.addProcessor(processor);
+		var context:Context = manager.createProcessor().process();
 		assertThat(context, contextInState());
 		assertThat(context.getObjectCount(), equalTo(1));		
 		assertThat(context.getObjectCount(SimpleClass), equalTo(1));		

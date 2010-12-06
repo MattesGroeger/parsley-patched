@@ -18,57 +18,21 @@ package org.spicefactory.parsley.core.builder {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.bootstrap.ConfigurationProcessor;
 
+[Deprecated(replacement="BootstrapManager")]
 /**
- * Responsible for building Context instances using one or more ObjectDefinitionBuilder instances.
- * 
- * <p>As of version 2.3 this is now considered an internal interface. The entire Context building
- * process in the IOC kernel still relies on this core interface. But application code is now
- * expected to either use the MXML <code>&lt;ContextBuilder&gt;</code> tags introduced with version 2.2 
- * or the convenient configuration DSL introduced with version 2.3.</p>
- * 
- * <p>A composite builder may be used when combining multiple configuration mechanisms like MXML or XML
- * into a single Context. It is also used by all short cut entry points that only use a single
- * configuration mechanism under the hood. So under the hood an implementation of this interface
- * is always responsible for starting a Context initialization process.</p>
- * 
- * <p>Example usage:</p>
- * 
- * <pre><code>var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
- * FlexContextBuilder.merge(BookStoreConfig, builder);
- * XmlContextBuilder.merge("logging.xml", builder);
- * builder.build();</code></pre>	 
- * 
  * @author Jens Halm
  */
 public interface CompositeContextBuilder {
 	
-	
 	[Deprecated(replacement="addProcessor")]
 	function addBuilder (builder:ObjectDefinitionBuilder) : void;
 	
-	/**
-	 * Adds a configuration processor.
-	 * 
-	 * @param processor the processor to add
-	 */
-	function addProcessor (processor:ConfigurationProcessor) : void;
+	function addProcessor (processor:org.spicefactory.parsley.core.bootstrap.ConfigurationProcessor) : void;
 	
-	/**
-	 * Adds a new scope for the Context created by this builder.
-	 * The new scope will be added to the scopes which may be inherited from a parent Context.
-	 * 
-	 * @param name the name of the scope
-	 * @param inherited whether child Contexts should inherit this scope
-	 * @param uuid the unique id of this scope
-	 */
 	function addScope (name:String, inherited:Boolean = true, uuid:String = null) : void;
 	
-	/**
-	 * The factories to be used by this builder.
-	 * For all factories that are not explicitly specified for this builder the
-	 * corresponding factory will be fetched from the <code>GlobalFactoryRegistry</code>.
-	 */
 	function get factories () : FactoryRegistry;
 	
 	/**

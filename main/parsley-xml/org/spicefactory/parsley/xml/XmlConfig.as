@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.xml {
-import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
+import org.spicefactory.parsley.core.bootstrap.ConfigurationProcessor;
 import org.spicefactory.parsley.xml.processor.XmlConfigurationProcessor;
 
 /**

@@ -15,36 +15,19 @@
  */
 
 package org.spicefactory.parsley.core.builder.impl {
-import org.spicefactory.lib.util.Delegate;
-import org.spicefactory.lib.util.DelegateChain;
-import org.spicefactory.lib.events.CompoundErrorEvent;
-import org.spicefactory.lib.logging.LogContext;
-import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.binding.BindingSupport;
-import org.spicefactory.parsley.core.builder.AsyncConfigurationProcessor;
+import org.spicefactory.parsley.core.factory.impl.LegacyFactoryRegistry;
 import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.core.bootstrap.BootstrapManager;
+import org.spicefactory.parsley.core.bootstrap.BootstrapProcessor;
+import org.spicefactory.parsley.core.bootstrap.ConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.ContextUtil;
-import org.spicefactory.parsley.core.errors.ContextBuilderError;
-import org.spicefactory.parsley.core.events.ContextBuilderEvent;
-import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.factory.FactoryRegistry;
-import org.spicefactory.parsley.core.factory.impl.DefaultContextStrategyProvider;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
-import org.spicefactory.parsley.core.factory.impl.LocalFactoryRegistry;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.scope.ScopeExtensions;
-import org.spicefactory.parsley.core.scope.ScopeName;
-import org.spicefactory.parsley.core.scope.impl.ScopeDefinition;
 
 import flash.display.DisplayObject;
-import flash.events.ErrorEvent;
-import flash.events.Event;
 import flash.system.ApplicationDomain;
 
 /**
@@ -55,9 +38,13 @@ import flash.system.ApplicationDomain;
 public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 
 	
-	private static const log:Logger = LogContext.getLogger(DefaultCompositeContextBuilder);
+	//private static const log:Logger = LogContext.getLogger(DefaultCompositeContextBuilder);
 
 	
+	private var manager:BootstrapManager;
+	private var processor:BootstrapProcessor;
+	
+	/*
 	private var _factories:LocalFactoryRegistry;
 	private var _registry:ObjectDefinitionRegistry;
 	
@@ -76,7 +63,7 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	
 	private var errors:Array = new Array();
 	private var async:Boolean = false;
-
+	*/
 	
 	/**
 	 * Creates a new instance
@@ -87,7 +74,8 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	 * @param description a description to be passed to the Context for logging or monitoring purposes
 	 */
 	function DefaultCompositeContextBuilder (viewRoot:DisplayObject = null, parent:Context = null, 
-			domain:ApplicationDomain = null, description:String = null) {
+			domain:ApplicationDomain = null, description:String = null, manager:BootstrapManager = null) {
+		/*
 		_factories = new LocalFactoryRegistry();
 		this.viewRoot = viewRoot;
 		var event:ContextBuilderEvent = null;
@@ -103,39 +91,60 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		this.domain = (domain != null) ? domain : (event != null && event.domain != null) ? event.domain : ClassInfo.currentDomain;
 		if (event) event.processScopes(this);
 		this.description = description;
+		 */
+		this.manager = (manager) 
+				? manager
+				: BootstrapDefaults.config.services.bootstrapManager.newInstance() as BootstrapManager;
+		this.manager.config.viewRoot = viewRoot;
+		this.manager.config.parent = parent;
+		this.manager.config.domain = domain;
+		this.manager.config.description = description;
 	}
 
 	
 	[Deprecated(replacement="addProcessor")]
 	public function addBuilder (builder:ObjectDefinitionBuilder) : void {
-		processors.push(builder);
+		if (builder is AsyncObjectDefinitionBuilder) {
+			addProcessor(new WrappedAsyncConfigurationProcessor(builder as AsyncObjectDefinitionBuilder)); 
+		}
+		else {
+			addProcessor(new WrappedConfigurationProcessor(builder));
+		}
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function addProcessor (processor:ConfigurationProcessor) : void {
-		processors.push(processor);
+		manager.config.addProcessor(processor);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function addScope (name:String, inherited:Boolean = true, uuid:String = null) : void {
-		customScopes.addDelegate(new Delegate(addCustomScope, [name, inherited, uuid]));
+		manager.config.addScope(name, inherited, uuid);
 	}
 	
+	/*
 	private function addCustomScope (name:String, inherited:Boolean, uuid:String) : void {
 		scopes.addScope(createScopeDefinition(name, inherited, uuid));
 	}
+	 */
 
+
+	private var _factories:FactoryRegistry;
 	/**
 	 * @inheritDoc
 	 */
 	public function get factories () : FactoryRegistry {
+		if (!_factories) {
+			_factories = new LegacyFactoryRegistry(manager.config);
+		}
 		return _factories;
 	}
 	
+	/*
 	private function assembleScopeDefinitions () : void {
 		scopes.addScope(createScopeDefinition(ScopeName.LOCAL, false));
 		if (parent == null) {
@@ -177,11 +186,13 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 				? description : processors.join(",");
 		return new DefaultContextStrategyProvider(factories, domain, scopeDefs, descr);
 	}
+	 */
 
 	/**
 	 * @inheritDoc
 	 */
 	public function build () : Context {
+		/*
 		if (processed) {
 			log.warn("Context was already built. Returning existing instance");
 			return context;
@@ -189,12 +200,20 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		prepareRegistry();
 		processConfiguration();
 		return context;	
+		 */
+		prepareRegistry();
+		return processor.process();
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function prepareRegistry () : ObjectDefinitionRegistry {
+		if (!processor) {
+			processor = manager.createProcessor();
+		}
+		return processor.info.registry;
+		/*
 		if (_registry != null) {
 			return _registry;
 		}
@@ -203,8 +222,10 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		assembleScopeDefinitions();
 		createContext();
 		return _registry;
+		 */
 	}
 	
+	/*
 	private function processConfiguration () : void {
 		if (context == null) {
 			prepareRegistry();
@@ -266,7 +287,6 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 	}
 	
 	private function handleLegacyBuilder (builder:ObjectDefinitionBuilder) : Boolean {
-		/* TODO - deprecated - remove in later versions */
 		if (builder is AsyncObjectDefinitionBuilder) {
 			currentProcessor = builder;
 			var asyncBuilder:AsyncObjectDefinitionBuilder = AsyncObjectDefinitionBuilder(builder);
@@ -321,41 +341,59 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 			currentProcessor.cancel();
 		}
 	}
-	
-
+	 */
 }
 }
 
-import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.scope.impl.ScopeDefinition;
+import org.spicefactory.parsley.core.bootstrap.AsyncConfigurationProcessor;
+import org.spicefactory.parsley.core.bootstrap.ConfigurationProcessor;
+import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.builder.AsyncObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 
-import flash.utils.Dictionary;
+import flash.events.ErrorEvent;
+import flash.events.Event;
+import flash.events.EventDispatcher;
 
-class ScopeCollection {
+class WrappedConfigurationProcessor implements ConfigurationProcessor {
 
-	private var scopes:Array = new Array();
-	private var inherited:Array = new Array();
-	private var nameLookup:Dictionary = new Dictionary();
+	private var legacyBuilder:ObjectDefinitionBuilder;
 	
-	public function addScope (scopeDef:ScopeDefinition) : void { 
-		if (nameLookup[scopeDef.name] != undefined) {
-			throw new ContextError("Overlapping scopes with name " + scopeDef.name);
-		}
-		nameLookup[scopeDef.name] = true;
-		scopes.push(scopeDef);
-		if (scopeDef.inherited) {
-			inherited.push(scopeDef);
-		}
+	function WrappedConfigurationProcessor (legacyBuilder:ObjectDefinitionBuilder) {
+		this.legacyBuilder = legacyBuilder;
+	}
+
+	public function processConfiguration (registry:ObjectDefinitionRegistry) : void {
+		legacyBuilder.build(registry);
 	}
 	
-	public function getAll () : Array {
-		return scopes;
+	public function toString () : String {
+		return (legacyBuilder as Object).toString();
+	}
+}
+
+class WrappedAsyncConfigurationProcessor extends EventDispatcher 
+		implements org.spicefactory.parsley.core.bootstrap.AsyncConfigurationProcessor {
+
+	private var legacyBuilder:AsyncObjectDefinitionBuilder;
+	
+	function WrappedAsyncConfigurationProcessor (legacyBuilder:AsyncObjectDefinitionBuilder) {
+		this.legacyBuilder = legacyBuilder;
+		legacyBuilder.addEventListener(Event.COMPLETE, dispatchEvent);
+		legacyBuilder.addEventListener(ErrorEvent.ERROR, dispatchEvent);
 	}
 	
-	public function getInherited () : Array {
-		return inherited;
+	public function processConfiguration (registry:ObjectDefinitionRegistry) : void {
+		legacyBuilder.build(registry);
 	}
 	
+	public function cancel () : void {
+		legacyBuilder.cancel();
+	}
+	
+	public function toString () : String {
+		return (legacyBuilder as Object).toString();
+	}
 }
 
 

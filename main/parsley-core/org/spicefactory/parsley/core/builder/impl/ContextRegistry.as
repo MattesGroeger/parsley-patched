@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.builder.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
 
@@ -43,12 +44,12 @@ public class ContextRegistry {
 	 * @param context the Context instance the specified scopes are associated with
 	 * @param scopes the scopes to add
 	 */
-	public static function addContext (context:Context, scopes:Array) : void {
+	public static function addContext (context:Context, config:BootstrapConfig, scopes:Array) : void {
 		if (scopeMap[context] != undefined) {
 			throw new IllegalArgumentError("Scopes already registered for the specified Context instance");
 		}
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		scopeMap[context] = new ContextRegistration(context, scopes);
+		scopeMap[context] = new ContextRegistration(context, config, scopes);
 	}
 
 	private static function contextDestroyed (event:ContextEvent) : void {
@@ -69,18 +70,36 @@ public class ContextRegistry {
 		}
 		return ContextRegistration(scopeMap[context]).scopes.concat();
 	}
+	
+	/**
+	 * Returns the bootstrap configuration for the specified Context instance.
+	 * 
+	 * @param context the Context to return the bootstrap configuration for
+	 * @return the bootstrap configuration for the specified Context instance
+	 */
+	public static function getBootstrapConfig (context:Context) : BootstrapConfig {
+		if (scopeMap[context] == undefined) {
+			throw new IllegalArgumentError("No Scopes registered for the specified Context instance");
+		}
+		return ContextRegistration(scopeMap[context]).config;
+	}
+	
+	
 }
 }
 
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.context.Context;
 
 class ContextRegistration {
 	
 	public var context:Context;
+	public var config:BootstrapConfig;
 	public var scopes:Array;
 	
-	function ContextRegistration (context:Context, scopes:Array) {
+	function ContextRegistration (context:Context, config:BootstrapConfig, scopes:Array) {
 		this.context = context;
+		this.config = config;
 		this.scopes = scopes;
 	}
 }

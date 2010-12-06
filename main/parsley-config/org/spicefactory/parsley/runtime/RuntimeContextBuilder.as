@@ -15,9 +15,10 @@
  */
 
 package org.spicefactory.parsley.runtime {
+import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.core.bootstrap.BootstrapManager;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.runtime.processor.RuntimeConfigurationProcessor;
 
 import flash.display.DisplayObject;
@@ -58,9 +59,12 @@ public class RuntimeContextBuilder {
 	 */
 	public static function build (instances:Array, viewRoot:DisplayObject = null, 
 			parent:Context = null, domain:ApplicationDomain = null) : Context {
-		var builder:CompositeContextBuilder = GlobalFactoryRegistry.instance.contextBuilder.create(viewRoot, parent, domain);
-		merge(instances, builder);
-		return builder.build();
+		var manager:BootstrapManager = BootstrapDefaults.config.services.bootstrapManager.newInstance() as BootstrapManager;
+		manager.config.viewRoot = viewRoot;
+		manager.config.parent = parent;
+		manager.config.domain = domain;
+		manager.config.addProcessor(new RuntimeConfigurationProcessor(instances));
+		return manager.createProcessor().process();
 	}
 	
 	[Deprecated(replacement="ContextBuilder DSL")]

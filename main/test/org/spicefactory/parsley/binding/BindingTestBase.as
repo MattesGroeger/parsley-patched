@@ -9,8 +9,9 @@ import org.spicefactory.parsley.binding.model.AnimalHolder;
 import org.spicefactory.parsley.binding.model.Cat;
 import org.spicefactory.parsley.binding.model.CatHolder;
 import org.spicefactory.parsley.binding.model.StringHolder;
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
+import org.spicefactory.parsley.core.bootstrap.BootstrapManager;
+import org.spicefactory.parsley.core.bootstrap.impl.DefaultBootstrapManager;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.ContextUtil;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
@@ -36,7 +37,7 @@ public class BindingTestBase {
 		throw new AbstractMethodError();
 	}
 	
-	protected function addConfig (builder:CompositeContextBuilder) : void {
+	protected function addConfig (conf:BootstrapConfig) : void {
 		throw new AbstractMethodError();
 	}
 	
@@ -155,10 +156,10 @@ public class BindingTestBase {
 		DictionaryPersistenceService.reset();
 		DictionaryPersistenceService.putStoredValue("local0", String, "test", "A");
 		
-		var builder:CompositeContextBuilder = new DefaultCompositeContextBuilder();
-		builder.factories.scopeExtensions.addExtension(new TestPersistenceManagerFactory());
-		addConfig(builder);
-		var context:Context = builder.build();
+		var manager:BootstrapManager = new DefaultBootstrapManager();
+		manager.config.scopeExtensions.addExtension(DictionaryPersistenceService);
+		addConfig(manager.config);
+		var context:Context = manager.createProcessor().process();
 		
 		var pub1:StringHolder = context.getObject("publishPersistent") as StringHolder;
 		var pub2:StringHolder = context.getObject("publishPersistent") as StringHolder;
@@ -172,14 +173,4 @@ public class BindingTestBase {
 		assertThat(DictionaryPersistenceService.getStoredValue("local0", String, "test"), equalTo("B"));
 	}
 }
-}
-
-import org.spicefactory.parsley.binding.DictionaryPersistenceService;
-import org.spicefactory.parsley.core.factory.ScopeExtensionFactory;
-
-class TestPersistenceManagerFactory implements ScopeExtensionFactory {
-
-	public function create() : Object {
-		return new DictionaryPersistenceService();
-	}
 }

@@ -15,34 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.builder {
-import flash.events.IEventDispatcher;
+import org.spicefactory.parsley.core.bootstrap.AsyncConfigurationProcessor;
 
-/**
- * Dispatched when the processor successfully finished.
- * 
- * @eventType flash.events.Event.COMPLETE
- */
-[Event(name="complete", type="flash.events.Event")]
-
-/**
- * Dispatched when processing the configuration failed. 
- * 
- * @eventType flash.events.ErrorEvent.ERROR
- */
-[Event(name="error", type="flash.events.ErrorEvent")]
-
-/**
- * Interface to be implemented by ConfigurationProcessors that operate asynchronously.
- * 
- * @author Jens Halm
- */
-public interface AsyncConfigurationProcessor extends ConfigurationProcessor, IEventDispatcher {
-	
-	/**	
-	 * Invoked when the configuration process gets cancelled, usually due to an associated Context
-	 * having been destroyed.
-	 */
-	function cancel () : void;
+[Deprecated(replacement="interface with the same name in the bootstrap package")]
+public interface AsyncConfigurationProcessor extends org.spicefactory.parsley.core.bootstrap.AsyncConfigurationProcessor {
 	
 }
 }

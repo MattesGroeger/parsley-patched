@@ -18,13 +18,15 @@ package org.spicefactory.parsley.core.registry.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.util.collection.SimpleMap;
+import org.spicefactory.parsley.core.bootstrap.BootstrapInfo;
+import org.spicefactory.parsley.core.bootstrap.InitializingService;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
 import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
+import org.spicefactory.parsley.core.registry.ConfigurationProperties;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
-import org.spicefactory.parsley.core.registry.ConfigurationProperties;
 import org.spicefactory.parsley.core.registry.builder.ObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.registry.builder.impl.DefaultObjectDefinitionBuilderFactory;
 import org.spicefactory.parsley.core.scope.ScopeManager;
@@ -38,7 +40,7 @@ import flash.utils.getQualifiedClassName;
  * 
  * @author Jens Halm
  */
-public class DefaultObjectDefinitionRegistry extends EventDispatcher implements ObjectDefinitionRegistry {
+public class DefaultObjectDefinitionRegistry extends EventDispatcher implements ObjectDefinitionRegistry, InitializingService {
 	
 	
 	private var _domain:ApplicationDomain;
@@ -58,23 +60,23 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 
 	/**
 	 * Creates a new instance.
-	 * 
-	 * @param domain the ApplicationDomain to use for reflecting on types added to this registry
-	 * @param context the Context associated with this registry
-	 * @param objectProviderFactory the factory to create ObjectProvider instances with
-	 * @param decoratorAssemblers the objects responsible for collecting decorators for definitions in this registry
-	 * @param viewDefinitions the registry for view definitions
 	 */
-	function DefaultObjectDefinitionRegistry (domain:ApplicationDomain, context:Context, 
-			objectProviderFactory:ObjectProviderFactory, decoratorAssemblers:Array) {
-		_domain = domain;
-		_context = context;
-		_decoratorAssemblers = decoratorAssemblers;
-		this.objectProviderFactory = objectProviderFactory;
+	function DefaultObjectDefinitionRegistry () {
+		
+	}
+
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function init (info:BootstrapInfo) : void {
+		_domain = info.domain;
+		_context = info.context;
+		_decoratorAssemblers = [];
+		this.objectProviderFactory = info.objectProviderFactory;
 		_properties = new DefaultProperties();
 		_builders = new DefaultObjectDefinitionBuilderFactory(this);
 	}
-
 	
 	/**
 	 * @inheritDoc

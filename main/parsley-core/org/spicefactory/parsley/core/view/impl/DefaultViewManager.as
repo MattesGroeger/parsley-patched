@@ -17,12 +17,15 @@
 package org.spicefactory.parsley.core.view.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
+import org.spicefactory.parsley.core.bootstrap.BootstrapInfo;
+import org.spicefactory.parsley.core.bootstrap.InitializingService;
+import org.spicefactory.parsley.core.bootstrap.impl.ServiceFactory;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.factory.ViewSettings;
 import org.spicefactory.parsley.core.view.ViewConfigurator;
 import org.spicefactory.parsley.core.view.ViewHandler;
 import org.spicefactory.parsley.core.view.ViewManager;
+import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.view.util.StageEventFilter;
 
 import flash.display.DisplayObject;
@@ -38,7 +41,7 @@ import flash.utils.getQualifiedClassName;
  * 
  * @author Jens Halm
  */
-public class DefaultViewManager implements ViewManager {
+public class DefaultViewManager implements ViewManager, InitializingService {
 
 
 	private static const log:Logger = LogContext.getLogger(DefaultViewManager);
@@ -65,26 +68,28 @@ public class DefaultViewManager implements ViewManager {
 	
 	/**
 	 * Creates a new instance.
-	 * 
-	 * @param context the Context view components should be dynamically wired to
-	 * @param domain the ApplicationDomain to use for reflection
-	 * @param settings the settings this ViewManager should use
-	 * @param defaultHandlers the ViewHandler implementations covering builtin features
 	 */
-	function DefaultViewManager (context:Context, domain:ApplicationDomain, settings:ViewSettings, defaultHandlers:Array) {
-		this.context = context;
-		this.domain = domain;
-		this.settings = settings;
+	function DefaultViewManager () {
+		
+	}
+	
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function init (info:BootstrapInfo) : void {
+		this.context = info.context;
+		this.domain = info.domain;
+		this.settings = info.viewSettings;
 		this.configurator = new DefaultViewConfigurator(context, domain, settings);
 		this.handlers = new Array();
-		initViewHandlers(defaultHandlers);
 		initViewHandlers(settings.viewHandlers);
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
 	
 	private function initViewHandlers (classes:Array) : void {
-		for each (var handlerClass:Class in classes) {
-			var handler:ViewHandler = new handlerClass();
+		for each (var handlerFactory:ServiceFactory in classes) {
+			var handler:ViewHandler = handlerFactory.newInstance() as ViewHandler;
 			handler.init(context, settings, configurator);
 			handlers.push(handler);
 		}

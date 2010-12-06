@@ -15,6 +15,11 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
+import flash.utils.getQualifiedClassName;
+import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
+import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.core.bootstrap.BootstrapManager;
 import org.spicefactory.lib.events.NestedErrorEvent;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
@@ -26,8 +31,6 @@ import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.FastInjectEvent;
 import org.spicefactory.parsley.core.events.ViewAutowireEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
-import org.spicefactory.parsley.core.factory.ContextBuilderFactory;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.handler.AutowirePrefilterCache;
 import org.spicefactory.parsley.core.view.handler.ContextLookupEvent;
@@ -118,7 +121,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	 */
 	public var description:String;
 	
-	[ArrayElementType("org.spicefactory.parsley.flex.tag.builder.ContextBuilderProcessor")]
+	[ArrayElementType("org.spicefactory.parsley.flex.tag.builder.ContextBuilderChildTag")]
 	/**
 	 * The individual configuration artifacts for this ContextBuilder.
 	 */
@@ -155,7 +158,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		}
 		super.initialized(document, id);
 		if (_context == null) {
-			autowireViewEventType = GlobalFactoryRegistry.instance.viewSettings.autowireFilter.eventType;
+			autowireViewEventType = BootstrapDefaults.config.viewSettings.autowireFilter.eventType;
 			addViewRootListeners(DisplayObject(document));
 		}
 	}
@@ -225,7 +228,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		cachedAutowireViewEvents.push(event);
 	}
 	
-	private function handleCachedEvents () : void {
+	private function handleCachedEvents (config:BootstrapConfig) : void {
 		for each (var lookupEvent:ContextLookupEvent in cachedContextLookupEvents) {
 			lookupEvent.context = _context;
 		}
@@ -240,7 +243,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		}
 		for each (var prefilterTarget:Object in cachedAutowirePrefilterTargets) {
 			var view:DisplayObject = DisplayObject(prefilterTarget);
-			var autowireFilter:ViewAutowireFilter = GlobalFactoryRegistry.instance.viewSettings.autowireFilter;
+			var autowireFilter:ViewAutowireFilter = config.viewSettings.autowireFilter;
 			if (autowireFilter.prefilter(view)) {
 				view.dispatchEvent(new ViewAutowireEvent());
 			}
@@ -278,15 +281,29 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	private function createContext () : void {
 		try {
 			
-			var factory:ContextBuilderFactory = GlobalFactoryRegistry.instance.contextBuilder;
-			var builder:CompositeContextBuilder = factory.create(viewRoot, parent, domain, description);
+			//var factory:ContextBuilderFactory = GlobalFactoryRegistry.instance.contextBuilder;
+			//var builder:CompositeContextBuilder = factory.create(viewRoot, parent, domain, description);
+			var manager:BootstrapManager = BootstrapDefaults.config.services.bootstrapManager.newInstance() as BootstrapManager;
+			var builder:CompositeContextBuilder; // don't create upfront, hope we don't need it
 			if (processors != null) {
-				for each (var processor:ContextBuilderProcessor in processors) {
-					processor.processBuilder(builder);
+				for each (var processor:ContextBuilderChildTag in processors) {
+					if (processor is BootstrapConfigProcessor) {
+						BootstrapConfigProcessor(processor).processConfig(manager.config);
+					}
+					else if (processor is ContextBuilderProcessor) {
+						/* deprecated - remove in later versions */
+						if (!builder) {
+							builder = new DefaultCompositeContextBuilder(viewRoot, parent, domain, description, manager);
+						}
+						ContextBuilderProcessor(processor).processBuilder(builder);
+					}
+					else {
+						throw Error("Unknown type of child tag for ContextBuilder: " + getQualifiedClassName(processor));
+					}
 				}
 			}
 			if (config != null) {
-				builder.addProcessor(new FlexConfigurationProcessor([config]));
+				manager.config.addProcessor(new FlexConfigurationProcessor([config]));
 			}
 			_context = builder.build();
 			dispatchEvent(new Event("contextCreated"));
@@ -297,7 +314,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 				_context.addEventListener(ContextEvent.INITIALIZED, contextInitialized);
 				_context.addEventListener(ErrorEvent.ERROR, contextError);
 			}
-			handleCachedEvents();
+			handleCachedEvents(manager.config);
 		}
 		catch (e:Error) {
 			log.error("Error building Context: {0}", e);

@@ -1,5 +1,4 @@
 package org.spicefactory.parsley.command {
-import org.spicefactory.parsley.util.contextInState;
 import org.flexunit.assertThat;
 import org.hamcrest.collection.array;
 import org.hamcrest.collection.arrayWithSize;
@@ -13,13 +12,14 @@ import org.spicefactory.parsley.command.mock.MockResult;
 import org.spicefactory.parsley.command.model.CommandExecutors;
 import org.spicefactory.parsley.command.model.CommandObservers;
 import org.spicefactory.parsley.command.model.CommandStatusFlags;
+import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 import org.spicefactory.parsley.core.messaging.command.CommandManager;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.messaging.messages.TestEvent;
 import org.spicefactory.parsley.messaging.model.EventSource;
+import org.spicefactory.parsley.util.contextInState;
 import org.spicefactory.parsley.util.contextWithIds;
 
 import flash.events.Event;
@@ -39,7 +39,7 @@ public class CommandTestBase {
 	public static function registerMockCommandFactory () : void {
 		if (!factory) {
 			factory = new MockCommandFactory();
-			GlobalFactoryRegistry.instance.messageSettings.commandFactories.addCommandFactory(MockResult, factory);
+			BootstrapDefaults.config.messageSettings.commandFactories.addCommandFactory(MockResult, factory);
 		}
 	}
 	

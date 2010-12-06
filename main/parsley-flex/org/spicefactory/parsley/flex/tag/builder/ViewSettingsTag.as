@@ -15,10 +15,8 @@
  */
 
 package org.spicefactory.parsley.flex.tag.builder {
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.factory.ViewSettings;
-import org.spicefactory.parsley.core.factory.impl.DefaultViewSettings;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
+import org.spicefactory.parsley.core.view.impl.DefaultViewSettings;
 
 /**
  * MXML tag for providing the settings to apply for dynamic view wiring. 
@@ -33,14 +31,9 @@ import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
  * @author Jens Halm
  */
 
-public class ViewSettingsTag extends DefaultViewSettings implements ContextBuilderProcessor {
+public class ViewSettingsTag extends DefaultViewSettings implements BootstrapConfigProcessor {
 	
-	/**
-	 * Indicates whether the settings in this tag should only applied
-	 * to the Context built by the corresponding ContextBuilder tag.
-	 * If set to false (the default) these settings will be applied globally,
-	 * but not to Context instances that were already built.
-	 */
+	[Deprecated]
 	public var local:Boolean = false;
 	
 	/**
@@ -52,16 +45,15 @@ public class ViewSettingsTag extends DefaultViewSettings implements ContextBuild
 	/**
 	 * @private
 	 */
-	public function processBuilder (builder:CompositeContextBuilder) : void {
-		var settings:ViewSettings = (local) ? builder.factories.viewSettings : GlobalFactoryRegistry.instance.viewSettings;
-		settings.autoremoveComponents = autoremoveComponents;
-		settings.autoremoveViewRoots = autoremoveViewRoots;
-		settings.autowireComponents = autowireComponents;
+	public function processConfig (config:BootstrapConfig) : void {
+		config.viewSettings.autoremoveComponents = autoremoveComponents;
+		config.viewSettings.autoremoveViewRoots = autoremoveViewRoots;
+		config.viewSettings.autowireComponents = autowireComponents;
 		if (autowireFilter) {
-			settings.autowireFilter = autowireFilter;
+			config.viewSettings.autowireFilter = autowireFilter;
 		}
 		if (viewHandler) {
-			settings.addViewHandler(viewHandler);
+			config.viewSettings.addViewHandler(viewHandler);
 		}
 	}
 	

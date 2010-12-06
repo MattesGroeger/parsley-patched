@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.factory {
-import org.spicefactory.parsley.core.scope.ScopeExtensions;
+package org.spicefactory.parsley.core.scope {
+	
+
 
 /**
  * A registry for scope-wide extensions.
@@ -27,15 +28,16 @@ public interface ScopeExtensionRegistry {
 	
 	
 	/**
-	 * Adds a factory for an extension to this registry.
+	 * Adds a scope extension to this registry.
 	 * If the scope parameter is omitted, a new extension instance will be created for each new scope that
 	 * this registry is responsible for.
 	 * 
-	 * @param factory the factory responsible for creating new extension instances
+	 * @param type the type of the extension
+	 * @param params the parameters to pass to the constructor of the extension
 	 * @param scope the scope the extension is responsible for
 	 * @param id an optional id the extension should be registered with
 	 */
-	function addExtension (factory:ScopeExtensionFactory, scope:String = null, id:String = null) : void;
+	function addExtension (type:Class, params:Array = null, scope:String = null, id:String = null) : void;
 	
 	/**
 	 * Returns all extensions for the specified scope.

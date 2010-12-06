@@ -39,7 +39,7 @@ public class DefaultScope implements Scope {
 	private var activated:Boolean = false;	
 	
 	private var domain:ApplicationDomain;
-	private var scopeDef:ScopeDefinition;
+	private var scopeDef:ScopeInfo;
 	private var _objectLifecycle:ObjectLifecycleScope;
 	private var _lifecycleObservers:LifecycleObserverRegistry;
 	
@@ -51,7 +51,7 @@ public class DefaultScope implements Scope {
 	 * @param scopeDef the shared definition for this scope
 	 * @param domain the ApplicationDomain to use for reflection
 	 */
-	function DefaultScope (context:Context, scopeDef:ScopeDefinition, domain:ApplicationDomain) {
+	function DefaultScope (context:Context, scopeDef:ScopeInfo, domain:ApplicationDomain) {
 		this.context = context;
 		this.scopeDef = scopeDef;
 		this.domain = domain;

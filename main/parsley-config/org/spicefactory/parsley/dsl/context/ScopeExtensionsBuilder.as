@@ -15,10 +15,7 @@
  */
 
 package org.spicefactory.parsley.dsl.context {
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
-import org.spicefactory.parsley.core.factory.FactoryRegistry;
-import org.spicefactory.parsley.core.factory.ScopeExtensionFactory;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 
 /**
  * Builder for registering scope extensions.
@@ -29,33 +26,34 @@ public class ScopeExtensionsBuilder implements SetupPart {
 	
 	
 	private var setup:ContextBuilderSetup;
-	private var local:Boolean;
 	private var scope:String;
 	
-	private var _factory:ScopeExtensionFactory;
+	private var service:Class;
+	private var params:Array;
 	private var id:String;
 	
 	
 	/**
 	 * @private
 	 */
-	function ScopeExtensionsBuilder (setup:ContextBuilderSetup, local:Boolean, scope:String) {
+	function ScopeExtensionsBuilder (setup:ContextBuilderSetup, scope:String) {
 		this.setup = setup;
-		this.local = local;
 		this.scope = scope;
 	}
 
 	
 	/**
-	 * Adds a factory for a scope extension. The factory will be used to create a new instance
-	 * of the extension for each scope that gets created.
+	 * Specifies the implementation of a scope extension. A new instance
+	 * of the extension will be created for each scope that gets created.
 	 * 
-	 * @param factory the factory responsible for creating the extensions
+	 * @param type the type of the extension
+	 * @param params the parameters to 
 	 * @param id the optional id the extension should be registered with (if omitted the factory will be registered by type)
 	 * @return the original setup instance for method chaining
 	 */	
-	public function factory (factory:ScopeExtensionFactory, id:String = null) : ContextBuilderSetup {
-		this._factory = factory;
+	public function addExtension (type:Class, params:Array = null, id:String = null) : ContextBuilderSetup {
+		this.service = type;
+		this.params = params;
 		this.id = id;
 		return setup;
 	}
@@ -63,10 +61,9 @@ public class ScopeExtensionsBuilder implements SetupPart {
 	/**
 	 * @private
 	 */
-	public function apply (builder:CompositeContextBuilder) : void {
-		var registry:FactoryRegistry = (local) ? builder.factories : GlobalFactoryRegistry.instance;
-		if (_factory != null) {
-			registry.scopeExtensions.addExtension(_factory, scope, id);
+	public function apply (config:BootstrapConfig) : void {
+		if (service != null) {
+			config.scopeExtensions.addExtension(service, params, scope, id);
 		}
 	}
 	

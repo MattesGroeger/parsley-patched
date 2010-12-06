@@ -15,22 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.builder {
-import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.bootstrap.ConfigurationProcessor;
 
-/**
- * Responsible for processing configuration and adding object definitions to a registry.
- * Parsley contains implementations of this interface that process MXML, XML or ActionScript configuration respectively.
- * 
- * @author Jens Halm
- */
-public interface ConfigurationProcessor {
-	
-	/**
-	 * Processes all configuration artifacts and adds object definitions to the specified registry.
-	 * 
-	 * @param registry the registry to process
-	 */
-	function processConfiguration (registry:ObjectDefinitionRegistry) : void;
+[Deprecated(replacement="interface with the same name in the bootstrap package")]
+public interface ConfigurationProcessor extends org.spicefactory.parsley.core.bootstrap.ConfigurationProcessor {
 	
 }
 }

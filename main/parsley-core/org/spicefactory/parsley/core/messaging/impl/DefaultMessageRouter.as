@@ -18,7 +18,7 @@ package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.factory.MessageSettings;
+import org.spicefactory.parsley.core.messaging.MessageSettings;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
@@ -51,16 +51,20 @@ public class DefaultMessageRouter implements MessageRouter {
 	 * 
 	 * @param settings the settings this router should use
 	 */
-	function DefaultMessageRouter (settings:MessageSettings, isLifecylceEventRouter:Boolean) {
+	function DefaultMessageRouter () {
 		_receivers = new DefaultMessageReceiverRegistry();
 		_commandManager = new DefaultCommandManager();
+	}
+
+	
+	public function init (settings:MessageSettings, isLifecylceEventRouter:Boolean) : void {
 		this.isLifecylceEventRouter = isLifecylceEventRouter;
 		env = new DefaultMessagingEnvironment(_commandManager, settings.commandFactories, settings.unhandledError);
 		for each (var handler:MessageErrorHandler in settings.errorHandlers) {
 			_receivers.addErrorHandler(handler);
 		}
 	}
-
+	
 	
 	/**
 	 * @inheritDoc

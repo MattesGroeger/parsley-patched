@@ -1,5 +1,5 @@
 package org.spicefactory.parsley.binding {
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.util.XmlContextUtil;
 import org.spicefactory.parsley.xml.XmlConfig;
@@ -14,8 +14,8 @@ public class BindingXmlTagTest extends BindingTestBase {
 		return XmlContextUtil.newContext(config);
 	}
 	
-	protected override function addConfig (builder:CompositeContextBuilder) : void {
-		builder.addProcessor(XmlConfig.forInstance(config));
+	protected override function addConfig (conf:BootstrapConfig) : void {
+		conf.addProcessor(XmlConfig.forInstance(config));
 	}
 	
 	public static const config:XML = <objects 

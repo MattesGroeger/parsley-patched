@@ -2,7 +2,9 @@ package org.spicefactory.parsley.flash.binding {
 import org.spicefactory.lib.reflect.Metadata;
 import org.spicefactory.parsley.binding.PersistenceManager;
 import org.spicefactory.parsley.binding.decorator.SubscribeDecorator;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
+import org.spicefactory.parsley.binding.impl.DefaultBindingManager;
+import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.core.scope.ScopeExtensionRegistry;
 import org.spicefactory.parsley.core.scope.ScopeName;
 
 /**
@@ -33,36 +35,14 @@ public class FlashBindingSupport {
 		Metadata.registerMetadataClass(FlashPublishDecorator);
 		Metadata.registerMetadataClass(FlashPublishSubscribeDecorator);
 		
-		GlobalFactoryRegistry.instance.scopeExtensions.addExtension(new BindingManagerFactory());
-		try {
-			GlobalFactoryRegistry.instance.scopeExtensions.getExtensions(ScopeName.GLOBAL).byType(PersistenceManager);
-		}
-		catch (e:Error) {
+		var scopeExtensions:ScopeExtensionRegistry = BootstrapDefaults.config.scopeExtensions;
+		scopeExtensions.addExtension(DefaultBindingManager);
+		if (!scopeExtensions.getExtensions(ScopeName.GLOBAL).hasType(PersistenceManager)) {
 			// only install default if no other manager is found:
-			GlobalFactoryRegistry.instance.scopeExtensions.addExtension(new PersistenceManagerFactory());
+			scopeExtensions.addExtension(DefaultBindingManager);
 		}
+		
 		initialized = true;
 	}
 }
 }
-
-import org.spicefactory.parsley.binding.impl.DefaultBindingManager;
-import org.spicefactory.parsley.binding.impl.LocalPersistenceManager;
-import org.spicefactory.parsley.core.factory.ScopeExtensionFactory;
-
-class BindingManagerFactory implements ScopeExtensionFactory {
-
-	public function create () : Object {
-		return new DefaultBindingManager();
-	}
-	
-}
-
-class PersistenceManagerFactory implements ScopeExtensionFactory {
-
-	public function create () : Object {
-		return new LocalPersistenceManager();
-	}
-	
-}
-

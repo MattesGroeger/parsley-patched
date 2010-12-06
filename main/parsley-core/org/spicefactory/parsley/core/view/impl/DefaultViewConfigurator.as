@@ -21,7 +21,7 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.factory.ViewSettings;
+import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.view.ViewConfigurator;

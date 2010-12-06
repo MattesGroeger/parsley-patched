@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.factory {
-import org.spicefactory.parsley.core.messaging.ErrorPolicy;
+package org.spicefactory.parsley.core.messaging {
+
 import org.spicefactory.parsley.core.messaging.command.CommandFactoryRegistry;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 

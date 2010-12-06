@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.dsl.context {
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 
 /**
  * @private
@@ -25,7 +25,7 @@ import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 internal interface SetupPart {
 	
 	
-	function apply (builder:CompositeContextBuilder) : void;
+	function apply (config:BootstrapConfig) : void;
 	
 	
 }

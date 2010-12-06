@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.factory.impl {
+package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.lib.reflect.types.Void;
-import org.spicefactory.parsley.core.factory.MessageSettings;
+import org.spicefactory.parsley.core.messaging.MessageSettings;
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
 import org.spicefactory.parsley.core.messaging.command.CommandFactory;
 import org.spicefactory.parsley.core.messaging.command.CommandFactoryRegistry;

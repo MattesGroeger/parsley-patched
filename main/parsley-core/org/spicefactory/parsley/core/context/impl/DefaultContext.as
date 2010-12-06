@@ -22,6 +22,8 @@ import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.collection.SimpleMap;
 import org.spicefactory.parsley.config.Configurations;
+import org.spicefactory.parsley.core.bootstrap.BootstrapInfo;
+import org.spicefactory.parsley.core.bootstrap.InitializingService;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicContext;
 import org.spicefactory.parsley.core.context.DynamicObject;
@@ -29,7 +31,6 @@ import org.spicefactory.parsley.core.context.provider.impl.ContextObjectProvider
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.ObjectDefinitionRegistryEvent;
-import org.spicefactory.parsley.core.factory.ContextStrategyProvider;
 import org.spicefactory.parsley.core.lifecycle.ManagedObjectHandler;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
@@ -56,7 +57,7 @@ import flash.utils.Dictionary;
  * 
  * @author Jens Halm
  */
-public class DefaultContext extends EventDispatcher implements Context {
+public class DefaultContext extends EventDispatcher implements Context, InitializingService {
 
 
 	private static const log:Logger = LogContext.getLogger(DefaultContext);
@@ -79,24 +80,20 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private var description:String;
 	
 	/* deprecated */
-	private var strategyProvider:ContextStrategyProvider;
+	private var bootstrapInfo:BootstrapInfo; // TODO - remove after createDynamicContext had been removed
 	private var objectProviderFactory:ContextObjectProviderFactory;
 
 	
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param provider instances to fetch all required strategies from
-	 */
-	function DefaultContext (provider:ContextStrategyProvider) {
-		this.strategyProvider = provider;
-		this.objectProviderFactory = new ContextObjectProviderFactory(this, strategyProvider.domain);
-		provider.init(this, objectProviderFactory);
-		_registry = provider.registry;
-		_lifecycleManager = provider.lifecycleManager;
-		_scopeManager = provider.scopeManager;
-		_viewManager = provider.viewManager;
-		description = provider.description;
+	
+	public function init (info:BootstrapInfo) : void {
+		this.bootstrapInfo = info;
+		this.objectProviderFactory = new ContextObjectProviderFactory(this, info.domain);
+		info.objectProviderFactory = objectProviderFactory;
+		_registry = info.registry;
+		_lifecycleManager = info.lifecycleManager;
+		_scopeManager = info.scopeManager;
+		_viewManager = info.viewManager;
+		description = info.description;
 		addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, 1);
 		_registry.addEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
 	}
@@ -105,7 +102,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	private function registryFrozen (event:Event) : void {
 		_registry.removeEventListener(ObjectDefinitionRegistryEvent.FROZEN, registryFrozen);
 		_configured = true;
-		initialize();
+		initializeSingletons();
 	}
 	
 	
@@ -114,7 +111,7 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 * an AsyncInit configuration this operation may execute asynchronously. After
 	 * all singletons have been instantiated the <code>initialized</code> Event will be fired.
 	 */
-	protected function initialize () : void {
+	protected function initializeSingletons () : void {
 		
 		objectProviderFactory.initialize();
 		
@@ -436,7 +433,9 @@ public class DefaultContext extends EventDispatcher implements Context {
 	 * @inheritDoc
 	 */
 	public function createDynamicContext () : DynamicContext {
-		return new DefaultDynamicContext(strategyProvider.createDynamicProvider(), this);
+		var context:DefaultDynamicContext = new DefaultDynamicContext();
+		context.init(bootstrapInfo.createDynamicInfo()); 
+		return context;
 	}
 	
 	private function checkState (mustBeConfigured:Boolean = true) : void {

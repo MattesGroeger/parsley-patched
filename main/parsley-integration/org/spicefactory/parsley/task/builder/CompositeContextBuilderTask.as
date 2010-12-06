@@ -19,66 +19,37 @@ import org.spicefactory.lib.task.Task;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.builder.ConfigurationProcessor;
 import org.spicefactory.parsley.core.builder.ObjectDefinitionBuilder;
+import org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.factory.impl.GlobalFactoryRegistry;
 
 import flash.display.DisplayObject;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.system.ApplicationDomain;
 
-/**
- * Wraps a CompositeContextBuilder to adapt it to the Task Framework.
- * Instances of this class can be used in Spicelib TaskGroups in case the initialization process of your application
- * involves more asynchronous operations than just Parsley Context initialization.
- * 
- * @author Jens Halm
- */
+[Deprecated]
 public class CompositeContextBuilderTask extends Task {
 
-	
 	private var _builder:CompositeContextBuilder;
 	private var _context:Context;
 
-	
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param viewRoot the initial view root to manage for the Context this instance creates
-	 * @param parent the Context to use as a parent for the Context this instance creates
-	 * @param domain the ApplicationDomain to use for reflecting on configured objects.
-	 */
 	function CompositeContextBuilderTask (viewRoot:DisplayObject = null, parent:Context = null, domain:ApplicationDomain = null) {
-		_builder = GlobalFactoryRegistry.instance.contextBuilder.create(viewRoot, parent, domain);
+		_builder = new DefaultCompositeContextBuilder(viewRoot, parent, domain);
 	}
 	
-	
-	/**
-	 * The Context this builder created. This property is null before <code>TaskEvent.COMPLETE</code>
-	 * has fired.
-	 */
 	public function get context () : Context {
 		return _context;
 	}
 	
-	[Deprecated(replacement="addProcessor")]
 	public function addBuilder (builder:ObjectDefinitionBuilder) : void {
 		_builder.addBuilder(builder);
 	}
 	
-	/**
-	 * Adds a configuration processor that should participate in creating the internal ObjectDefinitionRegistry.
-	 * 
-	 * @param builder the builder to add
-	 */
 	public function addProcessor (processor:ConfigurationProcessor) : void {
 		_builder.addProcessor(processor);
 	}
 	
-	/**
-	 * @private
-	 */
 	protected override function doStart () : void {
 		_context = _builder.build();
 		if (!_context.initialized) {

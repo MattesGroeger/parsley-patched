@@ -15,7 +15,7 @@
  */
  
 package org.spicefactory.parsley.core.events {
-import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
+import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.context.Context;
 
@@ -79,9 +79,9 @@ public class ContextBuilderEvent extends Event {
 	 * 
 	 * @param builder the builder to add the scopes to
 	 */
-	public function processScopes (builder:CompositeContextBuilder) : void {
+	public function processScopes (config:BootstrapConfig) : void {
 		for each (var s:Scope in _scopes) {
-			builder.addScope(s.name, s.inherited, s.uuid);
+			config.addScope(s.name, s.inherited, s.uuid);
 		}
 	}
 	

@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.view.impl {
-import org.spicefactory.parsley.core.factory.ViewSettings;
+import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.view.ViewAutowireMode;
 
 import flash.display.DisplayObject;
