@@ -44,9 +44,9 @@ public class XmlContextBuilder {
 	 * 
 	 * @param filename the name of the file that contains the XML configuration
 	 * @param viewRoot the initial view root for dynamically wiring view objects
-	 * @param parent the parent to use for the Context to build
-	 * @param domain the ApplicationDomain to use for reflection
-	 * @param expressionContext an ExpressionContext that may contain variables that may be used in the configuration file
+	 * @param deprecated, use ContextBuilder DSL when specifying custom bootstrap settings
+	 * @param deprecated, use ContextBuilder DSL when specifying custom bootstrap settings
+	 * @param deprecated, use ContextBuilder DSL when specifying custom bootstrap settings
 	 * @return a new Context instance, possibly not fully initialized yet
 	 */		
 	public static function build (filename:String, viewRoot:DisplayObject = null, parent:Context = null, 
@@ -54,18 +54,8 @@ public class XmlContextBuilder {
 		return buildAll([filename], viewRoot, parent, domain, expressionContext);		
 	}
 	
-	/**
-	 * Builds a Context from the specified XML configuration files.
-	 * The returned Context instance may not be fully initialized if it requires asynchronous operations.
-	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
-	 * 
-	 * @param filenames the names of the files that contain the XML configuration
-	 * @param viewRoot the initial view root for dynamically wiring view objects
-	 * @param parent the parent to use for the Context to build
-	 * @param domain the ApplicationDomain to use for reflection
-	 * @param expressionContext an ExpressionContext that may contain variables that may be used in the configuration file
-	 * @return a new Context instance, possibly not fully initialized yet
-	 */	
+	
+	[Deprecated(replacement="ContextBuilder DSL")]
 	public static function buildAll (filenames:Array, viewRoot:DisplayObject = null, parent:Context = null, 
 			domain:ApplicationDomain = null, expressionContext:ExpressionContext = null) : Context {
 		var manager:BootstrapManager = BootstrapDefaults.config.services.bootstrapManager.newInstance() as BootstrapManager;

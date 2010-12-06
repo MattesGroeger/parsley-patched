@@ -43,8 +43,8 @@ public class ActionScriptContextBuilder {
 	 * 
 	 * @param configClass the class that contains the ActionScript configuration
 	 * @param viewRoot the initial view root for dynamically wiring view objects
-	 * @param parent the parent to use for the Context to build
-	 * @param domain the ApplicationDomain to use for reflection
+	 * @param parent deprecated, use ContextBuilder DSL when specifying custom bootstrap settings
+	 * @param domain deprecated, use ContextBuilder DSL when specifying custom bootstrap settings
 	 * @return a new Context instance, possibly not fully initialized yet
 	 */
 	public static function build (configClass:Class, viewRoot:DisplayObject = null, 
@@ -52,17 +52,7 @@ public class ActionScriptContextBuilder {
 		return buildAll([configClass], viewRoot, parent, domain);		
 	}
 	
-	/**
-	 * Builds a Context from the specified ActionScript configuration classes.
-	 * The returned Context instance may not be fully initialized if it requires asynchronous operations.
-	 * You can check its state with its <code>configured</code> and <code>initialized</code> properties.
-	 * 
-	 * @param configClasses the classes that contain the ActionScript configuration
-	 * @param viewRoot the initial view root for dynamically wiring view objects
-	 * @param parent the parent to use for the Context to build
-	 * @param domain the ApplicationDomain to use for reflection
-	 * @return a new Context instance, possibly not fully initialized yet
-	 */
+	[Deprecated(replacement="ContextBuilder DSL")]
 	public static function buildAll (configClasses:Array, viewRoot:DisplayObject = null, 
 			parent:Context = null, domain:ApplicationDomain = null) : Context {
 		var manager:BootstrapManager = BootstrapDefaults.config.services.bootstrapManager.newInstance() as BootstrapManager;

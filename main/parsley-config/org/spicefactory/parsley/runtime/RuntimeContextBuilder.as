@@ -53,8 +53,8 @@ public class RuntimeContextBuilder {
 	 * 
 	 * @param instances the instances to include in the Context
 	 * @param viewRoot the initial view root for dynamically wiring view objects
-	 * @param parent the parent to use for the Context to build
-	 * @param domain the ApplicationDomain to use for reflection
+	 * @param parent deprecated, use ContextBuilder DSL when specifying custom bootstrap settings
+	 * @param domain deprecated, use ContextBuilder DSL when specifying custom bootstrap settings
 	 * @return a new Context instance, possibly not fully initialized yet
 	 */
 	public static function build (instances:Array, viewRoot:DisplayObject = null, 
