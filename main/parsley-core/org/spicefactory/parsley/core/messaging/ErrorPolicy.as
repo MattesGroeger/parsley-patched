@@ -54,7 +54,7 @@ public class ErrorPolicy {
 	/**
 	 * @private
 	 */
-	public function toSting () : String {
+	public function toString () : String {
 		return _key;
 	}
 	
