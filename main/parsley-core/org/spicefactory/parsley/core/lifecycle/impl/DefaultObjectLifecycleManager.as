@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.lifecycle.impl {
+import org.spicefactory.parsley.core.state.manager.GlobalObjectManager;
 import org.spicefactory.lib.util.ArrayUtil;
 import org.spicefactory.parsley.core.bootstrap.BootstrapInfo;
 import org.spicefactory.parsley.core.bootstrap.InitializingService;
@@ -40,6 +41,11 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager, In
 
 	private var domain:ApplicationDomain;
 	private var scopes:Array;
+	
+	/**
+	 * @private
+	 */
+	internal var globalObjectManager:GlobalObjectManager;
 
 
 	/**
@@ -55,6 +61,7 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager, In
 	public function init (info:BootstrapInfo) : void {
 		this.domain = info.domain;
 		this.scopes = info.scopes;
+		this.globalObjectManager = info.globalState.objects;
 	}
 
 	/**

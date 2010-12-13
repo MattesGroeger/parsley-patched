@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.scope.impl {
+import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.bootstrap.ServiceRegistry;
 import org.spicefactory.parsley.core.context.Context;
@@ -34,6 +35,7 @@ public class ScopeInfo {
 	
 	private var services:ServiceRegistry;
 	private var settings:MessageSettings;
+	private var domainManager:GlobalDomainManager;
 	
 	private var _name:String;
 	private var _uuid:String;
@@ -53,14 +55,16 @@ public class ScopeInfo {
 	 * @param uuid the unique id of the scope
 	 * @param factories the factories to obtain the internal MessageRouters for this scope from
 	 * @param extensions the extensions registered for this scope
+	 * @param domainManager the manager that keeps track of all ApplicationDomains currently used by one or more Contexts
 	 */
 	function ScopeInfo (name:String, inherited:Boolean, uuid:String, 
-			services:ServiceRegistry, settings:MessageSettings, extensions:ScopeExtensions) {
+			services:ServiceRegistry, settings:MessageSettings, extensions:ScopeExtensions, domainManager:GlobalDomainManager) {
 		_name = name;
 		_uuid = uuid;
 		_inherited = inherited;
 		this.services = services;
 		this.settings = settings;
+		this.domainManager = domainManager;
 		this._extensions = extensions;
 	}
 
@@ -106,7 +110,7 @@ public class ScopeInfo {
 	public function get lifecycleEventRouter () : MessageRouter {
 		if (_lifecycleEventRouter == null) {
 			_lifecycleEventRouter = services.messageRouter.newInstance() as MessageRouter;
-			_lifecycleEventRouter.init(settings, true);
+			_lifecycleEventRouter.init(settings, domainManager, true);
 		}
 		return _lifecycleEventRouter;
 	}
@@ -117,7 +121,7 @@ public class ScopeInfo {
 	public function get messageRouter () : MessageRouter {
 		if (_messageRouter == null) {
 			_messageRouter = services.messageRouter.newInstance() as MessageRouter;
-			_messageRouter.init(settings, false);
+			_messageRouter.init(settings, domainManager, false);
 		}
 		return _messageRouter;
 	}

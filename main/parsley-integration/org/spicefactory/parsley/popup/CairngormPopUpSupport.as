@@ -1,15 +1,15 @@
 package org.spicefactory.parsley.popup {
-import flash.events.Event;
-import org.spicefactory.lib.logging.LogContext;
-import org.spicefactory.lib.logging.Logger;
 import com.adobe.cairngorm.popup.PopUpWrapper;
 
+import org.spicefactory.lib.logging.LogContext;
+import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.ContextUtil;
+import org.spicefactory.parsley.core.state.GlobalState;
 
 import mx.core.IFlexDisplayObject;
 
 import flash.display.DisplayObject;
+import flash.events.Event;
 
 /**
  * Support for declarative popups from the Cairngorm 3 library.
@@ -53,7 +53,7 @@ public class CairngormPopUpSupport extends PopUpWrapper {
 	}
 	
 	private function findContext (view:DisplayObject) : void {
-		ContextUtil.findContextInView(view, contextFound);
+		GlobalState.views.findContextInHierarchy(view, contextFound);
 	}
 	
 	private function contextFound (context:Context) : void {

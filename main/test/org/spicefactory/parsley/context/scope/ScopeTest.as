@@ -12,12 +12,11 @@ import org.spicefactory.parsley.context.scope.model.CustomScopeReceiver;
 import org.spicefactory.parsley.context.scope.model.LocalReceiver;
 import org.spicefactory.parsley.context.scope.model.PassiveSender;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.ContextUtil;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.scope.Scope;
 import org.spicefactory.parsley.core.scope.ScopeName;
-import org.spicefactory.parsley.core.scope.ScopeRegistry;
-import org.spicefactory.parsley.core.scope.impl.DefaultScopeRegistry;
+import org.spicefactory.parsley.core.state.GlobalScopeState;
+import org.spicefactory.parsley.core.state.GlobalState;
 import org.spicefactory.parsley.dsl.context.ContextBuilder;
 import org.spicefactory.parsley.util.XmlContextUtil;
 
@@ -140,8 +139,8 @@ public class ScopeTest {
 	
 	[Test]
 	public function scopeRegistry () : void {
-		var reg:ScopeRegistry = ContextUtil.globalScopeRegistry;
-		DefaultScopeRegistry(reg).reset();
+		var reg:Object = GlobalState.scopes;
+		reg.reset();
 		validateScopes(0, 0, 0);
 		
 		var root1:Context = ContextBuilder.newBuilder().build();
@@ -180,21 +179,21 @@ public class ScopeTest {
 	}
 	
 	private function validateScopes (global:int, local:int, custom:int) : void {
-		var reg:ScopeRegistry = ContextUtil.globalScopeRegistry;
+		var reg:GlobalScopeState = GlobalState.scopes;
 		assertThat(reg.getScopesByName(ScopeName.GLOBAL), arrayWithSize(global));
 		assertThat(reg.getScopesByName(ScopeName.LOCAL), arrayWithSize(local));
 		assertThat(reg.getScopesByName(CUSTOM_SCOPE), arrayWithSize(custom));
 	}
 	
 	private function validateUuids (...uuids) : void {
-		var reg:ScopeRegistry = ContextUtil.globalScopeRegistry;
+		var reg:GlobalScopeState = GlobalState.scopes;
 		for each (var uuid:String in uuids) {
 			assertThat(reg.getScopeById(uuid), notNullValue());
 		}
 	}
 	
 	private function validateUuidsRemoved (...uuids) : void {
-		var reg:ScopeRegistry = ContextUtil.globalScopeRegistry;
+		var reg:GlobalScopeState = GlobalState.scopes;
 		for each (var uuid:String in uuids) {
 			assertThat(reg.getScopeById(uuid), nullValue());
 		}

@@ -58,6 +58,7 @@ public class DslConfigTest {
 }
 }
 
+import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.messaging.MessageSettings;
@@ -77,8 +78,9 @@ class MessageRouterDecorator implements MessageRouter {
 		this.delegate = delegate;
 	}
 	
-	public function init (settings:MessageSettings, isLifecylceEventRouter:Boolean) : void {
+	public function init (settings:MessageSettings, domainManager:GlobalDomainManager, isLifecylceEventRouter:Boolean) : void {
 		initCount++;
+		delegate.init(settings, domainManager, isLifecylceEventRouter);
 	}
 	
 	public function dispatchMessage (message:Object, domain:ApplicationDomain, selector:* = undefined) : void {

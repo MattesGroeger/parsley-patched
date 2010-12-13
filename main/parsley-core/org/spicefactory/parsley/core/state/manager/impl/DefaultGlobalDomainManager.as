@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.builder.impl {
+package org.spicefactory.parsley.core.state.manager.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -22,34 +22,43 @@ import org.spicefactory.lib.util.Delegate;
 import org.spicefactory.lib.util.DelegateChain;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
- * Manages the ApplicationDomain instances associated with all currently active Context instances.
- * If an ApplicationDomain is no longer in use after the last Context associated with it gets destroyed,
- * the reflection cache for that domain can be purged.
+ * Default implementation of the GlobalDomainManager interface.
  * 
  * @author Jens Halm
  */
-public class ReflectionCacheManager {
+public class DefaultGlobalDomainManager implements GlobalDomainManager {
 	
+
+	private static const log:Logger = LogContext.getLogger(DefaultGlobalDomainManager);
 	
-	private static const log:Logger = LogContext.getLogger(ReflectionCacheManager);
+	private const domainCounter:Dictionary = new Dictionary();
+	private const domainMap:Dictionary = new Dictionary();
+	private const domainPurgeHandlers:Dictionary = new Dictionary();
 	
-	
-	private static const domainCounter:Dictionary = new Dictionary();
-	private static const domainPurgeHandlers:Dictionary = new Dictionary();
-	private static const contextMap:Dictionary = new Dictionary();
 	
 	/**
-	 * Adds the domain to the cache until the specified Context instance gets destroyed.
+	 * @inheritDoc
+	 */
+	public function addPurgeHandler (domain:ApplicationDomain, handler:Function, ...params) : void {
+		params.unshift(domain);
+		var chain:DelegateChain = DelegateChain(domainPurgeHandlers[domain]);
+		if (chain) chain.addDelegate(new Delegate(handler, params));
+	}
+	
+	
+	/**
+	 * Manages the domain of the specified Context until it gets destroyed.
 	 * 
-	 * @param context the Context instance that uses the specified domain
 	 * @param domain the domain to add to the cache
 	 */
-	public static function addDomain (context:Context, domain:ApplicationDomain) : void {
+	public function addContext (context:Context) : void {
+		var domain:ApplicationDomain = context.domain;
 		if (domainCounter[domain] != undefined) {
 			domainCounter[domain]++;
 		}
@@ -59,19 +68,16 @@ public class ReflectionCacheManager {
 		if (domainPurgeHandlers[domain] == undefined) {
 			domainPurgeHandlers[domain] = new DelegateChain();
 		}
-		contextMap[context] = domain;
+		domainMap[context] = domain;
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, -100);
 	}
 
-	private static function contextDestroyed (event:ContextEvent) : void {
+	private function contextDestroyed (event:ContextEvent) : void {
 		var context:Context = event.target as Context;
 		context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		if (contextMap[context] == undefined) {
-			log.warn("No domain cached for Context");
-			return;
-		}
-		var domain:ApplicationDomain = contextMap[context] as ApplicationDomain;
-		delete contextMap[context];
+		var domain:ApplicationDomain = domainMap[context];
+		if (!domain) return;
+		delete domainMap[context];
 		if (domainCounter[domain] == undefined) {
 			log.warn("No counter available for ApplicationDomain");
 			return;
@@ -87,19 +93,6 @@ public class ReflectionCacheManager {
 			if (chain) chain.invoke();
 			delete domainPurgeHandlers[domain];
 		}
-	}
-	
-	/**
-	 * Adds a handler to be invoked when an ApplicationDomain is no longer used by any Context.
-	 * 
-	 * @param domain the domain to watch
-	 * @param handler the function to invoke in case the domain is no longer in use
-	 * @param params any parameters that should be passed to the handler in addition to the domain itself
-	 */
-	public static function addPurgeHandler (domain:ApplicationDomain, handler:Function, ...params) : void {
-		params.unshift(domain);
-		var chain:DelegateChain = DelegateChain(domainPurgeHandlers[domain]);
-		if (chain) chain.addDelegate(new Delegate(handler, params));
 	}
 	
 	

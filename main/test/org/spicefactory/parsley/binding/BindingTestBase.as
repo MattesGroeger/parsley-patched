@@ -13,11 +13,9 @@ import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.bootstrap.BootstrapManager;
 import org.spicefactory.parsley.core.bootstrap.impl.DefaultBootstrapManager;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.ContextUtil;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.scope.ScopeName;
-import org.spicefactory.parsley.core.scope.ScopeRegistry;
-import org.spicefactory.parsley.core.scope.impl.DefaultScopeRegistry;
+import org.spicefactory.parsley.core.state.GlobalState;
 
 /**
  * @author Jens Halm
@@ -151,8 +149,8 @@ public class BindingTestBase {
 	
 	[Test]
 	public function publishPersistent () : void {
-		var reg:ScopeRegistry = ContextUtil.globalScopeRegistry;
-		DefaultScopeRegistry(reg).reset();
+		var reg:Object = GlobalState.scopes;
+		reg.reset();
 		DictionaryPersistenceService.reset();
 		DictionaryPersistenceService.putStoredValue("local0", String, "test", "A");
 		

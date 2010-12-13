@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.bootstrap.impl {
+import org.spicefactory.parsley.core.state.manager.GlobalStateManager;
 import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.bootstrap.BootstrapInfo;
 import org.spicefactory.parsley.core.bootstrap.InitializingService;
@@ -26,8 +27,6 @@ import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.Scope;
 import org.spicefactory.parsley.core.scope.ScopeManager;
-import org.spicefactory.parsley.core.scope.ScopeRegistry;
-import org.spicefactory.parsley.core.scope.impl.DefaultScopeRegistry;
 import org.spicefactory.parsley.core.scope.impl.ScopeInfo;
 import org.spicefactory.parsley.core.view.ViewManager;
 
@@ -42,9 +41,6 @@ import flash.system.ApplicationDomain;
 public class DefaultBootstrapInfo implements BootstrapInfo {
 	
 	
-	private static const _scopeRegistry:DefaultScopeRegistry = new DefaultScopeRegistry(); // TODO - global state
-	
-	
 	private var config:BootstrapConfig;
 	
 	
@@ -54,9 +50,10 @@ public class DefaultBootstrapInfo implements BootstrapInfo {
 	 * @param config the configuration instance to use for the Context getting built
 	 * @param the scopes to be created by the Context getting built
 	 */
-	function DefaultBootstrapInfo (config:BootstrapConfig, scopes:Array) {
+	function DefaultBootstrapInfo (config:BootstrapConfig, scopes:Array, globalState:GlobalStateManager) {
 		this.config = config;
 		this._scopes = scopes;
+		this._globalState = globalState;
 	}
 
 	
@@ -95,6 +92,15 @@ public class DefaultBootstrapInfo implements BootstrapInfo {
 		return config.viewSettings;
 	}
 	
+	private var _globalState:GlobalStateManager;
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get globalState () : GlobalStateManager {
+		return _globalState;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -205,7 +211,7 @@ public class DefaultBootstrapInfo implements BootstrapInfo {
 	private function registerScopes () : void {
 		for each (var scope:Scope in _scopeManager.getAllScopes()) {
 			if (scope.rootContext == context) {
-				_scopeRegistry.addScope(scope);
+				_globalState.scopes.addScope(scope);
 			}
 		}
 	}
@@ -227,31 +233,25 @@ public class DefaultBootstrapInfo implements BootstrapInfo {
 	[Deprecated]
 	public function createDynamicInfo () : BootstrapInfo {
 		var info:DefaultBootstrapInfo 
-				= new DynamicBootstrapInfo(config, scopes, context);
+				= new DynamicBootstrapInfo(config, scopes, globalState, context);
 		info._scopeManager = scopeManager;
 		info._viewManager = viewManager;
 		return info;
 	}
 	
-	
-	/**
-	 * @private
-	 */
-	public static function get scopeRegistry () : ScopeRegistry {
-		// TODO - global state
-		return _scopeRegistry;
-	}
+
 }
 }
 
+import org.spicefactory.parsley.core.state.manager.GlobalStateManager;
 import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.bootstrap.impl.DefaultBootstrapInfo;
 import org.spicefactory.parsley.core.context.Context;
 
 class DynamicBootstrapInfo extends DefaultBootstrapInfo {
 	
-	function DynamicBootstrapInfo (config:BootstrapConfig, scopes:Array, parent:Context) {
-		super(config, scopes);
+	function DynamicBootstrapInfo (config:BootstrapConfig, scopes:Array, globalState:GlobalStateManager, parent:Context) {
+		super(config, scopes, globalState);
 		_parent = parent;
 	}
 	

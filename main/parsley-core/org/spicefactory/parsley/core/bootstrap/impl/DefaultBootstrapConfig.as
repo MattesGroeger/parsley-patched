@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.bootstrap.impl {
+import org.spicefactory.parsley.core.state.manager.GlobalStateManager;
+import org.spicefactory.parsley.core.state.GlobalState;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -27,10 +29,7 @@ import org.spicefactory.parsley.core.bootstrap.BootstrapInfo;
 import org.spicefactory.parsley.core.bootstrap.BootstrapProcessor;
 import org.spicefactory.parsley.core.bootstrap.ConfigurationProcessor;
 import org.spicefactory.parsley.core.bootstrap.ServiceRegistry;
-import org.spicefactory.parsley.core.builder.impl.ContextRegistry;
-import org.spicefactory.parsley.core.builder.impl.ReflectionCacheManager;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.ContextUtil;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.messaging.MessageSettings;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageSettings;
@@ -59,7 +58,8 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 	private var customScopes:DelegateChain = new DelegateChain();
 	private var scopes:ScopeCollection = new ScopeCollection();
 	private var processors:Array = new Array();
-	private var parentConfig:BootstrapConfig;
+	
+	private var stateManager:GlobalStateManager = GlobalStateAccessor.stateManager;
 	
 	
 	private var _services:DefaultServiceRegistry = new DefaultServiceRegistry();
@@ -224,8 +224,8 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 		if (_domain == null) {
 			_domain = ClassInfo.currentDomain; // TODO - new ApplicationDomainProvider strategy
 		}
-		parentConfig = (_parent) 
-			? ContextRegistry.getBootstrapConfig(_parent)
+		var parentConfig:BootstrapConfig = (_parent) 
+			? GlobalStateAccessor.stateManager.contexts.getBootstrapConfig(_parent)
 			: BootstrapDefaults.config;
 		_services.parent = parentConfig.services;
 		_viewSettings.parent = parentConfig.viewSettings;
@@ -239,8 +239,11 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 			scopes.addScope(createScopeInfo(ScopeName.GLOBAL, true));
 		}
 		else {
-			for each (var inheritedScope:ScopeInfo in ContextRegistry.getScopes(parent)) {
-				scopes.addScope(inheritedScope);
+			var parentScopes:Array = stateManager.contexts.getBootstrapInfo(parent).scopes;
+			for each (var scope:ScopeInfo in parentScopes) {
+				if (scope.inherited) {
+					scopes.addScope(scope);
+				}
 			}
 		}
 		customScopes.invoke();
@@ -249,25 +252,26 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 	private function createScopeInfo (name:String, inherited:Boolean, uuid:String = null) : ScopeInfo {
 		var extensions:ScopeExtensions = _scopeExtensions.getExtensions(name);
 		if (!uuid) {
-			uuid = ContextUtil.globalScopeRegistry.nextUuidForName(name);
+			uuid = GlobalState.scopes.nextUuidForName(name);
 		}
-		return new ScopeInfo(name, inherited, uuid, services, messageSettings, extensions);
+		return new ScopeInfo(name, inherited, uuid, services, messageSettings, extensions, stateManager.domains);
 	}
-	
+
 	private function prepareBootstrapInfo () : BootstrapInfo {
 		if (description == null) {
 			description = processors.join(","); // TODO - ignores processors added later
 		}
-		var info:BootstrapInfo = new DefaultBootstrapInfo(this, scopes.getAll());
+		var info:BootstrapInfo = new DefaultBootstrapInfo(this, scopes.getAll(), stateManager);
 		var context:Context = info.context;
 		if (log.isInfoEnabled()) {
 			log.info("Creating Context " + context + 
 					((_parent) ? " with parent " + _parent : " without parent"));
 		}
-		ContextRegistry.addContext(context, this, scopes.getInherited()); // TODO - global state
-		ReflectionCacheManager.addDomain(context, domain); // TODO - global state
+		stateManager.contexts.addContext(context, this, info);
 		return info;
 	}
+	
+	
 }
 }
 
@@ -279,7 +283,6 @@ import flash.utils.Dictionary;
 class ScopeCollection {
 
 	private var scopes:Array = new Array();
-	private var inherited:Array = new Array();
 	private var nameLookup:Dictionary = new Dictionary();
 	
 	public function addScope (scopeDef:ScopeInfo) : void { 
@@ -288,17 +291,11 @@ class ScopeCollection {
 		}
 		nameLookup[scopeDef.name] = true;
 		scopes.push(scopeDef);
-		if (scopeDef.inherited) {
-			inherited.push(scopeDef);
-		}
 	}
 	
 	public function getAll () : Array {
 		return scopes;
 	}
 	
-	public function getInherited () : Array {
-		return inherited;
-	}
 	
 }

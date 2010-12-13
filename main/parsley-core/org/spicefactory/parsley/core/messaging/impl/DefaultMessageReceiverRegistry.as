@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.core.messaging.impl {
+import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.builder.impl.ReflectionCacheManager;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
 import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
@@ -41,7 +41,18 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 	
 	private var selectionCache:Dictionary = new Dictionary();
 	
+	private var domainManager:GlobalDomainManager;
 	
+	
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param domainManager the manager that keeps track of all ApplicationDomains currently used by one or more Contexts
+	 */
+	function DefaultMessageReceiverRegistry (domainManager:GlobalDomainManager) {
+		this.domainManager = domainManager;
+	}
+
 	/**
 	 * Returns the selection of receivers that match the specified message type.
 	 * 
@@ -60,7 +71,7 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 			}
 			receiverSelection = new MessageReceiverSelectionCache(messageType, collections);
 			selectionCache[messageType.getClass()] = receiverSelection;
-			ReflectionCacheManager.addPurgeHandler(messageType.applicationDomain, clearDomainCache, messageType.getClass());
+			domainManager.addPurgeHandler(messageType.applicationDomain, clearDomainCache, messageType.getClass());
 		}
 		return receiverSelection;
 	}

@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package org.spicefactory.parsley.core.scope {
+package org.spicefactory.parsley.core.state {
+import org.spicefactory.parsley.core.scope.Scope;
 
 /**
- * @author Jens Halm
+ * Global status information about currently active scopes.
  * 
- * A global registry of active scopes.
+ * @author Jens Halm
  */
-public interface ScopeRegistry {
+public interface GlobalScopeState {
 	
 	
 	/**
@@ -48,6 +49,6 @@ public interface ScopeRegistry {
 	 */
 	function nextUuidForName (scopeName:String) : String;
 	
+	
 }
-
 }

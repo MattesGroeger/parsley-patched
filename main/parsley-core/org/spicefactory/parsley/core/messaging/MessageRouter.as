@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.messaging {
 
+import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 import org.spicefactory.parsley.core.messaging.command.CommandManager;
 
 import flash.system.ApplicationDomain;
@@ -32,9 +33,10 @@ public interface MessageRouter {
 	 * Initializes this router. Invoked once after the router has been instantiated.
 	 * 
 	 * @param settings the settings for the router created by this factory
+	 * @param domainManager the manager that keeps track of all ApplicationDomains currently used by one or more Context
 	 * @param isLifecycleEventRouter whether this router handles object lifecycle events or regular application events
 	 */
-	function init (settings:MessageSettings, isLifecylceEventRouter:Boolean) : void;
+	function init (settings:MessageSettings, domainManager:GlobalDomainManager, isLifecylceEventRouter:Boolean) : void;
 	
 	/**
 	 * The registry for all receivers of messages dispatched through this router.

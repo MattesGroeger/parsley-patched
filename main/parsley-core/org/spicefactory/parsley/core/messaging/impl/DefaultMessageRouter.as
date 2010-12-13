@@ -18,13 +18,14 @@ package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.messaging.MessageSettings;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.messaging.MessageSettings;
 import org.spicefactory.parsley.core.messaging.command.CommandManager;
 import org.spicefactory.parsley.core.messaging.command.impl.DefaultCommandManager;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
+import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 
 import flash.system.ApplicationDomain;
 
@@ -52,13 +53,13 @@ public class DefaultMessageRouter implements MessageRouter {
 	 * @param settings the settings this router should use
 	 */
 	function DefaultMessageRouter () {
-		_receivers = new DefaultMessageReceiverRegistry();
 		_commandManager = new DefaultCommandManager();
 	}
 
 	
-	public function init (settings:MessageSettings, isLifecylceEventRouter:Boolean) : void {
+	public function init (settings:MessageSettings, domainManager:GlobalDomainManager, isLifecylceEventRouter:Boolean) : void {
 		this.isLifecylceEventRouter = isLifecylceEventRouter;
+		_receivers = new DefaultMessageReceiverRegistry(domainManager);
 		env = new DefaultMessagingEnvironment(_commandManager, settings.commandFactories, settings.unhandledError);
 		for each (var handler:MessageErrorHandler in settings.errorHandlers) {
 			_receivers.addErrorHandler(handler);

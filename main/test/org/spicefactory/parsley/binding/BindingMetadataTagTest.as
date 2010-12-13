@@ -18,12 +18,10 @@ import org.spicefactory.parsley.binding.model.CatSubscribeLocalMetadata;
 import org.spicefactory.parsley.binding.model.CatSubscribeMetadata;
 import org.spicefactory.parsley.binding.model.StringPublishPersistentMetadata;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.ContextUtil;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.scope.ScopeName;
-import org.spicefactory.parsley.core.scope.ScopeRegistry;
-import org.spicefactory.parsley.core.scope.impl.DefaultScopeRegistry;
+import org.spicefactory.parsley.core.state.GlobalState;
 import org.spicefactory.parsley.dsl.context.ContextBuilder;
 import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
 
@@ -202,8 +200,8 @@ public class BindingMetadataTagTest {
 	
 	[Test]
 	public function publishPersistent () : void {
-		var reg:ScopeRegistry = ContextUtil.globalScopeRegistry;
-		DefaultScopeRegistry(reg).reset();
+		var reg:Object = GlobalState.scopes;
+		reg.reset();
 		DictionaryPersistenceService.reset();
 		DictionaryPersistenceService.putStoredValue("local0", String, "test", "A");
 		

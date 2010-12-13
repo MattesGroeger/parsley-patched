@@ -1,24 +1,24 @@
 package org.spicefactory.parsley.context.dynobjects {
-import org.hamcrest.object.notNullValue;
-import org.hamcrest.object.sameInstance;
-import org.hamcrest.object.nullValue;
-import org.hamcrest.object.equalTo;
-import org.spicefactory.parsley.util.contextInState;
 import org.flexunit.assertThat;
+import org.hamcrest.object.equalTo;
+import org.hamcrest.object.notNullValue;
+import org.hamcrest.object.nullValue;
+import org.hamcrest.object.sameInstance;
 import org.spicefactory.parsley.asconfig.ActionScriptContextBuilder;
 import org.spicefactory.parsley.config.Configurations;
 import org.spicefactory.parsley.context.dynobjects.model.AnnotatedDynamicTestObject;
 import org.spicefactory.parsley.context.dynobjects.model.DynamicTestDependency;
 import org.spicefactory.parsley.context.dynobjects.model.DynamicTestObject;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.context.ContextUtil;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.impl.DefaultContext;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
+import org.spicefactory.parsley.core.state.GlobalState;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.runtime.RuntimeContextBuilder;
 import org.spicefactory.parsley.tag.model.NestedObject;
+import org.spicefactory.parsley.util.contextInState;
 
 /**
  * @author Jens Halm
@@ -71,14 +71,14 @@ public class DynamicObjectTest {
 		var context:Context = ActionScriptContextBuilder.build(DynamicConfig);
 		assertThat(context, contextInState());
 		var obj:AnnotatedDynamicTestObject = new AnnotatedDynamicTestObject();
-		assertThat(ContextUtil.isManaged(obj), equalTo(false));
-		assertThat(ContextUtil.getContext(obj), nullValue());
+		assertThat(GlobalState.objects.isManaged(obj), equalTo(false));
+		assertThat(GlobalState.objects.getContext(obj), nullValue());
 		var dynObject:DynamicObject = context.addDynamicObject(obj);
-		assertThat(ContextUtil.isManaged(obj), equalTo(true));
-		assertThat(ContextUtil.getContext(obj), sameInstance(context));
+		assertThat(GlobalState.objects.isManaged(obj), equalTo(true));
+		assertThat(GlobalState.objects.getContext(obj), sameInstance(context));
 		dynObject.remove();
-		assertThat(ContextUtil.isManaged(obj), equalTo(false));
-		assertThat(ContextUtil.getContext(obj), nullValue());
+		assertThat(GlobalState.objects.isManaged(obj), equalTo(false));
+		assertThat(GlobalState.objects.getContext(obj), nullValue());
 	}
 
 	private function validateDynamicObject (dynObject:DynamicObject, context:Context) : void {

@@ -110,7 +110,7 @@ public class DefaultManagedObjectHandler implements ManagedObjectHandler {
 					target.definition, target.definition.processorFactories.length);
 		}
 		
-		ManagedObjectLookup.addManagedObject(target);
+		manager.globalObjectManager.addManagedObject(target);
 
 	 	createProcessors();
 
@@ -140,7 +140,8 @@ public class DefaultManagedObjectHandler implements ManagedObjectHandler {
 			log.info("Destroy managed object with {0}", target.definition);
 		}
 		
-		ManagedObjectLookup.removeManagedObject(target);
+		// TODO - addHandler and removeHandler in manager could handle managing the global state
+		manager.globalObjectManager.removeManagedObject(target);
 		
 		try {
 			processLifecycle(ObjectLifecycle.PRE_DESTROY);
