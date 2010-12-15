@@ -15,12 +15,11 @@
  */
 
 package org.spicefactory.parsley.core.view.handler {
-import flash.system.ApplicationDomain;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.view.ViewSettings;
-import org.spicefactory.parsley.core.view.ViewConfigurator;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
+import org.spicefactory.parsley.core.view.ViewConfigurator;
 import org.spicefactory.parsley.core.view.ViewHandler;
+import org.spicefactory.parsley.core.view.ViewSettings;
 
 import flash.display.DisplayObject;
 
@@ -33,7 +32,6 @@ import flash.display.DisplayObject;
 public class ContextCreationHandler implements ViewHandler {
 
 
-	private var domain:ApplicationDomain;
 	private var context:Context;
 	
 	
@@ -42,7 +40,6 @@ public class ContextCreationHandler implements ViewHandler {
 	 */
 	public function init (context:Context, settings:ViewSettings, configurator:ViewConfigurator) : void {
 		this.context = context;
-		this.domain = domain;
 	}
 
 	/**
@@ -67,9 +64,6 @@ public class ContextCreationHandler implements ViewHandler {
 	}
 	
 	private function contextCreated (event:ContextBuilderEvent) : void {
-		if (event.domain == null) {
-			event.domain = domain;
-		}
 		if (event.parent == null) {
 			event.parent = context;
 		}

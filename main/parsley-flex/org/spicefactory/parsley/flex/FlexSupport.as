@@ -18,7 +18,8 @@ package org.spicefactory.parsley.flex {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.logging.flex.FlexLogFactory;
-import org.spicefactory.parsley.flex.modules.FlexModuleSupport;
+import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.flex.modules.FlexApplicationDomainProvider;
 import org.spicefactory.parsley.rpc.flex.command.AsyncTokenCommandSupport;
 
 /**
@@ -48,7 +49,7 @@ public class FlexSupport {
 		log.info("Initialize Flex Support");
 		initialized = true;
 		if (LogContext.factory == null) LogContext.factory = new FlexLogFactory();
-		FlexModuleSupport.initialize();
+		BootstrapDefaults.config.domainProvider = new FlexApplicationDomainProvider();
 		AsyncTokenCommandSupport.initialize();
 	}
 	

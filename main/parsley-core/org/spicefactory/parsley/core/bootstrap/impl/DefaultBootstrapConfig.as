@@ -15,14 +15,13 @@
  */
 
 package org.spicefactory.parsley.core.bootstrap.impl {
-import org.spicefactory.parsley.core.state.manager.GlobalStateManager;
-import org.spicefactory.parsley.core.state.GlobalState;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.Delegate;
 import org.spicefactory.lib.util.DelegateChain;
 import org.spicefactory.parsley.binding.BindingSupport;
+import org.spicefactory.parsley.core.bootstrap.ApplicationDomainProvider;
 import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
 import org.spicefactory.parsley.core.bootstrap.BootstrapInfo;
@@ -38,8 +37,11 @@ import org.spicefactory.parsley.core.scope.ScopeExtensions;
 import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.core.scope.impl.DefaultScopeExtensionRegistry;
 import org.spicefactory.parsley.core.scope.impl.ScopeInfo;
+import org.spicefactory.parsley.core.state.GlobalState;
+import org.spicefactory.parsley.core.state.manager.GlobalStateManager;
 import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.view.impl.DefaultViewSettings;
+import org.spicefactory.parsley.flex.modules.FlexApplicationDomainProvider;
 
 import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
@@ -58,6 +60,7 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 	private var customScopes:DelegateChain = new DelegateChain();
 	private var scopes:ScopeCollection = new ScopeCollection();
 	private var processors:Array = new Array();
+	private var parentConfig:BootstrapConfig;
 	
 	private var stateManager:GlobalStateManager = GlobalStateAccessor.stateManager;
 	
@@ -116,6 +119,23 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 	 */
 	public function set domain (value:ApplicationDomain) : void {
 		_domain = value;
+	}
+	
+	
+	private var _domainProvider:ApplicationDomainProvider;
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get domainProvider () : ApplicationDomainProvider {
+		return (_domainProvider) ? _domainProvider : (parentConfig) ? parentConfig.domainProvider : null;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function set domainProvider (value:ApplicationDomainProvider) : void {
+		_domainProvider = value;
 	}
 	
 	
@@ -193,6 +213,7 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 	 * @private
 	 */
 	internal function createProcessor () : BootstrapProcessor {
+		new FlexApplicationDomainProvider();
 		BindingSupport.initialize();
 		findParent();
 		assembleScopeInfos();
@@ -213,24 +234,27 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 			}
 			event = new ContextBuilderEvent();
 			viewRoot.dispatchEvent(event);
-			if (_parent == null) { 
+			if (!_parent) { 
 				_parent = event.parent;
 			}
-			if (_domain == null) {
+			if (!_domain) {
 				_domain = event.domain;
 			}
 			event.processScopes(this);
 		}
-		if (_domain == null) {
-			_domain = ClassInfo.currentDomain; // TODO - new ApplicationDomainProvider strategy
-		}
-		var parentConfig:BootstrapConfig = (_parent) 
+		parentConfig = (_parent) 
 			? GlobalStateAccessor.stateManager.contexts.getBootstrapConfig(_parent)
 			: BootstrapDefaults.config;
 		_services.parent = parentConfig.services;
 		_viewSettings.parent = parentConfig.viewSettings;
 		_messageSettings.parent = parentConfig.messageSettings;
 		_scopeExtensions.parent = parentConfig.scopeExtensions;
+		if (!_domain && _viewRoot && _domainProvider) {
+			_domain = _domainProvider.getDomainForView(viewRoot);
+		}
+		if (!_domain) {
+			_domain = (_parent) ? _parent.domain : ClassInfo.currentDomain;
+		}
 	}
 	
 	private function assembleScopeInfos () : void {
@@ -270,8 +294,6 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 		stateManager.contexts.addContext(context, this, info);
 		return info;
 	}
-	
-	
 }
 }
 

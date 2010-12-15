@@ -3,7 +3,7 @@ import flash.display.Sprite;
 import flash.events.IEventDispatcher;
 
 /**
- * @author jenshalm
+ * @author Jens Halm
  */
 public class InterfaceFactory {
 	

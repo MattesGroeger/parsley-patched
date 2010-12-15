@@ -62,6 +62,13 @@ public interface BootstrapConfig {
 	function set domain (value:ApplicationDomain) : void;
 	
 	/**
+	 * The provider to use for determining the ApplicationDomain when it is not specified explicitly.
+	 */
+	function get domainProvider () : ApplicationDomainProvider;
+	
+	function set domainProvider (value:ApplicationDomainProvider) : void;
+	
+	/**
 	 * The parent of the new Context.
 	 */
 	function get parent () : Context;
