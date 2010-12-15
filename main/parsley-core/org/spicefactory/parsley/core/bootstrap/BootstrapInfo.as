@@ -114,7 +114,6 @@ public interface BootstrapInfo {
 	[Deprecated]
 	function get objectProviderFactory () : ObjectProviderFactory;
 
-	[Deprecated]
 	function set objectProviderFactory (value:ObjectProviderFactory) : void;
 	
 	[Deprecated]

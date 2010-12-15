@@ -225,7 +225,6 @@ public class DefaultBootstrapInfo implements BootstrapInfo {
 		return _objectProviderFactory;
 	}
 	
-	[Deprecated]
 	public function set objectProviderFactory (value:ObjectProviderFactory) : void {
 		_objectProviderFactory = value;
 	}
