@@ -66,13 +66,6 @@ public class DefaultCompositeContextBuilder implements CompositeContextBuilder {
 		manager.config.addScope(name, inherited, uuid);
 	}
 	
-	/*
-	private function addCustomScope (name:String, inherited:Boolean, uuid:String) : void {
-		scopes.addScope(createScopeDefinition(name, inherited, uuid));
-	}
-	 */
-
-
 	private var _factories:FactoryRegistry;
 	/**
 	 * @inheritDoc
@@ -146,7 +139,7 @@ class WrappedAsyncConfigurationProcessor extends EventDispatcher
 		legacyBuilder.cancel();
 	}
 	
-	public function toString () : String {
+	public override function toString () : String {
 		return (legacyBuilder as Object).toString();
 	}
 }
