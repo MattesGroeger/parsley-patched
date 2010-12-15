@@ -35,9 +35,6 @@
 	</target>
 
 	<target name="parsley_flex4">
-		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
-				token="extends Flex3ModuleInfoBase" value="extends Flex4ModuleInfoBase"/>
-		
 		<exec executable="${flex4.sdk}/bin/${compc}" dir="${basedir}">
 			
 			<arg line="-load-config+=config/spicelib-metadata.xml" />
@@ -52,9 +49,6 @@
 			<arg line="+player=10.0" />
 			
 		</exec>
-		
-		<replace file="${project.dir}/parsley-flex/org/spicefactory/parsley/flex/modules/FlexModuleSupport.as" 
-				token="extends Flex4ModuleInfoBase" value="extends Flex3ModuleInfoBase"/>
 	</target>
 	
 	<target name="parsley_flex3">
