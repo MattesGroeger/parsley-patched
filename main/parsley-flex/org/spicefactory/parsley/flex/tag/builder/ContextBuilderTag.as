@@ -280,10 +280,11 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	
 	private function createContext () : void {
 		try {
-			
-			//var factory:ContextBuilderFactory = GlobalFactoryRegistry.instance.contextBuilder;
-			//var builder:CompositeContextBuilder = factory.create(viewRoot, parent, domain, description);
 			var manager:BootstrapManager = BootstrapDefaults.config.services.bootstrapManager.newInstance() as BootstrapManager;
+			if (viewRoot) manager.config.viewRoot = viewRoot;
+			if (parent) manager.config.parent = parent;
+			if (domain) manager.config.domain = domain;
+			if (description) manager.config.description = description;
 			var builder:CompositeContextBuilder; // don't create upfront, hope we don't need it
 			if (processors != null) {
 				for each (var processor:ContextBuilderChildTag in processors) {
@@ -305,7 +306,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 			if (config != null) {
 				manager.config.addProcessor(new FlexConfigurationProcessor([config]));
 			}
-			_context = builder.build();
+			_context = manager.createProcessor().process();
 			dispatchEvent(new Event("contextCreated"));
 			if (_context.initialized) {
 				dispatchEvent(new FlexContextEvent(_context));
