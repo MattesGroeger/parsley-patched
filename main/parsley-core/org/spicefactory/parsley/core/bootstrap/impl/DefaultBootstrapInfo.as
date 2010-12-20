@@ -42,6 +42,7 @@ public class DefaultBootstrapInfo implements BootstrapInfo {
 	
 	
 	private var config:BootstrapConfig;
+	private var deferredInit:Array = new Array();
 	
 	
 	/**
@@ -116,9 +117,12 @@ public class DefaultBootstrapInfo implements BootstrapInfo {
 	 */
 	public function get context () : Context {
 		if (_context == null) {
-			_context = config.services.context.newInstance() as Context;
+			_context = config.services.context.newInstance(initContext) as Context;
 			initScopeDefinitions();
-			initializeService(_context);
+			for each (var service:InitializingService in deferredInit) {
+				service.init(this);
+			}
+			deferredInit = new Array();
 			if (config.viewRoot != null) {
 				_context.viewManager.addViewRoot(config.viewRoot);
 			}
@@ -134,8 +138,7 @@ public class DefaultBootstrapInfo implements BootstrapInfo {
 	 */
 	public function get registry () : ObjectDefinitionRegistry {
 		if (_registry == null) {
-			_registry = config.services.definitionRegistry.newInstance() as ObjectDefinitionRegistry;
-			initializeService(_registry);
+			_registry = config.services.definitionRegistry.newInstance(initService) as ObjectDefinitionRegistry;
 		}
 		return _registry;
 	}
@@ -148,8 +151,7 @@ public class DefaultBootstrapInfo implements BootstrapInfo {
 	 */
 	public function get lifecycleManager () : ObjectLifecycleManager {
 		if (_lifecycleManager == null) {
-			_lifecycleManager = config.services.lifecycleManager.newInstance() as ObjectLifecycleManager;
-			initializeService(_lifecycleManager);
+			_lifecycleManager = config.services.lifecycleManager.newInstance(initService) as ObjectLifecycleManager;
 		}
 		return _lifecycleManager;
 	}
@@ -162,8 +164,7 @@ public class DefaultBootstrapInfo implements BootstrapInfo {
 	 */
 	public function get viewManager () : ViewManager {
 		if (_viewManager == null) {
-			_viewManager = config.services.viewManager.newInstance() as ViewManager;
-			initializeService(_viewManager);
+			_viewManager = config.services.viewManager.newInstance(initService) as ViewManager;
 		}
 		return _viewManager;
 	}
@@ -176,15 +177,19 @@ public class DefaultBootstrapInfo implements BootstrapInfo {
 	 */
 	public function get scopeManager () : ScopeManager {
 		if (_scopeManager == null) {
-			_scopeManager = config.services.scopeManager.newInstance() as ScopeManager;
-			initializeService(_scopeManager);
+			_scopeManager = config.services.scopeManager.newInstance(initService) as ScopeManager;
 			registerScopes();
 		}
 		return _scopeManager;
 	}
 	
+	private function initContext (context:Context) : void {
+		if (context is InitializingService) {
+			deferredInit.push(context);
+		}
+	}
 	
-	private function initializeService (service:Object) : void {
+	private function initService (service:Object) : void {
 		if (service is InitializingService) {
 			InitializingService(service).init(this);
 		}

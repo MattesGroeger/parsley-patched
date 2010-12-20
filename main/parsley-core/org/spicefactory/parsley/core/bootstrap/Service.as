@@ -72,9 +72,10 @@ public interface Service {
 	 * Creates a new instance of this service, using the specified implementation
 	 * and applying all decorators added to this service.
 	 * 
+	 * @param initCallback the callback to invoke immediately after instantiation of service and decorator instances
 	 * @return a new instance of this service
 	 */
-	function newInstance () : Object;
+	function newInstance (initCallback:Function = null) : Object;
 	
 	
 }

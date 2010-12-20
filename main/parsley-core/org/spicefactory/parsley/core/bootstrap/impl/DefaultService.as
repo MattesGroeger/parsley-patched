@@ -25,6 +25,9 @@ import org.spicefactory.parsley.core.bootstrap.Service;
 public class DefaultService implements Service {
 	
 	
+	private var initCallback:Function;
+	
+	
 	/**
 	 * Creates a new instance.
 	 * 
@@ -33,7 +36,7 @@ public class DefaultService implements Service {
 	function DefaultService (serviceInterface:Class) {
 		_serviceInterface = serviceInterface;
 	}
-	
+
 	
 	private var _parent:Service;
 	
@@ -92,10 +95,16 @@ public class DefaultService implements Service {
 	/**
 	 * @inheritDoc
 	 */
-	public function newInstance() : Object {
+	public function newInstance(initCallback:Function = null) : Object {
 		var service:Object = factory.newInstance();
+		if (initCallback) {
+			initCallback(service);
+		}
 		for each (var decorator:ServiceFactory in decorators) {
 			service = decorator.newInstance(service);
+			if (initCallback) {
+				initCallback(service);
+			}
 		}
 		return service;
 	}
