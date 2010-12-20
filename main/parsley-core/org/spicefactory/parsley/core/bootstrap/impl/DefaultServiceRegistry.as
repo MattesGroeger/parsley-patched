@@ -33,13 +33,10 @@ import org.spicefactory.parsley.core.view.ViewManager;
 public class DefaultServiceRegistry implements ServiceRegistry {
 	
 	
-	private var _parent:ServiceRegistry;
-	
 	/**
 	 * The parent registry to be used to pull additional decorators and the default implementation from.
 	 */
 	public function set parent (value:ServiceRegistry) : void {
-		_parent = value;	
 		_bootstrapManager.parent = value.bootstrapManager;
 		_messageRouter.parent = value.messageRouter;
 		_context.parent = value.context;
