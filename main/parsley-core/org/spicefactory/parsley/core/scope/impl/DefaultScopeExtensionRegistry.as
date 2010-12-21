@@ -15,9 +15,9 @@
  */
 
 package org.spicefactory.parsley.core.scope.impl {
-import org.spicefactory.parsley.core.bootstrap.impl.ServiceFactory;
+import org.spicefactory.parsley.core.bootstrap.impl.DefaultService;
+import org.spicefactory.parsley.core.bootstrap.Service;
 import org.spicefactory.parsley.core.scope.ScopeExtensionRegistry;
-import org.spicefactory.parsley.core.scope.ScopeExtensions;
 
 import flash.utils.Dictionary;
 
@@ -30,8 +30,44 @@ public class DefaultScopeExtensionRegistry implements ScopeExtensionRegistry {
 
 	
 	private var _parent:ScopeExtensionRegistry;
-	private var allScopes:Registry = new Registry();
-	private var scopes:Dictionary = new Dictionary();
+	
+	private var types:Dictionary = new Dictionary();
+	
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function forType (type:Class) : Service {
+		var service:Service = types[type] as Service;
+		if (!service) {
+			service = new DefaultService(type);
+			types[type] = service;
+		}
+		return service;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function getAll () : Dictionary {
+		var services:Dictionary = new Dictionary();
+		for (var type:Object in types) {
+			services[type] = types[type];
+		}
+		if (_parent) {
+			var inheritedTypes:Dictionary = _parent.getAll();
+			for (var inheritedType:Object in inheritedTypes) {
+				if (!services[inheritedType]) {
+					services[inheritedType] = inheritedTypes[inheritedType];
+				}
+				else {
+					var child:DefaultService = services[inheritedType];
+					child.parent = inheritedTypes[inheritedType];
+				}
+			}
+		}
+		return services;
+	}
 	
 	
 	/**
@@ -41,70 +77,6 @@ public class DefaultScopeExtensionRegistry implements ScopeExtensionRegistry {
 		_parent = value;	
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
-	public function addExtension (type:Class, params:Array = null, scope:String = null, id:String = null) : void {
-		var registry:Registry;
-		if (scope == null) {
-			registry = allScopes;
-		}
-		else if (scopes[scope] == undefined) {
-			registry = new Registry();
-			scopes[scope] = registry;
-		}
-		else {
-			registry = Registry(scopes[scope]);
-		}
-		registry.addExtension(new ServiceFactory(type, params), id);
-	}
 	
-	/**
-	 * @inheritDoc
-	 */
-	public function getExtensions (scope:String) : ScopeExtensions {
-		var parentExt:ScopeExtensions = (_parent != null) ? _parent.getExtensions(scope) : null;
-		var ext:DefaultScopeExtensions = new DefaultScopeExtensions(parentExt);
-		if (scopes[scope] != undefined) {
-			var registry:Registry = scopes[scope] as Registry;
-			addExtensions(registry, ext);
-		}
-		addExtensions(allScopes, ext);
-		return ext;
-	}
-	
-	private function addExtensions (registry:Registry, ext:DefaultScopeExtensions) : void {
-		for each (var factory:ServiceFactory in registry.withoutId) {
-			ext.addExtension(factory.newInstance());
-		}
-		for (var id:String in registry.byId) {
-			var idFactory:ServiceFactory = ServiceFactory(registry.byId[id]);
-			ext.addExtension(idFactory.newInstance(), id);
-		}
-	}
 }
-}
-
-import org.spicefactory.parsley.core.bootstrap.impl.ServiceFactory;
-import org.spicefactory.parsley.core.errors.ContextError;
-
-import flash.utils.Dictionary;
-
-class Registry {
-
-	internal var byId:Dictionary = new Dictionary();
-	internal var withoutId:Array = new Array();
-
-	public function addExtension (factory:ServiceFactory, id:String) : void {
-		if (id != null) {
-			if (byId[id] != undefined) {
-				throw new ContextError("Duplicate id for scope extension: " + id);
-			}
-			byId[id] = factory;
-		}
-		else {
-			withoutId.push(factory);
-		}
-	}
-	
 }

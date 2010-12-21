@@ -22,8 +22,9 @@ import org.spicefactory.parsley.binding.decorator.SubscribeDecorator;
 import org.spicefactory.parsley.binding.impl.DefaultBindingManager;
 import org.spicefactory.parsley.binding.impl.LocalPersistenceManager;
 import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.core.bootstrap.Service;
 import org.spicefactory.parsley.core.scope.ScopeExtensionRegistry;
-import org.spicefactory.parsley.core.scope.ScopeName;
+
 
 /**
  * Provides a static method to initalize the decoupled binding facility.
@@ -56,10 +57,10 @@ public class BindingSupport {
 		
 		var scopeExtensions:ScopeExtensionRegistry = BootstrapDefaults.config.scopeExtensions;
 		
-		scopeExtensions.addExtension(DefaultBindingManager);
-		if (!scopeExtensions.getExtensions(ScopeName.GLOBAL).hasType(PersistenceManager)) {
-			// only install default if no other manager is found:
-			scopeExtensions.addExtension(LocalPersistenceManager);
+		scopeExtensions.forType(BindingManager).setImplementation(DefaultBindingManager);
+		var service:Service = scopeExtensions.forType(PersistenceManager);
+		if (!service.factory) {
+			service.setImplementation(LocalPersistenceManager);
 		}
 		
 		initialized = true;

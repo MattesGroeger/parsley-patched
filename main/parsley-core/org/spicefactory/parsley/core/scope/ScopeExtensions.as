@@ -37,7 +37,7 @@ public interface ScopeExtensions {
 	 * @param type the type of extenstion to obtain
 	 * @return the extension with a matching type
 	 */
-	function byType (type:Class) : Object;
+	function forType (type:Class) : Object;
 	
 	/**
 	 * Indicates whether this object contains an extension of the specified type.
@@ -47,21 +47,6 @@ public interface ScopeExtensions {
 	 */
 	function hasType (type:Class) : Boolean;
 
-	/**
-	 * Obtains the extension registered with the specified id.
-	 * 
-	 * @param id the id of the extension to obtain
-	 * @return the extension with the specified id
-	 */
-	function byId (id:String) : Object;
-	
-	/**
-	 * Indicates whether this object contains an extension with the specified id.
-	 * 
-	 * @param id the id of the extension to check
-	 * @return true if this object contains an extension with the specified id
-	 */
-	function hasId (id:String) : Boolean;
 	
 }
 }

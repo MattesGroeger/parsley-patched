@@ -33,7 +33,6 @@ import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.messaging.MessageSettings;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageSettings;
 import org.spicefactory.parsley.core.scope.ScopeExtensionRegistry;
-import org.spicefactory.parsley.core.scope.ScopeExtensions;
 import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.core.scope.impl.DefaultScopeExtensionRegistry;
 import org.spicefactory.parsley.core.scope.impl.ScopeInfo;
@@ -45,6 +44,7 @@ import org.spicefactory.parsley.flex.modules.FlexApplicationDomainProvider;
 
 import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
+import flash.utils.Dictionary;
 
 /**
  * Default implementation of the BootstrapConfig interface.
@@ -274,7 +274,7 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 	}
 
 	private function createScopeInfo (name:String, inherited:Boolean, uuid:String = null) : ScopeInfo {
-		var extensions:ScopeExtensions = _scopeExtensions.getExtensions(name);
+		var extensions:Dictionary = _scopeExtensions.getAll();
 		if (!uuid) {
 			uuid = GlobalState.scopes.nextUuidForName(name);
 		}

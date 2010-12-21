@@ -123,15 +123,17 @@ public class ScopeTest {
 	public function extensions () : void {
 		var context:Context = ContextBuilder
 		.newSetup()
-			.scopeExtensions().addExtension(ScopeTestExtension)
+			.scopeExtensions()
+				.forType(ScopeTestExtension)
+				.setImplementation(ScopeTestExtension)
 			.newBuilder()
 				.config(ActionScriptConfig.forClass(ScopeMessagingTestConfig))
 				.build();
 		
 		var localExtension:ScopeTestExtension
-				= context.scopeManager.getScope(ScopeName.LOCAL).extensions.byType(ScopeTestExtension) as ScopeTestExtension;
+				= context.scopeManager.getScope(ScopeName.LOCAL).extensions.forType(ScopeTestExtension) as ScopeTestExtension;
 		var globalExtension:ScopeTestExtension
-				= context.scopeManager.getScope(ScopeName.GLOBAL).extensions.byType(ScopeTestExtension) as ScopeTestExtension;
+				= context.scopeManager.getScope(ScopeName.GLOBAL).extensions.forType(ScopeTestExtension) as ScopeTestExtension;
 		assertThat(globalExtension, notNullValue());
 		assertThat(localExtension, notNullValue());
 		assertThat(localExtension, not(sameInstance(globalExtension)));

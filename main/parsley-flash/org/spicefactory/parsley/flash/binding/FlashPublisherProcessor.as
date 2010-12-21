@@ -45,7 +45,7 @@ public class FlashPublisherProcessor implements ObjectProcessor {
 				? new SubscribingFlashPropertyPublisher(target.instance, property, changeEvent, property.type, id, context)
 				: new FlashPropertyPublisher(target.instance, property, changeEvent, property.type, id, context);
 		this.manager = target.context.scopeManager.getScope(scope)
-				.extensions.byType(BindingManager) as BindingManager;
+				.extensions.forType(BindingManager) as BindingManager;
 	}
 	
 	

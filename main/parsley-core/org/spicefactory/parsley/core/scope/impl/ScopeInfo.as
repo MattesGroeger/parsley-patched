@@ -15,13 +15,15 @@
  */
 
 package org.spicefactory.parsley.core.scope.impl {
-import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.bootstrap.ServiceRegistry;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.messaging.MessageSettings;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.messaging.MessageSettings;
 import org.spicefactory.parsley.core.scope.ScopeExtensions;
+import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
+
+import flash.utils.Dictionary;
 
 /**
  * Holds the definition and collaborators like MessageRouters for a single scope. Instances of this class
@@ -44,7 +46,7 @@ public class ScopeInfo {
 	private var _rootContext:Context;
 	private var _lifecycleEventRouter:MessageRouter;
 	private var _messageRouter:MessageRouter;
-	private var _extensions:ScopeExtensions;
+	private var _extensions:DefaultScopeExtensions;
 	
 	
 	/**
@@ -54,18 +56,18 @@ public class ScopeInfo {
 	 * @param inherited whether child Contexts inherit this scope 
 	 * @param uuid the unique id of the scope
 	 * @param factories the factories to obtain the internal MessageRouters for this scope from
-	 * @param extensions the extensions registered for this scope
+	 * @param extensions the extensions registered for this scope mapped by type (Class)
 	 * @param domainManager the manager that keeps track of all ApplicationDomains currently used by one or more Contexts
 	 */
 	function ScopeInfo (name:String, inherited:Boolean, uuid:String, 
-			services:ServiceRegistry, settings:MessageSettings, extensions:ScopeExtensions, domainManager:GlobalDomainManager) {
+			services:ServiceRegistry, settings:MessageSettings, extensions:Dictionary, domainManager:GlobalDomainManager) {
 		_name = name;
 		_uuid = uuid;
 		_inherited = inherited;
 		this.services = services;
 		this.settings = settings;
 		this.domainManager = domainManager;
-		this._extensions = extensions;
+		this._extensions = new DefaultScopeExtensions(extensions);
 	}
 
 	

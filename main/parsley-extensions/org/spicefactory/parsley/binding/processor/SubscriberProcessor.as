@@ -51,7 +51,7 @@ public class SubscriberProcessor implements ObjectProcessor {
 		this.target = target;
 		this.subscriber = new PropertySubscriber(target.instance, property, property.type, id);
 		this.manager = target.context.scopeManager.getScope(scope)
-				.extensions.byType(BindingManager) as BindingManager;
+				.extensions.forType(BindingManager) as BindingManager;
 	}
 
 	/**

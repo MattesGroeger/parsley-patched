@@ -52,16 +52,16 @@ public class PersistentPublisherProcessor implements ObjectProcessor {
 	function PersistentPublisherProcessor (target:ManagedObject, property:Property, scope:Scope, id:String = null) {
 		this.target = target;
 		this.publisher = new PersistentPublisher(getPersistenceManager(scope), scope.uuid, property.type, id); 
-		this.manager = scope.extensions.byType(BindingManager) as BindingManager;
+		this.manager = scope.extensions.forType(BindingManager) as BindingManager;
 	}
 	
 	private function getPersistenceManager (scope:Scope) : PersistenceManager {
 		if (scope.extensions.hasType(PersistenceManager)) {
-			return scope.extensions.byType(PersistenceManager) as PersistenceManager;
+			return scope.extensions.forType(PersistenceManager) as PersistenceManager;
 		}
 		else {
 			return scope.rootContext.scopeManager.getScope(ScopeName.GLOBAL)
-				.extensions.byType(PersistenceManager) as PersistenceManager;
+				.extensions.forType(PersistenceManager) as PersistenceManager;
 		}
 	}
 	

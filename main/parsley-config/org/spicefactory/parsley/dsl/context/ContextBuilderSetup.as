@@ -116,11 +116,10 @@ public class ContextBuilderSetup {
 	 * Allows to register scope extensions.
 	 * 
 	 * @param local this parameter is deprecated and has no effect
-	 * @param scope the scope the extension should be created for (all scopes if omitted)
 	 * @return a builder that allows to register scope extensions
 	 */
-	public function scopeExtensions (local:Boolean = false, scope:String = null) : ScopeExtensionsBuilder {
-		var part:ScopeExtensionsBuilder = new ScopeExtensionsBuilder(this, scope);
+	public function scopeExtensions (local:Boolean = false) : ScopeExtensionsBuilder {
+		var part:ScopeExtensionsBuilder = new ScopeExtensionsBuilder(this);
 		addPart(part);
 		return part;
 	}

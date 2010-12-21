@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2009/2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
  */
 
 package org.spicefactory.parsley.core.scope {
-	
+import org.spicefactory.parsley.core.bootstrap.Service;
 
+import flash.utils.Dictionary;
 
 /**
  * A registry for scope-wide extensions.
@@ -28,24 +29,31 @@ public interface ScopeExtensionRegistry {
 	
 	
 	/**
-	 * Adds a scope extension to this registry.
-	 * If the scope parameter is omitted, a new extension instance will be created for each new scope that
-	 * this registry is responsible for.
+	 * Returns the service registration for the specified type.
+	 * If no such service has been registered yet, a new registration will be created.
+	 * The returned registration can be used to specify the implementation class or just decorators for existing
+	 * registrations. The type passed to this method is usually the service interface of the scope extension, 
+	 * so that alternative implementations can be registered. But this is not a requirement, the specified type
+	 * may be the same as the implementation.
 	 * 
-	 * @param type the type of the extension
-	 * @param params the parameters to pass to the constructor of the extension
-	 * @param scope the scope the extension is responsible for
-	 * @param id an optional id the extension should be registered with
+	 * <p>In a standard use case this method will get used like this:</p>
+	 * <code><pre>BootstrapDefaults.config.scopeExtensions.forType(MyService).setImplementation(MyServiceImpl);</pre></code>
+	 * <p>The above would mean that the service would be registered globally. Alternatively the <code>BootstrapInfo</code>
+	 * for a particular Context may be used to register an extension just for one Context (and its children, if any).</p>
+	 * 
+	 * @param type the type of service, usually the service interface
+	 * @return the service configuration which can be modified 
 	 */
-	function addExtension (type:Class, params:Array = null, scope:String = null, id:String = null) : void;
+	function forType (type:Class) : Service;
 	
 	/**
-	 * Returns all extensions for the specified scope.
+	 * Returns all service registrations that were created in this registry.
+	 * The Dictionary will map the type (usually the service interface) to <code>Service</code>
+	 * instances holding the full configuration for the service.
 	 * 
-	 * @param scope the scope to return all extensions for
-	 * @return all extensions for the specified scope
+	 * @return all service registrations that were created in this registry
 	 */
-	function getExtensions (scope:String) : ScopeExtensions;
+	function getAll () : Dictionary;
 	
 	
 }

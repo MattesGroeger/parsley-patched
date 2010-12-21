@@ -210,7 +210,9 @@ public class BindingMetadataTagTest {
 		
 		var context:Context = ContextBuilder
 			.newSetup()
-				.scopeExtensions().addExtension(DictionaryPersistenceService)
+				.scopeExtensions()
+					.forType(PersistenceManager)
+					.setImplementation(DictionaryPersistenceService)
 				.newBuilder()
 					.object(pub1)
 					.object(pub2)

@@ -60,7 +60,7 @@ public class PublisherProcessor implements ObjectProcessor {
 				? new SubscribingPropertyPublisher(target.instance, property, property.type, id, context)
 				: new PropertyPublisher(target.instance, property, property.type, id, context);
 		this.manager = target.context.scopeManager.getScope(scope)
-				.extensions.byType(BindingManager) as BindingManager;
+				.extensions.forType(BindingManager) as BindingManager;
 	}
 	
 	

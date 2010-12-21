@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.scope.impl {
+import org.spicefactory.parsley.core.bootstrap.Service;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.scope.ScopeExtensions;
 
@@ -29,91 +30,40 @@ import flash.utils.getQualifiedClassName;
 public class DefaultScopeExtensions implements ScopeExtensions {
 
 
-	private var parent:ScopeExtensions;
-	private var extById:Dictionary = new Dictionary();
-	private var allExt:Array = new Array();
+	private var factories:Dictionary = new Dictionary();
+	private var instances:Dictionary = new Dictionary();
 
 
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param parent the parent instance to obtain additional extensions from
+	 * @param types all extensions for this instance mapped by type
 	 */
-	function DefaultScopeExtensions (parent:ScopeExtensions) {
-		this.parent = parent;
+	function DefaultScopeExtensions (types:Dictionary) {
+		this.factories = types;
 	}
 
 	
-	/**
-	 * Adds an extension for this scope.
-	 * 
-	 * @param ext the extension instance to add
-	 * @param id the optional id the extension should be registered with
-	 */
-	public function addExtension (ext:Object, id:String = null) : void {
-		if (id != null) {
-			extById[id] = ext;
-		}
-		allExt.push(ext);
-	}
-
 	/**
 	 * @inheritDoc
 	 */
-	public function byType (type:Class) : Object {
-		var result:Object = findByType(type);
-		if (result == null) {
-			if (parent != null) {
-				return parent.byType(type);
-			}
-			else {
+	public function forType (type:Class) : Object {
+		if (!instances[type]) {
+			var service:Service = factories[type];
+			if (service == null) {
 				throw new ContextError("No scope extension registered for type " 
 							+ getQualifiedClassName(type));
 			}
+			instances[type] = service.newInstance();
 		}
-		return result;
-	}
-	
-	private function findByType (type:Class) : Object {
-		var result:Object = null;
-		for each (var ext:Object in allExt) {
-			if (ext is type) {
-				if (result != null) {
-					throw new ContextError("More than one scope extension registered for type " 
-							+ getQualifiedClassName(type));
-				}
-				result = ext; 
-			}
-		}
-		return result;
+		return instances[type];
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function hasType (type:Class) : Boolean {
-		var result:Object = findByType(type);
-		return (result != null) || (parent != null && parent.hasType(type));
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function byId (id:String) : Object {
-		if (extById[id] != undefined) {
-			return extById[id];
-		}
-		else if (parent != null) {
-			return parent.byId(id);
-		}
-		throw new ContextError("No scope extension registered with id " + id);
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function hasId (id:String) : Boolean {
-		return (extById[id] != undefined) || (parent != null && parent.hasId(id));
+		return (factories[type] != undefined);
 	}
 	
 	

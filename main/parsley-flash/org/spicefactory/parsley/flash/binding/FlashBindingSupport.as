@@ -1,11 +1,13 @@
 package org.spicefactory.parsley.flash.binding {
 import org.spicefactory.lib.reflect.Metadata;
+import org.spicefactory.parsley.binding.BindingManager;
 import org.spicefactory.parsley.binding.PersistenceManager;
 import org.spicefactory.parsley.binding.decorator.SubscribeDecorator;
 import org.spicefactory.parsley.binding.impl.DefaultBindingManager;
+import org.spicefactory.parsley.binding.impl.LocalPersistenceManager;
 import org.spicefactory.parsley.core.bootstrap.BootstrapDefaults;
+import org.spicefactory.parsley.core.bootstrap.Service;
 import org.spicefactory.parsley.core.scope.ScopeExtensionRegistry;
-import org.spicefactory.parsley.core.scope.ScopeName;
 
 /**
  * Provides a static method to initalize the decoupled binding facility.
@@ -36,10 +38,11 @@ public class FlashBindingSupport {
 		Metadata.registerMetadataClass(FlashPublishSubscribeDecorator);
 		
 		var scopeExtensions:ScopeExtensionRegistry = BootstrapDefaults.config.scopeExtensions;
-		scopeExtensions.addExtension(DefaultBindingManager);
-		if (!scopeExtensions.getExtensions(ScopeName.GLOBAL).hasType(PersistenceManager)) {
-			// only install default if no other manager is found:
-			scopeExtensions.addExtension(DefaultBindingManager);
+		
+		scopeExtensions.forType(BindingManager).setImplementation(DefaultBindingManager);
+		var service:Service = scopeExtensions.forType(PersistenceManager);
+		if (!service.factory) {
+			service.setImplementation(LocalPersistenceManager);
 		}
 		
 		initialized = true;

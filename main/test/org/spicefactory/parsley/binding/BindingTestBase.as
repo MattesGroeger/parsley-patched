@@ -155,7 +155,7 @@ public class BindingTestBase {
 		DictionaryPersistenceService.putStoredValue("local0", String, "test", "A");
 		
 		var manager:BootstrapManager = new DefaultBootstrapManager();
-		manager.config.scopeExtensions.addExtension(DictionaryPersistenceService);
+		manager.config.scopeExtensions.forType(PersistenceManager).setImplementation(DictionaryPersistenceService);
 		addConfig(manager.config);
 		var context:Context = manager.createProcessor().process();
 		

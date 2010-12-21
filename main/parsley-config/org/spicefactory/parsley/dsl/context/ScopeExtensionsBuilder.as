@@ -26,19 +26,16 @@ public class ScopeExtensionsBuilder implements SetupPart {
 	
 	
 	private var setup:ContextBuilderSetup;
-	private var scope:String;
 	
-	private var service:Class;
-	private var params:Array;
-	private var id:String;
+	private var builder:ServiceBuilder;
+	private var type:Class;
 	
 	
 	/**
 	 * @private
 	 */
-	function ScopeExtensionsBuilder (setup:ContextBuilderSetup, scope:String) {
+	function ScopeExtensionsBuilder (setup:ContextBuilderSetup) {
 		this.setup = setup;
-		this.scope = scope;
 	}
 
 	
@@ -47,26 +44,24 @@ public class ScopeExtensionsBuilder implements SetupPart {
 	 * of the extension will be created for each scope that gets created.
 	 * 
 	 * @param type the type of the extension
-	 * @param params the parameters to 
-	 * @param id the optional id the extension should be registered with (if omitted the factory will be registered by type)
-	 * @return the original setup instance for method chaining
+	 * @return the builder for specifying the implementation or decorators for the scope extension
 	 */	
-	public function addExtension (type:Class, params:Array = null, id:String = null) : ContextBuilderSetup {
-		this.service = type;
-		this.params = params;
-		this.id = id;
-		return setup;
+	public function forType (type:Class) : ServiceBuilder {
+		this.type = type;
+		builder = new ServiceBuilder(setup, null);
+		return builder;
 	}
 	
 	/**
 	 * @private
 	 */
 	public function apply (config:BootstrapConfig) : void {
-		if (service != null) {
-			config.scopeExtensions.addExtension(service, params, scope, id);
+		if (builder != null) {
+			builder.configureService(config.scopeExtensions.forType(type));
 		}
 	}
 	
 	
 }
 }
+

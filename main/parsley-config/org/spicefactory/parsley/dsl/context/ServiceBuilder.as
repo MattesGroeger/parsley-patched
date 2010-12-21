@@ -78,6 +78,13 @@ public class ServiceBuilder {
 	 */
 	public function apply (registry:ServiceRegistry) : void {
 		var service:Service = property.getValue(registry);
+		configureService(service);
+	}
+	
+	/**
+	 * @private
+	 */
+	public function configureService (service:Service) : void {
 		if (replacement) {
 			replacement.apply(service.setImplementation);
 		}
