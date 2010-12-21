@@ -30,17 +30,21 @@ import flash.utils.getQualifiedClassName;
 public class DefaultScopeExtensions implements ScopeExtensions {
 
 
-	private var factories:Dictionary = new Dictionary();
+	private var factories:Dictionary;
 	private var instances:Dictionary = new Dictionary();
+	
+	private var initCallback:Function;
 
 
 	/**
 	 * Creates a new instance.
 	 * 
 	 * @param types all extensions for this instance mapped by type
+	 * @param initCallback the callback to invoke when creating a new instance of a scope extension
 	 */
-	function DefaultScopeExtensions (types:Dictionary) {
+	function DefaultScopeExtensions (types:Dictionary, initCallback:Function) {
 		this.factories = types;
+		this.initCallback = initCallback;
 	}
 
 	
@@ -54,7 +58,7 @@ public class DefaultScopeExtensions implements ScopeExtensions {
 				throw new ContextError("No scope extension registered for type " 
 							+ getQualifiedClassName(type));
 			}
-			instances[type] = service.newInstance();
+			instances[type] = service.newInstance(initCallback);
 		}
 		return instances[type];
 	}

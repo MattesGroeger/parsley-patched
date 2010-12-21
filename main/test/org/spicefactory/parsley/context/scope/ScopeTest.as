@@ -140,6 +140,29 @@ public class ScopeTest {
 	}
 	
 	[Test]
+	public function initializingExtension () : void {
+		var context:Context = ContextBuilder
+		.newSetup()
+			.scopeExtensions()
+				.forType(InitializingTestExtension)
+				.setImplementation(InitializingTestExtension)
+			.newBuilder()
+				.build();
+		
+		var localScope:Scope = context.scopeManager.getScope(ScopeName.LOCAL);
+		var localExtension:InitializingTestExtension
+				= localScope.extensions.forType(InitializingTestExtension) as InitializingTestExtension;
+		var globalScope:Scope = context.scopeManager.getScope(ScopeName.GLOBAL);
+		var globalExtension:InitializingTestExtension
+				= globalScope.extensions.forType(InitializingTestExtension) as InitializingTestExtension;
+		assertThat(globalExtension, notNullValue());
+		assertThat(localExtension, notNullValue());
+		assertThat(localExtension, not(sameInstance(globalExtension)));
+		assertThat(globalExtension.scope, sameInstance(globalScope));
+		assertThat(localExtension.scope, sameInstance(localScope));
+	}
+
+	[Test]
 	public function scopeRegistry () : void {
 		var reg:Object = GlobalState.scopes;
 		reg.reset();

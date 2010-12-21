@@ -20,6 +20,8 @@ import org.spicefactory.parsley.core.bootstrap.ServiceRegistry;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.messaging.MessageSettings;
+import org.spicefactory.parsley.core.scope.InitializingExtension;
+import org.spicefactory.parsley.core.scope.Scope;
 import org.spicefactory.parsley.core.scope.ScopeExtensions;
 import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 
@@ -67,9 +69,16 @@ public class ScopeInfo {
 		this.services = services;
 		this.settings = settings;
 		this.domainManager = domainManager;
-		this._extensions = new DefaultScopeExtensions(extensions);
+		this._extensions = new DefaultScopeExtensions(extensions, initScopeExtension);
 	}
 
+	
+	private function initScopeExtension (ext:Object) : void {
+		if (ext is InitializingExtension) {
+			var scope:Scope = rootContext.scopeManager.getScope(name);
+			InitializingExtension(ext).init(scope);
+		}
+	}
 	
 	/**
 	 * The name of the scope.
