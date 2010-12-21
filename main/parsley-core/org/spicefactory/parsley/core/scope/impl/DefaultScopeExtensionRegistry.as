@@ -52,17 +52,22 @@ public class DefaultScopeExtensionRegistry implements ScopeExtensionRegistry {
 	public function getAll () : Dictionary {
 		var services:Dictionary = new Dictionary();
 		for (var type:Object in types) {
-			services[type] = types[type];
+			if (Service(types[type]).factory) {
+				services[type] = types[type];
+			}
 		}
 		if (_parent) {
 			var inheritedTypes:Dictionary = _parent.getAll();
 			for (var inheritedType:Object in inheritedTypes) {
-				if (!services[inheritedType]) {
+				if (!types[inheritedType]) {
 					services[inheritedType] = inheritedTypes[inheritedType];
 				}
 				else {
-					var child:DefaultService = services[inheritedType];
+					var child:DefaultService = types[inheritedType];
 					child.parent = inheritedTypes[inheritedType];
+					if (!services[inheritedType]) {
+						services[inheritedType] = inheritedTypes[inheritedType];
+					}
 				}
 			}
 		}
