@@ -12,7 +12,7 @@
 	
 	<target name="generate_html" description="Parsley Manual - HTML Version">
 		<java 
-			jar="garlic-1.1.0.jar"
+			jar="garlic-1.1.1.jar"
 			fork="true"
 			failonerror="false"
 			dir="${manual.src.dir}"
@@ -29,7 +29,7 @@
 	
 	<target name="generate_php" description="Parsley Manual - PHP">
 		<java 
-			jar="garlic-1.1.0.jar"
+			jar="garlic-1.1.1.jar"
 			fork="true"
 			failonerror="false"
 			dir="${manual.src.dir}"
