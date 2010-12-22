@@ -1,0 +1,10 @@
+#sc2 overview_migrate_23 Migrating from 2.2 to 2.3 #sc2
+
+#par Like the 2.2 release this new release is again fully backwards-compatible
+for application code. Your existing configuration classes and files and your existing container initialization markup or code
+is supposed to continue to work with version 2.3. #par
+
+#par If you have built extensions you may need to adjust a few of them. But even in case of deprecations the old APIs could
+be kept for backwards-compatibility in most cases. So if you see a lot of deprecation warnings now, don't worry.
+That does not mean these API ceased to function. You can migrate to the newer APIs at any point in time in the Parsley 2
+lifecycle. #par

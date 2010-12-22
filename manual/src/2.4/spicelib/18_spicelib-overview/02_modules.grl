@@ -1,0 +1,43 @@
+#sc2 spicelib-overview_modules Spicelib Modules #sc2
+
+#par Spicelib consists of the following modules: #par
+
+#sub Reflection #sub
+
+#par The reflection module contains convenient classes to reflect on AS3 classes,
+methods and properties without the need for cumbersome parsing of XML output from 
+#cdi describeType #cdi. For more information see #ref reflection_intro #ref. #par
+
+#sub XML to Object Mapper #sub
+
+#par A small but powerful and flexibel XML-to-Object Mapper which allows you to map from XML 
+to AS3 classes - in both directions. It comes with builtin mappers
+which cover the most common use cases like mapping properties of AS3 classes to XML attributes
+or child elements, but can be easily extended. For more information see #ref xmlmapper_intro #ref. #par
+
+#sub Task Framework #sub
+
+#par General abstraction for asynchronous operations. Allows nesting / grouping of
+Tasks in #cdi TaskGroup #cdi instances for concurrent or sequential
+execution. For more information see #ref task_intro #ref. #par
+
+#sub Logging #sub
+
+#par The logging framework allows to log custom messages from application code and use 
+the configuration options to filter log output based on logger names (often corresponding
+to the name of the class containing the log statement) and log levels as a way to indicate
+the severity or importance of the log message. 
+For more information see #ref logging_intro #ref. #par 
+
+#sub Expressions #sub
+
+#par The expression framework offers a way to parse and interpret simple string expressions
+that contain variables that will be evaluated at runtime. In the example expression
+#cdi "The age of the child is ${child.age}" #cdi the dynamically evaluated part is
+#cdi child.age #cdi. Currently only simple variables and properties with pluggable
+resolvers are supported, no
+arithmetic or comparison operators. Since the feature set is quite basic, there is no
+section about this module in the Developer Manual. Please refer to the 
+#url /parsley/docs/2.0/api/spicelib/ Spicelib API (ASDoc) #url
+for more information. In Parsley the Expression Framework is used to allow the inclusion
+of variables in the XML configuration of an #cdi ApplicationContext #cdi. #par

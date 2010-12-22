@@ -1,0 +1,22 @@
+#sc2 tagref_view Flex Component Wiring #sc2
+
+
+#sc3 tagref_view_configure Configure #sc3
+
+#tbl
+#tbr Metadata Tag # N/A #tbr
+#tbr MXML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <Configure/> #cdi #tbr
+#tbr XML Tag # N/A #tbr
+#tbr Detailed Explanation # #ref view_config_explicit #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi target #cdi # optional # The object that should be wired to the Context. If omitted the document object
+the tag was placed in will be wired. #tbr
+#tbr #cdi repeat #cdi # optional # Indicates whether the wiring should happen repeatedly whenever the 
+object is added to the stage. When set to false it is only wired once. The default is true. #tbr
+#tbl

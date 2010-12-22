@@ -1,0 +1,9 @@
+#sc1 spicelib-logging_intro Logging for Flash Applications #sc1
+
+#par The logging framework allows to log custom messages from application code and use 
+the configuration options to filter log output based on logger names and log levels.
+It was first developed in AS2 and used in inhouse projects for more than three years until
+we ported it to AS3 and included it in the public Spicelib release. #par
+
+#par It is currently maintained primarily for use in Flash Applications. 
+The Flex SDK has its own Logging API which you can use when building Flex Applications. #par

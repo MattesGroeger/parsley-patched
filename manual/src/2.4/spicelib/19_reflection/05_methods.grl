@@ -1,0 +1,42 @@
+#sc2 reflection_methods Reflecting on methods #sc2
+
+#par The #cdi Method #cdi class allows to obtain information about the method parameter types and
+if they are optional or not: #par
+
+#cdb
+var ci:ClassInfo = ClassInfo.forClass(Point);
+var m:Method = ci.getMethod("add");
+var params:Array = m.parameters;
+trace("param count: " + params.length);
+var param:Parameter = params[0] as Parameter;
+trace("param type: " + param.type.name);
+trace("param required: " + param.required);
+trace("return type: " + m.returnType.name);
+#cdb
+
+#par The output for the code above would be: #par
+
+#cdb
+param count: 1
+param type: flash.geom::Point
+param required: true
+return type: flash.geom::Point
+#cdb
+
+#par Furthermore you can also use the #cdi Method #cdi class to reflectively invoke
+the method on a particular instance of the class that the #cdi Method #cdi instance belongs to: #par
+
+#cdb
+var point:Point = new Point(7, 5);
+var ci:ClassInfo = ClassInfo.forClass(Point);
+var m:Method = ci.getMethod("add");
+var result:Point = m.invoke(point, [new Point(3, 3)]);
+trace(result.x); // output: 10
+#cdb
+
+#par When using #cdi Method.invoke #cdi any necessary type conversion for the method parameters
+will be done as described in #ref reflection_conversion #ref. #par
+
+#par Reflectively invoking methods is usually not done in application code.
+It is most useful for developing frameworks and libraries that have to manage classes not known
+until runtime. #par

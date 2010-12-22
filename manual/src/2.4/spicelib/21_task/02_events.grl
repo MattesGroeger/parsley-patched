@@ -1,0 +1,35 @@
+#sc2 task_events Task Events and States #sc2
+
+#par Each Task supports a set of events, some of them related to optional features: #par
+
+#tbl
+#tbr TaskEvent.START # Fires when the Task is started, either by application code calling
+the public #cdi start #cdi method or when a #cdi TaskGroup #cdi
+starts own of its child tasks in which case you do not manually start the child task. The
+internal state of the task changes from #cdi TaskState.INACTIVE #cdi to #cdi TaskState.ACTIVE #cdi. #tbr
+#tbr TaskEvent.COMPLETE # Fires when the Task is completed, usually when the custom Task implementation
+calls the protected #cdi complete #cdi method in the abstract #cdi Task #cdi superclass. The internal
+state of the task changes to #cdi TaskState.INACTIVE #cdi (for restartable tasks) or to
+#cdi TaskState.FINISHED #cdi for non-restartable tasks. #tbr
+#tbr TaskEvent.CANCEL # Fires when the Task is cancelled, usually through its public 
+#cdi cancel #cdi method. Can only occur if the #cdi cancelable #cdi property is set to true
+for that task. The internal
+state of the task changes to #cdi TaskState.INACTIVE #cdi (for restartable tasks) or to
+#cdi TaskState.FINISHED #cdi for non-restartable tasks. #tbr
+#tbr ErrorEvent.ERROR # Dispatched when an error occurred usually signalled by the custom Task
+implementation invoking the protected #cdi error #cdi method of the abstract #cdi Task #cdi
+superclass. The internal
+state of the task changes to #cdi TaskState.INACTIVE #cdi (for restartable tasks) or to
+#cdi TaskState.FINISHED #cdi for non-restartable tasks. #tbr
+#tbr TaskEvent.SUSPEND # Fires when a Task is suspended, usually through its public
+#cdi suspend #cdi method. Can only occur if the #cdi suspendable #cdi property is set to true
+for that task. The internal state of the task changes to #cdi TaskState.SUSPENDED #cdi. #tbr
+#tbr TaskEvent.RESUME # Fires when a Task is resumed, usually through its public
+#cdi resume #cdi method. Can only occur if the tasks state before the event was
+#cdi TaskState.SUSPENDED #cdi. 
+The internal state of the task switches back to #cdi TaskState.ACTIVE #cdi. #tbr
+#tbl
+
+#par The following state diagram shows the relationship between states and events: #par
+
+#img doc_img task_states.jpg #img

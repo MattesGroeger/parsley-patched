@@ -1,0 +1,125 @@
+#sc2 messaging_command_methods Asynchronous Command Methods #sc2
+
+#par Introduced with version 2.2 the Parsley framework now incorporates several ideas which originated
+in the Cairngorm 3 Library project, in particular the 
+#url http://opensource.adobe.com/wiki/display/cairngorm/HowToUseCairngormIntegration Integration Library #url. #par
+
+#par This collection of tags allow for a different type of message handling
+than the existing #cdi [MessageHandler] #cdi tag. With the new #cdi [Command] #cdi tag you can instruct
+the framework to manage the execution of an asynchronous command for you: #par
+
+#cdb
+[Inject]
+public var service:RemoteObject;
+
+#hlt [Command(selector="save")] #hlt
+public function saveUser (event:UserEvent) : #hlt AsyncToken #hlt {
+    return service.saveUser(event.user);
+}
+#cdb
+
+#par The #cdi [Command] #cdi tag supports the same set of attributes like the #cdi [MessageHandler] #cdi
+tag. The logic for matching messages to commands is also the same. In the example above the command
+will be executed for all messages of type #cdi UserEvent #cdi (including subtypes) with the 
+selector #cdi save #cdi which usually refers to the event type. #par
+
+#par The difference is that a command is not required to have a void return type like a regular message handler.
+Instead it can specify a type that the framework can use to manage the asynchronous command execution for you. 
+In this case it's the #cdi AsyncToken #cdi that was returned by the remote call. Now the framework
+will also manage the result or eventual fault for you. #par
+
+
+
+#sub Handling the result #sub
+
+#par Any object can now contain a method
+that wishes to handle the result of such a call: #par
+
+#cdb
+[CommandResult(selector="save")]
+public function handleResult (user:User, event:UserEvent) : void {
+#cdb
+
+#par In this case the User instance returned by the remote call will be passed to the result handler
+alongside the original message that triggered the action. The second parameter is optional,
+but if you omit it you have to specifiy the message type in the tag to allow for exact target matching: #par
+
+#cdb
+[CommandResult(type="com.foo.events.UserEvent" selector="save")]
+public function handleResult (user:User) : void {
+#cdb
+
+#par This is necessary because like with regular message handling Parsley does not solely rely on
+string identifiers (event types) for target selection to allow for more type-safety. It is always
+a combination of message type (polymorphically) and an optional selector value which serves as
+a secondary selection key. #par
+
+#par Alternatively you can also specify the #cdi ResultEvent #cdi instead of the actual result value as the 
+parameter type, in cases where you need access to headers returned from the server for example: #par
+
+#cdb
+[CommandResult(selector="save")]
+public function handleResult (result:ResultEvent, trigger:UserEvent) : void {
+#cdb
+
+
+
+#sub Handling command completion, but ignoring the result #sub
+
+#par If you are not interested in the actual result, but instead only want to execute some logic
+triggered by the completion of the command, you can use another tag: #par
+
+#cdb
+[CommandComplete]
+public function handleResult (event:UserEvent) : void {
+#cdb
+
+#par In this case we omitted the selector attribute. This would mean that this method would get invoked
+whenever any command triggered by an #cdi UserEvent #cdi has completed. #par
+
+#par The message parameter is also optional and can simply be omitted: #par
+
+#cdb
+[CommandComplete(type="com.foo.events.UserEvent", selector="save")]
+public function afterUserSaved () : void {
+#cdb
+
+
+
+#sub Handling errors #sub
+
+#par For receiving the eventual fault events, another tag can be used: #par
+
+#cdb
+[CommandError(selector="save")]
+public function handleResult (fault:FaultEvent, trigger:UserEvent) : void {
+#cdb
+
+#par The parameters are again both optional and the rules for matching are the same as
+for #cdi [CommandResult] #cdi. #par
+
+#par Finally you can also observe the status of executing commands: #par
+
+#cdb
+[CommandStatus(type="com.foo.events.UserEvent", selector="save")]
+public var isSaving:Boolean;
+#cdb
+
+#par This boolean flag will always be true if one or more asynchronous commands matching the specified
+type and selector are currently executing. It will be false otherwise. This is very convenient
+for tasks like disabling buttons during command execution for example. #par
+
+
+
+#sub Supported Command Types #sub
+
+#par The preceding examples all showed commands that execute remote calls and return an
+#cdi AsyncToken #cdi. This is not the only option available though. The command feature
+can also be used with Cinnamon Remoting, which returns instances of #cdi ServiceRequest #cdi
+instead as it does not use Flex RemoteObjects. Finally the commands are integrated with
+the Spicelib Task Framework, so a command can also declare #cdi Task #cdi as the return
+type. #par
+
+#par As you might expect these are only the three builtin options. You can extend the 
+framework easily through creating your own CommandFactories. For details see
+#ref extensions_commands #ref. #par

@@ -1,0 +1,33 @@
+#sc2 xmlmapper_textnodes Mapping Text Nodes #sc2
+
+#par This is different from mapping to child text nodes. It maps a property to the text node that belongs to the
+same element. Since this can only apply for a single property it is often combined with attribute mapping like
+in the following example: #par
+
+#cdb
+public class Song {
+
+    public var year:int;
+
+    public var artist:String;
+
+    [TextNode]
+    public var title:String;
+    
+}
+#cdb
+
+#cdb
+<song year="2000" artist="Goldfrapp">Felt Mountain</song>
+#cdb
+
+#par This is how the mapping for the example above would be initialized: #par
+
+#cdb
+var xml:XML = ...;
+var song:Song = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Song)
+    .build()
+    .mapToObject(xml) as Song;    
+#cdb

@@ -1,0 +1,87 @@
+#sc2 view_config_explicit Explicit Component Wiring #sc2
+
+#par In case you want to specify that a component should be wired to the Context directly within the component
+itself, you have two options to do so. First you can use the #cdi <Configure> #cdi tag: #par
+
+#cdb
+<s:Panel 
+    xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:s="library://ns.adobe.com/flex/spark"
+    xmlns:parsley="http://www.spicefactory.org/parsley"
+    >
+    
+    #hlt <parsley:Configure/> #hlt
+    
+    <!-- ... -->
+    
+</s:Panel> 
+#cdb
+
+#par In Flex 4 this would need to go into the #cdi <fx:Declarations> #cdi tag. In the example above it would 
+be the Panel (the component the tag is placed upon) that would be wired to the Context. Alternatively you 
+can specify the object to be wired explicitly and it does not even have to be a component: #par
+
+#cdb
+<s:Panel 
+    xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:s="library://ns.adobe.com/flex/spark"
+    xmlns:parsley="http://www.spicefactory.org/parsley"
+    xmlns:view="myproject.view.*"
+    >
+    
+    <view:MyPanelPM id="model"/>
+    <parsley:Configure #hlt target="{model}" #hlt /> 
+    
+    <!-- ... -->
+    
+</s:Panel> 
+#cdb
+
+#par In this example we declare a presentation model within the component and then instruct the framework to wire
+that model to the Context. In this case the component itself would not be managed by the container
+at all, so you cannot place any Parsley metadata tags into the component. This mode is primarily intended
+for performance optimizations. See the next section for a second option to avoid reflection on heavy
+component classes. #par
+
+
+#sub Wiring in Flash Applications #sub
+
+#par In Flash Applications the type of wiring as described in this chapter is often not needed.
+Without MXML serving as a nice means to define the view declaratively, you'd often declare view related
+objects directly in a Parsley XML or ActionScript configuration file. So there is no need to explicitly wire them. #par
+
+#par In case you do not want to define the view in the Context and instead wish to use a mechanism where 
+a view dynamically notifies the Context that it wishes to get wired, you could programmatically dispatch an event
+that is equivalent to the #cdi <Configure/> #cdi tag for Flex. For this to work you first have to specify the view
+root to be used to catch those bubbling events: #par
+
+#cdb
+var viewRoot:DisplayObject = ...;
+ActionScriptContextBuilder.build(MyConfig, viewRoot);
+#cdb
+
+#par Then each DisplayObject below the specified view root can dispatch an Event when it was added to the stage 
+to signal that it wishes to get wired: #par
+
+#cdb
+public class MyView extends Sprite {
+
+    function MyView () {
+        addEventListener(Event.ADDED_TO_STAGE, configure);
+    }
+    
+    private function configure () : void {
+        dispatchEvent(new Event("configureView", true));
+    }
+    
+    /* ... */
+    
+}
+#cdb
+
+#par In earlier versions of the framework this type of wiring was also mentioned as an option for Flex Applications,
+but with the new features and enhancements in version 2.2 it is no longer recommended to use it. It would work in most
+cases, but all other mechanisms available for Flex described in this chapter 
+(View Autowiring, #cdi <Configure> #cdi and #cdi <FastInject> #cdi)
+have the advantage to give you additional safety in that they contain a lot of synchronization logic that helps to avoid
+problems when a component initializes before the Context it belongs to is ready. #par

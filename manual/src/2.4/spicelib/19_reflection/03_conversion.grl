@@ -1,0 +1,12 @@
+#sc2 reflection_conversion Automatic type conversion #sc2
+
+#par The #cdi Converters #cdi class of the #cdi org.spicefactory.lib.reflect #cdi package includes a static
+#cdi addConverter #cdi method. This allows to register #cdi Converter #cdi instances and map them to
+particular types. Internally the Reflection Module will use these Converters to automatically convert
+method parameters and property values if their type does not match the required type. This applies
+to #cdi Property.setValue #cdi, #cdi Method.invoke #cdi and #cdi Constructor.newInstance #cdi, 
+all of them explained in the following sections. They will also be used to convert attributes
+of custom metadata tags to the properties of any registered custom metadata class.
+The Reflection Module contains some builtin Converters for basic types like #cdi Boolean #cdi,
+#cdi String #cdi, #cdi int #cdi, etc., but you can easily add your own. Just implement the
+#cdi Converter #cdi interface and add it to the Reflection Module with #cdi Converters.addConverter #cdi. #par

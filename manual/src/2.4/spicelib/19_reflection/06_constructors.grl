@@ -1,0 +1,49 @@
+#sc2 reflection_constructors Reflecting on constructors #sc2
+
+#par The #cdi Constructor #cdi class allows to obtain information about the method parameter types and
+if they are optional or not: #par
+
+#cdb
+var ci:ClassInfo = ClassInfo.forClass(Point);
+var con:Constructor = ci.getConstructor();
+var params:Array = con.parameters;
+trace("param count: " + params.length);
+var param:Parameter = params[0] as Parameter;
+trace("param 0 type: " + param.type.name);
+trace("param 0 required: " + param.required);
+param = params[1] as Parameter;
+trace("param 1 type: " + param.type.name);
+trace("param 1 required: " + param.required);
+#cdb
+
+#par The output for the code above would be: #par
+
+#cdb
+param count: 2
+param 0 type: Number
+param 0 required: false
+param 1 type: Number
+param 1 required: false
+#cdb
+
+#par Furthermore you can also use the #cdi Constructor #cdi class to reflectively 
+create new instances: #par
+
+#cdb
+var ci:ClassInfo = ClassInfo.forClass(Point);
+var con:Constructor = ci.getConstructor();
+var instance:Point = con.newInstance([2, 5]);
+trace(instance.x); // output: 2
+trace(instance.y); // output: 5
+#cdb
+
+#par When using #cdi Constructor.newInstance #cdi any necessary type conversion for the method parameters
+will be done as described in #ref reflection_conversion #ref. #par
+
+#par Unfortunately there is a bug in Flash Player 9 that causes the type information for the
+constructor parameters to get lost under certain circumstances, usually if you create a
+#cdi ClassInfo #cdi instance for a class that has not been instantiated yet. If you run into
+this bug it is usually sufficient to add a simple #cdi new MyClass() #cdi statement anywhere 
+in your code before you start reflecting on that class. The bug is marked as "in progress"
+in the #url http://bugs.adobe.com/jira/browse/FP-183 Adobe Jira #url, so hopefully it will
+be resolved for Player 10. #par

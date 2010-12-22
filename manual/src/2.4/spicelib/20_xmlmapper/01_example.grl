@@ -1,0 +1,93 @@
+#sc2 xmlmapper_example Usage Example #sc2 
+
+#par Let's start with a simple example. Consider this XML structure: #par
+
+#cdb
+<order>
+    <book 
+        isbn="0942407296" 
+        page-count="256"
+        title="Rain"
+        author="Karen Duve"
+    />
+    <book 
+        isbn="0953892201" 
+        page-count="272"
+        title="Perfume"
+        author="Patrick Suskind"
+        comment="Special Offer"
+    />    
+</order>
+#cdb
+
+#par Now we create two classes that this XML structure should map to: #par
+
+#cdb
+public class Order {
+
+    [ChoiceType("com.foo.Book")]
+    public var books:Array;
+    
+}
+#cdb
+
+#cdb
+public class Book {
+
+    [Required]
+    public var isbn:String;
+    
+    [Required]
+    public var pageCount:int;
+    
+    [Required]
+    public var title:String;
+    
+    [Required]
+    public var author:String;
+    
+    public var comment:String;
+    
+}
+#cdb
+
+#par It should be obvious how XML elements and attributes are supposed to map to these two classes and their properties.
+The only details that probably need a bit of explanation are the #cdi [Required] #cdi and #cdi [ChoiceType] #cdi metadata tags. 
+The former gives hint to the validator. So for the #cdi book #cdi element only the #cdi comment #cdi attribute is optional.
+If any of the other 4 attributes would be missing the mapping operation will fail. For more details see 
+#ref xmlmapper_validation #ref. #par
+
+#par The #cdi [ChoiceType] #cdi metadata tag lists the classes that are permitted as elements in the Array. All XML elements
+that map to the Book class or any subtype are valid child elements in this case. If this tag would be omitted, all tags
+would be allowed. For most mapping types there are sensible defaults. For simple property types like String and int the default
+is to map them to XML attributes, the same way as if you would add the #cdi [Attribute] #cdi metadata tag to the property declaration. #par
+
+#par Next we create the mapper that is responsible for transforming this structure; #par
+
+#cdb
+var mapper:XmlObjectMapper = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Order)
+    .mappedClasses(Book)
+    .build();    
+#cdb
+
+#par Here we are using the DSL for the mapper setup introduced with version 2.3. First we specify that our elements
+are unqualified, support for namespaces is also included of course. Then we have to specify the root element of our
+mapping and finally all other mapped classes used in any nested tags (in this case only one - Book). Metadata will be processed
+on the specified classes to look for any custom mappings. #par
+
+
+#par The mapper we created is now ready to use. This is how we would map from XML to objects: #par
+
+#cdb
+var xml:XML = ...;
+var order:Order = mapper.mapToObject(xml) as Order;
+#cdb
+
+#par And this is how we'd map from objects to XML: #par
+
+#cdb
+var order:Order = ...;
+var xml:XML = mapper.mapToXml(order);
+#cdb

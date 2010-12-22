@@ -1,0 +1,49 @@
+#sc2 task_introduction Introduction #sc2
+
+#par In Flash or Flex applications there are usually a great number of asynchronous operations:
+Loading configuration files, loading SWFs or modules, loading images, loading and playing sounds,
+playing animations, invoking remote services and more. While each of these operations are quite
+easy to handle on their own, it can soon become quite messy if you have to combine lots of 
+these operations. This is because most of them come with their own set of events or callbacks
+that designate the completion of the task or an error condition. So chaining them together 
+for sequential execution for example requires to register numerous event listeners and usually
+the event listener method then has to deal with the flow of the application and start the 
+next operation. As soon as you have to add a new operation in the middle of the flow you
+have to modify an existing listener method and move the invocation of the next operation
+to the listener method of the added task. Several years ago we had a project with a very complex 
+application startup logic with dozens of operations, some of them optional, and it really became
+a maintenance nightmare. So the Task Framework was born. It was first created in AS2 and used
+as part of an inhouse framework for several years. #par
+
+#par The following example code gives you an impression of how an application startup logic 
+for example might look like when using the Task Framework: #par
+
+#cdb
+var group:TaskGroup = new SequentialTaskGroup("some description for log output");
+group.ignoreChildErrors = false;
+group.addTask(new XmlConfigurationLoaderTask("config.xml"));
+group.addTask(new SwfLoaderTask("graphics.swf"));
+if (Environment.userLoggedIn) {
+    group.addTask(new UserProfileRemoteServiceTask());
+}
+group.addTask(new IntroAnimationTask());
+group.addEventListener(TaskEvent.COMPLETE, onAppStartComplete);
+group.addEventListener(ErrorEvent.ERROR, onAppStartError);
+group.start();
+#cdb
+
+#par As you see, instead of dealing with events of the individual tasks, we only care for the
+events fired by the #cdi TaskGroup #cdi instance. It will fire its #cdi COMPLETE #cdi event
+when the final operation of the chain is complete. Alernatively it will fire an #cdi ERROR #cdi
+event if one of the child tasks dispatches an #cdi ERROR #cdi event and then stop its
+execution and discard the remaining tasks. We force this behaviour through setting the
+#cdi ignoreChildErrors #cdi property of the #cdi TaskGroup #cdi to false. Otherwise it would
+treat #cdi ERROR #cdi events of child tasks the same way as #cdi COMPLETE #cdi events. #par  
+
+#par All Task implementations that are added to the chain in the example above are not part of
+Spicelib, they are just contrived to illustrate the flow of actions with their class names.
+But future versions of Spicelib might add some builtin Task implementations for the most
+common asynchronous operations like loading files and images or playing sounds and animations.
+For an example of how to write your own Task implementation see
+#ref task_implementation #ref. For more information on nesting and chaining tasks see
+#ref task_groups #ref. #par

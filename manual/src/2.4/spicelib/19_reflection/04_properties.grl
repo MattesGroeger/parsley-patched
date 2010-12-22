@@ -1,0 +1,38 @@
+#sc2 reflection_properties Reflecting on properties #sc2
+
+#par The #cdi Property #cdi class allows to obtain information about the type of the property and
+if it is readable and writable: #par
+
+#cdb
+var ci:ClassInfo = ClassInfo.forClass(Point);
+var p:Property = ci.getProperty("x");
+trace("type:     " + p.type.name);
+trace("readable: " + p.readable);
+trace("writable: " + p.writable);
+#cdb
+
+#par The output for the code above would be: #par
+
+#cdb
+type:     Number
+readable: true
+writable: true
+#cdb
+
+#par Furthermore you can also use the #cdi Property #cdi class to read and write the value
+of that property from/to a particular instance of the class that property belongs to: #par
+
+#cdb
+var point:Point = new Point(7, 5);
+var ci:ClassInfo = ClassInfo.forClass(Point);
+var p:Property = ci.getProperty("x");
+p.setValue(point, 12);
+trace(point.x); // output: 12
+#cdb
+
+#par When using #cdi Property.setValue #cdi any necessary type conversion will be done as described
+in #ref reflection_conversion #ref. #par
+
+#par Reading and writing property values reflectively is usually not done in application code.
+It is most useful for developing frameworks and libraries that have to manage classes not known
+until runtime. #par

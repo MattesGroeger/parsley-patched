@@ -1,0 +1,371 @@
+#sc2 tagref_messaging Messaging #sc2
+
+
+#sc3 tagref_messaging_managed_events ManagedEvents #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi [ManagedEvents] #cdi #tbr
+#tbr may be placed on # class declaration #tbr
+#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <ManagedEvents/> #cdi #tbr
+#tbr XML Tag # #cdi <managed-events/> #cdi #tbr
+#tbr Detailed Explanation # #ref messaging_managed_events #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi names #cdi # required # The names (types) of the events dispatched from the annotated object that the container should manage. #tbr
+#tbr #cdi scope #cdi # optional # The scope through which the event should be dispatched. If this attribute is omitted the 
+event will be dispatched through all scopes associated with the Context the dispatching object lives in. #tbr
+#tbl
+
+
+#sc3 tagref_messaging_dispatcher MessageDispatcher #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi [MessageDispatcher] #cdi #tbr
+#tbr may be placed on # property declaration #tbr
+#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <MessageDispatcher/> #cdi #tbr
+#tbr XML Tag # #cdi <message-dispatcher/> #cdi #tbr
+#tbr Detailed Explanation # #ref messaging_injected_dispatchers #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi property #cdi # required for MXML/XML # The property the injected dispatcher function should be injected into. 
+Will be automatically set when used as a Metadata Tag. #tbr
+#tbr #cdi scope #cdi # optional # The scope through which the message should be dispatched. If this attribute is omitted the 
+message will be dispatched through all scopes associated with the Context the dispatching object lives in. #tbr
+#tbl
+
+
+#sc3 tagref_messaging_handler MessageHandler #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi [MessageHandler] #cdi #tbr
+#tbr may be placed on # method declaration #tbr
+#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <MessageHandler/> #cdi #tbr
+#tbr XML Tag # #cdi <message-handler/> #cdi #tbr
+#tbr Detailed Explanation # #ref messaging_handlers #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi type #cdi # optional # The type (class) of the message that the annotated method wishes to receive. If omitted
+all messages will be received (rarely useful). #tbr
+#tbr #cdi messageProperties #cdi # optional # If specified not the message itself will be passed to the method, but
+instead the listed properties of the message as method parameters. #tbr
+#tbr #cdi selector #cdi # optional # An selector value for filtering in addition to message selection by type.
+See #ref messaging_selectors #ref. #tbr
+#tbr #cdi scope #cdi # optional # The scope from which the message should be received. The default is the global scope. #tbr
+#tbr #cdi order #cdi # optional # The order in which handlers should be invoked. The default value is #cdi int.MAX_VALUE #cdi. #tbr
+#tbr #cdi method #cdi # required for MXML/XML # The method the message instance should be passed to. 
+Will be automatically set when used as a Metadata Tag. #tbr
+#tbl
+
+
+#sc3 tagref_messaging_binding MessageBinding #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi [MessageBinding] #cdi #tbr
+#tbr may be placed on # property declaration #tbr
+#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <MessageBinding/> #cdi #tbr
+#tbr XML Tag # #cdi <message-binding/> #cdi #tbr
+#tbr Detailed Explanation # #ref messaging_bindings #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi type #cdi # required # The type (class) of the message that the annotated property should be bound to. #tbr
+#tbr #cdi messageProperty #cdi # required # The name of the property of the message class whose value should be 
+bound to the targetProperty. #tbr
+#tbr #cdi selector #cdi # optional # An selector value for filtering in addition to message selection by type.
+See #ref messaging_selectors #ref. #tbr
+#tbr #cdi scope #cdi # optional # The scope from which the message should be received. The default is the global scope. #tbr
+#tbr #cdi order #cdi # optional # The order in which bindings should be executed. The default value is #cdi int.MAX_VALUE #cdi. #tbr
+#tbr #cdi targetProperty #cdi # required for MXML/XML # The name of the property that the message property value should be bound to. 
+Will be automatically set when used as a Metadata Tag. #tbr
+#tbl
+
+
+#sc3 tagref_messaging_interceptor MessageInterceptor #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi [MessageInterceptor] #cdi #tbr
+#tbr may be placed on # method declaration #tbr
+#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <MessageInterceptor/> #cdi #tbr
+#tbr XML Tag # #cdi <message-interceptor/> #cdi #tbr
+#tbr Detailed Explanation # #ref messaging_interceptors #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi type #cdi # optional # The type (class) of the message that the annotated method wishes to intercept. If omitted
+all messages will be received (rarely useful). #tbr
+#tbr #cdi selector #cdi # optional # An selector value for filtering in addition to message selection by type.
+See #ref messaging_selectors #ref. #tbr
+#tbr #cdi scope #cdi # optional # The scope from which the message should be received. The default is the global scope. #tbr
+#tbr #cdi order #cdi # optional # The order in which interceptors should be invoked. The default value is #cdi int.MAX_VALUE #cdi. #tbr
+#tbr #cdi method #cdi # required for MXML/XML # The interceptor method. 
+Will be automatically set when used as a Metadata Tag. #tbr
+#tbl
+
+
+
+#sc3 tagref_messaging_error MessageError #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi [MessageError] #cdi #tbr
+#tbr may be placed on # method declaration #tbr
+#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <MessageError/> #cdi #tbr
+#tbr XML Tag # #cdi <message-error/> #cdi #tbr
+#tbr Detailed Explanation # #ref messaging_errorhandlers #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi type #cdi # optional # The type (class) of the message that was passed to the handler or interceptor that 
+threw an Error. If omitted the error handler applies to all message types. #tbr
+#tbr #cdi selector #cdi # optional # An selector value for filtering in addition to message selection by type.
+See #ref messaging_selectors #ref. #tbr
+#tbr #cdi scope #cdi # optional # The scope from which the message was dispatched to the handler or interceptor
+that threw an Error. The default is the global scope. #tbr
+#tbr #cdi order #cdi # optional # The order in which error handlers should be invoked. The default value is #cdi int.MAX_VALUE #cdi. #tbr
+#tbr #cdi method #cdi # required for MXML/XML # The interceptor method. 
+Will be automatically set when used as a Metadata Tag. #tbr
+#tbl
+
+
+
+#sc3 tagref_messaging_command Command #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi [Command] #cdi #tbr
+#tbr may be placed on # method declaration #tbr
+#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <Command/> #cdi #tbr
+#tbr XML Tag # #cdi <command/> #cdi #tbr
+#tbr Detailed Explanation # #ref messaging_command_methods #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi type #cdi # optional # The type (class) of the message that the annotated method wishes to receive. If omitted
+the type will be deduced from the method parameter. #tbr
+#tbr #cdi messageProperties #cdi # optional # If specified not the message itself will be passed to the method, but
+instead the listed properties of the message as method parameters. #tbr
+#tbr #cdi selector #cdi # optional # An selector value for filtering in addition to message selection by type.
+See #ref messaging_selectors #ref. #tbr
+#tbr #cdi scope #cdi # optional # The scope from which the message should be received. The default is the global scope. #tbr
+#tbr #cdi order #cdi # optional # The order in which handlers should be invoked. The default value is #cdi int.MAX_VALUE #cdi. #tbr
+#tbr #cdi method #cdi # required for MXML/XML # The method the message instance should be passed to. 
+Will be automatically set when used as a Metadata Tag. #tbr
+#tbl
+
+
+
+#sc3 tagref_messaging_commandcomplete CommandComplete #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi [CommandComplete] #cdi #tbr
+#tbr may be placed on # method declaration #tbr
+#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <CommandComplete/> #cdi #tbr
+#tbr XML Tag # #cdi <command-complete/> #cdi #tbr
+#tbr Detailed Explanation # #ref messaging_command_methods #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi type #cdi # optional # The type (class) of the message that the annotated method wishes to receive. If omitted
+the type will be deduced from the method parameter (if available). #tbr
+#tbr #cdi selector #cdi # optional # An selector value for filtering in addition to message selection by type.
+See #ref messaging_selectors #ref. #tbr
+#tbr #cdi scope #cdi # optional # The scope from which the message should be received. The default is the global scope. #tbr
+#tbr #cdi order #cdi # optional # The order in which complete handlers should be invoked. The default value is #cdi int.MAX_VALUE #cdi. #tbr
+#tbr #cdi method #cdi # required for MXML/XML # The method the result should be passed to. 
+Will be automatically set when used as a Metadata Tag. #tbr
+#tbl
+
+
+
+#sc3 tagref_messaging_commandresult CommandResult #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi [CommandResult] #cdi #tbr
+#tbr may be placed on # method declaration #tbr
+#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <CommandResult/> #cdi #tbr
+#tbr XML Tag # #cdi <command-result/> #cdi #tbr
+#tbr Detailed Explanation # #ref messaging_command_methods #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi type #cdi # optional # The type (class) of the message that the annotated method wishes to receive. If omitted
+the type will be deduced from the second method parameter (if available). #tbr
+#tbr #cdi selector #cdi # optional # An selector value for filtering in addition to message selection by type.
+See #ref messaging_selectors #ref. #tbr
+#tbr #cdi scope #cdi # optional # The scope from which the message should be received. The default is the global scope. #tbr
+#tbr #cdi order #cdi # optional # The order in which result handlers should be invoked. The default value is #cdi int.MAX_VALUE #cdi. #tbr
+#tbr #cdi method #cdi # required for MXML/XML # The method the result should be passed to. 
+Will be automatically set when used as a Metadata Tag. #tbr
+#tbl
+
+
+
+#sc3 tagref_messaging_commanderror CommandError #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi [CommandError] #cdi #tbr
+#tbr may be placed on # method declaration #tbr
+#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <CommandError/> #cdi #tbr
+#tbr XML Tag # #cdi <command-error/> #cdi #tbr
+#tbr Detailed Explanation # #ref messaging_command_methods #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi type #cdi # optional # The type (class) of the message that the annotated method wishes to receive. If omitted
+the type will be deduced from the second method parameter (if available). #tbr
+#tbr #cdi selector #cdi # optional # An selector value for filtering in addition to message selection by type.
+See #ref messaging_selectors #ref. #tbr
+#tbr #cdi scope #cdi # optional # The scope from which the message should be received. The default is the global scope. #tbr
+#tbr #cdi order #cdi # optional # The order in which error handlers should be invoked. The default value is #cdi int.MAX_VALUE #cdi. #tbr
+#tbr #cdi method #cdi # required for MXML/XML # The method the error should be passed to. 
+Will be automatically set when used as a Metadata Tag. #tbr
+#tbl
+
+
+
+#sc3 tagref_messaging_commandstatus CommandStatus #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi [CommandStatus] #cdi #tbr
+#tbr may be placed on # Boolean property declaration #tbr
+#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <CommandStatus/> #cdi #tbr
+#tbr XML Tag # #cdi <command-status/> #cdi #tbr
+#tbr Detailed Explanation # #ref messaging_command_methods #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi type #cdi # optional # The type (class) of the message that the annotated method wishes to receive. If omitted
+the type will be deduced from the second method parameter (if available). #tbr
+#tbr #cdi selector #cdi # optional # An selector value for filtering in addition to message selection by type.
+See #ref messaging_selectors #ref. #tbr
+#tbr #cdi scope #cdi # optional # The scope from which the message should be received. The default is the global scope. #tbr
+#tbr #cdi order #cdi # optional # The order in which error handlers should be invoked. The default value is #cdi int.MAX_VALUE #cdi. #tbr
+#tbr #cdi property #cdi # required for MXML/XML # The property which will act as a boolean flag for the matching command type. 
+Will be automatically set when used as a Metadata Tag. #tbr
+#tbl
+
+
+
+#sc3 tagref_messaging_dynamiccommand DynamicCommand #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi N/A #cdi #tbr
+#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <DynamicCommand/> #cdi #tbr
+#tbr XML Tag # #cdi <dynamic-command/> #cdi #tbr
+#tbr Detailed Explanation # #ref messaging_command_objects #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi type #cdi # required # The type (class) of the command to create. #tbr
+#tbr #cdi messageType #cdi # optional # The type (class) of the message that the command wishes to receive. If omitted
+the type will be deduced from the method parameter (if available). #tbr
+#tbr #cdi selector #cdi # optional # An selector value for filtering in addition to message selection by type.
+See #ref messaging_selectors #ref. #tbr
+#tbr #cdi scope #cdi # optional # The scope from which the message should be received. The default is the global scope. #tbr
+#tbr #cdi order #cdi # optional # The order in which commands should be invoked. The default value is #cdi int.MAX_VALUE #cdi. #tbr
+#tbr #cdi messageProperties #cdi # optional # If specified not the message itself will be passed to the method, but
+instead the listed properties of the message as method parameters. #tbr
+#tbr #cdi stateful #cdi # optional # If false (the default) the framework will create a new instance of this command
+for each matching message. If true the command instance will be reused for subsequent command invocations. #tbr
+#tbr #cdi execute #cdi # optional # The name of the method that executes the command. The default is #cdi execute #cdi. #tbr
+#tbr #cdi result #cdi # optional # The name of the method that handles the result. The default is #cdi result #cdi. #tbr
+#tbr #cdi error #cdi # optional # The name of the method that handles any errors. The default is #cdi error #cdi. #tbr
+#tbl
+
+#sub Child Elements #sub
+
+#par Any tag listed in 14.1 through 14.5, ConstructorArgs, Property, All Custom Configuration Tags that implement the
+#cdi ObjectDefinitionDecorator #cdi interface. #par
+
+
+
+
+#sc3 tagref_messaging_confirmation MessageConfirmation #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi N/A #cdi #tbr
+#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
+#tbr MXML Tag # #cdi <MessageConfirmation/> #cdi #tbr
+#tbr XML Tag # #cdi <message-confirmation/> #cdi #tbr
+#tbr Detailed Explanation # Simple utility tag that opens an Alert for matching messages and only continues with
+message processing if the user clicks OK. This is a Flex-only feature. #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#tbl
+#tbr #cdi type #cdi # optional # The type (class) of the message that the alert should be shown for. #tbr
+#tbr #cdi selector #cdi # optional # An selector value for filtering in addition to message selection by type.
+See #ref messaging_selectors #ref. #tbr
+#tbr #cdi scope #cdi # optional # The scope from which the message should be received. The default is the global scope. #tbr
+#tbr #cdi text #cdi # required # The text to display in the Alert. #tbr
+#tbr #cdi title #cdi # required # The title to display in the Alert. #tbr
+#tbl
+
+
+
+#sc3 tagref_messaging_selector Selector #sc3
+
+#tbl
+#tbr Metadata Tag # #cdi [Selector] #cdi #tbr
+#tbr may be placed on # property declaration #tbr
+#tbr MXML and XML Namespace # N/A #tbr
+#tbr MXML Tag # #cdi N/A #cdi #tbr
+#tbr XML Tag # #cdi N/A #cdi #tbr
+#tbr Detailed Explanation # #ref messaging_selectors #ref #tbr
+#tbl
+
+
+#sub Attributes #sub
+
+#par None #par

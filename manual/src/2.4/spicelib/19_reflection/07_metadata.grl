@@ -1,0 +1,58 @@
+#sc2 reflection_metadata Reflecting on metadata tags #sc2
+
+#par Introduced with version 1.1.0 the #cdi Metadata #cdi class allows to reflect on metadata tags
+added to classes, properties or methods. The #cdi ClassInfo #cdi, #cdi Constructor #cdi, #cdi Method #cdi
+and #cdi Property #cdi class now all extend #cdi MetadataAware #cdi directly or indirectly, so that you
+can retrieve information on any metadata tags added to one of those elements. (Note that for the 
+#cdi Constructor #cdi class the metadata feature was added for "forward compatibility", currently
+the Flash Player ignores metadata tags placed on constructors). #par
+
+#par There are two ways to reflect on metadata. The one described in this section just provides
+untyped String-based access to tags and its attributes. The following section then explains how you
+can register custom classes mapping to metadata tags to allow for type-safe reflection on metadata. #par
+
+#par Consider this simple class: #par
+
+#cdb
+public class MyClass {
+
+    [CustomMetadata(customAttribute="foo")]
+    public function someMethod () : void {
+        trace("someMethod invoked");    
+    } 
+    
+}
+#cdb   
+
+#par When you compile classes with custom metadata make sure that you add it to the
+#cdi -keep-as3-metadata #cdi compiler option, as it will be ignored otherwise: #par
+
+#cdb
+mxmlc -keep-as3-metadata+=CustomMetadata,OtherTag1,OtherTag2 ... [other options]
+#cdb
+
+#par If you use this option when compiling an SWC all projects that use that SWC
+do not need to explicitly specify the metadata tags to keep as they will be included
+automatically. #par
+
+#par Now you can obtain information about such a tag at runtime: #par
+
+#cdb
+var ci:ClassInfo = ClassInfo.forClass(MyClass);
+var m:Method = ci.getMethod("someMethod");
+var tags:Array = m.getMetadata("CustomMetadata");
+trace("number of metadata tags: " + tags.length);
+var meta:Metadata = tags[0] as Metadata;
+trace("customAttribute = " + meta.getArgument("customAttribute"));
+#cdb 
+
+#par The output for the above code would be: #par
+
+#cdb
+number of metadata tags: 1
+customAttribute = foo
+#cdb
+
+#par Note that #cdi getMetadata #cdi always returns an Array because multiple tags of the same
+type can be place on the same element. If no such tag exists for a particular element an empty
+Array will be returned. #par

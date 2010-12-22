@@ -1,0 +1,15 @@
+#sc2 spicelib-logging_levels Log levels #sc2
+
+#par Log levels offer a way to organize log statements into a hierarchy of different severities.
+The logging configuration (explained in the next section) allows to filter the log output
+based on Logger names and levels.
+The framework supports the following log levels (semantics borrowed from log4j and other existing frameworks): #par
+
+#tbl
+#tbr FATAL # Very severe error events that will presumably lead the application to abort. #tbr 
+#tbr ERROR # Error events that might still allow the application to continue running. #tbr 
+#tbr WARN # Potentially harmful situations. #tbr 
+#tbr INFO # Informational messages that highlight the progress of the application at coarse-grained level. #tbr 
+#tbr DEBUG # Fine-grained informational events that are most useful to debug an application. #tbr 
+#tbr TRACE # Very fine-grained information (represents the lowest rank of all levels). #tbr 
+#tbl

@@ -1,0 +1,25 @@
+#sc2 xmlmapper_programmatic Programmatic Mapper Setup #sc2
+
+#par There may be edge cases where neither the default settings nor the available metadata tags provide
+the required behaviour for a particular property. In these cases you can mix the default behaviour
+with explicit programmatic setup: #par
+
+#cdb
+var xml:XML = ...;
+var mappings:XmlObjectMappings = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Order);
+#hlt mappings    
+    .newMapperBuilder(Album)
+        .mapToAttribute("title")
+        .mapToChildTextNode("artist"); #hlt
+var order:Order = mappings
+    .choidId("products", Album, Book)
+    .build()
+    .mapToObject(xml) as Order;    
+#cdb
+
+#par In the example above we set up the mapper for the Album class programmatically. The mapper will still 
+look for metadata or apply the default behaviour for all properties of the Album class that were not explicitly
+mapped. This would even allow to use metadata in the class and override it in specific scenarios through
+programmatic setup. #par

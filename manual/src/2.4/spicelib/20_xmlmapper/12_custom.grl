@@ -1,0 +1,37 @@
+#sc2 xmlmapper_custom Creating Custom Mappers #sc2
+
+
+#par Finally there may even be a scenario where none of the available mapping types are sufficient. In this case
+you can create a custom mapper implementing the #cdi XmlObjectMapper #cdi element from scratch. #par
+
+#par The interface is quite simple: #par
+
+#cdb
+public interface XmlObjectMapper {
+	
+	function get objectType () : ClassInfo;
+
+	function get elementName () : QName;
+	
+	function mapToObject (element:XML, context:XmlProcessorContext) : Object;
+
+	function mapToXml (object:Object, context:XmlProcessorContext) : XML;
+	
+}
+#cdb
+
+#par It specifies the class and the XML element name that should be mapped and then two methods for mapping
+in both directions. In case you have a large and complex XML structure where you can use existing property
+mappers for most of the tags, but need a custom mapper for a single tag, you can combine the builtin 
+mappers with your custom one: #par
+
+#cdb
+var xml:XML = ...;
+var order:Order = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Order)
+    #hlt .customMapper(new MyCustomMapper()) #hlt
+    .choidId("products", Album, Book)
+    .build()
+    .mapToObject(xml) as Order;    
+#cdb

@@ -1,0 +1,64 @@
+#sc2 view_config_fastinject Component Wiring without Reflection #sc2
+
+#par Parsley reflects on all managed objects and reflection on components
+currently is a very expensive operation due to their dozens of properties, methods and events
+and the fact that reflection is based on parsing XML.
+It may take up to 30 milliseconds for a single component. Parsley maintains an internal reflection cache
+so that each class is only processed once, but if you are using a high number of different component classes
+this may not help much. 
+In a small application this effect may be negligible, but for larger applications it might indeed
+be a concern. This option allows to avoid a perceivable perfomance degradation in these cases. #par
+
+#par To allow for performance optimizations the #cdi FastInject #cdi tag was introduced in Parsley 2.2: #par
+
+#cdb
+<s:Panel 
+    xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:s="library://ns.adobe.com/flex/spark"
+    xmlns:parsley="http://www.spicefactory.org/parsley"
+    xmlns:view="myproject.view.*"
+    >
+    
+    <fx:Script>
+        <![CDATA[
+            import com.bookstore.model.MyPanelPM;
+            
+            public var model:MyPanelPM;
+        ]]>
+    </fx:Script>
+    
+    #hlt <parsley:FastInject property="model" type="{MyPanelPM}" /> #hlt 
+    
+    <!-- ... -->
+    
+</s:Panel> 
+#cdb
+
+#par This is somewhat similar to the example with the #cdi <Configure> #cdi tag and its #cdi target #cdi
+attribute. Again it is the model that is wired to the Context. But the difference is that in the former
+example the model was created by the tag within the component and then the existing model instance got
+configured by the framework. In this example the container will create the model (it must be configured
+for the corresponding Context) and then inject it into the component. The major advantage of this approach
+is that the model could be shared between components which is not possible with the preceding example. 
+Again use this mechanism only when performance is a concern and you want to avoid that the component
+itseld gets wired to the Context. #par
+
+#par The #cdi <FastInject> #cdi tag also allows to define multiple injections with child tags: #par
+
+#cdb
+<parsley:FastInject injectionComplete="init();">
+    <parsley:Inject property="model" type="{MyPanelPM}"/> 
+    <parsley:Inject property="status" type="{MyApplicationStatus}"/> 
+</parsley:FastInject>
+#cdb 
+
+#par To combine them into a single parent tag if you want to perform some action when all injections have been
+processed. This would be cumbersome if you'd use separate tags since you'd need to manually check which injections 
+have been already processed. In the example above there would be the guarantee that the init method will only
+be invoked when all injections have been performed. #par
+
+#par There are similar events for the #cdi <FastInject> #cdi tag 
+like #cdi creationComplete #cdi or #cdi addedToStage #cdi which differ from the
+original component events that those are only dispatched when the corresponding component event was dispatched 
+#str and #str the injections have been performed, facilitating to find the right moment to initialize the
+component. #par

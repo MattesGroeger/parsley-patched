@@ -1,0 +1,78 @@
+#sc2 xmlmapper_config Metadata Configuration and Defaults #sc2
+
+#par Although the mappings support metadata configuration the most convenient way to set up your mappings is to rely on the
+defaults (configuration by convention). A third option to determine how a particular property should map to XML is programmatic
+setup. #par
+
+
+#sub Configuration Precedence #sub
+
+#par For each property of a class the mapper determines if and how it should be mapped by checking and applying configuration 
+options in the following order: #par
+
+#lst
+#lse #str Programmatic Setup: #str If a property has been configured programmatically, any metadata configuration for that property
+will be ignored. This way you could even use metadata to set the defaults and override it when needed. For details see
+#ref xmlmapper_programmatic #ref. #lse
+
+#lse #str Metadata Tags: #str If there is no programmatic setup the mapper will look for a metadata tag on that property to
+determine if and how the property should be mapped. The available tags will be presented in the following sections. #lse
+
+#lse #str Default Behaviour: #str When there is no programmatic setup and no metadata tag the default behaviours will be applied
+for a property, depending on its type, as listed below. #lse
+#lst
+
+
+#sub Default Behaviours #sub
+
+#par The default behaviour if no programmatic or metadata configuration was applied is as follows: #par
+
+#lst
+#lse #str Simple Property Types: #str For a property of type #cdi String #cdi, #cdi Number #cdi, #cdi int #cdi, #cdi uint #cdi,
+#cdi Boolean #cdi, #cdi Date #cdi, #cdi Class #cdi and #cdi ClassInfo #cdi, the default behaviour is to map to an XML attribute.
+You can also map other types to attributes, but those would require an explicit #cdi [Attribute] #cdi tag on the property (or
+corresponding programmatic setup). #lse
+
+#lse #str Other non-Array Types: #str Other types will be mapped as an association to other mapped classes (or in XML terminology 
+to a choice of child elements). The permitted types will be deduced from the type of the property. All XML elements 
+that map to that type (including subtypes) are allowed as a child element. If there is more than one matching child element
+the mapper will throw an Error. #lse
+
+#lse #str Array Types: #str These will also be mapped as an association, but will allow more than one matching child element,
+assembling all mapped objects into the Array property. In this case the permitted type for the elements of the Array cannot
+be deduced, so all mapped classes would be allowed. Therefor relying on defaults for Array properties is often not desirable.
+Instead the #cdi [ChoiceType} #cdi or #cdi [ChoiceId] #cdi tags may be used to explicitly specify the permitted types.
+See #ref xmlmapper_childelements #ref and #ref xmlmapper_choices #ref for examples. #lse
+#lst
+
+
+#sub Naming Conventions #sub
+
+#par As you can see in our first example in this chapter, we were mapping the #cdi pageCount #cdi property
+to the #cdi page-count #cdi XML attribute. Per default the mapper always translates camel-case ActionScript names
+into dash notation which is more common in XML. So using #cdi pageCount #cdi as the attribute name in XML would
+actually give you an error. #par
+
+#par This is just the default behavior though and you can easily apply your own naming strategy: #par
+
+#cdb
+var mapper:XmlObjectMapper = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Order)
+    #hlt .defaultNamingStrategy(new MyNamingStrategy()); #hlt
+    .mappedClasses(Book)
+    .build();    
+#cdb 
+
+#par #cdi NamingStrategy #cdi is a trivial interface with just a single method that translates an ActionScript
+name to an XML name. #par
+
+#par The NamingStrategy is useful to change the convention globally. But you can also explicitly specify the name
+for a single element or attribute. See the following section on #ref xmlmapper_attributes #ref for an example
+on how to do that for a property that maps to an XML attribute. If you want to specify the matching XML element
+name for a class name, you can do that with the #cdi XmlMapping #cdi tag: #par
+
+#cdb
+[XmlMapping(elementName="product")]
+public class ProductModel 
+#cdb

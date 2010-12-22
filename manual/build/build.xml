@@ -17,7 +17,7 @@
 			failonerror="false"
 			dir="${manual.src.dir}"
 			>
-			<arg line=".htm template_html.txt toctemplate_html.txt parsley"/>
+			<arg line=".htm template_html.txt toctemplate_html.txt"/>
 		</java>
 		<move todir="${manual.target.dir}">
 			<fileset dir="${manual.src.dir}" includes="*.htm"/>
@@ -34,7 +34,7 @@
 			failonerror="false"
 			dir="${manual.src.dir}"
 			>
-			<arg line=".php template_php.txt toctemplate_php.txt parsley"/>
+			<arg line=".php template_php.txt toctemplate_php.txt"/>
 		</java>
 		<move todir="${website.parsley.docs.dir}/manual">
 			<fileset dir="${manual.src.dir}" includes="*.php,toc.htm"/>

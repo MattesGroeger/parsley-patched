@@ -1,0 +1,43 @@
+#sc2 xmlmapper_childtextnodes Mapping Child Text Nodes #sc2
+
+#par Properties with a simple type like #cdi String #cdi, #cdi int #cdi, #cdi Boolean #cdi, #cdi Class #cdi or #cdi Date #cdi
+can also be mapped to child text nodes, a mechanism very similar to mapping to attributes: #par
+
+#cdb
+public class Song {
+
+    public var year:int;
+    public var title:String;
+    public var artist:String;
+    
+}
+#cdb
+
+#cdb
+<song>
+    <year>1989</year> 
+    <title>Monkey Gone To Heaven</title>
+    <artist>Pixies</artist>
+</song>
+#cdb
+
+#par The default for simple property types is to map them to XML attributes. Thus, for switching to text nodes in child elements
+you'd usually have to use explicit metadata configuration then: #par
+
+#cdb
+[ChildTextNode]
+public var year:int;
+#cdb
+
+#par But if all or most of your XML elements follow this pattern, you can also switch the default globally and
+thus avoid any metadata configuration: #par
+
+#cdb
+var xml:XML = ...;
+var song:Song = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Song)
+    #hlt .defaultSimpleMappingType(SimpleMappingType.CHILD_TEXT_NODE) #hlt
+    .build()
+    .mapToObject(xml) as Song;    
+#cdb

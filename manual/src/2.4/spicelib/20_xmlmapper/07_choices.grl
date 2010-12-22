@@ -1,0 +1,52 @@
+#sc2 xmlmapper_choices Mapping disjointed Choices #sc2
+
+#par In the preceding section we mapped to child elements through the use of the #cdi [ChoiceType] #cdi tag, which allows
+us to specify the permitted types for the elements of an Array in a polymorphic way. Sometimes though this is not sufficient
+if the permitted types for an Array are not part of a distinct type hierarchy. In such a case a choice with a string
+identifier can be used, so that you can explicitly specify which classes are permitted. #par
+
+#cdb
+public class Order {
+
+    [ChoiceId("products")]
+    public var products:Array;
+    
+}
+
+public class Album {
+
+    public var artist:String;
+    public var title:String;
+    public var duration:String;
+    
+}
+
+public class Book {
+
+    public var author:String;
+    public var title:String;
+    public var pageCount:String;  
+
+}
+#cdb
+
+#cdb
+<order>
+    <album artist="Goldfrapp" title="Felt Mountain"  duration="38:50"/>
+    <album artist="Unkle" title="Never, Never, Land"  duration="49:27"/>
+    <book author="Karen Duve" title"Rain" pageCount="256"/>
+    <book author="Judith Hermann" title"Summerhouse, Later" pageCount="224"/>
+</order>
+#cdb
+
+#par In the mapper setup we then have to list all classes that should be associated with that choice id: #par
+
+#cdb
+var xml:XML = ...;
+var order:Order = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Order)
+    #hlt .choiceId("products", Album, Book) #hlt
+    .build()
+    .mapToObject(xml) as Order;    
+#cdb

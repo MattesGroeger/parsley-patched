@@ -1,0 +1,66 @@
+#sc2 xmlmapper_namespaces Working with Namespaces #sc2
+
+#par So far we only used unqualified XML elements in all examples to keep them simple. Therefor we always used
+#cdi XmlObjectMappings.forUnqualifiedElements() #cdi to start the mapper setup. But of course the mapper fully
+supports namespaces, too. If you only use a single namespace the overall setup is quite similar to that for
+unqualified elements. Consider the example from the preceding section, just adding a namespace to all elements: #par
+
+#cdb
+<order #hlt xmlns="http://www.mynamespace.com" #hlt>
+    <album artist="Goldfrapp" title="Felt Mountain"  duration="38:50"/>
+    <album artist="Unkle" title="Never, Never, Land"  duration="49:27"/>
+    <book author="Karen Duve" title"Rain" pageCount="256"/>
+    <book author="Judith Hermann" title"Summerhouse, Later" pageCount="224"/>
+</order>
+#cdb
+
+#par To set up the corresponding mapper we then have to explicitly specify the namespace: #par
+
+#cdb
+var xml:XML = ...;
+var order:Order = XmlObjectMappings
+    #hlt .forNamespace("http://www.mynamespace.com") #hlt
+    .withRootElement(Order)
+    .choiceId("products", Album, Book)
+    .build()
+    .mapToObject(xml) as Order;    
+#cdb
+
+#par Finally, in some cases you may wish to work with multiple namespaces in the same document. Consider
+you'd want to add a separate namespace for software products to the example above: #par
+
+#cdb
+<order 
+    xmlns="http://www.mynamespace.com" 
+    #hlt xmlns:sf="http://www.mynamespace.com/software" #hlt>
+    <album artist="Goldfrapp" title="Felt Mountain"  duration="38:50"/>
+    <album artist="Unkle" title="Never, Never, Land"  duration="49:27"/>
+    <book author="Karen Duve" title"Rain" pageCount="256"/>
+    <book author="Judith Hermann" title"Summerhouse, Later" pageCount="224"/>
+    #hlt <sf:software product="PageDesigner" version="4.0"/> #hlt
+</order>
+#cdb
+
+#par For such a scenario we'd set up separate groups of mappings for each namespace and then
+merge them: #par
+
+#cdb
+var xml:XML = ...;
+var softwareNS:XmlObjectMappings = XmlOhjectMappings
+    #hlt .forNamespace("http://www.mynamespace.com/software") #hlt
+    .withoutRootElement()
+    .choiceId("products", Software);
+    
+var order:Order = XmlObjectMappings
+    .forNamespace("http://www.mynamespace.com")
+    .withRootElement(Order)
+    .choidId("products", Album, Book)
+    #hlt .mergedMappings(softwareNS) #hlt
+    .build()
+    .mapToObject(xml) as Order;    
+#cdb
+
+#par As you see such a merged namespace often does not need a root element and you also do not need to call
+#cdi build #cdi on the namespaces to be merged. You can also see that merging namespaces also means to merge
+all choices with the same id. This way the choice with the id #cdi products #cdi in our example can contain
+child elements from different namespaces. #par

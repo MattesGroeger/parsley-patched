@@ -1,0 +1,13 @@
+#sc2 spicelib-logging_customize Customizing the Logging Framework #sc2
+
+#par The most common use case for customizing the logging framework would be to implement your own
+#cdi Appender #cdi. This might be necessary if you have some special requirements like the need
+to send log statements over a socket connection for example. Implementing the #cdi Appender #cdi
+interface is quite straightforward. You can look at the source of Spicelibs existing two implementations. #par
+
+#par If you need even more flexibility you could also develop your own implementations of the 
+#cdi Logger #cdi and #cdi LogFactory #cdi interfaces, but that might be a rather rare scenario. #par  
+
+#par In the future we might add more #cdi Appender #cdi implementations to Spicelib like a 
+#cdi FileAppender #cdi for AIR applications or even might look into integrating with the Flex Logging
+Framework. #par

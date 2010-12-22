@@ -1,0 +1,29 @@
+#sc2 xmlmapper_tags Custom Mapping Tags #sc2
+
+#par Similarly like with the metadata tags for Parsley configuration, you can create additional mapping tags 
+in case the builtin ones are not sufficient. For this you'd simply have to implement the #cdi MetadataMapperDecorator #cdi
+interface: #par
+
+#cdb
+public interface MetadataMapperDecorator {
+
+    function decorate (builder:MetadataMapperBuilder) : void;
+	
+}
+#cdb
+
+#par For each metadata tag on any property of a mapped class the #cdi decorate #cdi method would be invoked.
+For full examples you may browse the existing implementations, as all builtin tags use this hook, too. They
+reside in the package #cdi org.spicefactory.lib.xml.mapper.metadata #cdi. #par
+
+#par Like with the Parsley metadata tags, make sure that they meet the following requirements: #par
+
+#lst
+#lse They must contain the #cdi [Metadata] #cdi tag on the class level. See the existing tags for examples. 
+For details on how mapping metadata to classes works in general you may wish to read #ref reflection_metadata_mapping #ref. #lse
+
+#lse You must call #cdi Metadata.registerMetadataClass(MyTag) #cdi for each of the implementations before you create
+the first mapper. #lse
+
+#lse Make sure that the metadata tag gets compile into the application, using the #cdi -keep-as3-metadata #cdi option. #lse
+#lst

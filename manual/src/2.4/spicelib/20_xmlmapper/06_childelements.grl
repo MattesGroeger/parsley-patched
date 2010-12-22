@@ -1,0 +1,50 @@
+#sc2 xmlmapper_childelements Mapping Child Elements #sc2
+
+#par Mapping to child elements allows you to build a hierarchy of nested mappers like shown in the usage example in the 
+beginning of this chapter. #par
+
+#cdb
+public class Album {
+
+    public var year:int;
+    public var title:String;
+    public var artist:String;
+    
+    [ChoiceType("com.foo.Song")]
+    public var songs:Array;
+    
+}
+
+public class Song {
+
+    public var duration:String;
+    public var title:String;
+    
+}
+#cdb
+
+#cdb
+<album year="2000" artist="Goldfrapp" title="Felt Mountain">
+    <song title="Lovely Head" duration="3:50"/>
+    <song title="Pilots" duration="4:30"/>
+    <song title="Deer Stop" duration="4:07"/>
+    <song title="Utopia" duration="4:18"/>
+</album>
+#cdb
+
+#par In this example the #cdi song #cdi child elements will be mapped into the #cdi songs #cdi property of
+the #cdi Album #cdi class. Again we could also use the defaults, but that would allow any tag to be nested
+inside the #cdi album #cdi tag. That's why we explicitly specify the permitted type (including subtypes) with
+the #cdi [ChoiceType] #cdi metadata tag. #par 
+
+#par This is how you would set up such a mapper: #par
+
+#cdb
+var xml:XML = ...;
+var album:Album = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Album)
+    .mappedClasses(Song)
+    .build()
+    .mapToObject(xml) as Album;    
+#cdb

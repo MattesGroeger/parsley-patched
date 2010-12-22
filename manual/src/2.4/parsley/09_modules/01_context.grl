@@ -1,0 +1,72 @@
+#sc2 modules_context Modular Contexts #sc2
+
+#par In larger applications you may want to split your application into modules which are
+loaded on demand. In this case it would be unfortunate to have a monolithic Context
+that is fully loaded and initialized at application startup. Even splitting the configuration into
+multiple files like shown in #ref config_combine #ref won't help since those files will be merged into
+a single Context and loaded and initialized as if it was a single large configuration file. #par
+
+#par This is where another feature of Parsley comes in handy: when creating a #cdi Context #cdi
+it can connect to a parent Context. The parent may be the main context loaded at
+application startup for example and the child context may be one required by a module loaded on demand.
+In the configuration for the child Context you can use any object from the parent Context for Dependency Injection 
+(but not vice versa). Messaging also works across Context boundaries, depending on the scope you dispatch through. 
+You can create deeply nested hierarchies of Contexts, but often the structure would be rather flat, with one 
+root context and any number of child Contexts on the same level. #par
+
+#par There are two different ways to initialize such a child Context: #par
+
+
+#sub Connecting a Context hierarchy to a view hierarchy #sub
+
+#par When you are specifying a view root with any of the static ContextBuilder entry points,
+or when you are using the MXML ContextBuilder tags introduced with version 2.2 which automatically
+use the document they are placed upon as a view root, then
+the #cdi ViewManager #cdi associated with the Context will use that view root for two purposes:
+it will listen for bubbling events from components that wish to get wired to the Context and
+it will listen for bubbling events from other ContextBuilders sitting somewhere below in the
+view hierarchy. This way you do not have to manually specify the parent Context or the
+ApplicationDomain, the framework will take care of that for you: #par
+
+#cdb
+<parsley:ContextBuilder config="{BookStoreConfig}"/>
+#cdb
+
+#par or: #par
+
+#cdb
+var viewRoot:DisplayObject = ...;
+FlexContextBuilder.build(BookStoreConfig, viewRoot);
+#cdb
+
+#par In the examples above the new Context will use the view root to automatically look for a parent Context and to
+listen for child Contexts within the view hierarchy. #par
+
+#par In some scenarios you may want to keep the Context hierarchy separate from the view hierarchy.
+This is where the second option for building the hierarchy comes into play: #par
+
+
+#sub Manually specifying the parent Context #sub
+
+#par You can define an existing Context as the parent for a new Context with an optional parameter 
+of all the various ContextBuilder methods shown in #ref config_intro #ref: #par
+
+#cdb
+var parent:Context = ...;
+FlexContextBuilder.build(BookStoreConfig, null, parent);
+#cdb
+
+#par In this case we pass #cdi null #cdi for the view root parameter and instead specify the parent
+manually. You must also be aware of the fact that without a view root the Context is not able
+to automatically detect the ApplicationDomain for reflection. So if you are not working in the
+root ApplicationDomain but instead in a child domain of a loaded Flex Module for example,
+you also have to pass the domain to the builder method: #par
+
+#cdb
+var parent:Context = ...;
+var domain:ApplicationDomain = ...;
+FlexContextBuilder.build(BookStoreConfig, null, parent, domain);
+#cdb
+
+#par Again this is not necessary when specifying a view root, since the builder is then able
+to automatically detect the parent Context and the ApplicationDomain. #par

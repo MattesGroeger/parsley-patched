@@ -1,0 +1,72 @@
+#sc2 task_implementation Implementing a custom Task #sc2
+
+#par To illustrate the steps required to implement a custom Task, we create a class
+that just loads and plays a sound. To keep the example simple the sound cannot be
+stopped or paused. This is the source for the example task: #par
+
+#cdb
+package example {
+	
+import flash.events.ErrorEvent;
+import flash.events.Event;
+import flash.events.IOErrorEvent;
+import flash.media.Sound;
+import flash.media.SoundChannel;
+import flash.net.URLRequest;
+	
+	
+public class SoundTask extends Task {
+	
+    private var filename:String;
+
+    function SoundTask (file:String) {
+        super();
+        filename = file;
+        setCancelable(false);
+        setSuspendable(false);
+        setSkippable(false);	
+    }
+	
+    protected override function doStart () : void {
+        var sound:Sound = new Sound();
+        sound.addEventListener(IOErrorEvent.IO_ERROR, onError);
+        sound.load(new URLRequest(filename));
+        var channel:SoundChannel = sound.play();	
+        channel.addEventListener(Event.SOUND_COMPLETE, onComplete);	
+    }
+	
+    private function onComplete (event:Event) : void {
+        complete();
+    }
+	
+    private function onError (event:ErrorEvent) : void {
+        error("Error playing sound file " + filename + ": " + event.text);
+    }
+	
+}
+
+}
+#cdb
+
+#par All Task implementations must extend the abstract #cdi Task #cdi class.
+In the constructor we first set some of the Task properties. Since we don't want to make
+this SoundTask cancelable or suspendable for now, we set those properties to false. #par
+
+#par Next we override the protected #cdi doStart #cdi method, which will be invoked when the task is started.
+In most cases you should not override the public #cdi start #cdi method, since this deals with
+a lot of additional internal stuff (i.e. state management). The same pattern applies to other
+methods and events too. If we wanted this task to be cancelable we would override the protected
+#cdi doCancel #cdi method and not the public #cdi cancel #cdi method. #par
+
+#par In our #cdi doStart #cdi
+implementation we set up the #cdi Sound #cdi and #cdi SoundChannel #cdi instances and add
+event listeners. We listen to the #cdi IOErrorEvent.IO_ERROR #cdi which will fire for error
+conditions like "file not found". In the listener method we invoke the protected #cdi error #cdi
+method which in turn leads to an #cdi ErrorEvent.ERROR #cdi to be fired. Likewise we register
+a listener for the #cdi Event.SOUND_COMPLETE #cdi and invoke the protected #cdi complete #cdi
+method in the listener method. This will then cause a #cdi TaskEvent.COMPLETE #cdi to be fired. #par
+
+#par As you see one of the main requirements when implementing tasks is to map custom events to
+the generic #cdi TaskEvents #cdi to unify the event model for asynchronous operations. The simple
+class shown above is all you need to prepare a sound playback operation to be part of a 
+#cdi TaskGroup #cdi. These classes are explained in the next section. #par

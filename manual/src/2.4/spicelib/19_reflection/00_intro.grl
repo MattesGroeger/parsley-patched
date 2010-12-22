@@ -1,0 +1,5 @@
+#sc1 reflection_intro Reflection #sc1
+
+#par The reflection module contains convenient classes to reflect on AS3 classes,
+methods and properties without the need for cumbersome parsing of XML output from 
+#cdi describeType #cdi. #par

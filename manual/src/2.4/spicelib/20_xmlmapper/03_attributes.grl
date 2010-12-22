@@ -1,0 +1,43 @@
+#sc2 xmlmapper_attributes Mapping Attributes #sc2
+
+#par Properties with a simple type like #cdi String #cdi, #cdi int #cdi, #cdi Boolean #cdi, #cdi Class #cdi or #cdi Date #cdi
+can be mapped to attributes: #par
+
+#cdb
+public class Song {
+
+    public var year:int;
+    public var title:String;
+    public var artist:String;
+    
+}
+#cdb
+
+#cdb
+<song
+    year="1989" 
+    title="Monkey Gone To Heaven"
+    artist="Pixies"
+/>
+#cdb
+
+#par Since mapping to XML attributes is the default for simple properties, no metadata configuration is required
+on the properties in this case. You can use the #cdi [Attribute] #cdi metadata tag whenever the property type
+is not one of the simple types automatically mapped to attributes (see #ref xmlmapper_config #ref) or when the
+name of the attribute does not match the property name: #par
+
+#cdb
+[Attribute("song-title")]
+public var title:String;
+#cdb
+
+#par Otherwise the setup for such a mapper is straightforward: #par
+
+#cdb
+var xml:XML = ...;
+var song:Song = XmlObjectMappings
+    .forUnqualifiedElements()
+    .withRootElement(Song)
+    .build()
+    .mapToObject(xml) as Song;    
+#cdb

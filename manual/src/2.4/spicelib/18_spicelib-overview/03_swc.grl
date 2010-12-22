@@ -1,0 +1,16 @@
+#sc2 spicelib-overview_swc Module SWCs #sc2
+
+#par Introduced with version 1.1.0 Spicelib comes with separate Module SWCs in addition
+to the full release SWC. The SWC in the release folder of the
+download contains all Spicelib modules, the modules subfolder contains SWCs for individual
+modules. So if you know that you are only using one or two of the Spicelib modules
+you can keep the classpath free from classes you don't need. The following table
+lists the required SWC for each of the modules. #par
+
+#tbl
+#tbr Reflection # spicelib-reflect-2.0.0.swc, spicelib-core-2.0.0.swc #tbr
+#tbr XML to Object Mapper # spicelib-xml-2.0.0.swc, spicelib-core-2.0.0.swc #tbr
+#tbr Task Framework # spicelib-task-2.0.0.swc, spicelib-core-2.0.0.swc #tbr
+#tbr Logging # spicelib-flash-2.0.0.swc, spicelib-core-2.0.0.swc #tbr
+#tbr Expressions # spicelib-expresssions-2.0.0.swc, spicelib-core-2.0.0.swc #tbr
+#tbl

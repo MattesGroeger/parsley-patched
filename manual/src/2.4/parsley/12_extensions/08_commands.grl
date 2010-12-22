@@ -1,0 +1,162 @@
+#sc2 extensions_commands Custom Command Types #sc2
+
+#par For a general description of the command support, see #ref messaging_command_methods #ref and
+#ref messaging_command_objects #ref. The builtin command types are those that support command methods
+that return #cdi AsyncToken #cdi or #cdi Task #cdi from the Spicelib Task Framework. If you want to see how
+these are implemented, browse the code for #cdi AsyncTokenCommandFactory #cdi and #cdi TaskCommandFactory #cdi. #par
+
+#par The command type is detected by the return type declared for the command method, any return type other than the
+two listed above must be supported explicitly through a new #cdi CommandFactory #cdi. Such a factory creates new 
+command instances based on the return value of the original command method passed to the factory. #par
+
+#par Most of the complexity of handling commands, like distributing the result to all the #cdi [CommandResult] #cdi handlers
+with a matching parameter type, are generified and available for all existing and new command types. The #cdi CommandFactory #cdi
+primarily extracts the (surprisingly few) aspects that are specific for each command type. #par
+
+#par We'll show a simple example here for a custom command that understands how to deal with an #cdi URLLoader #cdi. #par
+
+#cdb
+package example {
+
+import org.spicefactory.parsley.core.messaging.command.Command;
+import org.spicefactory.parsley.core.messaging.command.CommandFactory;
+
+import flash.net.URLLoader;
+
+public class URLLoaderCommandFactory implements CommandFactory {
+
+    public function createCommand (returnValue:Object, 
+                                   message:Object, selector:* = undefined) : Command {
+                                   
+        return new URLLoaderCommand(URLLoader(returnValue), message, selector);
+    }
+    
+}
+}
+
+
+import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.messaging.command.impl.AbstractCommand;
+
+import flash.events.*;
+import flash.net.URLLoader;
+
+class URLLoaderCommand extends AbstractCommand {
+
+    private var loader:URLLoader;
+
+    function URLLoaderCommand (loader:URLLoader, message:Object, selector:*) {
+        super(loader, message, selector);
+        this.loader = loader;
+        loader.addEventListener(Event.COMPLETE, loaderComplete);
+        loader.addEventListener(IOErrorEvent.IO_ERROR, loaderError);
+        loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, loaderError);
+        start();
+    }
+    
+    private function loaderComplete (event:Event) : void {
+        removeEventListeners(event.target as IEventDispatcher);
+        complete(event);
+    }
+    
+    private function loaderError (event:ErrorEvent) : void {
+        removeEventListeners(event.target as IEventDispatcher);
+        error(event);
+    }
+    
+    private function removeEventListeners (task:IEventDispatcher) : void {
+        task.removeEventListener(Event.COMPLETE, loaderComplete);
+        task.removeEventListener(IOErrorEvent.IO_ERROR, loaderError);
+        task.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, loaderError);
+    }
+    
+    protected override function selectResultValue (result:*, targetType:ClassInfo) : * {
+        if (targetType.isType(Event)) {
+            return result;
+        }
+        var loader:URLLoader = Event(result).target as URLLoader;
+        if (targetType.isType(URLLoader)) {
+            return loader;
+        }
+        return loader.data;
+    }
+
+    protected override function selectErrorValue (result:*, targetType:ClassInfo) : * {
+        return (!targetType.isType(Event))
+            ? Event(result).target
+            : result;
+    }
+    
+    
+}
+#cdb
+
+#par As you see the factory itself is fairly simple. It just creates a new instance of #cdi URLLoaderCommand #cdi, a private class.
+The command itself extends #cdi AbstractCommand #cdi which contains a lot of the plumbing every command type needs.
+Apart from that it basically performs two tasks: #par
+
+#par First it adds all the necessary listeners to detect that the loading process has either succeeded or failed and then
+invokes the #cdi complete #cdi or #cdi error #cdi methods respectively. It passes the event as the result value in both cases.
+This is not required, you can pass any kind of value to these functions. But it allows for some flexibility in what result
+types are supported in result handlers. #par
+
+#par The second task it performs is overriding #cdi selectResultValue #cdi and #cdi selectErrorValue #cdi. After a command signals
+that it is complete (through invoking #cdi complete #cdi or #cdi error #cdi), the framework will invoke the corresponding select
+method for each matching result handler. It passes the #cdi targetType #cdi info for each handler into the select method. This
+is the declared parameter type of the handler method. The custom command can then use this type information to decide what to provide
+as the result value. #par
+
+#par In our example we allow the result handler to either accept the event or the #cdi URLLoader #cdi instances or the actual
+data loaded by that loader. So the following signatures would all be valid for a result handler: #par
+
+#cdb
+[CommandResult]
+public function handleResult (event:Event, msg:LoadConfigMessage) : void
+
+[CommandResult]
+public function handleResult (loader:URLLoader, msg:LoadConfigMessage) : void
+
+[CommandResult]
+public function handleResult (fileContent:String, msg:LoadConfigMessage) : void
+#cdb
+
+#par The type of the first parameter is the #cdi typeInfo #cdi passed to the select methods.
+Note that we do not throw an Error, even though we would be able to find out if the target type matches.
+If the type is neither #cdi Event #cdi nor #cdi URLLoader #cdi we blindly pass #cdi loader.data #cdi.
+This is because that through the Converter services of the Spicelib Reflection API which is used to 
+finally invoke the target method, there might be a converter registered for the target type if it does
+not match. Therefor it is recommended not to fail-fast in those methods. If the type does not match and there
+is no converter, the application will run into a runtime error anyway. #par
+
+#par Finally a custom #cdi CommandFactory #cdi must be registered with the framework: #par
+
+#cdb
+var settings:MessageSettings = GlobalFactoryRegistry.instance.messageSettings;
+settings.commandFactories.addCommandFactory(URLLoader, new URLLoaderCommandFactory());
+#cdb
+
+#par We pass the supported return type and the matching command factory. It is recommended to offer
+this setup logic in a simple custom tag that can be placed within #cdi <ContextBuilder> #cdi tags
+like demonstrated in #ref extensions_init #ref. #par
+
+#par After the factory is registered, command methods and command objects that return an URLLoader are
+supported: #par
+
+#cdb
+[Command]
+public function execute (msg:LoadConfigMessage) : #hlt URLLoader #hlt {
+var loader:URLLoader = new URLLoader();
+loader.dataFormat = URLLoaderDataFormat.TEXT;
+loader.load(new URLRequest(file));
+return loader;
+#cdb 
+
+
+#sub Alternative Implementation as a Task #sub
+
+#par Instead of creating a new command type, you may sometimes prefer to think about a custom Task implementation.
+The advantage would be that such a Task can then even be used without Parsley and outside of commands. It could
+be used in a #cdi TaskGroup #cdi for example that executes multiple asynchronous operations in sequence or in parallel.
+If such a #cdi URLLoaderTask #cdi would extend #cdi ResultTask #cdi instead of the base #cdi Task #cdi interface
+the result handling in commands would be almost the same, as Parsley already knows and supports #cdi ResultTask #cdis
+out of the box. #par

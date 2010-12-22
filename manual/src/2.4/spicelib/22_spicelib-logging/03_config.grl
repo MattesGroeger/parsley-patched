@@ -1,0 +1,33 @@
+#sc2 spicelib-logging_config Configuration #sc2
+
+#par There are two ways to configure the logging framework: Parsley XML and programmatic configuration. #par
+
+
+#sc3 spicelib-logging_config_parsley Using Parsley XML Tags #sc3
+
+#par If you are using Parsley anyway, using its XML configuration is probably the most convenient way.
+You can maintain different configuration files for each developer of the project and change it frequently 
+without recompiling. See #ref logging_flash #ref in the Parsley Manual for details. #par
+
+
+#sc3 spicelib-logging_config_programmatic Programmatic Configuration #sc3
+
+#par If you don't use Parsley for application configuration it is recommended to configure
+logging programmatically since you would pull in the whole Parsley library otherwise.
+An example setup could look like this: #par 
+
+#cdb
+var factory:FlashLogFactory = new DefaultLogFactory();
+
+factory.setRootLogLevel(LogLevel.WARN);
+factory.addLogLevel("com.mycompany.mypackage.controller", LogLevel.DEBUG);
+factory.addLogLevel("com.mycompany.mypackage.services", LogLevel.DEBUG);
+
+var traceApp:Appender = new TraceAppender();
+traceApp.threshold = LogLevel.TRACE;
+factory.addAppender(traceApp);
+
+LogContext.factory = factory;
+#cdb
+
+#par This block should execute once on application startup. #par

@@ -1,0 +1,8 @@
+#sc1 xmlmapper_intro XML to Object Mapper #sc1
+
+#par Since version 2.0 Spicelib contains a small but powerful and flexibel XML-to-Object Mapper.
+It allows you to map from XML to AS3 classes - in both directions. It comes with builtin mappers
+which cover the most common use cases like mapping properties of AS3 classes to XML attributes
+or child elements. But it is easily extensible to add your custom mappers for some of your XML
+elements and combine them with the builtin ones. In version 2.3 support for metadata configuration
+was added, leading to a significantly easier setup. #par

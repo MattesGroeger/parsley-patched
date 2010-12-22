@@ -1,0 +1,69 @@
+#sc2 messaging_interceptors MessageInterceptors #sc2
+
+#par This is the third option for the receiving side. Interceptors may come in handy when you want to
+decide whether or not the message should be passed to handlers and bindings based on application state or user decisions. 
+Interceptors have the following characteristics: #par  
+
+#lst
+#lse All registered interceptors execute before any handlers or bindings are executed. #lse
+#lse Interceptors can optionally suspend the message processing and resume it at a later time. #lse
+#lst
+
+#par A simple example where you might want to use such an interceptor, is when you have
+an application that can be used without being logged in, but does include some actions
+which will not be accessible without login. In that case an interceptor could suspend
+the message processing, present a login dialog and resume the message processing after
+successful login. #par
+
+#par Another example would be to show a simple warning before any delete operation
+is actually performed like in the following example: #par
+
+#cdb
+public class DeleteItemInterceptor {
+ 
+    [MessageInterceptor(type="com.bookstore.events.ShoppingCartDeleteEvent")]
+    public function interceptDeleteEvent (processor:MessageProcessor) : void {
+        var listener:Function = function (event:CloseEvent) : void {
+            if (event.detail == Alert.OK) {
+                processor.proceed();
+            }  
+        };      
+        Alert.show("Do you really want to delete this item?", "Warning", 
+            Alert.OK | Alert.CANCEL, null, listener);
+    }
+ 
+}
+#cdb 
+
+#par When the user hits cancel, the #cdi MessageProcessor #cdi never resumes and no subsequent handler or bindings will
+be executed. #par
+
+#par Like with MessageBindings you have to declare the message type since it cannot be detected from the method signature.
+Interceptor methods must always have a single parameter of type #cdi MessageProcessor #cdi. 
+Again you can use MXML or XML instead of Metadata tags for declaring the interceptor methods: #par
+
+#sub MXML Example #sub
+
+#cdb
+<Object type="{LoginServiceImpl}">
+    <MessageInterceptor 
+        method="interceptDeleteEvent" 
+        type="{ShoppingCartDeleteEvent}"
+    />
+</Object>
+#cdb
+ 
+#sub XML Example #sub
+
+#cdb
+<object type="com.bookstore.services.LoginServiceImpl">
+    <message-interceptor
+        method="interceptDeleteEvent"
+        type="com.bookstore.events.ShoppingCartDeleteEvent"
+    />
+</object>
+#cdb
+
+#par It is recommended to use interceptors sparingly as it is the only feature of the Messaging Framework that ties
+you to the Parsley API, as we have to pass a #cdi MessageProcessor #cdi instance to you so that you are able to
+#cdi rewind #cdi or #cdi proceed #cdi with message processing. #par

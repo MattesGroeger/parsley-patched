@@ -1,0 +1,27 @@
+#sc2 reflection_classinfo Obtaining ClassInfo instances #sc2
+
+#par The #cdi ClassInfo #cdi class is the central entry point for all reflection features. 
+We chose the name ClassInfo as the name Class is already a top level type in AS3.
+There are three ways to obtain an instance of #cdi ClassInfo #cdi: #par
+
+#tbl
+#tbr By class name # Example: #cdi ClassInfo.forName("flash.geom.Point"); #cdi #tbr
+#tbr By class reference # Example: #cdi ClassInfo.forClass(Point); #cdi #tbr
+#tbr By instance # Example: #cdi ClassInfo.forInstance(new Point()); #cdi #tbr
+#tbl
+
+#par Of course the last example would only make sense if you use an existing instance of a class
+and don't know or don't want to determine the type of the instance first. Otherwise the second
+example is the most efficient. If you invoke one of the above three static methods more than
+once for the same type, the returned #cdi ClassInfo #cdi instance will be taken from the internal
+cache to avoid the overhead of parsing the XML returned by #cdi describeType #cdi again. #par
+
+#par The #cdi ClassInfo #cdi class offers methods to obtain the superclasses and implemented interfaces
+(#cdi getSuperclasses #cdi and #cdi getInterfaces #cdi) and the #cdi isType #cdi method that checks if 
+the specified parameter is a superclass or one of the implemented interfaces of the class represented
+by the #cdi ClassInfo #cdi instance. #par
+
+#par Furhermore the #cdi ClassInfo #cdi class contains methods to reflect on properties and methods
+which will be explained in the following sections, 
+but before that we will introduce the concept of automatic type conversion, as this concept is used
+internally for some of the reflection features related to properties and methods. #par

@@ -1,0 +1,5 @@
+#sc1 task_intro The Task Framework #sc1
+
+#par The Task Framework is a general abstraction for asynchronous operations. It allows nesting / grouping 
+of Tasks in #cdi TaskGroup #cdi instances for concurrent or sequential
+execution. #par

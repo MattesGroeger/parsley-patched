@@ -1,0 +1,28 @@
+#sc2 reflection_appdomains Working with ApplicationDomains #sc2
+
+#par Finally, also introduced with version 1.1.0, Spicelib now supports ApplicationDomains.
+In case you work with Flex Modules or other SWF files that are loaded in a separate
+ApplicationDomain you can now tell the Spicelib Reflection API explicitly to use this
+domain. For this purpose the three methods you can use to obtain a #cdi ClassInfo #cdi
+instance have been modified to support an optional #cdi ApplicationDomain #cdi parameter: #par
+
+#cdb
+static function forName (name:String, domain:ApplicationDomain = null) : ClassInfo
+		
+static function forClass (clazz:Class, domain:ApplicationDomain = null) : ClassInfo
+
+static function forInstance (instance:Object, domain:ApplicationDomain = null) : ClassInfo
+#cdb
+
+#par Note that if you use a different domain you would have to specifiy it for all of these
+methods, not only the one that takes a String argument. This is because even if you pass
+an existing #cdi Class #cdi instance, the Spicelib might still need to know the domain to reflect
+on dependent types, since it uses #cdi describeType #cdi internally which provides type
+information for superclasses, implemented interfaces, property types and method parameter types
+in the form of Strings. To convert these Strings to actual #cdi Class #cdi instances the 
+specified domain will be used internally. Unfortunately AS3 does not have a similar construct
+like Javas #cdi getClassLoader #cdi method which would make the #cdi ApplicationDomain #cdi
+parameter obsolete for the second and third method. #par
+
+#par If you omit the optional second parameter, the #cdi ClassInfo #cdi class will work
+like in previous versions, simply using #cdi ApplicationDomain.currentDomain #cdi. #par

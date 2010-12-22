@@ -1,0 +1,29 @@
+#sc2 task_groups Using TaskGroups #sc2
+
+#par For your custom Task implementations to be really useful, they have to be part of a
+#cdi TaskGroup #cdi. A #cdi SequentialTaskGroup #cdi chains tasks for sequential execution and fires 
+its #cdi COMPLETE #cdi event
+when the final task has completed. A #cdi ConcurrentTaskGroup #cdi starts all child tasks concurrently and fires
+its #cdi COMPLETE #cdi event when all child tasks have completed. Both classes are subclasses of #cdi Task #cdi
+themselves (Composite Design Pattern), so they can be nested as well. This allows complex compositions
+of nested #cdi TaskGroups #cdi. #par
+
+#par The properties of #cdi TaskGroups #cdi like #cdi cancelable #cdi or #cdi suspendable #cdi
+are only true if the collection itself and all of its child tasks have the property set to true: #par
+
+#cdb
+var t:Task = new SoundTask("mySound.mp3"); // our example task is not cancelable
+var group:TaskGroup = new SequentialTaskGroup();
+group.addTask(t);
+group.cancelable = true;
+trace(group.cancelable); // output: false
+#cdb
+
+#par In the example above setting the cancelable property of the chain instance only sets its own
+internal cancelable flag to true, but the getter method also takes the property values of all
+children into account. #par
+
+#par Finally #cdi TaskGroups #cdi have a #cdi autoStart #cdi property. If this is set to true,
+an empty #cdi TaskGroup #cdi will start immediately when the first Task is added. This is useful
+for building execution queues where you want to avoid that a particular group of tasks runs concurrently
+but nevertheless want to start each of them as soon as possible. #par

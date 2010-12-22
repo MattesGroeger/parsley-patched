@@ -1,0 +1,26 @@
+#sc2 spicelib-logging_application Adding log statements to application code #sc2
+
+#par Usually you would just create a constant that holds the logger for your particular class:#par
+
+#cdb
+private static const log : Logger = LogContext.getLogger(MyClass);
+#cdb  
+
+#par You can just pass a #cdi Class #cdi instance to the #cdi getLogger #cdi method. In this case
+the fully qualified class name would be used as the name for the logger.
+Of course you could use any name you want (specified as a String) or create more that one logger for a class, 
+but using
+the class name is the most common usage. The static #cdi getLogger #cdi method of the #cdi LogContext #cdi
+class uses the default #cdi LogFactory #cdi under the hood. This is not required but it makes sure that
+your application logs use the same configuration and appenders than the internal logs of all Spicefactory
+projects. Alternatively you could also instantiate and use a custom #cdi LogFactory #cdi and configure 
+it separately. #par 
+
+#par You could then use that #cdi Logger #cdi instance anywhere in the class: #par
+
+#cdb
+public function loadProject (id:String) : void {
+    log.info("Start loading project with id {0}", id);
+    // do something
+}
+#cdb

@@ -1,0 +1,123 @@
+#sc2 messaging_command_objects Short-lived Command Objects #sc2
+
+#par The Command feature as demonstrated in the previous section does not alter the nature
+of the objects executing the command in any way. The tags #cdi [Command] #cdi, #cdi [CommandResult] #cdi
+and #cdi [CommandError] #cdi can be used on any method in any managed object. It can be a root singleton object
+or even a view (although this would be a bad idea in most cases in terms of architecture if the view executes
+a command). Each object can contain multiple command methods and also any number of result handlers for various
+types of commands. The result handler can be on the same object that executes the command or on any other object.
+In short: These tags only control the single method or property they are placed upon. #par
+
+#par Alternatively the framework allows for a second way of defining a command. Instead of just applying
+tags to individual methods you configure an entire command object. This object only has a single method
+that executes a command, and optionally a method to receive the result and one for an eventual error.
+The result handler would only be invoked for the command that the same instance executed. Such a command object
+might look like this: #par
+
+#cdb
+public class SaveUserCommand {
+
+    [Inject]
+    public var service:RemoteObject;
+
+    public function execute (event:UserEvent) : AsyncToken {
+        return service.saveUser(event.user);
+    }
+
+    public function result (user:User) : void {
+        // do something with the result
+    }
+    
+    public function error (fault:Fault) : void {
+        // do something with the result
+    }
+    
+}
+#cdb
+
+#par It can then be defined in a configuration class with the new #cdi DynamicCommand #cdi tag: #par
+
+#cdb
+<DynamicCommand type="{SaveUserCommand}" selector="save"/>
+#cdb
+
+#par As you see this is really a minimal configuration. We do specify the selector, but we can omit the
+message type as it will be deduced from the parameter type of the execute method. Furthermore we must not
+use the regular command metadata tags in the command object. The tags partly contain behaviour not applicable
+for this scenario and they are also not necessary. The default names for selecting the method that executes
+the command and the result and error handlers are like shown in the preceding example. You can overwrite these
+with the #cdi DynamicCommand #cdi tag, but this should only be necessary for adapting existing classes.
+In the following example we overwrite all three method names: #par
+
+#cdb
+<DynamicCommand 
+    type="{SaveUserCommand}" 
+    selector="save"
+    #hlt execute="saveUser"
+    result="handleUser"
+    error="handleFault" #hlt
+/>
+#cdb
+
+#par The tag also supports all of the attributes you know from the regular #cdi [MessageHandler] #cdi
+or #cdi [Command] #cdi tags: #par
+
+#cdb
+<DynamicCommand 
+    type="{SaveUserCommand}" 
+    selector="save"
+    #hlt scope="local"
+    order="1" #hlt
+/>
+#cdb
+
+#par In the example above the command will only execute if the triggering message was dispatched by an object
+living in the same Context. The order attribute allows to specify the execution order in case multiple
+message handlers and commands are going to be invoked for a particular message. It does not specify
+the order for the result or error handler on the command object, these will always be invoked first, before
+any other result handlers declared on other objects. #par
+
+#par Apart from the special semantics the #cdi DynamicCommand #cdi tag allows the same set of child tags
+like the regular #cdi Object #cdi tag: #par
+
+#cdb
+<DynamicCommand type="{SaveUserCommand}" selector="save">
+    <ConstructorArgs>
+        <ObjectRef idRef="someDependency"/>
+    </ConstructorArgs>
+</DynamicCommand>
+#cdb
+
+#par Of course the command object can be combined with separate result handler methods on other objects.
+If you are using the #cdi [CommandResult] #cdi tag for example it does not make any difference whether
+the command was executed by a single method annotated with the #cdi [Command] #cdi tag or whether
+it was executed by a command object declared with the #cdi <DynamicCommand> #cdi tag. So although
+such a command object has its own "private" result handlers, any other object in the system can still
+receive the result, too. #par
+
+
+#sub Command Object Lifecycle #sub
+
+#par Apart from grouping the executing method and the result handlers the #cdi DynamicCommand #cdi also
+introduces a special kind of lifecycle management for command objects. The creation of the object
+does not happen until a matching message is dispatched. It then becomes a container managed object 
+just for the duration of the command execution. It will immediately be removed from the Context after
+the result or error handler have been invoked. But during its lifetime, it is a fully managed object,
+can have its dependencies injected, or even take part in messaging during the command execution.
+But that would be a rather rare case, most common usage scenario is probably the command object
+just receiving all the dependencies it needs to execute the command. #par
+
+#par The default behaviour is that the container creates a new command instance for each matching
+message. So you can even have multiple commands executing in parallel without interfering with each
+other. This behaviour can be changed with the #cdi stateful #cdi attribute: #par
+
+#cdb
+<DynamicCommand type="{SaveUserCommand}" selector="save" stateful="true"/>
+#cdb
+
+#par Now the instance will still be lazily instantiated when the first matching message is heard.
+But it will then be kept as a container managed object, reusing the same instance for subsequent
+invocations. You may switch to this behaviour in case object creation and initialization is too
+expensive to be repeated all the time. For a stateful command you just have to make sure that
+you do not keep information for a single command execution in a private property, as multiple 
+commands would then interfere with each other and overwrite that value. #par

@@ -1,0 +1,116 @@
+#sc2 reflection_metadata_mapping Mapping classes to metadata tags #sc2
+
+#par While the API demonstrated in the previous section may be sufficient for simple use cases,
+it would be more convenient to work with metadata in a type-safe way if you are doing more
+than just simple lookups (like complex configuration tasks performed for custom metadata for example). #par
+
+#par If you want to work with custom classes mapped to metadata tags you have to perform the following
+tasks: #par
+
+#lst
+#lse Create a class with properties that correspond to the attributes of the metadata tag. #lse
+#lse Add a #cdi [Metadata] #cdi tag to this custom class, optionally specifying the types on which this tag
+is allowed to occur. #lse
+#lse Optionally add a #cdi [DefaultProperty] #cdi tag to one of the properties of that class. #lse
+#lse Register the class with #cdi Metadata.registerMetadataClass #cdi. #lse
+#lse Add the metadata tag to the #cdi -keep-as3-metadata #cdi compiler option. #lse
+#lst
+
+#par We will walk you through all these steps with a concrete example. Consider the following
+class: #par
+
+#cdb
+public class LoginController {
+
+    [EventHandler(name="login", type="com.foo.LoginEvent")]
+    public function handleLogin () : void {
+        trace("handleLogin invoked");    
+    } 
+    
+}
+#cdb
+
+#par Let's assume you are building a framework that will interpret the #cdi EventHandler #cdi tag
+and invoke the annotated method whenever such an Event occurs (in fact Parsley 2 will include
+metadata-driven configuration options like this). The first step would be to create a class
+that represents this tag: #par
+
+#cdb
+[Metadata(name="EventHandler", types="method")]
+public class EventHandlerMetadata {
+
+    [DefaultProperty]
+    public var name:String;
+    
+    public var type:ClassInfo;
+
+}
+#cdb
+
+#par As you see, the two properties correspond to the two attributes in the metadata tags. You are
+not limited to working with Strings here, the Spicelib will automatically convert the attributes
+to the property type, as long as there is a builtin Converter for that type. If you are working
+with properties that the Spicelib cannot convert out-of-the-box, you can register your own
+#cdi Converter #cdi instance as described in #ref reflection_conversion #ref, but you should
+rarely have the need to do so. In addition to the usual type conversion the metadata support
+handles an additional use case that is quite common: You can define a comma-separated value
+for an attribute when the property type is Array, in this case the Spicelib will split the
+value accordingly (but without type conversions for the individual elements). #par
+
+#par Above the class declaration you have to add the #cdi [Metadata] #cdi tag to declare
+that this is a class that should be mapped to a custom metadata tag. The attribute specifies
+the name of the tag (as we used it in the #cdi LoginController #cdi example class). If this
+attribute is omitted it will use the non-qualified name of the class as the tag name.
+The second attribute specifies on which types the metadata tag should be mapped to this class.
+Permitted values are #cdi class #cdi, #cdi constructor #cdi, #cdi method #cdi and #cdi property #cdi
+(but tags on the constructor are currently ignored by the Flex compilers, so this is included only
+for eventual future use). If this attribute is omitted Spicelib will map the metadata tag for all
+of these types. With this option you can for example map different classes for the same tag name,
+in case you have a different set of attributes for annotated methods than for properties. #par 
+
+#par Finally one of the two properties was defined as #cdi [DefaultProperty] #cdi. This means
+that this property will be set whenever an attribute is specified without a key like 
+in the following example: #par
+
+#cdb
+[EventHandler("login")]
+#cdb
+
+#par Now that you have created the class that you want to map to metadata, you have to register
+it like this: #par
+
+#cdb
+Metadata.registerMetadataClass(EventHandlerMetadata);
+#cdb
+
+#par Make sure that you register the class before you reflect on a class that uses this tag
+for the first time. Finally don't forget to add it to the #cdi -keep-as3-metadata #cdi compiler option.
+Now you can start reflecting on those tags: #par
+
+#cdb
+var ci:ClassInfo = ClassInfo.forClass(LoginController);
+var m:Method = ci.getMethod("handleLogin");
+var tags:Array = m.getMetadata(EventHandlerMetadata);
+trace("number of metadata tags: " + tags.length);
+var meta:EventHandlerMetadata = tags[0] as EventHandlerMetadata;
+trace("name = " + meta.name);
+trace("type = " + meta.type.name);
+#cdb
+
+#par The output for the above code would be: #par
+
+#cdb
+number of metadata tags: 1
+name = login
+type = com.foo.LoginEvent
+#cdb
+
+#par Note that you no longer use Strings as keys in your #cdi getMetadata #cdi invocations,
+you now use the class that represents the tag as the key (which is much better in terms of
+type-safety). #par
+
+#par If an error occurs while processing metadata tags (for example a type conversion that fails)
+it will be silently swallowed. This is because an illegal metadata tag should not prevent you
+from reflecting on the annotated method. We are considering adding a kind of optional "strict" mode
+to a future release that would throw an Error in such a case or any other means to explicitly
+validate tags. #par

@@ -1,0 +1,62 @@
+#sc2 xmlmapper_validation Validation #sc2
+
+#par Like shown in #ref xmlmapper_example #ref you can place #cdi [Required] #cdi metadata on properties so that the
+mapper throws an Error if the attribute or child element that the property is mapped to is not present in XML.
+This section provides some more detail on the exact semantics of this feature. #par
+
+#sub Validating single valued properties #sub
+
+#par When a property is single valued, either with a simple type that maps to an attribute or a text node
+or typed to a class that maps to a child element, the validation process includes the following checks: #par
+
+#lst
+#lse If the property is marked with the #cdi [Required] #cdi tag the mapper checks if the attribute, text node
+or child element is present in the mapped XML and throws an error if it is missing. Without the metadata tag
+the mapped XML element is considered optional. #lse
+
+#lse If the single valued property is mapped to a child element the mapper validates that there is at most
+a single occurence of that element and throws an Error if otherwise. #lse
+#lst
+
+
+#sub Validating Array properties #sub
+
+#par Array properties cannot be mapped to attributes (as multiple occurences of the same attribute in a single
+element are not possible). If they are mapped to child text nodes or child elements, the validation process
+includes the following checks: #par
+
+#lst
+#lse If the property is marked with the #cdi [Required] #cdi tag the mapper checks if the child text node
+or child element has at least a single occurence and throws an Error if otherwise. #lse
+
+#lse Without the #cdi [Required] #cdi tag any number of occurences for the child element (including 0)
+are permitted. #lse
+#lst 
+
+
+#sub Ignoring properties #sub
+
+#par Sometimes a class may contain properties that should not be mapped to XML. You can exclude individual
+properties from the mapping with the #cdi [Ignore] #cdi tag: #par
+
+#cdb
+[Ignore]
+public var somethingUnusual:String;
+#cdb
+
+#par Without this tag (and without any other mapping tag on that property) the mapper would create the 
+default mappings for that property. #par 
+
+
+#sub Ignoring xml elements and attributes #sub
+
+#par In some scenarios you may not be able to create strict mappings as the XML may contain child elements or attributes
+which are not relevant for the client side and should be ignored. To do that for a particular mapped class
+you can add the #cdi [XmlMapping] #cdi metadata to the class declaration: #par
+
+#cdb
+[XmlMapping(ignoreUnmappedAttributes="true", ignoreUnmappedChildren="true")]
+public class Order {
+#cdb
+
+#par Without these settings any attribute or child element unknown to the mapper would lead to an Error. #par
