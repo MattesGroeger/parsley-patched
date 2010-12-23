@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<flex-config>
+	<compiler>
+	
+		<source-path>
+			<path-element>${project}/spicelib-core</path-element>
+	  		<path-element>${project}/spicelib-expressions</path-element>
+	  		<path-element>${project}/spicelib-reflect</path-element>
+	  		<path-element>${project}/spicelib-task</path-element>
+	  		<path-element>${project}/spicelib-xml</path-element>
+	  		<path-element>${project}/spicelib-flash</path-element>
+	  		
+      		<path-element>${project}/parsley-core</path-element>
+      		<path-element>${project}/parsley-config</path-element>
+      		<path-element>${project}/parsley-flex</path-element>
+      		<path-element>${project}/parsley-flash</path-element>
+      		<path-element>${project}/parsley-extensions</path-element>
+      		<path-element>${project}/parsley-integration</path-element>
+      		<path-element>${project}/parsley-xml</path-element>
+    	</source-path>
+    	
+		<library-path>
+			<path-element>${flexlib}/libs/player/9/playerglobal.swc</path-element>
+			<path-element>${flexlib}/libs/framework.swc</path-element>
+			<path-element>${flexlib}/libs/rpc.swc</path-element>
+			
+			<path-element>${project}/lib/pimento-1.1.0.swc</path-element>
+			<path-element>${project}/lib/cinnamon-1.1.0.swc</path-element>
+			<path-element>${project}/lib/popup-flex3-1.7.swc</path-element>
+		</library-path>
+		
+	    <verbose-stacktraces>true</verbose-stacktraces>
+	    <debug>true</debug>
+	    
+	</compiler>
+	
+	<doc-sources>
+		<path-element>${project}/spicelib-core</path-element>
+  		<path-element>${project}/spicelib-expressions</path-element>
+  		<path-element>${project}/spicelib-reflect</path-element>
+  		<path-element>${project}/spicelib-task</path-element>
+  		<path-element>${project}/spicelib-xml</path-element>
+  		<path-element>${project}/spicelib-flash</path-element>
+  		
+   		<path-element>${project}/parsley-core</path-element>
+   		<path-element>${project}/parsley-config</path-element>
+   		<path-element>${project}/parsley-flash</path-element>
+   		<path-element>${project}/parsley-extensions</path-element>
+   		<path-element>${project}/parsley-integration</path-element>
+   		<path-element>${project}/parsley-xml</path-element>
+   	</doc-sources>
+	
+	<left-frameset-width>250</left-frameset-width>
+	
+	<main-title>Parsley - Spicelib - Flash API</main-title>
+	<window-title>Parsley - Spicelib - Flash API</window-title>
+  	
+  	<output>${project}/release/api/parsley-flash</output>
+	    
+	    
+</flex-config>
