@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package-listings>
+
+	<section title="Parsley IOC Kernel" includeIn="parsley-flex parsley-flash">
+		<package name="org.spicefactory.parsley.core.bootstrap">API for IOC kernel services for Context initialization</package>
+		<package name="org.spicefactory.parsley.core.bootstrap.impl">Implementation for IOC kernel services for Context initialization</package>
+		<package name="org.spicefactory.parsley.core.context">API for IOC kernel services for the core container</package>
+		<package name="org.spicefactory.parsley.core.context.impl">Implementation for IOC kernel services for the core container</package>
+		<package name="org.spicefactory.parsley.core.context.provider">API for dynamic object providers</package>
+		<package name="org.spicefactory.parsley.core.errors">Core Error classes</package>
+		<package name="org.spicefactory.parsley.core.events">Core Events</package>
+		<package name="org.spicefactory.parsley.core.lifecycle">API for IOC kernel services for object lifecycle management</package>
+		<package name="org.spicefactory.parsley.core.lifecycle.impl">Implementation for IOC kernel services for object lifecycle management</package>
+		<package name="org.spicefactory.parsley.core.messaging">API for IOC kernel services for the messaging system</package>
+		<package name="org.spicefactory.parsley.core.messaging.command">API for the asynchronous command support</package>
+		<package name="org.spicefactory.parsley.core.messaging.command.impl">Implementation of the asynchronous command support</package>
+		<package name="org.spicefactory.parsley.core.messaging.impl">Implementation for IOC kernel services for the messaging system</package>
+		<package name="org.spicefactory.parsley.core.messaging.receiver">API for various types of message receivers</package>
+		<package name="org.spicefactory.parsley.core.registry">API for IOC kernel services for the object definition registry</package>
+		<package name="org.spicefactory.parsley.core.registry.impl">Implementation for IOC kernel services for the object definition registry</package>
+		<package name="org.spicefactory.parsley.core.scope">API for IOC kernel services for scope management</package>
+		<package name="org.spicefactory.parsley.core.scope.impl">Implementation for IOC kernel services for scope management</package>
+		<package name="org.spicefactory.parsley.core.state">Public API for IOC kernel services providing access to global state</package>
+		<package name="org.spicefactory.parsley.core.state.manager">Internal API for IOC kernel services that manage global state</package>
+		<package name="org.spicefactory.parsley.core.state.manager.impl">Implementation for IOC kernel services that manage global state</package>
+		<package name="org.spicefactory.parsley.core.view">API for IOC kernel services for dynamic view wiring</package>
+		<package name="org.spicefactory.parsley.core.view.handler">Handlers responsible for dealing with individual aspect of view wiring</package>
+		<package name="org.spicefactory.parsley.core.view.impl">Implementation for IOC kernel services for dynamic view wiring</package>
+		<package name="org.spicefactory.parsley.core.view.metadata">Metadata to be used for dynamic view wiring</package>
+		<package name="org.spicefactory.parsley.core.view.util">Utility classes related to dynamic view wiring</package>
+	</section>
+	
+	<section title="Parsley Configuration" includeIn="parsley-flex parsley-flash">
+		<package name="org.spicefactory.parsley.asconfig">IOC Container initialization based on ActionScript configuration</package>
+		<package name="org.spicefactory.parsley.asconfig.metadata">Metadata tags for use in ActionScript configuration</package>
+		<package name="org.spicefactory.parsley.asconfig.processor">ConfigurationProcessor implementation for ActionScript configuration</package>
+		<package name="org.spicefactory.parsley.config">Core interfaces for the configuration extension points</package>
+		<package name="org.spicefactory.parsley.config.impl">Default implementations of the core configuration interfaces</package>
+		<package name="org.spicefactory.parsley.dsl">Core interfaces for the configuration DSL</package>
+		<package name="org.spicefactory.parsley.dsl.context">Builders for creating a new Context</package>
+		<package name="org.spicefactory.parsley.dsl.core">Core interfaces for the main builder parts of the configuration DSL</package>
+		<package name="org.spicefactory.parsley.dsl.core.impl">Default implementations of the main builder parts</package>
+		<package name="org.spicefactory.parsley.dsl.impl">Default implementations of the core DSL interfaces</package>
+		<package name="org.spicefactory.parsley.dsl.lifecycle">Builders for configuring the object lifecycle</package>
+		<package name="org.spicefactory.parsley.dsl.lifecycle.impl">Default implementations of the lifecycle builder interfaces</package>
+		<package name="org.spicefactory.parsley.dsl.messaging">Builders for configuring message receivers</package>
+		<package name="org.spicefactory.parsley.dsl.messaging.impl">Default implementations of the message receiver builder interfaces</package>
+		<package name="org.spicefactory.parsley.instantiator">Default implementations of the ObjectInstantiator interface</package>
+		<package name="org.spicefactory.parsley.metadata">Classes for Metadata processing</package>
+		<package name="org.spicefactory.parsley.processor.core">Core processors for basic operations like setting properties and invoking methods</package>
+		<package name="org.spicefactory.parsley.processor.lifecycle">Processor for registering lifecycle observers</package>
+		<package name="org.spicefactory.parsley.processor.messaging">Processor for registering message receivers</package>
+		<package name="org.spicefactory.parsley.processor.messaging.receiver">Default implementations of the various message receiver interfaces</package>
+		<package name="org.spicefactory.parsley.processor.resources">Processor for registering resource bindings</package>
+		<package name="org.spicefactory.parsley.processor.util">Utilities shared by all processors</package>
+		<package name="org.spicefactory.parsley.properties">Support for Configuration Properties</package>
+		<package name="org.spicefactory.parsley.properties.processor">ConfigurationProcessor implementation for loading property files</package>
+		<package name="org.spicefactory.parsley.properties.util">Utilities for parsing property files</package>
+		<package name="org.spicefactory.parsley.runtime">IOC Container initialization based on runtime configuration</package>
+		<package name="org.spicefactory.parsley.runtime.processor">ConfigurationProcessor implementation for runtime configuration</package>
+		<package name="org.spicefactory.parsley.tag">Base API for configuration tags</package>
+		<package name="org.spicefactory.parsley.tag.core">Core Configuration tags for MXML and XML configuration</package>
+		<package name="org.spicefactory.parsley.tag.inject">Configuration tags for dependency injection</package>
+		<package name="org.spicefactory.parsley.tag.lifecycle">Configuration tags for object lifecycle management</package>
+		<package name="org.spicefactory.parsley.tag.messaging">Configuration tags for the Messaging Framework</package>
+		<package name="org.spicefactory.parsley.tag.model">Configuration model shared by the tag implementations</package>
+		<package name="org.spicefactory.parsley.tag.resources">Configuration tags for localization</package>
+		<package name="org.spicefactory.parsley.tag.util">Utilities for configuration tag implementations</package>
+	</section>
+	
+	<section title="Parsley Flex Support" includeIn="parsley-flex">
+		<package name="org.spicefactory.parsley.flex">IOC Container initialization based on MXML configuration</package>
+		<package name="org.spicefactory.parsley.flex.logging">XML configuration tags for Flex LogTargets</package>
+		<package name="org.spicefactory.parsley.flex.modules">Integration with Flex Modules</package>
+		<package name="org.spicefactory.parsley.flex.processor">ConfigurationProcessor implementation for MXML configuration</package>
+		<package name="org.spicefactory.parsley.flex.resources">Adapter for the Flex ResourceManager</package>
+		<package name="org.spicefactory.parsley.flex.tag">Base class for synchronized MXML configuration tags</package>
+		<package name="org.spicefactory.parsley.flex.tag.builder">Configuration tags for Context initialization</package>
+		<package name="org.spicefactory.parsley.flex.tag.view">Configuration tag for explicit view wiring</package>
+		<package name="org.spicefactory.parsley.flex.util">Flex Support Utilities</package>
+	</section>
+	
+	<section title="Parsley XML Support" includeIn="parsley-flex parsley-flash">
+		<package name="org.spicefactory.parsley.xml">IOC Container initialization based on XML configuration</package>
+		<package name="org.spicefactory.parsley.xml.events">Events for XML configuration file loading</package>
+		<package name="org.spicefactory.parsley.xml.mapper">Xml-Object Mapper for XML configuration files</package>
+		<package name="org.spicefactory.parsley.xml.processor">ConfigurationProcesssor implementation based on XML configuration files</package>
+		<package name="org.spicefactory.parsley.xml.tag">Core XML configuration tags</package>
+	</section>
+	
+	<section title="Parsley Extensions" includeIn="parsley-flex parsley-flash">
+		<package name="org.spicefactory.parsley.binding">Core Interfaces for Decoupled Bindings</package>
+		<package name="org.spicefactory.parsley.binding.decorator">Configuration Tags for Decoupled Bindings</package>
+		<package name="org.spicefactory.parsley.binding.impl">Default Implementations of the Interfaces for Decoupled Bindings</package>
+		<package name="org.spicefactory.parsley.binding.processor">ObjectProcessors for Decoupled Bindings</package>
+	</section>
+	
+	<section title="Parsley Integration" includeIn="parsley-flex parsley-flash">
+		<package name="org.spicefactory.parsley.popup">Support for Declarative PopUps based on the Cairngorm 3 PopUp Library</package>
+		<package name="org.spicefactory.parsley.rpc.cinnamon.command">Command Support for Cinnamon Remoting</package>
+		<package name="org.spicefactory.parsley.rpc.cinnamon.config">MXML and XML configuration tags for Cinnamon Remoting</package>
+		<package name="org.spicefactory.parsley.rpc.flex.command">Command Support for RPC based on AsyncToken</package>
+		<package name="org.spicefactory.parsley.rpc.pimento.config">MXML and XML configuration tags for Pimento Data Services</package>
+		<package name="org.spicefactory.parsley.task.builder">ContextBuilder Integration with the Spicelib Task Framework</package>
+		<package name="org.spicefactory.parsley.task.command">Command Support for the Spicelib Task Framework</package>
+	</section>
+	
+	<section title="Parsley Flash Support" includeIn="parsley-flash">
+		<package name="org.spicefactory.parsley.flash.">XML configuration tags for the Spicelib Flash Logging Framework</package>
+		<package name="org.spicefactory.parsley.flash.">Core interfaces and classes for the Flash Localization Framework</package>
+		<package name="org.spicefactory.parsley.flash.">Adapter for the core ResourceBinding configuration tag</package>
+		<package name="org.spicefactory.parsley.flash.">Events of the Flash Localization Framework</package>
+		<package name="org.spicefactory.parsley.flash.">Default implementation of the Flash Localization Framework</package>
+		<package name="org.spicefactory.parsley.flash.">Service Provider Interfaces of the Flash Localization Framework</package>
+	</section>
+	
+	<section title="Spicelib Reflection API" includeIn="parsley-flex parsley-flash spicelib">
+		<package name="org.spicefactory.lib.reflect">Reflection API</package>
+		<package name="org.spicefactory.lib.reflect.cache">Reflection Cache</package>
+		<package name="org.spicefactory.lib.reflect.converter">Several Converter implementations</package>
+		<package name="org.spicefactory.lib.reflect.errors">Reflection Errors</package>
+		<package name="org.spicefactory.lib.reflect.mapping">Support for Metadata Tags Mapped to Classes</package>
+		<package name="org.spicefactory.lib.reflect.metadata">Classes mapped to metadata tags</package>
+		<package name="org.spicefactory.lib.reflect.types">Classes representing * and void</package>
+	</section>
+	
+	<section title="Spicelib XML-Object-Mapper" includeIn="parsley-flex parsley-flash spicelib">
+		<package name="org.spicefactory.lib.xml">Core interfaces and classes of the XML-to-Object Mapper</package>
+		<package name="org.spicefactory.lib.xml.mapper">Default XML-to-Object Mapper Implementation</package>
+		<package name="org.spicefactory.lib.xml.mapper.handler">Handlers responsible for mapping a single property to XML</package>
+		<package name="org.spicefactory.lib.xml.mapper.metadata">Metadata Tags for XML-to-Object Mapping Configuration</package>
+		<package name="org.spicefactory.lib.expr">Expression Framework API</package>
+		<package name="org.spicefactory.lib.expr.impl">Expression Framework Implementation</package>
+	</section>
+	
+	<section title="Spicelib Task Framework" includeIn="parsley-flex parsley-flash spicelib">
+		<package name="org.spicefactory.lib.task">The Task Framework - Abstractions for asynchronous operations</package>
+		<package name="org.spicefactory.lib.task.enum">Enumerations for the Task Framework</package>
+		<package name="org.spicefactory.lib.task.events">Events for the Task Framework</package>
+		<package name="org.spicefactory.lib.task.util">Utility Task Implementations</package>
+	</section>
+	
+	<section title="Spicelib Logging for Flash" includeIn="parsley-flash spicelib">
+		<package name="org.spicefactory.lib.flash.logging">Logging Framework API for Flash</package>
+		<package name="org.spicefactory.lib.flash.logging.impl">Logging Framework Implementation for Flash</package>
+	</section>
+	
+	<section title="Spicelib Shared APIs" includeIn="parsley-flex parsley-flash spicelib">
+		<package name="org.spicefactory.lib.errors">Common Error Classes</package>
+		<package name="org.spicefactory.lib.events">Common Event Classes</package>
+		<package name="org.spicefactory.lib.logging">Logging Wrapper API</package>
+		<package name="org.spicefactory.lib.logging.flex">Logging Wrapper Adapter for the Flex Logging API</package>
+		<package name="org.spicefactory.lib.util">Miscellaneous Utitlities</package>
+	</section>
+
+</package-listings>

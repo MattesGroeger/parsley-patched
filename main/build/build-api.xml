@@ -5,32 +5,51 @@
 	<property name="project.dir" value="${basedir}/.."/>
 
 	<target name="parsley_flex">
-		<delete dir="${project.dir}/release/api/parsley-flex"/>
-		<mkdir dir="${project.dir}/release/api/parsley-flex"/>
-		<exec executable="${flex3.sdk}/bin/asdoc.exe" dir="${project.dir}" spawn="no">
-			<arg line="-load-config+=build/config/parsley-api-flex.xml" />
-			<arg line="+project=${project.dir}" />
-		</exec>
+		<antcall target="generate_api">
+			<param name="target.dir" value="parsley-flex"/>
+			<param name="title" value="Parlsey - Spicelib - Flex"/>
+		</antcall>
 	</target>
 	
 	<target name="parsley_flash">
-		<delete dir="${project.dir}/release/api/parsley-flash"/>
-		<mkdir dir="${project.dir}/release/api/parsley-flash"/>
-		<exec executable="${flex3.sdk}/bin/asdoc.exe" dir="${project.dir}" spawn="no">
-			<arg line="-load-config+=build/config/parsley-api-flash.xml" />
-			<arg line="+project=${project.dir}" />
-		</exec>
+		<antcall target="generate_api">
+			<param name="target.dir" value="parsley_flash"/>
+			<param name="title" value="Parlsey - Spicelib - Flash"/>
+		</antcall>
 	</target>
 	
 	<target name="spicelib">
-		<delete dir="${project.dir}/release/api/spicelib"/>
-		<mkdir dir="${project.dir}/release/api/spicelib"/>
-		<exec executable="${flex3.sdk}/bin/asdoc.exe" dir="${project.dir}" spawn="no">
-			<arg line="-load-config+=build/config/spicelib-api.xml" />
-			<arg line="+project=${project.dir}" />
-		</exec>
+		<antcall target="generate_api">
+			<param name="target.dir" value="spicelib"/>
+			<param name="title" value="Spicelib"/>
+		</antcall>
 	</target>
 	
+	<target name="generate_api">
+		<delete dir="${project.dir}/release/api/${target.dir}"/>
+		<mkdir dir="${project.dir}/release/api/${target.dir}"/>
+		<exec executable="${flex3.sdk}/bin/asdoc.exe" dir="${project.dir}">
+			<arg line="-load-config+=build/config/${target.dir}-api.xml" />
+			<arg line="+project=${project.dir}" />
+		</exec>
+		<xslt 
+			force="true"
+		    in="${project.dir}/build/api/packages.xml" 
+			out="${project.dir}/release/api/${target.dir}/package-list.html" 
+			style="${project.dir}/build/api/stylesheets/package-list.xsl">
+			<param name="title" expression="${title}"/>
+			<param name="filter" expression="${target.dir}"/>
+		</xslt>
+		<xslt 
+			force="true"
+		    in="${project.dir}/build/api/packages.xml" 
+			out="${project.dir}/release/api/${target.dir}/package-summary.html" 
+			style="${project.dir}/build/api/stylesheets/package-summary.xsl">
+			<param name="title" expression="${title}"/>
+			<param name="filter" expression="${target.dir}"/>
+		</xslt>
+	</target>
+		
 	<target name="api_all" description="Create Public and Full Client API">
 		<antcall target="parsley_flex"/>
 		<antcall target="parsley_flash"/>
