@@ -15,7 +15,6 @@
  */
  
 package org.spicefactory.lib.reflect {
-import flash.system.ApplicationDomain;	
 
 /**
  * Represents a single parameter of a method.
@@ -36,13 +35,6 @@ public class Parameter {
 		_required = required;
 	}
 	
-	/**
-	 * @private
-	 */
-	internal static function fromXML (xml:XML, domain:ApplicationDomain) : Parameter {
-		var required:Boolean = (xml.@optional == "false");
-		return new Parameter(ClassInfo.resolve(xml.@type, domain), required);
-	}
 	
 	/**
 	 * Returns the type of this Parameter.

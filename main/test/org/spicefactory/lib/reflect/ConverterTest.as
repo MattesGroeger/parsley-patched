@@ -1,7 +1,7 @@
 package org.spicefactory.lib.reflect {
-import org.hamcrest.object.sameInstance;
-import org.hamcrest.number.closeTo;
 import org.flexunit.assertThat;
+import org.hamcrest.number.closeTo;
+import org.hamcrest.object.sameInstance;
 import org.hamcrest.object.strictlyEqualTo;
 import org.spicefactory.lib.reflect.converter.BooleanConverter;
 import org.spicefactory.lib.reflect.converter.ClassConverter;
@@ -13,14 +13,12 @@ import org.spicefactory.lib.reflect.converter.StringConverter;
 import org.spicefactory.lib.reflect.converter.UintConverter;
 import org.spicefactory.lib.reflect.model.ClassC;
 
-import flash.system.ApplicationDomain;
-
 public class ConverterTest {
 	
 
 	[Before]	
 	public function setUp () : void {
-		new ClassInfo("String", String, ApplicationDomain.currentDomain); // circumwent Flash Player describeType bug
+		//new ClassInfo("String", String, ApplicationDomain.currentDomain); // circumwent Flash Player describeType bug
 		ClassInfo.cache.purgeAll();
 	}
 	

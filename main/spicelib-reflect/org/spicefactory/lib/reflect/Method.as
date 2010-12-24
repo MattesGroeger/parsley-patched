@@ -16,7 +16,6 @@
  
 package org.spicefactory.lib.reflect {
 import org.spicefactory.lib.reflect.errors.MethodInvocationError;
-import org.spicefactory.lib.reflect.metadata.Types;
 
 import flash.utils.getQualifiedClassName;
 
@@ -28,28 +27,15 @@ import flash.utils.getQualifiedClassName;
 public class Method	extends FunctionBase {
 
 
-	private var _static:Boolean;
-	private var _returnType:ClassInfo;
+	private var _isStatic:Boolean;
 	
 	
 	/**
 	 * @private
 	 */
-	function Method (name:String, returnType:ClassInfo, params:Array, declaredBy:String,
-			s:Boolean, metadata:MetadataCollection, owner:ClassInfo) {
-		super(name, params, declaredBy, owner, metadata);
-		this._returnType = returnType;
-		this._static = s;
-	}
-	
-	/**
-	 * @private
-	 */
-	internal static function fromXML (xml:XML, isStatic:Boolean, owner:ClassInfo) : Method {
-		var params:Array = parametersFromXml(xml, owner);
-		var metadata:MetadataCollection = metadataFromXml(xml, Types.METHOD);
-		var type:ClassInfo = ClassInfo.resolve(xml.@returnType, owner.applicationDomain);
-		return new Method(xml.@name, type, params, xml.@declaredBy, isStatic, metadata, owner);
+	function Method (info:Object, isStatic:Boolean, owner:ClassInfo) {
+		super(info, owner);
+		_isStatic = isStatic;
 	}
 	
 
@@ -59,7 +45,7 @@ public class Method	extends FunctionBase {
 	 * @return true if the method represented by this instance is static
 	 */
 	public function get isStatic () : Boolean {
-		return _static;
+		return _isStatic;
 	}
 	
 	/**
@@ -72,7 +58,10 @@ public class Method	extends FunctionBase {
 	 * @return the return type of the method represented by this instance
 	 */
 	public function get returnType () : ClassInfo {
-		return _returnType;
+		if (info.returnType is String) {
+			info.returnType = ClassInfo.resolve(info.returnType, owner.applicationDomain);
+		}
+		return info.returnType;
 	}
 	
 	/**
@@ -92,7 +81,7 @@ public class Method	extends FunctionBase {
 	public function invoke (instance:Object, params:Array) : * {
 		checkInstanceParameter(instance);
 		convertParameters(params);
-		var f:Function = (_static) ? owner.getClass()[name] : instance[name];
+		var f:Function = (_isStatic) ? owner.getClass()[name] : instance[name];
 		try {
 			return f.apply(instance, params);
 		}
@@ -102,7 +91,7 @@ public class Method	extends FunctionBase {
 	}
 	
 	private function checkInstanceParameter (instance:Object) : void {
-		if (_static) {
+		if (_isStatic) {
 			if (instance != null) {
 				throw new MethodInvocationError("Instance parameter must be null for static methods");
 			}

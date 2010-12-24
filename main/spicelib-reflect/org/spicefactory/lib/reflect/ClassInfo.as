@@ -19,7 +19,8 @@ import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.cache.DefaultReflectionCache;
 import org.spicefactory.lib.reflect.cache.ReflectionCache;
-import org.spicefactory.lib.reflect.metadata.Types;
+import org.spicefactory.lib.reflect.provider.ClassInfoProvider;
+import org.spicefactory.lib.reflect.provider.ClassInfoProviderFactory;
 import org.spicefactory.lib.reflect.types.Any;
 import org.spicefactory.lib.reflect.types.Private;
 import org.spicefactory.lib.reflect.types.Void;
@@ -27,7 +28,6 @@ import org.spicefactory.lib.util.collection.SimpleMap;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Proxy;
-import flash.utils.describeType;
 import flash.utils.getQualifiedClassName;
 
 /**
@@ -42,6 +42,7 @@ public class ClassInfo extends MetadataAware {
 
 
 	private static var _cache:ReflectionCache = new DefaultReflectionCache();
+	private static const providerFactory:ClassInfoProviderFactory = new ClassInfoProviderFactory();
 	
 	
 	/**
@@ -166,7 +167,7 @@ public class ClassInfo extends MetadataAware {
 		if (cacheEntry != null) {
 			return cacheEntry;
 		}
-		var ci:ClassInfo = new ClassInfo(name, clazz, domain);
+		var ci:ClassInfo = new ClassInfo(name, clazz, domain, providerFactory.newProvider(clazz));
 		cache.addClass(ci, domain);
 		return ci;		
 	}
@@ -186,103 +187,29 @@ public class ClassInfo extends MetadataAware {
 	private var _name:String;
 	private var _simpleName:String;
 	
-	private var initialized:Boolean;
 	private var type:Class;
 	private var _applicationDomain:ApplicationDomain;
+	private var provider:ClassInfoProvider;
 	
-	private var _constructor:Constructor;
-	private var properties:SimpleMap;
-	private var staticProperties:SimpleMap;
-	private var methods:SimpleMap;
-	private var staticMethods:SimpleMap;
 	private var superClasses:Array;
 	private var interfaces:Array;
-	private var _interface:Boolean;
-	
+
+	private var _constructor:Constructor;
+
+	private var methods:SimpleMap;
+	private var staticMethods:SimpleMap;
+	private var properties:SimpleMap;
+	private var staticProperties:SimpleMap;
+	 
 	/**
 	 * @private
 	 */
-	function ClassInfo (name:String, type:Class, domain:ApplicationDomain) {
+	function ClassInfo (name:String, type:Class, domain:ApplicationDomain, provider:ClassInfoProvider) {
 		super(null); // Defer creation of metadata until init gets executed
 		this._name = name;
 		this.type = type;
 		this._applicationDomain = domain;
-	}
-
-	private function initCollections () : void {
-		properties = new SimpleMap();
-		staticProperties = new SimpleMap();
-		methods = new SimpleMap();
-		staticMethods = new SimpleMap();
-		superClasses = new Array();
-		interfaces = new Array();
-	}
-	
-	private function init () : void {
-		if (initialized) return;
-		initCollections();
-		var xml:XML = describeType(type);
-		var staticChildren:XMLList = xml.children();
-		var complete:Boolean = false;
-		for each (var staticChild:XML in staticChildren) {
-			var name:String = staticChild.localName() as String;
-			if (name == "accessor") {
-				var staticAccessor:Property = Property.fromAccessorXML(staticChild, true, this);
-				staticProperties.put(staticAccessor.name, staticAccessor);
-			} else if (name == "constant") {
-				var staticConstant:Property = Property.fromConstantXML(staticChild, true, this);
-				staticProperties.put(staticConstant.name, staticConstant);
-			} else if (name == "variable") {
-				var staticVariable:Property = Property.fromVariableXML(staticChild, true, this);
-				staticProperties.put(staticVariable.name, staticVariable);
-			} else if (name == "method") {
-				var sm:Method = Method.fromXML(staticChild, true, this);
-				staticMethods.put(sm.name, sm);
-			} else if (name == "factory") {
-				complete = true;
-				setMetadata(metadataFromXml(staticChild, Types.CLASS));
-				_interface = (staticChild.elements("extendsClass").length() == 0 && type != Object);
-				var instanceChildren:XMLList = staticChild.children();
-				for each (var instanceChild:XML in instanceChildren) {
-					var childName:String = instanceChild.localName() as String;
-					if (childName == "constructor") {
-						_constructor = Constructor.fromXML(instanceChild, this);
-					} else if (childName == "accessor") {
-						if (representsPublicMember(instanceChild)) {
-							var accessor:Property = Property.fromAccessorXML(instanceChild, false, this);
-							properties.put(accessor.name, accessor);
-						}
-					} else if (childName == "constant") {
-						if (representsPublicMember(instanceChild)) {
-							var constant:Property = Property.fromConstantXML(instanceChild, false, this);
-							properties.put(constant.name, constant);
-						}
-					} else if (childName == "variable") {
-						if (representsPublicMember(instanceChild)) {
-							var variable:Property = Property.fromVariableXML(instanceChild, false, this);
-							properties.put(variable.name, variable);
-						}
-					} else if (childName == "method") {
-						if (representsPublicMember(instanceChild)) {
-							var m:Method = Method.fromXML(instanceChild, false, this);
-							methods.put(m.name, m);
-						}
-					} else if (childName == "extendsClass") {
-						superClasses.push(getDefinition(instanceChild.@type));
-					} else if (childName == "implementsInterface") {
-						interfaces.push(getDefinition(instanceChild.@type));
-					}
-				}
-			}
-		}
-		if (!complete) {
-			throw new IllegalStateError("No factory element in XML for " + this);
-		}
-		if (!_interface && _constructor == null) {
-			// empty default constructor
-			_constructor = new Constructor([], new MetadataCollection([]), this);
-		}
-		initialized = true;
+		this.provider = provider;
 	}
 	
 	private function getDefinition (name:String) : Class {
@@ -294,19 +221,7 @@ public class ClassInfo extends MetadataAware {
 		}
 		return Private;
 	}
-	
-	/**
-	 * Since there is no way to reflectively invoke namespace scoped methods we will
-	 * not add them. But there is the edge case that interface methods have an uri
-	 * that equals the fully qualified name of the interface. That is the only case where
-	 * we accept an uri attribute.
-	 * 
-	 * @return whether we accept the type as a public member
-	 */
-	private function representsPublicMember (xml:XML) : Boolean {
-		return (xml.@uri.length() == 0 || _interface);
-	}
-	
+
 	/**
 	 * The fully qualified class name for this instance.
 	 */
@@ -334,11 +249,10 @@ public class ClassInfo extends MetadataAware {
 	 * @return a new instance of the class represented by this ClassInfo instance
 	 */
 	public function newInstance (constructorArgs:Array) : Object {
-		init();
-		if (_interface) {
+		if (isInterface()) {
 			throw new IllegalStateError("Cannot instantiate an interface: " + name);
 		}
-		return _constructor.newInstance(constructorArgs);
+		return getConstructor().newInstance(constructorArgs);
 	}
 	
 	/**
@@ -364,10 +278,10 @@ public class ClassInfo extends MetadataAware {
 	 * @return true if this type is an interface
 	 */
 	public function isInterface () : Boolean {
-		init();
-		return _interface;
+		initBases();
+		return superClasses.length == 0 && type != Object;
 	}
-	
+
 	/**
 	 * Returns the constructor for this class.
 	 * This method will return null for interfaces.
@@ -375,8 +289,20 @@ public class ClassInfo extends MetadataAware {
 	 * @return the constructor for this class
 	 */
 	public function getConstructor () : Constructor {
-		init();
+		if (isInterface()) return null;
+		initConstructor();
 		return _constructor;
+	}
+	
+	private function initConstructor () : void {
+		if (_constructor) return;
+		if (provider.instanceInfo.traits.constructor is Array) {
+			_constructor = new Constructor(provider.instanceInfo.traits.constructor, this);
+		}
+		else {
+			// empty default constructor
+			_constructor = new Constructor([], this);
+		}
 	}
 
 	/**
@@ -389,7 +315,7 @@ public class ClassInfo extends MetadataAware {
 	 * @return the Property instance for the specified property name or null if no such property exists
 	 */
 	public function getProperty (name:String) : Property {
-		init();
+		initProperties();
 		return properties.get(name) as Property;
 	}
 	
@@ -402,8 +328,24 @@ public class ClassInfo extends MetadataAware {
 	 * @return Property instances for all public, non-static properties of this class
 	 */
 	public function getProperties () : Array {
-		init();
+		initProperties();
 		return properties.values;
+	}
+	
+	private function initProperties () : void {
+		if (properties) return;
+		properties = createPropertyMap(provider.instanceInfo.traits, false);
+	}
+	
+	private function createPropertyMap (traits:Object, isStatic:Boolean) : SimpleMap {
+		var map:SimpleMap = new SimpleMap();
+		for each (var accessor:Object in traits.accessors) {
+			map.put(accessor.name, new Property(accessor, isStatic, this));
+ 		}
+ 		for each (var variable:Object in traits.variables) {
+			map.put(variable.name, new Property(variable, isStatic, this));
+ 		}
+		return map;
 	}
 
 	/**
@@ -416,7 +358,7 @@ public class ClassInfo extends MetadataAware {
 	 * @return the Property instance for the specified property name or null if no such property exists
 	 */	
 	public function getStaticProperty (name:String) : Property {
-		init();
+		initStaticProperties();
 		return staticProperties.get(name) as Property;
 	}
 
@@ -429,8 +371,13 @@ public class ClassInfo extends MetadataAware {
 	 * @return Property instances for all public, static properties of this class
 	 */	
 	public function getStaticProperties () : Array {
-		init();
+		initStaticProperties();
 		return staticProperties.values;
+	}
+	
+	private function initStaticProperties () : void {
+		if (staticProperties) return;
+		staticProperties = createPropertyMap(provider.staticInfo.traits, true);
 	}
 	
 	/**
@@ -442,7 +389,7 @@ public class ClassInfo extends MetadataAware {
 	 * @return the Method instance for the specified method name or null if no such method exists
 	 */
 	public function getMethod (name:String) : Method {
-		init();
+		initMethods();
 		return methods.get(name) as Method;
 	}
 	
@@ -454,8 +401,21 @@ public class ClassInfo extends MetadataAware {
 	 * @return Method instances for all public, non-static methods of this class
 	 */
 	public function getMethods () : Array {
-		init();
+		initMethods();
 		return methods.values;
+	}
+	
+	private function initMethods () : void {
+		if (methods) return;
+		methods = createMethodMap(provider.instanceInfo.traits, false);
+	}
+	
+	private function createMethodMap (traits:Object, isStatic:Boolean) : SimpleMap {
+		var map:SimpleMap = new SimpleMap();
+		for each (var method:Object in traits.methods) {
+			map.put(method.name, new Method(method, isStatic, this));
+ 		}
+		return map;
 	}
 	
 	/**
@@ -467,7 +427,7 @@ public class ClassInfo extends MetadataAware {
 	 * @return the Method instance for the specified method name or null if no such method exists
 	 */
 	public function getStaticMethod (name:String) : Method {
-		init();
+		initStaticMethods();
 		return staticMethods.get(name) as Method;
 	}
 
@@ -478,8 +438,13 @@ public class ClassInfo extends MetadataAware {
 	 * Method instances for all public, static methods of this class
 	 */	
 	public function getStaticMethods () : Array {
-		init();
+		initStaticMethods();
 		return staticMethods.values;
+	}
+	
+	private function initStaticMethods () : void {
+		if (staticMethods) return;
+		staticMethods = createMethodMap(provider.staticInfo.traits, true);
 	}
 	
 	/**
@@ -488,7 +453,7 @@ public class ClassInfo extends MetadataAware {
 	 * @return the superclass of the class represented by this ClassInfo instance
 	 */
 	public function getSuperClass () : Class {
-		init();
+		initBases();
 		return superClasses[0] as Class;
 	}
 	
@@ -501,8 +466,24 @@ public class ClassInfo extends MetadataAware {
 	 * represented by this ClassInfo instance
 	 */
 	public function getSuperClasses () : Array {
-		init();
+		initBases();
 		return superClasses.concat();
+	}
+	
+	private function initBases () : void {
+		if (superClasses) return;
+		superClasses = new Array();
+		for each (var base:String in provider.instanceInfo.traits.bases) {
+			superClasses.push(getDefinition(base));
+		}
+	}
+	
+	private function initInterfaces () : void {
+		if (interfaces) return;
+		interfaces = new Array();
+		for each (var inf:String in provider.instanceInfo.traits.interfaces) {
+			interfaces.push(getDefinition(inf));
+		}
 	}
 
 	/**
@@ -513,7 +494,7 @@ public class ClassInfo extends MetadataAware {
 	 * represented by this ClassInfo instance
 	 */	
 	public function getInterfaces () : Array {
-		init();
+		initInterfaces();
 		return interfaces.concat();
 	}
 	
@@ -525,7 +506,8 @@ public class ClassInfo extends MetadataAware {
 	 * is a subclass or subinterface of the specified class
 	 */
 	public function isType (c:Class) : Boolean {
-		init();
+		initBases();
+		initInterfaces();
 		if (type == c || Object == c) return true;
 		for each (var sc:Class in superClasses) {
 			if (sc == c) return true;
@@ -541,7 +523,7 @@ public class ClassInfo extends MetadataAware {
 	 * @private
 	 */
 	public override function hasMetadata (type:Object) : Boolean {
-		init();
+		initTraits();
 		return super.hasMetadata(type);
 	}
 	
@@ -549,7 +531,7 @@ public class ClassInfo extends MetadataAware {
 	 * @private
 	 */
 	public override function getMetadata (type:Object, validate:Boolean = true) : Array {
-		init();
+		initTraits();
 		return super.getMetadata(type, validate);
 	}
 	
@@ -557,10 +539,15 @@ public class ClassInfo extends MetadataAware {
 	 * @private
 	 */
 	public override function getAllMetadata (validate:Boolean = true) : Array {
-		init();
+		initTraits();
 		return super.getAllMetadata(validate);
 	}
 	
+	private function initTraits () : void {
+		if (info) return;
+		info = provider.instanceInfo.traits;
+	}
+
 	
 	/**
 	 * @private

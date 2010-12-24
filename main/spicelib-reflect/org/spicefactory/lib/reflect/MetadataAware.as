@@ -26,33 +26,29 @@ public class MetadataAware {
 	
 	
 	private var _metadata:MetadataCollection;
+	private var _info:Object;
 	
 	
 	/**
 	 * @private
 	 */
-	function MetadataAware (metadata:MetadataCollection) {
-		_metadata = metadata;
+	function MetadataAware (info:Object) {
+		_info = info;
 	}
-	
+
+
 	/**
 	 * @private
 	 */
-	internal function setMetadata (metadata:MetadataCollection) : void {
-		// in some cases metadata will be lazily initialized
-		_metadata = metadata;
+	protected function get info () : Object {
+		return _info;
 	}
-	
+
 	/**
 	 * @private
 	 */
-	internal static function metadataFromXml (xml:XML, type:String) : MetadataCollection {
-		var tags:Array = new Array();
-		for each (var metadataTag:XML in xml.metadata) {
-			var meta:Metadata = Metadata.fromXml(metadataTag, type);
-			tags.push(meta);
-		}
-		return new MetadataCollection(tags);
+	protected function set info (info:Object) : void {
+		_info = info;
 	}
 	
 	/**
@@ -66,6 +62,7 @@ public class MetadataAware {
 	 * @return true if this element has at least one metadata tag of the specified type
 	 */
 	public function hasMetadata (type:Object) : Boolean {
+		initMetadata();
 		return (_metadata.getMetadata(type, false).length > 0);
 	}
 	
@@ -87,6 +84,7 @@ public class MetadataAware {
 	 * @return all metadata tags for the specified type for this element
 	 */
 	public function getMetadata (type:Object, validate:Boolean = true) : Array {
+		initMetadata();
 		return _metadata.getMetadata(type, validate);
 	}
 	
@@ -97,7 +95,20 @@ public class MetadataAware {
 	 * @return all metadata tags for this type
 	 */
 	public function getAllMetadata (validate:Boolean = true) : Array {
+		initMetadata();
 		return _metadata.getAllMetadata(validate);
+	}
+	
+	private function initMetadata () : void {
+		var unresolved:Array = new Array();
+		for each (var meta:Object in info.metadata) {
+			var args:Object = {};
+			for each (var arg:Object in meta.value) {
+				args[arg.key] = arg.value;
+			}
+			unresolved.push(new Metadata(meta.name, args, this));
+		}
+		_metadata = new MetadataCollection(unresolved);
 	}
 	
 	

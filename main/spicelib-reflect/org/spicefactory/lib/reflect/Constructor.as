@@ -15,9 +15,7 @@
  */
  
 package org.spicefactory.lib.reflect {
-import org.spicefactory.lib.reflect.FunctionBase;
 import org.spicefactory.lib.reflect.errors.MethodInvocationError;
-import org.spicefactory.lib.reflect.metadata.Types;
 import org.spicefactory.lib.util.ClassUtil;
 
 /**
@@ -31,18 +29,8 @@ public class Constructor extends FunctionBase {
 	/**
 	 * @private
 	 */
-	function Constructor (params:Array, metadata:MetadataCollection, owner:ClassInfo) {
-		super(owner.simpleName, params, owner, owner, metadata);
-	}
-	
-	
-	/**
-	 * @private
-	 */
-	internal static function fromXML (xml:XML, owner:ClassInfo) : Constructor {
-		 // Metadata for constructor is ignored in Flash Player 9
-		var metadata:MetadataCollection = metadataFromXml(xml, Types.CONSTRUCTOR);
-		return new Constructor(parametersFromXml(xml, owner), metadata, owner);
+	function Constructor (params:Array, owner:ClassInfo) {
+		super({parameters:params, name:owner.simpleName}, owner);
 	}
 	
 

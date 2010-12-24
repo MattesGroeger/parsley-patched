@@ -47,25 +47,11 @@ public class Metadata {
 	/**
 	 * @private
 	 */
-	function Metadata (name:String, args:Object, type:String) {
+	function Metadata (name:String, args:Object, owner:MetadataAware) {
 		_name = name;
 		_arguments = args;
-		_type = type;
+		_type = Types.forOwner(owner);
 	}
-	
-	/**
-	 * @private
-	 */
-	internal static function fromXml (xml:XML, type:String) : Metadata {
-		if (!initialized) initialize();
-		var name:String = xml.@name;
-		var args:Object = new Object();
-		for each (var argTag:XML in xml.arg) {
-			args[argTag.@key] = argTag.@value.toString();
-		} 
-		return new Metadata(name, args, type);
-	}
-	
 	
 	/**
 	 * Registers a custom Class for representing metadata tags.
@@ -87,7 +73,6 @@ public class Metadata {
 	public static function registerMetadataClass (metadataClass:Class, 
 			appDomain:ApplicationDomain = null) : void {
 		if (!initialized) initialize();
-		//ClassInfo.clearCache();
 		var reg:MetadataClassRegistration = 
 				new MetadataClassRegistration(ClassInfo.forClass(metadataClass, appDomain));
 		for each (var key:String in reg.registrationKeys) {

@@ -15,6 +15,14 @@
  */
  
 package org.spicefactory.lib.reflect.metadata {
+import org.spicefactory.lib.errors.IllegalArgumentError;
+import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.reflect.Constructor;
+import org.spicefactory.lib.reflect.MetadataAware;
+import org.spicefactory.lib.reflect.Method;
+import org.spicefactory.lib.reflect.Property;
+
+import flash.utils.getQualifiedClassName;
 
 /**
  * Constants representing the types that metadata tags can be placed on. 
@@ -47,6 +55,31 @@ public class Types {
 	 * Constant for methods.
 	 */
 	public static const METHOD:String = "method";
+	
+	
+	/**
+	 * Returns the constant matching the specified metadata owner.
+	 * 
+	 * @param owner the type the metadata is placed upon
+	 * @return the constant matching the specified metadata owner
+	 */
+	public static function forOwner (owner:MetadataAware) : String {
+		if (owner is Property) {
+			return PROPERTY;
+		}
+		else if (owner is Method) {
+			return METHOD;
+		}
+		else if (owner is ClassInfo) {
+			return CLASS;
+		}
+		else if (owner is Constructor) {
+			return CONSTRUCTOR;
+		}
+		else {
+			throw IllegalArgumentError("Unknown metadata owner class: " + getQualifiedClassName(owner));
+		}
+	}
 	
 	
 }

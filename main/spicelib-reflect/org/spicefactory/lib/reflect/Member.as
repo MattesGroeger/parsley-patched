@@ -25,25 +25,15 @@ import org.spicefactory.lib.reflect.MetadataAware;
 public class Member extends MetadataAware {
 
 
-	private var _name:String;
-	private var _declaredByString:String;
-	private var _declaredBy:ClassInfo;
 	private var _owner:ClassInfo;
 
 
 	/**
 	 * @private
 	 */
-	function Member (name:String, declaredBy:Object, owner:ClassInfo, metadata:MetadataCollection) {
-		super(metadata);
-		_name = name;
+	function Member (info:Object, owner:ClassInfo) {
+		super(info);
 		_owner = owner;
-		if (declaredBy is ClassInfo) {
-			_declaredBy = declaredBy as ClassInfo;
-		}
-		else {
-			_declaredByString = declaredBy as String;
-		}
 	}
 	
 	/**
@@ -52,7 +42,7 @@ public class Member extends MetadataAware {
 	 * value is simply the name of the method or property.
 	 */
 	public function get name () : String  {	
-		return _name; 
+		return info.name; 
 	}
 	
 	/**
@@ -61,10 +51,10 @@ public class Member extends MetadataAware {
 	 * getters and setters only.
 	 */
 	public function get declaredBy () : ClassInfo {
-		if (!_declaredBy && _declaredByString) {
-			_declaredBy = ClassInfo.resolve(_declaredByString, owner.applicationDomain);
+		if (info.declaredBy is String) {
+			info.declaredBy = ClassInfo.resolve(info.declaredBy, owner.applicationDomain);
 		}
-		return _declaredBy;
+		return info.declaredBy;
 	}
 	
 	/**

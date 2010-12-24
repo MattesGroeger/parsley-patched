@@ -33,27 +33,20 @@ public class FunctionBase extends Member {
 	/**
 	 * @private
 	 */
-	function FunctionBase (name:String, params:Array, declaredBy:Object, owner:ClassInfo, metadata:MetadataCollection) {
-		super(name, declaredBy, owner, metadata);
-		_parameters = params;
-		for each (var param:Parameter in _parameters) {
-			if (param.required) minArgs++;
-			else break;
+	function FunctionBase (info:Object, owner:ClassInfo) {
+		super(info, owner);
+	}
+	
+	private function initParameters () : void {
+		if (_parameters) return;
+		_parameters = new Array();
+		for each (var param:Object in info.parameters) {
+			// TODO - check whether param.optional is a Boolean
+			_parameters.push(new Parameter(ClassInfo.resolve(param.type, owner.applicationDomain), !param.optional));
+			if (!param.optional) minArgs++;
 		}
 		maxArgs = _parameters.length;
 	}
-	
-	/**
-	 * @private
-	 */
-	internal static function parametersFromXml (xml:XML, owner:ClassInfo) : Array {
-		var params:Array = new Array();
-		for each (var paramTag:XML in xml.parameter) {
-			params.push(Parameter.fromXML(paramTag, owner.applicationDomain));
-		} 
-		return params;
-	}
-	
 	
 	/**
 	 * The parameter types of the function represented by this instance.
@@ -62,6 +55,7 @@ public class FunctionBase extends Member {
 	 * @return the parameter types of the function represented by this instance
 	 */
 	public function get parameters () : Array {
+		initParameters();
 		return _parameters;
 	}
 	
@@ -73,6 +67,7 @@ public class FunctionBase extends Member {
 	 * @throws ConversionError if the conversion for one of parameters fails
 	 */
 	protected function convertParameters (params:Array) : void {
+		initParameters();
 		if (params.length < minArgs) {
 			var message:String = "" + this + " expects at least " + minArgs + " arguments"; 
 			throw new ArgumentError(message);

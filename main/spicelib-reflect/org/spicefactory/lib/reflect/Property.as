@@ -16,7 +16,6 @@
  
 package org.spicefactory.lib.reflect {
 import org.spicefactory.lib.reflect.errors.PropertyError;
-import org.spicefactory.lib.reflect.metadata.Types;
 
 /**
  * Represents a single property. 
@@ -27,57 +26,17 @@ import org.spicefactory.lib.reflect.metadata.Types;
 public class Property extends Member {
 
 
-	private var _type:ClassInfo;
-	
 	private var _isStatic:Boolean;
-	private var _readable:Boolean;
-	private var _writable:Boolean;
-	
-	
-	/**
-	 * @private
-	 */
-	function Property (name:String, type:ClassInfo, declaredBy:String, readable:Boolean, writable:Boolean, s:Boolean, 
-			metadata:MetadataCollection, owner:ClassInfo) {
-		super(name, declaredBy, owner, metadata);
-		this._type = type;
-		this._readable = readable;
-		this._writable = writable;
-		this._isStatic = s;
-	}
+
 
 	/**
 	 * @private
 	 */
-	internal static function fromAccessorXML (x:XML, isStatic:Boolean, owner:ClassInfo) : Property {
-		var access:String = x.@access;
-		var readable:Boolean = (access != "writeonly");
-		var writable:Boolean = (access != "readonly");
-		return fromXML(x, x.@declaredBy, readable, writable, isStatic, owner);
+	function Property (info:Object, isStatic:Boolean, owner:ClassInfo) {
+		super(info, owner);
+		_isStatic = isStatic;
 	}
-	
-	/**
-	 * @private
-	 */
-	internal static function fromVariableXML (x:XML, isStatic:Boolean, owner:ClassInfo) : Property {
-		return fromXML(x, null, true, true, isStatic, owner);
-	}
-	
-	/**
-	 * @private
-	 */
-	internal static function fromConstantXML (x:XML, isStatic:Boolean, owner:ClassInfo) : Property {
-		return fromXML(x, null, true, false, isStatic, owner);
-	}
-	
-	private static function fromXML (x:XML, declaredBy:String, 
-			readable:Boolean, writable:Boolean, isStatic:Boolean, owner:ClassInfo) : Property {
-				
-		var type:ClassInfo = ClassInfo.resolve(x.@type, owner.applicationDomain);
-		var metadata:MetadataCollection = MetadataAware.metadataFromXml(x, Types.PROPERTY);
-		return new Property(x.@name, type, declaredBy, readable, writable, isStatic, metadata, owner); 		
-	}
-	
+
 	
 	/**
 	 * Returns the type of this Property.
@@ -85,7 +44,10 @@ public class Property extends Member {
 	 * @return the type of this Property
 	 */
 	public function get type () : ClassInfo {
-		return _type;
+		if (info.type is String) {
+			info.type = ClassInfo.resolve(info.type, owner.applicationDomain);
+		}
+		return info.type;
 	}
 	
 	/**
@@ -103,7 +65,7 @@ public class Property extends Member {
 	 * @return true if this instance represents a readable property
 	 */
 	public function get readable () : Boolean {
-		return _readable;
+		return (info.access != "writeonly");;
 	}
 	
 	/**
@@ -115,7 +77,7 @@ public class Property extends Member {
 	 * @return true if this instance represents a writable property
 	 */
 	public function get writable () : Boolean {
-		return _writable;
+		return (info.access != "readonly");
 	}
 	
 	/**
@@ -128,7 +90,7 @@ public class Property extends Member {
 	 * if the specified target instance is not of the required type
 	 */
 	public function getValue (instance:Object) : * {
-		if (!_readable) {
+		if (!readable) {
 			throw new PropertyError("" + this + " is write-only");
 		}
 		checkInstanceParameter(instance);
@@ -148,7 +110,7 @@ public class Property extends Member {
 	 * if the specified target instance is not of the required type
 	 */
 	public function setValue (instance:Object, value:*) : * {
-		if (!_writable) {
+		if (!writable) {
 			throw new PropertyError("" + this + " is read-only");
 		}
 		checkInstanceParameter(instance);
