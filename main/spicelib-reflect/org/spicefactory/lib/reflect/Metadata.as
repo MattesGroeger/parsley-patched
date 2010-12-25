@@ -15,15 +15,7 @@
  */
 
 package org.spicefactory.lib.reflect {
-import org.spicefactory.lib.reflect.mapping.MappedClass;
-import org.spicefactory.lib.reflect.mapping.MappedProperty;
-import org.spicefactory.lib.reflect.mapping.ValidationError;
-import org.spicefactory.lib.reflect.metadata.AssignableTo;
-import org.spicefactory.lib.reflect.metadata.DefaultProperty;
-import org.spicefactory.lib.reflect.metadata.EventInfo;
-import org.spicefactory.lib.reflect.metadata.MappedMetadata;
-import org.spicefactory.lib.reflect.metadata.Required;
-import org.spicefactory.lib.reflect.metadata.Types;
+import org.spicefactory.lib.reflect.mapping.MetadataRegistry;
 
 import flash.system.ApplicationDomain;
 
@@ -35,22 +27,16 @@ import flash.system.ApplicationDomain;
 public class Metadata {
 	
 	
-	private static var metadataClasses:Object = new Object();
-	private static var initialized:Boolean = false;
-	
 	private var _name:String;
-	private var _type:String;
 	private var _arguments:Object;
-	private var registration:MetadataClassRegistration;
 	
 	
 	/**
 	 * @private
 	 */
-	function Metadata (name:String, args:Object, owner:MetadataAware) {
+	function Metadata (name:String, args:Object) {
 		_name = name;
 		_arguments = args;
-		_type = Types.forOwner(owner);
 	}
 	
 	/**
@@ -72,22 +58,7 @@ public class Metadata {
 	 */
 	public static function registerMetadataClass (metadataClass:Class, 
 			appDomain:ApplicationDomain = null) : void {
-		if (!initialized) initialize();
-		var reg:MetadataClassRegistration = 
-				new MetadataClassRegistration(ClassInfo.forClass(metadataClass, appDomain));
-		for each (var key:String in reg.registrationKeys) {
-			metadataClasses[key] = reg;
-		} 
-	}
-	
-	private static function initialize () : void {
-		initialized = true;
-		for each (var reg:MetadataClassRegistration in createInternalRegistrations()) {
-			for each (var key:String in reg.registrationKeys) {
-				metadataClasses[key] = reg;
-			} 
-		}
-		registerMetadataClass(EventInfo);
+		MetadataRegistry.instance.registerClass(metadataClass, appDomain);
 	}
 	
 	/**
@@ -121,151 +92,11 @@ public class Metadata {
 	/**
 	 * @private
 	 */
-	internal function resolve () : Boolean {
-		registration = MetadataClassRegistration(metadataClasses[name + " " + _type]);
-		if (registration == null) {
-			return false;
-		}
-		if (registration.defaultProperty != null && _arguments[""] != undefined) {
-			_arguments[registration.defaultProperty] = _arguments[""];
-			delete _arguments[""];
-		}
-		return true;
-	}
-	
-	/**
-	 * @private
-	 */
-	internal function getExternalValue (validate:Boolean, first:Boolean) : Object {
-		if (registration == null) {
-			return this;
-		}
-		if (validate && !first && !registration.allowMultiple) {
-			throw new ValidationError("Multiple occurrences of the tag mapped to " 
-					+ registration.mappedClass.type.name + " on the same element are not allowed");
-		}
-		// Create a new instance on each access so that modifications of property values
-		// have no effect.
-		var values:Object = new Object();
-		for (var key:String in _arguments) {
-			values[key] = _arguments[key];
-		}
-		return registration.mappedClass.newInstance(values, validate);
-	}
-	
-	public static function createInternalRegistrations () : Array {
-		/* Internal tags like [Metadata] cannot be created through Reflection
-		   as this would lead to a chicken-and-egg problem. */
-	    var internalRegs:Array = new Array();
-	    var ci:ClassInfo = ClassInfo.forClass(MappedMetadata);
-	    var props:Array = [new MappedProperty(ci.getProperty("name")), 
-	    		new MappedProperty(ci.getProperty("types")), 
-	    		new MappedProperty(ci.getProperty("multiple"))];
-	    internalRegs.push(createRegistration("Metadata", 
-	   			ci, [Types.CLASS], null, props));
-	    internalRegs.push(createRegistration("DefaultProperty", 
-	    		ClassInfo.forClass(DefaultProperty), [Types.PROPERTY]));
-	    internalRegs.push(createRegistration("Required", 
-	    		ClassInfo.forClass(Required), [Types.PROPERTY]));
-	    ci = ClassInfo.forClass(AssignableTo);
-	    internalRegs.push(createRegistration("AssignableTo", 
-	    		ci, [Types.PROPERTY], "type", [new MappedProperty(ci.getProperty("type"), true)]));
-	    		
-	    return internalRegs;
-	}
-	
-	private static function createRegistration (name:String, metadataType:ClassInfo, annotatedTypes:Array, 
-			defaultProperty:String = null, properties:Array = null)
-			: MetadataClassRegistration {
-		if (properties == null) properties = [];
-		var reg:MetadataClassRegistration = new MetadataClassRegistration();
-		reg.name = name;
-		reg.mappedClass = new MappedClass(metadataType, properties);
-		reg.annotatedTypes = annotatedTypes;
-		reg.defaultProperty = defaultProperty;
-		
-		for each (var key:String in reg.registrationKeys) {
-			metadataClasses[key] = reg;
-		} 
-		
-		return reg;
-	}
-	
-	/**
-	 * @private
-	 */
-	internal function getKey () : Object {
-		if (registration == null) {
-			return _name;
-		}
-		else {
-			return registration.mappedClass.type.getClass();
-		}
-	}
-	
-	/**
-	 * @private
-	 */
 	public function toString () : String {
 		return "[Metadata name=" + name + "]";
 	}
 	
 	
 }
-}
-
-import org.spicefactory.lib.errors.IllegalArgumentError;
-import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.lib.reflect.Property;
-import org.spicefactory.lib.reflect.mapping.MappedClass;
-import org.spicefactory.lib.reflect.metadata.DefaultProperty;
-import org.spicefactory.lib.reflect.metadata.MappedMetadata;
-import org.spicefactory.lib.reflect.metadata.Types;
-
-class MetadataClassRegistration {
-	
-	
-	public var name:String;
-	public var mappedClass:MappedClass;
-	public var defaultProperty:String;
-	public var annotatedTypes:Array;
-	public var allowMultiple:Boolean;
-	
-	
-	function MetadataClassRegistration (type:ClassInfo = null) {
-		if (type != null) {
-			var metadata:Array = type.getMetadata(MappedMetadata);
-			if (metadata.length != 1) {
-				throw new IllegalArgumentError("Expected exactly one [Metadata] tag on Class " + type.name);
-			}
-			var mappedMetadata:MappedMetadata = MappedMetadata(metadata[0]);
-			this.name = (mappedMetadata.name == null) ? type.simpleName : mappedMetadata.name;
-			this.allowMultiple = mappedMetadata.multiple;
-			
-			this.annotatedTypes = (mappedMetadata.types == null || mappedMetadata.types.length == 0)
-					? [Types.CLASS, Types.CONSTRUCTOR, Types.PROPERTY, Types.METHOD] : mappedMetadata.types;
-			for each (var p:Property in type.getProperties()) {
-				metadata = p.getMetadata(DefaultProperty);
-				if (metadata.length == 1) {
-					if (this.defaultProperty != null) {
-						throw new IllegalArgumentError("Expected no more than one property annotated " +
-								"with [DefaultProperty] on Class " + type.name);
-					}
-					this.defaultProperty = p.name;
-				}
-			}
-			this.mappedClass = new MappedClass(type);
-		}
-	}
-	
-	public function get registrationKeys () : Array {
-		var keys:Array = new Array();
-		for each (var type:String in annotatedTypes) {
-			keys.push(name + " " + type);
-		}
-		return keys;
-	}
-	
-	
 }
 

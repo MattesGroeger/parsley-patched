@@ -33,11 +33,7 @@ public class MappedProperty {
 	
 	
 	/**
-	 * Creates a new instance.
-	 * 
-	 * @param targetProperty the property to map values to
-	 * @param required whether a value for this property is required
-	 * @param assignableTo whether the Class or ClassInfo value must be assignable to the specified type
+	 * @private
 	 */
 	function MappedProperty (targetProperty:Property, required:Boolean = false, assignableTo:ClassInfo = null) {
 		this.targetProperty = targetProperty;
@@ -47,15 +43,9 @@ public class MappedProperty {
 	
 
 	/**
-	 * Map the corresponding value from the specified Object to the property of the target object.
-	 * If a matching value is found in the given values parameter this method removes it from the object, so that
-	 * remaining values can be treated as unmapped.
-	 * 
-	 * @param target the target instance to map the value to
-	 * @param values a map of values with keys corresponding to property names of the mapped class
-	 * @param validate whether the mapping should be validated
+	 * @private
 	 */
-	public function mapValue (target:Object, values:Object, validate:Boolean) : void {
+	internal function mapValue (target:Object, values:Object, validate:Boolean) : void {
 		if (values[targetProperty.name] != undefined) {
 			var stringValue:String = values[targetProperty.name];
 			try {
@@ -94,6 +84,7 @@ public class MappedProperty {
 	}
 	
 	/**
+	 * TODO - move this utility method somewhere else
 	 * @private
 	 */
 	public static function splitAndTrim (value:String) : Array {

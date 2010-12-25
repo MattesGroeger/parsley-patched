@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.lib.reflect {
-
+import org.spicefactory.lib.reflect.mapping.MemberTagMap;
 
 /**
  * Base class for all types that can have associated metadata tags.
@@ -25,7 +25,7 @@ package org.spicefactory.lib.reflect {
 public class MetadataAware {
 	
 	
-	private var _metadata:MetadataCollection;
+	private var tagMap:MemberTagMap;
 	private var _info:Object;
 	
 	
@@ -63,7 +63,7 @@ public class MetadataAware {
 	 */
 	public function hasMetadata (type:Object) : Boolean {
 		initMetadata();
-		return (_metadata.getMetadata(type, false).length > 0);
+		return (tagMap.hasMetadata(type));
 	}
 	
 	/**
@@ -80,35 +80,28 @@ public class MetadataAware {
 	 * In this case you use the name of the metadata tag as a String for the type parameter.</p>
 	 * 
 	 * @param type for mapped metadata the mapped class otherwise the name of the metadata tag as a String.
-	 * @param whether the returned objects should be validated (applies only for metadata mapped to custom classes)
+	 * @param validate whether the returned objects should be validated (applies only for metadata mapped to custom classes)
 	 * @return all metadata tags for the specified type for this element
 	 */
 	public function getMetadata (type:Object, validate:Boolean = true) : Array {
 		initMetadata();
-		return _metadata.getMetadata(type, validate);
+		return tagMap.getMetadata(type, validate);
 	}
 	
 	/**
 	 * Returns all metadata tags for this type in no particular order.
 	 * 
-	 * @param whether the returned objects should be validated (applies only for metadata mapped to custom classes)
+	 * @param validate whether the returned objects should be validated (applies only for metadata mapped to custom classes)
 	 * @return all metadata tags for this type
 	 */
 	public function getAllMetadata (validate:Boolean = true) : Array {
 		initMetadata();
-		return _metadata.getAllMetadata(validate);
+		return tagMap.getAllMetadata(validate);
 	}
 	
 	private function initMetadata () : void {
-		var unresolved:Array = new Array();
-		for each (var meta:Object in info.metadata) {
-			var args:Object = {};
-			for each (var arg:Object in meta.value) {
-				args[arg.key] = arg.value;
-			}
-			unresolved.push(new Metadata(meta.name, args, this));
-		}
-		_metadata = new MetadataCollection(unresolved);
+		if (tagMap) return;
+		tagMap = (info.metadata) ? new MemberTagMap(info.metadata, this) : MemberTagMap.EMPTY;
 	}
 	
 	
