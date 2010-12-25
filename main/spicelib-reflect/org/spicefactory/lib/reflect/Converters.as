@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.lib.reflect {
+import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.reflect.Converter;
 import org.spicefactory.lib.reflect.converter.BooleanConverter;
 import org.spicefactory.lib.reflect.converter.ClassConverter;
@@ -41,6 +42,28 @@ public class Converters {
 
 
 	/**
+	 * The ApplicationDomain to be used by converters that need to use reflection.
+	 * This hook allows to temporarily overwrite the default, which is using the domain
+	 * the owner class of the property or method that triggers conversion belongs to.
+	 * Sometimes the default is not sufficient, for example when a framework class has
+	 * a property of type <code>Class</code> that may hold values pointing to classes
+	 * loaded into child ApplicationDomains.
+	 * 
+	 * <p>It is recommended to set this value in a try/finally clause and set it back 
+	 * to the previous value in the finally clause.</p>
+	 */
+	public static function get processingDomain () : ApplicationDomain {
+		return _processingDomain;
+	}
+	
+	private static var _processingDomain:ApplicationDomain;
+	
+	public static function set processingDomain (domain:ApplicationDomain) : void {
+		LogContext.getLogger(Converters).info("Setting processing domain: " + domain);
+		_processingDomain = domain;
+	}
+
+	/**
 	 * Converts the given value to the specified target type.
 	 * If no conversion is necessary the value will be returned unchanged.
 	 * Otherwise this method will look for a matching <code>Converter</code>
@@ -59,6 +82,7 @@ public class Converters {
 						+ getQualifiedClassName(value) + " to class " 
 						+ getQualifiedClassName(targetType));
 			}
+			domain = (processingDomain) ? processingDomain : domain;
 			value = conv.convert(value, domain);
 		}
 		return value;

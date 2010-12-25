@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.metadata {
+import flash.system.ApplicationDomain;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.*;
 import org.spicefactory.lib.reflect.converter.EnumerationConverter;
@@ -142,7 +143,14 @@ public class MetadataDecoratorAssembler implements DecoratorAssembler {
 	public function assemble (type:ClassInfo) : Array {
 		var decorators:Array = new Array();
 		var processed:ProcessedMembers = new ProcessedMembers();
-		doAssemble(type, decorators, processed);
+		var oldDomain:ApplicationDomain = Converters.processingDomain;
+		try {
+			Converters.processingDomain = type.applicationDomain;
+			doAssemble(type, decorators, processed);
+		}
+		finally {
+			Converters.processingDomain = oldDomain;
+		}
 		return decorators;
 	}
 	
