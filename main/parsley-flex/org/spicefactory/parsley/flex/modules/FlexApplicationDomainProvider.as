@@ -45,7 +45,7 @@ public class FlexApplicationDomainProvider extends DefaultApplicationDomainProvi
 		try {
 			if (view is UIComponent && view.hasOwnProperty("moduleFactory")) {
 				var comp:Object = view;
-				var domain:ApplicationDomain = comp.moduleFactory.info().applicationDomain;
+				var domain:ApplicationDomain = comp.moduleFactory.info().currentDomain;
 				if (domain) {
 					return domain; 
 				}

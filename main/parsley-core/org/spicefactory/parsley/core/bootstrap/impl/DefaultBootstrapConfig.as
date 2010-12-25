@@ -249,8 +249,8 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 		_viewSettings.parent = parentConfig.viewSettings;
 		_messageSettings.parent = parentConfig.messageSettings;
 		_scopeExtensions.parent = parentConfig.scopeExtensions;
-		if (!_domain && _viewRoot && _domainProvider) {
-			_domain = _domainProvider.getDomainForView(viewRoot);
+		if (!_domain && _viewRoot && domainProvider) {
+			_domain = domainProvider.getDomainForView(viewRoot);
 		}
 		if (!_domain) {
 			_domain = (_parent) ? _parent.domain : ClassInfo.currentDomain;
