@@ -55,7 +55,8 @@ public class Converters {
 		if (!(value is targetType) && value != null && targetType != null) {
 			var conv:Converter = getConverter(targetType);
 			if (conv == null) {
-				throw new ConversionError("No converter registered for class " 
+				throw new ConversionError("No converter registered for converting class " 
+						+ getQualifiedClassName(value) + " to class " 
 						+ getQualifiedClassName(targetType));
 			}
 			value = conv.convert(value, domain);
