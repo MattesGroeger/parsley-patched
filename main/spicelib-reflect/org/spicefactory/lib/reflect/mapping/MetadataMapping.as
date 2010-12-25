@@ -36,6 +36,7 @@ internal class MetadataMapping {
 	private var name:String;
 	private var members:Array;
 	private var _allowMultiple:Boolean;
+	private var strict:Boolean = true;
 
 	private var _defaultProperty:String;
 	private var _properties:Array;
@@ -58,6 +59,7 @@ internal class MetadataMapping {
 		var mappedMetadata:MappedMetadata = MappedMetadata(type.getMetadata(MappedMetadata)[0]);
 		this.name = (mappedMetadata.name == null) ? type.simpleName : mappedMetadata.name;
 		this._allowMultiple = mappedMetadata.multiple;
+		this.strict = mappedMetadata.strict;
 		
 		this.members = (mappedMetadata.types == null || mappedMetadata.types.length == 0)
 				? [Types.CLASS, Types.CONSTRUCTOR, Types.PROPERTY, Types.METHOD] : mappedMetadata.types;
@@ -89,10 +91,9 @@ internal class MetadataMapping {
 	/**
 	 * @private
 	 */
-	internal function initInternalMapping (name:String, members:Array, defaultProperty:String, properties:Array) : void {
+	internal function initInternalMapping (name:String, members:Array, properties:Array) : void {
 		this.name = name;
 		this.members = members;
-		this._defaultProperty = defaultProperty;	
 		this._properties = properties;	
 	}
 
@@ -137,7 +138,7 @@ internal class MetadataMapping {
 		for each (var prop:MappedProperty in _properties) {
 			prop.mapValue(instance, values, validate);
 		}
-		if (validate) {
+		if (validate && strict) {
 			var unmapped:Array = new Array();
 			for (var key:String in values) {
 				unmapped.push(key);

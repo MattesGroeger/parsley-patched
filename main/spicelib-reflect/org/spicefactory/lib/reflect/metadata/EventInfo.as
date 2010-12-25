@@ -16,7 +16,7 @@
 
 package org.spicefactory.lib.reflect.metadata {
 
-[Metadata(name="Event", types="class", multiple="true")]
+[Metadata(name="Event", types="class", multiple="true", strict="false")]
 /**
  * Represent a single Event metadata tag.
  * 

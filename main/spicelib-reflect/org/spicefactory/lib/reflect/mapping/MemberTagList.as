@@ -71,7 +71,9 @@ internal class MemberTagList {
 			}
 			resolved[key] = arg.value;
 		}
-		return (mapping) ? mapping.newInstance(resolved, validate) : new Metadata(name, resolved);
+		return (mapping) 
+			? mapping.newInstance(resolved, validate) 
+			: new Metadata(name, resolved);
 	}
 	
 	

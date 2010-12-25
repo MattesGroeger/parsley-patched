@@ -1,12 +1,12 @@
 package org.spicefactory.lib.reflect {
-import org.hamcrest.core.isA;
-import org.hamcrest.collection.arrayWithSize;
-import org.hamcrest.object.equalTo;
 import org.flexunit.assertThat;
-
+import org.hamcrest.collection.arrayWithSize;
+import org.hamcrest.core.isA;
+import org.hamcrest.object.equalTo;
 import org.spicefactory.lib.reflect.metadata.EventInfo;
 import org.spicefactory.lib.reflect.model.ClassC;
 import org.spicefactory.lib.reflect.model.ClassE;
+import org.spicefactory.lib.reflect.model.ClassF;
 import org.spicefactory.lib.reflect.model.InterfaceB;
 import org.spicefactory.lib.reflect.model.TestMetadata1;
 import org.spicefactory.lib.reflect.model.TestMetadata2;
@@ -46,6 +46,14 @@ public class MetadataTest {
 		var ei:EventInfo = EventInfo(meta);
 		assertThat(ei.name, equalTo(expectedName));
 		assertThat(ei.type, equalTo(expectedType));
+	}
+	
+	[Test]
+	public function eventWithUnknownAttribute () : void {
+		var ci:ClassInfo = ClassInfo.forClass(ClassF);
+		var meta:Array = ci.getMetadata(EventInfo);
+		assertThat(meta, arrayWithSize(1));
+		checkEventInfo(meta[0], "someName", "");
 	}
 	
 	[Test]

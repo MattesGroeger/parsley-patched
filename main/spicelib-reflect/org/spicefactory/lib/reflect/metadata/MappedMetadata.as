@@ -53,6 +53,12 @@ public class MappedMetadata {
 	 */
 	public var multiple:Boolean = false;
 	
+	/**
+	 * Determines whether the mapped metadata tag should cause an Error to be thrown 
+	 * when it contains one or more attributes that do not map to a property of the mapped class. 
+	 */
+	public var strict:Boolean = true;
+	
 	
 }
 

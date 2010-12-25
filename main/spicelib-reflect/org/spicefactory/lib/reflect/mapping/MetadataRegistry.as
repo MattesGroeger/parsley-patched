@@ -94,17 +94,21 @@ public class MetadataRegistry {
 		registerClass(Required);
 		registerClass(AssignableTo);
 		registerClass(EventInfo);
+		trace("fpp");
 	}
 	
 	private function createInternalMapping () : void {
 		/* The internal [Metadata] tag cannot be created through Reflection
 		   as this would lead to a chicken-and-egg problem. */
 	    var ci:ClassInfo = ClassInfo.forClass(MappedMetadata);
-	    var props:Array = [new MappedProperty(ci.getProperty("name")), 
-	    		new MappedProperty(ci.getProperty("types")), 
-	    		new MappedProperty(ci.getProperty("multiple"))];
+	    var props:Array = [
+    		new MappedProperty(ci.getProperty("name")), 
+    		new MappedProperty(ci.getProperty("types")), 
+    		new MappedProperty(ci.getProperty("multiple")),
+    		new MappedProperty(ci.getProperty("strict"))
+	    ];
 		var mapping:MetadataMapping = new MetadataMapping(ci);
-		mapping.initInternalMapping("Metadata", [Types.CLASS], null, props);
+		mapping.initInternalMapping("Metadata", [Types.CLASS], props);
 		registerMapping(mapping);
 	}
 	
