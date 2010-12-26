@@ -152,7 +152,7 @@ public class DefaultBootstrapProcessor implements BootstrapProcessor {
 	}
 	
 	private function handleErrors () : void {
-		var msg:String = "One or more errors in CompositeContextBuilder";
+		var msg:String = "One or more errors in BootstrapProcessor";
 		if (async) {
 			info.context.dispatchEvent(new CompoundErrorEvent(ErrorEvent.ERROR, errors, msg));
 		}
