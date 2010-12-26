@@ -45,7 +45,6 @@ public class JsonClassInfoProvider implements ClassInfoProvider {
 		this.functionRef = functionRef;
 		this.staticFlags = staticFlags;
 		this.instanceFlags = instanceFlags;
-		trace("fpp fpp");
 	}
 
 	public function get staticInfo () : Object {
