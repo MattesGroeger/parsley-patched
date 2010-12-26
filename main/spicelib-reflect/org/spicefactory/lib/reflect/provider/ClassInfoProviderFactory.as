@@ -15,6 +15,8 @@
  */
 
 package org.spicefactory.lib.reflect.provider {
+import org.spicefactory.lib.util.Flag;
+import avmplus.DescribeTypeJSONAccessor;
 
 /**
  * Factory that creates ClassInfoProvider instances based on the capabilities of the Flash Player.
@@ -26,6 +28,11 @@ package org.spicefactory.lib.reflect.provider {
 public class ClassInfoProviderFactory {
 	
 	
+	private static var hasJSON:Flag;
+	private static var describeTypeJSON:Function;
+	private static var staticFlags:int;
+	private static var instanceFlags:int;
+	
 	/**
 	 * Creates a new ClassInfoProvider based on the capabilities of the Flash Player.
 	 * 
@@ -33,7 +40,21 @@ public class ClassInfoProviderFactory {
 	 * @return a new ClassInfoProvider based on the capabilities of the Flash Player
 	 */
 	public function newProvider (type:Class) : ClassInfoProvider {
-		return new XmlClassInfoProvider(type);
+		if (!hasJSON) {
+			initJSON();
+		}
+		return (hasJSON.value) 
+				? new JsonClassInfoProvider(type, describeTypeJSON, staticFlags, instanceFlags)
+				: new XmlClassInfoProvider(type);
+	}
+	
+	private function initJSON () : void {
+		describeTypeJSON = DescribeTypeJSONAccessor.functionRef;
+		hasJSON = new Flag(describeTypeJSON != null);
+		if (hasJSON.value) {
+			staticFlags = DescribeTypeJSONAccessor.staticFlags;
+			instanceFlags = DescribeTypeJSONAccessor.instanceFlags;
+		}
 	}
 	
 	
