@@ -7,7 +7,7 @@ public class ClassB extends ClassA {
 	
 	private var _booleanProperty:Boolean;
 	
-	test_namespace var filteredVar:String;
+	test_namespace var nsVar:String;
 	
 	private static var staticCnt:int = 0;
 	
@@ -39,12 +39,12 @@ public class ClassB extends ClassA {
 		return null;
 	}
 	
-	test_namespace function filteredMethod () : void {
-		
+	test_namespace function nsMethod () : void {
+		stringVar = "nsMethodInvoked";
 	}
 	
-	test_namespace function get filteredProperty () : Object {
-		return null;
+	test_namespace function get nsProperty () : Object {
+		return 7;
 	}
 	
 	public function methodWithPrivateClassReturnValue () : Foo {

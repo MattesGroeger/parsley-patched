@@ -81,7 +81,8 @@ public class Method	extends FunctionBase {
 	public function invoke (instance:Object, params:Array) : * {
 		checkInstanceParameter(instance);
 		convertParameters(params);
-		var f:Function = (_isStatic) ? owner.getClass()[name] : instance[name];
+		var qname:Object = (namespaceURI) ? new QName(namespaceURI, name) : name;
+		var f:Function = (_isStatic) ? owner.getClass()[qname] : instance[qname];
 		try {
 			return f.apply(instance, params);
 		}

@@ -41,6 +41,13 @@ public class PropertyTest {
 		p.setValue(classBInstance, new Date());
 	}
 	
+	[Test]
+	public function namespaceMethod () : void {
+		var p:Property = classBInfo.getProperty("nsProperty", "http://www.spicefactory.org/spicelib/test");
+		var target:ClassB = new ClassB("foo");
+		assertThat(p.getValue(target), equalTo(7));
+	}
+	
 
 }
 

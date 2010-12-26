@@ -89,21 +89,13 @@ public class XmlClassInfoProvider implements ClassInfoProvider {
 					if (childName == "constructor") {
 						_instanceInfo.traits.constructor = parseParameters(instanceChild);
 					} else if (childName == "accessor") {
-						if (representsPublicMember(instanceChild, _instanceInfo.traits)) {
-							parseAccessor(instanceChild, _instanceInfo.traits);
-						}
+						parseAccessor(instanceChild, _instanceInfo.traits);
 					} else if (childName == "constant") {
-						if (representsPublicMember(instanceChild, _instanceInfo.traits)) {
-							parseVariable(instanceChild, _instanceInfo.traits, "readonly");
-						}
+						parseVariable(instanceChild, _instanceInfo.traits, "readonly");
 					} else if (childName == "variable") {
-						if (representsPublicMember(instanceChild, _instanceInfo.traits)) {
-							parseVariable(instanceChild, _instanceInfo.traits, "readwrite");
-						}
+						parseVariable(instanceChild, _instanceInfo.traits, "readwrite");
 					} else if (childName == "method") {
-						if (representsPublicMember(instanceChild, _instanceInfo.traits)) {
-							parseMethod(instanceChild, _instanceInfo.traits);
-						}
+						parseMethod(instanceChild, _instanceInfo.traits);
 					} else if (childName == "extendsClass") {
 						parseBase(instanceChild, _instanceInfo.traits);
 					} else if (childName == "implementsInterface") {
@@ -117,25 +109,6 @@ public class XmlClassInfoProvider implements ClassInfoProvider {
 		}
 	}
 	
-	
-	
-	/**
-	 * Since there is no way to reflectively invoke namespace scoped methods we will
-	 * not add them. But there is the edge case that interface methods have an uri
-	 * that equals the fully qualified name of the interface. That is the only case where
-	 * we accept an uri attribute.
-	 * 
-	 * TODO - remove for namespace support
-	 * 
-	 * @return whether we accept the type as a public member
-	 */
-	private function representsPublicMember (xml:XML, traits:Object) : Boolean {
-		return (xml.@uri.length() == 0 || isInterface(traits));
-	}
-	
-	private function isInterface (traits:Object) : Boolean {
-		return (traits.bases == null || traits.bases.length == 0) && type != Object;
-	}
 	
 	private function parseBase (xml:XML, traits:Object) : void {
 		if (!traits.bases) {
@@ -160,6 +133,7 @@ public class XmlClassInfoProvider implements ClassInfoProvider {
 			parameters: parseParameters(xml),
 			metadata: parseMetadata(xml)
 		};
+		if (method.uri == "") method.uri = null;
 		if (!traits.methods) {
 			traits.methods = [];
 		}
@@ -184,6 +158,7 @@ public class XmlClassInfoProvider implements ClassInfoProvider {
 			uri: (xml.@uri) ? xml.@uri.toString() : null,		
 			metadata: parseMetadata(xml)
 		};
+		if (accessor.uri == "") accessor.uri = null;
 		if (!traits.accessors) {
 			traits.accessors = [];
 		}
@@ -198,6 +173,7 @@ public class XmlClassInfoProvider implements ClassInfoProvider {
 			uri: (xml.@uri) ? xml.@uri.toString() : null,		
 			metadata: parseMetadata(xml)
 		};
+		if (variable.uri == "") variable.uri = null;
 		if (!traits.variables) {
 			traits.variables = [];
 		}

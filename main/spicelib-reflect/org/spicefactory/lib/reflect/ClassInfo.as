@@ -312,10 +312,12 @@ public class ClassInfo extends MetadataAware {
 	 * and may have been declared with var, const or implicit getter/setter functions.
 	 * 
 	 * @param name the name of the property
+	 * @param namespaceURI the namespace uri of the property
 	 * @return the Property instance for the specified property name or null if no such property exists
 	 */
-	public function getProperty (name:String) : Property {
+	public function getProperty (name:String, namespaceURI:String = null) : Property {
 		initProperties();
+		name = (namespaceURI) ? namespaceURI + "::" + name : name;
 		return properties.get(name) as Property;
 	}
 	
@@ -339,13 +341,20 @@ public class ClassInfo extends MetadataAware {
 	
 	private function createPropertyMap (traits:Object, isStatic:Boolean) : SimpleMap {
 		var map:SimpleMap = new SimpleMap();
+		var p:Property;
 		for each (var accessor:Object in traits.accessors) {
-			map.put(accessor.name, new Property(accessor, isStatic, this));
+			p = new Property(accessor, isStatic, this);
+			map.put(getMapKey(p), p);
  		}
  		for each (var variable:Object in traits.variables) {
-			map.put(variable.name, new Property(variable, isStatic, this));
+			p = new Property(variable, isStatic, this);
+			map.put(getMapKey(p), new Property(variable, isStatic, this));
  		}
 		return map;
+	}
+	
+	private function getMapKey (member:Member) : String {
+		return (member.namespaceURI) ? member.namespaceURI + "::" + member.name : member.name;
 	}
 
 	/**
@@ -355,10 +364,12 @@ public class ClassInfo extends MetadataAware {
 	 * Static properties of superclasses or superinterfaces are not included.
 	 * 
 	 * @param name the name of the static property
+	 * @param namespaceURI the namespace uri of the property
 	 * @return the Property instance for the specified property name or null if no such property exists
 	 */	
-	public function getStaticProperty (name:String) : Property {
+	public function getStaticProperty (name:String, namespaceURI:String = null) : Property {
 		initStaticProperties();
+		name = (namespaceURI) ? namespaceURI + "::" + name : name;
 		return staticProperties.get(name) as Property;
 	}
 
@@ -386,10 +397,12 @@ public class ClassInfo extends MetadataAware {
 	 * may be declared in this class or in one of its superclasses or superinterfaces.
 	 * 
 	 * @param name the name of the method
+	 * @param namespaceURI the namespace uri of the property
 	 * @return the Method instance for the specified method name or null if no such method exists
 	 */
-	public function getMethod (name:String) : Method {
+	public function getMethod (name:String, namespaceURI:String = null) : Method {
 		initMethods();
+		name = (namespaceURI) ? namespaceURI + "::" + name : name;
 		return methods.get(name) as Method;
 	}
 	
@@ -413,7 +426,8 @@ public class ClassInfo extends MetadataAware {
 	private function createMethodMap (traits:Object, isStatic:Boolean) : SimpleMap {
 		var map:SimpleMap = new SimpleMap();
 		for each (var method:Object in traits.methods) {
-			map.put(method.name, new Method(method, isStatic, this));
+			var m:Method = new Method(method, isStatic, this);
+			map.put(getMapKey(m), m);
  		}
 		return map;
 	}
@@ -424,10 +438,12 @@ public class ClassInfo extends MetadataAware {
 	 * must be declared in this class.
 	 * 
 	 * @param name the name of the static method
+	 * @param namespaceURI the namespace uri of the property
 	 * @return the Method instance for the specified method name or null if no such method exists
 	 */
-	public function getStaticMethod (name:String) : Method {
+	public function getStaticMethod (name:String, namespaceURI:String = null) : Method {
 		initStaticMethods();
+		name = (namespaceURI) ? namespaceURI + "::" + name : name;
 		return staticMethods.get(name) as Method;
 	}
 

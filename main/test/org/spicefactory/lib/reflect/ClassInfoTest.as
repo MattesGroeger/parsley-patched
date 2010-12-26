@@ -1,13 +1,12 @@
 package org.spicefactory.lib.reflect {
-import flash.utils.Proxy;
-import org.hamcrest.core.isA;
+import org.flexunit.assertThat;
 import org.flexunit.asserts.fail;
 import org.flexunit.async.Async;
-import org.hamcrest.object.notNullValue;
 import org.hamcrest.collection.arrayWithSize;
-import org.hamcrest.object.sameInstance;
-import org.flexunit.assertThat;
+import org.hamcrest.core.isA;
 import org.hamcrest.object.equalTo;
+import org.hamcrest.object.notNullValue;
+import org.hamcrest.object.sameInstance;
 import org.spicefactory.lib.reflect.model.ClassB;
 import org.spicefactory.lib.reflect.model.InterfaceA;
 import org.spicefactory.lib.reflect.model.InternalSubclass;
@@ -24,6 +23,8 @@ import flash.display.Sprite;
 import flash.events.Event;
 import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
+import flash.utils.Proxy;
+import flash.utils.describeType;
 import flash.utils.getQualifiedClassName;
 
 public class ClassInfoTest {
@@ -32,14 +33,16 @@ public class ClassInfoTest {
 	[Test]
 	public function basicModel () : void {
 		var ci:ClassInfo = ClassInfo.forClass(ClassB);
+		trace(describeType(ClassB));
 		// TODO - check inconsistencies with ::
 		assertThat(ci.name, equalTo("org.spicefactory.lib.reflect.model::ClassB"));
 		assertThat(ci.getClass(), sameInstance(ClassB));
 		assertThat(ci.isInterface(), equalTo(false));
-		assertThat(ci.getProperties(), arrayWithSize(8));
+		assertThat(ci.getProperties(), arrayWithSize(10));
 		assertThat(ci.getStaticProperties(), arrayWithSize(2));
-		assertThat(ci.getMethods(), arrayWithSize(3));
+		assertThat(ci.getMethods(), arrayWithSize(4));
 		assertThat(ci.getStaticMethods(), arrayWithSize(2));
+		var uri:String = "http://www.spicefactory.org/spicelib/test";
 		checkProperty(ci, "stringVar", String, false, true, true);
 		checkProperty(ci, "booleanVar", Boolean, false, true, true);
 		checkProperty(ci, "uintVar", uint, false, true, false );
@@ -48,9 +51,11 @@ public class ClassInfoTest {
 		checkProperty(ci, "readOnlyProperty", String, false, true, false);
 		checkProperty(ci, "readWriteProperty", String, false, true, true);
 		checkProperty(ci, "booleanProperty", Boolean, false, true, true);
-		//checkProperty(ci, "classVar", Class, true, true, false);
+		checkProperty(ci, "nsProperty", Object, false, true, false, uri);
+		checkProperty(ci, "nsVar", String, false, true, true, uri);
 		checkProperty(ci, "staticReadOnlyProperty", XML, true, true, false);
 		checkMethod(ci, "methodNoParams", Void, [], false);
+		checkMethod(ci, "nsMethod", Void, [], false, uri);
 		checkMethod(ci, "methodWithOptionalParam", Boolean, 
 				[new Parameter(ClassInfo.forClass(String), true), 
 				new Parameter(ClassInfo.forClass(uint), false)], false);
@@ -61,7 +66,13 @@ public class ClassInfoTest {
 	[Test]
 	public function checkInterface () : void {
 		var ci:ClassInfo = ClassInfo.forClass(InterfaceA);
+		assertThat(ci.getClass(), sameInstance(InterfaceA));
 		assertThat(ci.isInterface(), equalTo(true));
+		assertThat(ci.getProperties(), arrayWithSize(0));
+		assertThat(ci.getStaticProperties(), arrayWithSize(1));
+		assertThat(ci.getMethods(), arrayWithSize(1));
+		assertThat(ci.getStaticMethods(), arrayWithSize(0));
+		checkMethod(ci, "foo", String, [], false);
 	}
 	
 	[Test]
@@ -74,19 +85,20 @@ public class ClassInfoTest {
 	
 	
 	private function checkProperty (ci:ClassInfo, name:String, type:Class,
-			isStatic:Boolean, readable:Boolean, writable:Boolean) : void {
-		var p:Property = (!isStatic) ? ci.getProperty(name) : ci.getStaticProperty(name);
+			isStatic:Boolean, readable:Boolean, writable:Boolean, namespaceURI:String = null) : void {
+		var p:Property = (!isStatic) ? ci.getProperty(name, namespaceURI) : ci.getStaticProperty(name, namespaceURI);
 		assertThat(p, notNullValue());
 		assertThat(p.name, equalTo(name));
 		assertThat(p.type.getClass(), sameInstance(type));
 		assertThat(p.isStatic, equalTo(isStatic));
 		assertThat(p.readable, equalTo(readable));
 		assertThat(p.writable, equalTo(writable));
+		assertThat(p.namespaceURI, equalTo(namespaceURI));
 	}
 	
 	private function checkMethod (ci:ClassInfo, name:String,
-			returnType:Class, params:Array, isStatic:Boolean) : void {
-		var m:Method = (!isStatic) ? ci.getMethod(name) : ci.getStaticMethod(name);		
+			returnType:Class, params:Array, isStatic:Boolean, namespaceURI:String = null) : void {
+		var m:Method = (!isStatic) ? ci.getMethod(name, namespaceURI) : ci.getStaticMethod(name, namespaceURI);		
 		assertThat(m, notNullValue());
 		assertThat(m.name, equalTo(name));
 		assertThat(m.returnType.getClass(), sameInstance(returnType));
@@ -98,7 +110,8 @@ public class ClassInfoTest {
 			var actualParam:Parameter = actualParams[i++] as Parameter;
 			assertThat(actualParam.type.getClass(), sameInstance(expectedParam.type.getClass()));
 			assertThat(actualParam.required, equalTo(expectedParam.required));
-		}				
+		}			
+		assertThat(m.namespaceURI, equalTo(namespaceURI));
 	}
 	
 	
@@ -183,5 +196,4 @@ public class ClassInfoTest {
 	
 	
 }
-
 }

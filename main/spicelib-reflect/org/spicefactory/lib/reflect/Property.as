@@ -94,7 +94,8 @@ public class Property extends Member {
 			throw new PropertyError("" + this + " is write-only");
 		}
 		checkInstanceParameter(instance);
-		return (_isStatic) ? owner.getClass()[name] : instance[name];
+		var qname:Object = (namespaceURI) ? new QName(namespaceURI, name) : name;
+		return (_isStatic) ? owner.getClass()[qname] : instance[qname];
 	}
 	
 	/**
@@ -115,10 +116,11 @@ public class Property extends Member {
 		}
 		checkInstanceParameter(instance);
 		value = Converters.convert(value, type.getClass(), type.applicationDomain);
+		var qname:Object = (namespaceURI) ? new QName(namespaceURI, name) : name;
 		if (_isStatic) {
-			owner.getClass()[name] = value;
+			owner.getClass()[qname] = value;
 		} else {
-			instance[name] = value;
+			instance[qname] = value;
 		}
 		return value;
 	}

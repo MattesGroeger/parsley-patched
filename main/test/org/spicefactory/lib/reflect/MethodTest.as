@@ -1,5 +1,6 @@
 package org.spicefactory.lib.reflect {
 
+import org.spicefactory.lib.reflect.model.InterfaceA;
 import org.hamcrest.collection.arrayWithSize;
 import org.hamcrest.object.equalTo;
 import org.flexunit.assertThat;
@@ -72,7 +73,33 @@ public class MethodTest {
 		m.invoke(target, ["bar", "illegal"]);
 	}
 	
+	[Test]
+	public function interfaceMethod () : void {
+		var ci:ClassInfo = ClassInfo.forClass(InterfaceA);
+		var m:Method = ci.getMethod("foo");
+		var result:* = m.invoke(new InterfaceAImpl(), []);
+		assertThat(result, equalTo("bar"));
+	}
+	
+	[Test]
+	public function namespaceMethod () : void {
+		var m:Method = classBInfo.getMethod("nsMethod", "http://www.spicefactory.org/spicelib/test");
+		var target:ClassB = new ClassB("foo");
+		m.invoke(target, []);
+		assertThat(target.stringVar, equalTo("nsMethodInvoked"));
+	}
+	
 	
 }
 
+}
+
+import org.spicefactory.lib.reflect.model.InterfaceA;
+
+class InterfaceAImpl implements InterfaceA {
+
+	public function foo () : String {
+		return "bar";
+	}
+	
 }

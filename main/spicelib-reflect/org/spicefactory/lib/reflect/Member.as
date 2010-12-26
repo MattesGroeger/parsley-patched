@@ -46,6 +46,13 @@ public class Member extends MetadataAware {
 	}
 	
 	/**
+	 * The namespace URI for this member or null if this is a public member.
+	 */
+	public function get namespaceURI () : String  {
+		return (!info.uri || info.uri.replace(":",".") == owner.name.replace("::",".")) ? null : info.uri; 
+	}
+	
+	/**
 	 * The type declaring this member. Will be null for <code>var</code> and <code>const</code> declarations
 	 * as the Flash Player does not provide this information for these member types. This property works for methods and property
 	 * getters and setters only.
