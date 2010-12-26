@@ -67,6 +67,21 @@ public class ConfigPropertiesTest {
 		validateContext(context);
 	}
 	
+	[Test]
+	public function inheritedProperties () : void {
+		var parent:Context = ContextBuilder
+			.newBuilder()
+				.config(Properties.forString(propString))
+				.build();
+		var context:Context = ContextBuilder
+			.newSetup()
+				.parent(parent)
+			.newBuilder()
+				.config(FlexConfig.forClass(PropertiesMxmlConfig))
+				.build();
+		validateContext(context);
+	}
+	
 	
 	private function validateContext (context:Context) : void {
 		assertThat(context, contextInState());

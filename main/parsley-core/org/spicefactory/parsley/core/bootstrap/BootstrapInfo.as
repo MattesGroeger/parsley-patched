@@ -19,6 +19,7 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
 import org.spicefactory.parsley.core.messaging.MessageSettings;
+import org.spicefactory.parsley.core.registry.ConfigurationProperties;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.state.manager.GlobalStateManager;
@@ -68,6 +69,11 @@ public interface BootstrapInfo {
 	 * @copy org.spicefactory.parsley.bootstrap.BootstrapConfig#messageSettings
 	 */
 	function get messageSettings () : MessageSettings;
+	
+	/**
+	 * @copy org.spicefactory.parsley.bootstrap.BootstrapConfig#properties
+	 */
+	function get properties () : ConfigurationProperties;
 	
 	/**
 	 * The manager for the global state of all existing Contexts

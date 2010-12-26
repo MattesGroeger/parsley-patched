@@ -15,20 +15,21 @@
  */
 
 package org.spicefactory.parsley.core.bootstrap.impl {
-import org.spicefactory.parsley.core.state.manager.GlobalStateManager;
 import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.bootstrap.BootstrapInfo;
 import org.spicefactory.parsley.core.bootstrap.InitializingService;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.ObjectProviderFactory;
-import org.spicefactory.parsley.core.messaging.MessageSettings;
-import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
+import org.spicefactory.parsley.core.messaging.MessageSettings;
+import org.spicefactory.parsley.core.registry.ConfigurationProperties;
 import org.spicefactory.parsley.core.registry.ObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.Scope;
 import org.spicefactory.parsley.core.scope.ScopeManager;
 import org.spicefactory.parsley.core.scope.impl.ScopeInfo;
+import org.spicefactory.parsley.core.state.manager.GlobalStateManager;
 import org.spicefactory.parsley.core.view.ViewManager;
+import org.spicefactory.parsley.core.view.ViewSettings;
 
 import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
@@ -86,6 +87,13 @@ public class DefaultBootstrapInfo implements BootstrapInfo {
 		return config.parent;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function get properties () : ConfigurationProperties {
+		return config.properties;
+	}
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -242,15 +250,13 @@ public class DefaultBootstrapInfo implements BootstrapInfo {
 		info._viewManager = viewManager;
 		return info;
 	}
-	
-
 }
 }
 
-import org.spicefactory.parsley.core.state.manager.GlobalStateManager;
 import org.spicefactory.parsley.core.bootstrap.BootstrapConfig;
 import org.spicefactory.parsley.core.bootstrap.impl.DefaultBootstrapInfo;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.state.manager.GlobalStateManager;
 
 class DynamicBootstrapInfo extends DefaultBootstrapInfo {
 	

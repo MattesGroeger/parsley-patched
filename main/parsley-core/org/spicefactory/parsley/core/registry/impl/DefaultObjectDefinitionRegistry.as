@@ -72,9 +72,9 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	public function init (info:BootstrapInfo) : void {
 		_domain = info.domain;
 		_context = info.context;
+		_properties = info.properties;
 		_decoratorAssemblers = [];
 		this.objectProviderFactory = info.objectProviderFactory;
-		_properties = new DefaultProperties();
 		_builders = new DefaultObjectDefinitionBuilderFactory(this);
 	}
 	
@@ -251,27 +251,5 @@ public class DefaultObjectDefinitionRegistry extends EventDispatcher implements 
 	}
 	
 }
-}
-
-import org.spicefactory.parsley.core.registry.ConfigurationProperties;
-
-import flash.utils.Dictionary;
-
-class DefaultProperties implements ConfigurationProperties {
-	
-	private var map:Dictionary = new Dictionary();
-
-	public function setValue (name:String, value:Object) : void {
-		map[name] = value;
-	}
-	
-	public function getValue (name:String) : Object {
-		return map[name];
-	}
-	
-	public function removeValue (name:String) : void {
-		delete map[name];
-	}
-	
 }
 

@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.core.bootstrap {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.messaging.MessageSettings;
+import org.spicefactory.parsley.core.registry.ConfigurationProperties;
 import org.spicefactory.parsley.core.scope.ScopeExtensionRegistry;
 import org.spicefactory.parsley.core.view.ViewSettings;
 
@@ -53,6 +54,11 @@ public interface BootstrapConfig {
 	 * A registry of scope-wide extensions.
 	 */
 	function get scopeExtensions () : ScopeExtensionRegistry;
+	
+	/**
+	 * Properties that may be used to build or process ObjectDefinitions.
+	 */
+	function get properties () : ConfigurationProperties;
 	
 	/**
 	 * The ApplicationDomain to be used for reflecting on managed objects.

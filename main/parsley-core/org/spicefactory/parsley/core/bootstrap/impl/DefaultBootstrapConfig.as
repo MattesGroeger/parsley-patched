@@ -32,6 +32,7 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextBuilderEvent;
 import org.spicefactory.parsley.core.messaging.MessageSettings;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageSettings;
+import org.spicefactory.parsley.core.registry.ConfigurationProperties;
 import org.spicefactory.parsley.core.scope.ScopeExtensionRegistry;
 import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.core.scope.impl.DefaultScopeExtensionRegistry;
@@ -102,6 +103,16 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 	 */
 	public function get scopeExtensions () : ScopeExtensionRegistry {
 		return _scopeExtensions;
+	}
+	
+	
+	private var _properties:DefaultProperties = new DefaultProperties();
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get properties () : ConfigurationProperties {
+		return _properties;
 	}
 
 	
@@ -248,6 +259,7 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 		_services.parent = parentConfig.services;
 		_viewSettings.parent = parentConfig.viewSettings;
 		_messageSettings.parent = parentConfig.messageSettings;
+		_properties.parent = parentConfig.properties;
 		_scopeExtensions.parent = parentConfig.scopeExtensions;
 		if (!_domain && _viewRoot && domainProvider) {
 			_domain = domainProvider.getDomainForView(viewRoot);
@@ -298,6 +310,7 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 }
 
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.registry.ConfigurationProperties;
 import org.spicefactory.parsley.core.scope.impl.ScopeInfo;
 
 import flash.utils.Dictionary;
@@ -318,6 +331,24 @@ class ScopeCollection {
 	public function getAll () : Array {
 		return scopes;
 	}
+}
+
+class DefaultProperties implements ConfigurationProperties {
 	
+	private var map:Dictionary = new Dictionary();
+	
+	public var parent:ConfigurationProperties;
+
+	public function setValue (name:String, value:Object) : void {
+		map[name] = value;
+	}
+	
+	public function getValue (name:String) : Object {
+		return (map[name]) ? map[name] : (parent) ? parent.getValue(name) : null;
+	}
+	
+	public function removeValue (name:String) : void {
+		delete map[name];
+	}
 	
 }
