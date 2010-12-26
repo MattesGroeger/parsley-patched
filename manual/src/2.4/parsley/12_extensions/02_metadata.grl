@@ -210,7 +210,7 @@ If you use the #cdi ObjectProcessorFactories #cdi utility function like above (a
 you need to know that it is based on a convention how the constructor of your processor has to look like.
 The utility function expects the class of the processor it should create and any number of parameters to pass
 to the constructor. But as you see the actual constructor has one additional parameter which is of type
-#cdi ManagedEvent #cdi. The utility function will always pass the actual target instance as the first
+#cdi ManagedObject #cdi. The utility function will always pass the actual target instance as the first
 parameter, followed but the ones you specified. #par
 
 #par Finally, in the corresponding decorator, you need to add the processor to the definition: #par
