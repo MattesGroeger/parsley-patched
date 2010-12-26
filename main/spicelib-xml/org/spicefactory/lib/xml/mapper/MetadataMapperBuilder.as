@@ -138,7 +138,7 @@ public class MetadataMapperBuilder extends PropertyMapperBuilder {
 				if (processed) {
 					throw new MappingError("" + property + " contains more than one mapping metadata tag", []);
 				}
-				TargetPropertyUtil.setPropertyName(property, metadata);
+				TargetPropertyUtil.setPropertyName(property, metadata, objectType.applicationDomain);
 				MetadataMapperDecorator(metadata).decorate(this);
 				processed = true;
 			}

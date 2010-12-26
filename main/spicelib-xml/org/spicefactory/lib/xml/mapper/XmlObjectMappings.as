@@ -114,7 +114,7 @@ public class XmlObjectMappings {
 	private function registerMetadata () : void {
 		if (!metadataRegistered) {
 			for each (var metadataClass:Class in metadataClasses) {
-				Metadata.registerMetadataClass(metadataClass);
+				Metadata.registerMetadataClass(metadataClass, domain);
 			}
 			metadataRegistered = true;
 		}

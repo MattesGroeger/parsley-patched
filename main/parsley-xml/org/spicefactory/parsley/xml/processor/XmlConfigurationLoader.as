@@ -73,14 +73,6 @@ public class XmlConfigurationLoader extends EventDispatcher {
 	function XmlConfigurationLoader (files:Array, expressionContext:ExpressionContext) {
 		this.files = files;
 		this.expressionContext = expressionContext;
-		variableMapper = XmlObjectMappings
-			.forNamespace(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI)
-			.withRootElement(Variable)
-			.build();
-		includeMapper = XmlObjectMappings
-			.forNamespace(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI)
-			.withRootElement(Include)
-			.build();
 	}
 	
 	
@@ -106,6 +98,14 @@ public class XmlConfigurationLoader extends EventDispatcher {
 	 */
 	public function load (domain:ApplicationDomain) : void {
 		this.domain = domain;
+		variableMapper = XmlObjectMappings
+			.forNamespace(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI)
+			.withRootElement(Variable, domain)
+			.build();
+		includeMapper = XmlObjectMappings
+			.forNamespace(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI)
+			.withRootElement(Include, domain)
+			.build();
 		dispatchEvent(new Event(Event.INIT));
 		loadNextFile();
 	}

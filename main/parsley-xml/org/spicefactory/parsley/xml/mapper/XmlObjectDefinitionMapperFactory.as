@@ -108,7 +108,7 @@ public class XmlObjectDefinitionMapperFactory {
 			.forNamespace(PARSLEY_NAMESPACE_URI)
 				.withRootElement(ObjectsTag, domain)
 					.customMapper(new NullXmlObjectMapper())
-					.customMapper(new StaticPropertyRefMapper())
+					.customMapper(new StaticPropertyRefMapper(domain))
 					.customMapper(createSimpleValueMapper(Boolean, "boolean"))
 					.customMapper(createSimpleValueMapper(Number, "number"))
 					.customMapper(createSimpleValueMapper(int, "int"))
@@ -148,6 +148,7 @@ public class XmlObjectDefinitionMapperFactory {
 }
 }
 
+import flash.system.ApplicationDomain;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.types.Any;
 import org.spicefactory.lib.reflect.types.Void;
@@ -180,9 +181,9 @@ class StaticPropertyRefMapper extends AbstractXmlObjectMapper {
 	
 	private var delegate:XmlObjectMapper;
 	
-	function StaticPropertyRefMapper () {
+	function StaticPropertyRefMapper (domain:ApplicationDomain) {
 		super(ClassInfo.forClass(Any), new QName(XmlObjectDefinitionMapperFactory.PARSLEY_NAMESPACE_URI, "static-property"));
-		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(StaticPropertyRef, elementName);
+		var builder:PropertyMapperBuilder = new PropertyMapperBuilder(StaticPropertyRef, elementName, null, domain);
 		builder.mapAllToAttributes();
 		delegate = builder.build();
 	}

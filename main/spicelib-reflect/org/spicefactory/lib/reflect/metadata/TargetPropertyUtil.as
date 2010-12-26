@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.lib.reflect.metadata {
+import flash.system.ApplicationDomain;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Member;
@@ -40,9 +41,10 @@ public class TargetPropertyUtil {
 	 * 
 	 * @param member the member whose name should be applied to the metadata object
 	 * @param metadata the metadata object to apply the member name to
+	 * @param domain the ApplicationDomain to use for reflection
 	 */
-	public static function setPropertyName (member:Member, metadata:Object) : void {
-		var ci:ClassInfo = ClassInfo.forInstance(metadata);
+	public static function setPropertyName (member:Member, metadata:Object, domain:ApplicationDomain = null) : void {
+		var ci:ClassInfo = ClassInfo.forInstance(metadata, domain);
 		var target:* = targetPropertyMap[ci.getClass()];
 		if (target == undefined) {
 			for each (var property:Property in ci.getProperties()) {
