@@ -15,17 +15,14 @@
  */
 
 package org.spicefactory.lib.xml {
+import org.spicefactory.lib.errors.CompoundError;
 
 /**
  * Error thrown when an XML-to-Object mapping operation failed.
  * 
  * @author Jens Halm
  */
-public class MappingError extends Error {
-
-
-	private var _causes:Array;
-
+public class MappingError extends CompoundError {
 
 	/**
 	 * Creates a new instance.
@@ -34,31 +31,8 @@ public class MappingError extends Error {
 	 * @param causes one or more Error instances that caused this Error
 	 */
 	function MappingError (message:String, causes:Array) {
-		super(message);
-		_causes = causes;
+		super(message, causes);
 	}
-
-	
-	/**
-	 * One or more Errors that caused this Error.
-	 */
-	public function get causes () : Array {
-		return _causes;
-	}
-	
-		
-	/**
-	 * @private
-	 */
-	public override function getStackTrace () : String {
-		var st:String = super.getStackTrace();
-		var idx:int = 1;
-		for each (var e:Error in causes) {
-			st += "\ncause(" + idx++ + "): " + e.getStackTrace();
-		}
-		return st;
-	}
-	
 	
 }
 }
