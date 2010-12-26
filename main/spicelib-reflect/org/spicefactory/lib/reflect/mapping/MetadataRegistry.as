@@ -94,7 +94,6 @@ public class MetadataRegistry {
 		registerClass(Required);
 		registerClass(AssignableTo);
 		registerClass(EventInfo);
-		trace("fpp");
 	}
 	
 	private function createInternalMapping () : void {
