@@ -180,6 +180,7 @@ public class ActionScriptConfigurationProcessor implements ConfigurationProcesso
 	private function isValidRootConfig (property:Property) : Boolean {
 		return (property.getMetadata(InternalProperty).length == 0 
 				&& property.readable 
+				&& !property.namespaceURI
 				&& !property.type.isType(ResolvableConfigurationValue) 
 				&& !property.type.isType(ObjectDefinitionDecorator));
 	}
