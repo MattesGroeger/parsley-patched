@@ -26,7 +26,7 @@ import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.builder.CompositeContextBuilder;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
-import org.spicefactory.parsley.core.events.ContextBuilderEvent;
+import org.spicefactory.parsley.core.events.ContextConfigurationEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.FastInjectEvent;
 import org.spicefactory.parsley.core.events.ViewAutowireEvent;
@@ -164,7 +164,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	}
 	
 	private function addViewRootListeners (view:DisplayObject) : void {
-		view.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, detectPrematureChildCreation);
+		view.addEventListener(ContextConfigurationEvent.CONFIGURE_CONTEXT, detectPrematureChildCreation);
 		view.addEventListener(ContextLookupEvent.LOOKUP, cacheContextLookupEvent);
 		view.addEventListener(ViewConfigurationEvent.CONFIGURE_VIEW, cacheViewConfigEvent);
 		view.addEventListener(autowireViewEventType, cacheAutowirePrefilterEvent);
@@ -175,7 +175,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	}
 	
 	private function removeViewRootListeners (view:DisplayObject) : void {
-		view.removeEventListener(ContextBuilderEvent.BUILD_CONTEXT, detectPrematureChildCreation);
+		view.removeEventListener(ContextConfigurationEvent.CONFIGURE_CONTEXT, detectPrematureChildCreation);
 		view.removeEventListener(ContextLookupEvent.LOOKUP, cacheContextLookupEvent);
 		view.removeEventListener(ViewConfigurationEvent.CONFIGURE_VIEW, cacheViewConfigEvent);
 		view.removeEventListener(autowireViewEventType, cacheAutowirePrefilterEvent);
@@ -193,7 +193,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		}
 	}
 	
-	private function detectPrematureChildCreation (event:ContextBuilderEvent) : void {
+	private function detectPrematureChildCreation (event:ContextConfigurationEvent) : void {
 		event.stopImmediatePropagation();
 		throw new ContextBuilderError("Child Context created before parent is initialized");
 	}

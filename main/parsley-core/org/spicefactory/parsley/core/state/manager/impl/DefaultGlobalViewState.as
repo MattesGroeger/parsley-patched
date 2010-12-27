@@ -15,9 +15,12 @@
  */
 
 package org.spicefactory.parsley.core.state.manager.impl {
+import org.spicefactory.parsley.core.events.ContextCreationEvent;
+import org.spicefactory.parsley.core.events.ContextConfigurationEvent;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
+import org.spicefactory.parsley.core.state.ChildContextObserver;
 import org.spicefactory.parsley.core.state.GlobalViewState;
 import org.spicefactory.parsley.core.view.handler.ContextLookupEvent;
 
@@ -72,6 +75,89 @@ public class DefaultGlobalViewState implements GlobalViewState {
 		context.addEventListener(event, f);	
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	public function configureFirstChildContext (view:DisplayObject, callback:Function) : ChildContextObserver {
+		var f:Function = function (event:ContextConfigurationEvent) : void {
+			callback(event.config);
+		};
+		return new ChildContextObserverImpl(view, ContextConfigurationEvent.CONFIGURE_CONTEXT, f);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function waitForFirstChildContext (view:DisplayObject, callback:Function, 
+			requiredEvent:String = null) : ChildContextObserver {
+		var f:Function = function (event:ContextCreationEvent) : void {
+			if (requiredEvent) {
+				waitFor(event.context, requiredEvent, callback);
+			}
+			else {
+				callback(event.context);
+			}
+		};
+		return new ChildContextObserverImpl(view, ContextCreationEvent.CREATE_CONTEXT, f);
+	}
+	
 	
 }
 }
+
+import org.spicefactory.parsley.core.state.ChildContextObserver;
+
+import flash.display.DisplayObject;
+import flash.events.Event;
+import flash.events.TimerEvent;
+import flash.utils.Timer;
+
+class ChildContextObserverImpl implements ChildContextObserver {
+
+	private var _view:DisplayObject;
+	private var callback:Function;
+	private var event:String;
+	private var timer:Timer;
+	private var timeoutCallback:Function;
+	
+	function ChildContextObserverImpl (view:DisplayObject, event:String, callback:Function) {
+		_view = view;
+		_view.addEventListener(event, execute);
+		this.event = event;
+		this.callback = callback;
+	}
+	
+	public function timeout (timeout:uint, callback:Function = null) : void {
+		timer = new Timer(timeout, 1);
+		timer.addEventListener(TimerEvent.TIMER, onTimeout);
+		timer.start();
+		this.timeoutCallback = callback;
+	}
+
+	public function cancel () : void {
+		if (timer) {
+			timer.removeEventListener(TimerEvent.TIMER, onTimeout);
+			timer.stop();
+			timer = null;
+		}
+		view.removeEventListener(event, execute);
+	}
+	
+	private function execute (event:Event) : void {
+		cancel();
+		callback(event);
+	}
+	
+	private function onTimeout (event:TimerEvent) : void {
+		cancel();
+		if (timeoutCallback) {
+			timeoutCallback(view); 
+		}
+	}
+	
+	public function get view () : DisplayObject {
+		return _view;
+	}
+	
+}
+

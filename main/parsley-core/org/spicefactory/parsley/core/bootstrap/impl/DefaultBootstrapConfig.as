@@ -29,7 +29,8 @@ import org.spicefactory.parsley.core.bootstrap.BootstrapProcessor;
 import org.spicefactory.parsley.core.bootstrap.ConfigurationProcessor;
 import org.spicefactory.parsley.core.bootstrap.ServiceRegistry;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.events.ContextBuilderEvent;
+import org.spicefactory.parsley.core.events.ContextConfigurationEvent;
+import org.spicefactory.parsley.core.events.ContextCreationEvent;
 import org.spicefactory.parsley.core.messaging.MessageSettings;
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageSettings;
 import org.spicefactory.parsley.core.registry.ConfigurationProperties;
@@ -41,7 +42,6 @@ import org.spicefactory.parsley.core.state.GlobalState;
 import org.spicefactory.parsley.core.state.manager.GlobalStateManager;
 import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.view.impl.DefaultViewSettings;
-import org.spicefactory.parsley.flex.modules.FlexApplicationDomainProvider;
 
 import flash.display.DisplayObject;
 import flash.system.ApplicationDomain;
@@ -224,7 +224,7 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 	 * @private
 	 */
 	internal function createProcessor () : BootstrapProcessor {
-		new FlexApplicationDomainProvider();
+		//new FlexApplicationDomainProvider();
 		BindingSupport.initialize();
 		findParent();
 		assembleScopeInfos();
@@ -237,30 +237,23 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 	}
 	
 	private function findParent () : void {
-		var event:ContextBuilderEvent = null;
 		if (_viewRoot != null) {
 			if (viewRoot.stage == null) {
-				log.warn("Probably unable to look for parent Context and ApplicationDomain in the view hierarchy " +
+				log.warn("Probably unable to look for parent Context in the view hierarchy " +
 						" - specified view root has not been added to the stage yet");
 			}
-			event = new ContextBuilderEvent();
-			viewRoot.dispatchEvent(event);
-			if (!_parent) { 
-				_parent = event.parent;
-			}
-			if (!_domain) {
-				_domain = event.domain;
-			}
-			event.processScopes(this);
+			viewRoot.dispatchEvent(new ContextConfigurationEvent(this));
 		}
+		
 		parentConfig = (_parent) 
-			? GlobalStateAccessor.stateManager.contexts.getBootstrapConfig(_parent)
+			? stateManager.contexts.getBootstrapConfig(_parent)
 			: BootstrapDefaults.config;
 		_services.parent = parentConfig.services;
 		_viewSettings.parent = parentConfig.viewSettings;
 		_messageSettings.parent = parentConfig.messageSettings;
 		_properties.parent = parentConfig.properties;
 		_scopeExtensions.parent = parentConfig.scopeExtensions;
+		
 		if (!_domain && _viewRoot && domainProvider) {
 			_domain = domainProvider.getDomainForView(viewRoot);
 		}
@@ -304,6 +297,9 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 					((_parent) ? " with parent " + _parent : " without parent"));
 		}
 		stateManager.contexts.addContext(context, this, info);
+		if (_viewRoot != null) {
+			viewRoot.dispatchEvent(new ContextCreationEvent(context));
+		}
 		return info;
 	}
 }

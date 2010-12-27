@@ -41,9 +41,35 @@ public interface GlobalViewState {
 	 */
 	function findContextInHierarchy (view:DisplayObject, callback:Function, requiredEvent:String = null) : void;
 	
-	// function configureFirstChildContext; // TODO - add in 2.4.M1 or 2.4.M2
+	/**
+	 * Waits for the first child Context that gets created somewhere in the view hieararchy at or below the specified
+	 * view instance. When the first Context gets created it will invoke the specified callback, passing an instance
+	 * of type <code>BootstrapConfig</code> to the function. This allows to modify the configuration before the Context
+	 * gets built, like adding a custom scope, specifying setting or adding objects to the Context. At the time the
+	 * callback gets invoked the actual Context does not exist yet. To get access to the Context the 
+	 * <code>waitForFirstChildContext</code> may be used instead. The returned observer instance allows
+	 * to specify a timeout or cancel the observer.
+	 * 
+	 * @param view the view where to wait for the first child Context
+	 * @param callback the callback to invoke, passing an instance of BootstrapConfig
+	 * @return an observer instance that allows to set a timeout or cancel the operation
+	 */
+	function configureFirstChildContext (view:DisplayObject, callback:Function) : ChildContextObserver;
 	
-	// function waitForFirstChildContext; // TODO - add in 2.4.M1 or 2.4.M2
+	/**
+	 * Waits for the first child Context that gets created somewhere in the view hieararchy at or below the specified
+	 * view instance. When the first Context gets created it will invoke the specified callback, passing the Context instance 
+	 * to the function.  The third parameter allows to specify an Event (any of the constants of <code>ContextEvent</code>).
+	 * If specified the callback will not be invoked before that event has fired. If omitted the callback will
+	 * be invoked as soon as the Context is found, most likely passing a Context instance that is not fully initialized yet.
+	 * 
+	 * @param view the view where to wait for the first child Context
+	 * @param callback the callback to invoke, passing the Context instance that was created
+	 * @param requiredEvent the event that needs to have been fired before the callback gets invoked
+	 * @return an observer instance that allows to set a timeout or cancel the operation
+	 */
+	function waitForFirstChildContext (view:DisplayObject, callback:Function, requiredEvent:String = null) : ChildContextObserver;
+	
 	
 }
 }

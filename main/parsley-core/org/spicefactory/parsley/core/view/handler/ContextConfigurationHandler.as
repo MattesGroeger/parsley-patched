@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.core.view.handler {
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.events.ContextBuilderEvent;
+import org.spicefactory.parsley.core.events.ContextConfigurationEvent;
 import org.spicefactory.parsley.core.view.ViewConfigurator;
 import org.spicefactory.parsley.core.view.ViewHandler;
 import org.spicefactory.parsley.core.view.ViewSettings;
@@ -25,11 +25,11 @@ import flash.display.DisplayObject;
 
 /**
  * ViewHandler implementation that deals with bubbling events from ContextBuilders that need to know
- * the ApplicationDomain and parent Context to use for the building process.
+ * the parent Context to use for the building process.
  * 
  * @author Jens Halm
  */
-public class ContextCreationHandler implements ViewHandler {
+public class ContextConfigurationHandler implements ViewHandler {
 
 
 	private var context:Context;
@@ -53,19 +53,19 @@ public class ContextCreationHandler implements ViewHandler {
 	 * @inheritDoc
 	 */
 	public function addViewRoot (view:DisplayObject) : void {
-		view.addEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
+		view.addEventListener(ContextConfigurationEvent.CONFIGURE_CONTEXT, contextCreated);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function removeViewRoot (view:DisplayObject) : void {
-		view.removeEventListener(ContextBuilderEvent.BUILD_CONTEXT, contextCreated);
+		view.removeEventListener(ContextConfigurationEvent.CONFIGURE_CONTEXT, contextCreated);
 	}
 	
-	private function contextCreated (event:ContextBuilderEvent) : void {
-		if (event.parent == null) {
-			event.parent = context;
+	private function contextCreated (event:ContextConfigurationEvent) : void {
+		if (event.config.parent == null) {
+			event.config.parent = context;
 		}
 		event.stopImmediatePropagation();
 	}
