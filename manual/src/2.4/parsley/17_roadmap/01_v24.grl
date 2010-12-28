@@ -25,7 +25,7 @@ The old #cdi CompositeContextBuilder #cdi interface already moved from public AP
 higher level APIs like the #cdi <ContextBuilder> #cdi tag or ContextBuilder DSL were introduced. Now it gets deprecated and replaced
 by a new #cdi BootstrapManager #cdi which more cleanly offers one central hook for all bootstrap configuration which is now also
 completely inherited from parent Context to child Context. The new home for global defaults is now #cdi BootstrapDefaults.config #cdi,
-replacing the old #cdi GlobalFactoryRegistry #cdi #par.
+replacing the old #cdi GlobalFactoryRegistry #cdi. #par
 
 
 

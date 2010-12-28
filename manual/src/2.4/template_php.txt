@@ -1,6 +1,6 @@
 <?php 
 	$project = "doc_parsley";
-	$page = "v_2.3_###";
+	$page = "v_2.4_###";
 
 	include("../../../../inc/standard_error.inc");
 	include("../../../../inc/mysql.inc");

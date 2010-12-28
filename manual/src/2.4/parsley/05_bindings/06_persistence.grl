@@ -1,7 +1,7 @@
 #sc2 bindings_persistence Persistent Properties #sc2
 
-#par A published property can be marked as persistent. Immediately after the object was instantiated it will 
-then receive the value from the last time the application ran : #par
+#par A published property can be marked as persistent. Immediately after the object gets instantiated it will 
+then receive the value from the last time the application ran: #par
 
 #cdb
 [PublishSubscribe(persistent="true",objectId="selectedContact")]
