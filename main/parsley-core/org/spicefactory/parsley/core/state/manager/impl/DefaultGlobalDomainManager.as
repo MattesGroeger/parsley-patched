@@ -38,8 +38,9 @@ public class DefaultGlobalDomainManager implements GlobalDomainManager {
 	private static const log:Logger = LogContext.getLogger(DefaultGlobalDomainManager);
 	
 	private const domainCounter:Dictionary = new Dictionary();
-	private const domainMap:Dictionary = new Dictionary();
+	private const domainByContext:Dictionary = new Dictionary();
 	private const domainPurgeHandlers:Dictionary = new Dictionary();
+	private const domainByCustomKey:Dictionary = new Dictionary();
 	
 	
 	/**
@@ -51,6 +52,19 @@ public class DefaultGlobalDomainManager implements GlobalDomainManager {
 		if (chain) chain.addDelegate(new Delegate(handler, params));
 	}
 	
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function putIfAbsent (key:Object, domain:ApplicationDomain) : ApplicationDomain {
+		if (domainByCustomKey[key]) {
+			log.info("Using registered ApplicationDomain for key " + key);
+			return domainByCustomKey[key] as ApplicationDomain;
+		}
+		log.info("Using new ApplicationDomain for key " + key);
+		domainByCustomKey[key] = domain;
+		return domain;
+	}
 	
 	/**
 	 * Manages the domain of the specified Context until it gets destroyed.
@@ -68,16 +82,16 @@ public class DefaultGlobalDomainManager implements GlobalDomainManager {
 		if (domainPurgeHandlers[domain] == undefined) {
 			domainPurgeHandlers[domain] = new DelegateChain();
 		}
-		domainMap[context] = domain;
+		domainByContext[context] = domain;
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed, false, -100);
 	}
 
 	private function contextDestroyed (event:ContextEvent) : void {
 		var context:Context = event.target as Context;
 		context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
-		var domain:ApplicationDomain = domainMap[context];
+		var domain:ApplicationDomain = domainByContext[context];
 		if (!domain) return;
-		delete domainMap[context];
+		delete domainByContext[context];
 		if (domainCounter[domain] == undefined) {
 			log.warn("No counter available for ApplicationDomain");
 			return;
@@ -92,6 +106,11 @@ public class DefaultGlobalDomainManager implements GlobalDomainManager {
 			var chain:DelegateChain = DelegateChain(domainPurgeHandlers[domain]);
 			if (chain) chain.invoke();
 			delete domainPurgeHandlers[domain];
+			for each (var key:Object in domainByCustomKey) {
+				if (domainByCustomKey[key] == domain) {
+					delete domainByCustomKey[key];
+				}
+			}
 		}
 	}
 	

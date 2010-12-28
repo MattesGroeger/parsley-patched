@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.bootstrap.impl {
+import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.bootstrap.ApplicationDomainProvider;
@@ -38,13 +39,13 @@ public class DefaultApplicationDomainProvider implements ApplicationDomainProvid
 	/**
 	 * @inheritDoc
 	 */
-	public function getDomainForView (view:DisplayObject) : ApplicationDomain {
+	public function getDomainForView (view:DisplayObject, domainManager:GlobalDomainManager) : ApplicationDomain {
 		try {
-			if (view.loaderInfo) {
-				return view.loaderInfo.applicationDomain;
+			if (view.loaderInfo && view.loaderInfo.applicationDomain) {
+				return domainManager.putIfAbsent(view.loaderInfo, view.loaderInfo.applicationDomain);
 			}
-			else if (view.root) {
-				return view.root.loaderInfo.applicationDomain;
+			else if (view.root && view.root.loaderInfo.applicationDomain) {
+				return domainManager.putIfAbsent(view.root.loaderInfo, view.root.loaderInfo.applicationDomain);
 			}
 		}
 		catch (e:Error) {

@@ -39,6 +39,24 @@ public interface GlobalDomainManager {
 	 */
 	function addPurgeHandler (domain:ApplicationDomain, handler:Function, ...params) : void;
 	
+	/**
+	 * Adds the specified domain if there is no existing domain instance for the same key.
+	 * The returned domain will either be the one from an existing mapping or the one 
+	 * passed to this method if no mapping existed yet. This helps optimizing domain
+	 * usage in the framework. If multiple Contexts get created in the same ApplicationDomain
+	 * it helps keep the reflection cache small if the same ApplicationDomain instance is used
+	 * then. This is not easy to accomplish as all Flex SDK methods like <code>ApplicationDomain.currentDomain</code>
+	 * always return a new instance even if it points to the same domain.
+	 * 
+	 * <p>This method is primarily intended to be used by <code>ApplicationDomainProvider</code> implementations.
+	 * 
+	 * @param key the key to register the ApplicationDomain with
+	 * @param domain the domain to add
+	 * @return either the ApplicationDomain from an existing mapping or the one 
+	 * passed to this method if no mapping existed yet
+	 */
+	function putIfAbsent (key:Object, domain:ApplicationDomain) : ApplicationDomain;
+	
 	
 }
 }

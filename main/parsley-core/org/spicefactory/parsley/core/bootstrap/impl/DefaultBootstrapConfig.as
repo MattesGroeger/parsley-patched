@@ -255,7 +255,7 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 		_scopeExtensions.parent = parentConfig.scopeExtensions;
 		
 		if (!_domain && _viewRoot && domainProvider) {
-			_domain = domainProvider.getDomainForView(viewRoot);
+			_domain = domainProvider.getDomainForView(viewRoot, stateManager.domains);
 		}
 		if (!_domain) {
 			_domain = (_parent) ? _parent.domain : ClassInfo.currentDomain;
@@ -348,3 +348,4 @@ class DefaultProperties implements ConfigurationProperties {
 	}
 	
 }
+

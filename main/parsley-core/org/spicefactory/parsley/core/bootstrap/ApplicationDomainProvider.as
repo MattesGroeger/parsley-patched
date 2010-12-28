@@ -15,8 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.bootstrap {
-import flash.system.ApplicationDomain;
+import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
+
 import flash.display.DisplayObject;
+import flash.system.ApplicationDomain;
 
 /**
  * Responsible for determining the ApplicationDomain based on a provided view instance.
@@ -32,8 +34,12 @@ public interface ApplicationDomainProvider {
 	 * Determines and returns the ApplicationDomain the specified DisplayObject belongs to.
 	 * If the domain cannot be specified, this method should return null. Errors should preferrably
 	 * only be logged but not rethrown.
+	 * 
+	 * @param view the view that acts as the first view root for a new Context
+	 * @param domainManager the manager that can be used to fetch existing domain instances to keep the reflection cache small
+	 * @return the ApplicationDomain the new Context should use for reflection
 	 */
-	function getDomainForView (view:DisplayObject) : ApplicationDomain;
+	function getDomainForView (view:DisplayObject, domainManager:GlobalDomainManager) : ApplicationDomain;
 	
 	
 }

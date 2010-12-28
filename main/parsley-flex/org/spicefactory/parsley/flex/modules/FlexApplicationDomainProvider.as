@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.modules {
+import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.bootstrap.impl.DefaultApplicationDomainProvider;
@@ -41,20 +42,20 @@ public class FlexApplicationDomainProvider extends DefaultApplicationDomainProvi
 	/**
 	 * @inheritDoc
 	 */
-	public override function getDomainForView (view:DisplayObject) : ApplicationDomain {
+	public override function getDomainForView (view:DisplayObject, domainManager:GlobalDomainManager) : ApplicationDomain {
 		try {
 			if (view is UIComponent && view.hasOwnProperty("moduleFactory")) {
 				var comp:Object = view;
 				var domain:ApplicationDomain = comp.moduleFactory.info().currentDomain;
 				if (domain) {
-					return domain; 
+					return domainManager.putIfAbsent(comp.moduleFactory, domain); 
 				}
 			}
 		}
 		catch (e:Error) {
 			log.error("Error trying to determine the ApplicationDomain: {0}", e);
 		}
-		return super.getDomainForView(view);
+		return super.getDomainForView(view, domainManager);
 	}
 	
 	
