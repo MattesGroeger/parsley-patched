@@ -13,7 +13,7 @@
 	
 	<target name="parsley_flash">
 		<antcall target="generate_api">
-			<param name="target.dir" value="parsley_flash"/>
+			<param name="target.dir" value="parsley-flash"/>
 			<param name="title" value="Parlsey - Spicelib - Flash"/>
 		</antcall>
 	</target>
