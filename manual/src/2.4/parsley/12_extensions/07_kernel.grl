@@ -1,19 +1,21 @@
 #sc2 extensions_kernel Replacing IOC Kernel Services #sc2
 
+#par (Note: Prior to version 2.4 kernel services required a dedicated factory. This is no longer needed, you can now
+simply specify the implementation class like shown in the following examples.) #par
+
 #par All central services of the IOC kernel live behind interfaces which can be replaced by custom implementations. 
 The replacement can be done globally or just for a single Context, in case you build a modular application with
 a hierarchy of multiple Contexts. #par
 
 #par In the following example the central #cdi ViewManager #cdi will be replaced globally by specifying
-a custom #cdi ViewManagerFactory #cdi: #par
+a custom implementation: #par
 
 #cdb
-GlobalFactoryRegistry.instance.viewManager = new MyCustomViewManagerFactory();
+BootstrapDefaults.config.services.viewManager.setImplementation(MyCustomViewManager);
 #cdb
 
-#par A dedicated factory interface exists for each of the seven kernel services. 
-You cannot specify the #cdi ViewManager #cdi instance directly, because a new instance will be created 
-for each new Context. If you want to replace the #cdi ViewManager #cdi for a single Context only,
+#par A new instance of your custom ViewManager will then be created for each new Context. 
+If you want to replace the #cdi ViewManager #cdi for a single Context (and its children) only,
 you can specify the factory with the #cdi ContextBuilder #cdi DSL: #par
 
 #cdb
@@ -21,7 +23,7 @@ var viewRoot:DisplayObject = ...;
 
 ContextBuilder.newSetup()
     .viewRoot(viewRoot)
-#hlt     .factories().viewManager(new MyCustomViewManagerFactory()) #hlt
+#hlt     .services().viewManager().setImplementation(MyCustomViewManager) #hlt
     .newBuilder()
         .config(FlexConfig.forClass(BookStoreConfig))
         .build();
@@ -49,29 +51,7 @@ package {
 
 // [imports...]
 
-public class LoggingViewManagerFactory implements ViewManagerFactory {
-
-    private var delegateFactory:ViewManagerFactory;
-    
-    function LoggingViewManagerFactory (delegate:ViewManagerFactory) {
-        this.delegateFactory = delegate;
-    }
-    
-    public function create (context:Context, domain:ApplicationDomain, 
-                            settings:ViewSettings) : ViewManager {
-                                
-        var delegate:ViewManager = delegateFactory.create(context, domain, settings);
-        return new LoggingViewManager(delegate);
-    }
-    
-    /* deprecated methods omitted, in Parsley 2.x they still must be implemented */
-    
-}
-}
-
-// [imports...]
-
-class LoggingViewManager implements ViewManager {
+public class LoggingViewManager implements ViewManager {
     
     private static const log:ILogger = Log.getLogger("com.foo.LoggingViewManager");
     
@@ -92,15 +72,42 @@ class LoggingViewManager implements ViewManager {
     }
     
 }
+}
 #cdb
 
-#par As you can see we are simply wrapping the #cdi ViewManager #cdi and the #cdi ViewManagerFactory #cdi.
-You can then apply this factory globally like this: #par
+#par As you can see all you need to do is implement the kernel interface (#cdi ViewManager #cdi in this example)
+like when replacing kernel services and then adding a constructor that accepts the real #cdi ViewManager #cdi as
+a delegate. You can then apply this decorator globally like this: #par
 
 #cdb
-GlobalFactoryRegistry.instance.viewManager
-    = new LoggingViewManagerFactory(GlobalFactoryRegistry.instance.viewManager);
+BootstrapDefaults.config.services.viewManager.addDecorator(LoggingViewManager);
 #cdb
+
+
+#sub Knowing your Environment #sub
+
+#par In many cases you may need access to the configuration settings or collaborating services or just the #cdi Context #cdi
+instance itself. This can be accomplished for service replacements and decorators through implementing the #cdi InitializingService #cdi
+interface: #par
+
+#cdb
+class SomeService implements ViewManager, #hlt InitializingService #hlt {
+
+    #hlt public function init (info:BootstrapInfo) : void { #hlt
+    }
+
+    public function addViewRoot (view:DisplayObject) : void {
+    }
+	
+    public function removeViewRoot (view:DisplayObject) : void {
+    }
+	
+}
+#cdb
+
+#par The #cdi BootstrapInfo #cdi class gives you access to all the other kernel services and the configuration settings for
+the Context your service instance belongs to. The #cdi init #cdi method will be invoked once after your service has been
+instantiated. #par
 
 #par The next section gives you an overview over all services that can be replaced or decorated. #par
 
@@ -108,7 +115,7 @@ GlobalFactoryRegistry.instance.viewManager
 #sub List of IOC Kernel Services #sub
 
 #tbl
-#tbr #cdi CompositeContextBuilder #cdi # Responsible for processing the configuration
+#tbr #cdi BootstrapManager #cdi # Responsible for processing the configuration
 and then building and initializing the #cdi Context #cdi. 
 May be fed with different types of #cdi ConfigurationProcessor #cdis, like the builtin
 ones for ActionScript, MXML or XML configuration. #tbr
@@ -130,4 +137,4 @@ configuring and disposing the actual instances described by those definitions. #
 #tbr #cdi ViewManager #cdi # Responsible for dynamically wiring views to the #cdi Context #cdi. #tbr
 #tbl
 
-#par All the services listed above can be replaced through the #cdi FactoryRegistry #cdi. #par
+#par All the services listed above can be replaced through the #cdi BootstrapDefaults #cdi. #par

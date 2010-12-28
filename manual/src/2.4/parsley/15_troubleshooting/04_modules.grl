@@ -51,12 +51,12 @@ module. Inside the module you have a view of type #cdi MyWindow #cdi that needs 
 find these three entries in the log output (intertwined with other logs): #par
 
 #cdb
-22:18:54.953 [INFO] org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder 
+22:18:54.953 [INFO] org.spicefactory.parsley.core.bootstrap.impl.DefaultBootstrapConfig
 Creating Context [Context(FlexConfig{MyRootConfig})] without parent
 
 [...]
 
-22:19:01.270 [INFO] org.spicefactory.parsley.core.builder.impl.DefaultCompositeContextBuilder 
+22:19:01.270 [INFO] org.spicefactory.parsley.core.bootstrap.impl.DefaultBootstrapConfig 
 Creating Context [Context(FlexConfig{MyModuleConfig})] 
 with parent [Context(FlexConfig{MyRootConfig})]
 

@@ -21,11 +21,11 @@ public function handleError (processor:MessageProcessor, error:Error) : void;
 
 #par Finally, since an error handler configured with the tag shown above always listens to a single
 scope, you may want to add an error handler that will be automatically attached to every scope created
-for an application. You can do that programmatically through the #cdi GlobalFactoryRegistry #cdi: #par
+for an application. You can do that programmatically through the #cdi BootstrapDefaults #cdi: #par
 
 #cdb
 var provider:ObjectProvider = Provider.forInstance(this);
 var handler:MessageErrorHandler 
                   = new DefaultMessageErrorHandler(provider, "handleError", Object);
-GlobalFactoryRegistry.instance.messageRouter.addErrorHandler(handler);
+BootstrapDefaults.config.messageSettings.addErrorHandler(handler);
 #cdb

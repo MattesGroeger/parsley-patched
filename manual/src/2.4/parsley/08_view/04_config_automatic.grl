@@ -20,7 +20,7 @@ is wired to the nearest Context in the hierarchy above the component. #par
 #par ActionScript #par
 
 #cdb
-GlobalFactoryRegistry.instance.viewManager.autowireFilter.enabled = true;
+BootstrapDefaults.config.viewSettings.autowireComponents = true;
 #cdb
 
 #par The line above must be executed before the first Context gets created. As you might expect the autowireFilter

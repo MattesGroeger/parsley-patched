@@ -131,7 +131,7 @@ is no converter, the application will run into a runtime error anyway. #par
 #par Finally a custom #cdi CommandFactory #cdi must be registered with the framework: #par
 
 #cdb
-var settings:MessageSettings = GlobalFactoryRegistry.instance.messageSettings;
+var settings:MessageSettings = BootstrapDefaults.config.messageSettings;
 settings.commandFactories.addCommandFactory(URLLoader, new URLLoaderCommandFactory());
 #cdb
 

@@ -1,65 +1,31 @@
-#sc2 overview_whatsnew_23 What's new in Parsley 2.3 #sc2
+#sc2 overview_whatsnew_24 What's new in Parsley 2.4 #sc2
 
-#par This section just lists the parts of the manual which are new or have been signifantly modified.
-It does not list sections which only saw minor modifications. 
-Currently only the changes already present in the current milestone release (2.3.M3) are
-listed here. This list will further grow before the final 2.3 release. #par
+#par This section only lists the parts of the manual which are new or have been signifantly modified.
+Currently only the changes already present in the current milestone release (2.4.M1) are
+listed here. This list will further grow before the final 2.4 release. #par
 
-
-#par #ref overview_intro #ref #par
-
-#lst
-#lse #ref overview_building #ref (new) #lse
-#lst
-
-#par #ref config_intro #ref #par
-
-#lst
-#lse #ref config_mxml #ref (modified for new #cdi <Objects> #cdi root tag) #lse
-#lse #ref config_dsl #ref (new) #lse
-#lse #ref config_combine #ref (rewritten) #lse
-#lse #ref config_properties #ref (new) #lse
-#lst
 
 #par #ref bindings_intro #ref #par
 
 #lst
-#lse The entire chapter is new. #lse
-#lst
-
-#par #ref lifecycle_intro #ref #par
-
-#lst
-#lse #ref lifecycle_dynamic #ref (rewritten) #lse
-#lst
-
-#par #ref view_intro #ref #par
-
-#lst
-#lse #ref view_lifecycle #ref (rewritten and expanded) #lse
-#lse #ref view_popup #ref (new section for support for Cairngorm 3 PopUp library) #lse
+#lse #ref bindings_persistence #ref (new) #lse
 #lst
 
 #par #ref extensions_intro #ref #par
+ 
+#lst
+#lse #ref extensions_scopes #ref (rewritten for new API) #lse
+#lse #ref extensions_kernel #ref (rewritten for new API) #lse
+#lst 
+
+#par #ref roadmap_intro #ref #par
 
 #lst
-#lse The entire chapter has been rewritten. Restructured, more content and adapted for the new configuration DSL. #lse
-#lst
-
-#par #ref troubleshooting_intro #ref #par
-
-#lst
-#lse The entire chapter is new. #lse
+#lse The entire chapter has been modified for the new release #lse
 #lst
 
 #par #ref tagref_intro #ref #par
 
 #lst
-#lse #ref tagref_tags_dynamicobject #ref (new tag) #lse
-#lse #ref tagref_bindings_publish #ref (new tag) #lse
-#lse #ref tagref_bindings_publish_subscribe #ref (new tag) #lse
-#lse #ref tagref_bindings_subscribe #ref (new tag) #lse
-#lse #ref tagref_messaging_commandcomplete #ref (new tag) #lse
-#lse #ref tagref_tags_dynamicproperty #ref (new tag) #lse
+#lse #ref tagref_bindings_publish_subscribe #ref (new attribute) #lse
 #lst
- 

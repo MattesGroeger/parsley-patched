@@ -1,8 +1,54 @@
 #sc2 roadmap_v24 Version 2.4 #sc2
 
-#par The road map for the next version is not fully specified yet. 
-Since it largely depends on user feedback, feel free to post on the forum if you are still missing something
-in the framework. #par
+#par There will be two milestone releases during the development of this version, followed by the final
+release and possibly one or two bugfix and maintenance releases. #par
+
+
+
+#sc3 roadmap_reflection_10_1 Support for new Reflection Features in Flash Player 10.1 ?done #sc3
+
+#par Flash Player 10.1 introduced a new reflection hook that avoids the use of XML like the old #cdi describeType #cdi
+function and uses JSON under the hood instead. Parsley 2.4 will automatically detect whether this new function
+is available and prefer this over the old approach and only fall back to XML for older Players. Since reflection
+is the major bottleneck for any IOC container in current Flash Players every performance optimization helps
+improve the situation. #par
+
+
+
+#sc3 roadmap_bootstrap Redesign Context Bootstrap Service ?done #sc3
+
+#par This change primarily affects developers writing extensions. It has no effect on normal application code. #par 
+
+#par While the other 6 IOC kernel services are already stabilizing and won't be touched in version 2.4 (apart from small
+enhancements for the core messaging logic), one of the 7 kernel services needed a larger refactoring (basically a rewrite).
+The old #cdi CompositeContextBuilder #cdi interface already moved from public API to internal API over the last releases where
+higher level APIs like the #cdi <ContextBuilder> #cdi tag or ContextBuilder DSL were introduced. Now it gets deprecated and replaced
+by a new #cdi BootstrapManager #cdi which more cleanly offers one central hook for all bootstrap configuration which is now also
+completely inherited from parent Context to child Context. The new home for global defaults is now #cdi BootstrapDefaults.config #cdi,
+replacing the old #cdi GlobalFactoryRegistry #cdi #par.
+
+
+
+#sc3 roadmap_config_properties Configuration Properties inherited by Child Contexts ?done #sc3
+
+#par The new #ref config_properties #ref introduced in version 2.3 are now inherited by child Contexts.
+Previously they were only available for the one Context they were loaded into, so that they had to be loaded
+multiple times if they were needed in more than just one Context. #par
+
+
+
+#sc3 roadmap_modules Simplify Support for Flex Modules ?done #sc3
+
+#par Version 2.1 to 2.3 installed a wrapper around the original Flex #cdi ModuleManager #cdi, implementing the
+#cdi IModuleInfo #cdi interface itself. While this worked reasonably well, it turned out to be unnecessary overhead,
+as the major goal for that wrapper was to detect and remember the #cdi ApplicationDomain #cdi to use for each
+Context getting built. This task is now performed by a much simpler service, which can also be replaced.
+The default implementation looks for the #cdi moduleFactory #cdi property of the first view root for each new
+Context and retrieves the domain from there. In Flash Applications the default looks for the 
+#cdi viewRoot.root.loaderInfo #cdi property. #par
+
+#par If any of the automatic approaches does not work, the #cdi ApplicationDomain #cdi can still be specified
+explicitly like in previous versions. #par
 
 
 
@@ -55,6 +101,8 @@ function get state () : MessageState; // active, cancelled, suspended
 function get scope () : Scope;
 
 function get senderContext () : Context;
+
+function sendResponse (msg:Object, selector:* = null) : void;
 #cdb
 
 #par Apart from the changes outlined above the #cdi [MessageInterceptor] #cdi tag would be deprecated. It would still
@@ -116,78 +164,49 @@ would allow to receive remote messages in a regular #cdi [MessageHandler] #cdi f
 
 
 
-#sc3 roadmap_shared_modules Shared Module Dependencies #sc3
+#sc3 roadmap_default_scope Allow to Switch the Default Scope for Message Receivers #sc3
 
-#par #url http://opensource.powerflasher.com/jira/browse/PSL-508 Jira Ticket for Comments #url #par
+#par This is a much requested feature. In current versions the default scope for message receivers is always the global scope.
+This is a reasonable choice for smaller applications, in particular when only one Context gets created and scoping is not 
+relevant anyway. But in larger applications this quickly becomes a burden, as objects in modular applications often need to 
+predominantly use the local scope to avoid stepping on each other toes. #par
 
-#par In addition to the existing support for modular applications the next version might support
-more complex scenarios like shared module dependencies that will be lazily loaded on demand. 
-No details have been specified yet, so if have a particular use case that is not well supported currently
-feel free to post on the forum. #par
-
-
-
-#sc3 roadmap_task_commands Easier Setup for Tasks as Commands #sc3
-
-#par #url http://opensource.powerflasher.com/jira/browse/PSL-362 Jira Ticket for Comments #url #par
-
-#par Often a Task based DynamicCommand does not do much more in the execution method than creating a Task instance, passing some
-data from the message to the Task and returning it. This could be simplified through dedicated tags
-for declaring Task based commands: #par
+#par Therefor the next version will finally allow to simply switch the default: #par
 
 #cdb
-<TaskCommand type="{MyCustomTask}" messageType="{LoginMessage}" />
-
-<TaskGroupCommand messageType="{LoginMessage}">
-    <NestedObject type="{LoginTask}"/>
-    <ObjectRef idRef="loadPreferencesTask"/>
-    <ObjectRef typeRef="{StartPresentationTask}"/>
-</TaskGroupCommand>
+<parsley:ContextBuilder config="...">
+    <parsley:MessageSettings defaultReceiverScope="local"/>
+</parsley:ContextBuilder> 
 #cdb
 
-#par Two new tags would be introduced, one for declaring a single Task and one for a group of Tasks to be run sequentially or
-concurrently. When declaring a group all the regular tags for defining objects or references would be permitted as child tags. #par
 
-#par Metadata could be used to inject the message itself into the Task: #par
 
-#cdb
-[TriggerMessage]
-public var msg:LoginMessage;
-#cdb
+#sc3 roadmap_view_lifecycle Pluggable ViewLifecycleManagers #sc3
 
-#par Or alternatively just a single property of the message which is particularly useful for TaskGroups where 
-each individual Task might only be interested in one aspect of the message: #par
+#par When the automatic removal of views or view roots kicks in, it is currently always based on stage events.
+The only alternative is to switch that feature off and manually destroy the Context or remove the view from the Context. #par
+
+#par Since some Flex Components like AIR windows have flaky stage events, the default mechanism cannot be used here.
+A new hook could be used to avoid manual disposal through specifying a different lifecycle management for certain UI components: #par
 
 #cdb
-[TriggerMessage("username")]
-public var username:String;
+<parsley:ContextBuilder config="...">
+    <parsley:ViewLifecycle type="{Window}">
+        <custom:MyAirWindowLifecycle/>
+    </parsley:ViewLifecycle>
+</parsley:ContextBuilder>    
 #cdb
 
-#par Finally there might be existing Tasks where it's not possible to add metadata. Special child tags for declaring
-the Task might allow to specifiy the property of the message to inject and the property of the Task as the injection 
-target: #par
-
-#cdb
-<TaskGroupCommand messageType="{LoginMessage}">
-    <Task type="{LoginTask}" messageProperty="username" injectionTarget="username"/>
-    <Task type="{LoadPreferencesTask}" injectionTarget="message"/>
-</TaskGroupCommand>
-#cdb
-
-#par When #cdi messageProperty #cdi is not specified the entire message instance will be injected. #par
-
-#par In cases where a message needs data retrieved by one of the preceding tasks, a recommended pattern could be
-to pass data in the message instance itself. #par
 
 
 
-#sc3 roadmap_testing Testing Utilities #sc3
 
-#par #url http://opensource.powerflasher.com/jira/browse/PSL-453 Jira Ticket for Comments #url #par
 
-#par The UnitTests for Spicelib and Parsley already contain a bunch of classes that help with common tasks when
-testing classes which are normally managed by Parsley. That may be a mock function to inject into a property
-which usually holds a MessageDispatcher and now does nothing but counting the number of dispatched messages and
-their types and selectors. These classes are currently hidden in the internal TestSuites and not available
-in a SWC to use in application tests. These utilities should be polished and expanded and then released
-as a separate #cdi parsley-test-2.4.0.swc #cdi. #par
+    
+
+
+
+
+
+
+

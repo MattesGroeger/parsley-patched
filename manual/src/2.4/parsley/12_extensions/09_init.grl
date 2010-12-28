@@ -15,7 +15,7 @@ setup to make the extension available for that Context. #par
 #par Child tags of #cdi <ContextBuilder #cdi have to implement the #cdi ContextBuilderProcessor #cdi interface: #par
 
 #cdb
-public class NavigationSupportTag implements ContextBuilderProcessor {
+public class NavigationSupportTag implements BootstrapConfigProcessor {
 
     private static var initialized:Boolean = false;
 
@@ -25,15 +25,16 @@ public class NavigationSupportTag implements ContextBuilderProcessor {
         Metadata.registerMetadataClass(EnterScreenDecorator);
         Metadata.registerMetadataClass(ExitScreenDecorator);
 
-        var factory:ScopeExtensionFactory = new NavigationManagerFactory();
-        GlobalFactoryRegistry.instance.scopeExtensions.addExtension(factory);
+        BootstrapDefaults.config.scopeExtensions
+            .forType(NavigationManager)
+            .setImplementation(DefaultNavigationManager);
     
         [...]
         
         initialized = true;
     }
 
-    public function processBuilder (builder:CompositeContextBuilder) : void {
+    public function processConfig (config:BootstrapConfig) : void {
         initialize();
     }
     
