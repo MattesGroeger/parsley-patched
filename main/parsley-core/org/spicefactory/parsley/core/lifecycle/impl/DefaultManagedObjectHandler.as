@@ -201,8 +201,7 @@ public class DefaultManagedObjectHandler implements ManagedObjectHandler {
  			listener(target.instance, target.context);
 		}	
 		
-		var id:String = target.definition.id;
-		manager.processObservers(target.instance, event, id);
+		manager.processObservers(target, event);
 	}
 	
 	private function checkState (expected:String) : void {

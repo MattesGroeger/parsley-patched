@@ -20,7 +20,7 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
-import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
+import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.processor.messaging.receiver.DefaultCommandObserver;
@@ -59,7 +59,7 @@ public class DynamicCommandBuilder {
 	private var _error:String;
 	
 	private var targetDef:DynamicObjectDefinition;
-	private var target:CommandTarget;
+	private var target:MessageTarget;
 
 
 	/**
@@ -207,7 +207,7 @@ public class DynamicCommandBuilder {
 		/* message receivers will be created on demand - we create mocks here just for using
 		   the validation logic of these receiver implementations early */
 		var provider:ObjectProvider = new MockObjectProvider(targetDef.type);
-		var invoker:CommandTarget 
+		var invoker:DefaultCommandTarget 
 				= new DefaultCommandTarget(provider, _execute, _selector, messageInfo, _messageProperties, _order);
 		messageInfo = ClassInfo.forClass(invoker.messageType, targetDef.registry.domain);
 		
@@ -227,14 +227,14 @@ public class DynamicCommandBuilder {
 		target = new DynamicCommandProxy(messageInfo, _selector, _order, targetDef.registry.context, targetDef, _stateful,
 				invoker.returnType, _execute, _result, _error, _messageProperties);
 				
-		targetDef.registry.context.scopeManager.getScope(_scope).messageReceivers.addCommand(target);
+		targetDef.registry.context.scopeManager.getScope(_scope).messageReceivers.addTarget(target);
 		
 		targetDef.registry.context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
 
 	
 	private function contextDestroyed (event:ContextEvent) : void {
-		Context(event.target).scopeManager.getScope(_scope).messageReceivers.removeCommand(target);
+		Context(event.target).scopeManager.getScope(_scope).messageReceivers.removeTarget(target);
 	}
 }
 }

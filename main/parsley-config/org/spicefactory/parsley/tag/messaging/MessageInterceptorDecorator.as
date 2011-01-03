@@ -18,26 +18,17 @@ package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
+[Deprecated(replacement="MessageHandlerDecorator with optional MessageProcessor parameter on target method")]
 [Metadata(name="MessageInterceptor", types="method", multiple="true")]
 [XmlMapping(elementName="message-interceptor")]
 /**
- * Represents a Metadata, MXML or XML tag that can be used on methods that want to intercept messages of a particular type
- * dispatched through Parsleys central message router.
- * 
  * @author Jens Halm
  */
 public class MessageInterceptorDecorator extends MessageReceiverDecoratorBase implements ObjectDefinitionDecorator {
 
-
 	[Target]
-	/**
-	 * The name of the interceptor method.
-	 */
 	public var method:String;
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function decorate (builder:ObjectDefinitionBuilder) : void {
 		builder
 			.method(method)
@@ -47,7 +38,6 @@ public class MessageInterceptorDecorator extends MessageReceiverDecoratorBase im
 					.selector(selector)
 					.order(order);
 	}
-	
 	
 }
 

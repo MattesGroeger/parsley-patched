@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.rpc.flex.command {
+import org.spicefactory.parsley.core.messaging.Message;
 import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandFactory;
 
@@ -31,13 +32,14 @@ public class AsyncTokenCommandFactory implements CommandFactory {
 	/**
 	 * @inheritDoc
 	 */
-	public function createCommand (returnValue:Object, message:Object, selector:* = undefined) : Command {
-		return new AsyncTokenCommand(AsyncToken(returnValue), message, selector);
+	public function createCommand (returnValue:Object, message:Message) : Command {
+		return new AsyncTokenCommand(AsyncToken(returnValue), message);
 	}
 }
 }
 
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.messaging.Message;
 import org.spicefactory.parsley.core.messaging.command.impl.AbstractCommand;
 
 import mx.rpc.AsyncToken;
@@ -52,8 +54,8 @@ class AsyncTokenCommand extends AbstractCommand {
 
 	private var token:AsyncToken;
 
-	function AsyncTokenCommand (token:AsyncToken, message:Object, selector:*) {
-		super(token, message, selector);
+	function AsyncTokenCommand (token:AsyncToken, message:Message) {
+		super(token, message);
 		this.token = token;
 		token.addResponder(new Responder(complete, error));
 		token.addEventListener(Event.CANCEL, operationCanceled);

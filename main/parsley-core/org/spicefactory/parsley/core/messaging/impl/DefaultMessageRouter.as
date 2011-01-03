@@ -18,16 +18,20 @@ package org.spicefactory.parsley.core.messaging.impl {
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
-import org.spicefactory.parsley.core.messaging.MessageProcessor;
+import org.spicefactory.parsley.core.messaging.Message;
+import org.spicefactory.parsley.core.messaging.MessageReceiverCache;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.messaging.MessageSettings;
+import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandManager;
+import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.command.impl.DefaultCommandManager;
+import org.spicefactory.parsley.core.messaging.command.impl.DefaultCommandObserverProcessor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
 import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 
-import flash.system.ApplicationDomain;
+import flash.errors.IllegalOperationError;
 
 /**
  * Default implementation of the MessageRouter interface.
@@ -43,8 +47,8 @@ public class DefaultMessageRouter implements MessageRouter {
 	private var _receivers:DefaultMessageReceiverRegistry;
 	private var _commandManager:DefaultCommandManager;
 	
-	private var env:MessagingEnvironment;
 	private var isLifecylceEventRouter:Boolean;
+	private var settings:MessageSettings;
 	
 	
 	/**
@@ -57,34 +61,79 @@ public class DefaultMessageRouter implements MessageRouter {
 	}
 
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function init (settings:MessageSettings, domainManager:GlobalDomainManager, isLifecylceEventRouter:Boolean) : void {
 		this.isLifecylceEventRouter = isLifecylceEventRouter;
 		_receivers = new DefaultMessageReceiverRegistry(domainManager);
-		env = new DefaultMessagingEnvironment(_commandManager, settings.commandFactories, settings.unhandledError);
 		for each (var handler:MessageErrorHandler in settings.errorHandlers) {
 			_receivers.addErrorHandler(handler);
 		}
+		this.settings = settings;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getReceiverCache (type:ClassInfo) : MessageReceiverCache {
+		return _receivers.getSelectionCache(type);
 	}
 	
+	private function getEffectiveCache (message:Message, 
+			receiverKind:MessageReceiverKind, joinCaches:Array) : MessageReceiverCache {
+		var cache:MessageReceiverCache = getReceiverCache(message.type);
+		if (joinCaches) {
+			cache = new MergedMessageReceiverCache(joinCaches.concat([cache]));
+		}
+		return (cache.getReceivers(receiverKind, message.selector).length > 0) ? cache : null;
+	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function dispatchMessage (message:Object, domain:ApplicationDomain, selector:* = undefined) : void {
-		if (domain == null) domain = ClassInfo.currentDomain;
-		var messageType:ClassInfo = ClassInfo.forInstance(message, domain);
-		var cache:MessageReceiverSelectionCache = _receivers.getSelectionCache(messageType);
-		var actualSelector:* = (selector == undefined) ? cache.getSelectorValue(message) : selector;
-		if (!cache.hasFirstLevelTargets(actualSelector)) {
+	public function dispatchMessage (message:Message, receiverCaches:Array = null) : void {
+		if (!message.selector) {
+			message.selector = _receivers.getSelectionCache(message.type).getSelectorValue(message.instance);
+		}
+		var cache:MessageReceiverCache = getEffectiveCache(message, MessageReceiverKind.TARGET, receiverCaches);
+		if (!cache) {
 			if (!isLifecylceEventRouter && log.isDebugEnabled()) {
-				//log.debug("Discarding message '{0}': no matching receiver", message);
+				log.debug("Discarding message '{0}': no matching receiver", message.instance);
 			}
 			return;
 		}
-		var processor:MessageProcessor 
-				= new DefaultMessageProcessor(message, messageType, cache, actualSelector, env);
-		processor.proceed();
+		var processor:DefaultMessageProcessor = new DefaultMessageProcessor(message, cache, settings);
+		processor.start();
 	}	
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function observeCommand (command:Command, observerCaches:Array = null) : void {
+		if (isLifecylceEventRouter) {
+			throw new IllegalOperationError("Lifecycle router does not support command observers");
+		}
+		_commandManager.addActiveCommand(command);
+		if (observerCaches) {
+			command.addStatusHandler(handleCommand, observerCaches);
+			handleCommand(command, observerCaches, CommandStatus.EXECUTE);
+		}
+	}
+	
+	private function handleCommand (command:Command, joinCaches:Array, status:CommandStatus = null) : void {	
+		if (!status) status = command.status;
+		var cache:MessageReceiverCache = getEffectiveCache(command.message, MessageReceiverKind.forCommandStatus(status), joinCaches);
+		if (!cache && !command.hasObserver(status)) {
+			if (log.isDebugEnabled()) {
+				log.debug("Discarding command status {0} for message '{1}': no matching observer", status, command.message.instance);
+			}
+			return;
+		}
+		var processor:DefaultCommandObserverProcessor 
+				= new DefaultCommandObserverProcessor(command, cache, settings, status);
+		processor.start();
+	}
 	
 	/**
 	 * @inheritDoc
@@ -99,46 +148,30 @@ public class DefaultMessageRouter implements MessageRouter {
 	public function get commandManager () : CommandManager {
 		return _commandManager;
 	}
-	
-	
 }
 }
 
-import org.spicefactory.parsley.core.messaging.ErrorPolicy;
-import org.spicefactory.parsley.core.messaging.command.Command;
-import org.spicefactory.parsley.core.messaging.command.CommandFactory;
-import org.spicefactory.parsley.core.messaging.command.CommandFactoryRegistry;
-import org.spicefactory.parsley.core.messaging.command.impl.DefaultCommandManager;
-import org.spicefactory.parsley.core.messaging.impl.MessagingEnvironment;
+import org.spicefactory.parsley.core.messaging.MessageReceiverCache;
+import org.spicefactory.parsley.core.messaging.impl.MessageReceiverKind;
 
-class DefaultMessagingEnvironment implements MessagingEnvironment {
+class MergedMessageReceiverCache implements MessageReceiverCache {
 
-
-	private var _unhandledError:ErrorPolicy;
-	private var commandManager:DefaultCommandManager;
-	private var commandFactories:CommandFactoryRegistry;
+	private var caches:Array;
 	
-	
-	function DefaultMessagingEnvironment (commandManager:DefaultCommandManager, 
-			commandFactories:CommandFactoryRegistry, unhandledError:ErrorPolicy) {
-		this.commandManager = commandManager;
-		this.commandFactories = commandFactories;
-		_unhandledError = unhandledError;
+	function MergedMessageReceiverCache (caches:Array) {
+		this.caches = caches;
 	}
 
-	
-	public function getCommandFactory (type:Class) : CommandFactory {
-		return commandFactories.getCommandFactory(type);
+	public function getReceivers (kind:MessageReceiverKind, selector:*) : Array {
+		var receivers:Array = new Array();
+		for each (var cache:MessageReceiverCache in caches) {
+			var merge:Array = cache.getReceivers(kind, selector);
+			if (merge.length > 0) {
+				receivers = (receivers.length > 0) ? receivers.concat(merge) : merge;
+			}
+		}
+		return receivers;
 	}
-	
-	public function addActiveCommand (command:Command) : void {
-		commandManager.addActiveCommand(command);
-	}
-
-	public function get unhandledError () : ErrorPolicy {
-		return _unhandledError;
-	}
-	
 	
 }
 

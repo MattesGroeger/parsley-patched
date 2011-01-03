@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,14 @@
  */
 
 package org.spicefactory.parsley.core.messaging.command {
+import org.spicefactory.parsley.core.messaging.MessageProcessor;
 
 /**
- * Processor to be passed to CommandTargets.
- * 
  * @author Jens Halm
  */
-public interface CommandProcessor {
+public interface CommandObserverProcessor extends MessageProcessor {
 	
-	/**
-	 * The message that triggered Command execution.
-	 */
-	function get message () : Object;
-	
-	/**
-	 * Processes the specified return value and returns a new Command instance.
-	 * 
-	 * @param returnValue the value returned by the method that executed the command
-	 * @return a new Command instance
-	 */
-	function process (returnValue:*) : Command;
-	
+	function get command () : Command;
 	
 }
 }

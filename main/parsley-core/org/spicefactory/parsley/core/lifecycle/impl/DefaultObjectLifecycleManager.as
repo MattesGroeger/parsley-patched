@@ -15,16 +15,19 @@
  */
 
 package org.spicefactory.parsley.core.lifecycle.impl {
-import org.spicefactory.parsley.core.state.manager.GlobalObjectManager;
 import org.spicefactory.lib.util.ArrayUtil;
 import org.spicefactory.parsley.core.bootstrap.BootstrapInfo;
 import org.spicefactory.parsley.core.bootstrap.InitializingService;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.lifecycle.ManagedObject;
 import org.spicefactory.parsley.core.lifecycle.ManagedObjectHandler;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycleManager;
+import org.spicefactory.parsley.core.messaging.Message;
+import org.spicefactory.parsley.core.messaging.impl.DefaultMessage;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.scope.impl.ScopeInfo;
+import org.spicefactory.parsley.core.state.manager.GlobalObjectManager;
 
 import flash.system.ApplicationDomain;
 
@@ -76,11 +79,13 @@ public class DefaultObjectLifecycleManager implements ObjectLifecycleManager, In
 	/**
 	 * @private
 	 */	
-	internal function processObservers (instance:Object, event:ObjectLifecycle, id:String = null) : void {
+	internal function processObservers (target:ManagedObject, event:ObjectLifecycle) : void {
 		for each (var scope:ScopeInfo in scopes) {
-			scope.lifecycleEventRouter.dispatchMessage(instance, domain, event.key);
-			if (id != null) {
-				scope.lifecycleEventRouter.dispatchMessage(instance, domain, event.key + ":" + id);				
+			var msg:Message = new DefaultMessage(target.instance, target.definition.type, event.key);
+			scope.lifecycleEventRouter.dispatchMessage(msg);
+			if (target.definition.id != null) {
+				msg = new DefaultMessage(target.instance, target.definition.type, event.key + ":" + target.definition.id);
+				scope.lifecycleEventRouter.dispatchMessage(msg);				
 			}
 		}
 	}

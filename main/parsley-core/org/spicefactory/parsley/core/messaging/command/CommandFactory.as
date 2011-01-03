@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.command {
+import org.spicefactory.parsley.core.messaging.Message;
 
 /**
  * A factory responsible for creating Command instances based on the return value of
@@ -32,10 +33,9 @@ public interface CommandFactory {
 	 * 
 	 * @param returnValue the value returned by the method that executed the command
 	 * @param message the message that triggered the command execution
-	 * @param selector the selector value of the message
 	 * @return a new Command instance 
 	 */
-	function createCommand (returnValue:Object, message:Object, selector:* = undefined) : Command;
+	function createCommand (returnValue:Object, message:Message) : Command;
 	
 	
 }

@@ -15,23 +15,24 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver.impl {
-import flash.system.ApplicationDomain;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.provider.Provider;
+import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.command.Command;
-import org.spicefactory.parsley.core.messaging.command.CommandProcessor;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
-import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
+import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
+
+import flash.system.ApplicationDomain;
 
 [Deprecated(replacement="same class in new parsley.processor.messaging.receiver package")]
 /**
  * @author Jens Halm
  */
-public class DynamicCommandProxy extends AbstractMessageReceiver implements CommandTarget {
+public class DynamicCommandProxy extends AbstractMessageReceiver implements MessageTarget {
 	
 	private var context:Context;
 	private var definition:DynamicObjectDefinition;
@@ -79,7 +80,7 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 		return _returnType;
 	}
 	
-	public function executeCommand (processor:CommandProcessor) : void {
+	public function handleMessage (processor:MessageProcessor) : void {
 		
 		var object:DynamicObject = createObject();
 		
@@ -91,7 +92,7 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 					selector, messageInfo, messageProperties, order);
 					
 			var returnValue:* = invoker.invoke(processor.message);
-			command = processor.process(returnValue);
+			command = processor.createCommand(returnValue);
 		}
 		catch (e:Error) {
 			object.remove();
@@ -140,15 +141,16 @@ public class DynamicCommandProxy extends AbstractMessageReceiver implements Comm
 }
 }
 
-import flash.system.ApplicationDomain;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.DynamicObject;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.context.provider.Provider;
-import org.spicefactory.parsley.core.messaging.command.Command;
+import org.spicefactory.parsley.core.messaging.command.CommandObserverProcessor;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultCommandObserver;
 import org.spicefactory.parsley.core.messaging.receiver.impl.DefaultCommandTarget;
+
+import flash.system.ApplicationDomain;
 
 class DynamicCommandTarget extends DefaultCommandTarget {
 	
@@ -189,9 +191,9 @@ class DynamicCommandObserver extends DefaultCommandObserver {
 		this.stateful = stateful;
 	}
 
-	public override function observeCommand (command:Command) : void {
+	public override function observeCommand (processor:CommandObserverProcessor) : void {
 		try {
-			super.observeCommand(command);
+			super.observeCommand(processor);
 		}
 		finally {
 			if (!stateful) {

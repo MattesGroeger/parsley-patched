@@ -20,7 +20,7 @@ import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.messaging.command.Command;
+import org.spicefactory.parsley.core.messaging.command.CommandObserverProcessor;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
 import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
@@ -57,7 +57,7 @@ public class DefaultCommandObserver extends AbstractMethodReceiver implements Co
 
 	private function getMessageType (provider:ObjectProvider, methodName:String, 
 			explicitType:ClassInfo, supportsResult:Boolean) : Class {
-		maxParams = (supportsResult) ? 2 : 1;
+		maxParams = (supportsResult) ? 3 : 2;
 		var targetMethod:Method = provider.type.getMethod(methodName);
 		if (targetMethod == null) {
 			throw new ContextError("Target instance of type " + provider.type.name 
@@ -66,10 +66,10 @@ public class DefaultCommandObserver extends AbstractMethodReceiver implements Co
 		var params:Array = targetMethod.parameters;
 		if (params.length > maxParams) {
 			throw new ContextError("Target " + targetMethod  
-				+ ": At most " + maxParams + " parameter(s) allowed for this type of Command handler.");
+				+ ": At most " + maxParams + " parameter(s) allowed for this type of Command Observer.");
 		}
 		if (params.length == maxParams) {
-			return getMessageTypeFromParameter(targetMethod, maxParams - 1, explicitType);
+			return getMessageTypeFromParameter(targetMethod, maxParams - 2, explicitType);
 		}
 		else if (explicitType != null) {
 			return explicitType.getClass();
@@ -78,17 +78,30 @@ public class DefaultCommandObserver extends AbstractMethodReceiver implements Co
 	}
 		
 	/**
+	 * @private
+	 */
+	public override function get order () : int {
+		if (super.order != int.MAX_VALUE) {
+			return super.order;
+		}
+		return (targetMethod.parameters.length == maxParams) ? int.MIN_VALUE : int.MAX_VALUE;
+	}
+	
+	/**
 	 * @inheritDoc
 	 */
-	public function observeCommand (command:Command) : void {
+	public function observeCommand (processor:CommandObserverProcessor) : void {
 		var paramTypes:Array = targetMethod.parameters;
 		var params:Array = new Array();
-		if (paramTypes.length >= 1 && maxParams == 2) {
+		if (paramTypes.length >= 1 && maxParams == 3) {
 			var resultType:ClassInfo = Parameter(paramTypes[0]).type;
-			params.push(command.getResult(resultType));
+			params.push(processor.command.getResult(resultType));
+		}
+		if (paramTypes.length >= maxParams - 1) {
+			params.push(processor.message);
 		}
 		if (paramTypes.length == maxParams) {
-			params.push(command.message);
+			params.push(processor);
 		}
 		targetMethod.invoke(provider.instance, params);
 	}

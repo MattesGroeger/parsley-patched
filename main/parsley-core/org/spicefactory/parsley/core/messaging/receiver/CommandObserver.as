@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.receiver {
-import org.spicefactory.parsley.core.messaging.command.Command;
+import org.spicefactory.parsley.core.messaging.command.CommandObserverProcessor;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 
 /**
@@ -32,10 +32,12 @@ public interface CommandObserver extends MessageReceiver {
 	
 	/**
 	 * Invoked when a matching command starts or finishes its execution.
+	 * The specified processor may be used to control the processing of remaining observers,
+	 * like canceling or suspending the processor.
 	 * 
-	 * @param command the Command instance that starts or finishes executing
+	 * @param processor the processor for the command observer
 	 */
-	function observeCommand (command:Command) : void;
+	function observeCommand (processor:CommandObserverProcessor) : void;
 	
 	
 }

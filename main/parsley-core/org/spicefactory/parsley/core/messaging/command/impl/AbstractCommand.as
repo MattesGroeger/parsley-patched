@@ -15,17 +15,18 @@
  */
 
 package org.spicefactory.parsley.core.messaging.command.impl {
-	import flash.events.IEventDispatcher;
-	import flash.events.Event;
-	import flash.events.TimerEvent;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.util.Delegate;
 import org.spicefactory.lib.util.DelegateChain;
+import org.spicefactory.parsley.core.messaging.Message;
 import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
 
+import flash.events.Event;
+import flash.events.IEventDispatcher;
+import flash.events.TimerEvent;
 import flash.utils.Timer;
 
 /**
@@ -38,8 +39,7 @@ import flash.utils.Timer;
 public class AbstractCommand implements Command {
 
 
-	private var _message:Object;
-	private var _selector:*;
+	private var _message:Message;
 	private var _returnValue:*;
 	private var _result:*;
 
@@ -55,28 +55,23 @@ public class AbstractCommand implements Command {
 	 * 
 	 * @param returnValue the value returned by the method executing the command
 	 * @param message the message that triggered the command execution
-	 * @param selector the selector for the message
 	 */
-	function AbstractCommand (returnValue:*, message:Object, selector:*) {
+	function AbstractCommand (returnValue:*, message:Message) {
 		synchronous = true;
 		_returnValue = returnValue;
 		_message = message;
-		_selector = selector;
 		_status = CommandStatus.EXECUTE;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function get message () : Object {
+	public function get message () : Message {
 		return _message;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function get selector () : * {
-		return _selector;
+		return _message.selector;
 	}
 	
 	/**
@@ -227,6 +222,18 @@ public class AbstractCommand implements Command {
 		_observers.push(observer);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function hasObserver (status:CommandStatus) : Boolean {
+		for each (var observer:CommandObserver in _observers) {
+			if (observer.status == status) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * @inheritDoc
 	 */

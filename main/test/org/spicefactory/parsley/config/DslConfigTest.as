@@ -27,7 +27,7 @@ public class DslConfigTest {
 				.build();	
 		context.scopeManager.dispatchMessage(Object);
 		assertThat(MessageRouterDecorator.initCount, equalTo(4));
-		assertThat(MessageRouterDecorator.messageCount, equalTo(2));
+		assertThat(MessageRouterDecorator.messageCount, equalTo(1));
 	}
 	
 	[Test]
@@ -58,13 +58,15 @@ public class DslConfigTest {
 }
 }
 
-import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
+import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.messaging.Message;
+import org.spicefactory.parsley.core.messaging.MessageReceiverCache;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.MessageRouter;
 import org.spicefactory.parsley.core.messaging.MessageSettings;
+import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandManager;
-
-import flash.system.ApplicationDomain;
+import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 
 class MessageRouterDecorator implements MessageRouter {
 	
@@ -83,11 +85,19 @@ class MessageRouterDecorator implements MessageRouter {
 		delegate.init(settings, domainManager, isLifecylceEventRouter);
 	}
 	
-	public function dispatchMessage (message:Object, domain:ApplicationDomain, selector:* = undefined) : void {
-		messageCount++;
-		delegate.dispatchMessage(message, domain);
+	public function getReceiverCache (type:ClassInfo) : MessageReceiverCache {
+		return delegate.getReceiverCache(type);
 	}
 	
+	public function dispatchMessage (message:Message, joinCaches:Array = null) : void {
+		messageCount++;
+		delegate.dispatchMessage(message, joinCaches);
+	}
+
+	public function observeCommand (command:Command, joinCaches:Array = null) : void {
+		delegate.observeCommand(command, joinCaches);
+	}
+
 	public function get receivers () : MessageReceiverRegistry {
 		return delegate.receivers;
 	}

@@ -19,8 +19,8 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandManager;
+import org.spicefactory.parsley.core.messaging.command.CommandObserverProcessor;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
 import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
@@ -81,7 +81,7 @@ public class CommandStatusFlag extends AbstractObjectProviderReceiver implements
 	/**
 	 * @inheritDoc
 	 */
-	public function observeCommand (command:Command) : void {
+	public function observeCommand (processor:CommandObserverProcessor) : void {
 		property.setValue(provider.instance, manager.hasActiveCommands(messageType, selector));
 	}
 	

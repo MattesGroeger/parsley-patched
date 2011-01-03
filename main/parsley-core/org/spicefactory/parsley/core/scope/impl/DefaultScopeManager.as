@@ -18,10 +18,11 @@ package org.spicefactory.parsley.core.scope.impl {
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.bootstrap.BootstrapInfo;
 import org.spicefactory.parsley.core.bootstrap.InitializingService;
+import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.scope.Scope;
 import org.spicefactory.parsley.core.scope.ScopeManager;
+import org.spicefactory.parsley.core.scope.ScopeName;
 
-import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
 
 /**
@@ -33,15 +34,7 @@ public class DefaultScopeManager implements ScopeManager, InitializingService {
 	
 	
 	private var scopes:Dictionary = new Dictionary();
-	private var domain:ApplicationDomain;
-	
-	
-	/**
-	 * Creates a new instance.
-	 */
-	function DefaultScopeManager () {
-		
-	}
+	private var nonLocalScopes:Array = new Array();
 	
 	
 	/**
@@ -49,7 +42,11 @@ public class DefaultScopeManager implements ScopeManager, InitializingService {
 	 */
 	public function init (info:BootstrapInfo) : void {
 		for each (var scope:ScopeInfo in info.scopes) {
-			scopes[scope.name] = new DefaultScope(info.context, scope, domain);
+			var s:Scope = new DefaultScope(info.context, scope, info.domain);
+			scopes[scope.name] = s;
+			if (scope.name != ScopeName.LOCAL) {
+				nonLocalScopes.push(s);
+			}
 		}
 	}
 	
@@ -85,9 +82,14 @@ public class DefaultScopeManager implements ScopeManager, InitializingService {
 	 * @inheritDoc
 	 */
 	public function dispatchMessage (message:Object, selector:* = undefined) : void {
-		for each (var sc:Scope in scopes) {
-			sc.dispatchMessage(message, selector);
-		}
+		DefaultScope(scopes[ScopeName.LOCAL]).broadcastMessage(message, selector, nonLocalScopes);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function observeCommand (command:Command) : void {
+		DefaultScope(scopes[ScopeName.LOCAL]).observeCommand(command, nonLocalScopes);
 	}
 	
 	

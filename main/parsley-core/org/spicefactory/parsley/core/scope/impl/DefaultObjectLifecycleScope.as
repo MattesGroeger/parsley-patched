@@ -104,6 +104,7 @@ public class DefaultObjectLifecycleScope implements ObjectLifecycleScope {
 }
 
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
+import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.processor.messaging.receiver.AbstractMessageReceiver;
 import org.spicefactory.parsley.processor.messaging.receiver.MessageHandler;
@@ -117,8 +118,8 @@ class ObjectLifecycleListener extends AbstractMessageReceiver implements Message
 		this.listener = listener;
 	}
 	
-	public function handleMessage (message:Object) : void {
-		listener(message);
+	public function handleMessage (processor:MessageProcessor) : void {
+		listener(processor.message);
 	}
 	
 }

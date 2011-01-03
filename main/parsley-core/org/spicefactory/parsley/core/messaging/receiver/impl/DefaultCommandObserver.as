@@ -20,7 +20,7 @@ import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
-import org.spicefactory.parsley.core.messaging.command.Command;
+import org.spicefactory.parsley.core.messaging.command.CommandObserverProcessor;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
 
@@ -59,15 +59,15 @@ public class DefaultCommandObserver extends AbstractMethodReceiver implements Co
 		return Object;
 	}
 		
-	public function observeCommand (command:Command) : void {
+	public function observeCommand (processor:CommandObserverProcessor) : void {
 		var paramTypes:Array = targetMethod.parameters;
 		var params:Array = new Array();
 		if (paramTypes.length >= 1) {
 			var resultType:ClassInfo = Parameter(paramTypes[0]).type;
-			params.push(command.getResult(resultType));
+			params.push(processor.command.getResult(resultType));
 		}
 		if (paramTypes.length == 2) {
-			params.push(command.message);
+			params.push(processor.command.message);
 		}
 		targetMethod.invoke(targetInstance, params);
 	}

@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.processor.messaging.receiver {
+import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.lib.reflect.Parameter;
@@ -42,18 +43,22 @@ public class AbstractMessageHandler extends AbstractMethodReceiver {
 	 * @param messageType the type of the message or null if it should be autodetected by the parameter of the target method
 	 * @param messageProperties the list of names of properties of the message that should be used as method parameters
 	 * @param order the execution order for this receiver
+	 * @param supportsProcessorParam whether this handler type supports an additional parameter of type MessageProcessor
 	 */
 	function AbstractMessageHandler (provider:ObjectProvider, methodName:String, selector:* = undefined, 
-			messageType:ClassInfo = null, messageProperties:Array = null, order:int = int.MAX_VALUE) {
-		super(provider, methodName, getMessageType(provider, methodName, messageType, messageProperties), selector, order);
+			messageType:ClassInfo = null, messageProperties:Array = null, 
+			order:int = int.MAX_VALUE, supportsProcessorParam:Boolean = false) {
+		super(provider, methodName, 
+				getMessageType(provider, methodName, messageType, messageProperties, supportsProcessorParam), 
+				selector, order);
 		if (messageProperties != null) {
 			setMessageProperties(messageProperties, messageType);
 		}
 	}
-	
 
+	
 	private function getMessageType (provider:ObjectProvider, methodName:String, 
-			explicitType:ClassInfo, messageProperties:Array) : Class {
+			explicitType:ClassInfo, messageProperties:Array, supportsProcessorParam:Boolean) : Class {
 		if (messageProperties != null) {
 			return (explicitType != null) ? explicitType.getClass() : Object;
 		}
@@ -62,12 +67,13 @@ public class AbstractMessageHandler extends AbstractMethodReceiver {
 			throw new ContextError("Target instance of type " + provider.type.name 
 					+ " does not contain a method with name " + methodName);
 		}
-		var params:Array = targetMethod.parameters;
-		if (params.length > 1) {
+		var params:int = targetMethod.parameters.length;
+		var maxParams:int = (supportsProcessorParam) ? 2 : 1;
+		if (params > maxParams) {
 			throw new ContextError("Target " + targetMethod  
-				+ ": At most one parameter allowed for a MessageHandler.");
+				+ ": At most " + maxParams + " parameter(s) allowed for this type of message handler.");
 		}
-		if (params.length == 1) {
+		if (params >= 1) {
 			return getMessageTypeFromParameter(targetMethod, 0, explicitType);
 		}
 		else if (explicitType != null) {
@@ -107,15 +113,19 @@ public class AbstractMessageHandler extends AbstractMethodReceiver {
 	/**
 	 * @inheritDoc
 	 */
-	protected function invokeMethod (message:Object) : * {
-		var params:Array;
+	protected function invokeMethod (processor:MessageProcessor) : * {
+		var params:Array = new Array();
 		if (messageProperties == null) {
-			params = (targetMethod.parameters.length == 1) ? [message] : [];
+			if (targetMethod.parameters.length >= 1) {
+				params.push(processor.message);
+			}
+			if (targetMethod.parameters.length == 2) {
+				params.push(processor);
+			}
 		}
 		else {
-			params = new Array();
 			for each (var messageProperty:Property in messageProperties) {
-				var value:* = messageProperty.getValue(message);
+				var value:* = messageProperty.getValue(processor.message);
 				params.push(value);
 			}
 		}

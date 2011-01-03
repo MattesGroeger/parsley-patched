@@ -19,16 +19,16 @@ import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
-import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
+import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
-[Deprecated(replacement="same class in new parsley.processor.messaging.receiver package")]
+[Deprecated(replacement="DefaultMessageHandler in parsley.processor.messaging.receiver package")]
 /**
  * @author Jens Halm
  */
-public class DefaultMessageInterceptor extends AbstractMethodReceiver implements MessageInterceptor {
+public class DefaultMessageInterceptor extends AbstractMethodReceiver implements MessageTarget {
 
 	function DefaultMessageInterceptor (provider:ObjectProvider, methodName:String, messageType:Class,
-			selector:* = undefined, order:int = int.MAX_VALUE) {
+			selector:* = undefined, order:int = int.MIN_VALUE) {
 		super(provider, methodName, messageType, selector, order);
 		var params:Array = targetMethod.parameters;
 		if (params.length != 1 || Parameter(params[0]).type.getClass() != MessageProcessor) {
@@ -37,7 +37,8 @@ public class DefaultMessageInterceptor extends AbstractMethodReceiver implements
 		}
 	}
 	
-	public function intercept (processor:MessageProcessor) : void {
+	public function handleMessage (processor:MessageProcessor) : void {
+		processor.suspend();
 		targetMethod.invoke(targetInstance, [processor]);
 	}
 	

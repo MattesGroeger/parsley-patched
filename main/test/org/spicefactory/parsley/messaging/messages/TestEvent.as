@@ -31,5 +31,10 @@ public class TestEvent extends Event {
 	}
 	
 	
+	public override function toString () : String {
+		return "[TestEvent(" + type + ")]";
+	}
+	
+	
 }
 }

@@ -74,8 +74,8 @@ public class MessagingXmlTagTest extends MessagingTestBase {
 		<dynamic-object id="messageInterceptors" type="org.spicefactory.parsley.messaging.model.MessageInterceptors">
 			<message-interceptor method="interceptAllMessages" type="org.spicefactory.parsley.messaging.messages.TestEvent"/>
 			<message-interceptor method="allEvents"/>
-			<message-interceptor method="event1" selector="test1" type="org.spicefactory.parsley.messaging.messages.TestEvent" order="1"/>
-			<message-interceptor method="event2" selector="test2" type="org.spicefactory.parsley.messaging.messages.TestEvent" order="1"/>
+			<message-interceptor method="event1" selector="test1" type="org.spicefactory.parsley.messaging.messages.TestEvent" order="-1"/>
+			<message-interceptor method="event2" selector="test2" type="org.spicefactory.parsley.messaging.messages.TestEvent" order="-1"/>
 		</dynamic-object> 	
 	</objects>;
 

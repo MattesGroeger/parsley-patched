@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.core.messaging.command {
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.messaging.Message;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
 
 /**
@@ -29,11 +30,9 @@ public interface Command {
 	/**
 	 * The message that triggered the Command.
 	 */
-	function get message () : Object;
+	function get message () : Message;
 	
-	/**
-	 * The selector used for matching the Command method.
-	 */
+	[Deprecated(replacement="message.selector")]
 	function get selector () : *;
 	
 	/**
@@ -85,6 +84,14 @@ public interface Command {
 	 * @param observer the observer to be invoked upon command completion
 	 */
 	function addObserver (observer:CommandObserver) : void;
+	
+	/**
+	 * Indicates whether at least one observer has been added directly to this command, matching the specified status.
+	 * 
+	 * @param status the status to check the matching commands for
+	 * @return true when at least one observer has been added directly to this command, matching the specified status
+	 */
+	function hasObserver (status:CommandStatus) : Boolean;
 	
 	/**
 	 * Returns the observers directly added to this command, matching the specified status.

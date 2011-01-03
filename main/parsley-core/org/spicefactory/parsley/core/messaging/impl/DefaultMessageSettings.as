@@ -103,6 +103,7 @@ public class DefaultMessageSettings implements MessageSettings {
 }
 }
 
+import org.spicefactory.lib.reflect.types.Void;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.parsley.core.messaging.command.CommandFactory;
 import org.spicefactory.parsley.core.messaging.command.CommandFactoryRegistry;
@@ -127,15 +128,21 @@ class DefaultCommandFactoryRegistry implements CommandFactoryRegistry {
 		factoryMap[type] = factory;
 	}
 
-	public function getCommandFactory (type:Class) : CommandFactory {
-		if (factoryMap[type] == undefined) {
-			if (_parent) {
-				return _parent.getCommandFactory(type);
-			}
-			throw new IllegalArgumentError("No CommandFactory registered for return type " 
-					+ getQualifiedClassName(type));
+	public function getCommandFactory (returnValue:*) : CommandFactory {
+		if (returnValue == undefined && factoryMap[Void]) {
+			return factoryMap[Void] as CommandFactory;
 		}
-		return factoryMap[type] as CommandFactory;
+		for (var key:Object in factoryMap) {
+			var mappedType:Class = key as Class;
+			if (returnValue is mappedType) {
+				return factoryMap[key] as CommandFactory;
+			}
+		}
+		if (_parent) {
+			return _parent.getCommandFactory(returnValue);
+		}
+		throw new IllegalArgumentError("No CommandFactory registered for return type " 
+				+ getQualifiedClassName(returnValue));
 	}
 	
 }

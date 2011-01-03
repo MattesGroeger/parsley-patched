@@ -16,9 +16,7 @@
 
 package org.spicefactory.parsley.core.messaging {
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
-import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
-import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 /**
@@ -48,20 +46,6 @@ public interface MessageReceiverRegistry {
 	function removeTarget (target:MessageTarget) : void;
 	
 	/**
-	 * Adds an interceptor to this registry.
-	 * 
-	 * @param interceptor the interceptor to add to this registry
-	 */
-	function addInterceptor (interceptor:MessageInterceptor) : void;
-
-	/**
-	 * Removes an interceptor from this registry.
-	 * 
-	 * @param interceptor the interceptor to remove from this registry
-	 */
-	function removeInterceptor (interceptor:MessageInterceptor) : void;
-	
-	/**
 	 * Adds an error handler to this registry.
 	 * 
 	 * @param handler the error handler to add to this registry
@@ -75,20 +59,6 @@ public interface MessageReceiverRegistry {
 	 */
 	function removeErrorHandler (handler:MessageErrorHandler) : void;
 
-	/**
-	 * Adds a target that executes an asynchronous command to this registry.
-	 * 
-	 * @param command the command to add to this registry
-	 */
-	function addCommand (command:CommandTarget) : void;
-
-	/**
-	 * Removes a target that executes an asynchronous command from this registry.
-	 * 
-	 * @param command the command to remove from this registry
-	 */
-	function removeCommand (command:CommandTarget) : void;
-	
 	/**
 	 * Adds an observer for a matching command execution to this registry.
 	 * 

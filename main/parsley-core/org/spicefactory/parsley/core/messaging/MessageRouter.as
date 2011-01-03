@@ -15,11 +15,10 @@
  */
 
 package org.spicefactory.parsley.core.messaging {
-
-import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
+import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandManager;
-
-import flash.system.ApplicationDomain;
+import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 
 /**
  * The central message routing facility. Each Scope will contain two MessageRouters internally,
@@ -49,14 +48,34 @@ public interface MessageRouter {
 	function get commandManager () : CommandManager;
 	
 	/**
+	 * Returns the cache of receivers for the specified message type.
+	 * If no cache for that type exists yet, implementations should create and return a new
+	 * cache instance.
+	 * 
+	 * @param type the type for return the receiver cache for
+	 * @return the cache of receivers for the specified message type
+	 */
+	function getReceiverCache (type:ClassInfo) : MessageReceiverCache;
+	
+	/**
 	 * Dispatches the specified message, processing all interceptors, handlers and bindings that have
 	 * registered for that message type.
 	 * 
 	 * @param message the message to dispatch
-	 * @param domain the domain to use to reflect on the message type
-	 * @param selector the selector to use if it cannot be determined from the message instance itself
+	 * @param receiverCaches additional caches from other scopes to join to the registered receivers of this router
 	 */	
-	function dispatchMessage (message:Object, domain:ApplicationDomain, selector:* = undefined) : void;
+	function dispatchMessage (message:Message, receiverCaches:Array = null) : void;
+	
+	/**
+	 * Observes the specified command and dispatches messages to registered observers
+	 * when the state of the command changes. When the specified Array of cached observers
+	 * is null, implementations should only register the command with the <code>CommandManager</code>
+	 * of this instance and not process observers.
+	 * 
+	 * @param command the command to observe
+	 * @param observerCaches additional caches from other scopes to join to the registered observers of this router
+	 */
+	function observeCommand (command:Command, observerCaches:Array = null) : void;
 	
 	
 }

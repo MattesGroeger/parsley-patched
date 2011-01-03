@@ -1,4 +1,5 @@
 package org.spicefactory.parsley.command.mock {
+import org.spicefactory.parsley.core.messaging.Message;
 import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandFactory;
 
@@ -30,8 +31,8 @@ public class MockCommandFactory implements CommandFactory {
 	}
 	
 	
-	public function createCommand (returnValue:Object, message:Object, selector:* = undefined) : Command {
-		var command:MockCommand = new MockCommand(message, selector, MockResult(returnValue));
+	public function createCommand (returnValue:Object, message:Message) : Command {
+		var command:MockCommand = new MockCommand(message, MockResult(returnValue));
 		commands.push(command);
 		return command;
 	}
@@ -39,6 +40,7 @@ public class MockCommandFactory implements CommandFactory {
 }
 
 import org.spicefactory.parsley.command.mock.MockResult;
+import org.spicefactory.parsley.core.messaging.Message;
 import org.spicefactory.parsley.core.messaging.command.impl.AbstractCommand;
 
 class MockCommand extends AbstractCommand {
@@ -47,8 +49,8 @@ class MockCommand extends AbstractCommand {
 	private var result:MockResult;
 
 
-	function MockCommand (message:Object, selector:*, result:MockResult) {
-		super(result, message, selector);
+	function MockCommand (message:Message, result:MockResult) {
+		super(result, message);
 		this.result = result;
 		start();
 	}

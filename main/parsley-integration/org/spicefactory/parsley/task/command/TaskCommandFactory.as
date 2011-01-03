@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.task.command {
 import org.spicefactory.lib.task.Task;
+import org.spicefactory.parsley.core.messaging.Message;
 import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandFactory;
 
@@ -34,28 +35,29 @@ public class TaskCommandFactory implements CommandFactory {
 	/**
 	 * @inheritDoc
 	 */
-	public function createCommand (returnValue:Object, message:Object, selector:* = undefined) : Command {
-		return new TaskCommand(Task(returnValue), message, selector);
+	public function createCommand (returnValue:Object, message:Message) : Command {
+		return new TaskCommand(Task(returnValue), message);
 	}
 }
 }
 
-import flash.events.IEventDispatcher;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.task.ResultTask;
 import org.spicefactory.lib.task.Task;
 import org.spicefactory.lib.task.enum.TaskState;
 import org.spicefactory.lib.task.events.TaskEvent;
+import org.spicefactory.parsley.core.messaging.Message;
 import org.spicefactory.parsley.core.messaging.command.impl.AbstractCommand;
 
 import flash.events.ErrorEvent;
 import flash.events.Event;
+import flash.events.IEventDispatcher;
 
 class TaskCommand extends AbstractCommand {
 
 
-	function TaskCommand (task:Task, message:Object, selector:*) {
-		super(task, message, selector);
+	function TaskCommand (task:Task, message:Message) {
+		super(task, message);
 		task.addEventListener(TaskEvent.COMPLETE, taskComplete);
 		task.addEventListener(TaskEvent.CANCEL, taskCanceled);
 		task.addEventListener(ErrorEvent.ERROR, taskError);

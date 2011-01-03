@@ -15,8 +15,8 @@
  */
 
 package org.spicefactory.parsley.processor.messaging {
-import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.context.provider.Provider;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.lifecycle.ManagedObject;
@@ -92,17 +92,13 @@ public class MessageReceiverProcessorFactory implements ObjectProcessorFactory {
 			return new MessageReceiverProcessor(provider, receiverFactory, scope);
 		}
 	}
-	
-	
 }
 }
 
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
-import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
-import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.registry.ObjectProcessor;
@@ -145,14 +141,8 @@ class MessageReceiverProcessor implements ObjectProcessor {
 		if (receiver is MessageTarget) {
 			scope.messageReceivers.addTarget(MessageTarget(receiver));
 		}
-		else if (receiver is CommandTarget) {
-			scope.messageReceivers.addCommand(CommandTarget(receiver));
-		}
 		else if (receiver is CommandObserver) {
 			scope.messageReceivers.addCommandObserver(CommandObserver(receiver));
-		}
-		else if (receiver is MessageInterceptor) {
-			scope.messageReceivers.addInterceptor(MessageInterceptor(receiver));
 		}
 		else if (receiver is MessageErrorHandler) {
 			scope.messageReceivers.addErrorHandler(MessageErrorHandler(receiver));
@@ -167,14 +157,8 @@ class MessageReceiverProcessor implements ObjectProcessor {
 		if (receiver is MessageTarget) {
 			scope.messageReceivers.removeTarget(MessageTarget(receiver));
 		}
-		else if (receiver is CommandTarget) {
-			scope.messageReceivers.removeCommand(CommandTarget(receiver));
-		}
 		else if (receiver is CommandObserver) {
 			scope.messageReceivers.removeCommandObserver(CommandObserver(receiver));
-		}
-		else if (receiver is MessageInterceptor) {
-			scope.messageReceivers.removeInterceptor(MessageInterceptor(receiver));
 		}
 		else if (receiver is MessageErrorHandler) {
 			scope.messageReceivers.removeErrorHandler(MessageErrorHandler(receiver));

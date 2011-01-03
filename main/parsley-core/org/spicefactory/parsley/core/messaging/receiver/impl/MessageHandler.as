@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.core.messaging.receiver.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
+import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 [Deprecated(replacement="same class in new parsley.processor.messaging.receiver package")]
@@ -30,8 +31,8 @@ public class MessageHandler extends AbstractMessageHandler implements MessageTar
 		super(provider, methodName, selector, messageType, messageProperties, order);
 	}
 
-	public function handleMessage (message:Object) : void {
-		invokeMethod(message);
+	public function handleMessage (processor:MessageProcessor) : void {
+		invokeMethod(processor.message);
 	}
 	
 }

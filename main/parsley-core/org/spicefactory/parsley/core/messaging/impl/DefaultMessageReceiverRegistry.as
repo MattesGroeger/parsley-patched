@@ -15,15 +15,13 @@
  */
 
 package org.spicefactory.parsley.core.messaging.impl {
-import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
 import org.spicefactory.parsley.core.messaging.receiver.CommandObserver;
-import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
 import org.spicefactory.parsley.core.messaging.receiver.MessageErrorHandler;
-import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
+import org.spicefactory.parsley.core.state.manager.GlobalDomainManager;
 
 import flash.system.ApplicationDomain;
 import flash.utils.Dictionary;
@@ -59,9 +57,9 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 	 * @param messageType the message type to match against
 	 * @return the selection of receivers that match the specified message type
 	 */
-	public function getSelectionCache (messageType:ClassInfo) : MessageReceiverSelectionCache {
-		var receiverSelection:MessageReceiverSelectionCache =
-				selectionCache[messageType.getClass()] as MessageReceiverSelectionCache;
+	public function getSelectionCache (messageType:ClassInfo) : DefaultMessageReceiverCache {
+		var receiverSelection:DefaultMessageReceiverCache =
+				selectionCache[messageType.getClass()] as DefaultMessageReceiverCache;
 		if (receiverSelection == null) {
 			var collections:Array = new Array();
 			for each (var collection:MessageReceiverCollection in receivers) {
@@ -69,7 +67,7 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 					collections.push(collection);
 				}
 			}
-			receiverSelection = new MessageReceiverSelectionCache(messageType, collections);
+			receiverSelection = new DefaultMessageReceiverCache(messageType, collections);
 			selectionCache[messageType.getClass()] = receiverSelection;
 			domainManager.addPurgeHandler(messageType.applicationDomain, clearDomainCache, messageType.getClass());
 		}
@@ -77,7 +75,7 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 	}
 	
 	private function clearDomainCache (domain:ApplicationDomain, type:Class) : void {
-		var receiverSelection:MessageReceiverSelectionCache = selectionCache[type] as MessageReceiverSelectionCache;
+		var receiverSelection:DefaultMessageReceiverCache = selectionCache[type] as DefaultMessageReceiverCache;
 		receiverSelection.release();
 		delete selectionCache[type];
 	}
@@ -88,7 +86,7 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 		if (collection == null) {
 			collection = new MessageReceiverCollection(receiver.messageType);
 			receivers[receiver.messageType] = collection; 
-			for each (var cache:MessageReceiverSelectionCache in selectionCache) {
+			for each (var cache:DefaultMessageReceiverCache in selectionCache) {
 				cache.checkNewCollection(collection);
 			}
 		}
@@ -121,20 +119,6 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 	/**
 	 * @inheritDoc
 	 */
-	public function addInterceptor (interceptor:MessageInterceptor) : void {
-		addReceiver(MessageReceiverKind.INTERCEPTOR, interceptor);
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function removeInterceptor (interceptor:MessageInterceptor) : void {
-		removeReceiver(MessageReceiverKind.INTERCEPTOR, interceptor);
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
 	public function addErrorHandler (errorHandler:MessageErrorHandler) : void {
 		addReceiver(MessageReceiverKind.ERROR_HANDLER, errorHandler);
 	}
@@ -144,20 +128,6 @@ public class DefaultMessageReceiverRegistry implements MessageReceiverRegistry {
 	 */
 	public function removeErrorHandler (errorHandler:MessageErrorHandler) : void {
 		removeReceiver(MessageReceiverKind.ERROR_HANDLER, errorHandler);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function addCommand (command:CommandTarget) : void {
-		addReceiver(MessageReceiverKind.TARGET, command);
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function removeCommand (command:CommandTarget) : void {
-		removeReceiver(MessageReceiverKind.TARGET, command);
 	}
 	
 	/**

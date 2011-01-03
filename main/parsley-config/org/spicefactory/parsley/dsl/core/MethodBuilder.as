@@ -163,13 +163,7 @@ public interface MethodBuilder {
 	 */
 	function messageHandler () : MessageHandlerBuilder;
 	
-	/**
-	 * Configures this method as a message interceptor.
-	 * The builder returned by this method should be used to 
-	 * specify further options for the interceptor.
-	 * 
-	 * @return a builder to specify the options for the message interceptor
-	 */
+	[Deprecated(replacement="messageHandler with optional MessageProcessor parameter on target method")]
 	function messageInterceptor () : MessageReceiverBuilder;
 
 	

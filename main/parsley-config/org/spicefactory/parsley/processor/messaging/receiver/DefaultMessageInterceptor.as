@@ -19,30 +19,18 @@ import org.spicefactory.lib.reflect.Parameter;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.messaging.MessageProcessor;
-import org.spicefactory.parsley.core.messaging.receiver.MessageInterceptor;
+import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
 import org.spicefactory.parsley.processor.util.MessageReceiverFactories;
 
+[Deprecated(replacement="DefaultMessageHandler with optional MessageProcessor parameter")]
 /**
- * Default implementation of the MessageInterceptor interface.
- * 
  * @author Jens Halm
  */
-public class DefaultMessageInterceptor extends AbstractMethodReceiver implements MessageInterceptor {
+public class DefaultMessageInterceptor extends AbstractMethodReceiver implements MessageTarget {
 
-
-	/**
-	 * Creates a new instance.
-	 * The target method must have a single parameter of type <code>org.spicefactory.parsley.messaging.MessageProcessor</code>.
-	 * 
-	 * @param provider the provider for the actual instance intercepting the message
-	 * @param methodName the name of the interceptor method
-	 * @param messageType the type of the message this interceptor is interested in
-	 * @param selector an additional selector value to be used to determine matching messages
-	 * @param order the execution order for this receiver
-	 */	
 	function DefaultMessageInterceptor (provider:ObjectProvider, methodName:String, messageType:Class,
-			selector:* = undefined, order:int = int.MAX_VALUE) {
+			selector:* = undefined, order:int = int.MIN_VALUE) {
 		super(provider, methodName, messageType, selector, order);
 		var params:Array = targetMethod.parameters;
 		if (params.length != 1 || Parameter(params[0]).type.getClass() != MessageProcessor) {
@@ -51,31 +39,16 @@ public class DefaultMessageInterceptor extends AbstractMethodReceiver implements
 		}
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
-	public function intercept (processor:MessageProcessor) : void {
+	public function handleMessage (processor:MessageProcessor) : void {
+		processor.suspend();
 		targetMethod.invoke(provider.instance, [processor]);
 	}
 	
-	
-	/**
-	 * Creates a new factory that creates DefaultMessageInterceptor instances. 
-	 * Such a factory can be used for convenient registration of a <code>MessageReceiverProcessorFactory</code>
-	 * with a target <code>ObjectDefinition</code>.
-	 * 
-	 * @param methodName the name of the interceptor method
-	 * @param messageType the type of the message this interceptor is interested in
-	 * @param selector an additional selector value to be used to determine matching messages
-	 * @param order the execution order for this receiver
-	 * @return a new factory that creates DefaultMessageInterceptor instance
-	 */
 	public static function newFactory (methodName:String, messageType:Class, 
 			selector:* = undefined, order:int = int.MAX_VALUE) : MessageReceiverFactory {
 				
 		return MessageReceiverFactories.newFactory(DefaultMessageInterceptor, [methodName, messageType, selector, order]);
 	}
-	
 	
 }
 }

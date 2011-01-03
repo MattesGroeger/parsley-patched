@@ -19,6 +19,7 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
 import org.spicefactory.parsley.core.errors.ContextError;
+import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
 import org.spicefactory.parsley.processor.util.MessageReceiverFactories;
@@ -83,8 +84,8 @@ public class MessageBinding extends AbstractObjectProviderReceiver implements Me
 	/**
 	 * @inheritDoc
 	 */
-	public function handleMessage (message:Object) : void {
-		var value:* = messageProperty.getValue(message);
+	public function handleMessage (processor:MessageProcessor) : void {
+		var value:* = messageProperty.getValue(processor.message);
 		targetProperty.setValue(provider.instance, value);
 	}
 	

@@ -1,4 +1,5 @@
 package org.spicefactory.parsley.context.scope {
+import org.spicefactory.parsley.context.scope.model.OrderedMixedScopeReceivers;
 import org.hamcrest.assertThat;
 import org.hamcrest.collection.arrayWithSize;
 import org.hamcrest.core.not;
@@ -72,6 +73,14 @@ public class ScopeTest {
 		assertThat(receiver.getCount(Event, "global"), equalTo(3));
 		assertThat(receiver.getCount(Event, "custom"), equalTo(2));
 		assertThat(receiver.getCount(Event, "local"), equalTo(1));
+	}
+	
+	[Test]
+	public function orderedMixedScopeReceivers () : void {
+		var rec:OrderedMixedScopeReceivers = new OrderedMixedScopeReceivers();
+		var context:Context = ContextBuilder.newBuilder().object(rec).build();
+		context.scopeManager.dispatchMessage("foo");
+		assertThat(rec.order, equalTo("ABCD"));
 	}
 	
 	[Test]
@@ -163,7 +172,7 @@ public class ScopeTest {
 	}
 
 	[Test]
-	public function scopeRegistry () : void {
+	public function globalScopeState () : void {
 		var reg:Object = GlobalState.scopes;
 		reg.reset();
 		validateScopes(0, 0, 0);

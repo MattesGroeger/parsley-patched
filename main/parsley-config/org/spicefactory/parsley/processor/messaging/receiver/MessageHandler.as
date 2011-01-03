@@ -17,6 +17,7 @@
 package org.spicefactory.parsley.processor.messaging.receiver {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
+import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
 import org.spicefactory.parsley.processor.util.MessageReceiverFactories;
@@ -28,6 +29,8 @@ import org.spicefactory.parsley.processor.util.MessageReceiverFactories;
  */
 public class MessageHandler extends AbstractMessageHandler implements MessageTarget {
 	
+	
+	private var usesMessageProperties:Boolean;
 	
 	/**
 	 * Creates a new instance.
@@ -41,15 +44,29 @@ public class MessageHandler extends AbstractMessageHandler implements MessageTar
 	 */
 	function MessageHandler (provider:ObjectProvider, methodName:String, selector:* = undefined, 
 			messageType:ClassInfo = null, messageProperties:Array = null, order:int = int.MAX_VALUE) {
-		super(provider, methodName, selector, messageType, messageProperties, order);
+		super(provider, methodName, selector, messageType, messageProperties, order, true);
+		usesMessageProperties = (messageProperties != null);
 	}
 
 	
 	/**
+	 * @private
+	 */
+	public override function get order () : int {
+		if (super.order != int.MAX_VALUE) {
+			return super.order;
+		}
+		if (usesMessageProperties) {
+			return int.MAX_VALUE;
+		}
+		return (targetMethod.parameters.length == 2) ? int.MIN_VALUE : int.MAX_VALUE;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
-	public function handleMessage (message:Object) : void {
-		invokeMethod(message);
+	public function handleMessage (processor:MessageProcessor) : void {
+		invokeMethod(processor);
 	}
 	
 	

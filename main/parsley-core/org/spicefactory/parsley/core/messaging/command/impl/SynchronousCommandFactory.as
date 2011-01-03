@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.command.impl {
+import org.spicefactory.parsley.core.messaging.Message;
 import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandFactory;
 
@@ -29,19 +30,20 @@ public class SynchronousCommandFactory implements CommandFactory {
 	/**
 	 * @inheritDoc
 	 */
-	public function createCommand (returnValue:Object, message:Object, selector:* = undefined) : Command {
-		return new SynchronousCommand(message, selector);
+	public function createCommand (returnValue:Object, message:Message) : Command {
+		return new SynchronousCommand(message);
 	}
 }
 }
 
+import org.spicefactory.parsley.core.messaging.Message;
 import org.spicefactory.parsley.core.messaging.command.impl.AbstractCommand;
 
 class SynchronousCommand extends AbstractCommand {
 
 
-	function SynchronousCommand (message:Object, selector:*) {
-		super(undefined, message, selector);
+	function SynchronousCommand (message:Message) {
+		super(undefined, message);
 		complete();
 		start();
 	}

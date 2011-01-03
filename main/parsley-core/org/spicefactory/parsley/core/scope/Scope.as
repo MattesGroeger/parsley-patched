@@ -15,13 +15,13 @@
  */
 
 package org.spicefactory.parsley.core.scope {
-	import org.spicefactory.parsley.core.context.Context;
-	import org.spicefactory.parsley.core.lifecycle.LifecycleObserverRegistry;
-	import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
-	import org.spicefactory.parsley.core.messaging.command.CommandManager;
+import org.spicefactory.parsley.core.context.Context;
+import org.spicefactory.parsley.core.lifecycle.LifecycleObserverRegistry;
+import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
+import org.spicefactory.parsley.core.messaging.command.CommandManager;
 
-	/**
-	 * Represents a single scope.
+/**
+ * Represents a single scope.
  * 
  * @author Jens Halm
  */
@@ -78,8 +78,8 @@ public interface Scope {
 	
 	/**
 	 * Dispatches a message through this scope.
-
- * 	 * @param message the message to dispatch
+	 * 
+	 * @param message the message to dispatch
 	 * @param selector the selector to use if it cannot be determined from the message instance itself
 	 */
 	function dispatchMessage (message:Object, selector:* = undefined) : void;

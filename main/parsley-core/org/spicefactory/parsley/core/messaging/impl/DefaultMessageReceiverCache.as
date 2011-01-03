@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.impl {
+import org.spicefactory.parsley.core.messaging.MessageReceiverCache;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
@@ -30,10 +31,10 @@ import flash.utils.Dictionary;
  * 
  * @author Jens Halm
  */
-public class MessageReceiverSelectionCache {
+public class DefaultMessageReceiverCache implements MessageReceiverCache {
 	
 	
-	private static const log:Logger = LogContext.getLogger(MessageReceiverSelectionCache);
+	private static const log:Logger = LogContext.getLogger(DefaultMessageReceiverCache);
 	
 	
 	private var _messageType:ClassInfo;
@@ -48,7 +49,7 @@ public class MessageReceiverSelectionCache {
 	 * @param type the type of the message
 	 * @param collections the collections of receivers applicable for this message type and its subtypes
 	 */
-	function MessageReceiverSelectionCache (type:ClassInfo, collections:Array) {
+	function DefaultMessageReceiverCache (type:ClassInfo, collections:Array) {
 		_messageType = type;
 		this.collections = collections;
 		for each (var collection:MessageReceiverCollection in collections) {
@@ -110,23 +111,22 @@ public class MessageReceiverSelectionCache {
 	 * Returns all receivers of a particular kind that match for the specified selector value.
 	 * 
 	 * @param kind the kind of receiver to fetch
-	 * @param selectorValue the value of the selector property
+	 * @param selector the value of the selector property
 	 * @return all receivers of a particular kind that match for the specified selector value
 	 */	
-	public function getReceivers (kind:MessageReceiverKind, selectorValue:*) : Array {
+	public function getReceivers (kind:MessageReceiverKind, selector:*) : Array {
 		if (selectorMap == null) {
 			log.info("ApplicationDomain for type " + _messageType.name 
 					+ " is no longer used, using empty list of message receivers");
 			return [];
 		}
-		var receivers:Array = null;
-		if (selectorMap[kind] != undefined && selectorMap[kind][selectorValue] != undefined) {
-			return selectorMap[kind][selectorValue];
+		if (selectorMap[kind] != undefined && selectorMap[kind][selector] != undefined) {
+			return selectorMap[kind][selector];
 		}
 		else {
-			receivers = new Array();
+			var receivers:Array = new Array();
 			for each (var collection:MessageReceiverCollection in collections) {
-				var subset:Array = collection.getReceivers(kind, selectorValue);
+				var subset:Array = collection.getReceivers(kind, selector);
 				if (subset.length > 0) {
 					receivers = receivers.concat(subset);
 				}
@@ -136,23 +136,9 @@ public class MessageReceiverSelectionCache {
 				map = new Dictionary();
 				selectorMap[kind] = map;
 			}
-			map[selectorValue] = receivers;
+			map[selector] = receivers;
 			return receivers;
 		}
-	}
-	
-	/**
-	 * Indicates whether this cache has first level targets (MessageTarget, CommandTarget or MessageInterceptor)
-	 * for the specified selector. If no first level target exists for a particular message
-	 * the creation of a MessageProcessor instance can be skipped since second level targets (CommandObservers 
-	 * and MessageErrorHandlers) can only be triggered due to the outcome of a first level target.
-	 * 
-	 * @param selectorValue the value of the selector property
-	 * @return true if this cache has first level targets for the specified kind and selector
-	 */
-	public function hasFirstLevelTargets (selectorValue:*) : Boolean {
-		return (getReceivers(MessageReceiverKind.INTERCEPTOR, selectorValue).length > 0
-			|| getReceivers(MessageReceiverKind.TARGET, selectorValue).length > 0);
 	}
 	
 	/**

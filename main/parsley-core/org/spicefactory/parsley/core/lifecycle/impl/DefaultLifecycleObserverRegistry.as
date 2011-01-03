@@ -69,6 +69,7 @@ public class DefaultLifecycleObserverRegistry implements LifecycleObserverRegist
 }
 }
 
+import org.spicefactory.parsley.core.messaging.MessageProcessor;
 import org.spicefactory.parsley.core.lifecycle.LifecycleObserver;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.processor.messaging.receiver.AbstractMessageReceiver;
@@ -82,8 +83,8 @@ class ObjectLifecycleTarget extends AbstractMessageReceiver implements MessageTa
 		this.observer = observer;
 	}
 	
-	public function handleMessage (message:Object) : void {
-		observer.observe(message);
+	public function handleMessage (processor:MessageProcessor) : void {
+		observer.observe(processor.message);
 	}
 	
 }

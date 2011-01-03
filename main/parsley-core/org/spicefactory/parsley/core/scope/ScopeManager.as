@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.scope {
+import org.spicefactory.parsley.core.messaging.command.Command;
 
 /**
  * Responsible for managing the scopes associated with a single Context.
@@ -56,7 +57,6 @@ public interface ScopeManager {
 	
 	/**
 	 * Dispatches a message through all scopes managed by this instance.
-	 * This is just a convenient short cut to avoid looping through all scopes individually.
 	 * In many cases you'll want to dispatch application messages through all scopes so that
 	 * the receiving side can decide which scope it wants to listen for.
 	 * 
@@ -65,6 +65,13 @@ public interface ScopeManager {
 	 */
 	function dispatchMessage (message:Object, selector:* = undefined) : void;
 	
+	/**
+	 * Observes the specified command and dispatches messages to registered observers of all scopes managed by
+	 * this instance when the state of the command changes.
+	 * 
+	 * @param command the command to observe
+	 */
+	function observeCommand (command:Command) : void;
 	
 }
 }

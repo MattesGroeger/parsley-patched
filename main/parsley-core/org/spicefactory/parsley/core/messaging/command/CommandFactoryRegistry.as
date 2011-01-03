@@ -30,10 +30,10 @@ public interface CommandFactoryRegistry {
 	/**
 	 * Returns the factory registered for the specified return type.
 	 * 
-	 * @param returnType the type returned by the methods executing the commands
-	 * @return the factory registered for the specified return type
+	 * @param returnValue the value returned by the method executing the command
+	 * @return the factory registered for the specified return value
 	 */
-	function getCommandFactory (returnType:Class) : CommandFactory;
+	function getCommandFactory (returnValue:*) : CommandFactory;
 	
 	/**
 	 * Adds a factory that creates Command instances for all command methods

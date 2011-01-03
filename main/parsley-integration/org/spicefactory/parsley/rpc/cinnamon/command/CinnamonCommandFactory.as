@@ -16,6 +16,7 @@
 
 package org.spicefactory.parsley.rpc.cinnamon.command {
 import org.spicefactory.cinnamon.service.ServiceRequest;
+import org.spicefactory.parsley.core.messaging.Message;
 import org.spicefactory.parsley.core.messaging.command.Command;
 import org.spicefactory.parsley.core.messaging.command.CommandFactory;
 
@@ -31,8 +32,8 @@ public class CinnamonCommandFactory implements CommandFactory {
 	/**
 	 * @inheritDoc
 	 */
-	public function createCommand (returnValue:Object, message:Object, selector:* = undefined) : Command {
-		return new CinnamonCommand(ServiceRequest(returnValue), message, selector);
+	public function createCommand (returnValue:Object, message:Message) : Command {
+		return new CinnamonCommand(ServiceRequest(returnValue), message);
 	}
 }
 }
@@ -41,13 +42,14 @@ import org.spicefactory.cinnamon.service.ServiceContext;
 import org.spicefactory.cinnamon.service.ServiceRequest;
 import org.spicefactory.cinnamon.service.ServiceResponse;
 import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.parsley.core.messaging.Message;
 import org.spicefactory.parsley.core.messaging.command.impl.AbstractCommand;
 
 class CinnamonCommand extends AbstractCommand {
 
 
-	function CinnamonCommand (request:ServiceRequest, message:Object, selector:*) {
-		super(request, message, selector);
+	function CinnamonCommand (request:ServiceRequest, message:Message) {
+		super(request, message);
 		request.addResultHandler(complete).addErrorHandler(error);
 		start();
 	}

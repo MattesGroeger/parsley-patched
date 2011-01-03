@@ -18,14 +18,15 @@ package org.spicefactory.parsley.core.messaging.receiver.impl {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
-import org.spicefactory.parsley.core.messaging.command.CommandProcessor;
-import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
+import org.spicefactory.parsley.core.messaging.MessageProcessor;
+import org.spicefactory.parsley.core.messaging.command.Command;
+import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 
 [Deprecated(replacement="same class in new parsley.processor.messaging.receiver package")]
 /**
  * @author Jens Halm
  */
-public class DefaultCommandTarget extends AbstractMessageHandler implements CommandTarget {
+public class DefaultCommandTarget extends AbstractMessageHandler implements MessageTarget {
 	
 	private var _returnType:Class;
 	
@@ -44,9 +45,10 @@ public class DefaultCommandTarget extends AbstractMessageHandler implements Comm
 		return _returnType;
 	}
 	
-	public function executeCommand (processor:CommandProcessor) : void {
+	public function handleMessage (processor:MessageProcessor) : void {
 		var returnValue:* = invokeMethod(processor.message);
-		processor.process(returnValue);
+		var command:Command = processor.createCommand(returnValue);
+		processor.senderContext.scopeManager.observeCommand(command);
 	}
 	
 }

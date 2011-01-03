@@ -15,12 +15,19 @@
  */
 
 package org.spicefactory.parsley.core.scope.impl {
-	import org.spicefactory.parsley.core.lifecycle.impl.DefaultLifecycleObserverRegistry;
+import org.spicefactory.lib.reflect.ClassInfo;
+import org.spicefactory.lib.util.Delegate;
+import org.spicefactory.lib.util.DelegateChain;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
-import org.spicefactory.parsley.core.messaging.command.CommandManager;
 import org.spicefactory.parsley.core.lifecycle.LifecycleObserverRegistry;
+import org.spicefactory.parsley.core.lifecycle.impl.DefaultLifecycleObserverRegistry;
+import org.spicefactory.parsley.core.messaging.Message;
+import org.spicefactory.parsley.core.messaging.MessageReceiverRegistry;
+import org.spicefactory.parsley.core.messaging.MessageRouter;
+import org.spicefactory.parsley.core.messaging.command.Command;
+import org.spicefactory.parsley.core.messaging.command.CommandManager;
+import org.spicefactory.parsley.core.messaging.impl.DefaultMessage;
 import org.spicefactory.parsley.core.scope.ObjectLifecycleScope;
 import org.spicefactory.parsley.core.scope.Scope;
 import org.spicefactory.parsley.core.scope.ScopeExtensions;
@@ -35,7 +42,7 @@ import flash.system.ApplicationDomain;
 public class DefaultScope implements Scope {
 
 	private var context:Context;
-	private var deferredMessages:Array;
+	private var deferredActions:DelegateChain;
 	private var activated:Boolean = false;	
 	
 	private var domain:ApplicationDomain;
@@ -62,7 +69,7 @@ public class DefaultScope implements Scope {
 			activated = true;
 		}
 		else {
-			deferredMessages = new Array();
+			deferredActions = new DelegateChain();
 			context.addEventListener(ContextEvent.CONFIGURED, contextConfigured);
 			context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 		}
@@ -71,10 +78,8 @@ public class DefaultScope implements Scope {
 	private function contextConfigured (event:ContextEvent) : void {
 		removeListeners();
 		activated = true;
-		for each (var deferred:DeferredMessage in deferredMessages) {
-			doDispatch(deferred.message, deferred.selector);
-		}
-		deferredMessages = new Array();
+		deferredActions.invoke();
+		deferredActions = null;
 	}
 	
 	private function contextDestroyed (event:ContextEvent) : void {
@@ -86,22 +91,59 @@ public class DefaultScope implements Scope {
 		context.removeEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
 	
+	/**
+	 * @private
+	 */
+	internal function broadcastMessage (message:Object, selector:*, scopes:Array) : void {
+		if (!activated) {
+			deferredActions.addDelegate(new Delegate(doBroadcastMessage, [message, selector, scopes]));
+		}
+		else {
+			doBroadcastMessage(message, selector, scopes);
+		}
+	}
+	
+	/**
+	 * @private
+	 */
+	internal function observeCommand (command:Command, scopes:Array) : void {
+		if (!activated) {
+			deferredActions.addDelegate(new Delegate(doObserveCommand, [command, scopes]));
+		}
+		else {
+			doObserveCommand(command, scopes);
+		}
+	}
+	
+	private function doBroadcastMessage (message:Object, selector:*, scopes:Array) : void {
+		var type:ClassInfo = ClassInfo.forInstance(message, domain);
+		var msg:Message = new DefaultMessage(message, type, selector, context);
+		var caches:Array;
+		if (scopes) {
+			caches = new Array();
+			for each (var scope:DefaultScope in scopes) {
+				caches.push(scope.scopeDef.messageRouter.getReceiverCache(type));
+			}
+		}
+		scopeDef.messageRouter.dispatchMessage(msg, caches);
+	}
+	
+	private function doObserveCommand (command:Command, scopes:Array) : void {
+		var caches:Array = new Array();
+		for each (var scope:DefaultScope in scopes) {
+			var router:MessageRouter = scope.scopeDef.messageRouter;
+			caches.push(router.getReceiverCache(command.message.type));
+			router.observeCommand(command);
+		}
+		scopeDef.messageRouter.observeCommand(command, caches);
+	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function dispatchMessage (message:Object, selector:* = undefined) : void {
-		if (!activated) {
-			deferredMessages.push(new DeferredMessage(message, selector));
-		}
-		else {
-			doDispatch(message, selector);
-		}
+		broadcastMessage(message, selector, null);
 	}	
-	
-	private function doDispatch (message:Object, selector:* = undefined) : void {
-		scopeDef.messageRouter.dispatchMessage(message, domain, selector);
-	}
 	
 	/**
 	 * @inheritDoc
@@ -163,7 +205,7 @@ public class DefaultScope implements Scope {
 	public function get extensions () : ScopeExtensions {
 		return scopeDef.extensions;
 	}
-	
+
 	
 }
 }

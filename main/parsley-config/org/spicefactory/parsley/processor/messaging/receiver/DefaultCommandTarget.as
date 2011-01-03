@@ -18,8 +18,9 @@ package org.spicefactory.parsley.processor.messaging.receiver {
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.lib.reflect.Method;
 import org.spicefactory.parsley.core.context.provider.ObjectProvider;
-import org.spicefactory.parsley.core.messaging.command.CommandProcessor;
-import org.spicefactory.parsley.core.messaging.receiver.CommandTarget;
+import org.spicefactory.parsley.core.messaging.MessageProcessor;
+import org.spicefactory.parsley.core.messaging.command.Command;
+import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.processor.messaging.MessageReceiverFactory;
 import org.spicefactory.parsley.processor.util.MessageReceiverFactories;
 
@@ -28,7 +29,7 @@ import org.spicefactory.parsley.processor.util.MessageReceiverFactories;
  * 
  * @author Jens Halm
  */
-public class DefaultCommandTarget extends AbstractMessageHandler implements CommandTarget {
+public class DefaultCommandTarget extends AbstractMessageHandler implements MessageTarget {
 	
 	
 	private var _returnType:Class;
@@ -66,10 +67,13 @@ public class DefaultCommandTarget extends AbstractMessageHandler implements Comm
 	/**
 	 * @inheritDoc
 	 */
-	public function executeCommand (processor:CommandProcessor) : void {
-		var returnValue:* = invokeMethod(processor.message);
-		processor.process(returnValue);
+	public function handleMessage (processor:MessageProcessor) : void {
+		var returnValue:* = invokeMethod(processor);
+		var command:Command = processor.createCommand(returnValue);
+		processor.senderContext.scopeManager.observeCommand(command);
 	}
+	
+	
 	
 	
 	/**

@@ -26,11 +26,6 @@ public class MessageReceiverKind {
 
 
 	/**
-	 * Constant for a message interceptor.
-	 */
-	public static const INTERCEPTOR:MessageReceiverKind = new MessageReceiverKind("interceptor");
-
-	/**
 	 * Constant for a regular message target (like MessageHandler or Command).
 	 */
 	public static const TARGET:MessageReceiverKind = new MessageReceiverKind("target");
