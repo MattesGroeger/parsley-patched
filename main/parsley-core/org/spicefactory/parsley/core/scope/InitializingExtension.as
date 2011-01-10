@@ -27,8 +27,10 @@ public interface InitializingExtension {
 	
 	/**
 	 * Invoked once after the extension has been instantiated.
+	 * The Scope instance passed to this method represents the scope that
+	 * this extension is associated with.
  	 * 
- 	 * @param scope the Scope instance the extension is associated with
+ 	 * @param scope the scope this extension is associated with
 	 */
 	function init (scope:Scope) : void;
 	
