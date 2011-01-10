@@ -21,15 +21,15 @@ import org.spicefactory.parsley.core.context.Context;
 import flash.display.DisplayObject;
 
 /**
- * A ViewHandler is responsible for dealing with one particular aspect of a ViewManager.
- * There are four default ViewHandler implementations automatically added to each ViewManager
+ * A ViewRootHandler is responsible for dealing with one particular aspect of a ViewManager.
+ * There are four default ViewRootHandler implementations automatically added to each ViewManager
  * that deal with several builtin features like view autowiring. But applications can easily
- * add their own functionality through <code>ViewSettings.addViewHandler</code> or the
- * viewHandler attribute of the <code>&lt;ViewSettings&gt;</code> tag.
+ * add their own functionality through <code>ViewSettings.addViewRootHandler</code> or the
+ * viewRootHandler attribute of the <code>&lt;ViewSettings&gt;</code> tag.
  * 
  * @author Jens Halm
  */
-public interface ViewHandler {
+public interface ViewRootHandler {
 
 	/**
 	 * Initializes the handler and passes some collaborators.

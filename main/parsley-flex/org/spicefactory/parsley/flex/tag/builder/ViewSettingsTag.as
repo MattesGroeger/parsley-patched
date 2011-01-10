@@ -36,11 +36,15 @@ public class ViewSettingsTag extends DefaultViewSettings implements BootstrapCon
 	[Deprecated]
 	public var local:Boolean = false;
 	
+	[Deprecated(replacement="viewRootHandler")]
+	public var viewHandler:Class;
+	
 	/**
-	 * The type of a view handler to add to this Context. The class must implement the <code>ViewHandler</code> interface.
+	 * The type of a view root handler to add to this Context. 
+	 * The class must implement the <code>ViewRootHandler</code> interface.
 	 * For specifying more than one view handler multiple ViewSettings tags can be used.
 	 */
-	public var viewHandler:Class;
+	public var viewRootHandler:Class;
 	
 	/**
 	 * @private
@@ -53,7 +57,10 @@ public class ViewSettingsTag extends DefaultViewSettings implements BootstrapCon
 			config.viewSettings.autowireFilter = autowireFilter;
 		}
 		if (viewHandler) {
-			config.viewSettings.addViewHandler(viewHandler);
+			config.viewSettings.addViewRootHandler(viewHandler);
+		}
+		if (viewRootHandler) {
+			config.viewSettings.addViewRootHandler(viewRootHandler);
 		}
 	}
 	

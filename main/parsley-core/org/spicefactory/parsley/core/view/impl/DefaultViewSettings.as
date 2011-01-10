@@ -15,7 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.view.impl {
-import org.spicefactory.parsley.core.view.ViewHandler;
+import org.spicefactory.parsley.core.view.ViewRootHandler;
 import org.spicefactory.parsley.core.bootstrap.impl.ServiceFactory;
 import org.spicefactory.lib.util.Flag;
 import org.spicefactory.parsley.core.view.ViewSettings;
@@ -36,7 +36,7 @@ public class DefaultViewSettings implements ViewSettings {
 	private var _autoremoveComponents:Flag;
 	private var _autowireComponents:Flag;
 	private var _autowireFilter:ViewAutowireFilter;
-	private var _viewHandlers:Array = new Array();
+	private var _viewRootHandlers:Array = new Array();
 
 	
 	public function set parent (parent:ViewSettings) : void {
@@ -111,17 +111,17 @@ public class DefaultViewSettings implements ViewSettings {
 	/**
 	 * @inheritDoc
 	 */
-	public function addViewHandler (handler:Class, ...params) : void {
-		_viewHandlers.push(new ServiceFactory(handler, params, ViewHandler));
+	public function addViewRootHandler (handler:Class, ...params) : void {
+		_viewRootHandlers.push(new ServiceFactory(handler, params, ViewRootHandler));
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function get viewHandlers () : Array {
-		var handlers:Array = _viewHandlers;
+	public function get viewRootHandlers () : Array {
+		var handlers:Array = _viewRootHandlers;
 		if (_parent) {
-			handlers = handlers.concat(_parent.viewHandlers);
+			handlers = handlers.concat(_parent.viewRootHandlers);
 		}
 		return handlers;
 	}

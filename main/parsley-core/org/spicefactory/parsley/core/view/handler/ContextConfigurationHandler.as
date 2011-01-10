@@ -18,18 +18,18 @@ package org.spicefactory.parsley.core.view.handler {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextConfigurationEvent;
 import org.spicefactory.parsley.core.view.ViewConfigurator;
-import org.spicefactory.parsley.core.view.ViewHandler;
+import org.spicefactory.parsley.core.view.ViewRootHandler;
 import org.spicefactory.parsley.core.view.ViewSettings;
 
 import flash.display.DisplayObject;
 
 /**
- * ViewHandler implementation that deals with bubbling events from ContextBuilders that need to know
+ * ViewRootHandler implementation that deals with bubbling events from ContextBuilders that need to know
  * the parent Context to use for the building process.
  * 
  * @author Jens Halm
  */
-public class ContextConfigurationHandler implements ViewHandler {
+public class ContextConfigurationHandler implements ViewRootHandler {
 
 
 	private var context:Context;

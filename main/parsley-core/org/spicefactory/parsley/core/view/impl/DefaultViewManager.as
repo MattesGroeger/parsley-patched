@@ -23,7 +23,7 @@ import org.spicefactory.parsley.core.bootstrap.impl.ServiceFactory;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.view.ViewConfigurator;
-import org.spicefactory.parsley.core.view.ViewHandler;
+import org.spicefactory.parsley.core.view.ViewRootHandler;
 import org.spicefactory.parsley.core.view.ViewManager;
 import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.view.util.StageEventFilter;
@@ -37,7 +37,7 @@ import flash.utils.getQualifiedClassName;
 
 /**
  * Default implementation of the ViewManager interface.
- * Delegates most of the work to ViewHandlers.
+ * Delegates most of the work to ViewRootHandlers.
  * 
  * @author Jens Halm
  */
@@ -83,13 +83,13 @@ public class DefaultViewManager implements ViewManager, InitializingService {
 		this.settings = info.viewSettings;
 		this.configurator = new DefaultViewConfigurator(context, domain, settings);
 		this.handlers = new Array();
-		initViewHandlers(settings.viewHandlers);
+		initViewRootHandlers(settings.viewRootHandlers);
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
 	}
 	
-	private function initViewHandlers (classes:Array) : void {
+	private function initViewRootHandlers (classes:Array) : void {
 		for each (var handlerFactory:ServiceFactory in classes) {
-			var handler:ViewHandler = handlerFactory.newInstance() as ViewHandler;
+			var handler:ViewRootHandler = handlerFactory.newInstance() as ViewRootHandler;
 			handler.init(context, settings, configurator);
 			handlers.push(handler);
 		}
@@ -102,7 +102,7 @@ public class DefaultViewManager implements ViewManager, InitializingService {
 		}
 		viewRoots = new Dictionary();
 		viewRootCount = 0;
-		for each (var handler:ViewHandler in handlers) {
+		for each (var handler:ViewRootHandler in handlers) {
 			handler.destroy();
 		}
 	}
@@ -132,7 +132,7 @@ public class DefaultViewManager implements ViewManager, InitializingService {
 		viewRoots[view] = new ViewRoot(view, autoremove);
 		viewRootCount++;
 		
-		for each (var handler:ViewHandler in handlers) {
+		for each (var handler:ViewRootHandler in handlers) {
 			handler.addViewRoot(view);
 		}
 	}
@@ -164,7 +164,7 @@ public class DefaultViewManager implements ViewManager, InitializingService {
 	}
 	
 	private function handleRemovedViewRoot (viewRoot:ViewRoot) : void {
-		for each (var handler:ViewHandler in handlers) {
+		for each (var handler:ViewRootHandler in handlers) {
 			handler.removeViewRoot(viewRoot.view);
 		}
 			

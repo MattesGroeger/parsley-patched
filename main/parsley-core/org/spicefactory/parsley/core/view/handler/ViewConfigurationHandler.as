@@ -19,19 +19,19 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.view.ViewConfigurator;
-import org.spicefactory.parsley.core.view.ViewHandler;
+import org.spicefactory.parsley.core.view.ViewRootHandler;
 import org.spicefactory.parsley.core.view.util.ContextAwareEventHandler;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
 
 /**
- * ViewHandler implementation that deals with bubbling events from components that explicitly
+ * ViewRootHandler implementation that deals with bubbling events from components that explicitly
  * signal that they wish to get wired to the Context.
  * 
  * @author Jens Halm
  */
-public class ViewConfigurationHandler implements ViewHandler {
+public class ViewConfigurationHandler implements ViewRootHandler {
 
 	
 	private static const LEGACY_CONFIGURE_EVENT:String = "configureIOC";

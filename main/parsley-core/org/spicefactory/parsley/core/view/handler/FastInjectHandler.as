@@ -20,18 +20,18 @@ import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.FastInjectEvent;
 import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.view.ViewConfigurator;
-import org.spicefactory.parsley.core.view.ViewHandler;
+import org.spicefactory.parsley.core.view.ViewRootHandler;
 import org.spicefactory.parsley.core.view.impl.ViewInjection;
 import org.spicefactory.parsley.core.view.util.ContextAwareEventHandler;
 
 import flash.display.DisplayObject;
 
 /**
- * ViewHandler implementation that deals with bubbling events dispatched from FastInject tags.
+ * ViewRootHandler implementation that deals with bubbling events dispatched from FastInject tags.
  * 
  * @author Jens Halm
  */
-public class FastInjectHandler implements ViewHandler {
+public class FastInjectHandler implements ViewRootHandler {
 
 
 	private var eventHandler:ContextAwareEventHandler;

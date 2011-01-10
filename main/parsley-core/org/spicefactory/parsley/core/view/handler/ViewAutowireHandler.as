@@ -21,18 +21,18 @@ import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import org.spicefactory.parsley.core.view.ViewAutowireMode;
 import org.spicefactory.parsley.core.view.ViewConfigurator;
-import org.spicefactory.parsley.core.view.ViewHandler;
+import org.spicefactory.parsley.core.view.ViewRootHandler;
 import org.spicefactory.parsley.core.view.util.ContextAwareEventHandler;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
 
 /**
- * ViewHandler implementation that deals with autowiring views to the Context.
+ * ViewRootHandler implementation that deals with autowiring views to the Context.
  * 
  * @author Jens Halm
  */
-public class ViewAutowireHandler implements ViewHandler {
+public class ViewAutowireHandler implements ViewRootHandler {
 
 
 	private var context:Context;

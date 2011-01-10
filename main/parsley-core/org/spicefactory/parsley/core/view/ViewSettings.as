@@ -16,8 +16,6 @@
 
 package org.spicefactory.parsley.core.view {
 
-import org.spicefactory.parsley.core.view.ViewHandler;
-
 /**
  * Factory responsible for creating ViewManager instances.
  * 
@@ -68,22 +66,22 @@ public interface ViewSettings {
 	function set autowireFilter (value:ViewAutowireFilter) : void;
 	
 	/**
-	 * Adds a view handler that will be added to all ViewManagers created with these settings.
-	 * The provided class must implement the <code>ViewHandler</code> interface and provide
+	 * Adds a view root handler that will be added to all ViewManagers created with these settings.
+	 * The provided class must implement the <code>ViewRootHandler</code> interface and provide
 	 * a no-arg constructor.
 	 * 
 	 * @param handler the type of view handler to add
 	 * @param params the parameters to pass to the constructor of the view handler
 	 */
-	function addViewHandler (handler:Class, ...params) : void;
+	function addViewRootHandler (handler:Class, ...params) : void;
 	
 	/**
-	 * All view handlers that were registered for these settings.
+	 * All view root handlers that were registered for these settings.
 	 * This Array is read-only, modifications do not have any effect on
-	 * the registered view handlers. Use <code>addViewHandler</code> to
+	 * the registered view handlers. Use <code>addViewRootHandler</code> to
 	 * register a new handler.
 	 */
-	function get viewHandlers () : Array;
+	function get viewRootHandlers () : Array;
 	
 	
 }

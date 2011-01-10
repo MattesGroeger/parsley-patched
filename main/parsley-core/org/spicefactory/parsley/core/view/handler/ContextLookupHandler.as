@@ -18,17 +18,17 @@ package org.spicefactory.parsley.core.view.handler {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.view.ViewSettings;
 import org.spicefactory.parsley.core.view.ViewConfigurator;
-import org.spicefactory.parsley.core.view.ViewHandler;
+import org.spicefactory.parsley.core.view.ViewRootHandler;
 
 import flash.display.DisplayObject;
 
 /**
- * ViewHandler implementation that deals with bubbling events from components 
+ * ViewRootHandler implementation that deals with bubbling events from components 
  * that want to find out the nearest Context in the view hierarchy above them.
  * 
  * @author Jens Halm
  */
-public class ContextLookupHandler implements ViewHandler {
+public class ContextLookupHandler implements ViewRootHandler {
 
 
 	private var context:Context;

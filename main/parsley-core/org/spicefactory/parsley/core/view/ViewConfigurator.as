@@ -20,7 +20,7 @@ import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
 import flash.system.ApplicationDomain;
 
 /**
- * A facility to be used by any ViewHandler that wishes to dynamically wire views to the Context.
+ * A facility to be used by any ViewRootHandler that wishes to dynamically wire views to the Context.
  * 
  * @author Jens Halm
  */

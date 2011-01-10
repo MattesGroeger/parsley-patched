@@ -59,11 +59,11 @@ public class BootstrapDefaults {
 			defaults.services.scopeManager.setImplementation(DefaultScopeManager);
 			defaults.services.viewManager.setImplementation(DefaultViewManager);
 			
-			defaults.viewSettings.addViewHandler(ContextLookupHandler);
-			defaults.viewSettings.addViewHandler(ContextConfigurationHandler);
-			defaults.viewSettings.addViewHandler(FastInjectHandler);
-			defaults.viewSettings.addViewHandler(ViewAutowireHandler);
-			defaults.viewSettings.addViewHandler(ViewConfigurationHandler);
+			defaults.viewSettings.addViewRootHandler(ContextLookupHandler);
+			defaults.viewSettings.addViewRootHandler(ContextConfigurationHandler);
+			defaults.viewSettings.addViewRootHandler(FastInjectHandler);
+			defaults.viewSettings.addViewRootHandler(ViewAutowireHandler);
+			defaults.viewSettings.addViewRootHandler(ViewConfigurationHandler);
 			
 			defaults.domainProvider = new DefaultApplicationDomainProvider();
 		}
