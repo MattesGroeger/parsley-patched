@@ -23,6 +23,7 @@ import org.spicefactory.parsley.flex.tag.ConfigurationTagBase;
 import flash.display.DisplayObject;
 import flash.events.Event;
 
+[DefaultProperty("targets")]
 /**
  * MXML Tag that can be used for views that wish to be wired to the IOC Container.
  * With the target property of this tag the object to be wired to the Context can be explicitly specified
@@ -50,12 +51,15 @@ public class ConfigureTag extends ConfigurationTagBase {
 	}
 	
 	
-	/**
-	 * The target object to be wired to the Context.
-	 * If this property is not set explicitly then the document object this tag
-	 * was placed upon will be wired.
-	 */
+	[Deprecated(replacement="targets")]
 	public var target:Object;
+	
+	/**
+	 * The target objects to be wired to the Context.
+	 * If this property is not set explicitly then the document object this tag
+	 * was placed upon will be the only object getting wired.
+	 */
+	public var targets:Array;
 	
 	/**
 	 * The id to use to lookup a matching configuration in the container.
@@ -90,11 +94,11 @@ public class ConfigureTag extends ConfigurationTagBase {
 	}
 	
 	private function dispatchConfigurationEvent (view:DisplayObject) : void {
-		var configTarget:Object = (target == null) ? view : target;
-		var event:ViewConfigurationEvent = new ViewConfigurationEvent(configTarget, configId);
+		var configTargets:Array = (targets) ? targets : (target) ? [target] : [view];
+		var event:ViewConfigurationEvent = new ViewConfigurationEvent(configTargets, configId);
 		view.dispatchEvent(event);
 		if (!event.processed) {
-			log.warn("Configure tag could not be processed for target " + event.configTarget
+			log.warn("Configure tag could not be processed for targets " + event.configTargets
 					+ ": no Context found in view hierarchy");
 		}
 	}

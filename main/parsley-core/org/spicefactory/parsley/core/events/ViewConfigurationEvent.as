@@ -35,7 +35,7 @@ public class ViewConfigurationEvent extends Event {
 	public static const CONFIGURE_VIEW : String = "configureView";
 	
 	
-	private var explicitTarget:Object;
+	private var explicitTargets:Array;
 	private var explicitConfigId:String;
 	
 	private var _processed:Boolean;
@@ -47,25 +47,26 @@ public class ViewConfigurationEvent extends Event {
 	 * @param target the target that should be wired to the container
 	 * @param configId the id to use to lookup a matching configuration in the container
 	 */
-	public function ViewConfigurationEvent (target:Object = null, configId:String = null) {
+	public function ViewConfigurationEvent (targets:Array = null, configId:String = null) {
 		super(CONFIGURE_VIEW, true);
-		this.explicitTarget = target;
+		this.explicitTargets = targets;
 		this.explicitConfigId = configId;
 	}		
 	
 	/**
 	 * The target that should be wired to the container.
 	 */
-	public function get configTarget () : Object {
-		return (explicitTarget == null) ? target : explicitTarget;
+	public function get configTargets () : Array {
+		return (explicitTargets == null) ? [target] : explicitTargets;
 	}
 	
 	/**
-	 * The id to use to lookup a matching configuration in the container.
+	 * Returns the id to use to lookup a matching configuration in the container
+	 * for the specified target instance.
 	 * If the value is null, then no container configuration will be used 
 	 * and only metadata on the target instance will be processed.
 	 */
-	public function get configId () : String {
+	public function getConfigId (configTarget:Object) : String {
 		return (explicitConfigId != null) ? explicitConfigId : 
 			(configTarget is DisplayObject) ? DisplayObject(configTarget).name : null;
 	}
@@ -89,7 +90,7 @@ public class ViewConfigurationEvent extends Event {
 	 * @private
 	 */
 	public override function clone () : Event {
-		return new ViewConfigurationEvent(explicitTarget);
+		return new ViewConfigurationEvent(explicitTargets, explicitConfigId);
 	}	
 		
 		

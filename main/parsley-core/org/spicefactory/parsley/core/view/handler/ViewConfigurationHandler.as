@@ -85,13 +85,16 @@ public class ViewConfigurationHandler implements ViewRootHandler {
 	}
 	
 	private function processConfigurationEvent (event:Event) : void {
-		var configTarget:Object = (event is ViewConfigurationEvent) 
-				? ViewConfigurationEvent(event).configTarget : event.target;
-		var configId:String = (event is ViewConfigurationEvent) 
-				? ViewConfigurationEvent(event).configId 
+		var configTargets:Array = (event is ViewConfigurationEvent) 
+				? ViewConfigurationEvent(event).configTargets : [event.target];
+		for each (var configTarget in configTargets) {
+			var configId:String = (event is ViewConfigurationEvent) 
+				? ViewConfigurationEvent(event).getConfigId(configTarget) 
 				: (configTarget is DisplayObject) ? DisplayObject(configTarget).name : null;
-		if (configurator.isConfigured(configTarget)) return;
-		configurator.configure(configTarget, configurator.getDefinition(configTarget, configId));
+			if (configurator.isConfigured(configTarget)) continue;
+			configurator.configure(configTarget, configurator.getDefinition(configTarget, configId));
+		}
+		
 	}
 	
 	
