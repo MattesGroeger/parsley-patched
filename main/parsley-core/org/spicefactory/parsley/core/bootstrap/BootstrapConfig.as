@@ -97,6 +97,16 @@ public interface BootstrapConfig {
 	function set description (value:String) : void;
 	
 	/**
+	 * The unique id to assign to the local scope of this Context.
+	 * Will normally generated automatically and only needs to be set
+	 * explicitly if you need point to point messaging between distinct
+	 * scopes and want to assign ids which are meaningful for your application.
+	 */
+	function get localScopeUuid () : String;
+	
+	function set localScopeUuid (value:String) : void;
+	
+	/**
 	 * Adds a custom scope to the new Context.
 	 * The new scope will be added to the scopes which may be inherited from a parent Context.
 	 * 

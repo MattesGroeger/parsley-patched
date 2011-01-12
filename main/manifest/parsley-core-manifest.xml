@@ -55,6 +55,7 @@
 	<component id="Instance" class="org.spicefactory.parsley.flex.tag.builder.InstanceTag"/>
 	
 	<component id="Scope" class="org.spicefactory.parsley.flex.tag.builder.ScopeTag"/>
+	<component id="LocalScope" class="org.spicefactory.parsley.flex.tag.builder.LocalScopeTag"/>
 	
 	<component id="MessageSettings" class="org.spicefactory.parsley.flex.tag.builder.MessageSettingsTag"/>
 	<component id="ViewSettings" class="org.spicefactory.parsley.flex.tag.builder.ViewSettingsTag"/>

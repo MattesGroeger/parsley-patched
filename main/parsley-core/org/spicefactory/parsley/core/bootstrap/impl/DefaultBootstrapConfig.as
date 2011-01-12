@@ -200,6 +200,21 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 		_description = value;
 	}
 
+
+	private var _localScopeUuid:String;
+	/**
+	 * @inheritDoc
+	 */
+	public function get localScopeUuid () : String {
+		return _localScopeUuid;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function set localScopeUuid (value:String) : void {
+		_localScopeUuid = value;
+	}
 	
 	/**
 	 * @inheritDoc
@@ -263,7 +278,7 @@ public class DefaultBootstrapConfig implements BootstrapConfig {
 	}
 	
 	private function assembleScopeInfos () : void {
-		scopes.addScope(createScopeInfo(ScopeName.LOCAL, false));
+		scopes.addScope(createScopeInfo(ScopeName.LOCAL, false, localScopeUuid));
 		if (parent == null) {
 			scopes.addScope(createScopeInfo(ScopeName.GLOBAL, true));
 		}
