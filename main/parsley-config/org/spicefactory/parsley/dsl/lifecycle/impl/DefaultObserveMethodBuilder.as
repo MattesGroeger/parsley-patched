@@ -16,7 +16,6 @@
 
 package org.spicefactory.parsley.dsl.lifecycle.impl {
 import org.spicefactory.parsley.dsl.impl.ObjectDefinitionContext;
-import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.processor.lifecycle.ObserveMethodProcessorFactory;
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.dsl.impl.ObjectDefinitionBuilderPart;
@@ -34,7 +33,7 @@ public class DefaultObserveMethodBuilder implements ObserveMethodBuilder, Object
 	private var context:ObjectDefinitionContext;
 	private var method:String;
 
-	private var _scope:String = ScopeName.GLOBAL;
+	private var _scope:String;
 	private var _phase:ObjectLifecycle = ObjectLifecycle.POST_INIT;
 	private var _objectId:String;
 

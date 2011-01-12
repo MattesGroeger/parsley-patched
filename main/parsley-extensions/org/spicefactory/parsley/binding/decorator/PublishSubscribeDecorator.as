@@ -20,7 +20,6 @@ import org.spicefactory.parsley.core.scope.Scope;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.binding.processor.PublisherProcessor;
 import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
-import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.tag.util.ReflectionUtil;
 
@@ -39,7 +38,7 @@ public class PublishSubscribeDecorator implements ObjectDefinitionDecorator {
 	/**
 	 * The scope the property value is published to.
 	 */
-	public var scope:String = ScopeName.GLOBAL;
+	public var scope:String;
 
 	/**
 	 * The id the property value is published with.

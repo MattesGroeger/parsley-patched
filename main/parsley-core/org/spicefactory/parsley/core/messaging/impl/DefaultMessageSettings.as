@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.messaging.impl {
+import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.lib.reflect.types.Void;
 import org.spicefactory.parsley.core.messaging.MessageSettings;
 import org.spicefactory.parsley.core.messaging.ErrorPolicy;
@@ -33,6 +34,7 @@ public class DefaultMessageSettings implements MessageSettings {
 
 	private var _parent:MessageSettings;
 	
+	private var _defaultReceiverScope:String;
 	private var _unhandledError:ErrorPolicy;
 	private var _errorHandlers:Array = new Array();
 	private var _commandFactories:DefaultCommandFactoryRegistry;
@@ -100,6 +102,23 @@ public class DefaultMessageSettings implements MessageSettings {
 	public function get commandFactories () : CommandFactoryRegistry {
 		return _commandFactories;
 	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get defaultReceiverScope () : String {
+		return (_defaultReceiverScope) 
+				? _defaultReceiverScope 
+				: ((_parent) ? _parent.defaultReceiverScope : ScopeName.GLOBAL);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function set defaultReceiverScope (value:String) : void {
+		_defaultReceiverScope = value;
+	}
+	
 }
 }
 

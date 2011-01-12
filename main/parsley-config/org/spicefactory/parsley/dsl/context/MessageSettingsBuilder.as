@@ -28,6 +28,7 @@ public class MessageSettingsBuilder implements SetupPart {
 	
 	private var setup:ContextBuilderSetup;
 	
+	private var _defaultReceiverScope:String;
 	private var errorPolicy:ErrorPolicy;
 	private var errorHandler:Function;
 	
@@ -54,6 +55,21 @@ public class MessageSettingsBuilder implements SetupPart {
 	}
 	
 	/**
+	 * Sets the default scope to use for message receivers and observers.
+	 * If not specified the global scope will be used.
+	 * In a modular application it is not uncommon that most message receivers
+	 * are only interested in local messages. Switching the default allows to
+	 * avoid specifying the local scope explicitly on all metadata tags.
+	 * 
+	 * @param name the name of the default receiver scope
+	 * @return the original setup instance for method chaining
+	 */
+	public function defaultReceiverScope (name:String) : ContextBuilderSetup {
+		_defaultReceiverScope = name;
+		return setup;
+	}
+	
+	/**
 	 * Sets a handler that gets invoked for each Error thrown in any message receiver
 	 * in any Context in any scope. The signature of the function must be:
 	 * <code>function (processor:MessageProcessor, error:Error) : void</code>
@@ -75,6 +91,9 @@ public class MessageSettingsBuilder implements SetupPart {
 		}
 		if (errorHandler != null) {
 			config.messageSettings.addErrorHandler(new GlobalMessageErrorHandler(globalErrorHandler));
+		}
+		if (_defaultReceiverScope != null) {
+			config.messageSettings.defaultReceiverScope = _defaultReceiverScope;
 		}
 	}
 }

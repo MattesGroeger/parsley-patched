@@ -19,7 +19,6 @@ import org.spicefactory.parsley.dsl.messaging.impl.DynamicCommandBuilder;
 import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.parsley.config.RootConfigurationElement;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
-import org.spicefactory.parsley.core.scope.ScopeName;
 
 [DefaultProperty("decorators")]
 /**
@@ -50,7 +49,7 @@ public class DynamicCommandTag implements RootConfigurationElement {
 	/**
 	 * @copy org.spicefactory.parsley.tag.lifecycle.AbstractSynchronizedProviderDecorator#scope
 	 */
-	public var scope:String = ScopeName.GLOBAL;
+	public var scope:String;
 
 	/**
 	 * @copy org.spicefactory.parsley.tag.messaging.AbstractMessageReceiverDecorator#type

@@ -35,6 +35,7 @@ public class DefaultScopeManager implements ScopeManager, InitializingService {
 	
 	private var scopes:Dictionary = new Dictionary();
 	private var nonLocalScopes:Array = new Array();
+	private var defaultReceiverScope:String;
 	
 	
 	/**
@@ -48,8 +49,9 @@ public class DefaultScopeManager implements ScopeManager, InitializingService {
 				nonLocalScopes.push(s);
 			}
 		}
+		defaultReceiverScope = info.messageSettings.defaultReceiverScope;
 	}
-	
+
 	/**
 	 * @inheritDoc
 	 */
@@ -60,7 +62,10 @@ public class DefaultScopeManager implements ScopeManager, InitializingService {
 	/**
 	 * @inheritDoc
 	 */
-	public function getScope (name:String) : Scope {
+	public function getScope (name:String = null) : Scope {
+		if (!name) {
+			name = defaultReceiverScope;
+		}
 		if (!hasScope(name)) {
 			throw new IllegalArgumentError("This router does not contain a scope with name " + name);
 		}

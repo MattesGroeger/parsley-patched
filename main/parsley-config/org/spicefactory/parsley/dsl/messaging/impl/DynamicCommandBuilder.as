@@ -22,7 +22,6 @@ import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 import org.spicefactory.parsley.core.messaging.receiver.MessageTarget;
 import org.spicefactory.parsley.core.registry.DynamicObjectDefinition;
-import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.processor.messaging.receiver.DefaultCommandObserver;
 import org.spicefactory.parsley.processor.messaging.receiver.DefaultCommandTarget;
 import org.spicefactory.parsley.processor.messaging.receiver.DynamicCommandProxy;
@@ -46,7 +45,7 @@ import org.spicefactory.parsley.processor.messaging.receiver.DynamicCommandProxy
 public class DynamicCommandBuilder {
 
 
-	private var _scope:String = ScopeName.GLOBAL;
+	private var _scope:String;
 	private var _messageType:Class;
 	private var _selector:*;
 	private var _messageProperties:Array;

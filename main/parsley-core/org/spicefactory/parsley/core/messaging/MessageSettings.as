@@ -56,7 +56,17 @@ public interface MessageSettings {
 	 */
 	function get commandFactories () : CommandFactoryRegistry;
 	
+	/**
+	 * The default scope to use for message receivers and observers.
+	 * If not specified the global scope will be used.
+	 * In a modular application it is not uncommon that most message receivers
+	 * are only interested in local messages. Switching the default allows to
+	 * avoid specifying the local scope explicitly on all metadata tags.
+	 */
+	function get defaultReceiverScope () : String;
 	
+	function set defaultReceiverScope (value:String) : void;
 	
+		
 }
 }

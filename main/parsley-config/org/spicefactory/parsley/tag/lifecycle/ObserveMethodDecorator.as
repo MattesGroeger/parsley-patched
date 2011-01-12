@@ -17,7 +17,6 @@
 package org.spicefactory.parsley.tag.lifecycle {
 import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
 import org.spicefactory.parsley.core.lifecycle.ObjectLifecycle;
-import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 
 [Metadata(name="Observe", types="method", multiple="true")]
@@ -40,7 +39,7 @@ public class ObserveMethodDecorator implements ObjectDefinitionDecorator {
 	/**
 	 * The name of the scope to observe.
 	 */
-	public var scope:String = ScopeName.GLOBAL;
+	public var scope:String;
 	
 	[Attribute]
 	/**

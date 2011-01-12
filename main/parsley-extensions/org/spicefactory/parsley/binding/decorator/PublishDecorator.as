@@ -15,7 +15,6 @@
  */
  
 package org.spicefactory.parsley.binding.decorator {
-import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.lib.reflect.Property;
 import org.spicefactory.parsley.binding.processor.PublisherProcessor;
 import org.spicefactory.parsley.config.ObjectDefinitionDecorator;
@@ -36,7 +35,7 @@ public class PublishDecorator implements ObjectDefinitionDecorator {
 	/**
 	 * The scope the property value is published to.
 	 */
-	public var scope:String = ScopeName.GLOBAL;
+	public var scope:String;
 
 	/**
 	 * The optional id the property value is published with.

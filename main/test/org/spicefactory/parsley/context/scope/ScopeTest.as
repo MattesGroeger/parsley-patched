@@ -47,6 +47,19 @@ public class ScopeTest {
 	}
 	
 	[Test]
+	public function defaultReceiverScope () : void {
+		var context:Context = ContextBuilder.newSetup()
+				.messageSettings().defaultReceiverScope(ScopeName.LOCAL)
+				.newBuilder()
+				.config(ActionScriptConfig.forClass(ScopeMessagingTestConfig))
+				.build();
+		var r:LocalReceiver = context.getObjectByType(LocalReceiver) as LocalReceiver;
+		assertThat(r.getCount(), equalTo(4));
+		assertThat(r.getCount(Event, "global"), equalTo(2));
+		assertThat(r.getCount(Event, "local"), equalTo(2));
+	}
+	
+	[Test]
 	public function customScope () : void {
 		PassiveSender;
 		var configA:XML = <objects xmlns="http://www.spicefactory.org/parsley">

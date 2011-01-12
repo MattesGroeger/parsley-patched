@@ -18,7 +18,6 @@ package org.spicefactory.parsley.dsl.lifecycle.impl {
 import org.spicefactory.parsley.core.registry.ObjectDefinition;
 import org.spicefactory.parsley.core.registry.ObjectInstantiator;
 import org.spicefactory.parsley.core.registry.ObjectProcessorFactory;
-import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.dsl.core.ObjectDefinitionReplacer;
 import org.spicefactory.parsley.dsl.impl.ObjectDefinitionContext;
 import org.spicefactory.parsley.dsl.impl.ObjectProcessorBuilderPart;
@@ -76,7 +75,6 @@ public class DefaultLifecycleBuilder implements LifecycleBuilder {
 	 * @inheritDoc
 	 */
 	public function messageReceiverFactory (factory:MessageReceiverFactory, scope:String = null) : LifecycleBuilder {
-		if (scope == null) scope = ScopeName.GLOBAL;
 		context.addBuilderPart(new MessageReceiverFactoryBuilderPart(factory, context.config.context, scope));
 		return this;
 	}

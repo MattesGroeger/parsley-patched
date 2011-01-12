@@ -15,7 +15,6 @@
  */
 
 package org.spicefactory.parsley.tag.messaging {
-import org.spicefactory.parsley.core.scope.ScopeName;
 
 /**
  * Base class for decorators used for message receivers that offer the attributes scope, type, selector and order
@@ -29,7 +28,7 @@ public class MessageReceiverDecoratorBase {
 	/**
 	 * The name of the scope this tag should be applied to.
 	 */
-	public var scope:String = ScopeName.GLOBAL;
+	public var scope:String;
 	
 	/**
 	 * The type of the messages the receiver wants to handle.

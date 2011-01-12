@@ -1,5 +1,4 @@
 package org.spicefactory.parsley.flash.binding {
-import org.spicefactory.parsley.core.scope.ScopeName;
 import flash.events.Event;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.reflect.Property;
@@ -23,7 +22,7 @@ public class FlashPublishDecorator implements ObjectDefinitionDecorator {
 	/**
 	 * The scope the property value is published to.
 	 */
-	public var scope:String = ScopeName.GLOBAL;
+	public var scope:String;
 
 	/**
 	 * The id the property value is published with.

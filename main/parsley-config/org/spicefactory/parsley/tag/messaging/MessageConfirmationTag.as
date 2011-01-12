@@ -17,7 +17,6 @@
 package org.spicefactory.parsley.tag.messaging {
 import org.spicefactory.parsley.config.Configuration;
 import org.spicefactory.parsley.config.RootConfigurationElement;
-import org.spicefactory.parsley.core.scope.ScopeName;
 import org.spicefactory.parsley.dsl.ObjectDefinitionBuilder;
 import org.spicefactory.parsley.flex.util.MessageConfirmation;
 
@@ -42,7 +41,7 @@ public class MessageConfirmationTag implements RootConfigurationElement {
 	/**
 	 * The name of the scope in which to listen for the message.
 	 */
-	public var scope:String = ScopeName.GLOBAL;
+	public var scope:String;
 	
 	/**
 	 * The type of the message to show an Alert for.

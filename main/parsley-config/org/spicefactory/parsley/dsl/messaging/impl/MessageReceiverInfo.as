@@ -16,7 +16,6 @@
 
 package org.spicefactory.parsley.dsl.messaging.impl {
 import org.spicefactory.parsley.config.Configuration;
-import org.spicefactory.parsley.core.scope.ScopeName;
 
 /**
  * The base configuration for a message receiver.
@@ -30,7 +29,7 @@ public class MessageReceiverInfo {
 	/**
 	 * The name of the scope the receiver listens to.
 	 */
-	public var scope:String = ScopeName.GLOBAL;
+	public var scope:String;
 	
 	/**
 	 * The type of the message the receiver listens to.

@@ -42,11 +42,12 @@ public interface ScopeManager {
 	
 	/**
 	 * Returns the scope instance for the specified scope name.
+	 * If the scope name is omitted, the default receiver scope is returned.
 	 * 
 	 * @param name the name of the scope to look for
 	 * @return the Scope instance for the specified name
 	 */
-	function getScope (name:String) : Scope;
+	function getScope (name:String = null) : Scope;
 	
 	/**
 	 * Returns all scope instances managed by this instance.

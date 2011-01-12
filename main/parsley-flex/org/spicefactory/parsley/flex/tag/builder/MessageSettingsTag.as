@@ -48,6 +48,11 @@ public class MessageSettingsTag implements BootstrapConfigProcessor {
 	 */
 	public var unhandledErrors:ErrorPolicy;
 	
+	/**
+	 * @copy org.spicefactory.parsley.core.messaging.MessageSettingsTag#defaultReceiverScope
+	 */
+	public var defaultReceiverScope:String;
+	
 	[Deprecated]
 	public var local:Boolean = false;
 	
@@ -58,6 +63,9 @@ public class MessageSettingsTag implements BootstrapConfigProcessor {
 	public function processConfig (config:BootstrapConfig) : void {
 		/* var settings:MessageSettings = (local) 
 				? builder.factories.messageSettings : GlobalFactoryRegistry.instance.messageSettings; */
+		if (defaultReceiverScope != null) {
+			config.messageSettings.defaultReceiverScope = defaultReceiverScope;
+		}
 		if (unhandledErrors != null) {
 			config.messageSettings.unhandledError = unhandledErrors;
 		}
