@@ -65,7 +65,7 @@ public class ChildTextNodeHandler extends AbstractPropertyHandler {
 			var xmlName:QName = xmlNames[0];
 			var child:XML = <{xmlName.localName}/>;
 			if (xmlName.uri != null && xmlName.uri.length != 0) {
-				context.setNamespace(parentElement, xmlName.uri);
+				context.setNamespace(child, xmlName.uri);
 			}
 			child.text()[0] = getValue(instance);
 			parentElement.appendChild(child);
