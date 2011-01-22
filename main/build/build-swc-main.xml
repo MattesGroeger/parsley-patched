@@ -74,9 +74,9 @@
 		<replace file="${project.dir}/parsley-config/org/spicefactory/parsley/dsl/context/ContextBuilder.as" 
 					token="import org.spicefactory.parsley.flex.FlexSupport;" value="//***import org.spicefactory.parsley.flex.FlexSupport;"/>
 		
-		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/builder/impl/DefaultCompositeContextBuilder.as" 
+		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/bootstrap/impl/DefaultBootstrapConfig.as" 
 					token="BindingSupport" value="FlashBindingSupport"/>
-		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/builder/impl/DefaultCompositeContextBuilder.as" 
+		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/bootstrap/impl/DefaultBootstrapConfig.as" 
 					token="parsley.binding" value="parsley.flash.binding"/>
 		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
 					token="PublishDecorator" value="FlashPublishDecorator"/>
@@ -100,9 +100,9 @@
 		<replace file="${project.dir}/parsley-config/org/spicefactory/parsley/dsl/context/ContextBuilder.as" 
 					token="//***" value=""/>
 		
-		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/builder/impl/DefaultCompositeContextBuilder.as" 
+		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/bootstrap/impl/DefaultBootstrapConfig.as" 
 					token="FlashBindingSupport" value="BindingSupport"/>
-		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/builder/impl/DefaultCompositeContextBuilder.as" 
+		<replace file="${project.dir}/parsley-core/org/spicefactory/parsley/core/bootstrap/impl/DefaultBootstrapConfig.as" 
 					token="parsley.flash.binding" value="parsley.binding"/>
 		<replace file="${project.dir}/parsley-xml/org/spicefactory/parsley/xml/mapper/XmlObjectDefinitionMapperFactory.as" 
 					token="FlashPublishDecorator" value="PublishDecorator"/>
