@@ -68,7 +68,12 @@ public class DefaultCommandObserverProcessor extends DefaultMessageProcessor imp
 	}
 	
 	private function invokeObserver (observer:CommandObserver) : void {
+		var oldStatus:CommandStatus = status;
 		observer.observeCommand(this);
+		if (oldStatus != command.status && oldStatus != CommandStatus.EXECUTE) {
+			status = command.status;
+			rewind();
+		}
 	}
 	
 	/**

@@ -1,4 +1,5 @@
 package suites {
+import org.spicefactory.parsley.command.OverrideCommandResultTest;
 import org.spicefactory.parsley.command.DynamicCommandScopeAndOrderTest;
 import org.spicefactory.parsley.command.CommandMetadataTagTest;
 import org.spicefactory.parsley.command.CommandMxmlTagTest;
@@ -20,6 +21,7 @@ public class CommandSuite {
 	public var dynCommandXml:DynamicCommandXmlTagTest;
 	
 	public var order:DynamicCommandScopeAndOrderTest;
+	public var overrideResult:OverrideCommandResultTest;
 	public var commandTask:TaskCommandTest;
 	public var commandSync:SynchronousCommandTest;
 		

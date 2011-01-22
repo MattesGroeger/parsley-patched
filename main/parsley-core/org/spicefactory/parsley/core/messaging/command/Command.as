@@ -62,6 +62,18 @@ public interface Command {
 	function getResult (targetType:ClassInfo) : *;
 	
 	/**
+	 * Sets (and potentially overrides) the result of this command.
+	 * When a CommandStatus is passed to this method, the status of this command will also change.
+	 * This is useful in cases where a regular result must be interpreted as an error condition
+	 * or vice versa. When the status changes any active processor for command observers will
+	 * rewind and start processing again.
+	 * 
+	 * @param result the new result to set for this command
+	 * @param status the new status for this command 
+	 */
+	function setResult (result:Object, status:CommandStatus = null) : void;
+	
+	/**
 	 * Adds a handler function to invoke when the Command changes its status. 
 	 * This may either be a successful completion, or due to cancellation or an error. 
 	 * Should only be used for internal extension logic, any callback that calls

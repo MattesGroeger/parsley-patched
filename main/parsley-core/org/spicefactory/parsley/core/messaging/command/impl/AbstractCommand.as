@@ -142,6 +142,17 @@ public class AbstractCommand implements Command {
 			throw new IllegalStateError("Command already finished executing: " + this);
 		}
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function setResult (result:Object, status:CommandStatus = null) : void {
+		if (status == CommandStatus.EXECUTE) {
+			throw new IllegalStateError("Cannot set the result while Command is still executing");
+		}
+		_status = status;
+		_result = result;
+	}
 	
 	/**
 	 * @inheritDoc
@@ -246,6 +257,7 @@ public class AbstractCommand implements Command {
 		}
 		return result;
 	}
+	
 	
 }
 }
