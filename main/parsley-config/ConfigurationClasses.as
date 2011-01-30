@@ -15,6 +15,7 @@
  */
 
 package {
+import org.spicefactory.parsley.dsl.view.FastInject;
 import org.spicefactory.parsley.dsl.view.Configure;
 import org.spicefactory.parsley.tag.messaging.AbstractMessageReceiverDecorator;
 import org.spicefactory.parsley.tag.lifecycle.AbstractSynchronizedProviderDecorator;
@@ -49,6 +50,7 @@ public class ConfigurationClasses {
 	
 	ContextBuilder;
 	Configure;
+	FastInject;
 	
 	AbstractSynchronizedProviderDecorator;
 	AbstractMessageReceiverDecorator;
