@@ -15,12 +15,14 @@
  */
 
 package org.spicefactory.parsley.flex.tag.view {
-import org.spicefactory.parsley.core.view.util.StageEventFilterCollection;
+import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
-import org.spicefactory.parsley.core.events.FastInjectEvent;
-import org.spicefactory.parsley.core.view.util.StageEventFilter;
-import org.spicefactory.parsley.core.view.impl.ViewInjection;
+import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
+import org.spicefactory.parsley.core.view.ViewConfiguration;
+import org.spicefactory.parsley.core.view.impl.DefaultViewConfiguration;
+import org.spicefactory.parsley.core.view.processor.FastInjectProcessor;
+import org.spicefactory.parsley.core.view.util.StageEventFilterCollection;
 import org.spicefactory.parsley.flex.tag.ConfigurationTagBase;
 
 import mx.core.UIComponent;
@@ -91,6 +93,11 @@ public class FastInjectTag extends ConfigurationTagBase {
 	public var property:String;
 	
 	/**
+	 * The target object to inject into.
+	 */
+	public var target:Object;
+	
+	/**
 	 * The type of the object to inject.
 	 */
 	public var type:Class;
@@ -99,6 +106,16 @@ public class FastInjectTag extends ConfigurationTagBase {
 	 * The id of the object to inject.
 	 */
 	public var objectId:String;
+	
+	/**
+	 * Indicates whether the target instance will be reused in subsequent
+	 * lifecycles of the view. When set to false the injection will
+	 * only be processed once. This value should be true if the application
+	 * keeps instances of the view in memory and adds them back to the stage
+	 * later. It should be false if the view will get garbage collected once
+	 * it has been removed from the stage.
+	 */
+	public var reuse:Boolean;
 	
 	[ArrayElementType("org.spicefactory.parsley.flex.tag.view.InjectTag")]
 	/**
@@ -117,17 +134,27 @@ public class FastInjectTag extends ConfigurationTagBase {
 		this.view = view;
 		var viewInjections:Array = new Array();
 		if (property != null) {
-			viewInjections.push(new ViewInjection(property, type, objectId));
+			viewInjections.push(createConfiguration(target, property, type, objectId));
 		}
 		for each (var injectTag:InjectTag in injections) {
-			viewInjections.push(new ViewInjection(injectTag.property, injectTag.type, injectTag.objectId));
+			viewInjections.push(createConfiguration(injectTag.target, injectTag.property, injectTag.type, injectTag.objectId));
 		}
-		var event:FastInjectEvent = new FastInjectEvent(viewInjections, completeHandler);
+		var event:ViewConfigurationEvent = ViewConfigurationEvent.forConfigurations(viewInjections, completeHandler);
 		view.dispatchEvent(event);
 		if (!event.received) {
-			log.warn("FastInject tag could not be processed for target " + view + " and property " + property
+			log.warn("Fast injection could not be performed for view " + view
 					+ ": no Context found in view hierarchy");
 		}
+	}
+	
+	private function createConfiguration (target:Object, property:String, type:Class, objectId:String) : ViewConfiguration {
+		var config:ViewConfiguration = new DefaultViewConfiguration(view, target);
+		if (!type && !objectId) {
+			throw new IllegalStateError("Either type or objectId must be specified for FastInject into " + config.target);
+		}
+		config.reuse = reuse;
+		config.processor = new FastInjectProcessor(property, type, objectId);
+		return config;
 	}
 
 	private function completeHandler () : void {

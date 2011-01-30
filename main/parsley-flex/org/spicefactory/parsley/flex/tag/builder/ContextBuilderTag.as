@@ -28,7 +28,6 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextBuilderError;
 import org.spicefactory.parsley.core.events.ContextConfigurationEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.events.FastInjectEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.handler.AutowirePrefilterCache;
@@ -129,7 +128,6 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 	
 	private var cachedContextLookupEvents:Array = new Array();
 	private var cachedViewConfigEvents:Array = new Array();
-	private var cachedFastInjectEvents:Array = new Array();
 	private var cachedAutowireViewEvents:Array = new Array();
 	private var cachedAutowirePrefilterTargets:Array = new Array();
 	private var synchronizedChildEvents:Array = new Array();
@@ -169,7 +167,6 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		view.addEventListener(autowireViewEventType, cacheAutowirePrefilterEvent);
 		view.addEventListener(autowireViewEventType, cacheAutowirePrefilterEvent, true);
 		view.addEventListener(ViewConfigurationEvent.AUTOWIRE_VIEW, cacheAutowireViewEvent);
-		view.addEventListener(FastInjectEvent.FAST_INJECT, cacheFastInjectEvent);
 		view.addEventListener(ContextBuilderSyncEvent.SYNC_BUILDER, syncChildContext);
 	}
 	
@@ -180,7 +177,6 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		view.removeEventListener(autowireViewEventType, cacheAutowirePrefilterEvent);
 		view.removeEventListener(autowireViewEventType, cacheAutowirePrefilterEvent, true);
 		view.removeEventListener(ViewConfigurationEvent.AUTOWIRE_VIEW, cacheAutowireViewEvent);
-		view.removeEventListener(FastInjectEvent.FAST_INJECT, cacheFastInjectEvent);
 		view.removeEventListener(ContextBuilderSyncEvent.SYNC_BUILDER, syncChildContext);
 	}
 	
@@ -211,12 +207,6 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		event.markAsProcessed();
 	}
 	
-	private function cacheFastInjectEvent (event:FastInjectEvent) : void {
-		event.stopImmediatePropagation();
-		cachedFastInjectEvents.push(event);
-		event.markAsReceived();
-	}
-	
 	private function cacheAutowirePrefilterEvent (event:Event) : void {
 		if (!AutowirePrefilterCache.addEvent(event)) return;
 		cachedAutowirePrefilterTargets.push(event.target);
@@ -233,9 +223,6 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		}
 		for each (var viewEvent:Event in cachedViewConfigEvents) {
 			viewEvent.target.dispatchEvent(viewEvent.clone());
-		}
-		for each (var fastInject:Event in cachedFastInjectEvents) {
-			fastInject.target.dispatchEvent(fastInject.clone());
 		}
 		for each (var autowireEvent:Event in cachedAutowireViewEvents) {
 			autowireEvent.target.dispatchEvent(autowireEvent.clone());

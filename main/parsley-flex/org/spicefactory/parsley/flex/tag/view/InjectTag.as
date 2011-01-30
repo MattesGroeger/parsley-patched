@@ -27,6 +27,11 @@ public class InjectTag {
 	
 	
 	/**
+	 * The target object to inject into.
+	 */
+	public var target:Object;
+	
+	/**
 	 * The property to inject into.
 	 */
 	public var property:String;
