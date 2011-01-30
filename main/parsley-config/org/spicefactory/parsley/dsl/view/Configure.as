@@ -50,7 +50,6 @@ public class Configure {
 	private var _configId:String;
 	
 	private var _completeHandler:Function;
-	private var _errorHandler:Function;
 	
 	
 	/**
