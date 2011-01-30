@@ -34,7 +34,7 @@ public class ViewInjection {
 	 * 
 	 * @param property the property to inject into
 	 * @param type the type of the object to inject
-	 * @param objectId te type of the object to inject
+	 * @param objectId the id of the object to inject
 	 */
 	function ViewInjection (property:String, type:Class, objectId:String = null) {
 		_property = property;
