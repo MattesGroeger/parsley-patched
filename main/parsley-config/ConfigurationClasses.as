@@ -15,6 +15,7 @@
  */
 
 package {
+import org.spicefactory.parsley.dsl.view.Configure;
 import org.spicefactory.parsley.tag.messaging.AbstractMessageReceiverDecorator;
 import org.spicefactory.parsley.tag.lifecycle.AbstractSynchronizedProviderDecorator;
 import org.spicefactory.parsley.asconfig.ActionScriptConfig;
@@ -47,6 +48,7 @@ public class ConfigurationClasses {
 	MetadataDecoratorAssembler;
 	
 	ContextBuilder;
+	Configure;
 	
 	AbstractSynchronizedProviderDecorator;
 	AbstractMessageReceiverDecorator;

@@ -102,7 +102,7 @@ public class ConfigureTag extends ConfigurationTagBase {
 		}
 		var event:ViewConfigurationEvent = ViewConfigurationEvent.forConfigurations(configs);
 		view.dispatchEvent(event);
-		if (!event.processed) {
+		if (!event.received) {
 			log.warn("Configure tag could not be processed for targets " + event.configurations
 					+ ": no Context found in view hierarchy");
 		}

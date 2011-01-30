@@ -201,7 +201,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		event.stopImmediatePropagation();
 		cachedViewConfigEvents.push(event);
 		if (event is ViewConfigurationEvent) {
-			ViewConfigurationEvent(event).markAsProcessed();
+			ViewConfigurationEvent(event).markAsReceived();
 		}
 	}
 	

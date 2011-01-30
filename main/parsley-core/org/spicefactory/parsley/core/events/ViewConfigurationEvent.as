@@ -51,9 +51,10 @@ public class ViewConfigurationEvent extends Event {
 	 */
 	public static const AUTOWIRE_VIEW : String = "configureView";
 	
-	private var _processed:Boolean;
+	private var _received:Boolean;
 	
 	private var _configurations:Array;
+	private var callback:Function;
 	
 	/**
 	 * Creates a new event instance to be used to trigger the autowiring process.
@@ -88,10 +89,11 @@ public class ViewConfigurationEvent extends Event {
 	 * in the specified configuration instances to the nearest Context in the view hierarchy for processing.
 	 * 
 	 * @param configurations one or more ViewConfigurations that should get processed
+	 * @param callback the no-arg callback to invoke after processing of this event has completed
 	 * @return a new event instance
 	 */
-	public static function forConfigurations (configurations:Array) : ViewConfigurationEvent {
-		return new ViewConfigurationEvent(CONFIGURE_VIEW, configurations);
+	public static function forConfigurations (configurations:Array, callback:Function = null) : ViewConfigurationEvent {
+		return new ViewConfigurationEvent(CONFIGURE_VIEW, configurations, callback);
 	}
 	
 	
@@ -102,9 +104,10 @@ public class ViewConfigurationEvent extends Event {
 	 * @param type the type of the event
 	 * @param configurations one or more ViewConfigurations that should get processed
 	 */
-	public function ViewConfigurationEvent (type:String, configurations:Array) {
+	public function ViewConfigurationEvent (type:String, configurations:Array, callback:Function = null) {
 		super(type, true);
 		_configurations = configurations;
+		this.callback = callback;
 	}		
 	
 	/**
@@ -117,15 +120,22 @@ public class ViewConfigurationEvent extends Event {
 	/**
 	 * Indicates whether this event instance has already been processed by a Context.
 	 */
-	public function get processed () : Boolean {
-		return _processed;
+	public function get received () : Boolean {
+		return _received;
+	}
+	
+	/**
+	 * Marks this event instance as received by a corresponding Context.
+	 */
+	public function markAsReceived () : void {
+		_received = true;
 	}
 	
 	/**
 	 * Marks this event instance as processed by a corresponding Context.
 	 */
-	public function markAsProcessed () : void {
-		_processed = true;
+	public function markAsCompleted () : void {
+		if (callback) callback();
 	}
 	
 	
@@ -133,7 +143,7 @@ public class ViewConfigurationEvent extends Event {
 	 * @private
 	 */
 	public override function clone () : Event {
-		return new ViewConfigurationEvent(type, configurations);
+		return new ViewConfigurationEvent(type, configurations, callback);
 	}	
 		
 		

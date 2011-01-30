@@ -126,7 +126,7 @@ public class ViewConfigurationHandler implements ViewRootHandler {
 	private function handleExplicitEvent (event:Event) : void {
 		event.stopImmediatePropagation();
 		if (event is ViewConfigurationEvent) {
-			ViewConfigurationEvent(event).markAsProcessed();
+			ViewConfigurationEvent(event).markAsReceived();
 		}
 		explicitHandler.handleEvent(event);
 	}
@@ -156,6 +156,9 @@ public class ViewConfigurationHandler implements ViewRootHandler {
 			processConfiguration(config);
 		}
 		
+		if (event is ViewConfigurationEvent) {
+			ViewConfigurationEvent(event).markAsCompleted();
+		}
 	}
 	
 	private function processConfiguration (config:ViewConfiguration) : void {
