@@ -22,11 +22,10 @@ import org.spicefactory.parsley.core.bootstrap.InitializingService;
 import org.spicefactory.parsley.core.bootstrap.impl.ServiceFactory;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.view.ViewConfigurator;
-import org.spicefactory.parsley.core.view.ViewRootHandler;
 import org.spicefactory.parsley.core.view.ViewManager;
+import org.spicefactory.parsley.core.view.ViewRootHandler;
 import org.spicefactory.parsley.core.view.ViewSettings;
-import org.spicefactory.parsley.core.view.util.StageEventFilter;
+import org.spicefactory.parsley.core.view.util.StageEventFilterCollection;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
@@ -58,9 +57,7 @@ public class DefaultViewManager implements ViewManager, InitializingService {
 	private var viewRoots:Dictionary = new Dictionary();
 	private var viewRootCount:int = 0;
 	
-	private var configurator:ViewConfigurator;
-
-	private var stageEventFilter:StageEventFilter = new StageEventFilter();
+	private var stageEventFilter:StageEventFilterCollection = new StageEventFilterCollection();
 	
 	
 	private static const globalViewRootRegistry:Dictionary = new Dictionary();
@@ -81,7 +78,6 @@ public class DefaultViewManager implements ViewManager, InitializingService {
 		this.context = info.context;
 		this.domain = info.domain;
 		this.settings = info.viewSettings;
-		this.configurator = new DefaultViewConfigurator(context, domain, settings);
 		this.handlers = new Array();
 		initViewRootHandlers(settings.viewRootHandlers);
 		context.addEventListener(ContextEvent.DESTROYED, contextDestroyed);
@@ -90,7 +86,7 @@ public class DefaultViewManager implements ViewManager, InitializingService {
 	private function initViewRootHandlers (classes:Array) : void {
 		for each (var handlerFactory:ServiceFactory in classes) {
 			var handler:ViewRootHandler = handlerFactory.newInstance() as ViewRootHandler;
-			handler.init(context, settings, configurator);
+			handler.init(context, settings);
 			handlers.push(handler);
 		}
 	}
@@ -121,7 +117,7 @@ public class DefaultViewManager implements ViewManager, InitializingService {
 		}
 		globalViewRootRegistry[view] = this;
 		
-		var autoremove:Boolean = configurator.isAutoremove(view, settings.autoremoveViewRoots, false);
+		var autoremove:Boolean = (view is DisplayObject) ? settings.autoremoveViewRoots : false;
 		if (autoremove) {
 			stageEventFilter.addTarget(view, filteredViewRootRemoved, ignoredFilteredAddedToStage);
 		}

@@ -37,9 +37,8 @@ public interface ViewRootHandler {
 	 * 
 	 * @param context the Context this handler belongs to
 	 * @param settings the settings to use
-	 * @param configurator a helper object in case this handler needs to dynamically wire views to the Context
 	 */
-	function init (context:Context, settings:ViewSettings, configurator:ViewConfigurator) : void;
+	function init (context:Context, settings:ViewSettings) : void;
 	
 	/**
 	 * Invoked when the associated Context gets destroyed.

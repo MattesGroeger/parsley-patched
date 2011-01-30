@@ -22,7 +22,7 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.state.ChildContextObserver;
 import org.spicefactory.parsley.core.state.GlobalViewState;
-import org.spicefactory.parsley.core.view.handler.ContextLookupEvent;
+import org.spicefactory.parsley.core.events.ContextLookupEvent;
 
 import flash.display.DisplayObject;
 

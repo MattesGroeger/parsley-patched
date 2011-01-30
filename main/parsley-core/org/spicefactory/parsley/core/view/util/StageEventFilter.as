@@ -16,7 +16,7 @@
 
 package org.spicefactory.parsley.core.view.util {
 import flash.display.DisplayObject;
-import flash.utils.Dictionary;
+import flash.events.Event;
 
 /**
  * Utility class for filtering stage events that were only caused by reparenting a DisplayObject.
@@ -26,48 +26,6 @@ import flash.utils.Dictionary;
 public class StageEventFilter {
 	
 	
-	private var handlers:Dictionary = new Dictionary();
-	
-	
-	/**
-	 * Adds a target to filter the stage events for. The specified handlers will only be invoked
-	 * when an addedToStage or removedFromStage event occurs that is not just temporarily as those
-	 * that fire when a DisplayObject gets reparented as the result of some LayoutManager operation (e.g.
-	 * adding scrollbars).
-	 * 
-	 * <p>The parameter passed to the handlers is the DisplayObject, not the event.</p>
-	 * 
-	 * @param view the view to filter all stage events for
-	 * @param removedHandler the handler to invoke for all real removedFromStage events
-	 * @param addedHandler the handler to invoke for all real addedToStage events
-	 */
-	public function addTarget (view:DisplayObject, removedHandler:Function, addedHandler:Function = null) : void {
-		handlers[view] = new ViewHandler(view, removedHandler, addedHandler);
-	}
-	
-	/**
-	 * Removes a target so that stage event handlers are no longer invoked.
-	 * 
-	 * @param view the view to stop filtering stage events for
-	 */
-	public function removeTarget (view:DisplayObject) : void {
-		var handler:ViewHandler = handlers[view];
-		if (handler) {
-			handler.dispose();
-			delete handlers[view];
-		}
-	}
-	
-	
-}
-}
-
-import flash.display.DisplayObject;
-import flash.events.Event;
-
-class ViewHandler {
-	
-	
 	private var view:DisplayObject;
 	private var removedHandler:Function;
 	private var addedHandler:Function;
@@ -75,7 +33,14 @@ class ViewHandler {
 	private var removedInCurrentFrame:Boolean;
 	
 	
-	function ViewHandler (view:DisplayObject, removedHandler:Function, addedHandler:Function) {
+	/**
+	 * Creates a new instance that filters events for the specified view.
+	 * 
+	 * @param view the view for which to filter stage events
+	 * @param removedHandler the handler to invoke for filtered removedFromStage events
+	 * @param removedHandler the handler to invoke for filtered addedToStage events
+	 */
+	function StageEventFilter (view:DisplayObject, removedHandler:Function, addedHandler:Function = null) {
 		this.view = view;
 		this.removedHandler = removedHandler;
 		this.addedHandler = addedHandler;
@@ -84,6 +49,9 @@ class ViewHandler {
 	}
 	
 	
+	/**
+	 * Instructs this filter to stop listening to stage events.
+	 */
 	public function dispose () : void {
 		view.removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
 		view.removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
@@ -116,5 +84,5 @@ class ViewHandler {
 	
 	
 }
-
+}
 

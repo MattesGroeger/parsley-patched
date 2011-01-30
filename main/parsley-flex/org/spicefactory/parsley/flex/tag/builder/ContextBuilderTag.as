@@ -29,11 +29,10 @@ import org.spicefactory.parsley.core.errors.ContextBuilderError;
 import org.spicefactory.parsley.core.events.ContextConfigurationEvent;
 import org.spicefactory.parsley.core.events.ContextEvent;
 import org.spicefactory.parsley.core.events.FastInjectEvent;
-import org.spicefactory.parsley.core.events.ViewAutowireEvent;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
 import org.spicefactory.parsley.core.view.handler.AutowirePrefilterCache;
-import org.spicefactory.parsley.core.view.handler.ContextLookupEvent;
+import org.spicefactory.parsley.core.events.ContextLookupEvent;
 import org.spicefactory.parsley.flex.FlexSupport;
 import org.spicefactory.parsley.flex.processor.FlexConfigurationProcessor;
 import org.spicefactory.parsley.flex.resources.FlexResourceBindingAdapter;
@@ -169,7 +168,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		view.addEventListener(ViewConfigurationEvent.CONFIGURE_VIEW, cacheViewConfigEvent);
 		view.addEventListener(autowireViewEventType, cacheAutowirePrefilterEvent);
 		view.addEventListener(autowireViewEventType, cacheAutowirePrefilterEvent, true);
-		view.addEventListener(ViewAutowireEvent.AUTOWIRE, cacheAutowireViewEvent);
+		view.addEventListener(ViewConfigurationEvent.AUTOWIRE_VIEW, cacheAutowireViewEvent);
 		view.addEventListener(FastInjectEvent.FAST_INJECT, cacheFastInjectEvent);
 		view.addEventListener(ContextBuilderSyncEvent.SYNC_BUILDER, syncChildContext);
 	}
@@ -180,7 +179,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 		view.removeEventListener(ViewConfigurationEvent.CONFIGURE_VIEW, cacheViewConfigEvent);
 		view.removeEventListener(autowireViewEventType, cacheAutowirePrefilterEvent);
 		view.removeEventListener(autowireViewEventType, cacheAutowirePrefilterEvent, true);
-		view.removeEventListener(ViewAutowireEvent.AUTOWIRE, cacheAutowireViewEvent);
+		view.removeEventListener(ViewConfigurationEvent.AUTOWIRE_VIEW, cacheAutowireViewEvent);
 		view.removeEventListener(FastInjectEvent.FAST_INJECT, cacheFastInjectEvent);
 		view.removeEventListener(ContextBuilderSyncEvent.SYNC_BUILDER, syncChildContext);
 	}
@@ -245,7 +244,7 @@ public class ContextBuilderTag extends ConfigurationTagBase {
 			var view:DisplayObject = DisplayObject(prefilterTarget);
 			var autowireFilter:ViewAutowireFilter = config.viewSettings.autowireFilter;
 			if (autowireFilter.prefilter(view)) {
-				view.dispatchEvent(new ViewAutowireEvent());
+				view.dispatchEvent(ViewConfigurationEvent.forAutowiring(view));
 			}
 		}
 		cachedViewConfigEvents = new Array();

@@ -19,7 +19,6 @@ import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.errors.ContextError;
 import org.spicefactory.parsley.core.events.FastInjectEvent;
 import org.spicefactory.parsley.core.view.ViewSettings;
-import org.spicefactory.parsley.core.view.ViewConfigurator;
 import org.spicefactory.parsley.core.view.ViewRootHandler;
 import org.spicefactory.parsley.core.view.impl.ViewInjection;
 import org.spicefactory.parsley.core.view.util.ContextAwareEventHandler;
@@ -42,7 +41,7 @@ public class FastInjectHandler implements ViewRootHandler {
 	/**
 	 * @inheritDoc
 	 */
-	public function init (context:Context, settings:ViewSettings, configurator:ViewConfigurator) : void {
+	public function init (context:Context, settings:ViewSettings) : void {
 		this.context = context;
 		this.eventHandler = new ContextAwareEventHandler(context, processFastInject);
 	}

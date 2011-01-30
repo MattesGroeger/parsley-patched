@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.view {
+import org.spicefactory.parsley.core.bootstrap.Service;
 
 /**
  * Factory responsible for creating ViewManager instances.
@@ -82,6 +83,41 @@ public interface ViewSettings {
 	 * register a new handler.
 	 */
 	function get viewRootHandlers () : Array;
+	
+	/**
+	 * Adds a lifecycle handler class for a particular type of view component.
+	 * This hook allows to control the lifecycle differently than with the default
+	 * handler.
+	 * An example use case is an AIR window which has unreliable stage events, 
+	 * so that it is safer to listen to its <code>CLOSE</code> event instead.
+	 * 
+	 * <p>The specified lifecylce class must implement the <code>ViewLifecycle</code> interface.</p>
+	 * 
+	 * @param viewType the class for which to use the specified lifecycle class (this includes subclasses)
+	 * @param lifecycle the lifecycle class to instantiate for each view instance
+	 * @param params parameters to get passed to the constructor of the lifecylce class 
+	 */
+	function addViewLifecycle (viewType:Class, lifecycle:Class, ...params) : void;
+	
+	/**
+	 * Create a new lifecycle instance for the specified target object.
+	 * If no lifecycle has been installed for the type of the target this 
+	 * method should return null.
+	 * 
+	 * @param target the object for which to create a new lifecycle instance
+	 * @return a new lifecycle instance for the specified target or null if no matching lifecycle has been installed
+	 */
+	function newViewLifecycle (target:Object) : ViewLifecycle;
+	
+	/**
+	 * The view processor service registration for these settings.
+	 * This hook allows to install alternative implementations to be used for processing all
+	 * views in the associated Context and its children unless overwritten in a child.
+	 * 
+	 * <p>When specifying an implementation or decorator for this service, it must implement the
+	 * <code>ViewProcessor</code> interface.
+	 */
+	function get viewProcessor () : Service;
 	
 	
 }

@@ -15,12 +15,15 @@
  */
 
 package org.spicefactory.parsley.core.view.impl {
-import org.spicefactory.parsley.core.view.ViewRootHandler;
-import org.spicefactory.parsley.core.bootstrap.impl.ServiceFactory;
 import org.spicefactory.lib.util.Flag;
-import org.spicefactory.parsley.core.view.ViewSettings;
+import org.spicefactory.parsley.core.bootstrap.Service;
+import org.spicefactory.parsley.core.bootstrap.impl.DefaultService;
+import org.spicefactory.parsley.core.bootstrap.impl.ServiceFactory;
 import org.spicefactory.parsley.core.view.ViewAutowireFilter;
-
+import org.spicefactory.parsley.core.view.ViewLifecycle;
+import org.spicefactory.parsley.core.view.ViewProcessor;
+import org.spicefactory.parsley.core.view.ViewRootHandler;
+import org.spicefactory.parsley.core.view.ViewSettings;
 
 /**
  * Default implementation of the ViewSettings interface.
@@ -41,8 +44,9 @@ public class DefaultViewSettings implements ViewSettings {
 	
 	public function set parent (parent:ViewSettings) : void {
 		_parent = parent;
+		_viewProcessor.parent = parent.viewProcessor;
 	}
-	
+
 	
 	/**
 	 * @inheritDoc
@@ -127,5 +131,60 @@ public class DefaultViewSettings implements ViewSettings {
 	}
 	
 	
+	private var viewLifecycles:Array = new Array();
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function addViewLifecycle (viewType:Class, lifecycle:Class, ...params : *) : void {
+		viewLifecycles.push(new ViewLifecycleRegistration(viewType, lifecycle, params));
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function newViewLifecycle (target:Object) : ViewLifecycle {
+		for each (var reg:ViewLifecycleRegistration in viewLifecycles) {
+			if (reg.supports(target)) {
+				return reg.newInstance();
+			}
+		}
+		return (_parent) ? _parent.newViewLifecycle(target) : null;
+	}
+	
+	
+	private var _viewProcessor:DefaultService = new DefaultService(ViewProcessor);
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get viewProcessor () : Service {
+		return _viewProcessor;
+	}
+	
+	
 }
+}
+
+import org.spicefactory.parsley.core.bootstrap.impl.ServiceFactory;
+import org.spicefactory.parsley.core.view.ViewLifecycle;
+
+class ViewLifecycleRegistration {
+	
+	private var viewType:Class;
+	private var serviceFactory:ServiceFactory;
+	
+	function ViewLifecycleRegistration (viewType:Class, lifecycle:Class, ...params : *) {
+		this.viewType = viewType;
+		this.serviceFactory = new ServiceFactory(lifecycle, params, ViewLifecycle);
+	}
+	
+	public function supports (target:Object) : Boolean {
+		return (target is viewType);
+	}
+	
+	public function newInstance () : ViewLifecycle {
+		return serviceFactory.newInstance() as ViewLifecycle; 
+	}
+	
 }

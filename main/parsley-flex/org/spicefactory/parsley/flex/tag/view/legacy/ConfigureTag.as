@@ -40,14 +40,15 @@ public class ConfigureTag extends ConfigurationTagBase {
 	public var repeat:Boolean = true;
 	
 	protected override function executeAction (view:DisplayObject) : void { 
-		view.dispatchEvent(new ViewConfigurationEvent([target], configId));
+		view.dispatchEvent(ViewConfigurationEvent.forExplicitTarget(view, target, configId));
 		if (repeat) {
 			view.addEventListener(Event.ADDED_TO_STAGE, repeatAction);
 		}
 	}
 	
 	private function repeatAction (event:Event) : void {
-		DisplayObject(event.target).dispatchEvent(new ViewConfigurationEvent([target], configId));
+		DisplayObject(event.target).dispatchEvent(ViewConfigurationEvent
+				.forExplicitTarget(DisplayObject(event.target), target, configId));
 	}
 	
 	

@@ -19,7 +19,7 @@ import org.spicefactory.lib.errors.AbstractMethodError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextEvent;
-import org.spicefactory.parsley.core.view.handler.ContextLookupEvent;
+import org.spicefactory.parsley.core.events.ContextLookupEvent;
 
 import flash.display.DisplayObject;
 

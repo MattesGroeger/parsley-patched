@@ -79,8 +79,8 @@ public class ContextAwareEventHandler {
 	public function dispose () : void {
 		if (cachedEvents.length > 0) {
 			context.removeEventListener(ContextEvent.INITIALIZED, handleCachedEvents);
+			cachedEvents = new Array();
 		}
-		cachedEvents = new Array();
 	}
 	
 	

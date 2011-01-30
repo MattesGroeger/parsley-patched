@@ -1,4 +1,4 @@
-package org.spicefactory.parsley.core.view.handler {
+package org.spicefactory.parsley.core.events {
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.parsley.core.context.Context;
 

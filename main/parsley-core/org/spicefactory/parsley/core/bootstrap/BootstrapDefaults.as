@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.bootstrap {
+import org.spicefactory.parsley.core.view.processor.DefaultViewProcessor;
 import org.spicefactory.parsley.core.bootstrap.impl.DefaultApplicationDomainProvider;
 import org.spicefactory.parsley.core.bootstrap.impl.DefaultBootstrapConfig;
 import org.spicefactory.parsley.core.bootstrap.impl.DefaultBootstrapManager;
@@ -26,7 +27,6 @@ import org.spicefactory.parsley.core.scope.impl.DefaultScopeManager;
 import org.spicefactory.parsley.core.view.handler.ContextConfigurationHandler;
 import org.spicefactory.parsley.core.view.handler.ContextLookupHandler;
 import org.spicefactory.parsley.core.view.handler.FastInjectHandler;
-import org.spicefactory.parsley.core.view.handler.ViewAutowireHandler;
 import org.spicefactory.parsley.core.view.handler.ViewConfigurationHandler;
 import org.spicefactory.parsley.core.view.impl.DefaultViewManager;
 
@@ -62,8 +62,9 @@ public class BootstrapDefaults {
 			defaults.viewSettings.addViewRootHandler(ContextLookupHandler);
 			defaults.viewSettings.addViewRootHandler(ContextConfigurationHandler);
 			defaults.viewSettings.addViewRootHandler(FastInjectHandler);
-			defaults.viewSettings.addViewRootHandler(ViewAutowireHandler);
 			defaults.viewSettings.addViewRootHandler(ViewConfigurationHandler);
+			
+			defaults.viewSettings.viewProcessor.setImplementation(DefaultViewProcessor);
 			
 			defaults.domainProvider = new DefaultApplicationDomainProvider();
 		}

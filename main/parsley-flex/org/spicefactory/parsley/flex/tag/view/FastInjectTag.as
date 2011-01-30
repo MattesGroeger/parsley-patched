@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.flex.tag.view {
+import org.spicefactory.parsley.core.view.util.StageEventFilterCollection;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.events.FastInjectEvent;
@@ -69,7 +70,7 @@ public class FastInjectTag extends ConfigurationTagBase {
 	private static const INJECTION_COMPLETE:String = "injectionComplete";
 
 	
-	private var stageEventFilter:StageEventFilter = new StageEventFilter();
+	private var stageEventFilter:StageEventFilterCollection = new StageEventFilterCollection();
 	
 	
 	/**

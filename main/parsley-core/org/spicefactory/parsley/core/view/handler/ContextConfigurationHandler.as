@@ -17,7 +17,6 @@
 package org.spicefactory.parsley.core.view.handler {
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ContextConfigurationEvent;
-import org.spicefactory.parsley.core.view.ViewConfigurator;
 import org.spicefactory.parsley.core.view.ViewRootHandler;
 import org.spicefactory.parsley.core.view.ViewSettings;
 
@@ -38,7 +37,7 @@ public class ContextConfigurationHandler implements ViewRootHandler {
 	/**
 	 * @inheritDoc
 	 */
-	public function init (context:Context, settings:ViewSettings, configurator:ViewConfigurator) : void {
+	public function init (context:Context, settings:ViewSettings) : void {
 		this.context = context;
 	}
 
