@@ -208,7 +208,7 @@ public class ViewConfigurationHandler implements ViewRootHandler {
 	}
 	
 	private function getLifecycle (config:ViewConfiguration) : ViewLifecycle {
-		var lifecycle:ViewLifecycle = settings.newViewLifecycle(config.target);
+		var lifecycle:ViewLifecycle = settings.newViewLifecycle(config.view);
 		if (!lifecycle && (config.target is IEventDispatcher)) {
 			if (isAutoremove(config.target, settings.autoremoveComponents)) {
 				lifecycle = new AutoremoveLifecycle();
