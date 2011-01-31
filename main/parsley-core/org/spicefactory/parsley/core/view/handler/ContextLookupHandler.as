@@ -15,10 +15,11 @@
  */
 
 package org.spicefactory.parsley.core.view.handler {
-	import org.spicefactory.parsley.core.events.ContextLookupEvent;
 import org.spicefactory.parsley.core.context.Context;
-import org.spicefactory.parsley.core.view.ViewSettings;
+import org.spicefactory.parsley.core.events.ContextConfigurationEvent;
+import org.spicefactory.parsley.core.events.ContextLookupEvent;
 import org.spicefactory.parsley.core.view.ViewRootHandler;
+import org.spicefactory.parsley.core.view.ViewSettings;
 
 import flash.display.DisplayObject;
 
@@ -53,6 +54,7 @@ public class ContextLookupHandler implements ViewRootHandler {
 	 */
 	public function addViewRoot (view:DisplayObject) : void {
 		view.addEventListener(ContextLookupEvent.LOOKUP, handleLookup);
+		view.addEventListener(ContextConfigurationEvent.CONFIGURE_CONTEXT, contextCreated);
 	}
 	
 	/**
@@ -60,12 +62,20 @@ public class ContextLookupHandler implements ViewRootHandler {
 	 */
 	public function removeViewRoot (view:DisplayObject) : void {
 		view.removeEventListener(ContextLookupEvent.LOOKUP, handleLookup);
+		view.removeEventListener(ContextConfigurationEvent.CONFIGURE_CONTEXT, contextCreated);
 	}
 	
 	private function handleLookup (event:ContextLookupEvent) : void {
 		event.stopImmediatePropagation();
 		event.markAsProcessed();
 		event.context = context;
+	}
+	
+	private function contextCreated (event:ContextConfigurationEvent) : void {
+		event.stopImmediatePropagation();
+		if (event.config.parent == null) {
+			event.config.parent = context;
+		}
 	}
 	
 

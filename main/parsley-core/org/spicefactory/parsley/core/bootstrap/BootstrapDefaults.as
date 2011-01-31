@@ -24,7 +24,6 @@ import org.spicefactory.parsley.core.lifecycle.impl.DefaultObjectLifecycleManage
 import org.spicefactory.parsley.core.messaging.impl.DefaultMessageRouter;
 import org.spicefactory.parsley.core.registry.impl.DefaultObjectDefinitionRegistry;
 import org.spicefactory.parsley.core.scope.impl.DefaultScopeManager;
-import org.spicefactory.parsley.core.view.handler.ContextConfigurationHandler;
 import org.spicefactory.parsley.core.view.handler.ContextLookupHandler;
 import org.spicefactory.parsley.core.view.handler.ViewConfigurationHandler;
 import org.spicefactory.parsley.core.view.impl.DefaultViewManager;
@@ -59,7 +58,6 @@ public class BootstrapDefaults {
 			defaults.services.viewManager.setImplementation(DefaultViewManager);
 			
 			defaults.viewSettings.addViewRootHandler(ContextLookupHandler);
-			defaults.viewSettings.addViewRootHandler(ContextConfigurationHandler);
 			defaults.viewSettings.addViewRootHandler(ViewConfigurationHandler);
 			
 			defaults.viewSettings.viewProcessor.setImplementation(DefaultViewProcessor);
