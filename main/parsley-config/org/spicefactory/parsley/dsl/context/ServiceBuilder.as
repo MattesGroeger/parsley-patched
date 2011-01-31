@@ -37,7 +37,7 @@ public class ServiceBuilder {
 	/**
 	 * @private
 	 */
-	function ServiceBuilder (setup:ContextBuilderSetup, property:Property) {
+	function ServiceBuilder (setup:ContextBuilderSetup, property:Property = null) {
 		this.setup = setup;
 		this.property = property;
 	}

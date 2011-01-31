@@ -48,7 +48,7 @@ public class ScopeExtensionsBuilder implements SetupPart {
 	 */	
 	public function forType (type:Class) : ServiceBuilder {
 		this.type = type;
-		builder = new ServiceBuilder(setup, null);
+		builder = new ServiceBuilder(setup);
 		return builder;
 	}
 	
