@@ -34,6 +34,9 @@ public class ViewSettingsBuilder implements SetupPart {
 	private var _autoremoveComponents:Flag;
 	private var _autoremoveViewRoots:Flag;
 	
+	private var viewProcessorBuilder:ServiceBuilder;
+	private var viewLifecycles:Array = new Array();
+	
 	
 	/**
 	 * @private
@@ -122,6 +125,40 @@ public class ViewSettingsBuilder implements SetupPart {
 	}
 	
 	/**
+	 * The view processor service registration for these settings.
+	 * This hook allows to install alternative implementations to be used for processing all
+	 * views in the associated Context and its children unless overwritten in a child.
+	 * 
+	 * <p>When specifying an implementation or decorator for this service, it must implement the
+	 * <code>ViewProcessor</code> interface.
+	 * 
+	 * @return the builder for specifying the implementation or decorators for the ViewProcessor
+	 */
+	public function viewProcessor () : ServiceBuilder {
+		viewProcessorBuilder = new ServiceBuilder(setup);
+		return viewProcessorBuilder;
+	}
+	
+	/**
+	 * Adds a lifecycle handler class for a particular type of view component.
+	 * This hook allows to control the lifecycle differently than with the default
+	 * handler.
+	 * An example use case is an AIR window which has unreliable stage events, 
+	 * so that it is safer to listen to its <code>CLOSE</code> event instead.
+	 * 
+	 * <p>The specified lifecylce class must implement the <code>ViewLifecycle</code> interface.</p>
+	 * 
+	 * @param viewType the class for which to use the specified lifecycle class (this includes subclasses)
+	 * @param lifecycle the lifecycle class to instantiate for each view instance
+	 * @param params parameters to get passed to the constructor of the lifecylce class 
+	 * @return the original setup instance for method chaining
+	 */
+	public function addViewLifecycle (viewType:Class, lifecycle:Class, ...params) : ContextBuilderSetup {
+		viewLifecycles.push(new LifecycleSetup(viewType, lifecycle, params));
+		return setup;
+	}
+	
+	/**
 	 * @private
 	 */
 	public function apply (config:BootstrapConfig) : void {
@@ -137,10 +174,26 @@ public class ViewSettingsBuilder implements SetupPart {
 		if (_autoremoveViewRoots != null) {
 			config.viewSettings.autoremoveViewRoots = _autoremoveViewRoots.value;
 		}
+		if (viewProcessorBuilder != null) {
+			viewProcessorBuilder.configureService(config.viewSettings.viewProcessor);
+		}
+		for each (var lifecycle:LifecycleSetup in viewLifecycles) {
+			lifecycle.apply(config.viewSettings.addViewLifecycle);
+		}
 	}
 	
 	
 }
+}
+
+class LifecycleSetup {
+	private var params:Array;
+	function LifecycleSetup (viewType:Class, lifecycle:Class, params:Array) {
+		this.params = [viewType, lifecycle].concat(params);
+	}
+	public function apply (f:Function) : void {
+		f.apply(null, params);
+	}
 }
 
 
