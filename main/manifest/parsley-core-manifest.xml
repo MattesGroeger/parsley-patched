@@ -60,6 +60,7 @@
 	<component id="MessageSettings" class="org.spicefactory.parsley.flex.tag.builder.MessageSettingsTag"/>
 	<component id="ViewSettings" class="org.spicefactory.parsley.flex.tag.builder.ViewSettingsTag"/>
 	<component id="ViewLifecycle" class="org.spicefactory.parsley.flex.tag.builder.ViewLifecycleTag"/>
+	<component id="ViewProcessor" class="org.spicefactory.parsley.flex.tag.builder.ViewProcessorTag"/>
 
 	<component id="PropertiesFile" class="org.spicefactory.parsley.flex.tag.builder.PropertiesFileTag"/>
 	<component id="PropertiesString" class="org.spicefactory.parsley.flex.tag.builder.PropertiesStringTag"/>
