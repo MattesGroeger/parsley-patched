@@ -34,7 +34,7 @@ public class ViewConfigurationEvent extends Event {
 
 
 	/**
-	 * Constant for the type of bubbling event explicitly fired when a view component wishes to get 
+	 * Constant for the type of bubbling event explicitly fired by a view component that wishes to get 
 	 * processed by the nearest Context in the view hierarchy.
 	 * 
 	 * @eventType configureView
@@ -45,11 +45,11 @@ public class ViewConfigurationEvent extends Event {
 	 * Constant for the type of bubbling event automatically fired when a view component is a canididate
 	 * for getting processed by the nearest Context in the view hierarchy.
 	 * A candidate is a view component that passed the <code>prefilter</code> method of the active
-	 * <code>ViewAutowireFilter</code>.
+	 * <code>ViewAutowireFilter</code> when autowiring is enabled.
 	 * 
 	 * @eventType autowireView
 	 */
-	public static const AUTOWIRE_VIEW : String = "configureView";
+	public static const AUTOWIRE_VIEW : String = "autowireView";
 	
 	private var _received:Boolean;
 	
