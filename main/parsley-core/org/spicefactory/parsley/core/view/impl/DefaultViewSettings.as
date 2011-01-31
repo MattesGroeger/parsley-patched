@@ -174,7 +174,7 @@ class ViewLifecycleRegistration {
 	private var viewType:Class;
 	private var serviceFactory:ServiceFactory;
 	
-	function ViewLifecycleRegistration (viewType:Class, lifecycle:Class, ...params : *) {
+	function ViewLifecycleRegistration (viewType:Class, lifecycle:Class, params:Array) {
 		this.viewType = viewType;
 		this.serviceFactory = new ServiceFactory(lifecycle, params, ViewLifecycle);
 	}
