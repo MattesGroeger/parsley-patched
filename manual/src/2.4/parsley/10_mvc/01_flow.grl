@@ -19,7 +19,7 @@ The model creates an application message possibly gathering any further
 information from the view and encapsulating this information in the message. 
 This message will then be dispatched through Parsleys #cdi MessageRouter #cdi #lse
 
-#lse 3: The #cdi MessageRouter #cdi will then process any MessageHandlers, MessageBindings, MessageInterceptors
+#lse 3: The #cdi MessageRouter #cdi will then process any MessageHandlers
 or Commands which were registered for this message type (usually with Metadata tags on methods or properties, alternatively
 in MXML or XML). In this case the #cdi AddToCartCommand #cdi will be invoked. #lse
 

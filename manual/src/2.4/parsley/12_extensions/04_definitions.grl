@@ -146,7 +146,7 @@ or #cdi [CommandResult] #cdi programmatically, they are all available through th
 #cdb
 builder
     .method("intercept")
-        .messageInterceptor()
+        .messageHandler()
             .type(LoginMessage)
             .scope("local");
 

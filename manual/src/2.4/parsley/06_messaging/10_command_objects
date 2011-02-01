@@ -121,3 +121,54 @@ invocations. You may switch to this behaviour in case object creation and initia
 expensive to be repeated all the time. For a stateful command you just have to make sure that
 you do not keep information for a single command execution in a private property, as multiple 
 commands would then interfere with each other and overwrite that value. #par
+
+
+#sub Overriding the Result #sub
+
+#par Since version 2.4 the result can be overridden when you turn a result handler into a message
+interceptor: #par
+
+#cdb
+[CommandResult]
+public function handleResult 
+        (result:XML, msg:LoginMessage, processor:CommandObserverProcessor) : void {
+    var parsedResult:Object = parseResultSomehow(result);
+    processor.command.setResult(parsedResult);
+}
+#cdb
+
+#par The #cdi CommandObserverProcessor #cdi interface is a sub-interface of the #cdi MessageProcessor #cdi
+interface that provides access to the #cdi Command #cdi that was executed on top of the common #cdi MessageProcessor #cdi
+functionality. #par
+
+
+#sub Local Result Handlers #sub
+
+#par Also introduced in version 2.4 was the behavior of allowing local result handlers for a command
+that was executed in global scope. This solves a common problem in modular applications where a single
+tab or window dispatches a message that is supposed to trigger a command in a shared serice in the root
+application. The DynamicCommand in the shared service has to listen to the global scope, as it does not
+belong to the same Context as the sending object in the module loaded into that tab or window. But for the result handling
+it is very often only this particular tab or window which wants to handle it. For this reason command results and errors
+are now always re-routed to the Context where the message that triggered the command originated from. #par
+
+#par This allows to use a local handler like this: #par
+
+#cdb
+[CommandResult(scope="local")]
+public function handleResult (result:Object, msg:LoginMessage) : void {
+    [...]
+}
+#cdb
+
+#par Apart from that option any part of the application can still handle the result when listening in the global
+scope. #par
+
+
+
+
+
+        
+
+
+

@@ -99,33 +99,6 @@ Will be automatically set when used as a Metadata Tag. #tbr
 #tbl
 
 
-#sc3 tagref_messaging_interceptor MessageInterceptor #sc3
-
-#tbl
-#tbr Metadata Tag # #cdi [MessageInterceptor] #cdi #tbr
-#tbr may be placed on # method declaration #tbr
-#tbr MXML and XML Namespace # #cdi http://www.spicefactory.org/parsley #cdi #tbr
-#tbr MXML Tag # #cdi <MessageInterceptor/> #cdi #tbr
-#tbr XML Tag # #cdi <message-interceptor/> #cdi #tbr
-#tbr Detailed Explanation # #ref messaging_interceptors #ref #tbr
-#tbl
-
-
-#sub Attributes #sub
-
-#tbl
-#tbr #cdi type #cdi # optional # The type (class) of the message that the annotated method wishes to intercept. If omitted
-all messages will be received (rarely useful). #tbr
-#tbr #cdi selector #cdi # optional # An selector value for filtering in addition to message selection by type.
-See #ref messaging_selectors #ref. #tbr
-#tbr #cdi scope #cdi # optional # The scope from which the message should be received. The default is the global scope. #tbr
-#tbr #cdi order #cdi # optional # The order in which interceptors should be invoked. The default value is #cdi int.MAX_VALUE #cdi. #tbr
-#tbr #cdi method #cdi # required for MXML/XML # The interceptor method. 
-Will be automatically set when used as a Metadata Tag. #tbr
-#tbl
-
-
-
 #sc3 tagref_messaging_error MessageError #sc3
 
 #tbl

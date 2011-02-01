@@ -20,7 +20,7 @@ You can finetune the behaviour with properties of the #cdi ViewManagerFactory #c
 #lst
 #lse All objects configured in the destroyed Context stop receiving messages dispatched by Parsleys central
 #cdi MessageRouter #cdi. This affects all elements annotated with #cdi MessageHandler #cdi, #cdi MessageBinding #cdi,
-#cdi MessageInterceptor #cdi or #cdi MessageError #cdi. #lse
+#cdi CommandResult #cdi and so on. #lse
 
 #lse If any objects declared in the destroyed Context declared #cdi ManagedEvents #cdi they will be ignored from now
 on and no longer dispatched trough Parsleys messaging system. #lse

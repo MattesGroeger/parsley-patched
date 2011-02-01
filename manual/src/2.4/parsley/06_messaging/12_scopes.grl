@@ -35,10 +35,22 @@ public function save (event:ProductEvent) : void {
 #cdb
 
 #par Now the handler only listens to events dispatched from the same Context. Of course all tags
-for the various message receiver types accept a scope attribute, including #cdi MessageInterceptor #cdi
+for the various message receiver types accept a scope attribute, including #cdi MessageBinding #cdi
 and #cdi MessageErrorHandler #cdi. #par
 
-#par For the sending side the default behaviour is different. For any #cdi [ManagedEvents] #cdi tag
+#par Since version 2.4 the default scope can now be switched: #par
+
+#cdb
+<parsley:ContextBuilder config="...">
+    <parsley:MessageSettings defaultReceiverScope="local"/>
+</parsley:ContextBuilder>
+#cdb
+
+#par Now the local scope is the default whenever no scope is specified explicitly in a configuration tag.
+The default is in effect for the Context and all its children unless overwritten again for a child Context. #par
+
+#par For the sending side the default behaviour is different. For any #cdi [MessageDispatcher] #cdi or 
+#cdi [ManagedEvents] #cdi tag
 where no scope is explicitly specified the message will be dispatched through all scopes available
 for that particular Context. This way the receiving side can decide which scope it wants to listen to,
 allowing global and local receivers for the same message instance.

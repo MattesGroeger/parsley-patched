@@ -42,7 +42,7 @@ they are specified at Context construction time. #par
         <parsley:Instance id="obj1" instance="{instance1}"/>    
         <parsley:Instance id="obj2" instance="{instance2}"/>    
         #hlt <parsley:Object id="obj3" type="{LoginInterceptor}"/> 
-            <parsley:MessageInterceptor method="intercept" type="{LoginEvent}"/>
+            <parsley:MessageHandler method="handleLogin" type="{LoginEvent}"/>
         </parsley:Object> #hlt    
     </parsley:RuntimeConfig>
 </parsley:ContextBuilder>

@@ -57,7 +57,7 @@ public function login (event:LoginEvent) : void {
 #par Like with Dependency Injection selecting the message receivers by type improves the robustness of the system
 as you don't have to take care of unique event type constants for the whole system. #par
 
-#par There are more tags for the receiving side like #cdi [MessageBinding] #cdi or #cdi [MessageInterceptor] #cdi.
+#par There are more tags for the receiving side like the #cdi [MessageBinding] #cdi tag.
 Those will be explained in #ref messaging_intro #ref. #par 
 
 #par Furhermore since the module is called Messaging and not Event System, you can use any class as a message, 
