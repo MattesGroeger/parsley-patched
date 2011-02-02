@@ -68,7 +68,7 @@ public class DefaultCommandObserver extends AbstractMethodReceiver implements Co
 			throw new ContextError("Target " + targetMethod  
 				+ ": At most " + maxParams + " parameter(s) allowed for this type of Command Observer.");
 		}
-		if (params.length == maxParams) {
+		if (params.length >= maxParams - 1) {
 			return getMessageTypeFromParameter(targetMethod, maxParams - 2, explicitType);
 		}
 		else if (explicitType != null) {
