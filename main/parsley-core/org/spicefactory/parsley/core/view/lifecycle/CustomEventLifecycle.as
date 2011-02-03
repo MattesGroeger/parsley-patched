@@ -73,7 +73,6 @@ public class CustomEventLifecycle extends EventDispatcher implements ViewLifecyc
 	private function removeView (event:Event) : void {
 		log.debug("View '{0}' dispatched custom remove event", event.target);
 		dispatchEvent(new ViewLifecycleEvent(ViewLifecycleEvent.DESTROY_VIEW, config));
-		stop();
 	}
 	
 	private function configureView (event:Event) : void {
