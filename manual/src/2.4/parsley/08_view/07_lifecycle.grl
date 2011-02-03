@@ -5,7 +5,7 @@ is different than for objects defined directly in the container. Parsley offers 
 to control that lifecycle. #par
 
 
-#sub Controlling the Lifecycle of Components #sub
+#sc3 view_lifecycle_components Controlling the Lifecycle of Components #sc3
 
 #par The default behavior is that a component gets removed from the Context automatically 
 when it gets removed from the stage. But this can be changed through an attribute of the #cdi ViewSettings #cdi tag: #par
@@ -22,7 +22,7 @@ Note that this option does not have any influence when you use #cdi <FastInject>
 is not managed at all and will just receive a one-off injection. #par
 
 
-#sub Controlling the Lifecycle of View Roots #sub
+#sc3 view_lifecycle_viewroots Controlling the Lifecycle of View Roots #sc3
 
 #par Closely related is the lifecycle of the so-called view roots. If you use the #cdi <Configure> #cdi tag for example, this
 tag sends a bubbling event to signal that it wishes to get wired to the nearest Context. Other view wiring options like autowiring
@@ -45,7 +45,7 @@ the popup. In case you want to prevent this there is another flag specifically f
 #cdb
 
 
-#sub Settings for Individual Components #sub
+#sc3 view_lifecycle_individual Settings for Individual Components #sc3
 
 #par The two preceding sections showed switches for globally controlling the lifecycle of components and view roots.
 But there is also a way to change the settings for a single component: #par
@@ -57,7 +57,7 @@ But there is also a way to change the settings for a single component: #par
 #cdb
 
 
-#sub Beware of Memory Leaks #sub
+#sc3 view_lifecycle_leaks Beware of Memory Leaks #sc3
 
 #par If you use one of the configuration options shown above that switch off the automatic lifecycle management, you must
 be careful not to introduce memory leaks. A component (or any kind of object) cannot get garbage-collected as long as it
@@ -72,7 +72,7 @@ is met for all wired components in that Context: #par
 #lst
 
 
-#sub Be careful with Component Initialization Logic #sub
+#sc3 view_lifecycle_initialize Be careful with Component Initialization Logic #sc3
 
 #par Many developers are tempted to initialize the Presentation Model of a managed component like this: #par
 
@@ -198,6 +198,12 @@ is not managed in this case and metadata would not get processed. The behavior o
 is explained in the following sections. #par
 
 
+#sc3 view_lifecycle_methods Lifecycle Methods #sc3
+
+#par Managed views support the same #cdi [Init] #cdi and #cdi [Destroy] #cdi methods like regular managed objects
+declared in a Parsley configuration class or file, but the lifecycle for managed views is usually different. #par
+
+
 #sub Methods annotated with #cdi [Init] #cdi #sub
 
 #par For an object declared directly within a Parsley configuration file these methods get executed after the 
@@ -215,3 +221,75 @@ For a Flex Component that is dynamically wired, per default the destroy method
 will be invoked after the Component has been removed from the stage. Of course that means that the same
 instance can have multiple invocations of its Init and Destroy methods in case it gets removed and re-added
 to the stage. #par
+
+
+
+#sc3 view_lifecycle_custom Custom Lifecycle Handlers #sc3
+
+#par How the lifecycle of managed views is demarcated is usually determined by the #cdi ViewSettings #cdi
+of the corresponding Context as described in #ref view_lifecycle_components #ref. Thus for the default 
+behaviors Parsley comes with two implementations of the #cdi ViewLifecycle #cdi interface, one that
+controls the lifecycle of the component based on the time it is on the stage, the other based on
+custom events (#cdi configureView #cdi and #cdi removeView #cdi) dispatched by the component. #par
+
+#par But you can install custom lifecycle handlers for particular view classes (and their respective subtypes)
+if more low-level control is required. Here is an example for a lifecycle handler that simply listens 
+for events in the component: #par
+
+#cdb
+public class MyPanelLifecycle extends EventDispatcher implements ViewLifecycle {
+	
+    private static const DESTROY:String = "destroy";
+    private static const INIT:String = "init";
+	
+    private var config:ViewConfiguration;
+	
+    public function start (config:ViewConfiguration, context:Context) : void {
+        this.config = config;
+        config.view.addEventListener(DESTROY, destroyView);
+        config.view.addEventListener(INIT, initView);
+    }
+	
+    public function stop () : void {
+        config.view.removeEventListener(DESTROY, destroyView);
+        config.view.removeEventListener(INIT, initView);
+        config = null;
+    }
+	
+    private function removeView (event:Event) : void {
+        #hlt dispatchEvent(new ViewLifecycleEvent(ViewLifecycleEvent.DESTROY_VIEW, config)); #hlt
+    }
+	
+    private function configureView (event:Event) : void {
+        #hlt dispatchEvent(new ViewLifecycleEvent(ViewLifecycleEvent.INIT_VIEW, config)); #hlt
+    }
+	
+}
+#cdb
+
+#par The only purpose of such a lifecycle handler is to dispatch messages when the lifecycle of the component
+starts or ends (highlighted in red). The class above is just a very simple example where the handler primarily
+"translates" some events it knows to matching events the framework knows. But it could contain any kind of custom
+logic. #par
+
+#par Such a handler can then be installed for a Context and all its children like this: #par
+
+#cdb
+<parsley:ContextBuilder config="...">
+    <parsley:ViewLifecycle viewType="{MyPanel}" lifecycle="{MyPanelLifecycle}"/>
+</parsley:ContextBuilder>
+#cdb
+
+#par For each managed view of type #cdi MyPanel #cdi or any of its subtypes, the specified lifecycle handler
+will then be used. The framework will create a new instance of the lifecycle handler for each view instance
+so that you can keep state in the handler class. #par 
+
+
+
+
+
+
+ 
+
+
+
