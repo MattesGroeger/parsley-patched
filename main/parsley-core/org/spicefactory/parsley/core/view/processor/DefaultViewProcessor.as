@@ -15,6 +15,7 @@
  */
 
 package org.spicefactory.parsley.core.view.processor {
+import org.spicefactory.parsley.core.state.GlobalState;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.parsley.core.context.Context;
@@ -41,18 +42,25 @@ public class DefaultViewProcessor implements ViewProcessor {
 	 * @inheritDoc
 	 */
 	public function init (config:ViewConfiguration, context:Context) : void {
+		if (GlobalState.objects.isManaged(config.target)) {
+			log.warn("Target object is already managed: {0}", config.target);
+		}
 		if (!config.definition) {
 			config.definition = ViewDefinitionLookup.findMatchingDefinition(config, context);
 		}
 		dynamicObject = context.addDynamicObject(config.target, config.definition);
-		log.debug("Add view '{0}' to {1}", dynamicObject.instance, dynamicObject.context);
+		if (log.isDebugEnabled()) {
+			log.debug("Add view '{0}' to {1}", dynamicObject.instance, dynamicObject.context);
+		}
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function destroy () : void {
-		log.debug("Remove view '{0}' from {1}", dynamicObject.instance, dynamicObject.context);
+		if (log.isDebugEnabled()) {
+			log.debug("Remove view '{0}' from {1}", dynamicObject.instance, dynamicObject.context);
+		}
 		dynamicObject.remove();
 	}
 	
