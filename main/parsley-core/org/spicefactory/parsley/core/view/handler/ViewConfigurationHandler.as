@@ -15,12 +15,13 @@
  */
 
 package org.spicefactory.parsley.core.view.handler {
-import org.spicefactory.parsley.core.events.ViewLifecycleEvent;
+import org.spicefactory.lib.util.ArrayUtil;
 import org.spicefactory.lib.logging.LogContext;
 import org.spicefactory.lib.logging.Logger;
 import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.core.context.Context;
 import org.spicefactory.parsley.core.events.ViewConfigurationEvent;
+import org.spicefactory.parsley.core.events.ViewLifecycleEvent;
 import org.spicefactory.parsley.core.view.ViewAutowireMode;
 import org.spicefactory.parsley.core.view.ViewConfiguration;
 import org.spicefactory.parsley.core.view.ViewLifecycle;
@@ -37,7 +38,6 @@ import org.spicefactory.parsley.core.view.util.ViewDefinitionLookup;
 import flash.display.DisplayObject;
 import flash.events.Event;
 import flash.events.IEventDispatcher;
-import flash.utils.Dictionary;
 
 /**
  * ViewRootHandler implementation that deals with bubbling events from components that explicitly
@@ -55,7 +55,7 @@ public class ViewConfigurationHandler implements ViewRootHandler {
 	
 	private var explicitHandler:ContextAwareEventHandler;
 	private var autowireHandler:ContextAwareEventHandler;
-	private var activeConfigs:Dictionary = new Dictionary();
+	private var activeConfigs:Array = new Array();
 	
 	private var context:Context;
 	private var settings:ViewSettings;
@@ -162,8 +162,8 @@ public class ViewConfigurationHandler implements ViewRootHandler {
 	}
 	
 	private function processConfiguration (config:ViewConfiguration) : void {
-		if (activeConfigs[config.target] != undefined) return;
-		activeConfigs[config.target] = config;
+		//if (activeConfigs[config.target] != undefined) return;
+		activeConfigs.push(config);
 		log.debug("Process view '{0}' with {1}", config.target, context);
 		if (!config.lifecycle) {
 			config.lifecycle = getLifecycle(config);
@@ -185,7 +185,7 @@ public class ViewConfigurationHandler implements ViewRootHandler {
 		event.configuration.processor.destroy();
 		if (!event.configuration.reuse) {
 			disposeLifecycle(event.configuration);
-			delete activeConfigs[event.configuration.target];
+			ArrayUtil.remove(activeConfigs, event.configuration);
 		}
 	}
 	
