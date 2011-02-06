@@ -233,7 +233,7 @@ class ProcessedMembers {
 	
 	private var processed:Dictionary = new Dictionary();
 	
-	function addMember (member:Member) : Boolean {
+	public function addMember (member:Member) : Boolean {
 		var declared:String = (member.declaredBy == null) ? "" : member.declaredBy.name;
 		var key:String = declared + "#" + member.name;
 		if (processed[key]) return false;
