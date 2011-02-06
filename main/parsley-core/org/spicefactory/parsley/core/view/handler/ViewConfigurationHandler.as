@@ -203,8 +203,8 @@ public class ViewConfigurationHandler implements ViewRootHandler {
 	
 	private function disposeLifecycle (config:ViewConfiguration) : void {
 		config.lifecycle.stop();
-		config.lifecycle.addEventListener(ViewLifecycleEvent.DESTROY_VIEW, viewDestroyed);
-		config.lifecycle.addEventListener(ViewLifecycleEvent.INIT_VIEW, viewInitialized);
+		config.lifecycle.removeEventListener(ViewLifecycleEvent.DESTROY_VIEW, viewDestroyed);
+		config.lifecycle.removeEventListener(ViewLifecycleEvent.INIT_VIEW, viewInitialized);
 	}
 	
 	private function getLifecycle (config:ViewConfiguration) : ViewLifecycle {
