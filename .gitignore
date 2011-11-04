@@ -1,0 +1,29 @@
+
+# /main/
+/main/docs
+/main/bin
+
+# /main/build/
+/main/build/buildInternal.xml
+/main/build/asdoc_full_header.txt
+/main/build/buildInternal.properties
+/main/build/asdoc_public_header.txt
+/main/build/apiheader
+/main/build/api
+/main/build/build-old.xml
+
+# /main/parsley-flex/org/spicefactory/parsley/flex/modules/
+/main/parsley-flex/org/spicefactory/parsley/flex/modules/sdk
+
+# /main/release/
+/main/release/parsley-1.0.RC1.swc
+/main/release/parsley-1.0.1.swc
+/main/release/parsley-1.0.2-SNAPSHOT.swc
+/main/release/*.swc
+/main/release/parsley-*
+/main/release/api
+
+# /samples/flex/ParsleyHelloWorld/
+/samples/flex/ParsleyHelloWorld/html-template
+/samples/flex/ParsleyHelloWorld/bin-debug
+/samples/flex/ParsleyHelloWorld/bin-release
