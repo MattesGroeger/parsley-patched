@@ -303,6 +303,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 }
 }
 
+import org.spicefactory.parsley.core.messaging.receiver.MessageReceiver;
 import org.spicefactory.lib.errors.NestedError;
 
 class Processor {
@@ -316,7 +317,11 @@ class Processor {
 		this.receivers = receivers;
 		this.handler = handler;
 		this.handleErrors = handleErrors;
-		receivers.sortOn("order", Array.NUMERIC);
+		receivers.sort(sortOnOrder);
+	}
+	
+	private function sortOnOrder(receiver1:MessageReceiver, receiver2:MessageReceiver):Number {
+		return (receiver1.order - receiver2.order);
 	}
 	
 	internal function hasNext () : Boolean {
