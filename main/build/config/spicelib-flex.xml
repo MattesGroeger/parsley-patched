@@ -11,7 +11,7 @@
     	</source-path>
 		
 		<external-library-path>
-			<path-element>${flexlib}/libs/player/9/playerglobal.swc</path-element>
+			<path-element>${flexlib}/libs/player/10.2/playerglobal.swc</path-element>
 			<path-element>${flexlib}/libs/flex.swc</path-element>
 			<path-element>${flexlib}/libs/framework.swc</path-element>
 			<path-element>${flexlib}/libs/rpc.swc</path-element>

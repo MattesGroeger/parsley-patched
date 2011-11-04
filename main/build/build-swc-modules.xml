@@ -34,7 +34,7 @@
 		<exec executable="${flex3.sdk}/bin/${compc}" dir="${basedir}">
 			<arg line="-keep-as3-metadata+=DefaultProperty,Metadata,Required,Event,AssignableTo,Target" />
 			<arg line="-o ${release.target.dir}/release/modules/spicelib-reflect-${version}.swc" />
-			<arg line="-el ${flex3.sdk}/frameworks/libs/player/9/playerglobal.swc" />
+			<arg line="-el ${flex3.sdk}/frameworks/libs/player/10.2/playerglobal.swc" />
 			<arg line="-el ${release.target.dir}/release/modules/spicelib-core-${version}.swc" />
 			<arg line="-sp ${project.dir}/spicelib-reflect" />
 			<arg line="-is ${project.dir}/spicelib-reflect" />
