@@ -16,7 +16,8 @@
  
 package org.spicefactory.parsley.flash.resources {
 
-	import org.spicefactory.parsley.flash.resources.Locale;
+import org.spicefactory.parsley.flash.resources.params.Params;
+import org.spicefactory.parsley.flash.resources.Locale;
 import flash.events.IEventDispatcher;
 	
 /**
@@ -59,6 +60,10 @@ public interface ResourceManager extends IEventDispatcher {
 	function get cacheable () : Boolean;
 	
 	function set cacheable (cacheable:Boolean) : void;
+	
+	function get params () : Params;
+	
+	function set params (params:Params) : void;
 	
 	/**
 	 * The currently active <code>Locale</code>.
@@ -108,7 +113,7 @@ public interface ResourceManager extends IEventDispatcher {
 	/**
 	 * @copy org.spicefactory.parsley.context.ApplicationContext#getMessage()
 	 */
-	function getMessage (messageKey:String, bundleId:String = null, params:Array = null) : String;
+	function getMessage (messageKey:String, bundleId:String = null, params:Object = null) : String;
 		
 	
 }

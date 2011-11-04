@@ -20,6 +20,7 @@ import org.spicefactory.lib.reflect.ClassInfo;
 import org.spicefactory.parsley.flash.resources.Locale;
 import org.spicefactory.parsley.flash.resources.adapter.FlashResourceBindingAdapter;
 import org.spicefactory.parsley.flash.resources.impl.DefaultResourceManager;
+import org.spicefactory.parsley.flash.resources.params.DefaultParams;
 import org.spicefactory.parsley.flash.resources.spi.ResourceManagerSpi;
 
 import flash.utils.getQualifiedClassName;
@@ -79,6 +80,7 @@ public class ResourceManagerTag {
 		
 		manager.cacheable = cacheable;
 		manager.persistent = persistent;
+		manager.params = new DefaultParams();
 		
 		var first:Boolean = true;
 		for each (var locTag:LocaleTag in locales) {

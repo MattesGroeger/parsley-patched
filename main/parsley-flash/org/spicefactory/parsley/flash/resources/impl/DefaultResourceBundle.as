@@ -15,7 +15,8 @@
  */
  
 package org.spicefactory.parsley.flash.resources.impl {
-	import org.spicefactory.parsley.flash.resources.impl.LocaleUtil;
+import org.spicefactory.parsley.flash.resources.params.Params;
+import org.spicefactory.parsley.flash.resources.impl.LocaleUtil;
 import org.spicefactory.lib.task.TaskGroup;	
 import org.spicefactory.parsley.flash.resources.spi.ResourceBundleSpi;
 import org.spicefactory.parsley.flash.resources.spi.BundleLoaderFactory;
@@ -40,6 +41,7 @@ public class DefaultResourceBundle implements ResourceBundleSpi {
 	
 	private var _messages:Object;
 	private var _newMessages:Object;
+	private var _params:Params;
 	
 	/**
 	 * @inheritDoc
@@ -80,6 +82,14 @@ public class DefaultResourceBundle implements ResourceBundleSpi {
 	 */
 	public function get cacheable () : Boolean {
 		return _cacheable;
+	}
+
+	public function get params ():Params {
+		return _params;
+	}
+
+	public function set params (params:Params):void {
+		_params = params;
 	}
 	
 	/**
@@ -136,7 +146,7 @@ public class DefaultResourceBundle implements ResourceBundleSpi {
 	/**
 	 * @inheritDoc
 	 */
-	public function getMessage (messageKey:String, params:Array) : String {
+	public function getMessage (messageKey:String, params:Object = null) : String {
 		var msg:String; 
 		
 		if (_localized) {
@@ -149,9 +159,7 @@ public class DefaultResourceBundle implements ResourceBundleSpi {
 		}
 		if (msg == null) {
 			msg = _messages.__base[messageKey];
-		}
-		
-		if (msg != null && params != null && params.length > 0) {
+		} else {
 			msg = applyParams(msg, params);
 		}
 		return msg;
@@ -162,17 +170,20 @@ public class DefaultResourceBundle implements ResourceBundleSpi {
 		return (bundleKey == "") ? "__base" : bundleKey;
 	}
 	 
-	private function applyParams (msg:String, params:Array) : String {
+	private function applyParams (msg:String, params:Object = null) : String {
 		var parts:Array = msg.split("{");
 		var result:String = parts[0];
 		for (var i:Number = 1; i < parts.length; i++) {
 			var part:String = parts[i];
 			var sub:Array = part.split("}");
-			var index:uint = uint(sub[0]);
-			if (isNaN(index) || params[index] == undefined) {
-				result += "{" + index + "?}";
+			var property:String = String(sub[0]);
+			if (params == null || params[property] == undefined) {
+				if (_params.hasParam(property))
+					result += _params.getParam(property);
+				else
+					result += "{" + property + "?}";
 			} else {
-				result += params[index];
+				result += params[property];
 			}
 			result += sub[1];
 		}

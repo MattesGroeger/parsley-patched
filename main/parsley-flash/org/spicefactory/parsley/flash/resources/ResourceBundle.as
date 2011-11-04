@@ -15,6 +15,7 @@
  */
  
 package org.spicefactory.parsley.flash.resources {
+	import org.spicefactory.parsley.flash.resources.params.Params;
 	import org.spicefactory.parsley.flash.resources.Locale;
 	
 /**
@@ -38,6 +39,10 @@ public interface ResourceBundle {
 
 	function set cacheable (cacheable:Boolean) : void;
 	
+	function get params () : Params;
+	
+	function set params (params:Params) : void;
+	
 	/**
 	 * Adds messages for the specified <code>Locale</code>.
 	 * 
@@ -53,7 +58,7 @@ public interface ResourceBundle {
 	 * @param params optional parameters for parameterized messages
 	 * @return the localized message for the specified key with all parameters applied
 	 */
-	function getMessage (messageKey:String, params:Array) : String;	
+	function getMessage (messageKey:String, params:Object = null) : String;	
 	
 }
 	

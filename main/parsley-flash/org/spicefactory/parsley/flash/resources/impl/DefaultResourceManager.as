@@ -15,6 +15,7 @@
  */
  
 package org.spicefactory.parsley.flash.resources.impl {
+import org.spicefactory.parsley.flash.resources.params.Params;
 import org.spicefactory.lib.errors.IllegalArgumentError;
 import org.spicefactory.lib.errors.IllegalStateError;
 import org.spicefactory.lib.logging.LogContext;
@@ -55,6 +56,7 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	private var _currentLocale:Locale;
 	private var _nextLocale:Locale;
 	private var _supportedLocales:Object;
+	private var _params:Params;
 	
 	private var _defaultBundle:ResourceBundleSpi;
 	private var _bundles:Object;
@@ -119,6 +121,17 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 			var msg3:String = "The specified Locale (" + loc + ") is not supported";
 			_logger.error(msg3);
 			throw new IllegalArgumentError(msg3);
+		}
+	}
+	
+	public function get params ():Params {
+		return _params;
+	}
+
+	public function set params (params:Params):void {
+		_params = params;
+		for each (var bundle:ResourceBundle in _bundles) {
+			bundle.params = params;
 		}
 	}
 	
@@ -294,6 +307,7 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	 */
 	public function addBundle (bundle:ResourceBundleSpi) : void {
 		bundle.cacheable = _cacheable;
+		bundle.params = _params;
 		_bundles[bundle.id] = bundle;
 	}
 	
@@ -311,8 +325,7 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 	/**
 	 * @inheritDoc
 	 */
-	public function getMessage (messageKey:String, bundleId:String = null, params:Array = null) : String {
-		params = (params == null) ? new Array() : params ;
+	public function getMessage (messageKey:String, bundleId:String = null, params:Object = null) : String {
 		var bundle:ResourceBundle = getBundle(bundleId);
 		return bundle.getMessage(messageKey, params);
 	}
@@ -344,7 +357,6 @@ public class DefaultResourceManager extends EventDispatcher implements ResourceM
 			bundle.destroy();
 		}
 	}
-	
 }
 
 }
